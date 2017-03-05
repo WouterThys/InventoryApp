@@ -32,7 +32,16 @@ public class Application extends JFrame {
     }
 
     void createNewItem() {
-        NewItemDialog.showDialog(this);
+        Item item = NewItemDialog.showDialog(this);
+        if (item != null) {
+            try {
+                item.save();
+                selectedItem = item;
+                refreshItemList();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     void saveItem() {

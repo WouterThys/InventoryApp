@@ -56,7 +56,7 @@ public abstract class ErrorProvider extends InputVerifier {
             c.setToolTipText(originalTooltipText);
         } else {
             c.setBorder(new IconBorder(error.getImage(), originalBorder));
-            c.setBackground(error.getColor());
+            c.setBackground(originalBackgroundColor);
             c.setToolTipText(error.getMessage());
         }
         if (error.getErrorType() == Error.ERROR) {

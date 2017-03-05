@@ -77,6 +77,7 @@ public class PanelUtils {
             if(this.getText().isEmpty()) {
                 super.setText("");
                 showingHint = false;
+                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             }
         }
         @Override
@@ -84,6 +85,7 @@ public class PanelUtils {
             if(this.getText().isEmpty()) {
                 super.setText(hint);
                 showingHint = true;
+                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
             }
         }
 
@@ -111,6 +113,7 @@ public class PanelUtils {
             if(this.getText().isEmpty()) {
                 super.setText("");
                 showingHint = false;
+                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             }
         }
         @Override
@@ -118,6 +121,7 @@ public class PanelUtils {
             if(this.getText().isEmpty()) {
                 super.setText(hint);
                 showingHint = true;
+                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
             }
         }
 

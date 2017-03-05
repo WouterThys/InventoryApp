@@ -23,7 +23,8 @@ public class ResourceManager {
      */
     public ResourceManager(String propertiesFile) {
         this.propertiesFile = propertiesFile;
-        resourceURL = propertiesFile.substring(0, propertiesFile.lastIndexOf("/")+1);
+        resourceURL = propertiesFile.substring(0, propertiesFile.lastIndexOf("/"));
+        resourceURL = propertiesFile.substring(0, resourceURL.lastIndexOf("/")+1);
         properties = new Properties();
         try {
             properties.load(new FileInputStream(propertiesFile));
@@ -86,7 +87,7 @@ public class ResourceManager {
 
     /**
      *  Reads the icon path from the properties file and gets the icon
-     * from the path retieved
+     * from the path retrieved
      * @param resourceURL
      * @return
      */

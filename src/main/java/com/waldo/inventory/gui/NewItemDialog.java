@@ -18,6 +18,7 @@ import static com.waldo.inventory.Utils.PanelUtils.createLabelConstraints;
 public class NewItemDialog extends JPanel {
 
     private static JDialog dialog;
+    private static Item newItem;
 
     private JTextField idTextField;
     private JTextField nameTextField;
@@ -26,16 +27,15 @@ public class NewItemDialog extends JPanel {
     private JButton cancelButton;
     private JButton createButton;
 
-    public static void showDialog(JFrame parent) {
+    public static Item showDialog(JFrame parent) {
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new NewItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setSize(400,500);
         dialog.setResizable(false);
         dialog.setVisible(true);
+        return newItem;
     }
-
-    private Item newItem;
 
     public NewItemDialog() {
         super(new GridBagLayout());
@@ -44,6 +44,8 @@ public class NewItemDialog extends JPanel {
         initLayouts();
     }
 
+
+
     private void initComponents() {
         idTextField = new JTextField(String.valueOf(newItem.getId()));
         idTextField.setEditable(false);
@@ -51,6 +53,7 @@ public class NewItemDialog extends JPanel {
         nameTextField = PanelUtils.getHintTextField("Component name");
         nameTextField.setInputVerifier(new NotEmptyValidator(nameTextField));
         descriptionTextArea = PanelUtils.getHintTextArea("Component description");
+        descriptionTextArea.setInputVerifier(new NotEmptyValidator(descriptionTextArea));
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -65,6 +68,8 @@ public class NewItemDialog extends JPanel {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                newItem = null;
+                dialog.setVisible(false);
                 dialog.dispose();
             }
         });
@@ -73,13 +78,14 @@ public class NewItemDialog extends JPanel {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Do checks
-
                 // Create item
                 newItem.setName(nameTextField.getText());
                 newItem.setDescription(descriptionTextArea.getText());
                 newItem.setPrice(Double.valueOf(priceTextField.getText()));
-                // Return item??
+
+                // Close dialog
+                dialog.setVisible(false);
+                dialog.dispose();
             }
         });
     }
