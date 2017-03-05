@@ -11,14 +11,23 @@ public class Item {
     private String description;
     private double price;
 
+    private int category = -1;
+    private int product = -1;
+    private int type = -1;
+
     public void save() throws SQLException {
         try (Connection connection = DbManager.getConnection()) {
             if (id == -1) { // Save
-                final String sql = "INSERT INTO items (name, description, price) VALUES (?, ?, ?)";
+                final String sql = "INSERT INTO items (" +
+                        "name, description, price, category, product, type) VALUES " +
+                        "(?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                     statement.setString(1, name);
                     statement.setString(2, description);
                     statement.setDouble(3, price);
+                    statement.setInt(4, category);
+                    statement.setInt(5, product);
+                    statement.setInt(6, type);
                     statement.execute();
 
                     try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -27,11 +36,21 @@ public class Item {
                     }
                 }
             } else { // Update
-                final String sql = "UPDATE items SET name = ?, description = ?, price = ? WHERE id = ? ";
+                final String sql = "UPDATE items SET " +
+                        "name = ?, " +
+                        "description = ?, " +
+                        "price = ? " +
+                        "category = ? " +
+                        "product = ? " +
+                        "type = ? " +
+                        "WHERE id = ? ";
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setString(1, name);
                     statement.setString(2, description);
                     statement.setDouble(3, price);
+                    statement.setInt(4, category);
+                    statement.setInt(5, product);
+                    statement.setInt(6, type);
                     statement.execute();
                 }
             }
@@ -91,5 +110,29 @@ public class Item {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public int getProduct() {
+        return product;
+    }
+
+    public void setProduct(int product) {
+        this.product = product;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
