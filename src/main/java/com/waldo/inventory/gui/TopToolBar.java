@@ -14,6 +14,7 @@ public class TopToolBar extends JToolBar {
     private Action newAction;
     private Action deleteAction;
     private Action saveAction;
+    private Action editAction;
     private static Application app;
 
     public static TopToolBar getToolbar(Application app) {
@@ -29,6 +30,7 @@ public class TopToolBar extends JToolBar {
         add(refreshAction);
         addSeparator();
         add(newAction);
+        add(editAction);
         add(saveAction);
         addSeparator();
         add(deleteAction);
@@ -46,6 +48,13 @@ public class TopToolBar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 app.createNewItem();
+            }
+        };
+
+        editAction = new AbstractAction("Edit", ImageUtils.loadImageIcon("edit", ImageUtils.ICON_SIZE_24)) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                app.editItem();
             }
         };
 

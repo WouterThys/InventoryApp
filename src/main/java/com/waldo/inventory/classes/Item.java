@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.database.DbManager;
 
 import java.sql.*;
@@ -11,7 +12,7 @@ public class Item {
     private String description;
     private double price;
 
-    private int category = -1;
+    private int category = ItemCategories.UNKNOWN;
     private int product = -1;
     private int type = -1;
 

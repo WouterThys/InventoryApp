@@ -33,6 +33,9 @@ public class ItemDbManager {
                 i.setName(rs.getString("name"));
                 i.setDescription(rs.getString("description"));
                 i.setPrice(rs.getDouble("price"));
+                i.setCategory(rs.getInt("category"));
+                i.setProduct(rs.getInt("product"));
+                i.setType(rs.getInt("type"));
                 items.add(i);
             }
 

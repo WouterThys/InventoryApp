@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils.statics;
 
 public class ItemCategories {
+    public static final int EMPTY = -2;
     public static final int UNKNOWN = -1;
     public static final int SEMICONDUCTORS = 0;
     public static final int CIRCUIT_PROTECTION= 1;
@@ -65,7 +66,6 @@ public class ItemCategories {
 
     public static String[] getItemCategoriesStringArray() {
         return new String[]{
-                "Unknown",
                 "Semiconductors",
                 "Circuit protection",
                 "Connectors",

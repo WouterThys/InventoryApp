@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.Utils.validators.NotEmptyValidator;
 import com.waldo.inventory.classes.Item;
 
@@ -15,7 +16,7 @@ import static com.waldo.inventory.Utils.PanelUtils.createButtonConstraints;
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.Utils.PanelUtils.createLabelConstraints;
 
-public class NewItemDialog extends JPanel {
+public class EditItemDialog extends JPanel {
 
     private static JDialog dialog;
     private static Item newItem;
@@ -24,12 +25,14 @@ public class NewItemDialog extends JPanel {
     private JTextField nameTextField;
     private JTextArea descriptionTextArea;
     private JFormattedTextField priceTextField;
+    private JComboBox<String> categoryComboBox;
+
     private JButton cancelButton;
     private JButton createButton;
 
     public static Item showDialog(JFrame parent) {
         dialog = new JDialog(parent, "Create new Item", true);
-        dialog.getContentPane().add(new NewItemDialog());
+        dialog.getContentPane().add(new EditItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setSize(400,500);
         dialog.setResizable(false);
@@ -37,14 +40,35 @@ public class NewItemDialog extends JPanel {
         return newItem;
     }
 
-    public NewItemDialog() {
-        super(new GridBagLayout());
-        newItem = new Item();
-        initComponents();
-        initLayouts();
+    public static Item showDialog(JFrame parent, Item item) {
+        dialog = new JDialog(parent, "Create new Item", true);
+        dialog.getContentPane().add(new EditItemDialog(item));
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setSize(400,500);
+        dialog.setResizable(false);
+        dialog.setVisible(true);
+        return newItem;
     }
 
+    public EditItemDialog(Item item) {
+        super(new GridBagLayout());
+        newItem = item;
+        initComponents();
+        initLayouts();
+        updateValues();
+    }
 
+    public EditItemDialog() {
+        this(new Item());
+    }
+
+    private void updateValues() {
+        idTextField.setText(String.valueOf(newItem.getId()));
+        nameTextField.setText(newItem.getName());
+        descriptionTextArea.setText(newItem.getDescription());
+        priceTextField.setText(String.valueOf(newItem.getPrice()));
+        categoryComboBox.setSelectedIndex(newItem.getCategory());
+    }
 
     private void initComponents() {
         idTextField = new JTextField(String.valueOf(newItem.getId()));
@@ -64,6 +88,17 @@ public class NewItemDialog extends JPanel {
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = PanelUtils.getHintFormattedTextField("Price", formatter);
 
+        categoryComboBox = new JComboBox<>(ItemCategories.getItemCategoriesStringArray());
+        categoryComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox)e.getSource();
+                if (newItem != null) {
+                    newItem.setCategory(cb.getSelectedIndex());
+                }
+            }
+        });
+
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -82,6 +117,7 @@ public class NewItemDialog extends JPanel {
                 newItem.setName(nameTextField.getText());
                 newItem.setDescription(descriptionTextArea.getText());
                 newItem.setPrice(Double.valueOf(priceTextField.getText()));
+                newItem.setCategory(categoryComboBox.getSelectedIndex());
 
                 // Close dialog
                 dialog.setVisible(false);
@@ -109,8 +145,12 @@ public class NewItemDialog extends JPanel {
         add(new JLabel("Price: "), createLabelConstraints(0,3));
         add(priceTextField, createFieldConstraints(1,3));
 
+        // Category
+        add(new JLabel("Category: "), createLabelConstraints(0,4));
+        add(categoryComboBox, createFieldConstraints(1,4));
+
         // Buttons
-        add(cancelButton, createButtonConstraints(0,4));
-        add(createButton, createButtonConstraints(1,4));
+        add(cancelButton, createButtonConstraints(0,5));
+        add(createButton, createButtonConstraints(1,5));
     }
 }

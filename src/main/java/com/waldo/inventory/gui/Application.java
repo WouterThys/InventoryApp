@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui;
 
+import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.database.ItemDbManager;
 
@@ -11,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.PanelUtils.*;
+
 public class Application extends JFrame {
 
     private JTable itemTable;
@@ -19,6 +22,9 @@ public class Application extends JFrame {
     private JTextField idTextField;
     private JTextArea descriptionTextArea;
     private JTextField priceTextField;
+    private JTextField categoryTextField;
+    private JTextField productTextField;
+    private JTextField typeTextField;
 
     private Item selectedItem;
 
@@ -32,7 +38,7 @@ public class Application extends JFrame {
     }
 
     void createNewItem() {
-        Item item = NewItemDialog.showDialog(this);
+        Item item = EditItemDialog.showDialog(this);
         if (item != null) {
             try {
                 item.save();
@@ -44,11 +50,26 @@ public class Application extends JFrame {
         }
     }
 
+    void editItem() {
+        if (selectedItem != null) {
+            selectedItem = EditItemDialog.showDialog(this, selectedItem);
+            if (selectedItem != null) {
+                try {
+                    selectedItem.save();
+                    refreshItemList();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
     void saveItem() {
         if (selectedItem != null) {
             selectedItem.setName(nameTextField.getText());
             selectedItem.setDescription(descriptionTextArea.getText());
-            //selectedItem.setPrice(Integer.valueOf(priceTextField.getText()));
+            selectedItem.setPrice(Integer.valueOf(priceTextField.getText()));
+            //selectedItem.setCategory();
             try {
                 selectedItem.save();
             } catch (SQLException e) {
@@ -73,7 +94,6 @@ public class Application extends JFrame {
             }
         }
     }
-
 
     private void initComponents() {
         TopToolBar ttb = TopToolBar.getToolbar(this);
@@ -120,63 +140,62 @@ public class Application extends JFrame {
             idTextField.setText("");
             nameTextField.setText("");
             descriptionTextArea.setText("");
+            priceTextField.setText("");
+            categoryTextField.setText("");
+            productTextField.setText("");
+            typeTextField.setText("");
         } else {
             idTextField.setText(String.valueOf(selectedItem.getId()));
             nameTextField.setText(selectedItem.getName());
             descriptionTextArea.setText(selectedItem.getDescription());
+            priceTextField.setText(String.valueOf(selectedItem.getPrice()));
+            categoryTextField.setText(ItemCategories.getItemCategoryAsString(selectedItem.getCategory()));
+            productTextField.setText(String.valueOf(selectedItem.getProduct()));
+            typeTextField.setText(String.valueOf(selectedItem.getProduct()));
         }
     }
 
     private JComponent createEditor() {
         final JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints;
 
         // Id
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.insets = new Insets(2,2,2,2);
-        panel.add(new JLabel("Id"), constraints);
-
-        constraints = new GridBagConstraints();
-        constraints.gridx = 1;
-        constraints.weightx = 1;
-        constraints.insets = new Insets(2,2,2,2);
-        constraints.fill = GridBagConstraints.BOTH;
+        panel.add(new JLabel("Id"), createLabelConstraints(0,0));
         idTextField = new JTextField();
         idTextField.setEditable(false);
-        panel.add(idTextField, constraints);
+        panel.add(idTextField, createFieldConstraints(1,0));
 
         // Name
-        constraints = new GridBagConstraints();
-        constraints.gridy = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.insets = new Insets(2,2,2,2);
-        panel.add(new JLabel("Name"), constraints);
-
-        constraints = new GridBagConstraints();
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.weightx = 1;
-        constraints.insets = new Insets(2,2,2,2);
-        constraints.fill = GridBagConstraints.BOTH;
+        panel.add(new JLabel("Name"), createLabelConstraints(0,1));
         nameTextField = new JTextField();
-        panel.add(nameTextField, constraints);
+        panel.add(nameTextField, createFieldConstraints(1,1));
 
-        // Contacts
-        constraints = new GridBagConstraints();
-        constraints.gridy = 2;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.insets = new Insets(2,2,2,2);
-        panel.add(new JLabel("Contacts"), constraints);
-
-        constraints = new GridBagConstraints();
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        constraints.weightx = 1;
+        // Description
+        panel.add(new JLabel("Contacts"), createLabelConstraints(0,2));
+        constraints = createFieldConstraints(1,2);
         constraints.weighty = 1;
-        constraints.insets = new Insets(2,2,2,2);
-        constraints.fill = GridBagConstraints.BOTH;
         descriptionTextArea = new JTextArea();
         panel.add(new JScrollPane(descriptionTextArea), constraints);
+
+        // Price
+        panel.add(new JLabel("Price"), createLabelConstraints(0,3));
+        priceTextField = new JTextField();
+        panel.add(priceTextField, createFieldConstraints(1,3));
+
+        // Category
+        panel.add(new JLabel("Category"), createLabelConstraints(0,4));
+        categoryTextField = new JTextField();
+        panel.add(categoryTextField, createFieldConstraints(1,4));
+
+        // Product
+        panel.add(new JLabel("Product"), createLabelConstraints(0,5));
+        productTextField = new JTextField();
+        panel.add(productTextField, createFieldConstraints(1,5));
+
+        // Type
+        panel.add(new JLabel("Type"), createLabelConstraints(0,6));
+        typeTextField = new JTextField();
+        panel.add(typeTextField, createFieldConstraints(1,6));
 
         return panel;
     }
