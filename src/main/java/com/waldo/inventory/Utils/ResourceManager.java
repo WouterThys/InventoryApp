@@ -23,7 +23,7 @@ public class ResourceManager {
      */
     public ResourceManager(String propertiesFile) {
         this.propertiesFile = propertiesFile;
-        resourceURL = propertiesFile.substring(0, propertiesFile.lastIndexOf(File.separator)+1);
+        resourceURL = propertiesFile.substring(0, propertiesFile.lastIndexOf("/")+1);
         properties = new Properties();
         try {
             properties.load(new FileInputStream(propertiesFile));

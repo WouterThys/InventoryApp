@@ -15,7 +15,6 @@ public abstract class ErrorProvider extends InputVerifier {
     private String originalTooltipText;
     private Object parent;
 
-
     /**
      * Constructor
      * @param c The JComponent to be validated.
@@ -72,5 +71,4 @@ public abstract class ErrorProvider extends InputVerifier {
             return true;
         }
     }
-
 }

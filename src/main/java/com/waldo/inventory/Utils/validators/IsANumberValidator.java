@@ -13,7 +13,13 @@ public class IsANumberValidator extends ErrorProvider {
     @Override
     protected Error ErrorDefinition(JComponent c) {
         try {
-            Integer.parseInt(((JTextField)c).getText());
+            if (c instanceof JTextField) {
+                Integer.parseInt(((JTextField) c).getText());
+            } else if (c instanceof JTextArea) {
+                Integer.parseInt(((JTextArea) c).getText());
+            } else {
+                return new Error(Error.ERROR, "Not a text type component");
+            }
         } catch (NumberFormatException e) {
             return new Error(Error.ERROR, "Please enter a valid number");
         }
