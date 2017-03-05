@@ -2,6 +2,7 @@ package com.waldo.inventory.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public class Error {
     public static final int NO_ERROR = 0;
@@ -17,7 +18,8 @@ public class Error {
         this.errorType = errorType;
         this.message = message;
 
-        resourceManager = new ResourceManager(Error.class.getResource("Settings.properties").getPath());
+        URL url = Error.class.getResource("/settings/Settings.properties");
+        resourceManager = new ResourceManager(url.getPath());
     }
 
     protected int getErrorType() {

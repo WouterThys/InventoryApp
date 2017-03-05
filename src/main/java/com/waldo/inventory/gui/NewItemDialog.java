@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.validators.NotEmptyValidator;
 import com.waldo.inventory.classes.Item;
 
 import javax.swing.*;
@@ -48,6 +49,7 @@ public class NewItemDialog extends JPanel {
         idTextField.setEditable(false);
 
         nameTextField = PanelUtils.getHintTextField("Component name");
+        nameTextField.setInputVerifier(new NotEmptyValidator(nameTextField));
         descriptionTextArea = PanelUtils.getHintTextArea("Component description");
 
         NumberFormat format = NumberFormat.getInstance();
