@@ -6,6 +6,8 @@ import java.sql.*;
 
 public class Item extends DbObject {
 
+    public static final String TABLE_NAME = "items";
+
     private String description;
     private double price;
 
@@ -31,7 +33,7 @@ public class Item extends DbObject {
     private static final String deleteSql = "DELETE FROM items WHERE id = ?";
 
     public Item() {
-        super("items", insertSql, updateSql, deleteSql);
+        super(TABLE_NAME, insertSql, updateSql, deleteSql);
     }
 
 

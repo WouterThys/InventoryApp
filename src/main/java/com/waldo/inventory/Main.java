@@ -10,8 +10,8 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        DbManager.getInstance().init();
-        DbManager.getInstance().registerShutDownHook();
+        DbManager.dbInstance().init();
+        DbManager.dbInstance().registerShutDownHook();
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override

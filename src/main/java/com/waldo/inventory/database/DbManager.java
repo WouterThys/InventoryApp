@@ -1,11 +1,11 @@
 package com.waldo.inventory.database;
 
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.gui.ItemListAdapter;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,12 +16,11 @@ import java.util.List;
 public class DbManager {
 
     private static final DbManager INSTANCE = new DbManager();
-
-    private BasicDataSource dataSource;
-
-    public static DbManager getInstance() {
+    public static DbManager dbInstance() {
         return INSTANCE;
     }
+
+    private BasicDataSource dataSource;
 
     private DbManager() {}
 
@@ -61,7 +60,7 @@ public class DbManager {
     }
 
     public static Connection getConnection() throws SQLException {
-        return getInstance().getDataSource().getConnection();
+        return dbInstance().getDataSource().getConnection();
     }
 
     public List<Item> getItems() throws SQLException {
@@ -88,22 +87,164 @@ public class DbManager {
         }
     }
 
-    public <T extends DbObject> List<T> getList() throws SQLException {
-        List<T> list = new ArrayList<>();
+    public void getItemsAsync(final ItemListAdapter listAdapter) {
+        if (listAdapter != null) {
+            listAdapter.removeAllItems();
+        }
+        SwingWorker<Void, Item> worker = new SwingWorker<Void, Item>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<Item> itemList = dbInstance().getItems();
+                for(Item i : itemList) {
+                    publish(i);
+                }
+                return null;
+            }
 
-        String sql = "SELECT * FROM " + T.TABLE_NAME + " ORDER BY id";
+            @Override
+            protected void process(List<Item> chunks) {
+                for (Item c : chunks) {
+                    if (listAdapter != null) {
+                        listAdapter.add(c);
+                    }
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    private List<Category> getCategories() throws SQLException {
+        List<Category> categories = new ArrayList<>();
+
+        String sql = "SELECT * FROM "+Category.TABLE_NAME+" ORDER BY id";
         try (Connection connection = DbManager.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                T i = (T) new DbObject(T.TABLE_NAME);
+                Category i = new Category();
                 i.setId(rs.getLong("id"));
                 i.setName(rs.getString("name"));
-                list.add(i);
+                categories.add(i);
             }
 
-            return list;
+            return categories;
         }
+    }
+
+    public void getCategoriesAsync(final List<Category> categories) {
+        if (categories != null) {
+            categories.clear();
+        }
+        SwingWorker<Void, Category> worker = new SwingWorker<Void, Category>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<Category> categoryList = dbInstance().getCategories();
+                for(Category c : categoryList) {
+                    publish(c);
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Category> chunks) {
+                for (Category c : chunks) {
+                    if (categories != null) {
+                        categories.add(c);
+                    }
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    private List<Product> getProducts() throws SQLException {
+        List<Product> products = new ArrayList<>();
+
+        String sql = "SELECT * FROM "+Product.TABLE_NAME+" ORDER BY id";
+        try (Connection connection = DbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Product i = new Product();
+                i.setId(rs.getLong("id"));
+                i.setName(rs.getString("name"));
+                products.add(i);
+            }
+
+            return products;
+        }
+    }
+
+    public void getProductsAsync(final List<Product> products) {
+        if (products != null) {
+            products.clear();
+        }
+        SwingWorker<Void, Product> worker = new SwingWorker<Void, Product>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<Product> productList = dbInstance().getProducts();
+                for(Product p : productList) {
+                    publish(p);
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Product> chunks) {
+                for (Product c : chunks) {
+                    if (products != null) {
+                        products.add(c);
+                    }
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    private List<Type> getTypes() throws SQLException {
+        List<Type> types = new ArrayList<>();
+
+        String sql = "SELECT * FROM "+Type.TABLE_NAME+" ORDER BY id";
+        try (Connection connection = DbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Type i = new Type();
+                i.setId(rs.getLong("id"));
+                i.setName(rs.getString("name"));
+                types.add(i);
+            }
+
+            return types;
+        }
+    }
+
+    public void getTypesAsync(final List<Type> types) {
+        if (types != null) {
+            types.clear();
+        }
+        SwingWorker<Void, Type> worker = new SwingWorker<Void, Type>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<Type> typeList = dbInstance().getTypes();
+                for(Type p : typeList) {
+                    publish(p);
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Type> chunks) {
+                for (Type c : chunks) {
+                    if (types != null) {
+                        types.add(c);
+                    }
+                }
+            }
+        };
+        worker.execute();
     }
 }

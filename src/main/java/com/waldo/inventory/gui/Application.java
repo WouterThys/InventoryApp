@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui;
 
-import com.waldo.inventory.Utils.statics.ItemCategories;
+import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.database.TableChangedListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.PanelUtils.*;
+import static com.waldo.inventory.database.DbManager.dbInstance;
 
-public class Application extends JFrame {
+public class Application extends JFrame implements TableChangedListener {
 
     private JTable itemTable;
     private ItemListAdapter itemListAdapter;
@@ -26,15 +29,20 @@ public class Application extends JFrame {
     private JTextField productTextField;
     private JTextField typeTextField;
 
+    // Cached objects from database
+    private List<Category> categoryList;
+    private List<Product> productList;
+    private List<com.waldo.inventory.classes.Type> typeList;
+
     private Item selectedItem;
 
     public Application() {
+        initObjectsFromDb();
         initComponents();
     }
 
     void refreshItemList() {
-        // Do this asynchronous
-        new AsyncRefreshList().execute();
+        dbInstance().getItemsAsync(itemListAdapter);
     }
 
     void createNewItem() {
@@ -95,6 +103,29 @@ public class Application extends JFrame {
         }
     }
 
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public List<com.waldo.inventory.classes.Type> getTypeList() {
+        return typeList;
+    }
+
+    private void initObjectsFromDb() {
+        categoryList = new ArrayList<>();
+        dbInstance().getCategoriesAsync(categoryList);
+
+        productList = new ArrayList<>();
+        dbInstance().getProductsAsync(productList);
+
+        typeList = new ArrayList<>();
+        dbInstance().getTypesAsync(typeList);
+    }
+
     private void initComponents() {
         TopToolBar ttb = TopToolBar.getToolbar(this);
         ttb.init();
@@ -106,7 +137,7 @@ public class Application extends JFrame {
     private JComponent createTablePane() {
         List<Item> items = new ArrayList<>();
         try {
-            items = DbManager.getInstance().getItems();
+            items = dbInstance().getItems();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,7 +180,7 @@ public class Application extends JFrame {
             nameTextField.setText(selectedItem.getName());
             descriptionTextArea.setText(selectedItem.getDescription());
             priceTextField.setText(String.valueOf(selectedItem.getPrice()));
-            categoryTextField.setText(ItemCategories.getItemCategoryAsString(selectedItem.getCategory()));
+            categoryTextField.setText(categoryList.get(selectedItem.getCategory()).getName());
             productTextField.setText(String.valueOf(selectedItem.getProduct()));
             typeTextField.setText(String.valueOf(selectedItem.getProduct()));
         }
@@ -200,36 +231,26 @@ public class Application extends JFrame {
         return panel;
     }
 
-    private class AsyncRefreshList extends SwingWorker<Void, Item> {
+    @Override
+    public void tableChangedListener(String tableName, long id) {
+        switch (tableName) {
+            case Item.TABLE_NAME:
+                break;
 
-        AsyncRefreshList() {
-            itemListAdapter.removeAllItems();
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
+            case Category.TABLE_NAME:
+                dbInstance().getCategoriesAsync(categoryList);
+                break;
 
-        @Override
-        protected void process(List<Item> chunks) {
-            for(Item i : chunks) {
-                itemListAdapter.add(i);
-            }
-        }
+            case Product.TABLE_NAME:
+                dbInstance().getProductsAsync(productList);
+                break;
 
-        @Override
-        protected void done() {
-            setCursor(Cursor.getDefaultCursor());
-        }
+            case com.waldo.inventory.classes.Type.TABLE_NAME:
+                dbInstance().getTypesAsync(typeList);
+                break;
 
-        @Override
-        protected Void doInBackground() throws Exception {
-            try {
-                List<Item> items = DbManager.getInstance().getItems();
-                for (Item i : items) {
-                    publish(i);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return null;
+            default:
+                break;
         }
     }
 }

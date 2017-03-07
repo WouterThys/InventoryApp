@@ -20,12 +20,12 @@ public class ItemListAdapter extends AbstractTableModel {
         return itemList.get(row);
     }
 
-    void add(Item item) {
+    public void add(Item item) {
         this.itemList.add(item);
         fireTableDataChanged();
     }
 
-    void removeAllItems() {
+    public void removeAllItems() {
         this.itemList.clear();
         fireTableDataChanged();
     }

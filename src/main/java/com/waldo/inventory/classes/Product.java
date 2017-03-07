@@ -5,7 +5,9 @@ import java.sql.SQLException;
 
 public class Product extends DbObject {
 
+    public static final String TABLE_NAME = "products";
+
     public Product() {
-        super("products");
+        super(TABLE_NAME);
     }
 }

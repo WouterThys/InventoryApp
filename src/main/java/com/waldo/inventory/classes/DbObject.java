@@ -1,15 +1,17 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.TableChangedListener;
 
 import java.sql.*;
 
-public class DbObject {
+public abstract class DbObject {
 
     public static String TABLE_NAME;
 
     protected long id = -1;
     protected String name;
+    protected TableChangedListener onTableChangedListener;
 
     protected String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
     protected String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
@@ -53,6 +55,9 @@ public class DbObject {
                 }
             }
 
+            if (onTableChangedListener != null) {
+                onTableChangedListener.tableChangedListener(TABLE_NAME, id);
+            }
         }
     }
 
@@ -61,7 +66,12 @@ public class DbObject {
             try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
                 statement.setLong(1, id);
                 statement.execute();
-                id = -1; // Contact is not in database
+
+                if (onTableChangedListener != null) {
+                    onTableChangedListener.tableChangedListener(TABLE_NAME, id);
+                }
+
+                id = -1; // Not in database anymore
             }
         }
     }
@@ -91,5 +101,9 @@ public class DbObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setOnTableChangedListener(TableChangedListener tableChangedListenerListener) {
+        this.onTableChangedListener = tableChangedListenerListener;
     }
 }

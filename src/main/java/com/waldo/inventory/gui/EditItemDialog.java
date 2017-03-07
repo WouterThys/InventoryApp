@@ -1,26 +1,31 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.Utils.validators.NotEmptyValidator;
+import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.database.DbManager;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.Utils.PanelUtils.createButtonConstraints;
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.Utils.PanelUtils.createLabelConstraints;
 
-public class EditItemDialog extends JPanel {
+class EditItemDialog extends JPanel {
 
     private static JDialog dialog;
     private static Item newItem;
 
+    private static Application parent;
     private JTextField idTextField;
     private JTextField nameTextField;
     private JTextArea descriptionTextArea;
@@ -30,7 +35,8 @@ public class EditItemDialog extends JPanel {
     private JButton cancelButton;
     private JButton createButton;
 
-    public static Item showDialog(JFrame parent) {
+    static Item showDialog(Application parent) {
+        EditItemDialog.parent = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -40,7 +46,8 @@ public class EditItemDialog extends JPanel {
         return newItem;
     }
 
-    public static Item showDialog(JFrame parent, Item item) {
+    static Item showDialog(Application parent, Item item) {
+        EditItemDialog.parent = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog(item));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -50,7 +57,7 @@ public class EditItemDialog extends JPanel {
         return newItem;
     }
 
-    public EditItemDialog(Item item) {
+    private EditItemDialog(Item item) {
         super(new GridBagLayout());
         newItem = item;
         initComponents();
@@ -58,7 +65,7 @@ public class EditItemDialog extends JPanel {
         updateValues();
     }
 
-    public EditItemDialog() {
+    private EditItemDialog() {
         this(new Item());
     }
 
@@ -88,11 +95,17 @@ public class EditItemDialog extends JPanel {
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = PanelUtils.getHintFormattedTextField("Price", formatter);
 
-        categoryComboBox = new JComboBox<>(ItemCategories.getItemCategoriesStringArray());
+        String[] categoryStrings = new String[parent.getCategoryList().size()];
+        for(int i=0; i<parent.getCategoryList().size(); i++) {
+            categoryStrings[i] = parent.getCategoryList().get(i).getName();
+        }
+
+        categoryComboBox = new JComboBox<>(categoryStrings);
         categoryComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox)e.getSource();
+
                 if (newItem != null) {
                     newItem.setCategory(cb.getSelectedIndex());
                 }
