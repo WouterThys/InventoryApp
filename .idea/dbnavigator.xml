@@ -23,12 +23,19 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
+        <schema name="main" object-types="column, constraint, index, table, dataset trigger, view" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
       <console name="inventory" type="STANDARD" />
     </connection>
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-list connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" dataset="main.items" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
