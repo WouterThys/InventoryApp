@@ -2,7 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.database.ItemDbManager;
+import com.waldo.inventory.database.DbManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -106,7 +106,7 @@ public class Application extends JFrame {
     private JComponent createTablePane() {
         List<Item> items = new ArrayList<>();
         try {
-            items = ItemDbManager.getInstance().getItems();
+            items = DbManager.getInstance().getItems();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -222,7 +222,7 @@ public class Application extends JFrame {
         @Override
         protected Void doInBackground() throws Exception {
             try {
-                List<Item> items = ItemDbManager.getInstance().getItems();
+                List<Item> items = DbManager.getInstance().getItems();
                 for (Item i : items) {
                     publish(i);
                 }

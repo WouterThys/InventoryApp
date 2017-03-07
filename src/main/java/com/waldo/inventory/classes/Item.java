@@ -1,100 +1,58 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.statics.ItemCategories;
 import com.waldo.inventory.database.DbManager;
 
 import java.sql.*;
 
-public class Item {
+public class Item extends DbObject {
 
-    private long id = -1;
-    private String name;
     private String description;
     private double price;
 
-    private int category = ItemCategories.UNKNOWN;
+    private int category = -1;
     private int product = -1;
     private int type = -1;
 
-    public void save() throws SQLException {
-        try (Connection connection = DbManager.getConnection()) {
-            if (id == -1) { // Save
-                final String sql = "INSERT INTO items (" +
-                        "name, description, price, category, product, type) VALUES " +
-                        "(?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                    statement.setString(1, name);
-                    statement.setString(2, description);
-                    statement.setDouble(3, price);
-                    statement.setInt(4, category);
-                    statement.setInt(5, product);
-                    statement.setInt(6, type);
-                    statement.execute();
+    private static final String insertSql = "INSERT INTO items (" +
+                "name, description, price, category, product, type) VALUES " +
+                "(?, ?, ?, ?, ?, ?)";
 
-                    try (ResultSet rs = statement.getGeneratedKeys()) {
-                        rs.next();
-                        id = rs.getLong(1);
-                    }
-                }
-            } else { // Update
-                final String sql = "UPDATE items SET " +
-                        "name = ?, " +
-                        "description = ?, " +
-                        "price = ? " +
-                        "category = ? " +
-                        "product = ? " +
-                        "type = ? " +
-                        "WHERE id = ? ";
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setString(1, name);
-                    statement.setString(2, description);
-                    statement.setDouble(3, price);
-                    statement.setInt(4, category);
-                    statement.setInt(5, product);
-                    statement.setInt(6, type);
-                    statement.execute();
-                }
-            }
 
-        }
+
+    private static final String updateSql = "UPDATE items SET " +
+                "name = ?, " +
+                "description = ?, " +
+                "price = ? " +
+                "category = ? " +
+                "product = ? " +
+                "type = ? " +
+                "WHERE id = ? ";
+
+    private static final String deleteSql = "DELETE FROM items WHERE id = ?";
+
+    public Item() {
+        super("items", insertSql, updateSql, deleteSql);
     }
 
-    public void delete() throws SQLException {
-        if (id != -1) {
-            final String sql = "DELETE FROM items WHERE id = ?";
-            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, id);
-                statement.execute();
-                id = -1; // Contact is not in database
-            }
-        }
+
+    @Override
+    protected void insert(PreparedStatement statement) throws SQLException{
+        statement.setString(1, name);
+        statement.setString(2, description);
+        statement.setDouble(3, price);
+        statement.setInt(4, category);
+        statement.setInt(5, product);
+        statement.setInt(6, type);
     }
 
     @Override
-    public String toString() {
-        if (name == null) {
-            return "(No name)";
-        }
-        if (id == -1) {
-            return name + "*";
-        }
-        return name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    protected void update(PreparedStatement statement) throws SQLException{
+        statement.setString(1, name);
+        statement.setString(2, description);
+        statement.setDouble(3, price);
+        statement.setInt(4, category);
+        statement.setInt(5, product);
+        statement.setInt(6, type);
     }
 
     public String getDescription() {

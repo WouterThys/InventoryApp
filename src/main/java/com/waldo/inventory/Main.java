@@ -1,13 +1,10 @@
 package com.waldo.inventory;
 
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.ItemDbManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.List;
 
 public class Main {
 
