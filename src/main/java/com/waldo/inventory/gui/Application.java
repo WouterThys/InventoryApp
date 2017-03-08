@@ -130,8 +130,8 @@ public class Application extends JFrame implements TableChangedListener {
         TopToolBar ttb = TopToolBar.getToolbar(this);
         ttb.init();
         add(ttb, BorderLayout.PAGE_START);
-        add(createTablePane(), BorderLayout.WEST);
-        add(createEditor(), BorderLayout.CENTER);
+        add(createTablePane(), BorderLayout.CENTER);
+        //add(createEditor(), BorderLayout.CENTER);
     }
 
     private JComponent createTablePane() {
@@ -180,7 +180,7 @@ public class Application extends JFrame implements TableChangedListener {
             nameTextField.setText(selectedItem.getName());
             descriptionTextArea.setText(selectedItem.getDescription());
             priceTextField.setText(String.valueOf(selectedItem.getPrice()));
-            categoryTextField.setText(categoryList.get(selectedItem.getCategory()).getName());
+            categoryTextField.setText(categoryList.get((int) selectedItem.getCategory()).getName());
             productTextField.setText(String.valueOf(selectedItem.getProduct()));
             typeTextField.setText(String.valueOf(selectedItem.getProduct()));
         }
@@ -229,6 +229,15 @@ public class Application extends JFrame implements TableChangedListener {
         panel.add(typeTextField, createFieldConstraints(1,6));
 
         return panel;
+    }
+
+    Category findCategoryById(long id) {
+        for (Category c : categoryList) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
     }
 
     @Override

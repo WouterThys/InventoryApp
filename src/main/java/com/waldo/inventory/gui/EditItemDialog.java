@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.validators.NotEmptyValidator;
 import com.waldo.inventory.classes.Category;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.database.DbManager;
 
@@ -74,7 +75,8 @@ class EditItemDialog extends JPanel {
         nameTextField.setText(newItem.getName());
         descriptionTextArea.setText(newItem.getDescription());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
-        categoryComboBox.setSelectedIndex(newItem.getCategory());
+        Category c = parent.findCategoryById(newItem.getCategory());
+        categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
     }
 
     private void initComponents() {
@@ -106,8 +108,31 @@ class EditItemDialog extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox)e.getSource();
 
-                if (newItem != null) {
-                    newItem.setCategory(cb.getSelectedIndex());
+                int index = cb.getSelectedIndex();
+                if (index >= 0) {
+                    Category category = new Category();
+                    long id = parent.getCategoryList().get(index).getId();
+                    if (parent.getCategoryList().get(index).getId() == DbObject.NEW) {
+                        String newCategory = JOptionPane.showInputDialog(EditItemDialog.this, "Add new category name: ",
+                                "New category", JOptionPane.PLAIN_MESSAGE);
+                        if (newCategory != null && !newCategory.isEmpty()) {
+                            category = new Category(newCategory);
+                            try {
+                                category.save();
+                            } catch (SQLException ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+
+                        }
+                    } else {
+                        category = parent.getCategoryList().get(index);
+                    }
+
+                    if (newItem != null) {
+                        newItem.setCategory(category.getId());
+                    }
                 }
             }
         });

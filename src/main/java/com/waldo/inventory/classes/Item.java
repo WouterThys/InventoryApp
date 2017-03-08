@@ -11,9 +11,9 @@ public class Item extends DbObject {
     private String description;
     private double price;
 
-    private int category = -1;
-    private int product = -1;
-    private int type = -1;
+    private long category = -1;
+    private long product = -1;
+    private long type = -1;
 
     private static final String insertSql = "INSERT INTO items (" +
                 "name, description, price, category, product, type) VALUES " +
@@ -42,9 +42,9 @@ public class Item extends DbObject {
         statement.setString(1, name);
         statement.setString(2, description);
         statement.setDouble(3, price);
-        statement.setInt(4, category);
-        statement.setInt(5, product);
-        statement.setInt(6, type);
+        statement.setLong(4, category);
+        statement.setLong(5, product);
+        statement.setLong(6, type);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class Item extends DbObject {
         statement.setString(1, name);
         statement.setString(2, description);
         statement.setDouble(3, price);
-        statement.setInt(4, category);
-        statement.setInt(5, product);
-        statement.setInt(6, type);
+        statement.setLong(4, category);
+        statement.setLong(5, product);
+        statement.setLong(6, type);
     }
 
     public String getDescription() {
@@ -73,27 +73,27 @@ public class Item extends DbObject {
         this.price = price;
     }
 
-    public int getCategory() {
+    public long getCategory() {
         return category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(long category) {
         this.category = category;
     }
 
-    public int getProduct() {
+    public long getProduct() {
         return product;
     }
 
-    public void setProduct(int product) {
+    public void setProduct(long product) {
         this.product = product;
     }
 
-    public int getType() {
+    public long getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(long type) {
         this.type = type;
     }
 }

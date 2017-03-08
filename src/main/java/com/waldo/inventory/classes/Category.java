@@ -7,4 +7,9 @@ public class Category extends DbObject {
     public Category() {
         super(TABLE_NAME);
     }
+
+    public Category(String name) {
+        super(TABLE_NAME);
+        setName(name);
+    }
 }
