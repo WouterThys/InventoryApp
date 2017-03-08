@@ -20,7 +20,7 @@ public class Main {
                 Application app = new Application();
                 app.setTitle("Inventory");
                 app.setMinimumSize(new Dimension(800,600));
-                app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                //app.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 app.setVisible(true);
             }

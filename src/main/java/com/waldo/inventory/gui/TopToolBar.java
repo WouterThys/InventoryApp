@@ -3,10 +3,9 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.ImageUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class TopToolBar extends JToolBar {
+class TopToolBar extends JToolBar {
 
     private static final TopToolBar INSTANCE = new TopToolBar();
 
@@ -17,14 +16,14 @@ public class TopToolBar extends JToolBar {
     private Action editAction;
     private static Application app;
 
-    public static TopToolBar getToolbar(Application app) {
+    static TopToolBar getToolbar(Application app) {
         TopToolBar.app = app;
         return INSTANCE;
     }
 
     private TopToolBar(){}
 
-    public void init() {
+    void init() {
         initActions();
 
         add(refreshAction);

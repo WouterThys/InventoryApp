@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.TableChangedListener;
+import com.waldo.inventory.gui.panels.QueryPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -131,6 +132,7 @@ public class Application extends JFrame implements TableChangedListener {
         ttb.init();
         add(ttb, BorderLayout.PAGE_START);
         add(createTablePane(), BorderLayout.CENTER);
+        add(new QueryPanel(this), BorderLayout.SOUTH);
         //add(createEditor(), BorderLayout.CENTER);
     }
 
