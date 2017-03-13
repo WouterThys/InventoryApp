@@ -22,17 +22,30 @@
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
-    <show-object-properties value="false" />
+    <show-object-properties value="true" />
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
-      <console name="inventory" type="STANDARD"><![CDATA[select * from categories;]]></console>
+      <console name="inventory" type="STANDARD"><![CDATA[select * from items;
+
+select * from categories;
+
+select * from  main.sqlite_master where type = 'table';
+
+select * from "schema_version";
+
+select * from sqlite_sequence;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-list connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" dataset="main.items" active-filter-id="" />
     <filter-list connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" dataset="main.categories" active-filter-id="" />
+    <filter-list connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" dataset="main.schema_version" active-filter-id="19aa4286-5d3c-4055-8a88-030806efe4c6">
+      <filter id="19aa4286-5d3c-4055-8a88-030806efe4c6" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="installed_rank" operator="=" value="" active="true" />
+      </filter>
+    </filter-list>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

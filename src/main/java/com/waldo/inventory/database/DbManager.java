@@ -21,6 +21,7 @@ public class DbManager {
     }
 
     private BasicDataSource dataSource;
+    private List<String> tableNames;
 
     private DbManager() {}
 
@@ -34,6 +35,12 @@ public class DbManager {
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
         flyway.migrate();
+
+        try {
+            tableNames = getTableNames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void close() {
@@ -61,6 +68,22 @@ public class DbManager {
 
     public static Connection getConnection() throws SQLException {
         return dbInstance().getDataSource().getConnection();
+    }
+
+    public List<String> getTableNames() throws SQLException {
+        List<String> names = new ArrayList<>();
+
+        String sql = "SELECT * FROM main.sqlite_master WHERE type='table'";
+        try (Connection connection = DbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                names.add(rs.getString("name"));
+            }
+
+            return names;
+        }
     }
 
     public List<Item> getItems() throws SQLException {

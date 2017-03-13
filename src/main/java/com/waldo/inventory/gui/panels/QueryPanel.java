@@ -3,27 +3,24 @@ package com.waldo.inventory.gui.panels;
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.statics.SqlKeyWords;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.TimerTask;
+import java.util.List;
 
 public class QueryPanel extends JPanel {
 
     private Application app;
 
-    private JEditorPane queryTextArea;
+    private JTextPane queryTextArea;
     private JTextField messageTextField;
     private JToolBar queryToolBar;
 
@@ -65,32 +62,83 @@ public class QueryPanel extends JPanel {
     }
 
     private void initComponents() {
-        queryTextArea = new JEditorPane();
+        //queryTextArea = new JEditorPane();
         messageTextField = new JTextField();
         queryToolBar = new JToolBar();
 
+        final SimpleAttributeSet blueSet = new SimpleAttributeSet();
+        StyleConstants.setForeground(blueSet, Color.BLUE);
+        StyleConstants.setBold(blueSet, true);
+
+        final SimpleAttributeSet darkGreenSet = new SimpleAttributeSet();
+        StyleConstants.setForeground(darkGreenSet, new Color(0,102,0));
+        StyleConstants.setBold(darkGreenSet, true);
+
+        final SimpleAttributeSet lightGreenSet = new SimpleAttributeSet();
+        StyleConstants.setForeground(lightGreenSet,new Color(76,153,0));
+        StyleConstants.setBold(lightGreenSet, true);
+
+        final SimpleAttributeSet blackSet = new SimpleAttributeSet();
+        StyleConstants.setForeground(blackSet, Color.BLACK);
+        StyleConstants.setBold(blackSet, false);
+
+        List<String> tableNames;
+        String tableNamesString = "";
+        try {
+            tableNames = DbManager.dbInstance().getTableNames();
+            for(String name : tableNames) {
+                tableNamesString += name.toUpperCase() + "|";
+            }
+            tableNamesString = tableNamesString.substring(0, tableNamesString.length()-2); // remove last | again
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        final String finalTableNamesString = tableNamesString;
+        DefaultStyledDocument doc = new DefaultStyledDocument() {
+            @Override
+            public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
+                super.insertString(offset, str, a);
+                String text = getText(0, getLength());
+                int before = findLastNonWordChar(text, offset);
+                if (before < 0) before = 0;
+                int after = findFirstNonWordChar(text, offset + str.length());
+                int wordL = before;
+                int wordR = before;
+
+                while (wordR <= after) {
+                    if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
+                        if (text.substring(wordL, wordR).toUpperCase().matches("(\\W)*("+ SqlKeyWords.sqlKeyWords+")")) {
+                            setCharacterAttributes(wordL, wordR - wordL, blueSet, false); // SQL words
+                        } else if (text.substring(wordL, wordR).toUpperCase().matches("(\\W)*("+ finalTableNamesString+")")) {
+                            setCharacterAttributes(wordL, wordR - wordL, darkGreenSet, false); // Table names
+                        } else {
+                            setCharacterAttributes(wordL, wordR - wordL, blackSet, false);
+                        }
+                        wordL = wordR;
+                    }
+                    wordR++;
+                }
+            }
+
+            public void remove (int offs, int len) throws BadLocationException {
+                super.remove(offs, len);
+
+                String text = getText(0, getLength());
+                int before = findLastNonWordChar(text, offs);
+                if (before < 0) before = 0;
+                int after = findFirstNonWordChar(text, offs);
+
+                if (text.substring(before, after).matches("(\\W)*("+ SqlKeyWords.sqlKeyWords+")")) {
+                    setCharacterAttributes(before, after - before, blueSet, false);
+                } else {
+                    setCharacterAttributes(before, after - before, blackSet, false);
+                }
+            }
+        };
+
+        queryTextArea = new JTextPane(doc);
         queryTextArea.setMargin(new Insets(5,5,5,5));
-//        queryTextArea.getDocument().addDocumentListener(new DocumentListener() {
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                System.out.println("Insert update");
-//                checkSqlKeyWords(queryTextArea.getText());
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {}
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                System.out.println("Changed update");
-//                checkSqlKeyWords(queryTextArea.getText());
-//            }
-//        });
-
-
-        //queryTextArea.setText("select * from items");
-        //queryTextArea.setEditorKit(new HTMLEditorKit());
-        //checkSqlKeyWords(queryTextArea.getText());
 
         messageTextField.setEditable(false);
         messageTextField.setText("");
@@ -106,6 +154,7 @@ public class QueryPanel extends JPanel {
         queryToolBar.add(executeAllMenuItem);
         queryToolBar.add(clearMenuItem);
         queryToolBar.setOrientation(JToolBar.VERTICAL);
+        queryToolBar.setFloatable(false);
 
         add(new JLabel("SQL query: "), BorderLayout.WEST);
         add(new JScrollPane(queryTextArea), BorderLayout.CENTER);
@@ -160,20 +209,23 @@ public class QueryPanel extends JPanel {
         }
     }
 
-    private void checkSqlKeyWords(String text) {
-        if (text.toUpperCase().contains("SELECT")) {
-            text = text.replace("select", "<b>select</b>");
-            System.out.println(text);
-        }
-        final String edited = text;
-
-        Runnable setBold = new Runnable() {
-            @Override
-            public void run() {
-                queryTextArea.setText(edited);
+    private int findLastNonWordChar (String text, int index) {
+        while (--index >= 0) {
+            if (String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
             }
-        };
-        SwingUtilities.invokeLater(setBold);
+        }
+        return index;
+    }
+
+    private int findFirstNonWordChar (String text, int index) {
+        while (index < text.length()) {
+            if (String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
+            }
+            index++;
+        }
+        return index;
     }
 
     private void setError(String error) {
@@ -188,33 +240,3 @@ public class QueryPanel extends JPanel {
         }, 3000);
     }
 }
-
-
-//public class Bold extends JTextPane {
-//
-//    public Bold(){
-//        super();
-//
-//        setEditorKit(new HTMLEditorKit());
-//        setText("<html><h1>Example</h1><p>Just a test</p></html>");
-//        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "bold");
-//        getActionMap().put("bold", new AbstractAction(){
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                JTextPane bold = (JTextPane) e.getSource();
-//                int start = bold.getSelectionStart();
-//                int end = bold.getSelectionEnd();
-//                String txt = bold.getSelectedText();
-//                if(end != start)
-//                    try {
-//                        bold.getDocument().remove(start, end-start);
-//                        HTMLEditorKit htmlkit = (HTMLEditorKit) bold.getEditorKit();
-//                        htmlkit.insertHTML((HTMLDocument) bold.getDocument(), start, "<b>"+txt+"</b>", 0, 0, HTML.Tag.B);
-//                    } catch (Exception e1) {
-//                        e1.printStackTrace();
-//                    }
-//            }
-//
-//        });
-//    }
