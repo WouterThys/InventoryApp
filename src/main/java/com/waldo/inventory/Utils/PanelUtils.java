@@ -24,7 +24,8 @@ public class PanelUtils {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = gridLocX;
         constraints.gridy = gridLocY;
-        constraints.weightx = 1;
+        constraints.weightx = 3;
+        constraints.gridwidth = 2;
         constraints.insets = new Insets(2,2,2,2);
         constraints.fill = BOTH;
         return constraints;

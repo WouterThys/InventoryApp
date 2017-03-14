@@ -1,27 +1,25 @@
-package com.waldo.inventory.gui;
+package com.waldo.inventory.gui.dialogs;
 
+import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.validators.NotEmptyValidator;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.SQLException;
 import java.text.NumberFormat;
-import java.util.*;
-import java.util.List;
 
-import static com.waldo.inventory.Utils.PanelUtils.createButtonConstraints;
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.Utils.PanelUtils.createLabelConstraints;
+import static com.waldo.inventory.Utils.PanelUtils.*;
 
-class EditItemDialog extends JPanel {
+public class EditItemDialog extends JPanel {
 
     private static JDialog dialog;
     private static Item newItem;
@@ -33,21 +31,27 @@ class EditItemDialog extends JPanel {
     private JFormattedTextField priceTextField;
     private JComboBox<String> categoryComboBox;
 
+    private JTextField localDataSheetTextField;
+    private JButton localDataSheetButton;
+    private JFileChooser localDataSheetFileChooser;
+
+    private JTextField onlineDataSheetTextField;
+
     private JButton cancelButton;
     private JButton createButton;
 
-    static Item showDialog(Application parent) {
+    public static Item showDialog(Application parent) {
         EditItemDialog.parent = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setSize(400,500);
+        dialog.setSize(500,400);
         dialog.setResizable(false);
         dialog.setVisible(true);
         return newItem;
     }
 
-    static Item showDialog(Application parent, Item item) {
+    public static Item showDialog(Application parent, Item item) {
         EditItemDialog.parent = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog(item));
@@ -77,6 +81,8 @@ class EditItemDialog extends JPanel {
         priceTextField.setText(String.valueOf(newItem.getPrice()));
         Category c = parent.findCategoryById(newItem.getCategory());
         categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
+        // Local data sheet stuff
+        // Online data sheet stuff
     }
 
     private void initComponents() {
@@ -102,6 +108,7 @@ class EditItemDialog extends JPanel {
             categoryStrings[i] = parent.getCategoryList().get(i).getName();
         }
 
+        // Category
         categoryComboBox = new JComboBox<>(categoryStrings);
         categoryComboBox.addActionListener(new ActionListener() {
             @Override
@@ -111,7 +118,6 @@ class EditItemDialog extends JPanel {
                 int index = cb.getSelectedIndex();
                 if (index >= 0) {
                     Category category = new Category();
-                    long id = parent.getCategoryList().get(index).getId();
                     if (parent.getCategoryList().get(index).getId() == DbObject.NEW) {
                         String newCategory = JOptionPane.showInputDialog(EditItemDialog.this, "Add new category name: ",
                                 "New category", JOptionPane.PLAIN_MESSAGE);
@@ -137,6 +143,27 @@ class EditItemDialog extends JPanel {
             }
         });
 
+        // Local data sheet
+        localDataSheetTextField = new JTextField();
+        localDataSheetTextField.setToolTipText(localDataSheetTextField.getText());
+        localDataSheetFileChooser = new JFileChooser();
+        localDataSheetButton = new JButton(ImageUtils.loadImageIcon("folder"));
+        localDataSheetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               localDataSheetFileChooser.setCurrentDirectory(new File("."));
+               localDataSheetFileChooser.setDialogTitle("Select the data sheet");
+               localDataSheetFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+               if (localDataSheetFileChooser.showOpenDialog(EditItemDialog.this) == JFileChooser.APPROVE_OPTION) {
+                   localDataSheetTextField.setText(localDataSheetFileChooser.getSelectedFile().getAbsolutePath());
+               }
+            }
+        });
+
+        // Online data sheet
+        onlineDataSheetTextField = new JTextField();
+
+        // Dialog buttons
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -154,7 +181,10 @@ class EditItemDialog extends JPanel {
                 // Create item
                 newItem.setName(nameTextField.getText());
                 newItem.setDescription(descriptionTextArea.getText());
-                newItem.setPrice(Double.valueOf(priceTextField.getText()));
+                String priceTxt = priceTextField.getText();
+                if (!priceTxt.isEmpty()) {
+                    newItem.setPrice(Double.valueOf(priceTxt));
+                }
                 newItem.setCategory(categoryComboBox.getSelectedIndex());
 
                 // Close dialog
@@ -187,8 +217,26 @@ class EditItemDialog extends JPanel {
         add(new JLabel("Category: "), createLabelConstraints(0,4));
         add(categoryComboBox, createFieldConstraints(1,4));
 
+        // Local data sheet
+        add(new JLabel("Local data sheet: "), createLabelConstraints(0,5));
+        constraints = createFieldConstraints(1, 5);
+        constraints.gridwidth = 1;
+        add(localDataSheetTextField, constraints);
+        constraints = createFieldConstraints(2, 5);
+        constraints.weightx = 0.1;
+        constraints.gridwidth = 1;
+        add(localDataSheetButton, constraints);
+
+        // Online data sheet
+        add(new JLabel("Online data sheet: "), createLabelConstraints(0,6));
+        add(onlineDataSheetTextField, createFieldConstraints(1,6));
+
         // Buttons
-        add(cancelButton, createButtonConstraints(0,5));
-        add(createButton, createButtonConstraints(1,5));
+        JPanel buttons = new JPanel();
+        buttons.add(cancelButton);
+        buttons.add(createButton);
+        constraints = createButtonConstraints(0,7);
+        constraints.gridwidth = 3;
+        add(buttons, constraints);
     }
 }

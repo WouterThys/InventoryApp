@@ -3,14 +3,17 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.TableChangedListener;
+import com.waldo.inventory.gui.adapters.ItemListAdapter;
+import com.waldo.inventory.gui.dialogs.EditItemDialog;
 import com.waldo.inventory.gui.panels.QueryPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,7 @@ public class Application extends JFrame implements TableChangedListener {
 
     void createNewItem() {
         Item item = EditItemDialog.showDialog(this);
-        if (item != null) {
+        if (item != null && item.getId() >= 0) {
             try {
                 item.save();
                 selectedItem = item;
@@ -145,6 +148,12 @@ public class Application extends JFrame implements TableChangedListener {
         }
         itemListAdapter = new ItemListAdapter(items);
         itemTable = new JTable(itemListAdapter);
+        itemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                itemListAdapter.tableClicked(itemTable, e);
+            }
+        });
 
         itemTable.setColumnSelectionAllowed(false);
         itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -169,23 +178,23 @@ public class Application extends JFrame implements TableChangedListener {
      */
     private void setSelectedItem(Item selectedItem) {
         this.selectedItem = selectedItem;
-        if (selectedItem == null) {
-            idTextField.setText("");
-            nameTextField.setText("");
-            descriptionTextArea.setText("");
-            priceTextField.setText("");
-            categoryTextField.setText("");
-            productTextField.setText("");
-            typeTextField.setText("");
-        } else {
-            idTextField.setText(String.valueOf(selectedItem.getId()));
-            nameTextField.setText(selectedItem.getName());
-            descriptionTextArea.setText(selectedItem.getDescription());
-            priceTextField.setText(String.valueOf(selectedItem.getPrice()));
-            categoryTextField.setText(categoryList.get((int) selectedItem.getCategory()).getName());
-            productTextField.setText(String.valueOf(selectedItem.getProduct()));
-            typeTextField.setText(String.valueOf(selectedItem.getProduct()));
-        }
+//        if (selectedItem == null) {
+//            idTextField.setText("");
+//            nameTextField.setText("");
+//            descriptionTextArea.setText("");
+//            priceTextField.setText("");
+//            categoryTextField.setText("");
+//            productTextField.setText("");
+//            typeTextField.setText("");
+//        } else {
+//            idTextField.setText(String.valueOf(selectedItem.getId()));
+//            nameTextField.setText(selectedItem.getName());
+//            descriptionTextArea.setText(selectedItem.getDescription());
+//            priceTextField.setText(String.valueOf(selectedItem.getPrice()));
+//            categoryTextField.setText(categoryList.get((int) selectedItem.getCategory()).getName());
+//            productTextField.setText(String.valueOf(selectedItem.getProduct()));
+//            typeTextField.setText(String.valueOf(selectedItem.getProduct()));
+//        }
     }
 
     private JComponent createEditor() {
@@ -233,7 +242,7 @@ public class Application extends JFrame implements TableChangedListener {
         return panel;
     }
 
-    Category findCategoryById(long id) {
+    public Category findCategoryById(long id) {
         for (Category c : categoryList) {
             if (c.getId() == id) {
                 return c;

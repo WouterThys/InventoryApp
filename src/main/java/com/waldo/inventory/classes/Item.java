@@ -14,10 +14,12 @@ public class Item extends DbObject {
     private long category = -1;
     private long product = -1;
     private long type = -1;
+    private String localDataSheet = "";
+    private String onlineDataSheet = "";
 
     private static final String insertSql = "INSERT INTO items (" +
-                "name, description, price, category, product, type) VALUES " +
-                "(?, ?, ?, ?, ?, ?)";
+                "name, description, price, category, product, type, localdatasheet, onlinedatasheet) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?)";
 
 
 
@@ -28,6 +30,8 @@ public class Item extends DbObject {
                 "category = ? " +
                 "product = ? " +
                 "type = ? " +
+                "localdatasheet = ?" +
+                "onlinedatasheet = ?" +
                 "WHERE id = ? ";
 
     private static final String deleteSql = "DELETE FROM items WHERE id = ?";
@@ -45,6 +49,8 @@ public class Item extends DbObject {
         statement.setLong(4, category);
         statement.setLong(5, product);
         statement.setLong(6, type);
+        statement.setString(7, localDataSheet);
+        statement.setString(8, onlineDataSheet);
     }
 
     @Override
@@ -55,6 +61,8 @@ public class Item extends DbObject {
         statement.setLong(4, category);
         statement.setLong(5, product);
         statement.setLong(6, type);
+        statement.setString(7, localDataSheet);
+        statement.setString(8, onlineDataSheet);
     }
 
     public String getDescription() {
@@ -95,5 +103,21 @@ public class Item extends DbObject {
 
     public void setType(long type) {
         this.type = type;
+    }
+
+    public String getLocalDataSheet() {
+        return localDataSheet;
+    }
+
+    public void setLocalDataSheet(String localDataSheet) {
+        this.localDataSheet = localDataSheet;
+    }
+
+    public String getOnlineDataSheet() {
+        return onlineDataSheet;
+    }
+
+    public void setOnlineDataSheet(String onlineDataSheet) {
+        this.onlineDataSheet = onlineDataSheet;
     }
 }

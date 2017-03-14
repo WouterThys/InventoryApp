@@ -1,7 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.gui.ItemListAdapter;
+import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 

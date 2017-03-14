@@ -1,22 +1,24 @@
-package com.waldo.inventory.gui;
+package com.waldo.inventory.gui.adapters;
 
 import com.waldo.inventory.classes.Item;
 
-import javax.swing.event.TableModelListener;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemListAdapter extends AbstractTableModel {
 
-    private final String[] columnNames = {"Name", "Description", "Price"};
+    private final String[] columnNames = {"Name", "Description", "Price", "Data sheet"};
     private List<Item> itemList = new ArrayList<>();
 
-    ItemListAdapter(List<Item> itemList) {
+    public ItemListAdapter(List<Item> itemList) {
         this.itemList = itemList;
     }
 
-    Item getItemAt(int row) {
+    public Item getItemAt(int row) {
         return itemList.get(row);
     }
 
@@ -28,6 +30,17 @@ public class ItemListAdapter extends AbstractTableModel {
     public void removeAllItems() {
         this.itemList.clear();
         fireTableDataChanged();
+    }
+
+    public void tableClicked(JTable table, MouseEvent e) {
+        int col = table.columnAtPoint(e.getPoint());
+        if (col == 3) { // Data sheet column
+            int row = table.rowAtPoint(e.getPoint());
+            Item item = itemList.get(row);
+            if (item != null) {
+                System.out.print(item);
+            }
+        }
     }
 
     @Override
@@ -47,7 +60,7 @@ public class ItemListAdapter extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Item item = itemList.get(rowIndex);
+        final Item item = itemList.get(rowIndex);
         switch (columnIndex) {
             case 0: // Name
                 return item.getName();
@@ -55,6 +68,8 @@ public class ItemListAdapter extends AbstractTableModel {
                 return item.getDescription();
             case 2: // Price
                 return item.getPrice();
+            case 3: // Data sheet
+                return "Data sheet";
         }
         return null;
     }
