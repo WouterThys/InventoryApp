@@ -76,13 +76,17 @@ public class EditItemDialog extends JPanel {
 
     private void updateValues() {
         idTextField.setText(String.valueOf(newItem.getId()));
+
+        String n = newItem.getName();
         nameTextField.setText(newItem.getName());
+        String t = nameTextField.getText();
+
         descriptionTextArea.setText(newItem.getDescription());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
         Category c = parent.findCategoryById(newItem.getCategory());
         categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
-        // Local data sheet stuff
-        // Online data sheet stuff
+        localDataSheetTextField.setText(newItem.getLocalDataSheet());
+        onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
     }
 
     private void initComponents() {
@@ -90,9 +94,9 @@ public class EditItemDialog extends JPanel {
         idTextField.setEditable(false);
 
         nameTextField = PanelUtils.getHintTextField("Component name");
-        nameTextField.setInputVerifier(new NotEmptyValidator(nameTextField));
+        //nameTextField.setInputVerifier(new NotEmptyValidator(nameTextField));
         descriptionTextArea = PanelUtils.getHintTextArea("Component description");
-        descriptionTextArea.setInputVerifier(new NotEmptyValidator(descriptionTextArea));
+        //descriptionTextArea.setInputVerifier(new NotEmptyValidator(descriptionTextArea));
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -186,6 +190,8 @@ public class EditItemDialog extends JPanel {
                     newItem.setPrice(Double.valueOf(priceTxt));
                 }
                 newItem.setCategory(categoryComboBox.getSelectedIndex());
+                newItem.setLocalDataSheet(localDataSheetTextField.getText());
+                newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
 
                 // Close dialog
                 dialog.setVisible(false);

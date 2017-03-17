@@ -70,7 +70,7 @@ public class Application extends JFrame implements TableChangedListener {
                     selectedItem.save();
                     refreshItemList();
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Error saving Item: "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -151,7 +151,7 @@ public class Application extends JFrame implements TableChangedListener {
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                itemListAdapter.tableClicked(itemTable, e);
+                itemListAdapter.tableClicked(Application.this, itemTable, e);
             }
         });
 

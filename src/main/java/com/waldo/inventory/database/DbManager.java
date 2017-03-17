@@ -103,6 +103,8 @@ public class DbManager {
                 i.setCategory(rs.getInt("category"));
                 i.setProduct(rs.getInt("product"));
                 i.setType(rs.getInt("type"));
+                i.setLocalDataSheet(rs.getString("localdatasheet"));
+                i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
                 items.add(i);
             }
 

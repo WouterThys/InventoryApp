@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.adapters;
 
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -32,13 +35,17 @@ public class ItemListAdapter extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void tableClicked(JTable table, MouseEvent e) {
+    public void tableClicked(Application application, JTable table, MouseEvent e) {
         int col = table.columnAtPoint(e.getPoint());
         if (col == 3) { // Data sheet column
             int row = table.rowAtPoint(e.getPoint());
             Item item = itemList.get(row);
             if (item != null) {
-                System.out.print(item);
+                String local = item.getLocalDataSheet();
+                String online = item.getOnlineDataSheet();
+                if (!local.isEmpty() && !online.isEmpty()) {
+                    SelectDataSheetDialog.showDialog(application, online, local);
+                }
             }
         }
     }

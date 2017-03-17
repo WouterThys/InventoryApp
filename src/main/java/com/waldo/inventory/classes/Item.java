@@ -23,16 +23,10 @@ public class Item extends DbObject {
 
 
 
-    private static final String updateSql = "UPDATE items SET " +
-                "name = ?, " +
-                "description = ?, " +
-                "price = ? " +
-                "category = ? " +
-                "product = ? " +
-                "type = ? " +
-                "localdatasheet = ?" +
-                "onlinedatasheet = ?" +
-                "WHERE id = ? ";
+    private static final String updateSql =
+            "UPDATE items " +
+                    "SET name = ?, description = ?, price = ?, category = ?, product = ?, type = ?, localdatasheet = ?, onlinedatasheet = ? " +
+                "WHERE id = ?;";
 
     private static final String deleteSql = "DELETE FROM items WHERE id = ?";
 
