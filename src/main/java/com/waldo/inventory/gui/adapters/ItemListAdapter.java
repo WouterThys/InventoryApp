@@ -43,7 +43,7 @@ public class ItemListAdapter extends AbstractTableModel {
             if (item != null) {
                 String local = item.getLocalDataSheet();
                 String online = item.getOnlineDataSheet();
-                if (!local.isEmpty() && !online.isEmpty()) {
+                if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
                     SelectDataSheetDialog.showDialog(application, online, local);
                 }
             }

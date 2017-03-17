@@ -8,8 +8,8 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
-    private String description;
-    private double price;
+    private String description = "";
+    private double price = 0;
 
     private long category = -1;
     private long product = -1;
