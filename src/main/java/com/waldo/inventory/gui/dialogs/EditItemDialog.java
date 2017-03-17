@@ -31,11 +31,8 @@ public class EditItemDialog extends JPanel {
     private JTextArea descriptionTextArea;
     private JFormattedTextField priceTextField;
     private JComboBox<String> categoryComboBox;
-    private DefaultComboBoxModel<String> categoryCbModel;
     private JComboBox<String> productComboBox;
-    private DefaultComboBoxModel<String> productCbModel;
     private JComboBox<String> typeComboBox;
-    private DefaultComboBoxModel<String> typeCbModel;
 
     private String buttonText = "";
 
@@ -243,14 +240,8 @@ public class EditItemDialog extends JPanel {
             categoryItems.add(c.toString());
         }
 
-        categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
+        DefaultComboBoxModel<String> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
         categoryComboBox = new JComboBox<>(categoryCbModel);
-        categoryComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                categorySelected((JComboBox)e.getSource());
-            }
-        });
     }
 
     private void createProductCb() {
@@ -259,14 +250,8 @@ public class EditItemDialog extends JPanel {
             productStrings.add(p.toString());
         }
 
-        productCbModel = new DefaultComboBoxModel<>(productStrings);
+        DefaultComboBoxModel<String> productCbModel = new DefaultComboBoxModel<>(productStrings);
         productComboBox = new JComboBox<>(productCbModel);
-        productComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                productSelected((JComboBox)e.getSource());
-            }
-        });
     }
 
     private void createTypeCb() {
@@ -275,113 +260,7 @@ public class EditItemDialog extends JPanel {
             typeStrings.add(t.toString());
         }
 
-        typeCbModel = new DefaultComboBoxModel<>(typeStrings);
+        DefaultComboBoxModel<String> typeCbModel = new DefaultComboBoxModel<>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
-        typeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typeSelected((JComboBox)e.getSource());
-            }
-        });
-    }
-
-    private void categorySelected(JComboBox cb) {
-        int index = cb.getSelectedIndex();
-        if (index >= 0) {
-            Category category;
-            if (parent.getCategoryList().get(index).getId() == DbObject.NEW) {
-                category = createNewCategory();
-                categoryComboBox.setSelectedItem(category.toString());
-            }
-        }
-    }
-
-    private Category createNewCategory() {
-        Category category = null;
-        String newCategory = JOptionPane.showInputDialog(EditItemDialog.this, "Add new category name: ",
-                "New category", JOptionPane.PLAIN_MESSAGE);
-        if (newCategory != null && !newCategory.isEmpty()) {
-            category = new Category(newCategory);
-            try {
-                category.save();
-                parent.getCategoryList().add(category);
-                categoryCbModel.addElement(category.toString());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        return category;
-    }
-
-    private void productSelected(JComboBox cb) {
-        int index = cb.getSelectedIndex();
-        if (index >= 0) {
-            Product product;
-            if (parent.getProductList().get(index).getId() == DbObject.NEW) {
-                product = createNewProduct();
-            } else {
-                product = parent.getProductList().get(index);
-            }
-
-            if (newItem != null) {
-                newItem.setCategory(product.getId());
-            }
-        }
-    }
-
-    private Product createNewProduct() {
-        Product product = null;
-        String newProduct = JOptionPane.showInputDialog(EditItemDialog.this, "Add new product name: ",
-                "New product", JOptionPane.PLAIN_MESSAGE);
-        if (newProduct != null && !newProduct.isEmpty()) {
-            product = new Product(newProduct);
-            try {
-                product.save();
-                parent.getProductList().add(product);
-                productCbModel.addElement(product.toString());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        return product;
-    }
-
-    private void typeSelected(JComboBox cb) {
-        int index = cb.getSelectedIndex();
-        if (index >= 0) {
-            Type type;
-            if (parent.getTypeList().get(index).getId() == DbObject.NEW) {
-                type = createNewType();
-            } else {
-                type = parent.getTypeList().get(index);
-            }
-
-            if (newItem != null) {
-                newItem.setCategory(type.getId());
-            }
-        }
-    }
-
-    private Type createNewType() {
-        Type type = null;
-        String newType = JOptionPane.showInputDialog(EditItemDialog.this, "Add new type name: ",
-                "New type", JOptionPane.PLAIN_MESSAGE);
-        if (newType != null && !newType.isEmpty()) {
-            type = new Type(newType);
-            try {
-                type.save();
-                parent.getTypeList().add(type);
-                typeCbModel.addElement(type.toString());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new type: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        return type;
     }
 }

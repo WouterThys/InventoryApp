@@ -23,13 +23,18 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
+        <schema name="main" object-types="column, table, view" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
       <console name="inventory" type="STANDARD"><![CDATA[select * from items;
-
 select * from categories;
+select * from products;
+select * from types;
 
 select * from  main.sqlite_master where type = 'table';
 
@@ -37,7 +42,11 @@ select * from "schema_version";
 
 select * from sqlite_sequence;
 
-update categories set name = 'Passive' where id = 4;]]></console>
+update categories set name = 'Passive' where id = 4;
+
+delete from categories where id = 2;
+delete from types where id =2;
+delete from products where id = 4;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">

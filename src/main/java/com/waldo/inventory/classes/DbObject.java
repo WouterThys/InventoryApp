@@ -10,7 +10,6 @@ public abstract class DbObject {
     public static String TABLE_NAME;
 
     public static final int UNKNOWN = 1;
-    public static final int NEW = 2;
 
     protected long id = -1;
     protected String name;
