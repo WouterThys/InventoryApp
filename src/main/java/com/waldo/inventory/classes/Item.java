@@ -1,7 +1,5 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.database.DbManager;
-
 import java.sql.*;
 
 public class Item extends DbObject {

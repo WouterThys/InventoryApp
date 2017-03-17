@@ -99,7 +99,7 @@ public class ItemListAdapter extends AbstractTableModel {
                 boolean hasLocal = (item.getLocalDataSheet() != null && !item.getLocalDataSheet().isEmpty());
                 boolean hasOnline = (item.getOnlineDataSheet() != null && !item.getOnlineDataSheet().isEmpty());
                 if (hasLocal || hasOnline) {
-                    return "Data sheet";
+                    return "Open";
                 } else {
                     return "";
                 }

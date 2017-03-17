@@ -7,4 +7,9 @@ public class Type extends DbObject {
     public Type() {
         super(TABLE_NAME);
     }
+
+    public Type(String name) {
+        super(TABLE_NAME);
+        setName(name);
+    }
 }

@@ -69,7 +69,6 @@ public class PanelUtils {
             super(hint);
             this.hint = hint;
             this.showingHint = true;
-            this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
             super.addFocusListener(this);
         }
 
@@ -77,14 +76,14 @@ public class PanelUtils {
         public void focusGained(FocusEvent e) {
             if(this.getText().isEmpty()) {
                 super.setText("");
-                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                showingHint = false;
             }
         }
         @Override
         public void focusLost(FocusEvent e) {
             if(this.getText().isEmpty()) {
                 super.setText(hint);
-                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
+                showingHint = true;
             }
         }
 
@@ -92,18 +91,21 @@ public class PanelUtils {
         public String getText() {
             return showingHint ? "" : super.getText();
         }
-
-        @Override
-        public void setText(String t) {
-            if (t == null || t.isEmpty()) {
-                super.setText(hint);
-                showingHint = true;
-            } else {
-                super.setText(t);
-                showingHint = false;
-            }
-        }
     }
+
+//        @Override
+//        public void setText(String t) {
+//            if (t == null || t.isEmpty() || t.equals(hint)) {
+//                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
+//                super.setText(hint);
+//                showingHint = true;
+//            } else {
+//                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+//                super.setText(t);
+//                showingHint = false;
+//            }
+//        }
+
 
     private static class HintTextArea extends JTextArea implements FocusListener {
 
@@ -114,24 +116,21 @@ public class PanelUtils {
             super(hint);
             this.hint = hint;
             this.showingHint = true;
-            this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
             super.addFocusListener(this);
         }
 
         @Override
         public void focusGained(FocusEvent e) {
             if(this.getText().isEmpty()) {
-                super.setText("");
                 showingHint = false;
-                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                super.setText("");
             }
         }
         @Override
         public void focusLost(FocusEvent e) {
             if(this.getText().isEmpty()) {
-                super.setText(hint);
                 showingHint = true;
-                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
+                super.setText(hint);
             }
         }
 
@@ -143,9 +142,11 @@ public class PanelUtils {
         @Override
         public void setText(String t) {
             if (t == null || t.isEmpty()) {
+                this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
                 super.setText(hint);
                 showingHint = true;
             } else {
+                this.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
                 super.setText(t);
                 showingHint = false;
             }
@@ -162,7 +163,6 @@ public class PanelUtils {
             this.setText(hint);
             this.hint = hint;
             this.showingHint = true;
-            this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
             super.addFocusListener(this);
         }
 
@@ -184,17 +184,6 @@ public class PanelUtils {
         @Override
         public String getText() {
             return showingHint ? "" : super.getText();
-        }
-
-        @Override
-        public void setText(String t) {
-            if (t == null || t.isEmpty()) {
-                super.setText(hint);
-                showingHint = true;
-            } else {
-                super.setText(t);
-                showingHint = false;
-            }
         }
     }
 

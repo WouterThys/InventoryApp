@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.TableChangedListener;
 import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import com.waldo.inventory.gui.dialogs.EditItemDialog;
@@ -246,6 +247,24 @@ public class Application extends JFrame implements TableChangedListener {
         for (Category c : categoryList) {
             if (c.getId() == id) {
                 return c;
+            }
+        }
+        return null;
+    }
+
+    public Product findProductById(long id) {
+        for(Product p : productList) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public com.waldo.inventory.classes.Type findTypeById(long id) {
+        for (com.waldo.inventory.classes.Type t : typeList) {
+            if (t.getId() == id) {
+                return t;
             }
         }
         return null;

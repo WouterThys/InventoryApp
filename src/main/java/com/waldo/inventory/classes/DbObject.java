@@ -30,6 +30,10 @@ public abstract class DbObject {
 
     public DbObject(String tableName) {
         TABLE_NAME = tableName;
+
+        sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
+        sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
+        sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
     }
 
     protected DbObject(String tableName, String sqlInsert, String sqlUpdate, String sqlDelete) {

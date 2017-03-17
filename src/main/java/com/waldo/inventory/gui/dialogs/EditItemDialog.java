@@ -3,9 +3,7 @@ package com.waldo.inventory.gui.dialogs;
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.validators.NotEmptyValidator;
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -16,25 +14,35 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.Vector;
 
 import static com.waldo.inventory.Utils.PanelUtils.*;
 
 public class EditItemDialog extends JPanel {
 
+    // Local stuff
     private static JDialog dialog;
     private static Item newItem;
-
     private static Application parent;
+
+    // Components
     private JTextField idTextField;
     private JTextField nameTextField;
     private JTextArea descriptionTextArea;
     private JFormattedTextField priceTextField;
     private JComboBox<String> categoryComboBox;
+    private DefaultComboBoxModel<String> categoryCbModel;
+    private JComboBox<String> productComboBox;
+    private DefaultComboBoxModel<String> productCbModel;
+    private JComboBox<String> typeComboBox;
+    private DefaultComboBoxModel<String> typeCbModel;
 
+    private String buttonText = "";
+
+    // Data sheet
     private JTextField localDataSheetTextField;
     private JButton localDataSheetButton;
     private JFileChooser localDataSheetFileChooser;
-
     private JTextField onlineDataSheetTextField;
 
     private JButton cancelButton;
@@ -65,6 +73,7 @@ public class EditItemDialog extends JPanel {
     private EditItemDialog(Item item) {
         super(new GridBagLayout());
         newItem = item;
+        buttonText = "Save";
         initComponents();
         initLayouts();
         updateValues();
@@ -72,19 +81,24 @@ public class EditItemDialog extends JPanel {
 
     private EditItemDialog() {
         this(new Item());
+        buttonText = "Create";
     }
 
     private void updateValues() {
         idTextField.setText(String.valueOf(newItem.getId()));
-
-        String n = newItem.getName();
         nameTextField.setText(newItem.getName());
-        String t = nameTextField.getText();
-
         descriptionTextArea.setText(newItem.getDescription());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
+
         Category c = parent.findCategoryById(newItem.getCategory());
         categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
+
+        Product p = parent.findProductById(newItem.getProduct());
+        productComboBox.setSelectedIndex(parent.getProductList().indexOf(p));
+
+        Type t = parent.findTypeById(newItem.getType());
+        typeComboBox.setSelectedIndex(parent.getTypeList().indexOf(t));
+
         localDataSheetTextField.setText(newItem.getLocalDataSheet());
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
     }
@@ -107,45 +121,10 @@ public class EditItemDialog extends JPanel {
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = PanelUtils.getHintFormattedTextField("Price", formatter);
 
-        String[] categoryStrings = new String[parent.getCategoryList().size()];
-        for(int i=0; i<parent.getCategoryList().size(); i++) {
-            categoryStrings[i] = parent.getCategoryList().get(i).getName();
-        }
-
-        // Category
-        categoryComboBox = new JComboBox<>(categoryStrings);
-        categoryComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox cb = (JComboBox)e.getSource();
-
-                int index = cb.getSelectedIndex();
-                if (index >= 0) {
-                    Category category = new Category();
-                    if (parent.getCategoryList().get(index).getId() == DbObject.NEW) {
-                        String newCategory = JOptionPane.showInputDialog(EditItemDialog.this, "Add new category name: ",
-                                "New category", JOptionPane.PLAIN_MESSAGE);
-                        if (newCategory != null && !newCategory.isEmpty()) {
-                            category = new Category(newCategory);
-                            try {
-                                category.save();
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
-                                        "Error", JOptionPane.ERROR_MESSAGE);
-                            }
-
-                        }
-                    } else {
-                        category = parent.getCategoryList().get(index);
-                    }
-
-                    if (newItem != null) {
-                        newItem.setCategory(category.getId());
-                    }
-                }
-            }
-        });
+        // Combo boxes
+        createCategoryCb();
+        createProductCb();
+        createTypeCb();
 
         // Local data sheet
         localDataSheetTextField = new JTextField();
@@ -178,7 +157,7 @@ public class EditItemDialog extends JPanel {
             }
         });
 
-        createButton = new JButton("Create");
+        createButton = new JButton(buttonText);
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -189,7 +168,11 @@ public class EditItemDialog extends JPanel {
                 if (!priceTxt.isEmpty()) {
                     newItem.setPrice(Double.valueOf(priceTxt));
                 }
+
                 newItem.setCategory(categoryComboBox.getSelectedIndex());
+                newItem.setProduct(productComboBox.getSelectedIndex());
+                newItem.setType(typeComboBox.getSelectedIndex());
+
                 newItem.setLocalDataSheet(localDataSheetTextField.getText());
                 newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
 
@@ -223,26 +206,182 @@ public class EditItemDialog extends JPanel {
         add(new JLabel("Category: "), createLabelConstraints(0,4));
         add(categoryComboBox, createFieldConstraints(1,4));
 
+        // Product
+        add(new JLabel("Product: "), createLabelConstraints(0,5));
+        add(productComboBox, createFieldConstraints(1,5));
+
+        // Type
+        add(new JLabel("Type: "), createLabelConstraints(0,6));
+        add(typeComboBox, createFieldConstraints(1,6));
+
         // Local data sheet
-        add(new JLabel("Local data sheet: "), createLabelConstraints(0,5));
-        constraints = createFieldConstraints(1, 5);
+        add(new JLabel("Local data sheet: "), createLabelConstraints(0,7));
+        constraints = createFieldConstraints(1, 7);
         constraints.gridwidth = 1;
         add(localDataSheetTextField, constraints);
-        constraints = createFieldConstraints(2, 5);
+        constraints = createFieldConstraints(2, 7);
         constraints.weightx = 0.1;
         constraints.gridwidth = 1;
         add(localDataSheetButton, constraints);
 
         // Online data sheet
-        add(new JLabel("Online data sheet: "), createLabelConstraints(0,6));
-        add(onlineDataSheetTextField, createFieldConstraints(1,6));
+        add(new JLabel("Online data sheet: "), createLabelConstraints(0,8));
+        add(onlineDataSheetTextField, createFieldConstraints(1,8));
 
         // Buttons
         JPanel buttons = new JPanel();
         buttons.add(cancelButton);
         buttons.add(createButton);
-        constraints = createButtonConstraints(0,7);
+        constraints = createButtonConstraints(0,9);
         constraints.gridwidth = 3;
         add(buttons, constraints);
+    }
+
+    private void createCategoryCb() {
+        Vector<String> categoryItems = new Vector<>();
+        for (Category c : parent.getCategoryList()) {
+            categoryItems.add(c.toString());
+        }
+
+        categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
+        categoryComboBox = new JComboBox<>(categoryCbModel);
+        categoryComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                categorySelected((JComboBox)e.getSource());
+            }
+        });
+    }
+
+    private void createProductCb() {
+        Vector<String> productStrings = new Vector<>();
+        for (Product p : parent.getProductList()) {
+            productStrings.add(p.toString());
+        }
+
+        productCbModel = new DefaultComboBoxModel<>(productStrings);
+        productComboBox = new JComboBox<>(productCbModel);
+        productComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                productSelected((JComboBox)e.getSource());
+            }
+        });
+    }
+
+    private void createTypeCb() {
+        Vector<String> typeStrings = new Vector<>();
+        for (Type t : parent.getTypeList()) {
+            typeStrings.add(t.toString());
+        }
+
+        typeCbModel = new DefaultComboBoxModel<>(typeStrings);
+        typeComboBox = new JComboBox<>(typeCbModel);
+        typeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typeSelected((JComboBox)e.getSource());
+            }
+        });
+    }
+
+    private void categorySelected(JComboBox cb) {
+        int index = cb.getSelectedIndex();
+        if (index >= 0) {
+            Category category;
+            if (parent.getCategoryList().get(index).getId() == DbObject.NEW) {
+                category = createNewCategory();
+                categoryComboBox.setSelectedItem(category.toString());
+            }
+        }
+    }
+
+    private Category createNewCategory() {
+        Category category = null;
+        String newCategory = JOptionPane.showInputDialog(EditItemDialog.this, "Add new category name: ",
+                "New category", JOptionPane.PLAIN_MESSAGE);
+        if (newCategory != null && !newCategory.isEmpty()) {
+            category = new Category(newCategory);
+            try {
+                category.save();
+                parent.getCategoryList().add(category);
+                categoryCbModel.addElement(category.toString());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return category;
+    }
+
+    private void productSelected(JComboBox cb) {
+        int index = cb.getSelectedIndex();
+        if (index >= 0) {
+            Product product;
+            if (parent.getProductList().get(index).getId() == DbObject.NEW) {
+                product = createNewProduct();
+            } else {
+                product = parent.getProductList().get(index);
+            }
+
+            if (newItem != null) {
+                newItem.setCategory(product.getId());
+            }
+        }
+    }
+
+    private Product createNewProduct() {
+        Product product = null;
+        String newProduct = JOptionPane.showInputDialog(EditItemDialog.this, "Add new product name: ",
+                "New product", JOptionPane.PLAIN_MESSAGE);
+        if (newProduct != null && !newProduct.isEmpty()) {
+            product = new Product(newProduct);
+            try {
+                product.save();
+                parent.getProductList().add(product);
+                productCbModel.addElement(product.toString());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new category: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return product;
+    }
+
+    private void typeSelected(JComboBox cb) {
+        int index = cb.getSelectedIndex();
+        if (index >= 0) {
+            Type type;
+            if (parent.getTypeList().get(index).getId() == DbObject.NEW) {
+                type = createNewType();
+            } else {
+                type = parent.getTypeList().get(index);
+            }
+
+            if (newItem != null) {
+                newItem.setCategory(type.getId());
+            }
+        }
+    }
+
+    private Type createNewType() {
+        Type type = null;
+        String newType = JOptionPane.showInputDialog(EditItemDialog.this, "Add new type name: ",
+                "New type", JOptionPane.PLAIN_MESSAGE);
+        if (newType != null && !newType.isEmpty()) {
+            type = new Type(newType);
+            try {
+                type.save();
+                parent.getTypeList().add(type);
+                typeCbModel.addElement(type.toString());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(EditItemDialog.this, "Error saving new type: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return type;
     }
 }
