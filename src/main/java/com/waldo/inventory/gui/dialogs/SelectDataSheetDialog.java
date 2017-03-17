@@ -1,61 +1,90 @@
 package com.waldo.inventory.gui.dialogs;
 
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import static com.waldo.inventory.Utils.PanelUtils.createButtonConstraints;
-import static com.waldo.inventory.Utils.PanelUtils.createLabelConstraints;
+import java.io.IOException;
 
 public class SelectDataSheetDialog extends JPanel {
 
+    private static JDialog dialog;
     private final String onlineLink;
     private final String localLink;
-    private static Application parent;
 
     public static void showDialog(Application parent, String onlineLink, String localLink) {
-        SelectDataSheetDialog.parent = parent;
-        JDialog dialog = new JDialog(parent, "Create new Item", true);
+        dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new SelectDataSheetDialog(onlineLink, localLink));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setSize(500,400);
-        //dialog.setResizable(false);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setResizable(false);
+        dialog.pack();
         dialog.setVisible(true);
     }
 
     private SelectDataSheetDialog(String onlineLink, String localLink) {
-        super(new GridBagLayout());
+        super(new BorderLayout());
         this.onlineLink = onlineLink;
         this.localLink = localLink;
         initComponents();
     }
 
     private void initComponents() {
-        add(new JLabel("Local: "), createLabelConstraints(0,0));
-        add(new JLabel(localLink), createLabelConstraints(1,0));
-        Button localBtn = new Button("Open");
-        localBtn.addActionListener(new ActionListener() {
+        add(new JLabel("There are two datasheets specified, which one do you want to open?"), BorderLayout.CENTER);
+        JPanel buttonPanel = new JPanel();
+
+        JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                close();
             }
         });
-        add(localBtn, createButtonConstraints(1,1));
 
-        add(new JLabel("Online: "), createLabelConstraints(0,2));
-        add(new JLabel(localLink), createLabelConstraints(1,2));
-        Button onlineBtn = new Button("Open");
+        final JButton onlineBtn = new JButton("Online");
         onlineBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    OpenUtils.browseLink(onlineLink);
+                    close();
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        final JButton localBtn = new JButton("Local");
+        localBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    OpenUtils.openPdf(localLink);
+                    close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
 
             }
         });
-        add(onlineBtn, createButtonConstraints(2,2));
+
+        buttonPanel.add(cancelBtn);
+        buttonPanel.add(onlineBtn);
+        buttonPanel.add(localBtn);
+
+        add(buttonPanel, BorderLayout.SOUTH);
+
+    }
+
+    private void close() {
+        dialog.setVisible(false);
+        dialog.dispose();
     }
 
 }

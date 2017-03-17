@@ -1,14 +1,14 @@
 package com.waldo.inventory.gui.adapters;
 
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +45,26 @@ public class ItemListAdapter extends AbstractTableModel {
                 String online = item.getOnlineDataSheet();
                 if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
                     SelectDataSheetDialog.showDialog(application, online, local);
+                } else if (local != null && !local.isEmpty()) {
+                    try {
+                        OpenUtils.openPdf(local);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(application,
+                                "Error opening the file: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                } else if (online != null && !online.isEmpty()) {
+                    try {
+                        OpenUtils.browseLink(online);
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(application,
+                                "Error opening the file: " + e1.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
@@ -76,7 +96,13 @@ public class ItemListAdapter extends AbstractTableModel {
             case 2: // Price
                 return item.getPrice();
             case 3: // Data sheet
-                return "Data sheet";
+                boolean hasLocal = (item.getLocalDataSheet() != null && !item.getLocalDataSheet().isEmpty());
+                boolean hasOnline = (item.getOnlineDataSheet() != null && !item.getOnlineDataSheet().isEmpty());
+                if (hasLocal || hasOnline) {
+                    return "Data sheet";
+                } else {
+                    return "";
+                }
         }
         return null;
     }
