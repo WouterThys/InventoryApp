@@ -58,24 +58,32 @@ public class ITextField extends JTextField implements FocusListener {
 
     @Override
     public String getText() {
-        return showingHint ? "" : super.getText();
+        if (this.isEnabled()) {
+            return showingHint ? "" : super.getText();
+        } else {
+            return super.getText();
+        }
     }
 
     @Override
     public void focusGained(FocusEvent e) {
-        this.setForeground(Color.BLACK);
-        this.setBorder(focusBorder);
-        this.setOpaque(true);
-        if(this.getText().isEmpty()) {
-            setText("");
+        if (this.isEnabled()) {
+            this.setForeground(Color.BLACK);
+            this.setBorder(focusBorder);
+            this.setOpaque(true);
+            if (this.getText().isEmpty()) {
+                setText("");
+            }
         }
     }
     @Override
     public void focusLost(FocusEvent e) {
-        this.setBorder(normalBorder);
-        if(this.getText().isEmpty()) {
-            this.setForeground(Color.gray);
-            setText(hint);
+        if (this.isEnabled()) {
+            this.setBorder(normalBorder);
+            if (this.getText().isEmpty()) {
+                this.setForeground(Color.gray);
+                setText(hint);
+            }
         }
     }
 

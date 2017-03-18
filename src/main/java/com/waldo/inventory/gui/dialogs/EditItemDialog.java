@@ -30,7 +30,7 @@ public class EditItemDialog extends IDialogPanel {
     private JTextField idTextField;
     private ITextField nameTextField;
     private JTextArea descriptionTextArea;
-    private JTextField priceTextField;
+    private ITextField priceTextField;
     private JComboBox<String> categoryComboBox;
     private JComboBox<String> productComboBox;
     DefaultComboBoxModel<String> productCbModel;
@@ -107,12 +107,22 @@ public class EditItemDialog extends IDialogPanel {
     }
 
     private boolean verify() {
+        boolean ok = true;
+
         String name = nameTextField.getText();
         if (name.isEmpty()) {
             nameTextField.setError("Name can not be empty");
-            return false;
+            ok = false;
         }
-        return true;
+
+        String price = priceTextField.getText();
+        try {
+            Double.valueOf(price);
+        } catch (Exception e) {
+            priceTextField.setError("This should be a number");
+            ok = false;
+        }
+        return ok;
     }
 
     private void initComponents() {

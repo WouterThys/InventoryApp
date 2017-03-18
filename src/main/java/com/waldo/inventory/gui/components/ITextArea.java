@@ -50,7 +50,9 @@ public class ITextArea extends JTextArea implements FocusListener {
     @Override
     public void setText(String t) {
         super.setText(t);
-        showingHint = t.equals(hint);
+        if (t != null && hint != null && !hint.isEmpty()) {
+            showingHint = t.equals(hint);
+        }
     }
 
     @Override
@@ -60,19 +62,23 @@ public class ITextArea extends JTextArea implements FocusListener {
 
     @Override
     public void focusGained(FocusEvent e) {
-        this.setForeground(Color.BLACK);
-        this.setBorder(focusBorder);
-        this.setOpaque(true);
-        if(this.getText().isEmpty()) {
-            setText("");
+        if (this.isEnabled()) {
+            this.setForeground(Color.BLACK);
+            this.setBorder(focusBorder);
+            this.setOpaque(true);
+            if (this.getText().isEmpty()) {
+                setText("");
+            }
         }
     }
     @Override
     public void focusLost(FocusEvent e) {
-        this.setBorder(normalBorder);
-        if(this.getText().isEmpty()) {
-            this.setForeground(Color.gray);
-            setText(hint);
+        if (this.isEnabled()) {
+            this.setBorder(normalBorder);
+            if (this.getText().isEmpty()) {
+                this.setForeground(Color.gray);
+                setText(hint);
+            }
         }
     }
 
