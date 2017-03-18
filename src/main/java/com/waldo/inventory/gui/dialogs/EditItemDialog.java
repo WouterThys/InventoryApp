@@ -1,10 +1,12 @@
 package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.ImageUtils;
-import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.Utils.validators.NotEmptyValidator;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialogPanel;
+import com.waldo.inventory.gui.components.ITextArea;
+import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.ITitledPanel;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -12,13 +14,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.Vector;
 
 import static com.waldo.inventory.Utils.PanelUtils.*;
 
-public class EditItemDialog extends JPanel {
+public class EditItemDialog extends IDialogPanel {
 
     // Local stuff
     private static JDialog dialog;
@@ -29,9 +30,10 @@ public class EditItemDialog extends JPanel {
     private JTextField idTextField;
     private JTextField nameTextField;
     private JTextArea descriptionTextArea;
-    private JFormattedTextField priceTextField;
+    private JTextField priceTextField;
     private JComboBox<String> categoryComboBox;
     private JComboBox<String> productComboBox;
+    DefaultComboBoxModel<String> productCbModel;
     private JComboBox<String> typeComboBox;
 
     private String buttonText = "";
@@ -50,8 +52,10 @@ public class EditItemDialog extends JPanel {
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setSize(500,400);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(parent);
         dialog.setResizable(false);
+        dialog.pack();
         dialog.setVisible(true);
         return newItem;
     }
@@ -61,14 +65,16 @@ public class EditItemDialog extends JPanel {
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog(item));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setSize(400,500);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(parent);
         dialog.setResizable(false);
+        dialog.pack();
         dialog.setVisible(true);
         return newItem;
     }
 
     private EditItemDialog(Item item) {
-        super(new GridBagLayout());
+        super();
         newItem = item;
         buttonText = "Save";
         initComponents();
@@ -91,9 +97,9 @@ public class EditItemDialog extends JPanel {
         categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
 
         Product p = parent.findProductById(newItem.getProduct());
-        productComboBox.setSelectedIndex(parent.getProductList().indexOf(p));
+        productComboBox.setSelectedIndex(parent.getProductList().indexOf(p)); // TODO -> with products for category
 
-        Type t = parent.findTypeById(newItem.getType());
+        com.waldo.inventory.classes.Type t = parent.findTypeById(newItem.getType());
         typeComboBox.setSelectedIndex(parent.getTypeList().indexOf(t));
 
         localDataSheetTextField.setText(newItem.getLocalDataSheet());
@@ -101,13 +107,11 @@ public class EditItemDialog extends JPanel {
     }
 
     private void initComponents() {
-        idTextField = new JTextField(String.valueOf(newItem.getId()));
+        idTextField = new ITextField(String.valueOf(newItem.getId()));
         idTextField.setEditable(false);
 
-        nameTextField = PanelUtils.getHintTextField("Component name");
-        //nameTextField.setInputVerifier(new NotEmptyValidator(nameTextField));
-        descriptionTextArea = PanelUtils.getHintTextArea("Component description");
-        //descriptionTextArea.setInputVerifier(new NotEmptyValidator(descriptionTextArea));
+        nameTextField = new ITextField();
+        descriptionTextArea = new ITextArea();
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -116,7 +120,7 @@ public class EditItemDialog extends JPanel {
         formatter.setMaximum(Double.MAX_VALUE);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
-        priceTextField = PanelUtils.getHintFormattedTextField("Price", formatter);
+        priceTextField = new ITextField();
 
         // Combo boxes
         createCategoryCb();
@@ -124,7 +128,7 @@ public class EditItemDialog extends JPanel {
         createTypeCb();
 
         // Local data sheet
-        localDataSheetTextField = new JTextField();
+        localDataSheetTextField = new ITextField();
         localDataSheetTextField.setToolTipText(localDataSheetTextField.getText());
         localDataSheetFileChooser = new JFileChooser();
         localDataSheetButton = new JButton(ImageUtils.loadImageIcon("folder"));
@@ -141,7 +145,7 @@ public class EditItemDialog extends JPanel {
         });
 
         // Online data sheet
-        onlineDataSheetTextField = new JTextField();
+        onlineDataSheetTextField = new ITextField();
 
         // Dialog buttons
         cancelButton = new JButton("Cancel");
@@ -181,57 +185,52 @@ public class EditItemDialog extends JPanel {
     }
 
     private void initLayouts() {
-        // Id
-        add(new JLabel("Database ID: "), createLabelConstraints(0,0));
-        add(idTextField, createFieldConstraints(1,0));
+        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
 
-        // Name
-        add(new JLabel("Name: "), createLabelConstraints(0,1));
-        add(nameTextField, createFieldConstraints(1,1));
-
-        // Description
-        add(new JLabel("Description: "), createLabelConstraints(0,2));
-        GridBagConstraints constraints = createFieldConstraints(1,2);
-        constraints.weighty = 1;
-        add(descriptionTextArea, constraints);
-
-        // Price
-        add(new JLabel("Price: "), createLabelConstraints(0,3));
-        add(priceTextField, createFieldConstraints(1,3));
-
-        // Category
-        add(new JLabel("Category: "), createLabelConstraints(0,4));
-        add(categoryComboBox, createFieldConstraints(1,4));
-
-        // Product
-        add(new JLabel("Product: "), createLabelConstraints(0,5));
-        add(productComboBox, createFieldConstraints(1,5));
-
-        // Type
-        add(new JLabel("Type: "), createLabelConstraints(0,6));
-        add(typeComboBox, createFieldConstraints(1,6));
-
-        // Local data sheet
-        add(new JLabel("Local data sheet: "), createLabelConstraints(0,7));
-        constraints = createFieldConstraints(1, 7);
+        // Additional stuff
+        JPanel local = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = createFieldConstraints(0,0);
         constraints.gridwidth = 1;
-        add(localDataSheetTextField, constraints);
-        constraints = createFieldConstraints(2, 7);
+        local.add(localDataSheetTextField, constraints);
+        constraints = createFieldConstraints(1,0);
+        constraints.gridwidth = 1;
         constraints.weightx = 0.1;
-        constraints.gridwidth = 1;
-        add(localDataSheetButton, constraints);
+        local.add(localDataSheetButton, constraints);
 
-        // Online data sheet
-        add(new JLabel("Online data sheet: "), createLabelConstraints(0,8));
-        add(onlineDataSheetTextField, createFieldConstraints(1,8));
+        // Add all
+        getContentPanel().add(new ITitledPanel(
+                "Identification",
+                new String[] {"Database ID: ", "Name: "},
+                new JComponent[] {idTextField, nameTextField}
+        ));
 
-        // Buttons
-        JPanel buttons = new JPanel();
-        buttons.add(cancelButton);
-        buttons.add(createButton);
-        constraints = createButtonConstraints(0,9);
-        constraints.gridwidth = 3;
-        add(buttons, constraints);
+        getContentPanel().add(new ITitledPanel(
+                "Sub divisions",
+                new String[] {"Category: ", "Product: ", "Type: "},
+                new JComponent[] {categoryComboBox, productComboBox, typeComboBox}
+        ));
+
+        getContentPanel().add(new ITitledPanel(
+                "Data sheets",
+                new String[] {"Local: ", "Online: "},
+                new JComponent[] {local, onlineDataSheetTextField}
+        ));
+
+        getContentPanel().add(new ITitledPanel(
+                "Info",
+                new String[] {"Price: ", "Description: "},
+                new JComponent[] {priceTextField, descriptionTextArea}
+        ));
+
+//        // Buttons
+        setPositiveButton(createButton);
+        setNegativeButton(cancelButton);
+//        JPanel buttons = new JPanel();
+//        buttons.add(cancelButton);
+//        buttons.add(createButton);
+//        constraints = createButtonConstraints(0,9);
+//        constraints.gridwidth = 3;
+//        add(buttons, constraints);
     }
 
     private void createCategoryCb() {
@@ -254,6 +253,13 @@ public class EditItemDialog extends JPanel {
                 JComboBox cb = (JComboBox) e.getSource();
                 if (productComboBox != null) {
                     productComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
+
+                    productCbModel.removeAllElements();
+                    long id = getCategoryId();
+                    for (Product p : parent.getProductListForCategory(id)) {
+                        productCbModel.addElement(p.toString());
+                    }
+
                 }
                 if (typeComboBox != null) {
                     typeComboBox.setEnabled(cb.getSelectedIndex() > 0);
@@ -275,7 +281,7 @@ public class EditItemDialog extends JPanel {
             }
         }
 
-        DefaultComboBoxModel<String> productCbModel = new DefaultComboBoxModel<>(productStrings);
+        productCbModel = new DefaultComboBoxModel<>(productStrings);
         productComboBox = new JComboBox<>(productCbModel);
         productComboBox.addActionListener(new ActionListener() {
             @Override
@@ -293,7 +299,7 @@ public class EditItemDialog extends JPanel {
     private void createTypeCb() {
         int selectedIndex = 0;
         Vector<String> typeStrings = new Vector<>();
-        for (Type t : parent.getTypeList()) {
+        for (com.waldo.inventory.classes.Type t : parent.getTypeList()) {
             typeStrings.add(t.toString());
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (t.getId() == newItem.getType()) {

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.net.URL;
 
 public class Error {
+
     public static final int NO_ERROR = 0;
     public static final int INFO = 1;
     public static final int WARNING = 2;
@@ -22,11 +23,11 @@ public class Error {
         resourceManager = new ResourceManager(url.getPath());
     }
 
-    protected int getErrorType() {
+    public int getErrorType() {
         return errorType;
     }
 
-    protected String getMessage() {
+    public String getMessage() {
         return message;
     }
 

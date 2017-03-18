@@ -28,7 +28,7 @@ public class IconBorder extends AbstractBorder {
         int w = Math.max(2, insets.left);
         int bx = x + width - (icon.getIconHeight() + (w * 2)) + 2;
         g.translate(bx, by);
-        g.drawImage(icon.getImage(), x, y, icon.getImageObserver());
+        g.drawImage(icon.getImage(), x, y,icon.getImageObserver());
     }
 
     @Override

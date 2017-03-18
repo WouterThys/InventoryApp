@@ -15,6 +15,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.PortUnreachableException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,17 @@ public class Application extends JFrame implements TableChangedListener {
 
     public List<Product> getProductList() {
         return productList;
+    }
+
+    public List<Product> getProductListForCategory(long categoryId) {
+        List<Product> products = new ArrayList<>();
+        products.add(productList.get(0)); // Add "UNKNOWN"
+        for (Product p : productList) {
+            if (p.getCategoryId() == categoryId) {
+                products.add(p);
+            }
+        }
+        return products;
     }
 
     public List<com.waldo.inventory.classes.Type> getTypeList() {
