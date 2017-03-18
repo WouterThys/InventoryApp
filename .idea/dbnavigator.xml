@@ -44,9 +44,7 @@ select * from sqlite_sequence;
 
 update categories set name = 'Passive' where id = 4;
 
-delete from categories where id = 2;
-delete from types where id =2;
-delete from products where id = 4;]]></console>
+update products set categoryid = 3 where id = 3;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">

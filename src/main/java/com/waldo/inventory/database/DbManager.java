@@ -43,7 +43,7 @@ public class DbManager {
         }
     }
 
-    public void close() {
+    private void close() {
         if(dataSource != null) {
             try {
                 dataSource.close();
@@ -62,7 +62,7 @@ public class DbManager {
         }));
     }
 
-    public BasicDataSource getDataSource() {
+    private BasicDataSource getDataSource() {
         return dataSource;
     }
 
@@ -195,6 +195,7 @@ public class DbManager {
                 Product i = new Product();
                 i.setId(rs.getLong("id"));
                 i.setName(rs.getString("name"));
+                i.setCategoryId(rs.getLong("categoryid"));
                 products.add(i);
             }
 

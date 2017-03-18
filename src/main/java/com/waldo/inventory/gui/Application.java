@@ -26,13 +26,6 @@ public class Application extends JFrame implements TableChangedListener {
 
     private JTable itemTable;
     private ItemListAdapter itemListAdapter;
-    private JTextField nameTextField;
-    private JTextField idTextField;
-    private JTextArea descriptionTextArea;
-    private JTextField priceTextField;
-    private JTextField categoryTextField;
-    private JTextField productTextField;
-    private JTextField typeTextField;
 
     // Cached objects from database
     private List<Category> categoryList;
@@ -79,10 +72,6 @@ public class Application extends JFrame implements TableChangedListener {
 
     void saveItem() {
         if (selectedItem != null) {
-            selectedItem.setName(nameTextField.getText());
-            selectedItem.setDescription(descriptionTextArea.getText());
-            selectedItem.setPrice(Integer.valueOf(priceTextField.getText()));
-            //selectedItem.setCategory();
             try {
                 selectedItem.save();
             } catch (SQLException e) {
@@ -179,68 +168,6 @@ public class Application extends JFrame implements TableChangedListener {
      */
     private void setSelectedItem(Item selectedItem) {
         this.selectedItem = selectedItem;
-//        if (selectedItem == null) {
-//            idTextField.setText("");
-//            nameTextField.setText("");
-//            descriptionTextArea.setText("");
-//            priceTextField.setText("");
-//            categoryTextField.setText("");
-//            productTextField.setText("");
-//            typeTextField.setText("");
-//        } else {
-//            idTextField.setText(String.valueOf(selectedItem.getId()));
-//            nameTextField.setText(selectedItem.getName());
-//            descriptionTextArea.setText(selectedItem.getDescription());
-//            priceTextField.setText(String.valueOf(selectedItem.getPrice()));
-//            categoryTextField.setText(categoryList.get((int) selectedItem.getCategory()).getName());
-//            productTextField.setText(String.valueOf(selectedItem.getProduct()));
-//            typeTextField.setText(String.valueOf(selectedItem.getProduct()));
-//        }
-    }
-
-    private JComponent createEditor() {
-        final JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints;
-
-        // Id
-        panel.add(new JLabel("Id"), createLabelConstraints(0,0));
-        idTextField = new JTextField();
-        idTextField.setEditable(false);
-        panel.add(idTextField, createFieldConstraints(1,0));
-
-        // Name
-        panel.add(new JLabel("Name"), createLabelConstraints(0,1));
-        nameTextField = new JTextField();
-        panel.add(nameTextField, createFieldConstraints(1,1));
-
-        // Description
-        panel.add(new JLabel("Contacts"), createLabelConstraints(0,2));
-        constraints = createFieldConstraints(1,2);
-        constraints.weighty = 1;
-        descriptionTextArea = new JTextArea();
-        panel.add(new JScrollPane(descriptionTextArea), constraints);
-
-        // Price
-        panel.add(new JLabel("Price"), createLabelConstraints(0,3));
-        priceTextField = new JTextField();
-        panel.add(priceTextField, createFieldConstraints(1,3));
-
-        // Category
-        panel.add(new JLabel("Category"), createLabelConstraints(0,4));
-        categoryTextField = new JTextField();
-        panel.add(categoryTextField, createFieldConstraints(1,4));
-
-        // Product
-        panel.add(new JLabel("Product"), createLabelConstraints(0,5));
-        productTextField = new JTextField();
-        panel.add(productTextField, createFieldConstraints(1,5));
-
-        // Type
-        panel.add(new JLabel("Type"), createLabelConstraints(0,6));
-        typeTextField = new JTextField();
-        panel.add(typeTextField, createFieldConstraints(1,6));
-
-        return panel;
     }
 
     public Category findCategoryById(long id) {
