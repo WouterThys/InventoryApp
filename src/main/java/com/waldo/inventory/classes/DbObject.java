@@ -21,10 +21,13 @@ public abstract class DbObject {
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
+        statement.execute();
     }
 
     protected void update(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
+        statement.setString(1, name); // Set (name)
+        statement.setLong(2, id); // Where id
+        statement.execute();
     }
 
     public DbObject(String tableName) {
@@ -47,7 +50,6 @@ public abstract class DbObject {
             if (id == -1) { // Save
                 try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
                     insert(statement);
-                    statement.execute();
 
                     try (ResultSet rs = statement.getGeneratedKeys()) {
                         rs.next();
@@ -57,7 +59,6 @@ public abstract class DbObject {
             } else { // Update
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
-                    statement.execute();
                 }
             }
 

@@ -43,6 +43,7 @@ public class Item extends DbObject {
         statement.setLong(6, type);
         statement.setString(7, localDataSheet);
         statement.setString(8, onlineDataSheet);
+        statement.execute();
     }
 
     @Override
@@ -55,6 +56,8 @@ public class Item extends DbObject {
         statement.setLong(6, type);
         statement.setString(7, localDataSheet);
         statement.setString(8, onlineDataSheet);
+        statement.setLong(9, id); // WHERE id
+        statement.execute();
     }
 
     public String getDescription() {

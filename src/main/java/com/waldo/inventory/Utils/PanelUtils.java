@@ -63,12 +63,10 @@ public class PanelUtils {
     private static class HintTextField extends JTextField implements FocusListener {
 
         private final String hint;
-        private boolean showingHint;
 
         HintTextField(final String hint) {
             super(hint);
             this.hint = hint;
-            this.showingHint = true;
             super.addFocusListener(this);
         }
 
@@ -76,20 +74,22 @@ public class PanelUtils {
         public void focusGained(FocusEvent e) {
             if(this.getText().isEmpty()) {
                 super.setText("");
-                showingHint = false;
             }
         }
         @Override
         public void focusLost(FocusEvent e) {
             if(this.getText().isEmpty()) {
                 super.setText(hint);
-                showingHint = true;
             }
         }
 
         @Override
         public String getText() {
-            return showingHint ? "" : super.getText();
+            if (super.getText().equals(hint)) {
+                return "";
+            } else {
+                return super.getText();
+            }
         }
     }
 
@@ -122,14 +122,12 @@ public class PanelUtils {
         @Override
         public void focusGained(FocusEvent e) {
             if(this.getText().isEmpty()) {
-                showingHint = false;
                 super.setText("");
             }
         }
         @Override
         public void focusLost(FocusEvent e) {
             if(this.getText().isEmpty()) {
-                showingHint = true;
                 super.setText(hint);
             }
         }
@@ -141,7 +139,7 @@ public class PanelUtils {
 
         @Override
         public void setText(String t) {
-            if (t == null || t.isEmpty()) {
+            if (t == null || t.isEmpty() || t.equals(hint)) {
                 this.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
                 super.setText(hint);
                 showingHint = true;

@@ -166,9 +166,9 @@ public class EditItemDialog extends JPanel {
                     newItem.setPrice(Double.valueOf(priceTxt));
                 }
 
-                newItem.setCategory(categoryComboBox.getSelectedIndex());
-                newItem.setProduct(productComboBox.getSelectedIndex());
-                newItem.setType(typeComboBox.getSelectedIndex());
+                newItem.setCategory(getCategoryId());
+                newItem.setProduct(getProductId());
+                newItem.setType(getTypeId());
 
                 newItem.setLocalDataSheet(localDataSheetTextField.getText());
                 newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
@@ -235,32 +235,111 @@ public class EditItemDialog extends JPanel {
     }
 
     private void createCategoryCb() {
+        int selectedIndex = 0;
         Vector<String> categoryItems = new Vector<>();
         for (Category c : parent.getCategoryList()) {
             categoryItems.add(c.toString());
+            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
+                if (c.getId() == newItem.getCategory()) {
+                    selectedIndex = parent.getCategoryList().indexOf(c);
+                }
+            }
         }
 
         DefaultComboBoxModel<String> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
         categoryComboBox = new JComboBox<>(categoryCbModel);
+        categoryComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox) e.getSource();
+                if (productComboBox != null) {
+                    productComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
+                }
+                if (typeComboBox != null) {
+                    typeComboBox.setEnabled(cb.getSelectedIndex() > 0);
+                }
+            }
+        });
+        categoryComboBox.setSelectedIndex(selectedIndex);
     }
 
     private void createProductCb() {
+        int selectedIndex = 0;
         Vector<String> productStrings = new Vector<>();
         for (Product p : parent.getProductList()) {
             productStrings.add(p.toString());
+            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
+                if (p.getId() == newItem.getProduct()) {
+                    selectedIndex = parent.getProductList().indexOf(p);
+                }
+            }
         }
 
         DefaultComboBoxModel<String> productCbModel = new DefaultComboBoxModel<>(productStrings);
         productComboBox = new JComboBox<>(productCbModel);
+        productComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (typeComboBox != null) {
+                    JComboBox cb = (JComboBox) e.getSource();
+                    typeComboBox.setEnabled((cb.getSelectedIndex() > 0)); // Bigger than "UNKNOWN"
+                }
+            }
+        });
+        productComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getCategory() > DbObject.UNKNOWN));
+        productComboBox.setSelectedIndex(selectedIndex);
     }
 
     private void createTypeCb() {
+        int selectedIndex = 0;
         Vector<String> typeStrings = new Vector<>();
         for (Type t : parent.getTypeList()) {
             typeStrings.add(t.toString());
+            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
+                if (t.getId() == newItem.getType()) {
+                    selectedIndex = parent.getTypeList().indexOf(t);
+                }
+            }
         }
 
         DefaultComboBoxModel<String> typeCbModel = new DefaultComboBoxModel<>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
+        typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProduct() > DbObject.UNKNOWN));
+        typeComboBox.setSelectedIndex(selectedIndex);
+    }
+
+    private long getCategoryId() {
+        int ndx = categoryComboBox.getSelectedIndex();
+        if (ndx >= 0) {
+            return parent.getCategoryList().get(ndx).getId();
+        } else {
+            return DbObject.UNKNOWN;
+        }
+    }
+
+    private long getProductId() {
+        if (productComboBox.isEnabled()) {
+            int ndx = productComboBox.getSelectedIndex();
+            if (ndx >= 0) {
+                return parent.getProductList().get(ndx).getId();
+            } else {
+                return DbObject.UNKNOWN;
+            }
+        } else {
+            return DbObject.UNKNOWN;
+        }
+    }
+
+    private long getTypeId() {
+        if (typeComboBox.isEnabled()) {
+            int ndx = typeComboBox.getSelectedIndex();
+            if (ndx >= 0) {
+                return parent.getTypeList().get(ndx).getId();
+            } else {
+                return DbObject.UNKNOWN;
+            }
+        } else {
+            return DbObject.UNKNOWN;
+        }
     }
 }
