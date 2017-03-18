@@ -28,7 +28,7 @@ public class EditItemDialog extends IDialogPanel {
 
     // Components
     private JTextField idTextField;
-    private JTextField nameTextField;
+    private ITextField nameTextField;
     private JTextArea descriptionTextArea;
     private JTextField priceTextField;
     private JComboBox<String> categoryComboBox;
@@ -106,6 +106,15 @@ public class EditItemDialog extends IDialogPanel {
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
     }
 
+    private boolean verify() {
+        String name = nameTextField.getText();
+        if (name.isEmpty()) {
+            nameTextField.setError("Name can not be empty");
+            return false;
+        }
+        return true;
+    }
+
     private void initComponents() {
         idTextField = new ITextField(String.valueOf(newItem.getId()));
         idTextField.setEditable(false);
@@ -162,24 +171,26 @@ public class EditItemDialog extends IDialogPanel {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Create item
-                newItem.setName(nameTextField.getText());
-                newItem.setDescription(descriptionTextArea.getText());
-                String priceTxt = priceTextField.getText();
-                if (!priceTxt.isEmpty()) {
-                    newItem.setPrice(Double.valueOf(priceTxt));
+                if (verify()) {
+                    // Create item
+                    newItem.setName(nameTextField.getText());
+                    newItem.setDescription(descriptionTextArea.getText());
+                    String priceTxt = priceTextField.getText();
+                    if (!priceTxt.isEmpty()) {
+                        newItem.setPrice(Double.valueOf(priceTxt));
+                    }
+
+                    newItem.setCategory(getCategoryId());
+                    newItem.setProduct(getProductId());
+                    newItem.setType(getTypeId());
+
+                    newItem.setLocalDataSheet(localDataSheetTextField.getText());
+                    newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
+
+                    // Close dialog
+                    dialog.setVisible(false);
+                    dialog.dispose();
                 }
-
-                newItem.setCategory(getCategoryId());
-                newItem.setProduct(getProductId());
-                newItem.setType(getTypeId());
-
-                newItem.setLocalDataSheet(localDataSheetTextField.getText());
-                newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
-
-                // Close dialog
-                dialog.setVisible(false);
-                dialog.dispose();
             }
         });
     }
@@ -222,15 +233,9 @@ public class EditItemDialog extends IDialogPanel {
                 new JComponent[] {priceTextField, descriptionTextArea}
         ));
 
-//        // Buttons
+        // Buttons
         setPositiveButton(createButton);
         setNegativeButton(cancelButton);
-//        JPanel buttons = new JPanel();
-//        buttons.add(cancelButton);
-//        buttons.add(createButton);
-//        constraints = createButtonConstraints(0,9);
-//        constraints.gridwidth = 3;
-//        add(buttons, constraints);
     }
 
     private void createCategoryCb() {
