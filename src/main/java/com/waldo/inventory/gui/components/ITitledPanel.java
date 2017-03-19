@@ -10,50 +10,53 @@ import java.util.List;
 
 public class ITitledPanel extends JPanel {
 
-    private final String title;
-    private final List<String> labelList;
+    public static final int VERTICAL = 0;
+    public static final int HORIZONTAL = 1;
+
+    private String title;
     private final List<JComponent> componentList;
+    private TitledBorder titledBorder;
 
-    public ITitledPanel(String title,  List<String> labelList, List<JComponent> componentList) {
-        super(new BorderLayout(5,5));
-        this.title = title;
-        this.componentList = componentList;
-        this.labelList = labelList;
-
-        initializeComponents();
+    public ITitledPanel(String title, JComponent[] componentList) {
+        this(title, componentList, VERTICAL);
     }
 
-    public ITitledPanel(String title,  String[] labelList, JComponent[] componentList) {
+    public ITitledPanel(String title, JComponent[] componentList, int direction) {
         super(new BorderLayout(5,5));
         this.title = title;
         this.componentList = Arrays.asList(componentList);
-        this.labelList = Arrays.asList(labelList);
 
-        initializeComponents();
+        initializeComponents(direction);
     }
 
-    private void initializeComponents() {
+    private void initializeComponents(int direction) {
         JPanel content = new JPanel(new SpringLayout());
 
         // Title
-        TitledBorder titledBorder = BorderFactory.createTitledBorder(title);
+        titledBorder = BorderFactory.createTitledBorder(title);
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
-        for(int i = 0; i < labelList.size(); i++) {
-            JLabel lbl = new JLabel(labelList.get(i), JLabel.TRAILING);
-            lbl.setPreferredSize(new Dimension(100,20));
-            content.add(lbl);
-            lbl.setLabelFor(componentList.get(i));
-            content.add(componentList.get(i));
+        for(JComponent c : componentList) {
+            content.add(c);
         }
 
-        SpringUtilities.makeCompactGrid(content, labelList.size(),2, 5,5,10,10);
+        if (direction == VERTICAL) {
+            SpringUtilities.makeCompactGrid(content, componentList.size(), 1, 5, 5, 10, 10);
+        } else {
+            SpringUtilities.makeCompactGrid(content, 1, componentList.size(), 5, 5, 10, 10);
+        }
 
         setBorder(titledBorder);
         add(content, BorderLayout.CENTER);
+    }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        titledBorder.setTitle(title);
     }
 }
-
-

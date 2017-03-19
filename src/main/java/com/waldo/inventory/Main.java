@@ -17,6 +17,8 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                Font f = new Font("sans-serif", Font.PLAIN, 12);
+                UIManager.put("Menu.font", f);
                 Application app = new Application();
                 app.setTitle("Inventory");
                 app.setMinimumSize(new Dimension(800,600));

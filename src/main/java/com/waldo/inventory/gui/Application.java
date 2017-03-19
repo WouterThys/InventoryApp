@@ -139,6 +139,7 @@ public class Application extends JFrame implements TableChangedListener {
         add(createTablePane(), BorderLayout.CENTER);
         add(new QueryPanel(this), BorderLayout.SOUTH);
         //add(createEditor(), BorderLayout.CENTER);
+        setJMenuBar(new MenuBar(this));
     }
 
     private JComponent createTablePane() {

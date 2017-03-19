@@ -6,7 +6,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledPanel;
+import com.waldo.inventory.gui.components.ITitledEditPanel;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -219,25 +219,25 @@ public class EditItemDialog extends IDialogPanel {
         local.add(localDataSheetButton, constraints);
 
         // Add all
-        getContentPanel().add(new ITitledPanel(
+        getContentPanel().add(new ITitledEditPanel(
                 "Identification",
                 new String[] {"Database ID: ", "Name: "},
                 new JComponent[] {idTextField, nameTextField}
         ));
 
-        getContentPanel().add(new ITitledPanel(
+        getContentPanel().add(new ITitledEditPanel(
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {categoryComboBox, productComboBox, typeComboBox}
         ));
 
-        getContentPanel().add(new ITitledPanel(
+        getContentPanel().add(new ITitledEditPanel(
                 "Data sheets",
                 new String[] {"Local: ", "Online: "},
                 new JComponent[] {local, onlineDataSheetTextField}
         ));
 
-        getContentPanel().add(new ITitledPanel(
+        getContentPanel().add(new ITitledEditPanel(
                 "Info",
                 new String[] {"Price: ", "Description: "},
                 new JComponent[] {priceTextField, descriptionTextArea}
