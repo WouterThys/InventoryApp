@@ -1,11 +1,10 @@
 package com.waldo.inventory.gui.dialogs;
 
-import com.waldo.inventory.Utils.Error;
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -17,7 +16,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.sql.SQLException;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
@@ -26,7 +24,6 @@ public class SubDivisionsDialog extends IDialogPanel {
 
     private static JDialog dialog;
     private static Application application;
-    private ResourceManager resourceManager;
 
     public static void showDialog(Application parent) {
         SubDivisionsDialog.application = parent;
@@ -59,10 +56,6 @@ public class SubDivisionsDialog extends IDialogPanel {
 
     private SubDivisionsDialog() {
         super();
-
-        URL url = Error.class.getResource("/settings/Settings.properties");
-        resourceManager = new ResourceManager(url.getPath());
-
         initActions();
         initComponents();
         initLayouts();
@@ -72,7 +65,48 @@ public class SubDivisionsDialog extends IDialogPanel {
         addAction = new AbstractAction("Add", resourceManager.readImage("SubDivisionDialog.AddIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
+                    switch (selectedSubNdx) {
+                        case 0: // Categories
+                            Category c = (Category) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx);
+                            if (c != null) {
+                                try {
+                                    c.save(DbManager.dbInstance());
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            break;
 
+                        case 1: // Products
+                            Product p = (Product) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx);
+                            if (p != null) {
+                                try {
+                                    p.setCategoryId(((DbObject)selectionCbModel.getSelectedItem()).getId());
+                                    p.save(DbManager.dbInstance());
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            break;
+
+                        case 2: // Types
+                            Type t = (Type) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx);
+                            if (t != null) {
+                                try {
+                                    t.setProductId(((DbObject)selectionCbModel.getSelectedItem()).getId());
+                                    t.save(DbManager.dbInstance());
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            break;
+                    }
+
+                try {
+                    updateDetailListModel(selectedSubNdx, 1);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         };
 

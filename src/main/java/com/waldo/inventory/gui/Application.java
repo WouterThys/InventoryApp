@@ -1,11 +1,6 @@
 package com.waldo.inventory.gui;
 
-import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.TableChangedListener;
 import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import com.waldo.inventory.gui.dialogs.EditItemDialog;
 import com.waldo.inventory.gui.panels.QueryPanel;
@@ -16,33 +11,25 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.PortUnreachableException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.Utils.PanelUtils.*;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
-public class Application extends JFrame implements TableChangedListener {
+public class Application extends JFrame {
 
     private JTable itemTable;
     private ItemListAdapter itemListAdapter;
 
-    // Cached objects from database
-    //private List<Category> categoryList;
-    //private List<Product> productList;
-    //private List<com.waldo.inventory.classes.Type> typeList;
-
     private Item selectedItem;
 
     public Application() {
-        //initObjectsFromDb();
         initComponents();
     }
 
     void refreshItemList() {
-        dbInstance().getItemsAsync(itemListAdapter);
+        itemListAdapter.fireTableDataChanged();
     }
 
     void createNewItem() throws SQLException {
@@ -105,7 +92,6 @@ public class Application extends JFrame implements TableChangedListener {
         add(ttb, BorderLayout.PAGE_START);
         add(createTablePane(), BorderLayout.CENTER);
         add(new QueryPanel(this), BorderLayout.SOUTH);
-        //add(createEditor(), BorderLayout.CENTER);
         setJMenuBar(new MenuBar(this));
     }
 
@@ -116,12 +102,16 @@ public class Application extends JFrame implements TableChangedListener {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        itemListAdapter = new ItemListAdapter(items);
+        itemListAdapter = new ItemListAdapter();
         itemTable = new JTable(itemListAdapter);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                itemListAdapter.tableClicked(Application.this, itemTable, e);
+                try {
+                    itemListAdapter.tableClicked(Application.this, itemTable, e);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -132,7 +122,12 @@ public class Application extends JFrame implements TableChangedListener {
                 if(!e.getValueIsAdjusting()) {
                     int row = itemTable.getSelectedRow();
                     if (row >= 0) {
-                        Item selected = itemListAdapter.getItemAt(itemTable.getSelectedRow());
+                        Item selected = null;
+                        try {
+                            selected = itemListAdapter.getItemAt(itemTable.getSelectedRow());
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
                         setSelectedItem(selected);
                     }
                 }
@@ -142,34 +137,8 @@ public class Application extends JFrame implements TableChangedListener {
         return new JScrollPane(itemTable); // Put in ScrollPane!!
     }
 
-    /**
-     * Select a contact
-     * @param selectedItem: contact that was selected from the list.
-     */
     private void setSelectedItem(Item selectedItem) {
         this.selectedItem = selectedItem;
     }
 
-    @Override
-    public void tableChangedListener(String tableName, long id) {
-//        switch (tableName) {
-//            case Item.TABLE_NAME:
-//                break;
-//
-//            case Category.TABLE_NAME:
-//                dbInstance().getCategoriesAsync(categoryList);
-//                break;
-//
-//            case Product.TABLE_NAME:
-//                dbInstance().getProductsAsync(productList);
-//                break;
-//
-//            case com.waldo.inventory.classes.Type.TABLE_NAME:
-//                dbInstance().getTypesAsync(typeList);
-//                break;
-//
-//            default:
-//                break;
-//        }
-    }
 }

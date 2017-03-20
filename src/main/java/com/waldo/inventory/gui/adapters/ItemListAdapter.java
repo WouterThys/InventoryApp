@@ -9,37 +9,25 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
+import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class ItemListAdapter extends AbstractTableModel {
 
     private final String[] columnNames = {"Name", "Description", "Price", "Data sheet"};
-    private List<Item> itemList = new ArrayList<>();
+    //private List<Item> itemList = new ArrayList<>();
 
-    public ItemListAdapter(List<Item> itemList) {
-        this.itemList = itemList;
+    public ItemListAdapter() {}
+
+    public Item getItemAt(int row) throws SQLException {
+        return dbInstance().getItems().get(row);
     }
 
-    public Item getItemAt(int row) {
-        return itemList.get(row);
-    }
-
-    public void add(Item item) {
-        this.itemList.add(item);
-        fireTableDataChanged();
-    }
-
-    public void removeAllItems() {
-        this.itemList.clear();
-        fireTableDataChanged();
-    }
-
-    public void tableClicked(Application application, JTable table, MouseEvent e) {
+    public void tableClicked(Application application, JTable table, MouseEvent e) throws SQLException {
         int col = table.columnAtPoint(e.getPoint());
         if (col == 3) { // Data sheet column
             int row = table.rowAtPoint(e.getPoint());
-            Item item = itemList.get(row);
+            Item item = getItemAt(row);
             if (item != null) {
                 String local = item.getLocalDataSheet();
                 String online = item.getOnlineDataSheet();
@@ -77,7 +65,12 @@ public class ItemListAdapter extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return itemList.size();
+        try {
+            return dbInstance().getItems().size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
@@ -87,22 +80,27 @@ public class ItemListAdapter extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        final Item item = itemList.get(rowIndex);
-        switch (columnIndex) {
-            case 0: // Name
-                return item.getName();
-            case 1: // Description
-                return item.getDescription();
-            case 2: // Price
-                return item.getPrice();
-            case 3: // Data sheet
-                boolean hasLocal = (item.getLocalDataSheet() != null && !item.getLocalDataSheet().isEmpty());
-                boolean hasOnline = (item.getOnlineDataSheet() != null && !item.getOnlineDataSheet().isEmpty());
-                if (hasLocal || hasOnline) {
-                    return "Open";
-                } else {
-                    return "";
-                }
+        final Item item;
+        try {
+            item = getItemAt(rowIndex);
+            switch (columnIndex) {
+                case 0: // Name
+                    return item.getName();
+                case 1: // Description
+                    return item.getDescription();
+                case 2: // Price
+                    return item.getPrice();
+                case 3: // Data sheet
+                    boolean hasLocal = (item.getLocalDataSheet() != null && !item.getLocalDataSheet().isEmpty());
+                    boolean hasOnline = (item.getOnlineDataSheet() != null && !item.getOnlineDataSheet().isEmpty());
+                    if (hasLocal || hasOnline) {
+                        return "Open";
+                    } else {
+                        return "";
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }

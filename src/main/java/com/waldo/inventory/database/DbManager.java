@@ -23,6 +23,7 @@ public class DbManager implements TableChangedListener {
     private BasicDataSource dataSource;
     private List<String> tableNames;
 
+    private List<Item> items;
     private List<Category> categories;
     private List<Product> products;
     private List<Type> types;
@@ -91,7 +92,14 @@ public class DbManager implements TableChangedListener {
     }
 
     public List<Item> getItems() throws SQLException {
-        List<Item> items = new ArrayList<>();
+        if (items == null) {
+            updateItems();
+        }
+        return items;
+    }
+
+    private void updateItems() throws SQLException {
+        items = new ArrayList<>();
 
         String sql = "SELECT * FROM items ORDER BY id";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);
@@ -112,14 +120,12 @@ public class DbManager implements TableChangedListener {
                 i.setOnTableChangedListener(this);
                 items.add(i);
             }
-
-            return items;
         }
     }
 
-    public void getItemsAsync(final ItemListAdapter listAdapter) {
-        if (listAdapter != null) {
-            listAdapter.removeAllItems();
+    public void getItemsAsync(final List<Item> itemList) {
+        if (itemList != null) {
+            itemList.clear();
         }
         SwingWorker<Void, Item> worker = new SwingWorker<Void, Item>() {
             @Override
@@ -134,8 +140,8 @@ public class DbManager implements TableChangedListener {
             @Override
             protected void process(List<Item> chunks) {
                 for (Item c : chunks) {
-                    if (listAdapter != null) {
-                        listAdapter.add(c);
+                    if (itemList != null) {
+                        itemList.add(c);
                     }
                 }
             }

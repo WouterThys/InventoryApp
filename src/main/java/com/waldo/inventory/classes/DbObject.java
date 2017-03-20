@@ -30,7 +30,7 @@ public abstract class DbObject {
         statement.execute();
     }
 
-    public DbObject(String tableName) {
+    protected DbObject(String tableName) {
         TABLE_NAME = tableName;
 
         sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
@@ -66,6 +66,11 @@ public abstract class DbObject {
                 onTableChangedListener.tableChangedListener(TABLE_NAME, this);
             }
         }
+    }
+
+    public void save(TableChangedListener onTableChangedListener) throws SQLException {
+        setOnTableChangedListener(onTableChangedListener);
+        save();
     }
 
     public void delete() throws SQLException {
