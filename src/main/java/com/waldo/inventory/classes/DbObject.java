@@ -63,7 +63,7 @@ public abstract class DbObject {
             }
 
             if (onTableChangedListener != null) {
-                onTableChangedListener.tableChangedListener(TABLE_NAME, id);
+                onTableChangedListener.tableChangedListener(TABLE_NAME, this);
             }
         }
     }
@@ -73,12 +73,11 @@ public abstract class DbObject {
             try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
                 statement.setLong(1, id);
                 statement.execute();
-
-                if (onTableChangedListener != null) {
-                    onTableChangedListener.tableChangedListener(TABLE_NAME, id);
-                }
-
                 id = -1; // Not in database anymore
+            }
+
+            if (onTableChangedListener != null) {
+                onTableChangedListener.tableChangedListener(TABLE_NAME, this);
             }
         }
     }
