@@ -383,6 +383,7 @@ public class DbManager implements TableChangedListener {
         System.out.print(object.getName() +" from "+ tableName + "changed");
         switch (tableName) {
             case Item.TABLE_NAME:
+                updateItems();
                 break;
             case Category.TABLE_NAME:
                 updateCategories();

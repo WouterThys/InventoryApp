@@ -36,7 +36,7 @@ public class Application extends JFrame {
         Item item = EditItemDialog.showDialog(this);
         if (item != null && item.getId() >= 0) {
             try {
-                item.save();
+                item.save(dbInstance());
                 selectedItem = item;
                 refreshItemList();
             } catch (SQLException e) {
@@ -50,7 +50,7 @@ public class Application extends JFrame {
             selectedItem = EditItemDialog.showDialog(this, selectedItem);
             if (selectedItem != null) {
                 try {
-                    selectedItem.save();
+                    selectedItem.save(dbInstance());
                     refreshItemList();
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(this, "Error saving Item: "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -62,7 +62,7 @@ public class Application extends JFrame {
     void saveItem() {
         if (selectedItem != null) {
             try {
-                selectedItem.save();
+                selectedItem.save(dbInstance());
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -76,6 +76,7 @@ public class Application extends JFrame {
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
                 try {
                     selectedItem.delete();
+                    refreshItemList();
                 } catch (final SQLException e) {
                     JOptionPane.showMessageDialog(this, "Failed to delete the selected contact", "Delete", JOptionPane.ERROR_MESSAGE);
                 } finally {
