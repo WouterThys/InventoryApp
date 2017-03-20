@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbManager {
+public class DbManager implements TableChangedListener {
 
     private static final DbManager INSTANCE = new DbManager();
     public static DbManager dbInstance() {
@@ -75,18 +75,19 @@ public class DbManager {
     }
 
     public List<String> getTableNames() throws SQLException {
-        List<String> names = new ArrayList<>();
+        if (tableNames == null) {
+            tableNames = new ArrayList<>();
 
-        String sql = "SELECT * FROM main.sqlite_master WHERE type='table'";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+            String sql = "SELECT * FROM main.sqlite_master WHERE type='table'";
+            try (PreparedStatement stmt = getConnection().prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                names.add(rs.getString("name"));
+                while (rs.next()) {
+                    tableNames.add(rs.getString("name"));
+                }
             }
-
-            return names;
         }
+        return tableNames;
     }
 
     public List<Item> getItems() throws SQLException {
@@ -107,6 +108,8 @@ public class DbManager {
                 i.setType(rs.getInt("type"));
                 i.setLocalDataSheet(rs.getString("localdatasheet"));
                 i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
+
+                i.setOnTableChangedListener(this);
                 items.add(i);
             }
 
@@ -142,21 +145,27 @@ public class DbManager {
 
     public List<Category> getCategories() throws SQLException {
         if (categories == null) {
-            categories = new ArrayList<>();
-
-            String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY id";
-            try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    Category i = new Category();
-                    i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    categories.add(i);
-                }
-            }
+            updateCategories();
         }
         return categories;
+    }
+
+    private void updateCategories() throws SQLException {
+        categories = new ArrayList<>();
+
+        String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY id";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Category c = new Category();
+                c.setId(rs.getLong("id"));
+                c.setName(rs.getString("name"));
+
+                c.setOnTableChangedListener(this);
+                categories.add(c);
+            }
+        }
     }
 
     public void getCategoriesAsync(final List<Category> categories) {
@@ -187,22 +196,28 @@ public class DbManager {
 
     public List<Product> getProducts() throws SQLException {
         if (products == null) {
-            products = new ArrayList<>();
-
-            String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY id";
-            try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    Product i = new Product();
-                    i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    i.setCategoryId(rs.getLong("categoryid"));
-                    products.add(i);
-                }
-            }
+            updateProducts();
         }
         return products;
+    }
+
+    private void updateProducts() throws SQLException {
+        products = new ArrayList<>();
+
+        String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY id";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Product p = new Product();
+                p.setId(rs.getLong("id"));
+                p.setName(rs.getString("name"));
+                p.setCategoryId(rs.getLong("categoryid"));
+
+                p.setOnTableChangedListener(this);
+                products.add(p);
+            }
+        }
     }
 
     public void getProductsAsync(final List<Product> products) {
@@ -233,21 +248,28 @@ public class DbManager {
 
     public List<Type> getTypes() throws SQLException {
         if (types == null) {
-            types = new ArrayList<>();
-
-            String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY id";
-            try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    Type i = new Type();
-                    i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    types.add(i);
-                }
-            }
+            updateTypes();
         }
         return types;
+    }
+
+    private void updateTypes() throws SQLException {
+        types = new ArrayList<>();
+
+        String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY id";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Type t = new Type();
+                t.setId(rs.getLong("id"));
+                t.setName(rs.getString("name"));
+                t.setProductId(rs.getLong("productid"));
+
+                t.setOnTableChangedListener(this);
+                types.add(t);
+            }
+        }
     }
 
     public void getTypesAsync(final List<Type> types) {
@@ -350,4 +372,21 @@ public class DbManager {
         return types;
     }
 
+    @Override
+    public void tableChangedListener(String tableName, long id) throws SQLException {
+        switch (tableName) {
+            case Item.TABLE_NAME:
+
+                break;
+            case Category.TABLE_NAME:
+                updateCategories();
+                break;
+            case Product.TABLE_NAME:
+                updateProducts();
+                break;
+            case Type.TABLE_NAME:
+                updateTypes();
+                break;
+        }
+    }
 }
