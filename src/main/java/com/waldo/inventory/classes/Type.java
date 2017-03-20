@@ -1,15 +1,46 @@
 package com.waldo.inventory.classes;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Type extends DbObject {
 
     public static final String TABLE_NAME = "types";
+    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
+            "name, productid) VALUES " +
+            "(?, ?)";
+    private static final String updateSql =
+            "UPDATE "+TABLE_NAME+" " +
+                    "SET name = ?, productid = ? " +
+                    "WHERE id = ?;";
+    private static final String deleteSql = "DELETE FROM items WHERE id = ?";
+
+    private long productId;
 
     public Type() {
-        super(TABLE_NAME);
+        super(TABLE_NAME, insertSql, updateSql, deleteSql);
     }
 
-    public Type(String name) {
-        super(TABLE_NAME);
-        setName(name);
+    @Override
+    protected void insert(PreparedStatement statement) throws SQLException {
+        statement.setString(1, name);
+        statement.setLong(2, productId);
+        statement.execute();
+    }
+
+    @Override
+    protected void update(PreparedStatement statement) throws SQLException{
+        statement.setString(1, name);
+        statement.setLong(2, productId);
+        statement.setLong(3, id); // WHERE id
+        statement.execute();
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 }

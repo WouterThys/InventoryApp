@@ -14,10 +14,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.SQLException;
 import java.text.NumberFormat;
-import java.util.Vector;
+import java.util.*;
 
 import static com.waldo.inventory.Utils.PanelUtils.*;
+import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class EditItemDialog extends IDialogPanel {
 
@@ -47,7 +49,7 @@ public class EditItemDialog extends IDialogPanel {
     private JButton cancelButton;
     private JButton createButton;
 
-    public static Item showDialog(Application parent) {
+    public static Item showDialog(Application parent) throws SQLException {
         EditItemDialog.parent = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog());
@@ -60,9 +62,9 @@ public class EditItemDialog extends IDialogPanel {
         return newItem;
     }
 
-    public static Item showDialog(Application parent, Item item) {
+    public static Item showDialog(Application parent, Item item) throws SQLException {
         EditItemDialog.parent = parent;
-        dialog = new JDialog(parent, "Create new Item", true);
+        dialog = new JDialog(parent, "Edit Item", true);
         dialog.getContentPane().add(new EditItemDialog(item));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
@@ -73,7 +75,7 @@ public class EditItemDialog extends IDialogPanel {
         return newItem;
     }
 
-    private EditItemDialog(Item item) {
+    private EditItemDialog(Item item) throws SQLException {
         super();
         newItem = item;
         buttonText = "Save";
@@ -82,25 +84,28 @@ public class EditItemDialog extends IDialogPanel {
         updateValues();
     }
 
-    private EditItemDialog() {
+    private EditItemDialog() throws SQLException {
         this(new Item());
         buttonText = "Create";
     }
 
-    private void updateValues() {
+    private void updateValues() throws SQLException {
         idTextField.setText(String.valueOf(newItem.getId()));
         nameTextField.setText(newItem.getName());
         descriptionTextArea.setText(newItem.getDescription());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
-        Category c = parent.findCategoryById(newItem.getCategory());
-        categoryComboBox.setSelectedIndex(parent.getCategoryList().indexOf(c));
+        Category c = dbInstance().findCategoryById(newItem.getCategory());
+        java.util.List<Category> cl = dbInstance().getCategories();
+        int ndx = cl.indexOf(c);
 
-        Product p = parent.findProductById(newItem.getProduct());
-        productComboBox.setSelectedIndex(parent.getProductList().indexOf(p)); // TODO -> with products for category
+        categoryComboBox.setSelectedIndex(ndx);
 
-        com.waldo.inventory.classes.Type t = parent.findTypeById(newItem.getType());
-        typeComboBox.setSelectedIndex(parent.getTypeList().indexOf(t));
+        Product p = dbInstance().findProductById(newItem.getProduct());
+        productComboBox.setSelectedIndex(dbInstance().getProducts().indexOf(p)); // TODO -> with products for category
+
+        com.waldo.inventory.classes.Type t = dbInstance().findTypeById(newItem.getType());
+        typeComboBox.setSelectedIndex(dbInstance().getTypes().indexOf(t));
 
         localDataSheetTextField.setText(newItem.getLocalDataSheet());
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
@@ -125,7 +130,7 @@ public class EditItemDialog extends IDialogPanel {
         return ok;
     }
 
-    private void initComponents() {
+    private void initComponents() throws SQLException {
         idTextField = new ITextField(String.valueOf(newItem.getId()));
         idTextField.setEditable(false);
 
@@ -190,9 +195,21 @@ public class EditItemDialog extends IDialogPanel {
                         newItem.setPrice(Double.valueOf(priceTxt));
                     }
 
-                    newItem.setCategory(getCategoryId());
-                    newItem.setProduct(getProductId());
-                    newItem.setType(getTypeId());
+                    try {
+                        newItem.setCategory(getCategoryId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        newItem.setProduct(getProductId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        newItem.setType(getTypeId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
 
                     newItem.setLocalDataSheet(localDataSheetTextField.getText());
                     newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
@@ -248,14 +265,14 @@ public class EditItemDialog extends IDialogPanel {
         setNegativeButton(cancelButton);
     }
 
-    private void createCategoryCb() {
+    private void createCategoryCb() throws SQLException {
         int selectedIndex = 0;
         Vector<String> categoryItems = new Vector<>();
-        for (Category c : parent.getCategoryList()) {
+        for (Category c : dbInstance().getCategories()) {
             categoryItems.add(c.toString());
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (c.getId() == newItem.getCategory()) {
-                    selectedIndex = parent.getCategoryList().indexOf(c);
+                    selectedIndex = dbInstance().getCategories().indexOf(c);
                 }
             }
         }
@@ -270,9 +287,18 @@ public class EditItemDialog extends IDialogPanel {
                     productComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
 
                     productCbModel.removeAllElements();
-                    long id = getCategoryId();
-                    for (Product p : parent.getProductListForCategory(id)) {
-                        productCbModel.addElement(p.toString());
+                    long id = 0;
+                    try {
+                        id = getCategoryId();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        for (Product p : dbInstance().getProductListForCategory(id)) {
+                            productCbModel.addElement(p.toString());
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
 
                 }
@@ -284,14 +310,14 @@ public class EditItemDialog extends IDialogPanel {
         categoryComboBox.setSelectedIndex(selectedIndex);
     }
 
-    private void createProductCb() {
+    private void createProductCb() throws SQLException {
         int selectedIndex = 0;
         Vector<String> productStrings = new Vector<>();
-        for (Product p : parent.getProductList()) {
+        for (Product p : dbInstance().getProducts()) {
             productStrings.add(p.toString());
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (p.getId() == newItem.getProduct()) {
-                    selectedIndex = parent.getProductList().indexOf(p);
+                    selectedIndex = dbInstance().getProducts().indexOf(p);
                 }
             }
         }
@@ -311,14 +337,14 @@ public class EditItemDialog extends IDialogPanel {
         productComboBox.setSelectedIndex(selectedIndex);
     }
 
-    private void createTypeCb() {
+    private void createTypeCb() throws SQLException {
         int selectedIndex = 0;
         Vector<String> typeStrings = new Vector<>();
-        for (com.waldo.inventory.classes.Type t : parent.getTypeList()) {
+        for (com.waldo.inventory.classes.Type t : dbInstance().getTypes()) {
             typeStrings.add(t.toString());
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (t.getId() == newItem.getType()) {
-                    selectedIndex = parent.getTypeList().indexOf(t);
+                    selectedIndex = dbInstance().getTypes().indexOf(t);
                 }
             }
         }
@@ -329,20 +355,20 @@ public class EditItemDialog extends IDialogPanel {
         typeComboBox.setSelectedIndex(selectedIndex);
     }
 
-    private long getCategoryId() {
+    private long getCategoryId() throws SQLException {
         int ndx = categoryComboBox.getSelectedIndex();
         if (ndx >= 0) {
-            return parent.getCategoryList().get(ndx).getId();
+            return dbInstance().getCategories().get(ndx).getId();
         } else {
             return DbObject.UNKNOWN;
         }
     }
 
-    private long getProductId() {
+    private long getProductId() throws SQLException {
         if (productComboBox.isEnabled()) {
             int ndx = productComboBox.getSelectedIndex();
             if (ndx >= 0) {
-                return parent.getProductList().get(ndx).getId();
+                return dbInstance().getProducts().get(ndx).getId();
             } else {
                 return DbObject.UNKNOWN;
             }
@@ -351,11 +377,11 @@ public class EditItemDialog extends IDialogPanel {
         }
     }
 
-    private long getTypeId() {
+    private long getTypeId() throws SQLException {
         if (typeComboBox.isEnabled()) {
             int ndx = typeComboBox.getSelectedIndex();
             if (ndx >= 0) {
-                return parent.getTypeList().get(ndx).getId();
+                return dbInstance().getTypes().get(ndx).getId();
             } else {
                 return DbObject.UNKNOWN;
             }

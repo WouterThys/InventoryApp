@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.TableChangedListener;
 import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import com.waldo.inventory.gui.dialogs.EditItemDialog;
@@ -29,14 +30,14 @@ public class Application extends JFrame implements TableChangedListener {
     private ItemListAdapter itemListAdapter;
 
     // Cached objects from database
-    private List<Category> categoryList;
-    private List<Product> productList;
-    private List<com.waldo.inventory.classes.Type> typeList;
+    //private List<Category> categoryList;
+    //private List<Product> productList;
+    //private List<com.waldo.inventory.classes.Type> typeList;
 
     private Item selectedItem;
 
     public Application() {
-        initObjectsFromDb();
+        //initObjectsFromDb();
         initComponents();
     }
 
@@ -44,7 +45,7 @@ public class Application extends JFrame implements TableChangedListener {
         dbInstance().getItemsAsync(itemListAdapter);
     }
 
-    void createNewItem() {
+    void createNewItem() throws SQLException {
         Item item = EditItemDialog.showDialog(this);
         if (item != null && item.getId() >= 0) {
             try {
@@ -57,7 +58,7 @@ public class Application extends JFrame implements TableChangedListener {
         }
     }
 
-    void editItem() {
+    void editItem() throws SQLException {
         if (selectedItem != null) {
             selectedItem = EditItemDialog.showDialog(this, selectedItem);
             if (selectedItem != null) {
@@ -96,40 +97,6 @@ public class Application extends JFrame implements TableChangedListener {
                 }
             }
         }
-    }
-
-    public List<Category> getCategoryList() {
-        return categoryList;
-    }
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public List<Product> getProductListForCategory(long categoryId) {
-        List<Product> products = new ArrayList<>();
-        products.add(productList.get(0)); // Add "UNKNOWN"
-        for (Product p : productList) {
-            if (p.getCategoryId() == categoryId) {
-                products.add(p);
-            }
-        }
-        return products;
-    }
-
-    public List<com.waldo.inventory.classes.Type> getTypeList() {
-        return typeList;
-    }
-
-    private void initObjectsFromDb() {
-        categoryList = new ArrayList<>();
-        dbInstance().getCategoriesAsync(categoryList);
-
-        productList = new ArrayList<>();
-        dbInstance().getProductsAsync(productList);
-
-        typeList = new ArrayList<>();
-        dbInstance().getTypesAsync(typeList);
     }
 
     private void initComponents() {
@@ -183,53 +150,26 @@ public class Application extends JFrame implements TableChangedListener {
         this.selectedItem = selectedItem;
     }
 
-    public Category findCategoryById(long id) {
-        for (Category c : categoryList) {
-            if (c.getId() == id) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public Product findProductById(long id) {
-        for(Product p : productList) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public com.waldo.inventory.classes.Type findTypeById(long id) {
-        for (com.waldo.inventory.classes.Type t : typeList) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
     @Override
     public void tableChangedListener(String tableName, long id) {
-        switch (tableName) {
-            case Item.TABLE_NAME:
-                break;
-
-            case Category.TABLE_NAME:
-                dbInstance().getCategoriesAsync(categoryList);
-                break;
-
-            case Product.TABLE_NAME:
-                dbInstance().getProductsAsync(productList);
-                break;
-
-            case com.waldo.inventory.classes.Type.TABLE_NAME:
-                dbInstance().getTypesAsync(typeList);
-                break;
-
-            default:
-                break;
-        }
+//        switch (tableName) {
+//            case Item.TABLE_NAME:
+//                break;
+//
+//            case Category.TABLE_NAME:
+//                dbInstance().getCategoriesAsync(categoryList);
+//                break;
+//
+//            case Product.TABLE_NAME:
+//                dbInstance().getProductsAsync(productList);
+//                break;
+//
+//            case com.waldo.inventory.classes.Type.TABLE_NAME:
+//                dbInstance().getTypesAsync(typeList);
+//                break;
+//
+//            default:
+//                break;
+//        }
     }
 }

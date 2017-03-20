@@ -13,11 +13,11 @@ public abstract class DbObject {
 
     protected long id = -1;
     protected String name;
-    protected TableChangedListener onTableChangedListener;
+    private TableChangedListener onTableChangedListener;
 
-    protected String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
-    protected String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
-    protected String sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+    private String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
+    private String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
+    private String sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);

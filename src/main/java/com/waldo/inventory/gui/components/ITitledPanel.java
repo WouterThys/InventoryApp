@@ -58,5 +58,6 @@ public class ITitledPanel extends JPanel {
     public void setTitle(String title) {
         this.title = title;
         titledBorder.setTitle(title);
+        repaint();
     }
 }

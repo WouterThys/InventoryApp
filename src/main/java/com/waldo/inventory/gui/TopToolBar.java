@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.ImageUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 
 class TopToolBar extends JToolBar {
 
@@ -46,14 +47,22 @@ class TopToolBar extends JToolBar {
         newAction = new AbstractAction("Create", ImageUtils.loadImageIcon("create", ImageUtils.ICON_SIZE_24)) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.createNewItem();
+                try {
+                    app.createNewItem();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         };
 
         editAction = new AbstractAction("Edit", ImageUtils.loadImageIcon("edit", ImageUtils.ICON_SIZE_24)) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.editItem();
+                try {
+                    app.editItem();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         };
 
