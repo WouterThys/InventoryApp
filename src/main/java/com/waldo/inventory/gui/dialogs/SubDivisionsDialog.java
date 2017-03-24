@@ -44,10 +44,11 @@ public class SubDivisionsDialog extends IDialogPanel {
     private JList<DbObject> detailList;
     private JToolBar toolBar;
     private ITextField searchField;
-    private JPanel detailsPanel;
+    private ITitledPanel detailsPanel;
     private DefaultComboBoxModel<DbObject> selectionCbModel;
     private JComboBox<DbObject> selectionComboBox;
     private JLabel selectionLabel;
+    private JLabel iconLabel;
 
     private Action addAction;
     private Action deleteAction;
@@ -149,24 +150,24 @@ public class SubDivisionsDialog extends IDialogPanel {
         this.selectedObject = null;
         updateDetailListModel(selectedSubNdx, 1);
         updateSelectionCbModel(selectedSubNdx);
-//        switch (selectedSubNdx) {
-//            case 0: // Categories
-//                selectionLabel.setVisible(false);
-//                selectionComboBox.setVisible(false);
-//                break;
-//
-//            case 1: // Products
-//                selectionLabel.setText("Select a category");
-//                selectionLabel.setVisible(true);
-//                selectionComboBox.setVisible(true);
-//                break;
-//
-//            case 2: // Types
-//                selectionLabel.setText("Select a product");
-//                selectionLabel.setVisible(true);
-//                selectionComboBox.setVisible(true);
-//                break;
-//        }
+        switch (selectedSubNdx) {
+            case 0: // Categories
+                selectionLabel.setVisible(false);
+                selectionComboBox.setVisible(false);
+                break;
+
+            case 1: // Products
+                selectionLabel.setText("Select a category");
+                selectionLabel.setVisible(true);
+                selectionComboBox.setVisible(true);
+                break;
+
+            case 2: // Types
+                selectionLabel.setText("Select a product");
+                selectionLabel.setVisible(true);
+                selectionComboBox.setVisible(true);
+                break;
+        }
     }
 
     private void updateDetailListModel(int selectedSubNdx, long id) throws SQLException {
@@ -221,7 +222,7 @@ public class SubDivisionsDialog extends IDialogPanel {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     JList list = (JList)e.getSource();
-                    //detailsPanel.setTitle((String) list.getSelectedValue());
+                    detailsPanel.setTitle((String) list.getSelectedValue());
                     try {
                         updateComponents(list.getSelectedIndex());
                     } catch (SQLException e1) {
@@ -269,6 +270,9 @@ public class SubDivisionsDialog extends IDialogPanel {
             }
         });
 
+        // Icon
+        iconLabel = new JLabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
+
         // Toolbar
         toolBar = new JToolBar(JToolBar.VERTICAL);
         toolBar.setFloatable(false);
@@ -289,9 +293,8 @@ public class SubDivisionsDialog extends IDialogPanel {
             }
         });
         selectionLabel = new JLabel("Categories");
-//        detailsPanel = new ITitledPanel("Categories",
-//                new JComponent[] {createDetailsPanel()});
-        detailsPanel = createDetailsPanel();
+        detailsPanel = new ITitledPanel("Categories",
+                new JComponent[] {createDetailsPanel()});
 
         subDivisionList.setSelectedIndex(0);
 
@@ -304,8 +307,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                 new JComponent[] {searchField, new JScrollPane(subDivisionList)}
         ));
 
-        getContentPanel().add(new ITitledPanel("Categories",
-                new JComponent[] {detailsPanel}));
+        getContentPanel().add(detailsPanel);
     }
 
     private JPanel createDetailsPanel() {
@@ -332,60 +334,17 @@ public class SubDivisionsDialog extends IDialogPanel {
         layout.putConstraint(EAST, toolBar, -5, EAST, panel);
         layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
 
+        // Icon
+        layout.putConstraint(EAST, iconLabel,-5, EAST, panel);
+        layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
+
         // Add stuff
         panel.add(selectionLabel);
         panel.add(selectionComboBox);
         panel.add(list);
         panel.add(toolBar);
-        panel.setBackground(Color.RED);
+        panel.add(iconLabel);
         panel.setLayout(layout);
-        //panel.revalidate();
-
-//        JPanel panel = new JPanel(new GridBagLayout());
-//        GridBagConstraints constraints;
-//
-//        constraints = new GridBagConstraints();
-//        constraints.gridx = 0;
-//        constraints.gridy = 0;
-//        constraints.weightx = 1;
-//        constraints.weighty = 0.1;
-//        constraints.gridwidth = 2;
-//        constraints.insets = new Insets(2,2,2,2);
-//        constraints.fill = GridBagConstraints.BOTH;
-//        constraints.anchor = GridBagConstraints.PAGE_START;
-//        panel.add(selectionLabel, constraints);
-//
-//        constraints = new GridBagConstraints();
-//        constraints.gridx = 0;
-//        constraints.gridy = 1;
-//        constraints.weightx = 1;
-//        constraints.weighty = 0.2;
-//        constraints.gridwidth = 2;
-//        constraints.insets = new Insets(2,2,2,2);
-//        constraints.fill = GridBagConstraints.BOTH;
-//        constraints.anchor = GridBagConstraints.PAGE_START;
-//        panel.add(selectionComboBox, constraints);
-//
-//        constraints = new GridBagConstraints();
-//        constraints.gridx = 0;
-//        constraints.gridy = 2;
-//        constraints.weightx = 1;
-//        constraints.weighty = 1;
-//        constraints.gridwidth = 1;
-//        constraints.insets = new Insets(2,2,2,2);
-//        constraints.fill = GridBagConstraints.BOTH;
-//        constraints.anchor = GridBagConstraints.CENTER;
-//        panel.add(new JScrollPane(detailList), constraints);
-//
-//        constraints = new GridBagConstraints();
-//        constraints.gridx = 1;
-//        constraints.gridy = 2;
-//        constraints.weightx = 1;
-//        constraints.weighty = 0.2;
-//        constraints.gridwidth = 1;
-//        constraints.insets = new Insets(2,2,2,2);
-//        constraints.fill = GridBagConstraints.LINE_END;
-//        panel.add(toolBar, constraints);
 
         return panel;
     }
