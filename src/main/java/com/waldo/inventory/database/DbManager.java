@@ -98,7 +98,7 @@ public class DbManager implements TableChangedListener {
         return items;
     }
 
-    private void updateItems() throws SQLException {
+    public void updateItems() throws SQLException {
         items = new ArrayList<>();
 
         String sql = "SELECT * FROM items ORDER BY id";
@@ -302,6 +302,15 @@ public class DbManager implements TableChangedListener {
             }
         };
         worker.execute();
+    }
+
+    public Item findItemById(long id) throws  SQLException {
+        for (Item i : getItems()) {
+            if(i.getId() == id) {
+                return i;
+            }
+        }
+        return null;
     }
 
     public Category findCategoryById(long id) throws SQLException {

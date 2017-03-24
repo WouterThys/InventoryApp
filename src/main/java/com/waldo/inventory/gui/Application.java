@@ -34,11 +34,10 @@ public class Application extends JFrame {
 
     void createNewItem() throws SQLException {
         Item item = EditItemDialog.showDialog(this);
-        if (item != null && item.getId() >= 0) {
+        if (item != null) {
             try {
-                item.save(dbInstance());
+                itemListAdapter.addItem(item);
                 selectedItem = item;
-                refreshItemList();
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -51,9 +50,10 @@ public class Application extends JFrame {
             if (selectedItem != null) {
                 try {
                     selectedItem.save(dbInstance());
-                    refreshItemList();
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(this, "Error saving Item: "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    refreshItemList();
                 }
             }
         }
@@ -75,8 +75,7 @@ public class Application extends JFrame {
         if (selectedItem != null) {
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
                 try {
-                    selectedItem.delete();
-                    refreshItemList();
+                    itemListAdapter.deleteRow(selectedItem);
                 } catch (final SQLException e) {
                     JOptionPane.showMessageDialog(this, "Failed to delete the selected contact", "Delete", JOptionPane.ERROR_MESSAGE);
                 } finally {
@@ -97,12 +96,6 @@ public class Application extends JFrame {
     }
 
     private JComponent createTablePane() {
-        List<Item> items = new ArrayList<>();
-        try {
-            items = dbInstance().getItems();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         itemListAdapter = new ItemListAdapter();
         itemTable = new JTable(itemListAdapter);
         itemTable.addMouseListener(new MouseAdapter() {

@@ -15,7 +15,6 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 public class ItemListAdapter extends AbstractTableModel {
 
     private final String[] columnNames = {"Name", "Description", "Price", "Data sheet"};
-    //private List<Item> itemList = new ArrayList<>();
 
     public ItemListAdapter() {}
 
@@ -55,6 +54,25 @@ public class ItemListAdapter extends AbstractTableModel {
                     }
                 }
             }
+        }
+    }
+
+    public void addItem(Item item) throws SQLException {
+        if (item != null) {
+            item.save();
+            dbInstance().updateItems();
+            Item newItem = dbInstance().findItemById(item.getId());
+            int row = dbInstance().getItems().indexOf(newItem);
+            fireTableRowsInserted(row, row);
+        }
+    }
+
+    public void deleteRow(Item item) throws SQLException {
+        if (item != null) {
+            int row = dbInstance().getItems().indexOf(item);
+            item.delete();
+            dbInstance().updateItems();
+            fireTableRowsDeleted(row, row);
         }
     }
 
@@ -103,6 +121,12 @@ public class ItemListAdapter extends AbstractTableModel {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        super.setValueAt(aValue, rowIndex, columnIndex);
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     @Override

@@ -15,18 +15,18 @@ public class Item extends DbObject {
     private String localDataSheet = "";
     private String onlineDataSheet = "";
 
-    private static final String insertSql = "INSERT INTO items (" +
+    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
                 "name, description, price, category, product, type, localdatasheet, onlinedatasheet) VALUES " +
                 "(?, ?, ?, ?, ?, ?, ?, ?)";
 
 
 
     private static final String updateSql =
-            "UPDATE items " +
+            "UPDATE "+TABLE_NAME+" " +
                     "SET name = ?, description = ?, price = ?, category = ?, product = ?, type = ?, localdatasheet = ?, onlinedatasheet = ? " +
                 "WHERE id = ?;";
 
-    private static final String deleteSql = "DELETE FROM items WHERE id = ?";
+    private static final String deleteSql = "DELETE FROM "+TABLE_NAME+" WHERE id = ?";
 
     public Item() {
         super(TABLE_NAME, insertSql, updateSql, deleteSql);
