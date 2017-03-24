@@ -301,13 +301,13 @@ public class SubDivisionsDialog extends IDialogPanel {
     }
 
     private void initLayouts() {
-        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.X_AXIS));
+        getContentPanel().setLayout(new BorderLayout());
 
         getContentPanel().add(new ITitledPanel("Sub divisions",
                 new JComponent[] {searchField, new JScrollPane(subDivisionList)}
-        ));
+        ), BorderLayout.WEST);
 
-        getContentPanel().add(detailsPanel);
+        getContentPanel().add(detailsPanel, BorderLayout.CENTER);
     }
 
     private JPanel createDetailsPanel() {
@@ -344,6 +344,7 @@ public class SubDivisionsDialog extends IDialogPanel {
         panel.add(list);
         panel.add(toolBar);
         panel.add(iconLabel);
+        panel.setPreferredSize(new Dimension(400,500));
         panel.setLayout(layout);
 
         return panel;

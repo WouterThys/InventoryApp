@@ -7,32 +7,33 @@ public class Product extends DbObject {
 
     public static final String TABLE_NAME = "products";
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, categoryid) VALUES " +
-            "(?, ?)";
+            "name, iconpath, categoryid) VALUES " +
+            "(?, ?, ?)";
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, categoryid = ? " +
+                    "SET name = ?, iconpath = ?, categoryid = ? " +
                     "WHERE id = ?;";
-    private static final String deleteSql = "DELETE FROM items WHERE id = ?";
 
     private long categoryId;
 
     public Product() {
-        super(TABLE_NAME, insertSql, updateSql, deleteSql);
+        super(TABLE_NAME, insertSql, updateSql);
     }
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
-        statement.setLong(2, categoryId);
+        statement.setString(2, iconPath);
+        statement.setLong(3, categoryId);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setLong(2, categoryId);
-        statement.setLong(3, id); // WHERE id
+        statement.setString(2, iconPath);
+        statement.setLong(3, categoryId);
+        statement.setLong(4, id); // WHERE id
         statement.execute();
     }
 

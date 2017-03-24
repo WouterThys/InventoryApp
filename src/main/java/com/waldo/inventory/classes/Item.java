@@ -16,47 +16,47 @@ public class Item extends DbObject {
     private String onlineDataSheet = "";
 
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-                "name, description, price, category, product, type, localdatasheet, onlinedatasheet) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?)";
+                "name, iconpath, description, price, category, product, type, localdatasheet, onlinedatasheet) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
 
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, description = ?, price = ?, category = ?, product = ?, type = ?, localdatasheet = ?, onlinedatasheet = ? " +
+                    "SET name = ?, iconpath = ?, description = ?, price = ?, category = ?, product = ?, type = ?, localdatasheet = ?, onlinedatasheet = ? " +
                 "WHERE id = ?;";
 
-    private static final String deleteSql = "DELETE FROM "+TABLE_NAME+" WHERE id = ?";
-
     public Item() {
-        super(TABLE_NAME, insertSql, updateSql, deleteSql);
+        super(TABLE_NAME, insertSql, updateSql);
     }
 
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setString(2, description);
-        statement.setDouble(3, price);
-        statement.setLong(4, category);
-        statement.setLong(5, product);
-        statement.setLong(6, type);
-        statement.setString(7, localDataSheet);
-        statement.setString(8, onlineDataSheet);
+        statement.setString(2, iconPath);
+        statement.setString(3, description);
+        statement.setDouble(4, price);
+        statement.setLong(5, category);
+        statement.setLong(6, product);
+        statement.setLong(7, type);
+        statement.setString(8, localDataSheet);
+        statement.setString(9, onlineDataSheet);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setString(2, description);
-        statement.setDouble(3, price);
-        statement.setLong(4, category);
-        statement.setLong(5, product);
-        statement.setLong(6, type);
-        statement.setString(7, localDataSheet);
-        statement.setString(8, onlineDataSheet);
-        statement.setLong(9, id); // WHERE id
+        statement.setString(2, iconPath);
+        statement.setString(3, description);
+        statement.setDouble(4, price);
+        statement.setLong(5, category);
+        statement.setLong(6, product);
+        statement.setLong(7, type);
+        statement.setString(8, localDataSheet);
+        statement.setString(9, onlineDataSheet);
+        statement.setLong(10, id); // WHERE id
         statement.execute();
     }
 

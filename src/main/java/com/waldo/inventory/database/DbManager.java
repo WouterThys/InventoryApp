@@ -109,6 +109,7 @@ public class DbManager implements TableChangedListener {
                 Item i = new Item();
                 i.setId(rs.getLong("id"));
                 i.setName(rs.getString("name"));
+                i.setIconPath(rs.getString("iconpath"));
                 i.setDescription(rs.getString("description"));
                 i.setPrice(rs.getDouble("price"));
                 i.setCategory(rs.getInt("category"));
@@ -167,6 +168,7 @@ public class DbManager implements TableChangedListener {
                 Category c = new Category();
                 c.setId(rs.getLong("id"));
                 c.setName(rs.getString("name"));
+                c.setIconPath(rs.getString("iconpath"));
 
                 c.setOnTableChangedListener(this);
                 categories.add(c);
@@ -218,6 +220,7 @@ public class DbManager implements TableChangedListener {
                 Product p = new Product();
                 p.setId(rs.getLong("id"));
                 p.setName(rs.getString("name"));
+                p.setIconPath(rs.getString("iconpath"));
                 p.setCategoryId(rs.getLong("categoryid"));
 
                 p.setOnTableChangedListener(this);
@@ -270,6 +273,7 @@ public class DbManager implements TableChangedListener {
                 Type t = new Type();
                 t.setId(rs.getLong("id"));
                 t.setName(rs.getString("name"));
+                t.setIconPath(rs.getString("iconpath"));
                 t.setProductId(rs.getLong("productid"));
 
                 t.setOnTableChangedListener(this);

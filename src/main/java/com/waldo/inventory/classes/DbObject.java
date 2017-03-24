@@ -12,30 +12,29 @@ public abstract class DbObject {
     public static final int UNKNOWN = 1;
 
     protected long id = -1;
-    protected String name;
+    protected String name = "";
+    protected String iconPath = "";
     private TableChangedListener onTableChangedListener;
 
-    private String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
-    private String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
+    private String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name, iconpath) VALUES (?, ?)";
+    private String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ?, iconpath = ? WHERE id = ?";
     private String sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
+        statement.setString(2, iconPath);
         statement.execute();
     }
 
     protected void update(PreparedStatement statement) throws SQLException {
         statement.setString(1, name); // Set (name)
-        statement.setLong(2, id); // Where id
+        statement.setString(2, iconPath); // Set (icon path)
+        statement.setLong(3, id); // Where id
         statement.execute();
     }
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
-
-        sqlInsert = "INSERT INTO " + TABLE_NAME + " (name) VALUES (?)";
-        sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ? WHERE id = ?";
-        sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
     }
 
     protected DbObject(String tableName, String sqlInsert, String sqlUpdate, String sqlDelete) {
@@ -43,6 +42,10 @@ public abstract class DbObject {
         this.sqlUpdate = sqlUpdate;
         this.sqlDelete = sqlDelete;
         this.sqlInsert = sqlInsert;
+    }
+
+    protected DbObject(String tableName, String sqlInsert, String sqlUpdate) {
+        this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + TABLE_NAME + " WHERE id = ?");
     }
 
     public void save() throws SQLException {
@@ -112,6 +115,14 @@ public abstract class DbObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 
     public void setOnTableChangedListener(TableChangedListener tableChangedListenerListener) {

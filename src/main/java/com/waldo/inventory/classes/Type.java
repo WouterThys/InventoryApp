@@ -7,32 +7,33 @@ public class Type extends DbObject {
 
     public static final String TABLE_NAME = "types";
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, productid) VALUES " +
-            "(?, ?)";
+            "name, iconpath, productid) VALUES " +
+            "(?, ?, ?)";
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, productid = ? " +
+                    "SET name = ?, iconpath = ?, productid = ? " +
                     "WHERE id = ?;";
-    private static final String deleteSql = "DELETE FROM items WHERE id = ?";
 
     private long productId;
 
     public Type() {
-        super(TABLE_NAME, insertSql, updateSql, deleteSql);
+        super(TABLE_NAME, insertSql, updateSql);
     }
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
-        statement.setLong(2, productId);
+        statement.setString(2, iconPath);
+        statement.setLong(3, productId);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setLong(2, productId);
-        statement.setLong(3, id); // WHERE id
+        statement.setString(2, iconPath);
+        statement.setLong(3, productId);
+        statement.setLong(4, id); // WHERE id
         statement.execute();
     }
 
