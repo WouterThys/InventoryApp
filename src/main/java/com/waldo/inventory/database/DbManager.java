@@ -393,7 +393,7 @@ public class DbManager implements TableChangedListener {
 
     @Override
     public void tableChangedListener(String tableName, DbObject object) throws SQLException {
-        System.out.print(object.getName() +" from "+ tableName + "changed");
+        System.out.print(object.getName() +" from "+ tableName + " changed");
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();

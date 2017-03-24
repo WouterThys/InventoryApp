@@ -118,7 +118,10 @@ public abstract class DbObject {
     }
 
     public String getIconPath() {
-        return iconPath;
+        if (iconPath != null) {
+            return iconPath;
+        }
+        return "";
     }
 
     public void setIconPath(String iconPath) {

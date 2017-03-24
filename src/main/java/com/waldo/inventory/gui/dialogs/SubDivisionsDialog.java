@@ -17,6 +17,9 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
@@ -74,6 +77,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                             if (c != null) {
                                 try {
                                     c.save(DbManager.dbInstance());
+                                    updateDetailListModel(selectedSubNdx, c.getId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
                                 }
@@ -86,6 +90,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                                 try {
                                     p.setCategoryId(((DbObject)selectionCbModel.getSelectedItem()).getId());
                                     p.save(DbManager.dbInstance());
+                                    updateDetailListModel(selectedSubNdx, p.getCategoryId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
                                 }
@@ -98,6 +103,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                                 try {
                                     t.setProductId(((DbObject)selectionCbModel.getSelectedItem()).getId());
                                     t.save(DbManager.dbInstance());
+                                    updateDetailListModel(selectedSubNdx, t.getProductId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
                                 }
@@ -105,11 +111,6 @@ public class SubDivisionsDialog extends IDialogPanel {
                             break;
                     }
 
-                try {
-                    updateDetailListModel(selectedSubNdx, 1);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
             }
         };
 
@@ -140,14 +141,52 @@ public class SubDivisionsDialog extends IDialogPanel {
         editAction = new AbstractAction("Edit", resourceManager.readImage("SubDivisionDialog.EditIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
+                switch (selectedSubNdx) {
+                    case 0: // Categories
+                        Category c = (Category) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
+                        if (c != null) {
+                            try {
+                                c.save(DbManager.dbInstance());
+                                updateDetailListModel(selectedSubNdx, c.getId());
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        break;
 
+                    case 1: // Products
+                        Product p = (Product) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
+                        if (p != null) {
+                            try {
+                                p.setCategoryId(((DbObject)selectionCbModel.getSelectedItem()).getId());
+                                p.save(DbManager.dbInstance());
+                                updateDetailListModel(selectedSubNdx, p.getCategoryId());
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        break;
+
+                    case 2: // Types
+                        Type t = (Type) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
+                        if (t != null) {
+                            try {
+                                t.setProductId(((DbObject)selectionCbModel.getSelectedItem()).getId());
+                                t.save(DbManager.dbInstance());
+                                updateDetailListModel(selectedSubNdx, t.getProductId());
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        break;
+                }
             }
         };
     }
 
     private void updateComponents(int selectedSubNdx) throws SQLException {
         this.selectedSubNdx = selectedSubNdx;
-        this.selectedObject = null;
+        setSelectedObject(null);
         updateDetailListModel(selectedSubNdx, 1);
         updateSelectionCbModel(selectedSubNdx);
         switch (selectedSubNdx) {
@@ -191,6 +230,27 @@ public class SubDivisionsDialog extends IDialogPanel {
                 }
                 break;
         }
+    }
+
+    private void setSelectedObject(DbObject object) {
+        selectedObject = object;
+        if (selectedObject != null) {
+            String iconPath = selectedObject.getIconPath();
+            if (iconPath != null && !iconPath.isEmpty()) {
+                try {
+                    URL url = new File(selectedObject.getIconPath()).toURI().toURL();
+                    iconLabel.setIcon(resourceManager.readImage(url, 48,48));
+                } catch (Exception e) {
+                    iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+                    e.printStackTrace();
+                }
+            } else {
+                iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+            }
+        } else {
+            iconLabel.setIcon(null);
+        }
+
     }
 
     private void updateSelectionCbModel(int selectedSubNdx) throws SQLException {
@@ -288,7 +348,7 @@ public class SubDivisionsDialog extends IDialogPanel {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    selectedObject = (DbObject) ((JList)e.getSource()).getSelectedValue();
+                    setSelectedObject((DbObject) ((JList)e.getSource()).getSelectedValue());
                 }
             }
         });

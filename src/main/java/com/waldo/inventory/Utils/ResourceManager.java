@@ -1,7 +1,9 @@
 package com.waldo.inventory.Utils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -98,6 +100,27 @@ public class ResourceManager {
 
     public ImageIcon readImage(String key) {
         return new ImageIcon(Toolkit.getDefaultToolkit().createImage(resourceURL + readString(key)));
+    }
+
+    public ImageIcon readImage(URL resourceURL, int width, int height) {
+        //Image img = Toolkit.getDefaultToolkit().createImage(resourceURL);
+        Image img = null;
+        try {
+            img = ImageIO.read(resourceURL);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (img != null) {
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics2D = bufferedImage.createGraphics();
+
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2D.drawImage(img, 0,0,width, height, null);
+            graphics2D.dispose();
+
+            return new ImageIcon(bufferedImage);
+        }
+        return null;
     }
 
     /**

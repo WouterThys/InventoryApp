@@ -45,11 +45,37 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         return dbObject;
     }
 
+    public static DbObject showDialog(Application application, int type, DbObject object) {
+        dialog = new JDialog(application, "Sub Divisions", true);
+        dialog.getContentPane().add(new AddNewSubDivisionDialog(type, object));
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(application);
+        dialog.setResizable(false);
+        dialog.pack();
+        dialog.setVisible(true);
+        return dbObject;
+    }
+
     private AddNewSubDivisionDialog(int type) {
         super();
         objectType = type;
         initComponents();
         initLayouts();
+    }
+
+    private AddNewSubDivisionDialog(int type, DbObject object) {
+        this(type);
+        dbObject = object;
+        updateComponents();
+    }
+
+    private void updateComponents() {
+        if (dbObject != null) {
+            nameTextField.setText(dbObject.getName());
+            iconPathTextField.setText(dbObject.getIconPath());
+            createButton.setText("Update");
+        }
     }
 
     private Boolean verify() {
@@ -97,18 +123,21 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
             public void actionPerformed(ActionEvent e) {
                 if (verify()) {
                     // Set values
-                    switch (objectType) {
-                        case 0:
-                            dbObject = new Category();
-                            break;
-                        case 1:
-                            dbObject = new Product();
-                            break;
-                        case 2:
-                            dbObject = new Type();
-                            break;
+                    if (dbObject == null) {
+                        switch (objectType) {
+                            case 0:
+                                dbObject = new Category();
+                                break;
+                            case 1:
+                                dbObject = new Product();
+                                break;
+                            case 2:
+                                dbObject = new Type();
+                                break;
+                        }
                     }
                     dbObject.setName(nameTextField.getText());
+                    dbObject.setIconPath(iconPathTextField.getText());
                     // Close dialog
                     dialog.setVisible(false);
                     dialog.dispose();
