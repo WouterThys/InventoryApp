@@ -2,7 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.adapters.ItemListAdapter;
-import com.waldo.inventory.gui.dialogs.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.panels.QueryPanel;
 
 import javax.swing.*;
@@ -12,8 +12,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-
-import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class Application extends JFrame {
 

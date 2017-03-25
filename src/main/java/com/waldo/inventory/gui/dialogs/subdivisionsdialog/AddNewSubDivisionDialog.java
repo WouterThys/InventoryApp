@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs;
+package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;

@@ -28,42 +28,42 @@ import static javax.swing.SpringLayout.SOUTH;
 public class SubDivisionsDialogLayout extends IDialogPanel
         implements GuiInterface, CategoriesChangedListener, ProductsChangedListener, TypesChangedListener {
 
-    public static final int CATEGORIES = 0;
-    public static final int PRODUCTS = 1;
-    public static final int TYPES = 2;
+    static final int CATEGORIES = 0;
+    static final int PRODUCTS = 1;
+    static final int TYPES = 2;
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected JList<String> subDivisionList;
+    JList<String> subDivisionList;
 
-    protected DefaultListModel<DbObject> detailListModel;
-    protected JList<DbObject> detailList;
+    private DefaultListModel<DbObject> detailListModel;
+    JList<DbObject> detailList;
 
-    protected JToolBar toolBar;
-    protected ITextField searchField;
-    protected ITitledPanel detailsPanel;
+    private JToolBar toolBar;
+    ITextField searchField;
+    ITitledPanel detailsPanel;
 
-    protected DefaultComboBoxModel<DbObject> selectionCbModel;
-    protected JComboBox<DbObject> selectionComboBox;
+    DefaultComboBoxModel<DbObject> selectionCbModel;
+    JComboBox<DbObject> selectionComboBox;
 
-    protected JLabel selectionLabel;
-    protected JLabel iconLabel;
+    private JLabel selectionLabel;
+    JLabel iconLabel;
 
-    protected Action addAction;
-    protected Action deleteAction;
-    protected Action editAction;
+    Action addAction;
+    Action deleteAction;
+    Action editAction;
 
-    protected Action searchAction;
+    Action searchAction;
 
-    protected ListSelectionListener subDivisionChangedAction;
-    protected ListSelectionListener detailChangedAction;
-    protected ItemListener selectionCbIndexChanged;
+    ListSelectionListener subDivisionChangedAction;
+    ListSelectionListener detailChangedAction;
+    ItemListener selectionCbIndexChanged;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public int selectedSubType; // Selection between categories, products or types
+    int selectedSubType; // Selection between categories, products or types
 
     /*
      *                  PRIVATE METHODS
@@ -221,7 +221,7 @@ public class SubDivisionsDialogLayout extends IDialogPanel
      * Get the id of which product is selected, than get all types for this product, and add them to the
      * Detail list
      */
-    protected void updateTypeList() {
+    void updateTypeList() {
         if (selectedSubType == TYPES) {
             long productId = -1;
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
@@ -257,7 +257,7 @@ public class SubDivisionsDialogLayout extends IDialogPanel
         updateProductList();
     }
 
-    protected void updateProductList() {
+    void updateProductList() {
         if (selectedSubType == PRODUCTS) {
             long categoryId = -1;
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
@@ -293,7 +293,7 @@ public class SubDivisionsDialogLayout extends IDialogPanel
         updateCategoryList();
     }
 
-    protected void updateCategoryList() {
+    void updateCategoryList() {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
             try {

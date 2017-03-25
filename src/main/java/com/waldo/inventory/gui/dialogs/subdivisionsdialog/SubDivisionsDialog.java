@@ -5,18 +5,11 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialogPanel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledPanel;
-import com.waldo.inventory.gui.dialogs.AddNewSubDivisionDialog;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
@@ -26,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
-import static javax.swing.SpringLayout.*;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
