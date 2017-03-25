@@ -102,14 +102,8 @@ public class ResourceManager {
         return new ImageIcon(Toolkit.getDefaultToolkit().createImage(resourceURL + readString(key)));
     }
 
-    public ImageIcon readImage(URL resourceURL, int width, int height) {
-        //Image img = Toolkit.getDefaultToolkit().createImage(resourceURL);
-        Image img = null;
-        try {
-            img = ImageIO.read(resourceURL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {
+        Image img = ImageIO.read(resourceURL);
         if (img != null) {
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics2D = bufferedImage.createGraphics();

@@ -6,12 +6,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36fd7e16-0309-4518-8f75-f0c4236fa64c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/create/add16.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/create/add24.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/create/add32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/create/add48.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/delete/delete16.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/delete/delete24.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/delete/delete32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/delete/delete48.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/refresh/refresh.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/refresh/refresh16.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/refresh/refresh32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/refresh/refresh64.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/save/save16.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/save/save24.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/save/save32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Images/save/save48.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/inventory.db" afterPath="$PROJECT_DIR$/data/inventory.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/settings/Settings.properties" afterPath="$PROJECT_DIR$/src/main/resources/settings/Settings.properties" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -26,13 +43,33 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="AddNewSubDivisionDialog.java" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="345">
+                    <caret line="101" column="114" lean-forward="false" selection-start-line="101" selection-start-column="114" selection-end-line="101" selection-end-column="114" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="DbManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5145">
+            <state relative-caret-position="15">
               <caret line="360" column="18" lean-forward="false" selection-start-line="360" selection-start-column="18" selection-end-line="360" selection-end-column="18" />
               <folding>
                 <marker date="1490396493326" expanded="true" signature="2191:2242" ph=" SELECT statement (SQLITE_MASTER)" />
@@ -45,37 +82,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DbObject.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java">
+      <file leaf-file-name="Settings.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/settings/Settings.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1650">
-              <caret line="123" column="18" lean-forward="false" selection-start-line="123" selection-start-column="18" selection-end-line="123" selection-end-column="18" />
-              <folding>
-                <element signature="e#1213#1214#0" expanded="true" />
-                <element signature="e#1251#1252#0" expanded="true" />
-                <element signature="e#3846#3847#0" expanded="true" />
-                <element signature="e#3886#3887#0" expanded="true" />
-                <marker date="1490390392913" expanded="true" signature="464:525" ph=" INSERT statement (MISSINGVALUE)" />
-                <marker date="1490390392913" expanded="true" signature="560:625" ph=" UPDATE statement (MISSINGVALUE)" />
-                <marker date="1490390392913" expanded="true" signature="660:703" ph=" DELETE statement (MISSINGVALUE)" />
-              </folding>
+            <state relative-caret-position="180">
+              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="20" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SubDivisionsDialog.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SubDivisionsDialog.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="459" column="44" lean-forward="true" selection-start-line="459" selection-start-column="44" selection-end-line="459" selection-end-column="44" />
+            <state relative-caret-position="1250">
+              <caret line="459" column="44" lean-forward="false" selection-start-line="459" selection-start-column="44" selection-end-line="459" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#14514#15057#0" expanded="true" />
-                <element signature="e#15056#15057#0" expanded="true" />
-                <element signature="e#15591#16821#0" expanded="true" />
-                <element signature="e#16820#16821#0" expanded="true" />
-                <element signature="e#17380#17675#0" expanded="true" />
-                <element signature="e#17674#17675#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -84,8 +107,8 @@
       <file leaf-file-name="ResourceManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1395">
-              <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+            <state relative-caret-position="156">
+              <caret line="104" column="91" lean-forward="false" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -93,12 +116,53 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Settings.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/settings/Settings.properties">
+      <file leaf-file-name="EditItemDialog.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="13" />
-              <folding />
+            <state relative-caret-position="-2532">
+              <caret line="210" column="56" lean-forward="true" selection-start-line="210" selection-start-column="56" selection-end-line="210" selection-end-column="56" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#5450#6621#0" expanded="true" />
+                <element signature="e#6620#6621#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ITextField.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="431">
+              <caret line="143" column="45" lean-forward="false" selection-start-line="143" selection-start-column="45" selection-end-line="143" selection-end-column="45" />
+              <folding>
+                <element signature="e#1184#1185#0" expanded="true" />
+                <element signature="e#1212#1213#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ILabel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="34" lean-forward="false" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#145#146#0" expanded="true" />
+                <element signature="e#168#169#0" expanded="true" />
+                <element signature="e#201#202#0" expanded="true" />
+                <element signature="e#229#230#0" expanded="true" />
+                <element signature="e#287#288#0" expanded="true" />
+                <element signature="e#336#337#0" expanded="true" />
+                <element signature="e#370#371#0" expanded="true" />
+                <element signature="e#397#398#0" expanded="true" />
+                <element signature="e#467#468#0" expanded="true" />
+                <element signature="e#521#522#0" expanded="true" />
+                <element signature="e#580#581#0" expanded="true" />
+                <element signature="e#628#629#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -135,6 +199,7 @@
       <find>selectedObject</find>
       <find>selecte</find>
       <find>dbObject</find>
+      <find>filechooser</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -148,7 +213,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/ItemDbManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/NewItemDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/statics/ItemProcuctTypes.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/statics/ItemProductTypes.java" />
@@ -176,13 +240,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/Error.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/IconBorder.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextArea.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/MenuBar.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITitledEditPanel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITitledPanel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/TopToolBar.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/TableChangedListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IDialogPanel.java" />
         <option value="[inventory] CONSOLE - inventory" />
@@ -194,11 +256,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Type.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Category.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/settings/Settings.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/settings/Settings.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java" />
       </list>
     </option>
   </component>
@@ -1059,7 +1124,14 @@
       <option name="project" value="LOCAL" />
       <updated>1490394052753</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="SubDivisionDialog done for now">
+      <created>1490439748282</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1490439748282</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1110,7 +1182,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added category chooser logic" />
     <MESSAGE value="Before adding colors to words" />
     <MESSAGE value="Colored table names, almost finished sql query field" />
     <MESSAGE value="Added data sheet links" />
@@ -1135,7 +1206,8 @@
     <MESSAGE value="spring layout works" />
     <MESSAGE value="sub division dialog sizing" />
     <MESSAGE value="Adding images&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding images&#10;" />
+    <MESSAGE value="SubDivisionDialog done for now" />
+    <option name="LAST_COMMIT_MESSAGE" value="SubDivisionDialog done for now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1166,21 +1238,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java</url>
-          <line>48</line>
+          <line>49</line>
           <properties />
           <option name="timeStamp" value="151" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java</url>
-          <line>73</line>
+          <line>74</line>
           <properties />
           <option name="timeStamp" value="152" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java</url>
+          <line>72</line>
+          <properties />
+          <option name="timeStamp" value="160" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="157" />
+      <option name="time" value="161" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1189,13 +1267,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/resources/db/migration/V2__add_price.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="db://[inventory] CONSOLE - inventory" />
     <entry file="db://[inventory] CONSOLE - inventory" />
     <entry file="db://[inventory] CONSOLE - inventory" />
@@ -1297,13 +1368,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="822">
-          <caret line="81" column="0" lean-forward="false" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/TopToolBar.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="822">
@@ -1347,21 +1411,13 @@
       </provider>
     </entry>
     <entry file="db://[inventory] CONSOLE - inventory" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="340" column="0" lean-forward="false" selection-start-line="340" selection-start-column="0" selection-end-line="340" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITitledPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="191">
           <caret line="23" column="77" lean-forward="false" selection-start-line="23" selection-start-column="77" selection-end-line="23" selection-end-column="77" />
           <folding>
-            <element signature="e#539#540#0" expanded="true" />
-            <element signature="e#591#592#0" expanded="true" />
+            <element signature="e#539#540#0" expanded="false" />
+            <element signature="e#591#592#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1371,8 +1427,8 @@
         <state relative-caret-position="135">
           <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
           <folding>
-            <element signature="e#828#829#0" expanded="true" />
-            <element signature="e#882#883#0" expanded="true" />
+            <element signature="e#828#829#0" expanded="false" />
+            <element signature="e#882#883#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1382,7 +1438,7 @@
         <state relative-caret-position="930">
           <caret line="62" column="14" lean-forward="false" selection-start-line="62" selection-start-column="14" selection-end-line="62" selection-end-column="14" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1436,8 +1492,8 @@
         <state relative-caret-position="195">
           <caret line="14" column="36" lean-forward="true" selection-start-line="8" selection-start-column="4" selection-end-line="14" selection-end-column="36" />
           <folding>
-            <element signature="e#1213#1214#0" expanded="true" />
-            <element signature="e#1245#1246#0" expanded="true" />
+            <element signature="e#1213#1214#0" expanded="false" />
+            <element signature="e#1245#1246#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1447,8 +1503,8 @@
         <state relative-caret-position="60">
           <caret line="4" column="57" lean-forward="false" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
           <folding>
-            <element signature="e#161#162#0" expanded="true" />
-            <element signature="e#194#195#0" expanded="true" />
+            <element signature="e#161#162#0" expanded="false" />
+            <element signature="e#194#195#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1457,34 +1513,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="112" column="22" lean-forward="false" selection-start-line="112" selection-start-column="22" selection-end-line="112" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="76" column="40" lean-forward="false" selection-start-line="76" selection-start-column="40" selection-end-line="76" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/settings/Settings.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1650">
+        <state relative-caret-position="401">
           <caret line="123" column="18" lean-forward="false" selection-start-line="123" selection-start-column="18" selection-end-line="123" selection-end-column="18" />
           <folding>
-            <element signature="e#1213#1214#0" expanded="true" />
-            <element signature="e#1251#1252#0" expanded="true" />
-            <element signature="e#3846#3847#0" expanded="true" />
-            <element signature="e#3886#3887#0" expanded="true" />
             <marker date="1490390392913" expanded="true" signature="464:525" ph=" INSERT statement (MISSINGVALUE)" />
             <marker date="1490390392913" expanded="true" signature="560:625" ph=" UPDATE statement (MISSINGVALUE)" />
             <marker date="1490390392913" expanded="true" signature="660:703" ph=" DELETE statement (MISSINGVALUE)" />
@@ -1492,9 +1529,60 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/settings/Settings.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="34" lean-forward="false" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#145#146#0" expanded="true" />
+            <element signature="e#168#169#0" expanded="true" />
+            <element signature="e#201#202#0" expanded="true" />
+            <element signature="e#229#230#0" expanded="true" />
+            <element signature="e#287#288#0" expanded="true" />
+            <element signature="e#336#337#0" expanded="true" />
+            <element signature="e#370#371#0" expanded="true" />
+            <element signature="e#397#398#0" expanded="true" />
+            <element signature="e#467#468#0" expanded="true" />
+            <element signature="e#521#522#0" expanded="true" />
+            <element signature="e#580#581#0" expanded="true" />
+            <element signature="e#628#629#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="143" column="45" lean-forward="false" selection-start-line="143" selection-start-column="45" selection-end-line="143" selection-end-column="45" />
+          <folding>
+            <element signature="e#1184#1185#0" expanded="true" />
+            <element signature="e#1212#1213#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1250">
+          <caret line="459" column="44" lean-forward="false" selection-start-line="459" selection-start-column="44" selection-end-line="459" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5145">
+        <state relative-caret-position="15">
           <caret line="360" column="18" lean-forward="false" selection-start-line="360" selection-start-column="18" selection-end-line="360" selection-end-column="18" />
           <folding>
             <marker date="1490396493326" expanded="true" signature="2191:2242" ph=" SELECT statement (SQLITE_MASTER)" />
@@ -1508,26 +1596,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1395">
-          <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+        <state relative-caret-position="156">
+          <caret line="104" column="91" lean-forward="false" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/SubDivisionsDialog.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/AddNewSubDivisionDialog.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="459" column="44" lean-forward="true" selection-start-line="459" selection-start-column="44" selection-end-line="459" selection-end-column="44" />
+        <state relative-caret-position="345">
+          <caret line="101" column="114" lean-forward="false" selection-start-line="101" selection-start-column="114" selection-end-line="101" selection-end-column="114" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/EditItemDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2532">
+          <caret line="210" column="56" lean-forward="true" selection-start-line="210" selection-start-column="56" selection-end-line="210" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#14514#15057#0" expanded="true" />
-            <element signature="e#15056#15057#0" expanded="true" />
-            <element signature="e#15591#16821#0" expanded="true" />
-            <element signature="e#16820#16821#0" expanded="true" />
-            <element signature="e#17380#17675#0" expanded="true" />
-            <element signature="e#17674#17675#0" expanded="true" />
+            <element signature="e#5450#6621#0" expanded="true" />
+            <element signature="e#6620#6621#0" expanded="true" />
           </folding>
         </state>
       </provider>

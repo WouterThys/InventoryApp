@@ -3,23 +3,30 @@ package com.waldo.inventory.gui.dialogs;
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialogPanel;
-import com.waldo.inventory.gui.components.ITextArea;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledEditPanel;
+import com.waldo.inventory.gui.components.*;
+import javafx.stage.FileChooser;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.*;
 
 import static com.waldo.inventory.Utils.PanelUtils.*;
 import static com.waldo.inventory.database.DbManager.dbInstance;
+import static javax.swing.SpringLayout.*;
 
 public class EditItemDialog extends IDialogPanel {
 
@@ -29,6 +36,8 @@ public class EditItemDialog extends IDialogPanel {
     private static Application parent;
 
     // Components
+    private ILabel titleIconLabel;
+    private ILabel titleNameLabel;
     private JTextField idTextField;
     private ITextField nameTextField;
     private JTextArea descriptionTextArea;
@@ -78,18 +87,28 @@ public class EditItemDialog extends IDialogPanel {
     private EditItemDialog(Item item) throws SQLException {
         super();
         newItem = item;
-        buttonText = "Save";
         initComponents();
         initLayouts();
         updateValues();
+        createButton.setText("Save");
     }
 
     private EditItemDialog() throws SQLException {
         this(new Item());
-        buttonText = "Create";
+        createButton.setText("Create");
     }
 
     private void updateValues() throws SQLException {
+        if (!newItem.getIconPath().isEmpty()) {
+            try {
+                URL url = new File(newItem.getIconPath()).toURI().toURL();
+                titleIconLabel.setIcon(resourceManager.readImage(url, 48,48));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        titleNameLabel.setText(newItem.getName());
+
         idTextField.setText(String.valueOf(newItem.getId()));
         nameTextField.setText(newItem.getName());
         descriptionTextArea.setText(newItem.getDescription());
@@ -131,10 +150,41 @@ public class EditItemDialog extends IDialogPanel {
     }
 
     private void initComponents() throws SQLException {
+        // Title
+        titleIconLabel = new ILabel(resourceManager.readImage("Common.UnknownIcon48"));
+        titleIconLabel.setPreferredSize(new Dimension(48,48));
+        titleIconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JLabel lbl = (JLabel)e.getSource();
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "jpeg");
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileFilter(filter);
+                    fileChooser.setCurrentDirectory(new File("."));
+                    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    if (fileChooser.showOpenDialog(EditItemDialog.this) == JFileChooser.APPROVE_OPTION) {
+                        newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
+                        try {
+                            URL url = fileChooser.getSelectedFile().toURI().toURL();
+                            lbl.setIcon(resourceManager.readImage(url, 48,48));
+                        } catch (IOException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        titleNameLabel = new ILabel("?");
+        titleNameLabel.setFontSize(36);
+
+        // Identification
         idTextField = new ITextField(String.valueOf(newItem.getId()));
         idTextField.setEditable(false);
+        idTextField.setEnabled(false);
 
         nameTextField = new ITextField();
+        nameTextField.setTrackingField(titleNameLabel);
         descriptionTextArea = new ITextArea();
 
         NumberFormat format = NumberFormat.getInstance();
@@ -235,7 +285,24 @@ public class EditItemDialog extends IDialogPanel {
         constraints.weightx = 0.1;
         local.add(localDataSheetButton, constraints);
 
+        // Title
+        JPanel titlePanel = new JPanel();
+        SpringLayout layout = new SpringLayout();
+        layout.putConstraint(WEST, titleIconLabel, 5, WEST, titlePanel);
+        layout.putConstraint(NORTH, titleIconLabel, 5, NORTH, titlePanel);
+        layout.putConstraint(SOUTH, titleIconLabel, -5, SOUTH, titlePanel);
+
+        layout.putConstraint(HORIZONTAL_CENTER, titleNameLabel, 0, HORIZONTAL_CENTER, titlePanel);
+        layout.putConstraint(VERTICAL_CENTER, titleNameLabel, 0, VERTICAL_CENTER, titlePanel);
+
+        titlePanel.add(titleIconLabel, BorderLayout.WEST);
+        titlePanel.add(titleNameLabel, BorderLayout.CENTER);
+        titlePanel.setPreferredSize(new Dimension(200, 60));
+        titlePanel.setLayout(layout);
+
         // Add all
+        getContentPanel().add(titlePanel);
+
         getContentPanel().add(new ITitledEditPanel(
                 "Identification",
                 new String[] {"Database ID: ", "Name: "},
@@ -294,6 +361,7 @@ public class EditItemDialog extends IDialogPanel {
                         e1.printStackTrace();
                     }
                     try {
+                        productCbModel.addElement(dbInstance().getProducts().get(0).toString()); // Add unknown
                         for (Product p : dbInstance().getProductListForCategory(id)) {
                             productCbModel.addElement(p.toString());
                         }

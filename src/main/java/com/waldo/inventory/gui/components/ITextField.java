@@ -7,6 +7,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -117,5 +120,43 @@ public class ITextField extends JTextField implements FocusListener {
             this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
         }
+    }
+
+    public void setTrackingField(final JTextComponent textField) {
+        this.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+        });
+    }
+
+    public void setTrackingField(final JLabel textField) {
+        this.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                textField.setText(ITextField.this.getText());
+            }
+        });
     }
 }

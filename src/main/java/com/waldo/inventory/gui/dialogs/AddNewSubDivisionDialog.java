@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -98,6 +99,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         browseIconButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "jpeg");
                 iconPathChooser.setCurrentDirectory(new File("."));
                 iconPathChooser.setDialogTitle("Select the data sheet");
                 iconPathChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
