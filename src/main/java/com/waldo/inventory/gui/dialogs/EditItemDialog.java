@@ -31,9 +31,7 @@ import static javax.swing.SpringLayout.*;
 public class EditItemDialog extends IDialogPanel {
 
     // Local stuff
-    private static JDialog dialog;
     private static Item newItem;
-    private static Application parent;
 
     // Components
     private ILabel titleIconLabel;
@@ -47,7 +45,10 @@ public class EditItemDialog extends IDialogPanel {
     DefaultComboBoxModel<String> productCbModel;
     private JComboBox<String> typeComboBox;
 
-    private String buttonText = "";
+    private boolean isNew = false;
+
+    private Action createAction;
+    private Action cancelAction;
 
     // Data sheet
     private JTextField localDataSheetTextField;
@@ -55,11 +56,8 @@ public class EditItemDialog extends IDialogPanel {
     private JFileChooser localDataSheetFileChooser;
     private JTextField onlineDataSheetTextField;
 
-    private JButton cancelButton;
-    private JButton createButton;
-
     public static Item showDialog(Application parent) throws SQLException {
-        EditItemDialog.parent = parent;
+        EditItemDialog.application = parent;
         dialog = new JDialog(parent, "Create new Item", true);
         dialog.getContentPane().add(new EditItemDialog());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -72,7 +70,7 @@ public class EditItemDialog extends IDialogPanel {
     }
 
     public static Item showDialog(Application parent, Item item) throws SQLException {
-        EditItemDialog.parent = parent;
+        EditItemDialog.application = parent;
         dialog = new JDialog(parent, "Edit Item", true);
         dialog.getContentPane().add(new EditItemDialog(item));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -87,15 +85,15 @@ public class EditItemDialog extends IDialogPanel {
     private EditItemDialog(Item item) throws SQLException {
         super();
         newItem = item;
+        isNew = false;
         initComponents();
         initLayouts();
         updateValues();
-        createButton.setText("Save");
     }
 
     private EditItemDialog() throws SQLException {
         this(new Item());
-        createButton.setText("Create");
+        isNew = false;
     }
 
     private void updateValues() throws SQLException {
@@ -221,19 +219,15 @@ public class EditItemDialog extends IDialogPanel {
         // Online data sheet
         onlineDataSheetTextField = new ITextField();
 
-        // Dialog buttons
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
+        // Button actions
+        cancelAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 newItem = null;
-                dialog.setVisible(false);
-                dialog.dispose();
+                close();
             }
-        });
-
-        createButton = new JButton(buttonText);
-        createButton.addActionListener(new ActionListener() {
+        };
+        createAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (verify()) {
@@ -265,11 +259,10 @@ public class EditItemDialog extends IDialogPanel {
                     newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
 
                     // Close dialog
-                    dialog.setVisible(false);
-                    dialog.dispose();
+                    close();
                 }
             }
-        });
+        };
     }
 
     private void initLayouts() {
@@ -328,8 +321,9 @@ public class EditItemDialog extends IDialogPanel {
         ));
 
         // Buttons
-        setPositiveButton(createButton);
-        setNegativeButton(cancelButton);
+        String txt  = isNew ? "Create" : "Save";
+        setPositiveButton(txt).addActionListener(createAction);
+        setNegativeButton("Cancel").addActionListener(cancelAction);
     }
 
     private void createCategoryCb() throws SQLException {

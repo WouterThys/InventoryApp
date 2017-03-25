@@ -3,15 +3,27 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.RoundedButtonBorder;
+import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.net.URL;
+
+import static javax.swing.SpringLayout.*;
 
 public class IDialogPanel extends JPanel {
 
+    protected static JDialog dialog;
+    protected static Application application;
+
     private JPanel contentPanel;
     private JPanel buttonsPanel;
+
+    protected JButton positiveButton;
+    protected JButton neutralButton;
+    protected JButton negativeButton;
 
     protected ResourceManager resourceManager;
 
@@ -19,40 +31,83 @@ public class IDialogPanel extends JPanel {
         super(new BorderLayout());
         contentPanel = new JPanel();
         add(contentPanel, BorderLayout.CENTER);
-        buttonsPanel = new JPanel(new GridBagLayout());
+        buttonsPanel = createButtonPanel();
+        buttonsPanel.setVisible(false);
         add(buttonsPanel, BorderLayout.SOUTH);
 
         URL url = Error.class.getResource("/settings/Settings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 
-//    @Override
-//    public Component add(Component comp) {
-//        return contentPanel.add(comp);
-//    }
+    protected void close() {
+        if (dialog != null) {
+            dialog.setVisible(false);
+            dialog.dispose();
+        }
+    }
 
-//    @Override
-//    public void setLayout(LayoutManager mgr) {
-//        if (contentPanel == null) {
-//            super.setLayout(mgr);
-//        } else {
-//            contentPanel.setLayout(mgr);
-//        }
-//    }
-
-    public JPanel getContentPanel() {
+    protected JPanel getContentPanel() {
         return contentPanel;
     }
 
-    public void setNegativeButton(JButton button) {
-        buttonsPanel.add(button, PanelUtils.createButtonConstraints(0,0));
+    protected JButton setNegativeButton(String text) {
+        negativeButton.setVisible(true);
+        buttonsPanel.setVisible(true);
+        return negativeButton;
     }
 
-    public void setNeutralButton(JButton button) {
-        buttonsPanel.add(button, PanelUtils.createButtonConstraints(1,0));
+    protected JButton setNeutralButton(String text) {
+        neutralButton.setVisible(true);
+        buttonsPanel.setVisible(true);
+        return neutralButton;
     }
 
-    public void setPositiveButton(JButton button) {
-        buttonsPanel.add(button, PanelUtils.createButtonConstraints(2,0));
+    protected JButton setPositiveButton(String text) {
+        positiveButton.setVisible(true);
+        buttonsPanel.setVisible(true);
+        return positiveButton;
     }
+
+    private JPanel createButtonPanel() {
+        positiveButton = new JButton("Ok");
+        neutralButton = new JButton("Meh");
+        negativeButton = new JButton("Cancel");
+
+        positiveButton.setVisible(false);
+        neutralButton.setVisible(false);
+        negativeButton.setVisible(false);
+
+        positiveButton.setBorder(new RoundedButtonBorder(5));
+        neutralButton.setBorder(new RoundedButtonBorder(5));
+        negativeButton.setBorder(new RoundedButtonBorder(5));
+
+        positiveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        negativeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        neutralButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+        Action action = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                close();
+            }
+        };
+
+        positiveButton.addActionListener(action);
+        negativeButton.addActionListener(action);
+        neutralButton.addActionListener(action);
+
+        positiveButton.setPreferredSize(new Dimension(90,25));
+        neutralButton.setPreferredSize(new Dimension(90,25));
+        negativeButton.setPreferredSize(new Dimension(90,25));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5,5));
+        panel.add(negativeButton);
+        panel.add(neutralButton);
+        panel.add(positiveButton);
+
+        return panel;
+    }
+
+
 }

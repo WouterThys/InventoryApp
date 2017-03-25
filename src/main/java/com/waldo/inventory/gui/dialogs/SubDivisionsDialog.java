@@ -29,9 +29,6 @@ import static javax.swing.SpringLayout.*;
 
 public class SubDivisionsDialog extends IDialogPanel {
 
-    private static JDialog dialog;
-    private static Application application;
-
     public static void showDialog(Application parent) {
         SubDivisionsDialog.application = parent;
         dialog = new JDialog(parent, "Sub Divisions", true);
@@ -457,15 +454,20 @@ public class SubDivisionsDialog extends IDialogPanel {
     private void initLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-//        JPanel searchPanel = new JPanel();
-//        searchPanel.add(searchField);
-//        searchPanel.add(searchButton);
-
         getContentPanel().add(new ITitledPanel("Sub divisions",
                 new JComponent[] {searchField, new JScrollPane(subDivisionList)}
         ), BorderLayout.WEST);
 
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
+
+        JButton okButton = new JButton("Ok");
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                close();
+            }
+        });
+        setPositiveButton("Ok");
     }
 
     private JPanel createDetailsPanel() {

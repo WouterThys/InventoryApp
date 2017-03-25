@@ -12,8 +12,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
@@ -34,14 +32,14 @@ public class Application extends JFrame {
 
     void createNewItem() throws SQLException {
         Item item = EditItemDialog.showDialog(this);
-        if (item != null) {
-            try {
-                itemListAdapter.addItem(item);
-                selectedItem = item;
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
+            if (item != null) {
+                try {
+                    itemListAdapter.addItem(item);
+                    selectedItem = item;
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
     }
 
     void editItem() throws SQLException {

@@ -20,9 +20,6 @@ import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 
 public class AddNewSubDivisionDialog extends IDialogPanel {
 
-    private static JDialog dialog;
-    private static Application application;
-
     private ITextField nameTextField;
     private ITextField iconPathTextField;
     private JButton browseIconButton;
@@ -31,8 +28,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
     private static DbObject dbObject;
     private int objectType;
 
-    private JButton cancelButton;
-    private JButton createButton;
+    private Action createAction;
 
     public static DbObject showDialog(Application application, int type) {
         dialog = new JDialog(application, "Sub Divisions", true);
@@ -75,7 +71,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         if (dbObject != null) {
             nameTextField.setText(dbObject.getName());
             iconPathTextField.setText(dbObject.getIconPath());
-            createButton.setText("Update");
+            positiveButton.setText("Update");
         }
     }
 
@@ -110,17 +106,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         });
 
         // Dialog buttons
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.setVisible(false);
-                dialog.dispose();
-            }
-        });
-
-        createButton = new JButton("Create");
-        createButton.addActionListener(new ActionListener() {
+        createAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (verify()) {
@@ -141,11 +127,10 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
                     dbObject.setName(nameTextField.getText());
                     dbObject.setIconPath(iconPathTextField.getText());
                     // Close dialog
-                    dialog.setVisible(false);
-                    dialog.dispose();
+                    close();
                 }
             }
-        });
+        };
     }
 
     private void initLayouts() {
@@ -169,7 +154,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         ));
 
         // Dialog buttons
-        setNegativeButton(cancelButton);
-        setPositiveButton(createButton);
+        setNegativeButton("Cancel");
+        setPositiveButton("Create").addActionListener(createAction);
     }
 }
