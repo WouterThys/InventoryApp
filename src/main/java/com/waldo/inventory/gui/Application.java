@@ -47,7 +47,7 @@ public class Application extends JFrame {
             selectedItem = EditItemDialog.showDialog(this, selectedItem);
             if (selectedItem != null) {
                 try {
-                    selectedItem.save(dbInstance());
+                    selectedItem.save();
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(this, "Error saving Item: "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 } finally {
@@ -60,7 +60,7 @@ public class Application extends JFrame {
     void saveItem() {
         if (selectedItem != null) {
             try {
-                selectedItem.save(dbInstance());
+                selectedItem.save();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

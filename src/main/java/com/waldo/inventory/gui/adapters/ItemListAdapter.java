@@ -59,8 +59,8 @@ public class ItemListAdapter extends AbstractTableModel {
 
     public void addItem(Item item) throws SQLException {
         if (item != null) {
-            item.save(dbInstance());
-            dbInstance().updateItems();
+            item.save();
+            // TODO: CLEAN
             Item newItem = dbInstance().findItemById(item.getId());
             int row = dbInstance().getItems().indexOf(newItem);
             fireTableRowsInserted(row, row);
@@ -71,7 +71,7 @@ public class ItemListAdapter extends AbstractTableModel {
         if (item != null) {
             int row = dbInstance().getItems().indexOf(item);
             item.delete();
-            dbInstance().updateItems();
+            // TODO: CLEAN
             fireTableRowsDeleted(row, row);
         }
     }

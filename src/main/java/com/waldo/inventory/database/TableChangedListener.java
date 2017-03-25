@@ -5,7 +5,5 @@ import com.waldo.inventory.classes.DbObject;
 import java.sql.SQLException;
 
 public interface TableChangedListener {
-
-    void tableChangedListener(String tableName, DbObject obj) throws SQLException;
-
+    void onTableChanged(String tableName, int changedHow, DbObject obj) throws SQLException;
 }

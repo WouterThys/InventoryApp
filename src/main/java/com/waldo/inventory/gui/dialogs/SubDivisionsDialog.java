@@ -75,7 +75,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                             Category c = (Category) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx);
                             if (c != null) {
                                 try {
-                                    c.save(DbManager.dbInstance());
+                                    c.save();
                                     updateDetailListModel(selectedSubNdx, c.getId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
@@ -88,7 +88,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                             if (p != null) {
                                 try {
                                     p.setCategoryId(((DbObject)selectionCbModel.getSelectedItem()).getId());
-                                    p.save(DbManager.dbInstance());
+                                    p.save();
                                     updateDetailListModel(selectedSubNdx, p.getCategoryId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
@@ -101,7 +101,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                             if (t != null) {
                                 try {
                                     t.setProductId(((DbObject)selectionCbModel.getSelectedItem()).getId());
-                                    t.save(DbManager.dbInstance());
+                                    t.save();
                                     updateDetailListModel(selectedSubNdx, t.getProductId());
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
@@ -145,7 +145,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                         Category c = (Category) AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
                         if (c != null) {
                             try {
-                                c.save(DbManager.dbInstance());
+                                c.save();
                                 updateDetailListModel(selectedSubNdx, c.getId());
                             } catch (SQLException e1) {
                                 e1.printStackTrace();
@@ -158,7 +158,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                         if (p != null) {
                             try {
                                 p.setCategoryId(((DbObject)selectionCbModel.getSelectedItem()).getId());
-                                p.save(DbManager.dbInstance());
+                                p.save();
                                 updateDetailListModel(selectedSubNdx, p.getCategoryId());
                             } catch (SQLException e1) {
                                 e1.printStackTrace();
@@ -171,7 +171,7 @@ public class SubDivisionsDialog extends IDialogPanel {
                         if (t != null) {
                             try {
                                 t.setProductId(((DbObject)selectionCbModel.getSelectedItem()).getId());
-                                t.save(DbManager.dbInstance());
+                                t.save();
                                 updateDetailListModel(selectedSubNdx, t.getProductId());
                             } catch (SQLException e1) {
                                 e1.printStackTrace();

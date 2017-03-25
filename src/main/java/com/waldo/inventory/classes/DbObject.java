@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.TableChangedListener;
+import com.waldo.inventory.database.*;
 
 import java.sql.*;
 
@@ -14,6 +13,7 @@ public abstract class DbObject {
     protected long id = -1;
     protected String name = "";
     protected String iconPath = "";
+
     private TableChangedListener onTableChangedListener;
 
     private String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name, iconpath) VALUES (?, ?)";
@@ -58,22 +58,20 @@ public abstract class DbObject {
                         rs.next();
                         id = rs.getLong(1);
                     }
+                    setOnTableChangedListener(DbManager.dbInstance());
+                    if (onTableChangedListener != null) {
+                        onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, this);
+                    }
                 }
             } else { // Update
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
+                    if (onTableChangedListener != null) {
+                        onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, this);
+                    }
                 }
             }
-
-            if (onTableChangedListener != null) {
-                onTableChangedListener.tableChangedListener(TABLE_NAME, this);
-            }
         }
-    }
-
-    public void save(TableChangedListener onTableChangedListener) throws SQLException {
-        setOnTableChangedListener(onTableChangedListener);
-        save();
     }
 
     public void delete() throws SQLException {
@@ -85,7 +83,7 @@ public abstract class DbObject {
             }
 
             if (onTableChangedListener != null) {
-                onTableChangedListener.tableChangedListener(TABLE_NAME, this);
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, this);
             }
         }
     }
