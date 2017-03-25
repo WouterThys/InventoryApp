@@ -426,22 +426,24 @@ public class DbManager implements TableChangedListener {
 
     @Override
     public void onTableChanged(String tableName, int changedHow, DbObject object) throws SQLException {
-        System.out.println(object.getName() +" from "+ tableName + " changed");
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
                 switch (changedHow) {
                     case OBJECT_ADDED:
+                        System.out.println(object.getName() +" from "+ tableName + " added");
                         if (onItemsChangedListener != null) {
                             onItemsChangedListener.onItemAdded((Item)object);
                         }
                         break;
                     case OBJECT_UPDATED:
+                        System.out.println(object.getName() +" from "+ tableName + " updated");
                         if (onItemsChangedListener != null) {
                             onItemsChangedListener.onItemUpdated((Item)object);
                         }
                         break;
                     case OBJECT_DELETED:
+                        System.out.println(object.getName() +" from "+ tableName + " deleted");
                         if (onItemsChangedListener != null) {
                             onItemsChangedListener.onItemDeleted((Item)object);
                         }
@@ -452,16 +454,19 @@ public class DbManager implements TableChangedListener {
                 updateCategories();
                 switch (changedHow) {
                     case OBJECT_ADDED:
+                        System.out.println(object.getName() +" from "+ tableName + " added");
                         if (onCategoriesChangedListener != null) {
                             onCategoriesChangedListener.onCategoryAdded((Category) object);
                         }
                         break;
                     case OBJECT_UPDATED:
+                        System.out.println(object.getName() +" from "+ tableName + " updated");
                         if (onCategoriesChangedListener != null) {
                             onCategoriesChangedListener.onCategoryUpdated((Category)object);
                         }
                         break;
                     case OBJECT_DELETED:
+                        System.out.println(object.getName() +" from "+ tableName + " deleted");
                         if (onCategoriesChangedListener != null) {
                             onCategoriesChangedListener.onCategoryDeleted((Category)object);
                         }
@@ -472,16 +477,19 @@ public class DbManager implements TableChangedListener {
                 updateProducts();
                 switch (changedHow) {
                     case OBJECT_ADDED:
+                        System.out.println(object.getName() +" from "+ tableName + " added");
                         if (onProductsChangedListener != null) {
                             onProductsChangedListener.onProductAdded((Product) object);
                         }
                         break;
                     case OBJECT_UPDATED:
+                        System.out.println(object.getName() +" from "+ tableName + " updated");
                         if (onProductsChangedListener != null) {
                             onProductsChangedListener.onProductUpdated((Product) object);
                         }
                         break;
                     case OBJECT_DELETED:
+                        System.out.println(object.getName() +" from "+ tableName + " deleted");
                         if (onProductsChangedListener != null) {
                             onProductsChangedListener.onProductDeleted((Product) object);
                         }
@@ -492,16 +500,19 @@ public class DbManager implements TableChangedListener {
                 updateTypes();
                 switch (changedHow) {
                     case OBJECT_ADDED:
+                        System.out.println(object.getName() +" from "+ tableName + " added");
                         if (onTypesChangedListener != null) {
                             onTypesChangedListener.onTypeAdded((Type) object);
                         }
                         break;
                     case OBJECT_UPDATED:
+                        System.out.println(object.getName() +" from "+ tableName + " updated");
                         if (onTypesChangedListener != null) {
                             onTypesChangedListener.onTypeUpdated((Type) object);
                         }
                         break;
                     case OBJECT_DELETED:
+                        System.out.println(object.getName() +" from "+ tableName + " deleted");
                         if (onTypesChangedListener != null) {
                             onTypesChangedListener.onTypeDeleted((Type) object);
                         }

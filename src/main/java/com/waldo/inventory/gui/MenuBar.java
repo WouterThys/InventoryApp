@@ -2,7 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.gui.dialogs.SubDivisionsDialog;
+import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
