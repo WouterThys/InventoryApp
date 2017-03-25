@@ -52,6 +52,7 @@ public class IDialogPanel extends JPanel {
 
     protected JButton setNegativeButton(String text) {
         negativeButton.setVisible(true);
+        negativeButton.setText(text);
         buttonsPanel.setVisible(true);
         return negativeButton;
     }
@@ -59,12 +60,14 @@ public class IDialogPanel extends JPanel {
     protected JButton setNeutralButton(String text) {
         neutralButton.setVisible(true);
         buttonsPanel.setVisible(true);
+        neutralButton.setText(text);
         return neutralButton;
     }
 
     protected JButton setPositiveButton(String text) {
         positiveButton.setVisible(true);
         buttonsPanel.setVisible(true);
+        positiveButton.setText(text);
         return positiveButton;
     }
 

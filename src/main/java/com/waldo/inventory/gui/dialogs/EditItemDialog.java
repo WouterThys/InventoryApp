@@ -42,7 +42,8 @@ public class EditItemDialog extends IDialogPanel {
     private ITextField priceTextField;
     private JComboBox<String> categoryComboBox;
     private JComboBox<String> productComboBox;
-    DefaultComboBoxModel<String> productCbModel;
+    private DefaultComboBoxModel<String> productCbModel;
+    private DefaultComboBoxModel<String> typeCbModel;
     private JComboBox<String> typeComboBox;
 
     private boolean isNew = false;
@@ -159,7 +160,7 @@ public class EditItemDialog extends IDialogPanel {
                     FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "jpeg");
                     JFileChooser fileChooser = new JFileChooser();
                     fileChooser.setFileFilter(filter);
-                    fileChooser.setCurrentDirectory(new File("."));
+                    fileChooser.setCurrentDirectory(new File("./Images/ItemImages/"));
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                     if (fileChooser.showOpenDialog(EditItemDialog.this) == JFileChooser.APPROVE_OPTION) {
                         newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
@@ -389,13 +390,29 @@ public class EditItemDialog extends IDialogPanel {
         productComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox) e.getSource();
                 if (typeComboBox != null) {
-                    JComboBox cb = (JComboBox) e.getSource();
-                    typeComboBox.setEnabled((cb.getSelectedIndex() > 0)); // Bigger than "UNKNOWN"
+                    typeComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
+
+                    typeCbModel.removeAllElements();
+                    long id = 0;
+                    try {
+                        id = getProductId();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        typeCbModel.addElement(dbInstance().getTypes().get(0).toString()); // Add unknown
+                        for (Type t : dbInstance().getTypeListForProduct(id)) {
+                            typeCbModel.addElement(t.toString());
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+
                 }
             }
         });
-        productComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getCategory() > DbObject.UNKNOWN));
         productComboBox.setSelectedIndex(selectedIndex);
     }
 
@@ -411,7 +428,7 @@ public class EditItemDialog extends IDialogPanel {
             }
         }
 
-        DefaultComboBoxModel<String> typeCbModel = new DefaultComboBoxModel<>(typeStrings);
+        typeCbModel = new DefaultComboBoxModel<>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProduct() > DbObject.UNKNOWN));
         typeComboBox.setSelectedIndex(selectedIndex);

@@ -401,10 +401,10 @@ public class DbManager implements TableChangedListener {
 
     @Override
     public void tableChangedListener(String tableName, DbObject object) throws SQLException {
-        System.out.print(object.getName() +" from "+ tableName + " changed");
+        System.out.println(object.getName() +" from "+ tableName + " changed");
         switch (tableName) {
             case Item.TABLE_NAME:
-                updateItems();
+                //updateItems();
                 break;
             case Category.TABLE_NAME:
                 updateCategories();

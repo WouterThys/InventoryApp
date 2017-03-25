@@ -11,17 +11,16 @@ import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledPanel;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
@@ -46,7 +45,6 @@ public class SubDivisionsDialog extends IDialogPanel {
     private JList<DbObject> detailList;
     private JToolBar toolBar;
     private ITextField searchField;
-    private JButton searchButton;
     private ITitledPanel detailsPanel;
     private DefaultComboBoxModel<DbObject> selectionCbModel;
     private JComboBox<DbObject> selectionComboBox;
@@ -384,7 +382,7 @@ public class SubDivisionsDialog extends IDialogPanel {
         searchField.addActionListener(searchAction);
 
         // Search button
-        searchButton = new JButton(resourceManager.readImage("Common.Search"));
+        JButton searchButton = new JButton(resourceManager.readImage("Common.Search"));
         searchButton.addActionListener(searchAction);
 
         // Combo box
