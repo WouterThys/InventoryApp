@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 import static javax.swing.SpringLayout.*;
@@ -47,6 +49,7 @@ public class SubDivisionsDialog extends IDialogPanel {
     private JList<DbObject> detailList;
     private JToolBar toolBar;
     private ITextField searchField;
+    private JButton searchButton;
     private ITitledPanel detailsPanel;
     private DefaultComboBoxModel<DbObject> selectionCbModel;
     private JComboBox<DbObject> selectionComboBox;
@@ -56,6 +59,7 @@ public class SubDivisionsDialog extends IDialogPanel {
     private Action addAction;
     private Action deleteAction;
     private Action editAction;
+    private Action searchAction;
 
     private int selectedSubNdx = 0;
     private DbObject selectedObject;
@@ -182,6 +186,30 @@ public class SubDivisionsDialog extends IDialogPanel {
                 }
             }
         };
+
+        searchAction = new AbstractAction("Search", resourceManager.readImage("Common.Search")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchWord = searchField.getText();
+                if (searchWord.isEmpty()) {
+                    searchField.setError("Enter a search word");
+                } else {
+                    java.util.List<DbObject> foundList = search(searchWord);
+                    if (foundList.size() > 0) {
+                        if (foundList.size() == 1) {
+                            DbObject obj = foundList.get(0);
+                            try {
+                                selectObject(obj);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        } else {
+
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private void updateComponents(int selectedSubNdx) throws SQLException {
@@ -232,27 +260,6 @@ public class SubDivisionsDialog extends IDialogPanel {
         }
     }
 
-    private void setSelectedObject(DbObject object) {
-        selectedObject = object;
-        if (selectedObject != null) {
-            String iconPath = selectedObject.getIconPath();
-            if (iconPath != null && !iconPath.isEmpty()) {
-                try {
-                    URL url = new File(selectedObject.getIconPath()).toURI().toURL();
-                    iconLabel.setIcon(resourceManager.readImage(url, 48,48));
-                } catch (Exception e) {
-                    iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
-                    e.printStackTrace();
-                }
-            } else {
-                iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
-            }
-        } else {
-            iconLabel.setIcon(null);
-        }
-
-    }
-
     private void updateSelectionCbModel(int selectedSubNdx) throws SQLException {
         switch (selectedSubNdx) {
             default:
@@ -272,8 +279,90 @@ public class SubDivisionsDialog extends IDialogPanel {
         }
     }
 
-    private void initComponents() {
+    private void setSelectedObject(DbObject object) {
+        selectedObject = object;
+        if (selectedObject != null) {
+            String iconPath = selectedObject.getIconPath();
+            if (iconPath != null && !iconPath.isEmpty()) {
+                try {
+                    URL url = new File(selectedObject.getIconPath()).toURI().toURL();
+                    iconLabel.setIcon(resourceManager.readImage(url, 48,48));
+                } catch (Exception e) {
+                    iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+                    e.printStackTrace();
+                }
+            } else {
+                iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+            }
+        } else {
+            iconLabel.setIcon(null);
+        }
+    }
 
+    private void selectObject(DbObject object) throws SQLException, ClassCastException {
+        if (object instanceof Category) {
+            selectedSubNdx = 0;
+        } else if (object instanceof Product) {
+            selectedSubNdx = 1;
+        } else {
+            selectedSubNdx = 2;
+        }
+
+        subDivisionList.setSelectedIndex(selectedSubNdx);
+        switch (selectedSubNdx) {
+            case 0: // Category
+                break;
+            case 1: { // Product
+                int ndx = dbInstance().findProductIndex((Product)object);
+                if (ndx >= 0) {
+                    selectionComboBox.setSelectedIndex(ndx);
+                }
+                break;
+            }
+            case 2: { // Type
+                int ndx = dbInstance().getTypeListForProduct(((Type) object).getProductId()).indexOf(object);
+                selectionComboBox.setSelectedIndex(ndx);
+                break;
+            }
+        }
+        detailList.setSelectedValue(object, true);
+        setSelectedObject(selectedObject);
+    }
+
+    private List<DbObject> search(String searchWord) {
+        List<DbObject> foundList = new ArrayList<>();
+
+        try {
+            Category c = dbInstance().findCategoryByName(searchWord);
+            if (c != null) {
+                foundList.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Product p = dbInstance().findProductByName(searchWord);
+            if (p != null) {
+                foundList.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Type t= dbInstance().findTypeByName(searchWord);
+            if (t != null) {
+                foundList.add(t);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foundList;
+    }
+
+    private void initComponents() {
         // Sub divisions list
         String[] subDivisions = new String[] {"Categories", "Products", "Types"};
         subDivisionList = new JList<>(subDivisions);
@@ -295,6 +384,11 @@ public class SubDivisionsDialog extends IDialogPanel {
         // Search field
         searchField = new ITextField("Search");
         searchField.setMaximumSize(new Dimension(100,30));
+        searchField.addActionListener(searchAction);
+
+        // Search button
+        searchButton = new JButton(resourceManager.readImage("Common.Search"));
+        searchButton.addActionListener(searchAction);
 
         // Combo box
         selectionCbModel = new DefaultComboBoxModel<>();
@@ -362,6 +456,10 @@ public class SubDivisionsDialog extends IDialogPanel {
 
     private void initLayouts() {
         getContentPanel().setLayout(new BorderLayout());
+
+//        JPanel searchPanel = new JPanel();
+//        searchPanel.add(searchField);
+//        searchPanel.add(searchButton);
 
         getContentPanel().add(new ITitledPanel("Sub divisions",
                 new JComponent[] {searchField, new JScrollPane(subDivisionList)}

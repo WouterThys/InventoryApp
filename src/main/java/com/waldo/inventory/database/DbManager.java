@@ -353,6 +353,14 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
+    public int findProductIndex(Product product) throws SQLException {
+        Product p = findProductById(product.getId());
+        if (p != null) {
+            return getProducts().indexOf(p);
+        }
+        return -1;
+    }
+
     public Type findTypeById(long id) throws SQLException {
        for (Type t : getTypes()) {
            if (t.getId() == id) {
