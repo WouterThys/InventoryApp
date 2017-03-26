@@ -5,15 +5,18 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.RoundedButtonBorder;
 import com.waldo.inventory.gui.Application;
+import sun.awt.WindowClosingListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowListener;
 import java.net.URL;
 
 import static javax.swing.SpringLayout.*;
 
-public class IDialogPanel extends JPanel {
+public abstract class IDialogPanel extends JPanel {
 
     protected static JDialog dialog;
     protected static Application application;

@@ -24,10 +24,10 @@ public class DbManager implements TableChangedListener {
         return INSTANCE;
     }
 
-    private ItemsChangedListener onItemsChangedListener;
-    private CategoriesChangedListener onCategoriesChangedListener;
-    private ProductsChangedListener onProductsChangedListener;
-    private TypesChangedListener onTypesChangedListener;
+    private List<ItemsChangedListener> onItemsChangedListenerList;
+    private List<CategoriesChangedListener> onCategoriesChangedListenerList;
+    private List<ProductsChangedListener> onProductsChangedListenerList;
+    private List<TypesChangedListener> onTypesChangedListenerList;
 
     private BasicDataSource dataSource;
     private List<String> tableNames;
@@ -84,20 +84,72 @@ public class DbManager implements TableChangedListener {
         return dbInstance().getDataSource().getConnection();
     }
 
-    public void setOnItemsChangedListener(ItemsChangedListener onItemsChangedListener) {
-        this.onItemsChangedListener = onItemsChangedListener;
+    public void addOnItemsChangedListener(ItemsChangedListener onItemsChangedListener) {
+        if (onItemsChangedListenerList == null) {
+            onItemsChangedListenerList = new ArrayList<>();
+        }
+        if (!onItemsChangedListenerList.contains(onItemsChangedListener)) {
+            onItemsChangedListenerList.add(onItemsChangedListener);
+        }
     }
 
-    public void setOnCategoriesChangedListener(CategoriesChangedListener onCategoriesChangedListener) {
-        this.onCategoriesChangedListener = onCategoriesChangedListener;
+    public void addOnCategoriesChangedListener(CategoriesChangedListener onCategoriesChangedListener) {
+        if (onCategoriesChangedListenerList == null) {
+            onCategoriesChangedListenerList = new ArrayList<>();
+        }
+        if (!onCategoriesChangedListenerList.contains(onCategoriesChangedListener)) {
+            onCategoriesChangedListenerList.add(onCategoriesChangedListener);
+        }
     }
 
-    public void setOnProductsChangedListener(ProductsChangedListener onProductsChangedListener) {
-        this.onProductsChangedListener = onProductsChangedListener;
+    public void addOnProductsChangedListener(ProductsChangedListener onProductsChangedListener) {
+        if (onProductsChangedListenerList == null) {
+            onProductsChangedListenerList = new ArrayList<>();
+        }
+        if (!onProductsChangedListenerList.contains(onProductsChangedListener)) {
+            onProductsChangedListenerList.add(onProductsChangedListener);
+        }
     }
 
-    public void setOnTypesChangedListener(TypesChangedListener onTypesChangedListener) {
-        this.onTypesChangedListener = onTypesChangedListener;
+    public void addOnTypesChangedListener(TypesChangedListener onTypesChangedListener) {
+        if (onTypesChangedListenerList == null) {
+            onTypesChangedListenerList = new ArrayList<>();
+        }
+        if (!onTypesChangedListenerList.contains(onTypesChangedListener)) {
+            onTypesChangedListenerList.add(onTypesChangedListener);
+        }
+    }
+
+    public void removeOnItemsChangedListener(ItemsChangedListener onItemsChangedListener) {
+        if (onItemsChangedListenerList != null) {
+            if (onItemsChangedListenerList.contains(onItemsChangedListener)) {
+                onItemsChangedListenerList.remove(onItemsChangedListener);
+            }
+        }
+    }
+
+    public void removeOnCategoriesChangedListener(CategoriesChangedListener onCategoriesChangedListener) {
+        if (onCategoriesChangedListenerList != null) {
+            if (onCategoriesChangedListenerList.contains(onCategoriesChangedListener)) {
+                onCategoriesChangedListenerList.remove(onCategoriesChangedListener);
+            }
+        }
+    }
+
+    public void removeOnProductsChangedListener(ProductsChangedListener onProductsChangedListener) {
+        if (onProductsChangedListenerList != null) {
+            if (onProductsChangedListenerList.contains(onProductsChangedListener)) {
+                onProductsChangedListenerList.remove(onProductsChangedListener);
+            }
+        }
+    }
+
+    public void removeOnTypesChangedListener(TypesChangedListener onTypesChangedListener) {
+        if (onTypesChangedListenerList != null) {
+            if (onTypesChangedListenerList.contains(onTypesChangedListener)) {
+                onTypesChangedListenerList.remove(onTypesChangedListener);
+            }
+        }
     }
 
     public List<String> getTableNames() throws SQLException {
@@ -424,101 +476,107 @@ public class DbManager implements TableChangedListener {
         return types;
     }
 
+    private void notifyItemListListeners(int changedHow, DbObject object) {
+        if (onItemsChangedListenerList != null) {
+            for(ItemsChangedListener l : onItemsChangedListenerList) {
+                switch (changedHow) {
+                    case OBJECT_ADDED:
+                        l.onItemAdded((Item)object);
+                        break;
+                    case OBJECT_UPDATED:
+                        l.onItemUpdated((Item)object);
+                        break;
+                    case OBJECT_DELETED:
+                        l.onItemDeleted((Item)object);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void notifyCategoryListListeners(int changedHow, DbObject object) {
+        if (onCategoriesChangedListenerList != null) {
+            for(CategoriesChangedListener l : onCategoriesChangedListenerList) {
+                switch (changedHow) {
+                    case OBJECT_ADDED:
+                        l.onCategoryAdded((Category) object);
+                        break;
+                    case OBJECT_UPDATED:
+                        l.onCategoryUpdated((Category)object);
+                        break;
+                    case OBJECT_DELETED:
+                        l.onCategoryDeleted((Category)object);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void notifyProductListListeners(int changedHow, DbObject object) {
+        if (onProductsChangedListenerList != null) {
+            for(ProductsChangedListener l : onProductsChangedListenerList) {
+                switch (changedHow) {
+                    case OBJECT_ADDED:
+                        l.onProductAdded((Product) object);
+                        break;
+                    case OBJECT_UPDATED:
+                        l.onProductUpdated((Product) object);
+                        break;
+                    case OBJECT_DELETED:
+                        l.onProductDeleted((Product) object);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void notifyTypeListListeners(int changedHow, DbObject object) {
+        if (onTypesChangedListenerList != null) {
+            for(TypesChangedListener l : onTypesChangedListenerList) {
+                switch (changedHow) {
+                    case OBJECT_ADDED:
+                        l.onTypeAdded((Type) object);
+                        break;
+                    case OBJECT_UPDATED:
+                        l.onTypeUpdated((Type) object);
+                        break;
+                    case OBJECT_DELETED:
+                        l.onTypeDeleted((Type)object);
+                        break;
+                }
+            }
+        }
+    }
+
+
+
     @Override
     public void onTableChanged(String tableName, int changedHow, DbObject object) throws SQLException {
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        System.out.println(object.getName() +" from "+ tableName + " added");
-                        if (onItemsChangedListener != null) {
-                            onItemsChangedListener.onItemAdded((Item)object);
-                        }
-                        break;
-                    case OBJECT_UPDATED:
-                        System.out.println(object.getName() +" from "+ tableName + " updated");
-                        if (onItemsChangedListener != null) {
-                            onItemsChangedListener.onItemUpdated((Item)object);
-                        }
-                        break;
-                    case OBJECT_DELETED:
-                        System.out.println(object.getName() +" from "+ tableName + " deleted");
-                        if (onItemsChangedListener != null) {
-                            onItemsChangedListener.onItemDeleted((Item)object);
-                        }
-                        break;
-                }
+                notifyItemListListeners(changedHow, object);
                 break;
             case Category.TABLE_NAME:
                 updateCategories();
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        System.out.println(object.getName() +" from "+ tableName + " added");
-                        if (onCategoriesChangedListener != null) {
-                            onCategoriesChangedListener.onCategoryAdded((Category) object);
-                        }
-                        break;
-                    case OBJECT_UPDATED:
-                        System.out.println(object.getName() +" from "+ tableName + " updated");
-                        if (onCategoriesChangedListener != null) {
-                            onCategoriesChangedListener.onCategoryUpdated((Category)object);
-                        }
-                        break;
-                    case OBJECT_DELETED:
-                        System.out.println(object.getName() +" from "+ tableName + " deleted");
-                        if (onCategoriesChangedListener != null) {
-                            onCategoriesChangedListener.onCategoryDeleted((Category)object);
-                        }
-                        break;
-                }
+                notifyCategoryListListeners(changedHow, object);
                 break;
             case Product.TABLE_NAME:
                 updateProducts();
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        System.out.println(object.getName() +" from "+ tableName + " added");
-                        if (onProductsChangedListener != null) {
-                            onProductsChangedListener.onProductAdded((Product) object);
-                        }
-                        break;
-                    case OBJECT_UPDATED:
-                        System.out.println(object.getName() +" from "+ tableName + " updated");
-                        if (onProductsChangedListener != null) {
-                            onProductsChangedListener.onProductUpdated((Product) object);
-                        }
-                        break;
-                    case OBJECT_DELETED:
-                        System.out.println(object.getName() +" from "+ tableName + " deleted");
-                        if (onProductsChangedListener != null) {
-                            onProductsChangedListener.onProductDeleted((Product) object);
-                        }
-                        break;
-                }
+                notifyProductListListeners(changedHow, object);
                 break;
             case Type.TABLE_NAME:
                 updateTypes();
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        System.out.println(object.getName() +" from "+ tableName + " added");
-                        if (onTypesChangedListener != null) {
-                            onTypesChangedListener.onTypeAdded((Type) object);
-                        }
-                        break;
-                    case OBJECT_UPDATED:
-                        System.out.println(object.getName() +" from "+ tableName + " updated");
-                        if (onTypesChangedListener != null) {
-                            onTypesChangedListener.onTypeUpdated((Type) object);
-                        }
-                        break;
-                    case OBJECT_DELETED:
-                        System.out.println(object.getName() +" from "+ tableName + " deleted");
-                        if (onTypesChangedListener != null) {
-                            onTypesChangedListener.onTypeDeleted((Type) object);
-                        }
-                        break;
-                }
+                notifyTypeListListeners(changedHow, object);
                 break;
         }
+
+        String how = "";
+        switch (changedHow) {
+            case OBJECT_ADDED: how = "added"; break;
+            case OBJECT_UPDATED: how = "updated"; break;
+            case OBJECT_DELETED: how = "deleted"; break;
+        }
+        System.out.println(object.getName() + " " + how + " in/from " + tableName);
     }
 }

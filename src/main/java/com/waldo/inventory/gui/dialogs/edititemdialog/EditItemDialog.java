@@ -1,10 +1,8 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
+import sun.awt.WindowClosingListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,10 +16,12 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
+
     public static Item showDialog(Application parent) throws SQLException {
         EditItemDialog.application = parent;
         dialog = new JDialog(parent, "Create new Item", true);
-        dialog.getContentPane().add(new EditItemDialog());
+        EditItemDialog layout = new EditItemDialog();
+        dialog.getContentPane().add(layout);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(parent);
@@ -157,21 +157,15 @@ public class EditItemDialog extends EditItemDialogLayout {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    JComboBox cb = (JComboBox) e.getSource();
+                    Category selectedCategory = (Category) e.getItem();
                     if (productComboBox != null) {
-                        productComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
+                        productComboBox.setEnabled(selectedCategory.getId() > 1); // Bigger than "UNKNOWN"
 
                         productCbModel.removeAllElements();
-                        long id = 0;
                         try {
-                            id = getCategoryId();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                        try {
-                            productCbModel.addElement(dbInstance().getProducts().get(0).toString()); // Add unknown
-                            for (Product p : dbInstance().getProductListForCategory(id)) {
-                                productCbModel.addElement(p.toString());
+                            productCbModel.addElement(dbInstance().getProducts().get(0)); // Add unknown
+                            for (Product p : dbInstance().getProductListForCategory(selectedCategory.getId())) {
+                                productCbModel.addElement(p);
                             }
                         } catch (SQLException e1) {
                             e1.printStackTrace();
@@ -179,7 +173,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
                     }
                     if (typeComboBox != null) {
-                        typeComboBox.setEnabled(cb.getSelectedIndex() > 0);
+                        typeComboBox.setEnabled(selectedCategory.getId() > 1);
                     }
                 }
             }
@@ -190,21 +184,15 @@ public class EditItemDialog extends EditItemDialogLayout {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    JComboBox cb = (JComboBox) e.getSource();
+                    Product selectedProduct = (Product) e.getItem();
                     if (typeComboBox != null) {
-                        typeComboBox.setEnabled(cb.getSelectedIndex() > 0); // Bigger than "UNKNOWN"
+                        typeComboBox.setEnabled(selectedProduct.getId() > 1); // Bigger than "UNKNOWN"
 
                         typeCbModel.removeAllElements();
-                        long id = 0;
                         try {
-                            id = getProductId();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                        try {
-                            typeCbModel.addElement(dbInstance().getTypes().get(0).toString()); // Add unknown
-                            for (Type t : dbInstance().getTypeListForProduct(id)) {
-                                typeCbModel.addElement(t.toString());
+                            typeCbModel.addElement(dbInstance().getTypes().get(0)); // Add unknown
+                            for (Type t : dbInstance().getTypeListForProduct(selectedProduct.getId())) {
+                                typeCbModel.addElement(t);
                             }
                         } catch (SQLException e1) {
                             e1.printStackTrace();
@@ -269,4 +257,5 @@ public class EditItemDialog extends EditItemDialogLayout {
             return DbObject.UNKNOWN;
         }
     }
+
 }

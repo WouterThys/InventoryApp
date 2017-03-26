@@ -99,6 +99,15 @@ public abstract class DbObject {
         return name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DbObject) {
+            if (((DbObject) obj).getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public long getId() {
         return id;

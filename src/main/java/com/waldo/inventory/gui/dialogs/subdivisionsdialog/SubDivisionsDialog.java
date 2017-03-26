@@ -9,9 +9,7 @@ import com.waldo.inventory.gui.Application;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
@@ -25,9 +23,19 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     public static void showDialog(Application parent) {
         SubDivisionsDialog.application = parent;
         dialog = new JDialog(parent, "Sub Divisions", true);
-        dialog.getContentPane().add(new SubDivisionsDialog());
+        final SubDivisionsDialog sdd = new SubDivisionsDialog();
+        dialog.getContentPane().add(sdd);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dbInstance().removeOnCategoriesChangedListener(sdd);
+                dbInstance().removeOnProductsChangedListener(sdd);
+                dbInstance().removeOnTypesChangedListener(sdd);
+                super.windowClosing(e);
+            }
+        });
         dialog.setLocationRelativeTo(parent);
         //dialog.setResizable(false);
         dialog.pack();
@@ -44,9 +52,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        dbInstance().setOnCategoriesChangedListener(this);
-        dbInstance().setOnProductsChangedListener(this);
-        dbInstance().setOnTypesChangedListener(this);
+        dbInstance().addOnCategoriesChangedListener(this);
+        dbInstance().addOnProductsChangedListener(this);
+        dbInstance().addOnTypesChangedListener(this);
     }
 
     private void initActions() {

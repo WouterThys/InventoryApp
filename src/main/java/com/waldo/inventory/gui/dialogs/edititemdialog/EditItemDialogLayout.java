@@ -22,7 +22,7 @@ import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.HORIZONTAL_CENTER;
 import static javax.swing.SpringLayout.VERTICAL_CENTER;
 
-public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
+public abstract class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
 
     /*
      *                  COMPONENTS
@@ -33,11 +33,11 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
     ITextField nameTextField;
     JTextArea descriptionTextArea;
     ITextField priceTextField;
-    JComboBox<String> categoryComboBox;
-    JComboBox<String> productComboBox;
-    DefaultComboBoxModel<String> productCbModel;
-    DefaultComboBoxModel<String> typeCbModel;
-    JComboBox<String> typeComboBox;
+    JComboBox<Category> categoryComboBox;
+    JComboBox<Product> productComboBox;
+    DefaultComboBoxModel<Product> productCbModel;
+    DefaultComboBoxModel<Type> typeCbModel;
+    JComboBox<Type> typeComboBox;
 
     // Data sheet
     JTextField localDataSheetTextField;
@@ -63,9 +63,9 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void createCategoryCb() throws SQLException {
         int selectedIndex = 0;
-        Vector<String> categoryItems = new Vector<>();
+        Vector<Category> categoryItems = new Vector<>();
         for (Category c : dbInstance().getCategories()) {
-            categoryItems.add(c.toString());
+            categoryItems.add(c);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (c.getId() == newItem.getCategory()) {
                     selectedIndex = dbInstance().getCategories().indexOf(c);
@@ -73,7 +73,7 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
             }
         }
 
-        DefaultComboBoxModel<String> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
+        DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<Category>(categoryItems);
         categoryComboBox = new JComboBox<>(categoryCbModel);
         categoryComboBox.addItemListener(categoryChangedAction);
         categoryComboBox.setSelectedIndex(selectedIndex);
@@ -81,9 +81,9 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
 
     private void createProductCb() throws SQLException {
         int selectedIndex = 0;
-        Vector<String> productStrings = new Vector<>();
+        Vector<Product> productStrings = new Vector<>();
         for (Product p : dbInstance().getProducts()) {
-            productStrings.add(p.toString());
+            productStrings.add(p);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (p.getId() == newItem.getProduct()) {
                     selectedIndex = dbInstance().getProducts().indexOf(p);
@@ -99,9 +99,9 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
 
     private void createTypeCb() throws SQLException {
         int selectedIndex = 0;
-        Vector<String> typeStrings = new Vector<>();
+        Vector<Type> typeStrings = new Vector<>();
         for (com.waldo.inventory.classes.Type t : dbInstance().getTypes()) {
-            typeStrings.add(t.toString());
+            typeStrings.add(t);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (t.getId() == newItem.getType()) {
                     selectedIndex = dbInstance().getTypes().indexOf(t);
@@ -109,7 +109,7 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
             }
         }
 
-        typeCbModel = new DefaultComboBoxModel<>(typeStrings);
+        typeCbModel = new DefaultComboBoxModel<Type>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProduct() > DbObject.UNKNOWN));
         typeComboBox.setSelectedIndex(selectedIndex);
@@ -243,11 +243,11 @@ public class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
                 e.printStackTrace();
             }
         }
-        titleNameLabel.setText(newItem.getName());
+        titleNameLabel.setText(newItem.getName().trim());
 
         idTextField.setText(String.valueOf(newItem.getId()));
-        nameTextField.setText(newItem.getName());
-        descriptionTextArea.setText(newItem.getDescription());
+        nameTextField.setText(newItem.getName().trim());
+        descriptionTextArea.setText(newItem.getDescription().trim());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
         Category c = null;
