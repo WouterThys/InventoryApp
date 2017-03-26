@@ -16,7 +16,6 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
-
     public static Item showDialog(Application parent) throws SQLException {
         EditItemDialog.application = parent;
         dialog = new JDialog(parent, "Create new Item", true);

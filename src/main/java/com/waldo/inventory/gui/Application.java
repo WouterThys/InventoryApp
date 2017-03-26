@@ -1,134 +1,129 @@
 package com.waldo.inventory.gui;
 
+import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.panels.QueryPanel;
+import com.waldo.inventory.gui.panels.itemlist.ItemListPanel;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.sql.SQLException;
 
 public class Application extends JFrame {
 
-    private JTable itemTable;
-    private ItemListAdapter itemListAdapter;
+    private ResourceManager resourceManager;
 
-    private Item selectedItem;
+    private Action refreshItemsAction;
+    private Action addItemAction;
+    public Action updateItemAction;
+    private Action deleteItemAction;
+
+    private ItemListPanel itemListPanel;
 
     public Application() {
+        URL url = ItemListPanel.class.getResource("/settings/Settings.properties");
+        resourceManager = new ResourceManager(url.getPath());
+        initActions();
         initComponents();
     }
 
-    void refreshItemList() {
-        itemListAdapter.fireTableDataChanged();
-    }
-
-    void createNewItem() throws SQLException {
-        Item item = EditItemDialog.showDialog(this);
-            if (item != null) {
-                try {
-                    itemListAdapter.addItem(item);
-                    selectedItem = item;
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(this, "Error saving Item", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-    }
-
-    void editItem() throws SQLException {
-        if (selectedItem != null) {
-            selectedItem = EditItemDialog.showDialog(this, selectedItem);
-            if (selectedItem != null) {
-                try {
-                    selectedItem.save();
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(this, "Error saving Item: "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    refreshItemList();
-                }
-            }
-        }
-    }
-
-    void saveItem() {
-        if (selectedItem != null) {
-            try {
-                selectedItem.save();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                refreshItemList();
-            }
-        }
-    }
-
-    void deleteItem() {
-        if (selectedItem != null) {
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                try {
-                    itemListAdapter.deleteRow(selectedItem);
-                } catch (final SQLException e) {
-                    JOptionPane.showMessageDialog(this, "Failed to delete the selected contact", "Delete", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    setSelectedItem(null);
-                    refreshItemList();
-                }
-            }
-        }
-    }
-
     private void initComponents() {
-        TopToolBar ttb = TopToolBar.getToolbar(this);
-        ttb.init();
+        // Toolbar
+        TopToolBar ttb = TopToolBar.getToolbar();
+        ttb.init(refreshItemsAction, addItemAction, updateItemAction, deleteItemAction);
         add(ttb, BorderLayout.PAGE_START);
-        add(createTablePane(), BorderLayout.CENTER);
-        add(new QueryPanel(this), BorderLayout.SOUTH);
+
+        // Menu
         setJMenuBar(new MenuBar(this));
+
+        // Main view
+        itemListPanel = new ItemListPanel(this);
+        add(itemListPanel, BorderLayout.CENTER);
+
+        //add(createTablePane(), BorderLayout.CENTER); // TODO: to ItemListPanel
+        //add(new QueryPanel(this), BorderLayout.SOUTH);
     }
 
-    private JComponent createTablePane() {
-        itemListAdapter = new ItemListAdapter();
-        itemTable = new JTable(itemListAdapter);
-        itemTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-                    itemListAdapter.tableClicked(Application.this, itemTable, e);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
+    private void initActions() {
+        initRefreshItemsAction();
+        initAddItemAction();
+        initUpdateItemAction();
+        initDeleteItemAction();
+    }
 
-        itemTable.setColumnSelectionAllowed(false);
-        itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    private void initDeleteItemAction() {
+        deleteItemAction = new AbstractAction("Delete", resourceManager.readImage("Toolbar.DeleteIcon")) {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if(!e.getValueIsAdjusting()) {
-                    int row = itemTable.getSelectedRow();
-                    if (row >= 0) {
-                        Item selected = null;
+            public void actionPerformed(ActionEvent e) {
+                Item selectedItem = itemListPanel.getSelectedItem();
+                if (selectedItem != null) {
+                    System.out.println(selectedItem.getName() + " will be deleted.");
+                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Application.this, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
                         try {
-                            selected = itemListAdapter.getItemAt(itemTable.getSelectedRow());
+                            selectedItem.delete();
                         } catch (SQLException e1) {
+                            JOptionPane.showMessageDialog(Application.this, "Failed to delete the selected contact", "Delete", JOptionPane.ERROR_MESSAGE);
                             e1.printStackTrace();
                         }
-                        setSelectedItem(selected);
                     }
                 }
             }
-        });
-
-        return new JScrollPane(itemTable); // Put in ScrollPane!!
+        };
     }
 
-    private void setSelectedItem(Item selectedItem) {
-        this.selectedItem = selectedItem;
+    private void initUpdateItemAction() {
+        updateItemAction = new AbstractAction("Edit", resourceManager.readImage("Toolbar.EditIcon")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Item selectedItem = itemListPanel.getSelectedItem();
+                try {
+                    selectedItem = EditItemDialog.showDialog(Application.this, selectedItem);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                if (selectedItem != null) {
+                    System.out.println(selectedItem.getName() + " will be updated.");
+                    try {
+                        selectedItem.save();
+                    } catch (SQLException e2) {
+                        JOptionPane.showMessageDialog(Application.this, "Error saving Item: "+ e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        };
+    }
+
+    private void initAddItemAction() {
+        addItemAction = new AbstractAction("Add", resourceManager.readImage("Toolbar.AddIcon")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Item newItem = null;
+                try {
+                    newItem = EditItemDialog.showDialog(Application.this);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                if (newItem != null) {
+                    System.out.println(newItem.getName() + " will be added.");
+                    try {
+                        newItem.save();
+                    } catch (SQLException e2) {
+                        JOptionPane.showMessageDialog(Application.this, "Error saving Item: "+ e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        };
+    }
+
+    private void initRefreshItemsAction() {
+        refreshItemsAction = new AbstractAction("Refresh", resourceManager.readImage("Toolbar.RefreshIcon")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
     }
 
 }

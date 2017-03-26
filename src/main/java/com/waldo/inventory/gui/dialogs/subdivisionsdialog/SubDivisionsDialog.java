@@ -90,18 +90,20 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubType);
-                try {
-                    if (object instanceof Product) {
-                        Category c = (Category) selectionCbModel.getSelectedItem();
-                        ((Product) object).setCategoryId(c.getId());
+                if (object != null) {
+                    try {
+                        if (object instanceof Product) {
+                            Category c = (Category) selectionCbModel.getSelectedItem();
+                            ((Product) object).setCategoryId(c.getId());
+                        }
+                        if (object instanceof Type) {
+                            Product p = (Product) selectionCbModel.getSelectedItem();
+                            ((Type) object).setProductId(p.getId());
+                        }
+                        object.save();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
-                    if (object instanceof Type) {
-                        Product p = (Product) selectionCbModel.getSelectedItem();
-                        ((Type) object).setProductId(p.getId());
-                    }
-                    object.save();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
                 }
             }
         };

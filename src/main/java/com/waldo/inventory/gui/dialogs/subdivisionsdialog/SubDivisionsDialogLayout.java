@@ -25,7 +25,7 @@ import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
 
-public class SubDivisionsDialogLayout extends IDialogPanel
+public abstract class SubDivisionsDialogLayout extends IDialogPanel
         implements GuiInterface, CategoriesChangedListener, ProductsChangedListener, TypesChangedListener {
 
     static final int CATEGORIES = 0;
@@ -50,20 +50,18 @@ public class SubDivisionsDialogLayout extends IDialogPanel
     private JLabel selectionLabel;
     JLabel iconLabel;
 
+    /*
+     *                  VARIABLES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    int selectedSubType; // Selection between categories, products or types
     Action addAction;
     Action deleteAction;
     Action editAction;
-
     Action searchAction;
 
     ListSelectionListener subDivisionChangedAction;
     ListSelectionListener detailChangedAction;
     ItemListener selectionCbIndexChanged;
-
-    /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    int selectedSubType; // Selection between categories, products or types
 
     /*
      *                  PRIVATE METHODS

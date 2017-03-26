@@ -38,7 +38,7 @@ public abstract class IDialogPanel extends JPanel {
         buttonsPanel.setVisible(false);
         add(buttonsPanel, BorderLayout.SOUTH);
 
-        URL url = Error.class.getResource("/settings/Settings.properties");
+        URL url = IDialogPanel.class.getResource("/settings/Settings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 

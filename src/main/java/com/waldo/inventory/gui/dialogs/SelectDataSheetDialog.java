@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.gui.Application;
+import jdk.nashorn.internal.scripts.JD;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +17,7 @@ public class SelectDataSheetDialog extends JPanel {
     private final String localLink;
 
     public static void showDialog(Application parent, String onlineLink, String localLink) {
-        dialog = new JDialog(parent, "Create new Item", true);
+        dialog = new JDialog(parent, "Create new Item");
         dialog.getContentPane().add(new SelectDataSheetDialog(onlineLink, localLink));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);

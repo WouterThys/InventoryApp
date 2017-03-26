@@ -6,7 +6,7 @@ import java.sql.*;
 
 public abstract class DbObject {
 
-    public static String TABLE_NAME;
+    public String TABLE_NAME;
 
     public static final int UNKNOWN = 1;
 
@@ -45,7 +45,7 @@ public abstract class DbObject {
     }
 
     protected DbObject(String tableName, String sqlInsert, String sqlUpdate) {
-        this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + TABLE_NAME + " WHERE id = ?");
+        this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + tableName + " WHERE id = ?");
     }
 
     public void save() throws SQLException {
@@ -62,6 +62,7 @@ public abstract class DbObject {
                     if (onTableChangedListener != null) {
                         onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, this);
                     }
+                    System.out.println("Added object to " + TABLE_NAME);
                 }
             } else { // Update
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
@@ -69,6 +70,7 @@ public abstract class DbObject {
                     if (onTableChangedListener != null) {
                         onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, this);
                     }
+                    System.out.println("Updated object in " + TABLE_NAME);
                 }
             }
         }
@@ -80,6 +82,7 @@ public abstract class DbObject {
                 statement.setLong(1, id);
                 statement.execute();
                 id = -1; // Not in database anymore
+                System.out.println("Deleted object from " + TABLE_NAME);
             }
 
             if (onTableChangedListener != null) {
