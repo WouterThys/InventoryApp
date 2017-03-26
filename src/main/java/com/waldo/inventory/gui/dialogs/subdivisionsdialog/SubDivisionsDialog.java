@@ -5,6 +5,8 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.gui.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -19,6 +21,8 @@ import java.util.List;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialog.class);
 
     public static void showDialog(Application parent) {
         SubDivisionsDialog.application = parent;
@@ -91,18 +95,21 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             public void actionPerformed(ActionEvent e) {
                 DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubType);
                 if (object != null) {
-                    try {
-                        if (object instanceof Product) {
-                            Category c = (Category) selectionCbModel.getSelectedItem();
-                            ((Product) object).setCategoryId(c.getId());
-                        }
-                        if (object instanceof Type) {
-                            Product p = (Product) selectionCbModel.getSelectedItem();
-                            ((Type) object).setProductId(p.getId());
-                        }
+                    if (object instanceof Category) {
                         object.save();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
+                        LOG.debug("Adding category " + object.getName());
+                    } else
+                    if (object instanceof Product) {
+                        Category c = (Category) selectionCbModel.getSelectedItem();
+                        ((Product) object).setCategoryId(c.getId());
+                        object.save();
+                        LOG.debug("Adding product " + object.getName());
+                    } else
+                    if (object instanceof Type) {
+                        Product p = (Product) selectionCbModel.getSelectedItem();
+                        ((Type) object).setProductId(p.getId());
+                        object.save();
+                        LOG.debug("Adding type " + object.getName());
                     }
                 }
             }
@@ -118,15 +125,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                             "Delete",
                             JOptionPane.YES_NO_OPTION)) {
 
-                        try {
                             selectedObject.delete();
-                        } catch (SQLException e1) {
-                            JOptionPane.showMessageDialog(SubDivisionsDialog.this,
-                                    "Failed to delete " + selectedObject.getName()+". "+e1.getMessage(),
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
-                            e1.printStackTrace();
-                        }
                     }
                 }
             }
@@ -137,11 +136,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
-                try {
-                    object.save();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
+                object.save();
             }
         };
     }

@@ -1,11 +1,18 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.sql.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public abstract class DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DbObject.class);
     public String TABLE_NAME;
 
     public static final int UNKNOWN = 1;
@@ -48,9 +55,10 @@ public abstract class DbObject {
         this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + tableName + " WHERE id = ?");
     }
 
-    public void save() throws SQLException {
+    private void doSave() throws SQLException {
         try (Connection connection = DbManager.getConnection()) {
             if (id == -1) { // Save
+                LOG.debug("Start adding to " + TABLE_NAME);
                 try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
                     insert(statement);
 
@@ -59,35 +67,77 @@ public abstract class DbObject {
                         id = rs.getLong(1);
                     }
                     setOnTableChangedListener(DbManager.dbInstance());
+                    LOG.debug("Added object to " + TABLE_NAME);
                     if (onTableChangedListener != null) {
                         onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, this);
                     }
-                    System.out.println("Added object to " + TABLE_NAME);
                 }
             } else { // Update
+                LOG.debug("Start updating in " + TABLE_NAME);
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
+                    LOG.debug("Updated object in " + TABLE_NAME);
                     if (onTableChangedListener != null) {
                         onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, this);
                     }
-                    System.out.println("Updated object in " + TABLE_NAME);
                 }
             }
         }
     }
 
-    public void delete() throws SQLException {
+    public void save() {
+        SwingWorker worker = new SwingWorker() {
+            @Override
+            protected Object doInBackground() throws Exception {
+                try {
+                    doSave();
+                } catch (Exception e) {
+                    LOG.error("Failed to save object.", e);
+                }
+                return null;
+            }
+        };
+        worker.execute();
+        try {
+            worker.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            LOG.error("Failed to save object.", e);
+        }
+    }
+
+    private void doDelete() throws SQLException {
         if (id != -1) {
+            LOG.debug("Start deleting in " + TABLE_NAME);
             try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
                 statement.setLong(1, id);
                 statement.execute();
                 id = -1; // Not in database anymore
-                System.out.println("Deleted object from " + TABLE_NAME);
+                LOG.debug("Deleted object from " + TABLE_NAME);
             }
 
             if (onTableChangedListener != null) {
                 onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, this);
             }
+        }
+    }
+
+    public void delete() {
+        SwingWorker worker = new SwingWorker() {
+            @Override
+            protected Object doInBackground() throws Exception {
+                try {
+                    doDelete();
+                } catch (Exception e) {
+                    LOG.error("Failed to delete object.", e);
+                }
+                return null;
+            }
+        };
+        worker.execute();
+        try {
+            worker.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            LOG.error("Failed to delete object.", e);
         }
     }
 

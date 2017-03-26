@@ -12,6 +12,8 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -27,6 +29,8 @@ import static javax.swing.SpringLayout.SOUTH;
 
 public abstract class SubDivisionsDialogLayout extends IDialogPanel
         implements GuiInterface, CategoriesChangedListener, ProductsChangedListener, TypesChangedListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialogLayout.class);
 
     static final int CATEGORIES = 0;
     static final int PRODUCTS = 1;
@@ -225,18 +229,23 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
             if (obj != null) {
                 productId = obj.getId();
-            }
-            if (productId < 0) {
-                productId = 1; // Unknown
-            }
-            detailListModel.removeAllElements();
-            try {
-                for (Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
-                    detailListModel.addElement(t);
+                if (productId < 0) {
+                    productId = 1; // Unknown
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                detailListModel.removeAllElements();
+                try {
+                    for (Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
+                        detailListModel.addElement(t);
+                    }
+                    LOG.debug(obj.getName() + " updated in type list. Product id = " + productId + ". Element count: " + detailListModel.size());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                LOG.debug("Type list not updated, object is null");
             }
+        } else {
+            LOG.error("Type notification for change, but selectedSubType is not TYPES: " + selectedSubType);
         }
     }
 
@@ -261,18 +270,23 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
             if (obj != null) {
                 categoryId = obj.getId();
-            }
-            if (categoryId < 0) {
-                categoryId = 1; // Unknown
-            }
-            detailListModel.removeAllElements();
-            try {
-                for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
-                    detailListModel.addElement(p);
+                if (categoryId < 0) {
+                    categoryId = 1; // Unknown
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                detailListModel.removeAllElements();
+                try {
+                    for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
+                        detailListModel.addElement(p);
+                    }
+                    LOG.debug(obj.getName() + " updated in product list. Category id = " + categoryId + ". Element count: " + detailListModel.size());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                LOG.debug("Category list not updated, object is null");
             }
+        } else {
+            LOG.error("Product notification for change, but selectedSubType is not PRODUCTS: " + selectedSubType);
         }
     }
 
@@ -298,9 +312,12 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
                 for (Category c : DbManager.dbInstance().getCategories()) {
                     detailListModel.addElement(c);
                 }
+                LOG.debug("Category list updated" + ". Element count: " + detailListModel.size());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        } else {
+            LOG.error("Category notification for change, but selectedSubType is not CATEGORIES: " + selectedSubType);
         }
     }
 }

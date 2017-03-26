@@ -4,6 +4,8 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.database.ItemsChangedListener;
 import com.waldo.inventory.gui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -16,13 +18,15 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public abstract class ItemListPanelLayout extends JPanel implements GuiInterface, ItemsChangedListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ItemListPanelLayout.class);
+
     private static final String[] columnNames = {"Name", "Description", "Price", "Data sheet"};
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JTable itemTable;
-    AbstractTableModel tableModel;
+    private AbstractTableModel tableModel;
     Item selectedItem;
 
     /*
@@ -122,20 +126,20 @@ public abstract class ItemListPanelLayout extends JPanel implements GuiInterface
     public void onItemAdded(Item item) {
         tableModel.fireTableDataChanged();
         selectedItem = item;
-        System.out.println("Item list updated: added item " + item.getName());
+        LOG.debug("Item list updated: added item " + item.getName());
     }
 
     @Override
     public void onItemUpdated(Item item) {
         tableModel.fireTableDataChanged();
         selectedItem = item;
-        System.out.println("Item list updated: updated item " + item.getName());
+        LOG.debug("Item list updated: updated item " + item.getName());
     }
 
     @Override
     public void onItemDeleted(Item item) {
         tableModel.fireTableDataChanged();
         selectedItem = null;
-        System.out.println("Item list updated: deleted item " + item.getName());
+        LOG.debug("Item list updated: deleted item " + item.getName());
     }
 }

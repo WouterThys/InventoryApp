@@ -4,6 +4,8 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.panels.itemlist.ItemListPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ import java.sql.SQLException;
 
 public class Application extends JFrame {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     private ResourceManager resourceManager;
 
     private Action refreshItemsAction;
@@ -59,14 +62,9 @@ public class Application extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Item selectedItem = itemListPanel.getSelectedItem();
                 if (selectedItem != null) {
-                    System.out.println(selectedItem.getName() + " will be deleted.");
+                    LOG.debug(selectedItem.getName() + " will be deleted.");
                     if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Application.this, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                        try {
-                            selectedItem.delete();
-                        } catch (SQLException e1) {
-                            JOptionPane.showMessageDialog(Application.this, "Failed to delete the selected contact", "Delete", JOptionPane.ERROR_MESSAGE);
-                            e1.printStackTrace();
-                        }
+                        selectedItem.delete();
                     }
                 }
             }
@@ -84,12 +82,8 @@ public class Application extends JFrame {
                     e1.printStackTrace();
                 }
                 if (selectedItem != null) {
-                    System.out.println(selectedItem.getName() + " will be updated.");
-                    try {
-                        selectedItem.save();
-                    } catch (SQLException e2) {
-                        JOptionPane.showMessageDialog(Application.this, "Error saving Item: "+ e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    LOG.debug(selectedItem.getName() + " will be updated.");
+                    selectedItem.save();
                 }
             }
         };
@@ -106,12 +100,8 @@ public class Application extends JFrame {
                     e1.printStackTrace();
                 }
                 if (newItem != null) {
-                    System.out.println(newItem.getName() + " will be added.");
-                    try {
-                        newItem.save();
-                    } catch (SQLException e2) {
-                        JOptionPane.showMessageDialog(Application.this, "Error saving Item: "+ e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    LOG.debug(newItem.getName() + " will be added.");
+                    newItem.save();
                 }
             }
         };

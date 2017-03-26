@@ -1,9 +1,10 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.gui.adapters.ItemListAdapter;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbManager implements TableChangedListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DbManager.class);
 
     public static final int OBJECT_ADDED = 0;
     public static final int OBJECT_UPDATED = 1;
@@ -479,6 +482,7 @@ public class DbManager implements TableChangedListener {
     private void notifyItemListListeners(int changedHow, DbObject object) {
         if (onItemsChangedListenerList != null) {
             for(ItemsChangedListener l : onItemsChangedListenerList) {
+                LOG.debug("Notifying " + l);
                 switch (changedHow) {
                     case OBJECT_ADDED:
                         l.onItemAdded((Item)object);
@@ -496,62 +500,90 @@ public class DbManager implements TableChangedListener {
 
     private void notifyCategoryListListeners(int changedHow, DbObject object) {
         if (onCategoriesChangedListenerList != null) {
-            for(CategoriesChangedListener l : onCategoriesChangedListenerList) {
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        l.onCategoryAdded((Category) object);
-                        break;
-                    case OBJECT_UPDATED:
-                        l.onCategoryUpdated((Category)object);
-                        break;
-                    case OBJECT_DELETED:
-                        l.onCategoryDeleted((Category)object);
-                        break;
+            if (onCategoriesChangedListenerList.size() > 0) {
+                for (CategoriesChangedListener l : onCategoriesChangedListenerList) {
+                    LOG.debug("Notifying " + l);
+                    switch (changedHow) {
+                        case OBJECT_ADDED:
+                            l.onCategoryAdded((Category) object);
+                            break;
+                        case OBJECT_UPDATED:
+                            l.onCategoryUpdated((Category) object);
+                            break;
+                        case OBJECT_DELETED:
+                            l.onCategoryDeleted((Category) object);
+                            break;
+                    }
                 }
             }
+            else {
+                LOG.debug("No one to notify for category change");
+            }
+        }  else {
+            LOG.debug("No one to notify for category change");
         }
     }
 
     private void notifyProductListListeners(int changedHow, DbObject object) {
         if (onProductsChangedListenerList != null) {
-            for(ProductsChangedListener l : onProductsChangedListenerList) {
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        l.onProductAdded((Product) object);
-                        break;
-                    case OBJECT_UPDATED:
-                        l.onProductUpdated((Product) object);
-                        break;
-                    case OBJECT_DELETED:
-                        l.onProductDeleted((Product) object);
-                        break;
+            if (onProductsChangedListenerList.size() > 0) {
+                for (ProductsChangedListener l : onProductsChangedListenerList) {
+                    LOG.debug("Notifying " + l);
+                    switch (changedHow) {
+                        case OBJECT_ADDED:
+                            l.onProductAdded((Product) object);
+                            break;
+                        case OBJECT_UPDATED:
+                            l.onProductUpdated((Product) object);
+                            break;
+                        case OBJECT_DELETED:
+                            l.onProductDeleted((Product) object);
+                            break;
+                    }
                 }
+            } else {
+                LOG.debug("No one to notify for product change");
             }
+        } else {
+            LOG.debug("No one to notify for product change");
         }
     }
 
     private void notifyTypeListListeners(int changedHow, DbObject object) {
         if (onTypesChangedListenerList != null) {
-            for(TypesChangedListener l : onTypesChangedListenerList) {
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        l.onTypeAdded((Type) object);
-                        break;
-                    case OBJECT_UPDATED:
-                        l.onTypeUpdated((Type) object);
-                        break;
-                    case OBJECT_DELETED:
-                        l.onTypeDeleted((Type)object);
-                        break;
+            if (onTypesChangedListenerList.size() > 0) {
+                for (TypesChangedListener l : onTypesChangedListenerList) {
+                    LOG.debug("Notifying " + l);
+                    switch (changedHow) {
+                        case OBJECT_ADDED:
+                            l.onTypeAdded((Type) object);
+                            break;
+                        case OBJECT_UPDATED:
+                            l.onTypeUpdated((Type) object);
+                            break;
+                        case OBJECT_DELETED:
+                            l.onTypeDeleted((Type) object);
+                            break;
+                    }
                 }
+            } else {
+                LOG.debug("No one to notify for types change");
             }
+        } else {
+            LOG.debug("No one to notify for types change");
         }
     }
 
-
-
     @Override
     public void onTableChanged(String tableName, int changedHow, DbObject object) throws SQLException {
+        String how = "";
+        switch (changedHow) {
+            case OBJECT_ADDED: how = "added"; break;
+            case OBJECT_UPDATED: how = "updated"; break;
+            case OBJECT_DELETED: how = "deleted"; break;
+        }
+        LOG.info(object.getName() + " " + how + " in/from " + tableName);
+
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
@@ -570,13 +602,5 @@ public class DbManager implements TableChangedListener {
                 notifyTypeListListeners(changedHow, object);
                 break;
         }
-
-        String how = "";
-        switch (changedHow) {
-            case OBJECT_ADDED: how = "added"; break;
-            case OBJECT_UPDATED: how = "updated"; break;
-            case OBJECT_DELETED: how = "deleted"; break;
-        }
-        System.out.println(object.getName() + " " + how + " in/from " + tableName);
     }
 }
