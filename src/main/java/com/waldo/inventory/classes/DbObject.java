@@ -56,45 +56,72 @@ public abstract class DbObject {
     }
 
     private void doSave() throws SQLException {
+        setOnTableChangedListener(DbManager.dbInstance());
+
+        long startTime = System.nanoTime();
+        LOG.debug("Start connection open");
+
         try (Connection connection = DbManager.getConnection()) {
+            if (!connection.isValid(5)) {
+                throw new SQLException("Conenction invalid, timed out after 5s...");
+            }
+            LOG.debug("Connection is open");
             if (id == -1) { // Save
-                LOG.debug("Start adding to " + TABLE_NAME);
-                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+                try (Statement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
                     insert(statement);
 
                     try (ResultSet rs = statement.getGeneratedKeys()) {
                         rs.next();
                         id = rs.getLong(1);
                     }
-                    setOnTableChangedListener(DbManager.dbInstance());
-                    LOG.debug("Added object to " + TABLE_NAME);
-                    if (onTableChangedListener != null) {
-                        onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, this);
-                    }
                 }
             } else { // Update
-                LOG.debug("Start updating in " + TABLE_NAME);
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
-                    LOG.debug("Updated object in " + TABLE_NAME);
-                    if (onTableChangedListener != null) {
-                        onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, this);
-                    }
                 }
             }
+            connection.close();
         }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        LOG.debug("Connection was open for: " + duration/1000000 + "ms");
     }
 
     public void save() {
+        final long saveId = id;
         SwingWorker worker = new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
                 try {
+                    LOG.debug("Start save.");
                     doSave();
                 } catch (Exception e) {
                     LOG.error("Failed to save object.", e);
                 }
                 return null;
+            }
+
+            @Override
+            protected void done() {
+                if (saveId < 0) { // Save
+                    LOG.debug("Added object to " + TABLE_NAME);
+                    if (onTableChangedListener != null) {
+                        try {
+                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else { // Update
+                    LOG.debug("Updated object in " + TABLE_NAME);
+                    if (onTableChangedListener != null) {
+                        try {
+                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         };
         worker.execute();
@@ -112,9 +139,9 @@ public abstract class DbObject {
                 statement.setLong(1, id);
                 statement.execute();
                 id = -1; // Not in database anymore
-                LOG.debug("Deleted object from " + TABLE_NAME);
             }
 
+            LOG.debug("Deleted object from " + TABLE_NAME);
             if (onTableChangedListener != null) {
                 onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, this);
             }

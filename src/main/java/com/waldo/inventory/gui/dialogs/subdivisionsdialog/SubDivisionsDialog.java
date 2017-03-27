@@ -95,21 +95,23 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             public void actionPerformed(ActionEvent e) {
                 DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubType);
                 if (object != null) {
-                    if (object instanceof Category) {
-                        object.save();
-                        LOG.debug("Adding category " + object.getName());
-                    } else
-                    if (object instanceof Product) {
-                        Category c = (Category) selectionCbModel.getSelectedItem();
-                        ((Product) object).setCategoryId(c.getId());
-                        object.save();
-                        LOG.debug("Adding product " + object.getName());
-                    } else
-                    if (object instanceof Type) {
-                        Product p = (Product) selectionCbModel.getSelectedItem();
-                        ((Type) object).setProductId(p.getId());
-                        object.save();
-                        LOG.debug("Adding type " + object.getName());
+                    switch (selectedSubType) {
+                        case CATEGORIES:
+                            object.save();
+                            LOG.debug("Adding category " + object.getName());
+                            break;
+                        case PRODUCTS:
+                            Category c = (Category) selectionCbModel.getSelectedItem();
+                            ((Product) object).setCategoryId(c.getId());
+                            object.save();
+                            LOG.debug("Adding product " + object.getName());
+                            break;
+                        case TYPES:
+                            Product p = (Product) selectionCbModel.getSelectedItem();
+                            ((Type) object).setProductId(p.getId());
+                            object.save();
+                            LOG.debug("Adding type " + object.getName());
+                            break;
                     }
                 }
             }

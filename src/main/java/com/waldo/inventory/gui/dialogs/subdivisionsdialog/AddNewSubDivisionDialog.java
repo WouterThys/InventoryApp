@@ -17,6 +17,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
+import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.CATEGORIES;
+import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.PRODUCTS;
+import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.TYPES;
 
 public class AddNewSubDivisionDialog extends IDialogPanel {
 
@@ -30,8 +33,15 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
 
     private Action createAction;
 
-    public static DbObject showDialog(Application application, int type) {
-        dialog = new JDialog(application, "Sub Divisions", true);
+    static DbObject showDialog(Application application, int type) {
+        String title;
+        switch (type) {
+            case CATEGORIES: title = "Add category"; break;
+            case PRODUCTS: title = "Add product"; break;
+            case TYPES: title = "Add type"; break;
+            default: title = "Add";
+        }
+        dialog = new JDialog(application, title, true);
         dialog.getContentPane().add(new AddNewSubDivisionDialog(type));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
@@ -42,8 +52,15 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         return dbObject;
     }
 
-    public static DbObject showDialog(Application application, int type, DbObject object) {
-        dialog = new JDialog(application, "Sub Divisions", true);
+    static DbObject showDialog(Application application, int type, DbObject object) {
+        String title;
+        switch (type) {
+            case CATEGORIES: title = "Edit " + object.getName(); break;
+            case PRODUCTS: title = "Edit " + object.getName(); break;
+            case TYPES: title = "Edit " + object.getName(); break;
+            default: title = "Edit";
+        }
+        dialog = new JDialog(application, title, true);
         dialog.getContentPane().add(new AddNewSubDivisionDialog(type, object));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);

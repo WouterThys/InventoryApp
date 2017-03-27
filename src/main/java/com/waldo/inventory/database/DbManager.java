@@ -44,10 +44,13 @@ public class DbManager implements TableChangedListener {
 
     public void init() {
         dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.sqlite.JDBC");
-        dataSource.setUrl("jdbc:sqlite:data/inventory.db");
+        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
+        dataSource.setUrl("jdbc:log4jdbc:sqlite:data/inventory.db");
         dataSource.setUsername("waldo");
         dataSource.setPassword("");
+        dataSource.setMaxIdle(600);
+        dataSource.setPoolPreparedStatements(true);
+        dataSource.setValidationQueryTimeout(5);
 
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
