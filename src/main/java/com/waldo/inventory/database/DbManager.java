@@ -203,9 +203,9 @@ public class DbManager implements TableChangedListener {
                     i.setIconPath(rs.getString("iconpath"));
                     i.setDescription(rs.getString("description"));
                     i.setPrice(rs.getDouble("price"));
-                    i.setCategory(rs.getInt("category"));
-                    i.setProduct(rs.getInt("product"));
-                    i.setType(rs.getInt("type"));
+                    i.setCategoryId(rs.getInt("category"));
+                    i.setProductId(rs.getInt("product"));
+                    i.setTypeId(rs.getInt("type"));
                     i.setLocalDataSheet(rs.getString("localdatasheet"));
                     i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
 
@@ -433,6 +433,15 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
+    public int findCategoryIndex(long categoryId) throws SQLException {
+        for (int i = 0; i < getCategories().size(); i++) {
+            if (getCategories().get(i).getId() == categoryId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public Product findProductById(long id) throws SQLException {
         for (Product p : getProducts()) {
             if (p.getId() == id) {
@@ -449,6 +458,15 @@ public class DbManager implements TableChangedListener {
             }
         }
         return null;
+    }
+
+    public int findProductIndex(long productId) throws SQLException {
+        for (int i = 0; i < getProducts().size(); i++) {
+            if (getProducts().get(i).getId() == productId) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public int findProductIndex(Product product) throws SQLException {
@@ -475,6 +493,15 @@ public class DbManager implements TableChangedListener {
             }
         }
         return null;
+    }
+
+    public int findTypeIndex(long typeId) throws SQLException {
+        for (int i = 0; i < getTypes().size(); i++) {
+            if (getTypes().get(i).getId() == typeId) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public List<Product> getProductListForCategory(long categoryId) throws SQLException {
