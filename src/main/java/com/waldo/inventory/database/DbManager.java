@@ -50,6 +50,11 @@ public class DbManager implements TableChangedListener {
         dataSource.setPassword("");
         dataSource.setMaxIdle(600);
         dataSource.setPoolPreparedStatements(true);
+        dataSource.setLogAbandoned(true);
+        dataSource.setRemoveAbandoned(true);
+        dataSource.setMaxActive(-1);
+        dataSource.setInitialSize(5);
+        dataSource.setRemoveAbandonedTimeout(1);
         dataSource.setValidationQueryTimeout(5);
 
         Flyway flyway = new Flyway();
@@ -163,11 +168,13 @@ public class DbManager implements TableChangedListener {
             tableNames = new ArrayList<>();
 
             String sql = "SELECT * FROM main.sqlite_master WHERE type='table'";
-            try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    ResultSet rs = stmt.executeQuery();
 
-                while (rs.next()) {
-                    tableNames.add(rs.getString("name"));
+                    while (rs.next()) {
+                        tableNames.add(rs.getString("name"));
+                    }
                 }
             }
         }
@@ -185,24 +192,26 @@ public class DbManager implements TableChangedListener {
         items = new ArrayList<>();
 
         String sql = "SELECT * FROM items ORDER BY id";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Item i = new Item();
-                i.setId(rs.getLong("id"));
-                i.setName(rs.getString("name"));
-                i.setIconPath(rs.getString("iconpath"));
-                i.setDescription(rs.getString("description"));
-                i.setPrice(rs.getDouble("price"));
-                i.setCategory(rs.getInt("category"));
-                i.setProduct(rs.getInt("product"));
-                i.setType(rs.getInt("type"));
-                i.setLocalDataSheet(rs.getString("localdatasheet"));
-                i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
+                while (rs.next()) {
+                    Item i = new Item();
+                    i.setId(rs.getLong("id"));
+                    i.setName(rs.getString("name"));
+                    i.setIconPath(rs.getString("iconpath"));
+                    i.setDescription(rs.getString("description"));
+                    i.setPrice(rs.getDouble("price"));
+                    i.setCategory(rs.getInt("category"));
+                    i.setProduct(rs.getInt("product"));
+                    i.setType(rs.getInt("type"));
+                    i.setLocalDataSheet(rs.getString("localdatasheet"));
+                    i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
 
-                i.setOnTableChangedListener(this);
-                items.add(i);
+                    i.setOnTableChangedListener(this);
+                    items.add(i);
+                }
             }
         }
     }
@@ -244,17 +253,19 @@ public class DbManager implements TableChangedListener {
         categories = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY id";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Category c = new Category();
-                c.setId(rs.getLong("id"));
-                c.setName(rs.getString("name"));
-                c.setIconPath(rs.getString("iconpath"));
+                while (rs.next()) {
+                    Category c = new Category();
+                    c.setId(rs.getLong("id"));
+                    c.setName(rs.getString("name"));
+                    c.setIconPath(rs.getString("iconpath"));
 
-                c.setOnTableChangedListener(this);
-                categories.add(c);
+                    c.setOnTableChangedListener(this);
+                    categories.add(c);
+                }
             }
         }
     }
@@ -296,18 +307,20 @@ public class DbManager implements TableChangedListener {
         products = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY id";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Product p = new Product();
-                p.setId(rs.getLong("id"));
-                p.setName(rs.getString("name"));
-                p.setIconPath(rs.getString("iconpath"));
-                p.setCategoryId(rs.getLong("categoryid"));
+                while (rs.next()) {
+                    Product p = new Product();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+                    p.setCategoryId(rs.getLong("categoryid"));
 
-                p.setOnTableChangedListener(this);
-                products.add(p);
+                    p.setOnTableChangedListener(this);
+                    products.add(p);
+                }
             }
         }
     }
@@ -349,18 +362,20 @@ public class DbManager implements TableChangedListener {
         types = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY id";
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Type t = new Type();
-                t.setId(rs.getLong("id"));
-                t.setName(rs.getString("name"));
-                t.setIconPath(rs.getString("iconpath"));
-                t.setProductId(rs.getLong("productid"));
+                while (rs.next()) {
+                    Type t = new Type();
+                    t.setId(rs.getLong("id"));
+                    t.setName(rs.getString("name"));
+                    t.setIconPath(rs.getString("iconpath"));
+                    t.setProductId(rs.getLong("productid"));
 
-                t.setOnTableChangedListener(this);
-                types.add(t);
+                    t.setOnTableChangedListener(this);
+                    types.add(t);
+                }
             }
         }
     }

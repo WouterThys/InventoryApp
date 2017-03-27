@@ -59,15 +59,14 @@ public abstract class DbObject {
         setOnTableChangedListener(DbManager.dbInstance());
 
         long startTime = System.nanoTime();
-        LOG.debug("Start connection open");
+        try (Connection connection = DbManager.getConnection();){
 
-        try (Connection connection = DbManager.getConnection()) {
             if (!connection.isValid(5)) {
                 throw new SQLException("Conenction invalid, timed out after 5s...");
             }
             LOG.debug("Connection is open");
             if (id == -1) { // Save
-                try (Statement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)){
                     insert(statement);
 
                     try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -76,11 +75,10 @@ public abstract class DbObject {
                     }
                 }
             } else { // Update
-                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
+                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate);) {
                     update(statement);
                 }
             }
-            connection.close();
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
