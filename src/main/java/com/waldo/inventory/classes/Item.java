@@ -9,21 +9,21 @@ public class Item extends DbObject {
     private String description = "";
     private double price = 0;
 
-    private long category = -1;
-    private long product = -1;
-    private long type = -1;
+    private long categoryId = -1;
+    private long productId = -1;
+    private long typeId = -1;
     private String localDataSheet = "";
     private String onlineDataSheet = "";
 
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-                "name, iconpath, description, price, category, product, type, localdatasheet, onlinedatasheet) VALUES " +
+                "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet) VALUES " +
                 "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
 
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, description = ?, price = ?, category = ?, product = ?, type = ?, localdatasheet = ?, onlinedatasheet = ? " +
+                    "SET name = ?, iconpath = ?, description = ?, price = ?, categoryId = ?, productId = ?, typeId = ?, localdatasheet = ?, onlinedatasheet = ? " +
                 "WHERE id = ?;";
 
     public Item() {
@@ -37,9 +37,9 @@ public class Item extends DbObject {
         statement.setString(2, iconPath);
         statement.setString(3, description);
         statement.setDouble(4, price);
-        statement.setLong(5, category);
-        statement.setLong(6, product);
-        statement.setLong(7, type);
+        statement.setLong(5, categoryId);
+        statement.setLong(6, productId);
+        statement.setLong(7, typeId);
         statement.setString(8, localDataSheet);
         statement.setString(9, onlineDataSheet);
         statement.execute();
@@ -51,9 +51,9 @@ public class Item extends DbObject {
         statement.setString(2, iconPath);
         statement.setString(3, description);
         statement.setDouble(4, price);
-        statement.setLong(5, category);
-        statement.setLong(6, product);
-        statement.setLong(7, type);
+        statement.setLong(5, categoryId);
+        statement.setLong(6, productId);
+        statement.setLong(7, typeId);
         statement.setString(8, localDataSheet);
         statement.setString(9, onlineDataSheet);
         statement.setLong(10, id); // WHERE id
@@ -76,28 +76,28 @@ public class Item extends DbObject {
         this.price = price;
     }
 
-    public long getCategory() {
-        return category;
+    public long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(long category) {
-        this.category = category;
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public long getProduct() {
-        return product;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setProduct(long product) {
-        this.product = product;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
-    public long getType() {
-        return type;
+    public long getTypeId() {
+        return typeId;
     }
 
-    public void setType(long type) {
-        this.type = type;
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
     }
 
     public String getLocalDataSheet() {

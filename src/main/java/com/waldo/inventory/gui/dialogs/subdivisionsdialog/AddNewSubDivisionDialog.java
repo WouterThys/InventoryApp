@@ -41,8 +41,9 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
             case TYPES: title = "Add type"; break;
             default: title = "Add";
         }
-        dialog = new JDialog(application, title, true);
-        dialog.getContentPane().add(new AddNewSubDivisionDialog(type));
+        dbObject = null;
+        JDialog dialog = new JDialog(application, title, true);
+        dialog.getContentPane().add(new AddNewSubDivisionDialog(application, dialog, type));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(application);
@@ -60,8 +61,9 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
             case TYPES: title = "Edit " + object.getName(); break;
             default: title = "Edit";
         }
-        dialog = new JDialog(application, title, true);
-        dialog.getContentPane().add(new AddNewSubDivisionDialog(type, object));
+        dbObject = null;
+        JDialog dialog = new JDialog(application, title, true);
+        dialog.getContentPane().add(new AddNewSubDivisionDialog(application, dialog, type, object));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(application);
@@ -71,15 +73,15 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         return dbObject;
     }
 
-    private AddNewSubDivisionDialog(int type) {
-        super();
+    private AddNewSubDivisionDialog(Application application, JDialog dialog, int type) {
+        super(application, dialog);
         objectType = type;
         initComponents();
         initLayouts();
     }
 
-    private AddNewSubDivisionDialog(int type, DbObject object) {
-        this(type);
+    private AddNewSubDivisionDialog(Application application, JDialog dialog, int type, DbObject object) {
+        this(application, dialog, type);
         dbObject = object;
         updateComponents();
     }

@@ -37,6 +37,15 @@ public class Product extends DbObject {
         statement.execute();
     }
 
+    public static Product getUnknownProduct() {
+        Product unknown =  new Product();
+        unknown.setName(UNKNOWN_NAME);
+        unknown.setId(UNKNOWN_ID);
+        unknown.setCategoryId(UNKNOWN_ID);
+        return unknown;
+
+    }
+
     public long getCategoryId() {
         return categoryId;
     }

@@ -13,9 +13,10 @@ import java.util.concurrent.TimeoutException;
 public abstract class DbObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(DbObject.class);
-    public String TABLE_NAME;
+    public static final int UNKNOWN_ID = 1;
+    public static final String UNKNOWN_NAME = "Unknown";
 
-    public static final int UNKNOWN = 1;
+    private String TABLE_NAME;
 
     protected long id = -1;
     protected String name = "";
@@ -23,9 +24,9 @@ public abstract class DbObject {
 
     private TableChangedListener onTableChangedListener;
 
-    private String sqlInsert = "INSERT INTO " + TABLE_NAME + " (name, iconpath) VALUES (?, ?)";
-    private String sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ?, iconpath = ? WHERE id = ?";
-    private String sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+    private String sqlInsert;
+    private String sqlUpdate;
+    private String sqlDelete;
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
@@ -42,10 +43,15 @@ public abstract class DbObject {
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
+
+        this.sqlInsert = "INSERT INTO " + TABLE_NAME + " (name, iconpath) VALUES (?, ?)";
+        this.sqlUpdate = "UPDATE " + TABLE_NAME + " SET name = ?, iconpath = ? WHERE id = ?";
+        this.sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
     }
 
     protected DbObject(String tableName, String sqlInsert, String sqlUpdate, String sqlDelete) {
         this(tableName);
+        // Overwrite values
         this.sqlUpdate = sqlUpdate;
         this.sqlDelete = sqlDelete;
         this.sqlInsert = sqlInsert;
@@ -60,7 +66,6 @@ public abstract class DbObject {
 
         long startTime = System.nanoTime();
         try (Connection connection = DbManager.getConnection();){
-
             if (!connection.isValid(5)) {
                 throw new SQLException("Conenction invalid, timed out after 5s...");
             }

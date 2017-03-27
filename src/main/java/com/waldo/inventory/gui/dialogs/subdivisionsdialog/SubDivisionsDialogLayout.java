@@ -8,6 +8,7 @@ import com.waldo.inventory.database.CategoriesChangedListener;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.ProductsChangedListener;
 import com.waldo.inventory.database.TypesChangedListener;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -66,6 +67,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     ListSelectionListener subDivisionChangedAction;
     ListSelectionListener detailChangedAction;
     ItemListener selectionCbIndexChanged;
+
+    public SubDivisionsDialogLayout(Application application, JDialog dialog) {
+        super(application, dialog);
+    }
 
     /*
      *                  PRIVATE METHODS

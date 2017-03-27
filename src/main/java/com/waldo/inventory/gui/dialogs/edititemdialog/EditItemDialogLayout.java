@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
@@ -58,6 +59,10 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     static Item newItem;
     boolean isNew = false;
 
+    public EditItemDialogLayout(Application application, JDialog dialog) {
+        super(application, dialog);
+    }
+
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -67,7 +72,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         for (Category c : dbInstance().getCategories()) {
             categoryItems.add(c);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (c.getId() == newItem.getCategory()) {
+                if (c.getId() == newItem.getCategoryId()) {
                     selectedIndex = dbInstance().getCategories().indexOf(c);
                 }
             }
@@ -85,7 +90,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         for (Product p : dbInstance().getProducts()) {
             productStrings.add(p);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (p.getId() == newItem.getProduct()) {
+                if (p.getId() == newItem.getProductId()) {
                     selectedIndex = dbInstance().getProducts().indexOf(p);
                 }
             }
@@ -103,7 +108,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         for (com.waldo.inventory.classes.Type t : dbInstance().getTypes()) {
             typeStrings.add(t);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (t.getId() == newItem.getType()) {
+                if (t.getId() == newItem.getTypeId()) {
                     selectedIndex = dbInstance().getTypes().indexOf(t);
                 }
             }
@@ -111,7 +116,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
 
         typeCbModel = new DefaultComboBoxModel<Type>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
-        typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProduct() > DbObject.UNKNOWN));
+        typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedIndex(selectedIndex);
     }
 
@@ -250,46 +255,37 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         descriptionTextArea.setText(newItem.getDescription().trim());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
-        Category c = null;
+        // Combo boxes
         try {
-            c = dbInstance().findCategoryById(newItem.getCategory());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        java.util.List<Category> cl = null;
-        try {
-            cl = dbInstance().getCategories();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        int ndx = (cl != null) ? cl.indexOf(c) : 0;
+            int cNdx = dbInstance().findCategoryIndex(newItem.getCategoryId());
+            int pNdx = dbInstance().findProductIndex(newItem.getProductId());
+            int tNdx = dbInstance().findTypeIndex(newItem.getTypeId());
+            if (cNdx >= 0) {
+                categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
 
-        categoryComboBox.setSelectedIndex(ndx);
+                if (pNdx >= 0) {
+                    productComboBox.setSelectedIndex(pNdx);
 
-        Product p = null;
-        try {
-            p = dbInstance().findProductById(newItem.getProduct());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            productComboBox.setSelectedIndex(dbInstance().getProducts().indexOf(p)); // TODO -> with products for category
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                    if (tNdx >= 0) {
+                        typeComboBox.setSelectedIndex(tNdx);
+                    } else {
+                        typeComboBox.setSelectedIndex(0);
+                    }
+                } else {
+                    productComboBox.setSelectedIndex(0);
+                    typeComboBox.setSelectedIndex(0);
+                }
 
-        Type t = null;
-        try {
-            t = dbInstance().findTypeById(newItem.getType());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            typeComboBox.setSelectedIndex(dbInstance().getTypes().indexOf(t));
+            } else {
+                categoryComboBox.setSelectedIndex(0); // Unknown
+                productComboBox.setSelectedIndex(0);
+                typeComboBox.setSelectedIndex(0);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        // Data sheets
         localDataSheetTextField.setText(newItem.getLocalDataSheet());
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
     }

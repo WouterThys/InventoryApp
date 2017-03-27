@@ -25,9 +25,8 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialog.class);
 
     public static void showDialog(Application parent) {
-        SubDivisionsDialog.application = parent;
-        dialog = new JDialog(parent, "Sub Divisions", true);
-        final SubDivisionsDialog sdd = new SubDivisionsDialog();
+        JDialog dialog = new JDialog(parent, "Sub Divisions", true);
+        final SubDivisionsDialog sdd = new SubDivisionsDialog(parent, dialog);
         dialog.getContentPane().add(sdd);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
@@ -50,8 +49,8 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private int selectedSubNdx = 0;
     private DbObject selectedObject;
 
-    private SubDivisionsDialog() {
-        super();
+    private SubDivisionsDialog(Application application, JDialog dialog) {
+        super(application, dialog);
         initActions();
         initializeComponents();
         initializeLayouts();
@@ -264,7 +263,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             case 0: // Category
                 break;
             case 1: { // Product
-                int ndx = dbInstance().findProductIndex((Product)object);
+                int ndx = dbInstance().findProductIndex(object.getId());
                 if (ndx >= 0) {
                     selectionComboBox.setSelectedIndex(ndx);
                 }

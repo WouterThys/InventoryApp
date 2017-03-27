@@ -9,6 +9,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -25,7 +26,6 @@ public class ITextField extends JTextField implements FocusListener {
     private final Border focusBorder = new CompoundBorder(line, empty);
     private final Border normalBorder = new CompoundBorder(thinLine, empty);
 
-
     private String originalText = hint;
     private Border originalBorder = empty;
     private String originalToolTip = "";
@@ -34,6 +34,7 @@ public class ITextField extends JTextField implements FocusListener {
 
     public ITextField() {
         this("", 15);
+        addMenu();
     }
 
     public ITextField(String hint) {
@@ -158,5 +159,26 @@ public class ITextField extends JTextField implements FocusListener {
                 textField.setText(ITextField.this.getText());
             }
         });
+    }
+
+    private void addMenu() {
+        JPopupMenu menu = new JPopupMenu();
+
+        Action cut = new DefaultEditorKit.CutAction();
+        cut.putValue(Action.NAME, "Cut");
+        cut.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
+        menu.add( cut );
+
+        Action copy = new DefaultEditorKit.CopyAction();
+        copy.putValue(Action.NAME, "Copy");
+        copy.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
+        menu.add( copy );
+
+        Action paste = new DefaultEditorKit.PasteAction();
+        paste.putValue(Action.NAME, "Paste");
+        paste.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
+        menu.add( paste );
+
+        setComponentPopupMenu(menu);
     }
 }

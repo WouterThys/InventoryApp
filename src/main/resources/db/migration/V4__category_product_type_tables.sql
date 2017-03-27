@@ -14,10 +14,7 @@ CREATE TABLE types (
 );
 
 INSERT INTO categories (name) VALUES ('Unknown');
-INSERT INTO categories (name) VALUES ('<New>');
 
 INSERT INTO products (name) VALUES ('Unknown');
-INSERT INTO products (name) VALUES ('<New>');
 
 INSERT INTO types (name) VALUES ('Unknown');
-INSERT INTO types (name) VALUES ('<New>');

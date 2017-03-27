@@ -191,7 +191,7 @@ public class DbManager implements TableChangedListener {
     private void updateItems() throws SQLException {
         items = new ArrayList<>();
 
-        String sql = "SELECT * FROM items ORDER BY id";
+        String sql = "SELECT * FROM items ORDER BY name";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -203,14 +203,16 @@ public class DbManager implements TableChangedListener {
                     i.setIconPath(rs.getString("iconpath"));
                     i.setDescription(rs.getString("description"));
                     i.setPrice(rs.getDouble("price"));
-                    i.setCategoryId(rs.getInt("category"));
-                    i.setProductId(rs.getInt("product"));
-                    i.setTypeId(rs.getInt("type"));
+                    i.setCategoryId(rs.getInt("categoryid"));
+                    i.setProductId(rs.getInt("productid"));
+                    i.setTypeId(rs.getInt("typeid"));
                     i.setLocalDataSheet(rs.getString("localdatasheet"));
                     i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
 
-                    i.setOnTableChangedListener(this);
-                    items.add(i);
+
+                        i.setOnTableChangedListener(this);
+                        items.add(i);
+
                 }
             }
         }
@@ -252,7 +254,7 @@ public class DbManager implements TableChangedListener {
     private void updateCategories() throws SQLException {
         categories = new ArrayList<>();
 
-        String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY id";
+        String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -263,11 +265,14 @@ public class DbManager implements TableChangedListener {
                     c.setName(rs.getString("name"));
                     c.setIconPath(rs.getString("iconpath"));
 
-                    c.setOnTableChangedListener(this);
-                    categories.add(c);
+                    if (c.getId() != DbObject.UNKNOWN_ID) {
+                        c.setOnTableChangedListener(this);
+                        categories.add(c);
+                    }
                 }
             }
         }
+        categories.add(0, Category.getUnknownCategory());
     }
 
     public void getCategoriesAsync(final List<Category> categories) {
@@ -306,7 +311,7 @@ public class DbManager implements TableChangedListener {
     private void updateProducts() throws SQLException {
         products = new ArrayList<>();
 
-        String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY id";
+        String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -318,11 +323,15 @@ public class DbManager implements TableChangedListener {
                     p.setIconPath(rs.getString("iconpath"));
                     p.setCategoryId(rs.getLong("categoryid"));
 
-                    p.setOnTableChangedListener(this);
-                    products.add(p);
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        p.setOnTableChangedListener(this);
+                        products.add(p);
+                    }
                 }
             }
         }
+
+        products.add(0, Product.getUnknownProduct());
     }
 
     public void getProductsAsync(final List<Product> products) {
@@ -361,7 +370,7 @@ public class DbManager implements TableChangedListener {
     private void updateTypes() throws SQLException {
         types = new ArrayList<>();
 
-        String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY id";
+        String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -373,11 +382,14 @@ public class DbManager implements TableChangedListener {
                     t.setIconPath(rs.getString("iconpath"));
                     t.setProductId(rs.getLong("productid"));
 
-                    t.setOnTableChangedListener(this);
-                    types.add(t);
+                    if (t.getId() != 1) {
+                        t.setOnTableChangedListener(this);
+                        types.add(t);
+                    }
                 }
             }
         }
+        types.add(0, Type.getUnknownType());
     }
 
     public void getTypesAsync(final List<Type> types) {
@@ -415,6 +427,15 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
+    public Item findItemByName(String name) throws SQLException {
+        for (Item i : getItems()) {
+            if (i.getName().equals(name)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
     public Category findCategoryById(long id) throws SQLException {
         for (Category c : getCategories()) {
             if (c.getId() == id) {
@@ -433,9 +454,9 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findCategoryIndex(long categoryId) throws SQLException {
+    public int findCategoryIndex(long categoryNdx) throws SQLException {
         for (int i = 0; i < getCategories().size(); i++) {
-            if (getCategories().get(i).getId() == categoryId) {
+            if (getCategories().get(i).getId() == categoryNdx) {
                 return i;
             }
         }
@@ -460,19 +481,11 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findProductIndex(long productId) throws SQLException {
+    public int findProductIndex(long productNdx) throws SQLException {
         for (int i = 0; i < getProducts().size(); i++) {
-            if (getProducts().get(i).getId() == productId) {
+            if (getProducts().get(i).getId() == productNdx) {
                 return i;
             }
-        }
-        return -1;
-    }
-
-    public int findProductIndex(Product product) throws SQLException {
-        Product p = findProductById(product.getId());
-        if (p != null) {
-            return getProducts().indexOf(p);
         }
         return -1;
     }
@@ -495,9 +508,9 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findTypeIndex(long typeId) throws SQLException {
+    public int findTypeIndex(long typeNdx) throws SQLException {
         for (int i = 0; i < getTypes().size(); i++) {
-            if (getTypes().get(i).getId() == typeId) {
+            if (getTypes().get(i).getId() == typeNdx) {
                 return i;
             }
         }

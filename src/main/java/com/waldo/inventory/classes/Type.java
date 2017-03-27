@@ -37,6 +37,14 @@ public class Type extends DbObject {
         statement.execute();
     }
 
+    public static Type getUnknownType() {
+        Type unknown =  new Type();
+        unknown.setName(UNKNOWN_NAME);
+        unknown.setId(UNKNOWN_ID);
+        unknown.setProductId(UNKNOWN_ID);
+        return unknown;
+    }
+
     public long getProductId() {
         return productId;
     }

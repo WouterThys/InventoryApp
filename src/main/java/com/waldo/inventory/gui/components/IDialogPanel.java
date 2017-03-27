@@ -1,25 +1,18 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.Error;
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.RoundedButtonBorder;
 import com.waldo.inventory.gui.Application;
-import sun.awt.WindowClosingListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowListener;
 import java.net.URL;
-
-import static javax.swing.SpringLayout.*;
 
 public abstract class IDialogPanel extends JPanel {
 
-    protected static JDialog dialog;
-    protected static Application application;
+    protected JDialog dialog;
+    protected Application application;
 
     private JPanel contentPanel;
     private JPanel buttonsPanel;
@@ -30,8 +23,10 @@ public abstract class IDialogPanel extends JPanel {
 
     protected ResourceManager resourceManager;
 
-    public IDialogPanel() {
+    public IDialogPanel(Application application, JDialog dialog) {
         super(new BorderLayout());
+        this.application = application;
+        this.dialog = dialog;
         contentPanel = new JPanel();
         add(contentPanel, BorderLayout.CENTER);
         buttonsPanel = createButtonPanel();
