@@ -31,7 +31,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         });
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(parent);
-        dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);
         return newItem;
@@ -51,7 +50,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         });
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(parent);
-        dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);
         return newItem;
@@ -61,8 +59,8 @@ public class EditItemDialog extends EditItemDialogLayout {
         super(application, dialog);
         newItem = item;
         isNew = false;
-        initActions();
         initializeComponents();
+        initActions();
         initializeLayouts();
         updateComponents(null);
     }
@@ -73,12 +71,60 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
     private void initActions() {
+        // Component panel actions
         initIconDoubleClicked();
-        initLocalDataSheetAction();
         initCreateAction();
         initCancelAction();
         initCategoryChangedAction();
         initProductChangedAction();
+    }
+
+    private void initCreateAction() {
+        createAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (verify()) {
+                    // Create item
+                    newItem.setName(componentPanel.getNameFieldValue());
+                    newItem.setDescription(componentPanel.getDescriptionFieldValue());
+                    String priceTxt = componentPanel.getPriceFieldValue();
+                    if (!priceTxt.isEmpty()) {
+                        newItem.setPrice(Double.valueOf(priceTxt));
+                    }
+
+                    try {
+                        newItem.setCategoryId(componentPanel.getCbCategoryId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        newItem.setProductId(componentPanel.getCbProductId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        newItem.setTypeId(componentPanel.getCbTypeId());
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
+                    newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
+
+                    // Close dialog
+                    close();
+                }
+            }
+        };
+    }
+    private void initCancelAction() {
+        cancelAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newItem = null;
+                close();
+            }
+        };
     }
 
     private void initIconDoubleClicked() {
@@ -105,123 +151,46 @@ public class EditItemDialog extends EditItemDialogLayout {
             }
         };
     }
-    private void initLocalDataSheetAction() {
-        localDataSheetAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                localDataSheetFileChooser.setCurrentDirectory(new File("."));
-                localDataSheetFileChooser.setDialogTitle("Select the data sheet");
-                localDataSheetFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (localDataSheetFileChooser.showOpenDialog(EditItemDialog.this) == JFileChooser.APPROVE_OPTION) {
-                    localDataSheetTextField.setText(localDataSheetFileChooser.getSelectedFile().getAbsolutePath());
-                }
-            }
-        };
-    }
-    private void initCreateAction() {
-        createAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (verify()) {
-                    // Create item
-                    newItem.setName(nameTextField.getText());
-                    newItem.setDescription(descriptionTextArea.getText());
-                    String priceTxt = priceTextField.getText();
-                    if (!priceTxt.isEmpty()) {
-                        newItem.setPrice(Double.valueOf(priceTxt));
-                    }
 
-                    try {
-                        newItem.setCategoryId(getCategoryId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        newItem.setProductId(getProductId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        newItem.setTypeId(getTypeId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    newItem.setLocalDataSheet(localDataSheetTextField.getText());
-                    newItem.setOnlineDataSheet(onlineDataSheetTextField.getText());
-
-                    // Close dialog
-                    close();
-                }
-            }
-        };
-    }
-    private void initCancelAction() {
-        cancelAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                newItem = null;
-                close();
-            }
-        };
-    }
     private void initCategoryChangedAction() {
-        categoryChangedAction = e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Category selectedCategory = (Category) e.getItem();
-                if (productComboBox != null) {
-                    productComboBox.setEnabled(selectedCategory.getId() > UNKNOWN_ID); // Bigger than "UNKNOWN"
-
-                    productCbModel.removeAllElements();
-                    try {
-                        productCbModel.addElement(dbInstance().getProducts().get(0)); // Add unknown
-                        for (Product p : dbInstance().getProductListForCategory(selectedCategory.getId())) {
-                            productCbModel.addElement(p);
+        componentPanel.setCategoryChangedAction(
+                e -> {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        Category selectedCategory = (Category) e.getItem();
+                        if (componentPanel.getProductComboBox() != null) {
+                            componentPanel.getProductComboBox().setEnabled(selectedCategory.getId() > UNKNOWN_ID); // Bigger than "UNKNOWN"
+                            componentPanel.updateProductCbValues(selectedCategory.getId());
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
+                        if (componentPanel.getTypeComboBox() != null) {
+                            componentPanel.getTypeComboBox().setEnabled(selectedCategory.getId() > 1);
+                        }
                     }
-
-                }
-                if (typeComboBox != null) {
-                    typeComboBox.setEnabled(selectedCategory.getId() > 1);
-                }
-            }
-        };
+                });
     }
     private void initProductChangedAction() {
-        productChangedAction = e -> {
+        componentPanel.setProductChangedAction(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Product selectedProduct = (Product) e.getItem();
-                if (typeComboBox != null) {
-                    typeComboBox.setEnabled(selectedProduct.getId() > 1); // Bigger than "UNKNOWN"
-
-                    typeCbModel.removeAllElements();
-                    try {
-                        typeCbModel.addElement(dbInstance().getTypes().get(0)); // Add unknown
-                        for (Type t : dbInstance().getTypeListForProduct(selectedProduct.getId())) {
-                            typeCbModel.addElement(t);
-                        }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                if (componentPanel.getTypeComboBox() != null) {
+                    componentPanel.getTypeComboBox().setEnabled(selectedProduct.getId() > 1); // Bigger than "UNKNOWN"
+                    componentPanel.updateTypeCbValues(selectedProduct.getId());
                 }
             }
-        };
+        });
     }
 
     private boolean verify() {
         boolean ok = true;
 
-        String name = nameTextField.getText();
+        String name = componentPanel.getNameFieldValue();
         if (name.isEmpty()) {
-            nameTextField.setError("Name can not be empty");
+            componentPanel.setNameFieldError("Name can not be empty");
             ok = false;
         } else {
             try {
                 Item check = dbInstance().findItemByName(name);
                 if (check != null) {
-                    nameTextField.setError("Name already exists in items");
+                    componentPanel.setNameFieldError("Name already exists in items");
                     ok = false;
                 }
             } catch (SQLException e) {
@@ -229,49 +198,16 @@ public class EditItemDialog extends EditItemDialogLayout {
             }
         }
 
-        String price = priceTextField.getText();
+        String price = componentPanel.getPriceFieldValue();
         try {
             Double.valueOf(price);
         } catch (Exception e) {
-            priceTextField.setError("This should be a number");
+            componentPanel.setNameFieldError("This should be a number");
             ok = false;
         }
         return ok;
     }
 
-    private long getCategoryId() throws SQLException {
-        int ndx = categoryComboBox.getSelectedIndex();
-        if (ndx >= 0) {
-            return dbInstance().getCategories().get(ndx).getId();
-        } else {
-            return UNKNOWN_ID;
-        }
-    }
 
-    private long getProductId() throws SQLException {
-        if (productComboBox.isEnabled()) {
-            int ndx = productComboBox.getSelectedIndex();
-            if (ndx >= 0) {
-                return dbInstance().getProducts().get(ndx).getId();
-            } else {
-                return UNKNOWN_ID;
-            }
-        } else {
-            return UNKNOWN_ID;
-        }
-    }
-
-    private long getTypeId() throws SQLException {
-        if (typeComboBox.isEnabled()) {
-            int ndx = typeComboBox.getSelectedIndex();
-            if (ndx >= 0) {
-                return dbInstance().getTypes().get(ndx).getId();
-            } else {
-                return UNKNOWN_ID;
-            }
-        } else {
-            return UNKNOWN_ID;
-        }
-    }
 
 }

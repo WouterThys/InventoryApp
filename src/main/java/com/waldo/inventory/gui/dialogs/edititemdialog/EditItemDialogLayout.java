@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -30,34 +31,24 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILabel titleIconLabel;
     private ILabel titleNameLabel;
-    private JTextField idTextField;
-    ITextField nameTextField;
-    JTextArea descriptionTextArea;
-    ITextField priceTextField;
-    JComboBox<Category> categoryComboBox;
-    JComboBox<Product> productComboBox;
-    DefaultComboBoxModel<Product> productCbModel;
-    DefaultComboBoxModel<Type> typeCbModel;
-    JComboBox<Type> typeComboBox;
 
-    // Data sheet
-    JTextField localDataSheetTextField;
-    private JButton localDataSheetButton;
-    JFileChooser localDataSheetFileChooser;
-    JTextField onlineDataSheetTextField;
+    private JTabbedPane tabbedPane;
 
-    Action createAction;
-    Action cancelAction;
-    Action localDataSheetAction;
-    MouseAdapter titleIconDoubleClicked;
-    ItemListener categoryChangedAction;
-    ItemListener productChangedAction;
+    ComponentPanel componentPanel;
+    JPanel manufacturerPanel;
+    JPanel locationPanel;
+    JPanel orderPanel;
+
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     static Item newItem;
     boolean isNew = false;
+
+    Action createAction;
+    Action cancelAction;
+    MouseAdapter titleIconDoubleClicked;
 
     public EditItemDialogLayout(Application application, JDialog dialog) {
         super(application, dialog);
@@ -66,60 +57,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void createCategoryCb() throws SQLException {
-        int selectedIndex = 0;
-        Vector<Category> categoryItems = new Vector<>();
-        for (Category c : dbInstance().getCategories()) {
-            categoryItems.add(c);
-            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (c.getId() == newItem.getCategoryId()) {
-                    selectedIndex = dbInstance().getCategories().indexOf(c);
-                }
-            }
-        }
-
-        DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<Category>(categoryItems);
-        categoryComboBox = new JComboBox<>(categoryCbModel);
-        categoryComboBox.addItemListener(categoryChangedAction);
-        categoryComboBox.setSelectedIndex(selectedIndex);
-    }
-
-    private void createProductCb() throws SQLException {
-        int selectedIndex = 0;
-        Vector<Product> productStrings = new Vector<>();
-        for (Product p : dbInstance().getProducts()) {
-            productStrings.add(p);
-            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (p.getId() == newItem.getProductId()) {
-                    selectedIndex = dbInstance().getProducts().indexOf(p);
-                }
-            }
-        }
-
-        productCbModel = new DefaultComboBoxModel<>(productStrings);
-        productComboBox = new JComboBox<>(productCbModel);
-        productComboBox.addItemListener(productChangedAction);
-        productComboBox.setSelectedIndex(selectedIndex);
-    }
-
-    private void createTypeCb() throws SQLException {
-        int selectedIndex = 0;
-        Vector<Type> typeStrings = new Vector<>();
-        for (com.waldo.inventory.classes.Type t : dbInstance().getTypes()) {
-            typeStrings.add(t);
-            if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
-                if (t.getId() == newItem.getTypeId()) {
-                    selectedIndex = dbInstance().getTypes().indexOf(t);
-                }
-            }
-        }
-
-        typeCbModel = new DefaultComboBoxModel<Type>(typeStrings);
-        typeComboBox = new JComboBox<>(typeCbModel);
-        typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
-        typeComboBox.setSelectedIndex(selectedIndex);
-    }
-
 
     @Override
     public void initializeComponents() {
@@ -130,65 +67,30 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         titleNameLabel = new ILabel("?");
         titleNameLabel.setFontSize(36);
 
-        // Identification
-        idTextField = new ITextField();
-        idTextField.setEditable(false);
-        idTextField.setEnabled(false);
+        // Tabbed pane
+        tabbedPane = new JTabbedPane();
 
-        nameTextField = new ITextField();
-        nameTextField.setTrackingField(titleNameLabel);
-        descriptionTextArea = new ITextArea();
+        // Panels
+        componentPanel = new ComponentPanel(newItem);
+        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
+        componentPanel.initializeComponents();
+        componentPanel.setNameTextFieldTracker(titleNameLabel);
 
-        NumberFormat format = NumberFormat.getInstance();
-        NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Double.class);
-        formatter.setMinimum(Double.MIN_VALUE);
-        formatter.setMaximum(Double.MAX_VALUE);
-        formatter.setAllowsInvalid(false);
-        formatter.setCommitsOnValidEdit(true); // Commit on every key press
-        priceTextField = new ITextField();
+        manufacturerPanel = new JPanel();
+        manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
 
-        // Combo boxes
-        try {
-            createCategoryCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            createProductCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            createTypeCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        locationPanel = new JPanel();
+        locationPanel.setLayout(new BoxLayout(locationPanel, BoxLayout.Y_AXIS));
 
-        // Local data sheet
-        localDataSheetTextField = new ITextField();
-        localDataSheetTextField.setToolTipText(localDataSheetTextField.getText());
-        localDataSheetFileChooser = new JFileChooser();
-        localDataSheetButton = new JButton(ImageUtils.loadImageIcon("folder"));
-        localDataSheetButton.addActionListener(localDataSheetAction);
+        orderPanel = new JPanel();
+        orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.Y_AXIS));
 
-        // Online data sheet
-        onlineDataSheetTextField = new ITextField();
+
     }
 
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
-
-        // Additional stuff
-        JPanel local = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = createFieldConstraints(0,0);
-        constraints.gridwidth = 1;
-        local.add(localDataSheetTextField, constraints);
-        constraints = createFieldConstraints(1,0);
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.1;
-        local.add(localDataSheetButton, constraints);
 
         // Title
         JPanel titlePanel = new JPanel();
@@ -205,32 +107,19 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         titlePanel.setPreferredSize(new Dimension(200, 60));
         titlePanel.setLayout(layout);
 
+        // Component panel
+        componentPanel.initializeLayouts();
+
         // Add all
         getContentPanel().add(titlePanel);
 
-        getContentPanel().add(new ITitledEditPanel(
-                "Identification",
-                new String[] {"Database ID: ", "Name: "},
-                new JComponent[] {idTextField, nameTextField}
-        ));
+        tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
+        tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), manufacturerPanel, "Manufacturer info");
+        tabbedPane.addTab("Location", resourceManager.readImage("EditItem.LocationIcon"), locationPanel, "Location info");
+        tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Order info");
+        tabbedPane.setPreferredSize(new Dimension(600, 600));
 
-        getContentPanel().add(new ITitledEditPanel(
-                "Sub divisions",
-                new String[] {"Category: ", "Product: ", "Type: "},
-                new JComponent[] {categoryComboBox, productComboBox, typeComboBox}
-        ));
-
-        getContentPanel().add(new ITitledEditPanel(
-                "Data sheets",
-                new String[] {"Local: ", "Online: "},
-                new JComponent[] {local, onlineDataSheetTextField}
-        ));
-
-        getContentPanel().add(new ITitledEditPanel(
-                "Info",
-                new String[] {"Price: ", "Description: "},
-                new JComponent[] {priceTextField, descriptionTextArea}
-        ));
+        getContentPanel().add(tabbedPane);
 
         // Buttons
         String txt  = isNew ? "Create" : "Save";
@@ -250,43 +139,11 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         }
         titleNameLabel.setText(newItem.getName().trim());
 
-        idTextField.setText(String.valueOf(newItem.getId()));
-        nameTextField.setText(newItem.getName().trim());
-        descriptionTextArea.setText(newItem.getDescription().trim());
-        priceTextField.setText(String.valueOf(newItem.getPrice()));
-
-        // Combo boxes
-        try {
-            int cNdx = dbInstance().findCategoryIndex(newItem.getCategoryId());
-            int pNdx = dbInstance().findProductIndex(newItem.getProductId());
-            int tNdx = dbInstance().findTypeIndex(newItem.getTypeId());
-            if (cNdx >= 0) {
-                categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
-
-                if (pNdx >= 0) {
-                    productComboBox.setSelectedIndex(pNdx);
-
-                    if (tNdx >= 0) {
-                        typeComboBox.setSelectedIndex(tNdx);
-                    } else {
-                        typeComboBox.setSelectedIndex(0);
-                    }
-                } else {
-                    productComboBox.setSelectedIndex(0);
-                    typeComboBox.setSelectedIndex(0);
-                }
-
-            } else {
-                categoryComboBox.setSelectedIndex(0); // Unknown
-                productComboBox.setSelectedIndex(0);
-                typeComboBox.setSelectedIndex(0);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Data sheets
-        localDataSheetTextField.setText(newItem.getLocalDataSheet());
-        onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
+        // Component panel
+        componentPanel.updateComponents(null);
     }
+
+    /*
+     *                  GETTERS - SETTERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 }
