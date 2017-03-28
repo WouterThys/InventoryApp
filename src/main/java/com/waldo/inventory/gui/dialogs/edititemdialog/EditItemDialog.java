@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -71,10 +72,13 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
     private void initActions() {
-        // Component panel actions
-        initIconDoubleClicked();
+        // Top Panel
         initCreateAction();
         initCancelAction();
+        initIconDoubleClicked();
+        initTabChangedAction();
+
+        // Component panel actions
         initCategoryChangedAction();
         initProductChangedAction();
     }
@@ -126,19 +130,18 @@ public class EditItemDialog extends EditItemDialogLayout {
             }
         };
     }
-
     private void initIconDoubleClicked() {
-        titleIconDoubleClicked = new MouseAdapter() {
+        titleIconLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     JLabel lbl = (JLabel)e.getSource();
-                    FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "jpeg");
-                    JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setFileFilter(filter);
+
+                    JFileChooser fileChooser = ImageFileChooser.getFileChooser();
                     fileChooser.setCurrentDirectory(new File("./Images/ItemImages/"));
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    if (fileChooser.showOpenDialog(EditItemDialog.this) == JFileChooser.APPROVE_OPTION) {
+
+                    if (fileChooser.showDialog(EditItemDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
                         newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
@@ -149,7 +152,10 @@ public class EditItemDialog extends EditItemDialogLayout {
                     }
                 }
             }
-        };
+        });
+    }
+    private void initTabChangedAction() {
+        tabbedPane.addChangeListener(e -> updateComponents(null));
     }
 
     private void initCategoryChangedAction() {

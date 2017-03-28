@@ -6,8 +6,12 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.LocationPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ManufacturerPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.OrderPanel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,15 +33,15 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel titleIconLabel;
-    private ILabel titleNameLabel;
+    ILabel titleIconLabel;
+    ILabel titleNameLabel;
 
-    private JTabbedPane tabbedPane;
+    JTabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    JPanel manufacturerPanel;
-    JPanel locationPanel;
-    JPanel orderPanel;
+    ManufacturerPanel manufacturerPanel;
+    LocationPanel locationPanel;
+    OrderPanel orderPanel;
 
 
     /*
@@ -48,7 +52,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
 
     Action createAction;
     Action cancelAction;
-    MouseAdapter titleIconDoubleClicked;
 
     public EditItemDialogLayout(Application application, JDialog dialog) {
         super(application, dialog);
@@ -63,7 +66,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         // Title
         titleIconLabel = new ILabel(resourceManager.readImage("Common.UnknownIcon48"));
         titleIconLabel.setPreferredSize(new Dimension(48,48));
-        titleIconLabel.addMouseListener(titleIconDoubleClicked);
         titleNameLabel = new ILabel("?");
         titleNameLabel.setFontSize(36);
 
@@ -76,15 +78,17 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         componentPanel.initializeComponents();
         componentPanel.setNameTextFieldTracker(titleNameLabel);
 
-        manufacturerPanel = new JPanel();
+        manufacturerPanel = new ManufacturerPanel(newItem);
         manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
+        manufacturerPanel.initializeComponents();
 
-        locationPanel = new JPanel();
+        locationPanel = new LocationPanel(newItem);
         locationPanel.setLayout(new BoxLayout(locationPanel, BoxLayout.Y_AXIS));
+        locationPanel.initializeComponents();
 
-        orderPanel = new JPanel();
+        orderPanel = new OrderPanel(newItem);
         orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.Y_AXIS));
-
+        orderPanel.initializeComponents();
 
     }
 
@@ -109,16 +113,19 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
 
         // Component panel
         componentPanel.initializeLayouts();
+        manufacturerPanel.initializeLayouts();
+        locationPanel.initializeLayouts();
+        orderPanel.initializeLayouts();
 
-        // Add all
-        getContentPanel().add(titlePanel);
-
+        // Add tabs
         tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), manufacturerPanel, "Manufacturer info");
         tabbedPane.addTab("Location", resourceManager.readImage("EditItem.LocationIcon"), locationPanel, "Location info");
         tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Order info");
         tabbedPane.setPreferredSize(new Dimension(600, 600));
 
+        // Add all
+        getContentPanel().add(titlePanel);
         getContentPanel().add(tabbedPane);
 
         // Buttons
@@ -140,7 +147,12 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         titleNameLabel.setText(newItem.getName().trim());
 
         // Component panel
-        componentPanel.updateComponents(null);
+        switch (tabbedPane.getSelectedIndex()) {
+            case 0:
+        }
+
+        ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
+        //componentPanel.updateComponents(null);
     }
 
     /*

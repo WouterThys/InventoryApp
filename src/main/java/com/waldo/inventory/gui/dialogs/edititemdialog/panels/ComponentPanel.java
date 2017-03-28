@@ -6,6 +6,8 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -22,6 +24,8 @@ import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ComponentPanel.class);
 
     private Item newItem;
 
@@ -262,6 +266,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     @Override
     public void updateComponents(Object object) {
+        LOG.debug("Component panel: update components.");
+
         idTextField.setText(String.valueOf(newItem.getId()));
         nameTextField.setText(newItem.getName().trim());
         descriptionTextArea.setText(newItem.getDescription().trim());
