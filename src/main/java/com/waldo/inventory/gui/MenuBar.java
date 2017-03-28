@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
@@ -37,10 +36,23 @@ public class MenuBar extends JMenuBar {
         // Database menu
         JMenu dbMenu = new JMenu("Database");
 
-        JMenuItem subDivisions = new JMenuItem("Edit sub divisions", resourceManager.readImage("MenuBar.EditSubDivisionsIcon"));
+        JMenuItem subDivisions = new JMenuItem("Sub divisions", resourceManager.readImage("MenuBar.EditSubDivisionsIcon"));
         subDivisions.addActionListener(subDivisionsSelected());
 
+        JMenuItem manufacturers = new JMenuItem("Manufacturers", resourceManager.readImage("MenuBar.EditManufacturers"));
+        manufacturers.addActionListener(manufacturersSelected());
+
+        JMenuItem orders = new JMenuItem("Orders", resourceManager.readImage("MenuBar.EditOrders"));
+        orders.addActionListener(ordersSelected());
+
+        JMenuItem locations = new JMenuItem("Locations", resourceManager.readImage("MenuBar.EditLocations"));
+        locations.addActionListener(locationsSelected());
+
         dbMenu.add(subDivisions);
+        dbMenu.addSeparator();
+        dbMenu.add(manufacturers);
+        dbMenu.add(orders);
+        dbMenu.add(locations);
 
 
         // Add menus
@@ -49,11 +61,18 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener subDivisionsSelected() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SubDivisionsDialog.showDialog(application);
-            }
-        };
+        return e -> SubDivisionsDialog.showDialog(application);
+    }
+
+    private ActionListener manufacturersSelected() {
+        return null;
+    }
+
+    private ActionListener ordersSelected() {
+        return null;
+    }
+
+    private ActionListener locationsSelected() {
+        return null;
     }
 }

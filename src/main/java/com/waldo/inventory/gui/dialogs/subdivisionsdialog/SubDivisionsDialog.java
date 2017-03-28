@@ -39,7 +39,8 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 super.windowClosing(e);
             }
         });
-        dialog.setLocationRelativeTo(parent);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(null);
         //dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);

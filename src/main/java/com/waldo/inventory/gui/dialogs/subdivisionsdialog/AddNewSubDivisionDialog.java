@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
+import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -15,6 +16,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.CATEGORIES;
@@ -26,7 +29,6 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
     private ITextField nameTextField;
     private ITextField iconPathTextField;
     private JButton browseIconButton;
-    private JFileChooser iconPathChooser;
 
     private static DbObject dbObject;
     private int objectType;
@@ -109,17 +111,16 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
         iconPathTextField = new ITextField();
 
         // File chooser
-        iconPathChooser = new JFileChooser();
         browseIconButton = new JButton(resourceManager.readImage("Common.BrowseIcon"));
         browseIconButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "jpeg");
-                iconPathChooser.setCurrentDirectory(new File("."));
-                iconPathChooser.setDialogTitle("Select the data sheet");
-                iconPathChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (iconPathChooser.showOpenDialog(AddNewSubDivisionDialog.this) == JFileChooser.APPROVE_OPTION) {
-                    iconPathTextField.setText(iconPathChooser.getSelectedFile().getAbsolutePath());
+                JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+                fileChooser.setCurrentDirectory(new File("./Images/DivisionImages/"));
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                if (fileChooser.showDialog(AddNewSubDivisionDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                    iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
                 }
             }
         });
