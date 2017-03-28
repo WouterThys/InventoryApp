@@ -33,9 +33,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ILabel titleIconLabel;
-    ILabel titleNameLabel;
-
     JTabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
@@ -54,7 +51,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     Action cancelAction;
 
     public EditItemDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog);
+        super(application, dialog, true);
     }
 
     /*
@@ -63,12 +60,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
 
     @Override
     public void initializeComponents() {
-        // Title
-        titleIconLabel = new ILabel(resourceManager.readImage("Common.UnknownIcon48"));
-        titleIconLabel.setPreferredSize(new Dimension(48,48));
-        titleNameLabel = new ILabel("?");
-        titleNameLabel.setFontSize(36);
-
         // Tabbed pane
         tabbedPane = new JTabbedPane();
 
@@ -76,7 +67,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         componentPanel = new ComponentPanel(newItem);
         componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
-        componentPanel.setNameTextFieldTracker(titleNameLabel);
+        componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
         manufacturerPanel = new ManufacturerPanel(newItem);
         manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
@@ -96,21 +87,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     public void initializeLayouts() {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
 
-        // Title
-        JPanel titlePanel = new JPanel();
-        SpringLayout layout = new SpringLayout();
-        layout.putConstraint(WEST, titleIconLabel, 5, WEST, titlePanel);
-        layout.putConstraint(NORTH, titleIconLabel, 5, NORTH, titlePanel);
-        layout.putConstraint(SOUTH, titleIconLabel, -5, SOUTH, titlePanel);
-
-        layout.putConstraint(HORIZONTAL_CENTER, titleNameLabel, 0, HORIZONTAL_CENTER, titlePanel);
-        layout.putConstraint(VERTICAL_CENTER, titleNameLabel, 0, VERTICAL_CENTER, titlePanel);
-
-        titlePanel.add(titleIconLabel, BorderLayout.WEST);
-        titlePanel.add(titleNameLabel, BorderLayout.CENTER);
-        titlePanel.setPreferredSize(new Dimension(200, 60));
-        titlePanel.setLayout(layout);
-
         // Component panel
         componentPanel.initializeLayouts();
         manufacturerPanel.initializeLayouts();
@@ -124,8 +100,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Order info");
         tabbedPane.setPreferredSize(new Dimension(600, 600));
 
-        // Add all
-        getContentPanel().add(titlePanel);
+        // Add
         getContentPanel().add(tabbedPane);
 
         // Buttons
@@ -139,12 +114,12 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         if (!newItem.getIconPath().isEmpty()) {
             try {
                 URL url = new File(newItem.getIconPath()).toURI().toURL();
-                titleIconLabel.setIcon(resourceManager.readImage(url, 48,48));
+                setTitleIcon(resourceManager.readImage(url, 48,48));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        titleNameLabel.setText(newItem.getName().trim());
+        setTitleName(newItem.getName().trim());
 
         // Component panel
         switch (tabbedPane.getSelectedIndex()) {

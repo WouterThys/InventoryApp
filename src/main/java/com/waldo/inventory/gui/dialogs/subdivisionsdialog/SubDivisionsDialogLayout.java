@@ -4,10 +4,10 @@ import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.CategoriesChangedListener;
+import com.waldo.inventory.database.interfaces.CategoriesChangedListener;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.ProductsChangedListener;
-import com.waldo.inventory.database.TypesChangedListener;
+import com.waldo.inventory.database.interfaces.ProductsChangedListener;
+import com.waldo.inventory.database.interfaces.TypesChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialogPanel;
@@ -69,7 +69,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     ItemListener selectionCbIndexChanged;
 
     public SubDivisionsDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog);
+        super(application, dialog, true);
     }
 
     /*
@@ -122,6 +122,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
 
     @Override
     public void initializeComponents() {
+        // Title
+        setTitleName("Sub Divisions");
+        setTitleIcon(resourceManager.readImage("SubDivisionDialog.TitleIcon"));
+
         // Sub divisions list
         String[] subDivisions = new String[] {"Categories", "Products", "Types"};
         subDivisionList = new JList<>(subDivisions);

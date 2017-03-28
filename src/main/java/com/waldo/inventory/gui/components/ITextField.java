@@ -32,6 +32,8 @@ public class ITextField extends JTextField implements FocusListener {
 
     private Error error;
 
+    private DocumentListener documentListener;
+
     public ITextField() {
         this("", 15);
         addMenu();
@@ -80,6 +82,7 @@ public class ITextField extends JTextField implements FocusListener {
             }
         }
     }
+
     @Override
     public void focusLost(FocusEvent e) {
         if (this.isEnabled()) {
@@ -143,7 +146,7 @@ public class ITextField extends JTextField implements FocusListener {
     }
 
     public void setTrackingField(final JLabel textField) {
-        this.getDocument().addDocumentListener(new DocumentListener() {
+        documentListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 textField.setText(ITextField.this.getText());
@@ -158,7 +161,15 @@ public class ITextField extends JTextField implements FocusListener {
             public void changedUpdate(DocumentEvent e) {
                 textField.setText(ITextField.this.getText());
             }
-        });
+        };
+
+        this.getDocument().addDocumentListener(documentListener);
+    }
+
+    public void removeTrackingField() {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
     }
 
     private void addMenu() {

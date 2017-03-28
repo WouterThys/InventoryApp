@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.itemlist;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.database.ItemsChangedListener;
+import com.waldo.inventory.database.interfaces.ItemsChangedListener;
 import com.waldo.inventory.gui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

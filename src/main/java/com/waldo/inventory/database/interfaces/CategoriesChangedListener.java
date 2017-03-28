@@ -1,4 +1,4 @@
-package com.waldo.inventory.database;
+package com.waldo.inventory.database.interfaces;
 
 import com.waldo.inventory.classes.Category;
 

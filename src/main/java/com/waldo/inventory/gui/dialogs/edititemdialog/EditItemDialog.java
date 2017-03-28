@@ -131,7 +131,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         };
     }
     private void initIconDoubleClicked() {
-        titleIconLabel.addMouseListener(new MouseAdapter() {
+        getTitleIconLabel().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {

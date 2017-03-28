@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.*;
+import com.waldo.inventory.database.interfaces.TableChangedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

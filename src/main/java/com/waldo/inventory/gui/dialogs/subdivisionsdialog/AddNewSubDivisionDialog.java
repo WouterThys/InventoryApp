@@ -76,7 +76,7 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
     }
 
     private AddNewSubDivisionDialog(Application application, JDialog dialog, int type) {
-        super(application, dialog);
+        super(application, dialog, true);
         objectType = type;
         initComponents();
         initLayouts();

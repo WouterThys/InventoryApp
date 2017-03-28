@@ -37,4 +37,11 @@ public class Location extends DbObject {
         super(tableName, sqlInsert, sqlUpdate);
     }
 
+    public static Location getUnknownLocation() {
+        Location l = new Location();
+        l.setName(UNKNOWN_NAME);
+        l.setId(UNKNOWN_ID);
+        return l;
+    }
+
 }

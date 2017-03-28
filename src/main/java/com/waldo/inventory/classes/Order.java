@@ -36,4 +36,11 @@ public class Order extends DbObject {
     public Order(String tableName, String sqlInsert, String sqlUpdate) {
         super(tableName, sqlInsert, sqlUpdate);
     }
+
+    public static Order getUnknownOrder() {
+        Order o = new Order();
+        o.setName(UNKNOWN_NAME);
+        o.setId(UNKNOWN_ID);
+        return o;
+    }
 }

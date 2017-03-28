@@ -37,7 +37,10 @@ public class Manufacturer extends DbObject {
         super(tableName, sqlInsert, sqlUpdate);
     }
 
-
-
-
+    public static Manufacturer getUnknownManufacturer() {
+        Manufacturer m = new Manufacturer();
+        m.setName(UNKNOWN_NAME);
+        m.setId(UNKNOWN_ID);
+        return m;
+    }
 }
