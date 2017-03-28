@@ -202,7 +202,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         try {
             Double.valueOf(price);
         } catch (Exception e) {
-            componentPanel.setNameFieldError("This should be a number");
+            componentPanel.setPriceFieldError("This should be a number");
             ok = false;
         }
         return ok;

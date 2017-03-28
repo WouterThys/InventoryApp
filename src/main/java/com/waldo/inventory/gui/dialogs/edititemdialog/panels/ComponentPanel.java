@@ -6,7 +6,6 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -126,7 +125,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
         }
 
-        DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<Category>(categoryItems);
+        DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
         categoryComboBox = new JComboBox<>(categoryCbModel);
         categoryComboBox.setSelectedIndex(selectedIndex);
     }
@@ -160,7 +159,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
         }
 
-        typeCbModel = new DefaultComboBoxModel<Type>(typeStrings);
+        typeCbModel = new DefaultComboBoxModel<>(typeStrings);
         typeComboBox = new JComboBox<>(typeCbModel);
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedIndex(selectedIndex);
