@@ -31,13 +31,13 @@ public class DbManager implements TableChangedListener {
     private List<String> tableNames;
 
     // Events
-    private List<ItemsChangedListener> onItemsChangedListenerList;
-    private List<CategoriesChangedListener> onCategoriesChangedListenerList;
-    private List<ProductsChangedListener> onProductsChangedListenerList;
-    private List<TypesChangedListener> onTypesChangedListenerList;
-    private List<ManufacturersChangedListener> onManufacturerChangedListenerList;
-    private List<OrdersChangedListener> onOrdersChangedListenerList;
-    private List<LocationChangedListener> onLocationsChangedListenerList;
+    private List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Type>> onTypesChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
 
     // Cached lists
     private List<Item> items;
@@ -124,294 +124,122 @@ public class DbManager implements TableChangedListener {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addOnItemsChangedListener(ItemsChangedListener onItemsChangedListener) {
-        if (onItemsChangedListenerList == null) {
-            onItemsChangedListenerList = new ArrayList<>();
-        }
-        if (!onItemsChangedListenerList.contains(onItemsChangedListener)) {
-            onItemsChangedListenerList.add(onItemsChangedListener);
+    public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
+        if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
+            onItemsChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnCategoriesChangedListener(CategoriesChangedListener onCategoriesChangedListener) {
-        if (onCategoriesChangedListenerList == null) {
-            onCategoriesChangedListenerList = new ArrayList<>();
-        }
-        if (!onCategoriesChangedListenerList.contains(onCategoriesChangedListener)) {
-            onCategoriesChangedListenerList.add(onCategoriesChangedListener);
+    public void addOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {
+        if (!onCategoriesChangedListenerList.contains(dbObjectChangedListener)) {
+            onCategoriesChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnProductsChangedListener(ProductsChangedListener onProductsChangedListener) {
-        if (onProductsChangedListenerList == null) {
-            onProductsChangedListenerList = new ArrayList<>();
-        }
-        if (!onProductsChangedListenerList.contains(onProductsChangedListener)) {
-            onProductsChangedListenerList.add(onProductsChangedListener);
+    public void addOnProductsChangedListener(DbObjectChangedListener<Product> dbObjectChangedListener) {
+        if (!onProductsChangedListenerList.contains(dbObjectChangedListener)) {
+            onProductsChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnTypesChangedListener(TypesChangedListener onTypesChangedListener) {
-        if (onTypesChangedListenerList == null) {
-            onTypesChangedListenerList = new ArrayList<>();
-        }
-        if (!onTypesChangedListenerList.contains(onTypesChangedListener)) {
-            onTypesChangedListenerList.add(onTypesChangedListener);
+    public void addOnTypesChangedListener(DbObjectChangedListener<Type> dbObjectChangedListener) {
+        if (!onTypesChangedListenerList.contains(dbObjectChangedListener)) {
+            onTypesChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnManufacturerChangedListener(ManufacturersChangedListener onManufacturerChangedListener) {
-        if (onManufacturerChangedListenerList == null) {
-            onManufacturerChangedListenerList = new ArrayList<>();
-        }
-        if (!onManufacturerChangedListenerList.contains(onManufacturerChangedListener)) {
-            onManufacturerChangedListenerList.add(onManufacturerChangedListener);
+    public void addOnManufacturerChangedListener(DbObjectChangedListener<Manufacturer> dbObjectChangedListener) {
+        if (!onManufacturerChangedListenerList.contains(dbObjectChangedListener)) {
+            onManufacturerChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnLocationsChangedListener(LocationChangedListener locationChangedListener) {
-        if (onLocationsChangedListenerList == null) {
-            onLocationsChangedListenerList = new ArrayList<>();
-        }
-        if (!onLocationsChangedListenerList.contains(locationChangedListener)) {
-            onLocationsChangedListenerList.add(locationChangedListener);
+    public void addOnLocationsChangedListener(DbObjectChangedListener<Location> dbObjectChangedListener) {
+        if (!onLocationsChangedListenerList.contains(dbObjectChangedListener)) {
+            onLocationsChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnOrdersChangedListener(OrdersChangedListener ordersChangedListener) {
+    public void addOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
         if (onOrdersChangedListenerList == null) {
             onOrdersChangedListenerList = new ArrayList<>();
         }
-        if (!onOrdersChangedListenerList.contains(ordersChangedListener)) {
-            onOrdersChangedListenerList.add(ordersChangedListener);
+        if (!onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
+            onOrdersChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
 
-    public void removeOnItemsChangedListener(ItemsChangedListener onItemsChangedListener) {
+    public void removeOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (onItemsChangedListenerList != null) {
-            if (onItemsChangedListenerList.contains(onItemsChangedListener)) {
-                onItemsChangedListenerList.remove(onItemsChangedListener);
+            if (onItemsChangedListenerList.contains(dbObjectChangedListener)) {
+                onItemsChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnCategoriesChangedListener(CategoriesChangedListener onCategoriesChangedListener) {
+    public void removeOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {
         if (onCategoriesChangedListenerList != null) {
-            if (onCategoriesChangedListenerList.contains(onCategoriesChangedListener)) {
-                onCategoriesChangedListenerList.remove(onCategoriesChangedListener);
+            if (onCategoriesChangedListenerList.contains(dbObjectChangedListener)) {
+                onCategoriesChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnProductsChangedListener(ProductsChangedListener onProductsChangedListener) {
+    public void removeOnProductsChangedListener(DbObjectChangedListener<Product> dbObjectChangedListener) {
         if (onProductsChangedListenerList != null) {
-            if (onProductsChangedListenerList.contains(onProductsChangedListener)) {
-                onProductsChangedListenerList.remove(onProductsChangedListener);
+            if (onProductsChangedListenerList.contains(dbObjectChangedListener)) {
+                onProductsChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnTypesChangedListener(TypesChangedListener onTypesChangedListener) {
+    public void removeOnTypesChangedListener(DbObjectChangedListener<Type> dbObjectChangedListener) {
         if (onTypesChangedListenerList != null) {
-            if (onTypesChangedListenerList.contains(onTypesChangedListener)) {
-                onTypesChangedListenerList.remove(onTypesChangedListener);
+            if (onTypesChangedListenerList.contains(dbObjectChangedListener)) {
+                onTypesChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnManufacturersChangedListener(ManufacturersChangedListener onManufacturersChangedListener) {
+    public void removeOnManufacturersChangedListener(DbObjectChangedListener<Manufacturer> dbObjectChangedListener) {
         if (onManufacturerChangedListenerList != null) {
-            if (onManufacturerChangedListenerList.contains(onManufacturersChangedListener)) {
-                onManufacturerChangedListenerList.remove(onManufacturersChangedListener);
+            if (onManufacturerChangedListenerList.contains(dbObjectChangedListener)) {
+                onManufacturerChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnLocationChangedListener(LocationChangedListener locationChangedListener) {
+    public void removeOnLocationChangedListener(DbObjectChangedListener<Location> dbObjectChangedListener) {
         if (onLocationsChangedListenerList != null) {
-            if (onLocationsChangedListenerList.contains(locationChangedListener)) {
-                onLocationsChangedListenerList.remove(locationChangedListener);
+            if (onLocationsChangedListenerList.contains(dbObjectChangedListener)) {
+                onLocationsChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
-    public void removeOnOrdersChangedListener(OrdersChangedListener ordersChangedListener) {
+    public void removeOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
         if (onOrdersChangedListenerList != null) {
-            if (onOrdersChangedListenerList.contains(ordersChangedListener)) {
-                onOrdersChangedListenerList.remove(ordersChangedListener);
+            if (onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
+                onOrdersChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
 
 
-    private void notifyItemListListeners(int changedHow, DbObject object) {
-        if (onItemsChangedListenerList != null) {
-            for(ItemsChangedListener l : onItemsChangedListenerList) {
-                LOG.debug("Notifying " + l);
-                switch (changedHow) {
-                    case OBJECT_ADDED:
-                        l.onItemAdded((Item)object);
-                        break;
-                    case OBJECT_UPDATED:
-                        l.onItemUpdated((Item)object);
-                        break;
-                    case OBJECT_DELETED:
-                        l.onItemDeleted((Item)object);
-                        break;
-                }
+    private <T extends DbObject> void notifyListeners(int changedHow, T object, List<DbObjectChangedListener<T>> listeners) {
+        for (DbObjectChangedListener<T> l : listeners) {
+            switch (changedHow) {
+                case OBJECT_ADDED:
+                    l.onAdded(object);
+                    break;
+                case OBJECT_UPDATED:
+                    l.onUpdated(object);
+                    break;
+                case OBJECT_DELETED:
+                    l.onDeleted(object);
+                    break;
             }
-        }
-    }
-
-    private void notifyCategoryListListeners(int changedHow, DbObject object) {
-        if (onCategoriesChangedListenerList != null) {
-            if (onCategoriesChangedListenerList.size() > 0) {
-                for (CategoriesChangedListener l : onCategoriesChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onCategoryAdded((Category) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onCategoryUpdated((Category) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onCategoryDeleted((Category) object);
-                            break;
-                    }
-                }
-            }
-            else {
-                LOG.debug("No one to notify for category change");
-            }
-        }  else {
-            LOG.debug("No one to notify for category change");
-        }
-    }
-
-    private void notifyProductListListeners(int changedHow, DbObject object) {
-        if (onProductsChangedListenerList != null) {
-            if (onProductsChangedListenerList.size() > 0) {
-                for (ProductsChangedListener l : onProductsChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onProductAdded((Product) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onProductUpdated((Product) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onProductDeleted((Product) object);
-                            break;
-                    }
-                }
-            } else {
-                LOG.debug("No one to notify for product change");
-            }
-        } else {
-            LOG.debug("No one to notify for product change");
-        }
-    }
-
-    private void notifyTypeListListeners(int changedHow, DbObject object) {
-        if (onTypesChangedListenerList != null) {
-            if (onTypesChangedListenerList.size() > 0) {
-                for (TypesChangedListener l : onTypesChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onTypeAdded((Type) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onTypeUpdated((Type) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onTypeDeleted((Type) object);
-                            break;
-                    }
-                }
-            } else {
-                LOG.debug("No one to notify for types change");
-            }
-        } else {
-            LOG.debug("No one to notify for types change");
-        }
-    }
-
-    private void notifyManufacturersListListeners(int changedHow, DbObject object) {
-        if (onManufacturerChangedListenerList != null) {
-            if (onManufacturerChangedListenerList.size() > 0) {
-                for (ManufacturersChangedListener l : onManufacturerChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onManufacturerAdded((Manufacturer) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onManufacturerUpdated((Manufacturer) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onManufacturerDeleted((Manufacturer) object);
-                            break;
-                    }
-                }
-            } else {
-                LOG.debug("No one to notify for manufacturers change");
-            }
-        } else {
-            LOG.debug("No one to notify for manufacturers change");
-        }
-    }
-
-    private void notifyLocationListListeners(int changedHow, DbObject object) {
-        if (onLocationsChangedListenerList != null) {
-            if (onLocationsChangedListenerList.size() > 0) {
-                for (LocationChangedListener l : onLocationsChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onLocationAdded((Location) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onLocationUpdated((Location) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onLocationDeleted((Location) object);
-                            break;
-                    }
-                }
-            } else {
-                LOG.debug("No one to notify for Location change");
-            }
-        } else {
-            LOG.debug("No one to notify for Location change");
-        }
-    }
-
-    private void notifyOrdersListListeners(int changedHow, DbObject object) {
-        if (onOrdersChangedListenerList != null) {
-            if (onOrdersChangedListenerList.size() > 0) {
-                for (OrdersChangedListener l : onOrdersChangedListenerList) {
-                    LOG.debug("Notifying " + l);
-                    switch (changedHow) {
-                        case OBJECT_ADDED:
-                            l.onOrderAdded((Order) object);
-                            break;
-                        case OBJECT_UPDATED:
-                            l.onOrderUpdated((Order) object);
-                            break;
-                        case OBJECT_DELETED:
-                            l.onOrderDeleted((Order) object);
-                            break;
-                    }
-                }
-            } else {
-                LOG.debug("No one to notify for Order change");
-            }
-        } else {
-            LOG.debug("No one to notify for Order change");
         }
     }
 
@@ -428,31 +256,31 @@ public class DbManager implements TableChangedListener {
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
-                notifyItemListListeners(changedHow, object);
+                notifyListeners(changedHow, (Item)object, onItemsChangedListenerList);
                 break;
             case Category.TABLE_NAME:
                 updateCategories();
-                notifyCategoryListListeners(changedHow, object);
+                notifyListeners(changedHow, (Category)object, onCategoriesChangedListenerList);
                 break;
             case Product.TABLE_NAME:
                 updateProducts();
-                notifyProductListListeners(changedHow, object);
+                notifyListeners(changedHow, (Product)object, onProductsChangedListenerList);
                 break;
             case Type.TABLE_NAME:
                 updateTypes();
-                notifyTypeListListeners(changedHow, object);
+                notifyListeners(changedHow, (Type)object, onTypesChangedListenerList);
                 break;
             case Manufacturer.TABLE_NAME:
                 updateManufacturers();
-                notifyManufacturersListListeners(changedHow, object);
+                notifyListeners(changedHow, (Manufacturer)object, onManufacturerChangedListenerList);
                 break;
             case Location.TABLE_NAME:
                 updateLocations();
-                notifyLocationListListeners(changedHow, object);
+                notifyListeners(changedHow, (Location)object, onLocationsChangedListenerList);
                 break;
             case Order.TABLE_NAME:
                 updateOrders();
-                notifyOrdersListListeners(changedHow, object);
+                notifyListeners(changedHow, (Order)object, onOrdersChangedListenerList);
                 break;
         }
     }

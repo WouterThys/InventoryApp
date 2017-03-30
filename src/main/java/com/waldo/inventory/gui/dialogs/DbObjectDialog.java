@@ -1,9 +1,6 @@
-package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
+package com.waldo.inventory.gui.dialogs;
 
-import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialogPanel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -13,72 +10,57 @@ import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.CATEGORIES;
-import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.PRODUCTS;
-import static com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout.TYPES;
 
-public class AddNewSubDivisionDialog extends IDialogPanel {
+import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
+
+public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
 
     private ITextField nameTextField;
     private ITextField iconPathTextField;
     private JButton browseIconButton;
 
-    private static DbObject dbObject;
-    private int objectType;
-
+    private T dbObject;
     private Action createAction;
 
-    static DbObject showDialog(Application application, int type) {
-        String title;
-        switch (type) {
-            case CATEGORIES: title = "Add category"; break;
-            case PRODUCTS: title = "Add product"; break;
-            case TYPES: title = "Add type"; break;
-            default: title = "Add";
-        }
-        dbObject = null;
+//    public static DbObject showDialog(Application application, String title) {
+//        dbObject = null;
+//        JDialog dialog = new JDialog(application, title, true);
+//        dialog.getContentPane().add(new DbObjectDialog(null, dialog));
+//        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//        dialog.setLocationByPlatform(true);
+//        dialog.setLocationRelativeTo(null);
+//        dialog.setResizable(false);
+//        dialog.pack();
+//        dialog.setVisible(true);
+//        return dbObject;
+//    }
+
+    public T getDbObject() {
+        return dbObject;
+    }
+
+    public static int showDialog(Application application, String title, DbObject object) {
         JDialog dialog = new JDialog(application, title, true);
-        dialog.getContentPane().add(new AddNewSubDivisionDialog(application, dialog, type));
+        dialog.getContentPane().add(new DbObjectDialog<>(application, dialog, object));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(application);
         dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);
-        return dbObject;
+        return returnValue;
     }
 
-    static DbObject showDialog(Application application, int type, DbObject object) {
-        String title;
-        switch (type) {
-            case CATEGORIES: title = "Edit " + object.getName(); break;
-            case PRODUCTS: title = "Edit " + object.getName(); break;
-            case TYPES: title = "Edit " + object.getName(); break;
-            default: title = "Edit";
-        }
-        dbObject = null;
-        JDialog dialog = new JDialog(application, title, true);
-        dialog.getContentPane().add(new AddNewSubDivisionDialog(application, dialog, type, object));
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(application);
-        dialog.setResizable(false);
-        dialog.pack();
-        dialog.setVisible(true);
-        return dbObject;
-    }
-
-    private AddNewSubDivisionDialog(Application application, JDialog dialog, int type) {
+    private DbObjectDialog(Application application, JDialog dialog) {
         super(application, dialog, false);
-        objectType = type;
         initComponents();
         initLayouts();
     }
 
-    private AddNewSubDivisionDialog(Application application, JDialog dialog, int type, DbObject object) {
-        this(application, dialog, type);
+    private DbObjectDialog(Application application, JDialog dialog, T object) {
+        this(application, dialog);
         dbObject = object;
         updateComponents();
     }
@@ -107,13 +89,16 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
 
         // File chooser
         browseIconButton = new JButton(resourceManager.readImage("Common.BrowseIcon"));
-        browseIconButton.addActionListener(e -> {
-            JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-            fileChooser.setCurrentDirectory(new File("./Images/DivisionImages/"));
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        browseIconButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+                fileChooser.setCurrentDirectory(new File("./Images/"));
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-            if (fileChooser.showDialog(AddNewSubDivisionDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                    iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                }
             }
         });
 
@@ -123,21 +108,9 @@ public class AddNewSubDivisionDialog extends IDialogPanel {
             public void actionPerformed(ActionEvent e) {
                 if (verify()) {
                     // Set values
-                    if (dbObject == null) {
-                        switch (objectType) {
-                            case 0:
-                                dbObject = new Category();
-                                break;
-                            case 1:
-                                dbObject = new Product();
-                                break;
-                            case 2:
-                                dbObject = new Type();
-                                break;
-                        }
-                    }
                     dbObject.setName(nameTextField.getText());
                     dbObject.setIconPath(iconPathTextField.getText());
+                    returnValue = OK;
                     // Close dialog
                     close();
                 }

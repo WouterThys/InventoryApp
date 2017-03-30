@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class DbObject {
+public class DbObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(DbObject.class);
     public static final int UNKNOWN_ID = 1;
@@ -58,7 +58,7 @@ public abstract class DbObject {
         this.sqlInsert = sqlInsert;
     }
 
-    protected DbObject(String tableName, String sqlInsert, String sqlUpdate) {
+    public DbObject(String tableName, String sqlInsert, String sqlUpdate) {
         this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + tableName + " WHERE id = ?");
     }
 

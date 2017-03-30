@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -25,9 +26,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-//                dbInstance().removeOnCategoriesChangedListener(md);
-//                dbInstance().removeOnProductsChangedListener(md);
-//                dbInstance().removeOnTypesChangedListener(sdd);
+                dbInstance().removeOnManufacturersChangedListener(md);
                 super.windowClosing(e);
             }
         });
@@ -46,6 +45,6 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     private void initActions() {
-
     }
+
 }

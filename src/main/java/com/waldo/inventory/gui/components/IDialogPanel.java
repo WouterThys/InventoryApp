@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.Application;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
 import static javax.swing.SpringLayout.*;
@@ -14,6 +15,11 @@ import static javax.swing.SpringLayout.HORIZONTAL_CENTER;
 import static javax.swing.SpringLayout.VERTICAL_CENTER;
 
 public abstract class IDialogPanel extends JPanel {
+
+    public static final int OK = 1;
+    public static final int NEUTRAL = 0;
+    public static final int CANCEL = -1;
+    protected static int returnValue = -1;
 
     protected JDialog dialog;
     protected Application application;
@@ -114,16 +120,18 @@ public abstract class IDialogPanel extends JPanel {
         negativeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
         neutralButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
-        Action action = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        };
-
-        positiveButton.addActionListener(action);
-        negativeButton.addActionListener(action);
-        neutralButton.addActionListener(action);
+        positiveButton.addActionListener(e -> {
+            returnValue = OK;
+            close();
+        });
+        negativeButton.addActionListener(e -> {
+            returnValue = CANCEL;
+            close();
+        });
+        neutralButton.addActionListener(e -> {
+            returnValue = NEUTRAL;
+            close();
+        });
 
         positiveButton.setPreferredSize(new Dimension(90,25));
         neutralButton.setPreferredSize(new Dimension(90,25));

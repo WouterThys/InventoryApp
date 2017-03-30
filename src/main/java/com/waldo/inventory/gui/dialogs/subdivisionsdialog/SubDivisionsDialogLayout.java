@@ -4,10 +4,8 @@ import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.interfaces.CategoriesChangedListener;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.ProductsChangedListener;
-import com.waldo.inventory.database.interfaces.TypesChangedListener;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialogPanel;
@@ -29,7 +27,7 @@ import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
 
 public abstract class SubDivisionsDialogLayout extends IDialogPanel
-        implements GuiInterface, CategoriesChangedListener, ProductsChangedListener, TypesChangedListener {
+        implements GuiInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialogLayout.class);
 
@@ -67,9 +65,15 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     ListSelectionListener subDivisionChangedAction;
     ListSelectionListener detailChangedAction;
     ItemListener selectionCbIndexChanged;
+    DbObjectChangedListener<Category> categoriesChanged;
+    DbObjectChangedListener<Product> productsChanged;
+    DbObjectChangedListener<Type> typesChanged;
 
     public SubDivisionsDialogLayout(Application application, JDialog dialog) {
         super(application, dialog, true);
+        setCategoriesChanged();
+        setProductsChanged();
+        setTypesChanged();
     }
 
     /*
@@ -210,21 +214,23 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         }
     }
 
+    private void setCategoriesChanged() {
+        categoriesChanged = new DbObjectChangedListener<Category>() {
+            @Override
+            public void onAdded(Category object) {
+                updateCategoryList();
+            }
 
+            @Override
+            public void onUpdated(Category object) {
+                updateCategoryList();
+            }
 
-    @Override
-    public void onTypeAdded(Type type) {
-        updateTypeList();
-    }
-
-    @Override
-    public void onTypeUpdated(Type type) {
-        updateTypeList();
-    }
-
-    @Override
-    public void onTypeDeleted(Type type) {
-        updateTypeList();
+            @Override
+            public void onDeleted(Category object) {
+                updateCategoryList();
+            }
+        };
     }
 
     /**
@@ -258,19 +264,23 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         }
     }
 
-    @Override
-    public void onProductAdded(Product product) {
-        updateProductList();
-    }
+    public void setProductsChanged() {
+        productsChanged = new DbObjectChangedListener<Product>() {
+            @Override
+            public void onAdded(Product object) {
+                updateProductList();
+            }
 
-    @Override
-    public void onProductUpdated(Product product) {
-        updateProductList();
-    }
+            @Override
+            public void onUpdated(Product object) {
+                updateProductList();
+            }
 
-    @Override
-    public void onProductDeleted(Product product) {
-        updateProductList();
+            @Override
+            public void onDeleted(Product object) {
+                updateProductList();
+            }
+        };
     }
 
     void updateProductList() {
@@ -299,19 +309,23 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         }
     }
 
-    @Override
-    public void onCategoryAdded(Category category) {
-        updateCategoryList();
-    }
+    private void setTypesChanged() {
+        typesChanged = new DbObjectChangedListener<Type>() {
+            @Override
+            public void onAdded(Type object) {
+                updateTypeList();
+            }
 
-    @Override
-    public void onCategoryUpdated(Category category) {
-        updateCategoryList();
-    }
+            @Override
+            public void onUpdated(Type object) {
+                updateTypeList();
+            }
 
-    @Override
-    public void onCategoryDeleted(Category category) {
-        updateCategoryList();
+            @Override
+            public void onDeleted(Type object) {
+                updateTypeList();
+            }
+        };
     }
 
     void updateCategoryList() {

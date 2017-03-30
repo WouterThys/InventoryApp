@@ -33,9 +33,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                dbInstance().removeOnCategoriesChangedListener(sdd);
-                dbInstance().removeOnProductsChangedListener(sdd);
-                dbInstance().removeOnTypesChangedListener(sdd);
+                dbInstance().removeOnCategoriesChangedListener(sdd.categoriesChanged);
+                dbInstance().removeOnProductsChangedListener(sdd.productsChanged);
+                dbInstance().removeOnTypesChangedListener(sdd.typesChanged);
                 super.windowClosing(e);
             }
         });
@@ -56,9 +56,11 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        dbInstance().addOnCategoriesChangedListener(this);
-        dbInstance().addOnProductsChangedListener(this);
-        dbInstance().addOnTypesChangedListener(this);
+
+
+        dbInstance().addOnCategoriesChangedListener(categoriesChanged);
+        dbInstance().addOnProductsChangedListener(productsChanged);
+        dbInstance().addOnTypesChangedListener(typesChanged);
     }
 
     private void initActions() {
