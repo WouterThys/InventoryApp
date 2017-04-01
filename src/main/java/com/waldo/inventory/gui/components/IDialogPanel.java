@@ -122,7 +122,7 @@ public abstract class IDialogPanel extends JPanel {
 
         positiveButton.addActionListener(e -> {
             returnValue = OK;
-            close();
+            //close();
         });
         negativeButton.addActionListener(e -> {
             returnValue = CANCEL;
@@ -130,7 +130,7 @@ public abstract class IDialogPanel extends JPanel {
         });
         neutralButton.addActionListener(e -> {
             returnValue = NEUTRAL;
-            close();
+            //close();
         });
 
         positiveButton.setPreferredSize(new Dimension(90,25));

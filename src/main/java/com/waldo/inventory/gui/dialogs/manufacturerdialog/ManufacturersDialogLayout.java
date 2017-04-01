@@ -1,18 +1,20 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDialogPanel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledPanel;
-import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.sql.SQLException;
 
+import static com.waldo.inventory.database.DbManager.dbInstance;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialogPanel
@@ -26,12 +28,17 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     IdBToolBar toolBar;
     ITextField searchField;
 
+    ITextField detailName;
+    ITextField detailWebsite;
+
     Action searchAction;
     ListSelectionListener manufacturerChanged;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    Manufacturer selectedManufacturer;
+
 
     ManufacturersDialogLayout(Application application, JDialog dialog) {
         super(application, dialog, true);
@@ -94,24 +101,45 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         toolBar = new IdBToolBar(IdBToolBar.HORIZONTAL) {
             @Override
             protected void refresh() {
-
+                updateComponents(null);
             }
 
             @Override
             protected void add() {
+                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
+                if (dialog.showDialog() == DbObjectDialog.OK) {
+                    Manufacturer m = dialog.getDbObject();
+                    m.save();
+                }
 
             }
 
             @Override
             protected void delete() {
-
+                if (selectedManufacturer != null) {
+                    int res = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete \"" + selectedManufacturer.getName() + "\"?");
+                    if (res == JOptionPane.OK_OPTION) {
+                        selectedManufacturer.delete();
+                        selectedManufacturer = null;
+                    }
+                }
             }
 
             @Override
             protected void update() {
-
+                if (selectedManufacturer != null) {
+                    DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", selectedManufacturer);
+                    if (dialog.showDialog() == DbObjectDialog.OK) {
+                        selectedManufacturer.save();
+                    }
+                }
             }
         };
+        toolBar.setFloatable(false);
+
+        // Details
+        detailName = new ITextField("Name");
+        detailWebsite = new ITextField("Web stie");
     }
 
     @Override
@@ -123,27 +151,44 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 //        getContentPanel().add(new ITitledPanel("Manufacturers",
 //                new JComponent[] {createListPanelLayout()}), BorderLayout.WEST);
 
+        // New JPanel with box layout for details?
+
+        getContentPanel().add(new ITitledEditPanel("Details",
+                new String[] {"Name: ", "Web site: "},
+                new JComponent[] {detailName, detailWebsite}), BorderLayout.CENTER);
+
         setPositiveButton("Ok");
+
+        setPreferredSize(getPreferredSize());
+        validate();
     }
 
     @Override
     public void updateComponents(Object object) {
-
+        // Get all manus
+        manufacturerDefaultListModel.removeAllElements();
+        try {
+            for(Manufacturer m : dbInstance().getManufacturers()) {
+                manufacturerDefaultListModel.addElement(m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void onAdded(Manufacturer manufacturer) {
-
+        updateComponents(null);
     }
 
     @Override
     public void onUpdated(Manufacturer manufacturer) {
-
+        updateComponents(null);
     }
 
     @Override
     public void onDeleted(Manufacturer manufacturer) {
-
+        updateComponents(null);
     }
 }

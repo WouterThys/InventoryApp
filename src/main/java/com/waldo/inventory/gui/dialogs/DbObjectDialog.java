@@ -41,26 +41,39 @@ public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
         return dbObject;
     }
 
-    public static int showDialog(Application application, String title, DbObject object) {
-        JDialog dialog = new JDialog(application, title, true);
-        dialog.getContentPane().add(new DbObjectDialog<>(application, dialog, object));
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(application);
-        dialog.setResizable(false);
+//    public static int showDialog(Application application, String title, DbObject object) {
+//        JDialog dialog = new JDialog(application, title, true);
+//        //dialog.getContentPane().add(new DbObjectDialog<>(application, dialog, object));
+//        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//        dialog.setLocationByPlatform(true);
+//        dialog.setLocationRelativeTo(application);
+//        dialog.setResizable(false);
+//        dialog.pack();
+//        dialog.setVisible(true);
+//        return returnValue;
+//    }
+
+    public int showDialog() {
         dialog.pack();
         dialog.setVisible(true);
         return returnValue;
     }
 
-    private DbObjectDialog(Application application, JDialog dialog) {
-        super(application, dialog, false);
+    public DbObjectDialog(Application application, String title) {
+        super(application, new JDialog(application, title, true), false);
+
+        dialog.getContentPane().add(this);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(application);
+        dialog.setResizable(false);
+
         initComponents();
         initLayouts();
     }
 
-    private DbObjectDialog(Application application, JDialog dialog, T object) {
-        this(application, dialog);
+    public DbObjectDialog(Application application, String title,  T object) {
+        this(application, title);
         dbObject = object;
         updateComponents();
     }
@@ -89,16 +102,13 @@ public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
 
         // File chooser
         browseIconButton = new JButton(resourceManager.readImage("Common.BrowseIcon"));
-        browseIconButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-                fileChooser.setCurrentDirectory(new File("./Images/"));
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        browseIconButton.addActionListener(e -> {
+            JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+            fileChooser.setCurrentDirectory(new File("./Images/"));
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-                if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                    iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-                }
+            if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
         });
 
