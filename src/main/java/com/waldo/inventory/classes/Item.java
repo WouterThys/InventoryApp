@@ -14,16 +14,19 @@ public class Item extends DbObject {
     private long typeId = -1;
     private String localDataSheet = "";
     private String onlineDataSheet = "";
+    private long manufacturerId = -1;
+    private long locationId = -1;
 
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-                "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet, manufacturerid, locationid) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
 
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
                     "SET name = ?, iconpath = ?, description = ?, price = ?, categoryId = ?, productId = ?, typeId = ?, localdatasheet = ?, onlinedatasheet = ? " +
+                    "manufacturerid = ?, locationid = ? " +
                 "WHERE id = ?;";
 
     public Item() {
@@ -42,6 +45,8 @@ public class Item extends DbObject {
         statement.setLong(7, typeId);
         statement.setString(8, localDataSheet);
         statement.setString(9, onlineDataSheet);
+        statement.setLong(10, manufacturerId);
+        statement.setLong(11, locationId);
         statement.execute();
     }
 
@@ -56,7 +61,10 @@ public class Item extends DbObject {
         statement.setLong(7, typeId);
         statement.setString(8, localDataSheet);
         statement.setString(9, onlineDataSheet);
-        statement.setLong(10, id); // WHERE id
+        statement.setLong(10, manufacturerId);
+        statement.setLong(11, locationId);
+
+        statement.setLong(12, id); // WHERE id
         statement.execute();
     }
 
@@ -114,5 +122,21 @@ public class Item extends DbObject {
 
     public void setOnlineDataSheet(String onlineDataSheet) {
         this.onlineDataSheet = onlineDataSheet;
+    }
+
+    public long getManufacturerId() {
+        return manufacturerId;
+    }
+
+    public void setManufacturerId(long manufacturerId) {
+        this.manufacturerId = manufacturerId;
+    }
+
+    public long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(long locationId) {
+        this.locationId = locationId;
     }
 }

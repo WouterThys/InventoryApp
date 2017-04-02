@@ -1,0 +1,2 @@
+ALTER TABLE items ADD COLUMN manufacturerid INTEGER;
+ALTER TABLE items ADD COLUMN locationid INTEGER;

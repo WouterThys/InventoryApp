@@ -1,5 +1,6 @@
 package com.waldo.inventory.database;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -316,11 +317,11 @@ public class DbManager implements TableChangedListener {
                     i.setTypeId(rs.getInt("typeid"));
                     i.setLocalDataSheet(rs.getString("localdatasheet"));
                     i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
+                    i.setManufacturerId(rs.getLong("manufacturerid"));
+                    i.setLocationId(rs.getLong("locationid"));
 
-
-                        i.setOnTableChangedListener(this);
-                        items.add(i);
-
+                    i.setOnTableChangedListener(this);
+                    items.add(i);
                 }
             }
         }
@@ -558,6 +559,7 @@ public class DbManager implements TableChangedListener {
                     Manufacturer m = new Manufacturer();
                     m.setId(rs.getLong("id"));
                     m.setName(rs.getString("name"));
+                    m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
 
                     if (m.getId() != 1) {
@@ -842,5 +844,19 @@ public class DbManager implements TableChangedListener {
             }
         }
         return types;
+    }
+
+    public List<Order> getOrdersForManufacturer(long manufacturerId) {
+        return null;
+    }
+
+    public List<Item> getItemsForManufacturer(long manufacturerId) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        for (Item item : getItems()) {
+            if (item.getManufacturerId() == manufacturerId) {
+                items.add(item);
+            }
+        }
+        return items;
     }
 }

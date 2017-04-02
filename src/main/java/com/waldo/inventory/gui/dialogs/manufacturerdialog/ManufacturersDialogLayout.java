@@ -1,8 +1,9 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -12,8 +13,12 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 import static javax.swing.SpringLayout.*;
 
@@ -30,6 +35,11 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
     ITextField detailName;
     ITextField detailWebsite;
+    JButton detailsBroweButton;
+    ILabel detailLogo;
+
+    JList<Item> detailItemList;
+    DefaultListModel<Item> detailItemDefaultListModel;
 
     Action searchAction;
     ListSelectionListener manufacturerChanged;
@@ -97,7 +107,6 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         manufacturerList = new JList<>(manufacturerDefaultListModel);
         manufacturerList.addListSelectionListener(manufacturerChanged);
 
-
         toolBar = new IdBToolBar(IdBToolBar.HORIZONTAL) {
             @Override
             protected void refresh() {
@@ -139,7 +148,23 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
         // Details
         detailName = new ITextField("Name");
+        detailName.setEnabled(false);
         detailWebsite = new ITextField("Web stie");
+        detailLogo = new ILabel();
+        detailLogo.setPreferredSize(new Dimension(48,48));
+        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+        detailsBroweButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        detailsBroweButton.addActionListener(e -> {
+            if (selectedManufacturer!= null && selectedManufacturer.getId() != DbObject.UNKNOWN_ID && !selectedManufacturer.getWebsite().isEmpty())
+                try {
+                    OpenUtils.browseLink(selectedManufacturer.getWebsite());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+        });
+
+        detailItemDefaultListModel = new DefaultListModel<>();
+        detailItemList = new JList<>(detailItemDefaultListModel);
     }
 
     @Override
@@ -152,12 +177,29 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 //                new JComponent[] {createListPanelLayout()}), BorderLayout.WEST);
 
         // New JPanel with box layout for details?
+        JPanel details = new JPanel();
+        details.setLayout(new BoxLayout(details, BoxLayout.Y_AXIS));
 
-        getContentPanel().add(new ITitledEditPanel("Details",
-                new String[] {"Name: ", "Web site: "},
-                new JComponent[] {detailName, detailWebsite}), BorderLayout.CENTER);
+        // Additional stuff
+        JPanel browsePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = createFieldConstraints(0,0);
+        constraints.gridwidth = 1;
+        browsePanel.add(detailWebsite, constraints);
+        constraints = createFieldConstraints(1,0);
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.1;
+        browsePanel.add(detailsBroweButton, constraints);
 
-        setPositiveButton("Ok");
+        details.add(new ITitledPanel("Info",
+                //new String[] {"Name: ", "Web site: "},
+                new JComponent[] {detailName, browsePanel, detailLogo}));
+        details.add(new ITitledPanel("Items",
+                new JComponent[] {new JScrollPane(detailItemList)}));
+
+
+        getContentPanel().add(details, BorderLayout.CENTER);
+
+        setPositiveButton("Ok").addActionListener(e -> close());
 
         setPreferredSize(getPreferredSize());
         validate();

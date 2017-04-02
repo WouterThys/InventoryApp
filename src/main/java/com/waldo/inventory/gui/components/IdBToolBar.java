@@ -75,9 +75,9 @@ public abstract class IdBToolBar extends JToolBar {
         add(refreshAction);
         addSeparator();
         add(addAction);
-        add(editAction);
-        addSeparator();
         add(deleteAction);
+        addSeparator();
+        add(editAction);
     }
 
 //    private void initialize() {

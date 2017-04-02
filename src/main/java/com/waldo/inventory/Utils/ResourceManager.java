@@ -104,17 +104,18 @@ public class ResourceManager {
 
     public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {
         Image img = ImageIO.read(resourceURL);
-        if (img != null) {
-            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D graphics2D = bufferedImage.createGraphics();
-
-            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            graphics2D.drawImage(img, 0,0,width, height, null);
-            graphics2D.dispose();
-
-            return new ImageIcon(bufferedImage);
-        }
-        return null;
+        return new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH));
+//        if (img != null) {
+//            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//            Graphics2D graphics2D = bufferedImage.createGraphics();
+//
+//            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//            graphics2D.drawImage(img, 0,0,width, height, null);
+//            graphics2D.dispose();
+//
+//            return new ImageIcon(bufferedImage);
+//        }
+//        return null;
     }
 
     /**
