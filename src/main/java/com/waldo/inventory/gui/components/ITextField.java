@@ -36,7 +36,6 @@ public class ITextField extends JTextField implements FocusListener {
 
     public ITextField() {
         this("", 15);
-        addMenu();
     }
 
     public ITextField(String hint) {
@@ -52,6 +51,7 @@ public class ITextField extends JTextField implements FocusListener {
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
         showingHint = !hint.isEmpty();
+        addMenu();
     }
 
     @Override

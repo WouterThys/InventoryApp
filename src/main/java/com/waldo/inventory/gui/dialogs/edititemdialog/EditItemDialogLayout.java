@@ -70,7 +70,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
         manufacturerPanel = new ManufacturerPanel(newItem);
-        manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
+        //manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
         manufacturerPanel.initializeComponents();
 
         locationPanel = new LocationPanel(newItem);

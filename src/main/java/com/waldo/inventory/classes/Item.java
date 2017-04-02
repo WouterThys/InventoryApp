@@ -19,13 +19,13 @@ public class Item extends DbObject {
 
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
                 "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet, manufacturerid, locationid) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "(?,   ?,        ?,           ?,     ?,          ?,         ?,      ?,              ?,               ?,              ?)";
 
 
 
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, description = ?, price = ?, categoryId = ?, productId = ?, typeId = ?, localdatasheet = ?, onlinedatasheet = ? " +
+                    "SET name = ?, iconpath = ?, description = ?, price = ?, categoryId = ?, productId = ?, typeId = ?, localdatasheet = ?, onlinedatasheet = ?, " +
                     "manufacturerid = ?, locationid = ? " +
                 "WHERE id = ?;";
 

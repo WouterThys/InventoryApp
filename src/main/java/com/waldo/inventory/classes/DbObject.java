@@ -66,7 +66,7 @@ public class DbObject {
         setOnTableChangedListener(DbManager.dbInstance());
 
         long startTime = System.nanoTime();
-        try (Connection connection = DbManager.getConnection();){
+        try (Connection connection = DbManager.getConnection()){
             if (!connection.isValid(5)) {
                 throw new SQLException("Conenction invalid, timed out after 5s...");
             }
@@ -81,7 +81,7 @@ public class DbObject {
                     }
                 }
             } else { // Update
-                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate);) {
+                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
                 }
             }

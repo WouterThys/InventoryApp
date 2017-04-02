@@ -9,6 +9,7 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialogPanel;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledPanel;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     JComboBox<DbObject> selectionComboBox;
 
     private JLabel selectionLabel;
-    JLabel iconLabel;
+    ILabel iconLabel;
 
     /*
      *                  VARIABLES
@@ -150,7 +151,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         selectionComboBox.addItemListener(selectionCbIndexChanged);
 
         // Icon
-        iconLabel = new JLabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
+        iconLabel = new ILabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
 
         // Toolbar
         toolBar = new JToolBar(JToolBar.VERTICAL);

@@ -88,7 +88,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (verify()) {
-                    // Create item
+                    // Component
                     newItem.setName(componentPanel.getNameFieldValue());
                     newItem.setDescription(componentPanel.getDescriptionFieldValue());
                     String priceTxt = componentPanel.getPriceFieldValue();
@@ -114,6 +114,9 @@ public class EditItemDialog extends EditItemDialogLayout {
 
                     newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
                     newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
+
+                    // Manufacturer
+                    newItem.setManufacturerId(manufacturerPanel.getSelectedManufacturerId());
 
                     // Close dialog
                     close();
@@ -193,14 +196,16 @@ public class EditItemDialog extends EditItemDialogLayout {
             componentPanel.setNameFieldError("Name can not be empty");
             ok = false;
         } else {
-            try {
-                Item check = dbInstance().findItemByName(name);
-                if (check != null) {
-                    componentPanel.setNameFieldError("Name already exists in items");
-                    ok = false;
+            if (isNew) {
+                try {
+                    Item check = dbInstance().findItemByName(name);
+                    if (check != null) {
+                        componentPanel.setNameFieldError("Name already exists in items");
+                        ok = false;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }
 

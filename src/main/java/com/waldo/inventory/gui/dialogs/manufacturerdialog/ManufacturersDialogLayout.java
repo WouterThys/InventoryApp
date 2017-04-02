@@ -13,8 +13,6 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -155,9 +153,9 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
         detailsBroweButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
         detailsBroweButton.addActionListener(e -> {
-            if (selectedManufacturer!= null && selectedManufacturer.getId() != DbObject.UNKNOWN_ID && !selectedManufacturer.getWebsite().isEmpty())
+            if (!detailWebsite.getText().isEmpty())
                 try {
-                    OpenUtils.browseLink(selectedManufacturer.getWebsite());
+                    OpenUtils.browseLink(detailWebsite.getText());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

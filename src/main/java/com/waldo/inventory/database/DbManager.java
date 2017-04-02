@@ -761,9 +761,9 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findManufacturerIndex(long typeNdx) throws SQLException {
+    public int findManufacturerIndex(long manufacturerId) throws SQLException {
         for (int i = 0; i < getManufacturers().size(); i++) {
-            if (getManufacturers().get(i).getId() == typeNdx) {
+            if (getManufacturers().get(i).getId() == manufacturerId) {
                 return i;
             }
         }

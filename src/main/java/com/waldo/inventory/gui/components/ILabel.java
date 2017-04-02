@@ -1,7 +1,13 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.ResourceManager;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ILabel extends JLabel {
 
@@ -34,6 +40,29 @@ public class ILabel extends JLabel {
         this.setFont(new Font(labelFont.getName(), labelFont.getStyle(), size));
     }
 
+    public void setIcon(String path) {
+        URL url = ILabel.class.getResource("/settings/Settings.properties");
+        ResourceManager resourceManager = new ResourceManager(url.getPath());
+
+        try {
+            url = new File(path).toURI().toURL();
+            setIcon(resourceManager.readImage(url));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setIcon(String path, int width, int height) {
+        URL url = ILabel.class.getResource("/settings/Settings.properties");
+        ResourceManager resourceManager = new ResourceManager(url.getPath());
+
+        try {
+            url = new File(path).toURI().toURL();
+            setIcon(resourceManager.readImage(url, width, height));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void adjustTextSize() {
         Font labelFont = this.getFont();

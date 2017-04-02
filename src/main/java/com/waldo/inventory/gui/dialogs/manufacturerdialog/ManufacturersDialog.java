@@ -79,12 +79,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             detailWebsite.setText(selectedManufacturer.getWebsite());
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
-                try {
-                    URL url = new File(selectedManufacturer.getIconPath()).toURI().toURL();
-                    detailLogo.setIcon(resourceManager.readImage(url, 48,48));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                detailLogo.setIcon(selectedManufacturer.getIconPath(), 48,48);
             } else {
                 detailLogo.setIcon(resourceManager.readImage("Common.UnknownIcon48"));
             }
@@ -103,7 +98,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     private void clearDetails() {
         detailName.setText("");
         detailWebsite.setText("");
-        detailLogo.setIcon(null);
+        detailLogo.setIcon((Icon) null);
         detailItemDefaultListModel.removeAllElements();
     }
 }

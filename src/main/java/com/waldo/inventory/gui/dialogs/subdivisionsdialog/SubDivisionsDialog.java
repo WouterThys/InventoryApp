@@ -238,8 +238,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             String iconPath = selectedObject.getIconPath();
             if (iconPath != null && !iconPath.isEmpty()) {
                 try {
-                    URL url = new File(selectedObject.getIconPath()).toURI().toURL();
-                    iconLabel.setIcon(resourceManager.readImage(url, 48,48));
+                    iconLabel.setIcon(selectedObject.getIconPath());
                 } catch (Exception e) {
                     iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
                     e.printStackTrace();
@@ -248,7 +247,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
             }
         } else {
-            iconLabel.setIcon(null);
+            iconLabel.setIcon((Icon) null);
         }
     }
 
