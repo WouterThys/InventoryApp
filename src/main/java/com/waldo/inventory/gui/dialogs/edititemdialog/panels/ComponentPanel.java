@@ -179,6 +179,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         nameTextField = new ITextField();
         descriptionTextArea = new ITextArea();
+        descriptionTextArea.setLineWrap(true); // Go to next line when area is full
+        descriptionTextArea.setWrapStyleWord(true); // Don't cut words in two
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -188,6 +190,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = new ITextField();
+
 
         // Combo boxes
         try {

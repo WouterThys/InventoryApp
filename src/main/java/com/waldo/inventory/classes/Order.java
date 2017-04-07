@@ -1,23 +1,28 @@
 package com.waldo.inventory.classes;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class Order extends DbObject {
 
     public static final String TABLE_NAME = "orders";
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath) VALUES " +
-            "(?, ?)";
+            "name, iconpath, orderdate) VALUES " +
+            "(?, ?, ?)";
     private static final String updateSql =
             "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ? " +
+                    "SET name = ?, iconpath = ?, orderdate = ? " +
                     "WHERE id = ?;";
+
+    private Date orderDate;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setString(2, iconPath);
+        statement.setDate(3, orderDate);
         statement.execute();
     }
 
@@ -25,8 +30,18 @@ public class Order extends DbObject {
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
         statement.setString(2, iconPath);
-        statement.setLong(3, id); // WHERE id
+        statement.setDate(3, orderDate);
+        statement.setLong(4, id); // WHERE id
         statement.execute();
+    }
+
+    @Override
+    public String toString() {
+        if (orderDate != null) {
+            return orderDate.toString();
+        } else {
+            return Date.valueOf(LocalDate.MIN).toString();
+        }
     }
 
     public Order() {
@@ -42,5 +57,13 @@ public class Order extends DbObject {
         o.setName(UNKNOWN_NAME);
         o.setId(UNKNOWN_ID);
         return o;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 }

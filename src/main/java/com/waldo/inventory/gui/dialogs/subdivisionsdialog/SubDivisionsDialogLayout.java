@@ -8,18 +8,14 @@ import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDialogPanel;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledPanel;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 
@@ -44,7 +40,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     private DefaultListModel<DbObject> detailListModel;
     JList<DbObject> detailList;
 
-    private JToolBar toolBar;
+    private IdBToolBar toolBar;
     ITextField searchField;
     ITitledPanel detailsPanel;
 
@@ -58,9 +54,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     int selectedSubType; // Selection between categories, products or types
-    Action addAction;
-    Action deleteAction;
-    Action editAction;
+    DbObject selectedObject;
     Action searchAction;
 
     ListSelectionListener subDivisionChangedAction;
@@ -154,12 +148,63 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         iconLabel = new ILabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
 
         // Toolbar
-        toolBar = new JToolBar(JToolBar.VERTICAL);
+        toolBar = new IdBToolBar(IdBToolBar.VERTICAL) {
+            @Override
+            protected void refresh() {
+                updateComponents(null);
+            }
+
+            @Override
+            protected void add() {
+                DbObjectDialog dialog;
+                switch (selectedSubType) {
+                    case CATEGORIES:
+                        dialog = new DbObjectDialog<>(application, "New category", new Category());
+                        if (dialog.showDialog() == DbObjectDialog.OK) {
+                            dialog.getDbObject().save();
+                        }
+                        break;
+                    case PRODUCTS:
+                        dialog = new DbObjectDialog<>(application, "New product", new Product());
+                        if (dialog.showDialog() == DbObjectDialog.OK) {
+                            Category c = (Category) selectionCbModel.getSelectedItem();
+                            ((Product)dialog.getDbObject()).setCategoryId(c.getId());
+                            dialog.getDbObject().save();
+                        }
+                        break;
+                    case TYPES:
+                        dialog = new DbObjectDialog<>(application, "New product", new Type());
+                        if (dialog.showDialog() == DbObjectDialog.OK) {
+                            Product p = (Product) selectionCbModel.getSelectedItem();
+                            ((Type)dialog.getDbObject()).setProductId(p.getId());
+                            dialog.getDbObject().save();
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            protected void delete() {
+                if (selectedObject != null) {
+                    int res = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete \"" + selectedObject.getName() + "\"?");
+                    if (res == JOptionPane.OK_OPTION) {
+                        selectedObject.delete();
+                        selectedObject = null;
+                    }
+                }
+            }
+
+            @Override
+            protected void update() {
+                if (selectedObject != null) {
+                    DbObjectDialog dialog = new DbObjectDialog<>(application, "Update " + selectedObject.getName(), selectedObject);
+                    if (dialog.showDialog() == DbObjectDialog.OK) {
+                        selectedObject.save();
+                    }
+                }
+            }
+        };
         toolBar.setFloatable(false);
-        toolBar.add(addAction);
-        toolBar.add(deleteAction);
-        toolBar.add(editAction);
-        toolBar.setMaximumSize(new Dimension(toolBar.getPreferredSize()));
 
         // Details
         detailListModel = new DefaultListModel<>();
@@ -182,15 +227,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         ), BorderLayout.WEST);
 
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
-
-        JButton okButton = new JButton("Ok");
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
-        setPositiveButton("Ok");
+        setPositiveButton("Ok").addActionListener(e -> close());
     }
 
     @Override
@@ -241,7 +278,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
      */
     void updateTypeList() {
         if (selectedSubType == TYPES) {
-            long productId = -1;
+            long productId;
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
             if (obj != null) {
                 productId = obj.getId();
@@ -265,7 +302,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         }
     }
 
-    public void setProductsChanged() {
+    private void setProductsChanged() {
         productsChanged = new DbObjectChangedListener<Product>() {
             @Override
             public void onAdded(Product object) {
@@ -286,7 +323,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
 
     void updateProductList() {
         if (selectedSubType == PRODUCTS) {
-            long categoryId = -1;
+            long categoryId;
             DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
             if (obj != null) {
                 categoryId = obj.getId();

@@ -48,7 +48,6 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
 
     private int selectedSubNdx = 0;
-    private DbObject selectedObject;
 
     private SubDivisionsDialog(Application application, JDialog dialog) {
         super(application, dialog);
@@ -64,10 +63,6 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void initActions() {
-        initAddAction();
-        initDeleteAction();
-        initEditAction();
-
         initSearchAction();
 
         initSubDivisionChangedAction();
@@ -91,59 +86,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
         };
     }
-    private void initAddAction() {
-        addAction = new AbstractAction("Add", resourceManager.readImage("SubDivisionDialog.AddIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubType);
-                if (object != null) {
-                    switch (selectedSubType) {
-                        case CATEGORIES:
-                            object.save();
-                            LOG.debug("Adding category " + object.getName());
-                            break;
-                        case PRODUCTS:
-                            Category c = (Category) selectionCbModel.getSelectedItem();
-                            ((Product) object).setCategoryId(c.getId());
-                            object.save();
-                            LOG.debug("Adding product " + object.getName());
-                            break;
-                        case TYPES:
-                            Product p = (Product) selectionCbModel.getSelectedItem();
-                            ((Type) object).setProductId(p.getId());
-                            object.save();
-                            LOG.debug("Adding type " + object.getName());
-                            break;
-                    }
-                }
-            }
-        };
-    }
-    private void initDeleteAction() {
-        deleteAction = new AbstractAction("Delete", resourceManager.readImage("SubDivisionDialog.DeleteIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedObject != null) {
-                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(SubDivisionsDialog.this,
-                            "Are you sure you want to delete "+selectedObject.getName()+"?",
-                            "Delete",
-                            JOptionPane.YES_NO_OPTION)) {
 
-                            selectedObject.delete();
-                    }
-                }
-            }
-        };
-    }
-    private void initEditAction() {
-        editAction = new AbstractAction("Edit", resourceManager.readImage("SubDivisionDialog.EditIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DbObject object = AddNewSubDivisionDialog.showDialog(application, selectedSubNdx, selectedObject);
-                object.save();
-            }
-        };
-    }
     private void initSearchAction() {
         searchAction = new AbstractAction("Search", resourceManager.readImage("Common.Search")) {
             @Override

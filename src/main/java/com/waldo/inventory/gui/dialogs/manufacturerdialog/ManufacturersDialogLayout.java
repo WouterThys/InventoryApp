@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -136,7 +135,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
             @Override
             protected void update() {
                 if (selectedManufacturer != null) {
-                    DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", selectedManufacturer);
+                    DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
                     if (dialog.showDialog() == DbObjectDialog.OK) {
                         selectedManufacturer.save();
                     }

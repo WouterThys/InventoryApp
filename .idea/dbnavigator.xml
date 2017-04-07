@@ -23,7 +23,11 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
+        <schema name="main" object-types="table, view" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
@@ -44,7 +48,9 @@ update products set categoryid = 3 where id = 3;
 
 delete from items where id = 31;
 
-update products set categoryid = 10 where id = 12;]]></console>
+update products set categoryid = 10 where id = 12;
+
+update products set categoryid = 2 where id = 4;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
