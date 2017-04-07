@@ -19,6 +19,8 @@ public class ITextField extends JTextField implements FocusListener {
 
     private String hint = "";
     private boolean showingHint = false;
+    private String beforeEditText = "";
+    private boolean edited = false;
 
     private final Border line = BorderFactory.createLineBorder(Color.GRAY, 2, true);
     private final Border thinLine = BorderFactory.createLineBorder(Color.GRAY, 1, true);
@@ -61,6 +63,12 @@ public class ITextField extends JTextField implements FocusListener {
             showingHint = t.equals(hint);
         }
     }
+
+    public void setTextBeforeEdit(String t) {
+        beforeEditText = t;
+        setText(t);
+    }
+
 
     @Override
     public String getText() {
@@ -124,6 +132,14 @@ public class ITextField extends JTextField implements FocusListener {
             this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
         }
+    }
+
+    public boolean isEdited() {
+        return (edited || !getText().equals(beforeEditText));
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 
     public void setTrackingField(final JTextComponent textField) {

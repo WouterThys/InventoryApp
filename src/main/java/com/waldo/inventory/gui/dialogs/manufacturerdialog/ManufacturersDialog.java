@@ -9,12 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
@@ -43,6 +40,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         dialog.setVisible(true);
     }
 
+
+    private boolean canClose = true;
+
     private ManufacturersDialog(Application application, JDialog dialog) {
         super(application, dialog);
         initActions();
@@ -56,6 +56,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     private void initActions() {
         initManufacturerChanged();
+        initOkAction();
     }
 
 
@@ -75,8 +76,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     private void setDetails() {
         if (selectedManufacturer != null) {
-            detailName.setText(selectedManufacturer.getName());
-            detailWebsite.setText(selectedManufacturer.getWebsite());
+            detailName.setTextBeforeEdit(selectedManufacturer.getName());
+            detailWebsite.setTextBeforeEdit(selectedManufacturer.getWebsite());
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedManufacturer.getIconPath(), 48,48);
@@ -100,5 +101,45 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         detailWebsite.setText("");
         detailLogo.setIcon((Icon) null);
         detailItemDefaultListModel.removeAllElements();
+    }
+
+    private void initOkAction() {
+        okAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (detailWebsite.isEdited()) {
+                    canClose = false;
+                    showSaveDialog();
+                }
+
+                if (canClose) {
+                    close();
+                }
+            }
+        };
+    }
+
+    private void showSaveDialog() {
+        String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
+        if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            if (verify()) {
+                selectedManufacturer.setName(detailName.getText());
+                selectedManufacturer.setWebsite(detailWebsite.getText());
+                selectedManufacturer.save();
+                close();
+            }
+        }
+    }
+
+    private boolean verify() {
+        boolean ok = true;
+        if (detailName.getText().isEmpty()) {
+            detailName.setError("Name can't be empty");
+            ok = false;
+        }
+
+        // Valid website??
+        //...
+        return ok;
     }
 }

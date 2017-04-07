@@ -40,6 +40,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     DefaultListModel<Item> detailItemDefaultListModel;
 
     Action searchAction;
+    Action okAction;
     ListSelectionListener manufacturerChanged;
 
     /*
@@ -147,7 +148,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailWebsite = new ITextField("Web stie");
+        detailWebsite = new ITextField("Web site");
         detailLogo = new ILabel();
         detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -197,7 +198,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
         getContentPanel().add(details, BorderLayout.CENTER);
 
-        setPositiveButton("Ok").addActionListener(e -> close());
+        setPositiveButton("Ok").addActionListener(okAction);
 
         setPreferredSize(getPreferredSize());
         validate();
@@ -205,7 +206,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
     @Override
     public void updateComponents(Object object) {
-        // Get all manus
+        // Get all menus
         manufacturerDefaultListModel.removeAllElements();
         try {
             for(Manufacturer m : dbInstance().getManufacturers()) {
@@ -214,6 +215,8 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
     }
 
 
