@@ -846,6 +846,16 @@ public class DbManager implements TableChangedListener {
         return types;
     }
 
+    public List<Item> getItemListForType(long typeId) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        for (Item i : getItems()) {
+            if (i.getTypeId() == typeId) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
     public List<Order> getOrdersForManufacturer(long manufacturerId) {
         return null;
     }
@@ -854,6 +864,16 @@ public class DbManager implements TableChangedListener {
         List<Item> items = new ArrayList<>();
         for (Item item : getItems()) {
             if (item.getManufacturerId() == manufacturerId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> getItemsForCategory(long categoryId) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        for (Item item : getItems()) {
+            if (item.getCategoryId() == categoryId) {
                 items.add(item);
             }
         }

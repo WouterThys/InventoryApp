@@ -3,7 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.panels.itemlist.ItemListPanel;
+import com.waldo.inventory.gui.panels.mainpanel.ItemListPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

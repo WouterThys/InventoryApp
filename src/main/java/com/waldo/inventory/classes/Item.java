@@ -68,6 +68,7 @@ public class Item extends DbObject {
         statement.execute();
     }
 
+
     public String getDescription() {
         return description;
     }

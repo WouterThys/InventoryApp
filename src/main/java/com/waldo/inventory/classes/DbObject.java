@@ -17,6 +17,15 @@ public class DbObject {
     public static final int UNKNOWN_ID = 1;
     public static final String UNKNOWN_NAME = "Unknown";
 
+    public static final int TYPE_UNKNOWN = -1;
+    public static final int TYPE_ITEM = 1;
+    public static final int TYPE_CATEGORY = 2;
+    public static final int TYPE_PRODUCT = 3;
+    public static final int TYPE_TYPE = 4;
+    public static final int TYPE_MANUFACTURER = 5;
+    public static final int TYPE_LOCATION = 6;
+    public static final int TYPE_ORDER = 7;
+
     private String TABLE_NAME;
 
     protected long id = -1;
@@ -56,6 +65,14 @@ public class DbObject {
         this.sqlUpdate = sqlUpdate;
         this.sqlDelete = sqlDelete;
         this.sqlInsert = sqlInsert;
+    }
+
+    public static int getType(DbObject dbObject) {
+        if (dbObject instanceof Item) return TYPE_ITEM;
+        if (dbObject instanceof Category) return TYPE_CATEGORY;
+        if (dbObject instanceof Product) return TYPE_PRODUCT;
+        if (dbObject instanceof Type) return TYPE_TYPE;
+        return TYPE_UNKNOWN;
     }
 
     public DbObject(String tableName, String sqlInsert, String sqlUpdate) {

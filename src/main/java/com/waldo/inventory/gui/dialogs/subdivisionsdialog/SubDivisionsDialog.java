@@ -55,8 +55,6 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-
-
         dbInstance().addOnCategoriesChangedListener(categoriesChanged);
         dbInstance().addOnProductsChangedListener(productsChanged);
         dbInstance().addOnTypesChangedListener(typesChanged);
