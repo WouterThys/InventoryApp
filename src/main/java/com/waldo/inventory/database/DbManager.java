@@ -846,10 +846,32 @@ public class DbManager implements TableChangedListener {
         return types;
     }
 
-    public List<Item> getItemListForType(long typeId) throws SQLException {
+    public List<Item> getItemListForCategory(Category c) throws SQLException {
         List<Item> items = new ArrayList<>();
         for (Item i : getItems()) {
-            if (i.getTypeId() == typeId) {
+            if (i.getCategoryId() == c.getId()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> getItemListForProduct(Product p) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        Category c = findCategoryById(p.getCategoryId());
+        for (Item i : getItemListForCategory(c)) {
+            if (i.getProductId() == p.getId()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> getItemListForType(Type t) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        Product p = findProductById(t.getProductId());
+        for (Item i : getItemListForProduct(p)) {
+            if (i.getTypeId() == t.getId()) {
                 items.add(i);
             }
         }

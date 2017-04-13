@@ -8,6 +8,8 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeSelectionEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -52,13 +54,12 @@ public class ItemListPanel extends ItemListPanelLayout {
     private void initActions() {
         initMouseClicked();
         initItemSelectedListener();
-        initCategorySelectedListener();
     }
 
     private void initItemSelectedListener() {
-        itemTable.getSelectionModel().addListSelectionListener( e -> {
-            if (!e.getValueIsAdjusting()) {
-
+//        itemTable.getSelectionModel().addListSelectionListener( e -> {
+//            if (!e.getValueIsAdjusting()) {
+//
 //                    int row = itemTable.getSelectedRow();
 //                    if (row >= 0) {
 //                        Item selected = null;
@@ -69,23 +70,9 @@ public class ItemListPanel extends ItemListPanelLayout {
 //                        }
 //                        selectedItem = selected;
 //                    }
-
-            }
-        });
-    }
-
-    private void initCategorySelectedListener() {
-        categoryList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                JList list  = (JList)e.getSource();
-                selectedCategory = (Category) list.getSelectedValue();
-                if (selectedCategory != null && selectedCategory.getId() != DbObject.UNKNOWN_ID) {
-                    // set selected item
-                } else {
-                    // clear active item
-                }
-            }
-        });
+//
+//            }
+//        });
     }
 
     private void initMouseClicked() {
@@ -178,6 +165,7 @@ public class ItemListPanel extends ItemListPanelLayout {
         categoriesChanged = new DbObjectChangedListener<Category>() {
             @Override
             public void onAdded(Category object) {
+                //tableModel.fireTable
                 updateComponents(null);
             }
 
@@ -229,5 +217,52 @@ public class ItemListPanel extends ItemListPanelLayout {
 
             }
         };
+    }
+
+
+
+    //
+    // Tree model interface
+    //
+
+    @Override
+    public void treeNodesChanged(TreeModelEvent e) {
+        System.out.print(e);
+    }
+
+    @Override
+    public void treeNodesInserted(TreeModelEvent e) {
+        System.out.print(e);
+    }
+
+    @Override
+    public void treeNodesRemoved(TreeModelEvent e) {
+        System.out.print(e);
+    }
+
+    @Override
+    public void treeStructureChanged(TreeModelEvent e) {
+        System.out.print(e);
+    }
+
+    //
+    // Tree selection interface
+    //
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        DivisionTreeModel.DbObjectNode node = (DivisionTreeModel.DbObjectNode) subDivisionTree.getLastSelectedPathComponent();
+
+        if (node == null) {
+            lastSelectedDivision = null;
+            return; // Nothing selected
+        }
+
+        lastSelectedDivision = node.getDbObject();
+        try {
+            updateTable(lastSelectedDivision);
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
     }
 }

@@ -22,32 +22,32 @@ public class ItemTableModel extends AbstractTreeTableModel implements TreeTableM
     }
 
     static {
-        try {
+//        try {
 
-            rootNode = new DbObjectNode(new DbObject("", "", ""), false); // Virtual root
-
-            for (Category category : dbInstance().getCategories()) {
-                DbObjectNode cNode = new DbObjectNode(category, false);
-                rootNode.getChildren().addElement(cNode);
-
-                for (Product product : dbInstance().getProductListForCategory(category.getId())) {
-                    DbObjectNode pNode = new DbObjectNode(product, false);
-                    cNode.getChildren().addElement(pNode);
-
-                    for (Type type : dbInstance().getTypeListForProduct(product.getId())) {
-                        DbObjectNode tNode = new DbObjectNode(type, false);
-                        pNode.getChildren().add(tNode);
-
-                        for (Item item : dbInstance().getItemListForType(type.getId())) {
-                            DbObjectNode iNode = new DbObjectNode(item, true);
-                            tNode.getChildren().add(iNode);
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//            rootNode = new DbObjectNode(new DbObject("", "", ""), false); // Virtual root
+//
+//            for (Category category : dbInstance().getCategories()) {
+//                DbObjectNode cNode = new DbObjectNode(category, false);
+//                rootNode.getChildren().addElement(cNode);
+//
+//                for (Product product : dbInstance().getProductListForCategory(category.getId())) {
+//                    DbObjectNode pNode = new DbObjectNode(product, false);
+//                    cNode.getChildren().addElement(pNode);
+//
+//                    for (Type type : dbInstance().getTypeListForProduct(product.getId())) {
+//                        DbObjectNode tNode = new DbObjectNode(type, false);
+//                        pNode.getChildren().add(tNode);
+//
+//                        for (Item item : dbInstance().getItemListForType(type.getId())) {
+//                            DbObjectNode iNode = new DbObjectNode(item, true);
+//                            tNode.getChildren().add(iNode);
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
 //    //
