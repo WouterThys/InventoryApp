@@ -9,6 +9,7 @@ public class ITable extends JTable {
         super();
 
         setModel(model);
+
     }
 
 }
