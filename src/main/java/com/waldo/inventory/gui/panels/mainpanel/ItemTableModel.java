@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.DbManager;
@@ -15,6 +16,7 @@ public class ItemTableModel extends AbstractTableModel {
     // Names and classes
     private static final String[] columnNames = {"Name", "Description", "Manufacturer", "Data sheet"};
     private static final Class[] columnClasses = {String.class, String.class, String.class, Boolean.class };
+    public static final Integer[] columnWidths = {25,50,20,5};
 
     private List<Item> itemList;
 
@@ -33,13 +35,12 @@ public class ItemTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    private Item getItem(int index) {
+    public Item getItem(int index) {
         if (index >= 0 && index < itemList.size()) {
             return itemList.get(index);
         }
         return null;
     }
-
 
     @Override
     public int getRowCount() {
@@ -73,7 +74,7 @@ public class ItemTableModel extends AbstractTableModel {
                 case 2: // Manufacturer
                     try {
                         Manufacturer m = DbManager.dbInstance().findManufacturerById(item.getManufacturerId());
-                        if (m != null) {
+                        if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
                             return m.getName();
                         }
                     } catch (SQLException e) {

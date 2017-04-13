@@ -78,6 +78,8 @@ public abstract class IdBToolBar extends JToolBar {
         add(deleteAction);
         addSeparator();
         add(editAction);
+
+        setOpaque(false);
     }
 
 //    private void initialize() {

@@ -9,8 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
@@ -21,7 +26,8 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 public abstract class ItemListPanelLayout extends JPanel implements
         GuiInterface,
         TreeModelListener,
-        TreeSelectionListener {
+        TreeSelectionListener,
+        ListSelectionListener{
 
     /*
      *                  COMPONENTS
@@ -45,12 +51,12 @@ public abstract class ItemListPanelLayout extends JPanel implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Item getItemAt(int row) throws SQLException {
-        return dbInstance().getItems().get(row);
+    Item getItemAt(int row)  {
+        return tableModel.getItem(row);
     }
 
-    void updateTable(DbObject selectedObject) throws SQLException {
-        if (selectedObject.getName().equals("All*")) {
+    public void updateTable(DbObject selectedObject) throws SQLException {
+        if (selectedObject == null || selectedObject.getName().equals("All")) {
             tableModel.setItemList(dbInstance().getItems());
         } else {
             switch (DbObject.getType(selectedObject)) {
@@ -91,6 +97,8 @@ public abstract class ItemListPanelLayout extends JPanel implements
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        itemTable.getSelectionModel().addListSelectionListener(this);
+        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     @Override
@@ -102,6 +110,21 @@ public abstract class ItemListPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) {
+        resizeColumnWidth(itemTable);
+    }
 
+    public void resizeColumnWidth(JTable table) {
+        final TableColumnModel columnModel = table.getColumnModel();
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            int width = 15; // Min width
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, column);
+                Component comp = table.prepareRenderer(renderer, row, column);
+                width = Math.max(comp.getPreferredSize().width +1 , width);
+            }
+            if(width > 300)
+                width=300;
+            columnModel.getColumn(column).setPreferredWidth(width);
+        }
     }
 }

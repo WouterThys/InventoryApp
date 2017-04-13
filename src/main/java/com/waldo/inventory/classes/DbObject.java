@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.StringJoiner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -208,6 +209,11 @@ public class DbObject {
             }
         }
         return false;
+    }
+
+    public boolean hasMatch(String searchTerm) {
+        return getName().toUpperCase().contains(searchTerm.toUpperCase())
+                || getIconPath().toUpperCase().contains(searchTerm.toUpperCase());
     }
 
     public long getId() {

@@ -6,8 +6,11 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
 import java.awt.event.ActionEvent;
@@ -51,38 +54,33 @@ public class ItemListPanel extends ItemListPanelLayout {
         return selectedItem;
     }
 
-    private void initActions() {
-        initMouseClicked();
-        initItemSelectedListener();
+    public DbObject getLastSelectedDivision() {
+        return lastSelectedDivision;
     }
 
-    private void initItemSelectedListener() {
-//        itemTable.getSelectionModel().addListSelectionListener( e -> {
-//            if (!e.getValueIsAdjusting()) {
-//
-//                    int row = itemTable.getSelectedRow();
-//                    if (row >= 0) {
-//                        Item selected = null;
-//                        try {
-//                            selected = getItemAt(itemTable.getSelectedRow());
-//                        } catch (SQLException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                        selectedItem = selected;
-//                    }
-//
-//            }
-//        });
+    public ItemTableModel getTableModel() {
+        return tableModel;
+    }
+
+    private void initActions() {
+        initMouseClicked();
     }
 
     private void initMouseClicked() {
-        mouseClicked = new MouseAdapter() {
+        itemTable.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTable table = (JTable) e.getSource();
                 if (e.getClickCount() == 2) {
-                    ActionListener a = application.updateItemAction;
-                    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,  null));
+                    Item selectedItem = application.getSelectedItem();
+                    try {
+                        selectedItem = EditItemDialog.showDialog(application, selectedItem);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    if (selectedItem != null) {
+                        selectedItem.save();
+                    }
                 }
                 if (e.getClickCount() == 1) {
                     try {
@@ -92,7 +90,7 @@ public class ItemListPanel extends ItemListPanelLayout {
                     }
                 }
             }
-        };
+        });
     }
 
     private void dataSheetColumnClicked(int col, int row) throws SQLException {
@@ -140,25 +138,29 @@ public class ItemListPanel extends ItemListPanelLayout {
             @Override
             public void onAdded(Item item) {
                 selectedItem = item;
-                updateItems(item);
+                updateItems();
             }
 
             @Override
             public void onUpdated(Item item) {
                 selectedItem = item;
-                updateItems(item);
+                updateItems();
             }
 
             @Override
             public void onDeleted(Item item) {
                 selectedItem = null;
-                updateItems(item);
+                updateItems();
             }
         };
     }
 
-    private void updateItems(Item item) {
-        //tableModel.;
+    private void updateItems() {
+        try {
+            updateTable(lastSelectedDivision);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setCategoriesChangedListener() {
@@ -219,8 +221,6 @@ public class ItemListPanel extends ItemListPanelLayout {
         };
     }
 
-
-
     //
     // Tree model interface
     //
@@ -260,9 +260,24 @@ public class ItemListPanel extends ItemListPanelLayout {
 
         lastSelectedDivision = node.getDbObject();
         try {
+            application.clearSearch();
             updateTable(lastSelectedDivision);
         } catch (SQLException e1) {
             e1.printStackTrace();
+        }
+    }
+
+    //
+    // Table selction changed
+    //
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            int row = itemTable.getSelectedRow();
+            if (row >= 0) {
+                selectedItem = getItemAt(itemTable.getSelectedRow());
+            }
         }
     }
 }
