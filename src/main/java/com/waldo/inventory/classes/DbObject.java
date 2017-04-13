@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class DbObject {
+public abstract class DbObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(DbObject.class);
     public static final int UNKNOWN_ID = 1;

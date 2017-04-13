@@ -18,6 +18,5 @@ public class Category extends DbObject {
         unknown.setName(UNKNOWN_NAME);
         unknown.setId(UNKNOWN_ID);
         return unknown;
-
     }
 }

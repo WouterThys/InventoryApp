@@ -32,7 +32,7 @@ public class Main {
 
                 Application app = new Application();
                 app.setTitle("Inventory");
-                app.setMinimumSize(new Dimension(800,600));
+                app.setMinimumSize(new Dimension(1500,800));
                 app.setLocationByPlatform(true);
                 //app.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

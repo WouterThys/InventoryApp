@@ -146,7 +146,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getManufacturers()), searchWord));
 
         // Items
-        foundList.addAll(searchForItem(new ArrayList<>(dbInstance().getItems()), searchWord));
+        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getItems()), searchWord));
 
         return foundList;
     }
@@ -174,7 +174,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
                     foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getManufacturers()), searchWord));
                     break;
                 case DbObject.TYPE_ITEM:
-                    foundList.addAll(searchForItem(new ArrayList<>(dbInstance().getItems()), searchWord));
+                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getItems()), searchWord));
                     break;
                 default:
                     break;
@@ -200,38 +200,6 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         return foundList;
     }
 
-    private List<DbObject> searchForItem(List<DbObject> listToSearch, String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-        if (listToSearch == null || listToSearch.size() == 0) {
-            return foundList;
-        }
-        searchWord = searchWord.toUpperCase();
-
-        for (DbObject dbo : listToSearch) {
-            // Search in DbObject part
-            if (dbo.hasMatch(searchWord)) {
-                foundList.add(dbo);
-            } else {
-                // Specific for item
-                Item item;
-                try {
-                    item = (Item) dbo;
-                } catch (ClassCastException ex) {
-                    continue;
-                }
-                if (item.getDescription().toUpperCase().contains(searchWord)) {
-                    foundList.add(item);
-                } else if (item.getLocalDataSheet().toUpperCase().contains(searchWord)) {
-                    foundList.add(item);
-                } else if (item.getOnlineDataSheet().toUpperCase().contains(searchWord)) {
-                    foundList.add(item);
-                }
-            }
-        }
-
-        return foundList;
-    }
-
     @Override
     public void initializeComponents() {
         // Search text field
@@ -240,12 +208,21 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                clearLabel();
+                clearSearch();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
+            }
+        });
+        searchField.addActionListener(e -> {
+            String searchWord = searchField.getText();
+            if (searchWord == null || searchWord.isEmpty()) {
+                setError("No input..");
+            } else {
+                clearLabel();
+                search(searchWord);
             }
         });
 

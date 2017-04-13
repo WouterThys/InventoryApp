@@ -48,6 +48,15 @@ public class Manufacturer extends DbObject {
         return m;
     }
 
+    @Override
+    public boolean hasMatch(String searchTerm) {
+        if (super.hasMatch(searchTerm)) {
+            return true;
+        } else {
+            return (getWebsite().toUpperCase().contains(searchTerm)) ;
+        }
+    }
+
     public String getWebsite() {
         if (website == null) {
             return "";

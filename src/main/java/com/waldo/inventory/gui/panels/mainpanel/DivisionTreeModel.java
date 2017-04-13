@@ -24,8 +24,7 @@ public class DivisionTreeModel implements TreeModel {
     private void initializeTree() {
         try {
 
-            rootNode = new DbObjectNode(new DbObject("", "", ""), false); // Virtual root
-            rootNode.getDbObject().setName("All");
+            rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
 
             for (Category category : dbInstance().getCategories()) {
                 DbObjectNode cNode = new DbObjectNode(category, false);

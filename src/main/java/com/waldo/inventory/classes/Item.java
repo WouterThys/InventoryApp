@@ -1,5 +1,7 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
+
 import java.sql.*;
 import java.util.Comparator;
 
@@ -69,6 +71,65 @@ public class Item extends DbObject {
         statement.execute();
     }
 
+    @Override
+    public boolean hasMatch(String searchTerm) {
+        if (super.hasMatch(searchTerm)) {
+            return true;
+        } else {
+            // Local objects
+            if (getDescription().toUpperCase().contains(searchTerm)) {
+                return true;
+            } else if (getLocalDataSheet().toUpperCase().contains(searchTerm)) {
+                return true;
+            } else if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) {
+                return true;
+            }
+
+            // Covert category, product, type, ...
+            Category c = null;
+            try {
+                c = DbManager.dbInstance().findCategoryById(categoryId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (c != null && c.hasMatch(searchTerm)) {
+                return true;
+            }
+
+            Product p = null;
+            try {
+                p = DbManager.dbInstance().findProductById(productId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (p != null && p.hasMatch(searchTerm)) {
+                return true;
+            }
+
+            Type t = null;
+            try {
+                t = DbManager.dbInstance().findTypeById(typeId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (t != null && t.hasMatch(searchTerm)) {
+                return true;
+            }
+
+            Manufacturer m = null;
+            try {
+                m = DbManager.dbInstance().findManufacturerById(manufacturerId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (m != null && m.hasMatch(searchTerm)) {
+                return true;
+            }
+
+
+        }
+        return false;
+    }
 
     public static class ItemComparator implements Comparator<Item> {
         @Override
