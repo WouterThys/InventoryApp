@@ -197,14 +197,10 @@ public class EditItemDialog extends EditItemDialogLayout {
             ok = false;
         } else {
             if (isNew) {
-                try {
-                    Item check = dbInstance().findItemByName(name);
-                    if (check != null) {
-                        componentPanel.setNameFieldError("Name already exists in items");
-                        ok = false;
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                Item check = dbInstance().findItemByName(name);
+                if (check != null) {
+                    componentPanel.setNameFieldError("Name already exists in items");
+                    ok = false;
                 }
             }
         }

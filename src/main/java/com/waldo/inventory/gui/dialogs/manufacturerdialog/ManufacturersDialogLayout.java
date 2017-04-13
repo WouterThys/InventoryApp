@@ -207,15 +207,9 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     public void updateComponents(Object object) {
         // Get all menus
         manufacturerDefaultListModel.removeAllElements();
-        try {
-            for(Manufacturer m : dbInstance().getManufacturers()) {
-                manufacturerDefaultListModel.addElement(m);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for(Manufacturer m : dbInstance().getManufacturers()) {
+            manufacturerDefaultListModel.addElement(m);
         }
-
-
     }
 
 

@@ -286,14 +286,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
                     productId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                try {
-                    for (Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
-                        detailListModel.addElement(t);
-                    }
-                    LOG.debug(obj.getName() + " updated in type list. Product id = " + productId + ". Element count: " + detailListModel.size());
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                for (Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
+                    detailListModel.addElement(t);
                 }
+                LOG.debug(obj.getName() + " updated in type list. Product id = " + productId + ". Element count: " + detailListModel.size());
             } else {
                 LOG.debug("Type list not updated, object is null");
             }
@@ -331,14 +327,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
                     categoryId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                try {
-                    for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
-                        detailListModel.addElement(p);
-                    }
-                    LOG.debug(obj.getName() + " updated in product list. Category id = " + categoryId + ". Element count: " + detailListModel.size());
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
+                    detailListModel.addElement(p);
                 }
+                LOG.debug(obj.getName() + " updated in product list. Category id = " + categoryId + ". Element count: " + detailListModel.size());
             } else {
                 LOG.debug("Category list not updated, object is null");
             }
@@ -369,14 +361,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     void updateCategoryList() {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
-            try {
-                for (Category c : DbManager.dbInstance().getCategories()) {
-                    detailListModel.addElement(c);
-                }
-                LOG.debug("Category list updated" + ". Element count: " + detailListModel.size());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            for (Category c : DbManager.dbInstance().getCategories()) {
+                detailListModel.addElement(c);
             }
+            LOG.debug("Category list updated" + ". Element count: " + detailListModel.size());
         } else {
             LOG.error("Category notification for change, but selectedSubType is not CATEGORIES: " + selectedSubType);
         }

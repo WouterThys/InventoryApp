@@ -88,25 +88,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     public void updateProductCbValues(long categoryId) {
         productCbModel.removeAllElements();
-        try {
-            productCbModel.addElement(dbInstance().getProducts().get(0)); // Add unknown
-            for (Product p : dbInstance().getProductListForCategory(categoryId)) {
-                productCbModel.addElement(p);
-            }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
+        productCbModel.addElement(dbInstance().getProducts().get(0)); // Add unknown
+        for (Product p : dbInstance().getProductListForCategory(categoryId)) {
+            productCbModel.addElement(p);
         }
     }
 
     public void updateTypeCbValues(long productId) {
         typeCbModel.removeAllElements();
-        try {
-            typeCbModel.addElement(dbInstance().getTypes().get(0)); // Add unknown
-            for (Type t : dbInstance().getTypeListForProduct(productId)) {
-                typeCbModel.addElement(t);
-            }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
+        typeCbModel.addElement(dbInstance().getTypes().get(0)); // Add unknown
+        for (Type t : dbInstance().getTypeListForProduct(productId)) {
+            typeCbModel.addElement(t);
         }
     }
 
@@ -277,33 +269,29 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
         // Combo boxes
-        try {
-            int cNdx = dbInstance().findCategoryIndex(newItem.getCategoryId());
-            int pNdx = dbInstance().findProductIndex(newItem.getProductId());
-            int tNdx = dbInstance().findTypeIndex(newItem.getTypeId());
-            if (cNdx >= 0) {
-                categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
+        int cNdx = dbInstance().findCategoryIndex(newItem.getCategoryId());
+        int pNdx = dbInstance().findProductIndex(newItem.getProductId());
+        int tNdx = dbInstance().findTypeIndex(newItem.getTypeId());
+        if (cNdx >= 0) {
+            categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
 
-                if (pNdx >= 0) {
-                    productComboBox.setSelectedIndex(pNdx);
+            if (pNdx >= 0) {
+                productComboBox.setSelectedIndex(pNdx);
 
-                    if (tNdx >= 0) {
-                        typeComboBox.setSelectedIndex(tNdx);
-                    } else {
-                        typeComboBox.setSelectedIndex(0);
-                    }
+                if (tNdx >= 0) {
+                    typeComboBox.setSelectedIndex(tNdx);
                 } else {
-                    productComboBox.setSelectedIndex(0);
                     typeComboBox.setSelectedIndex(0);
                 }
-
             } else {
-                categoryComboBox.setSelectedIndex(0); // Unknown
                 productComboBox.setSelectedIndex(0);
                 typeComboBox.setSelectedIndex(0);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } else {
+            categoryComboBox.setSelectedIndex(0); // Unknown
+            productComboBox.setSelectedIndex(0);
+            typeComboBox.setSelectedIndex(0);
         }
 
         // Data sheets

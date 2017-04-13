@@ -63,24 +63,16 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         manufacturerCbModel.removeAllElements();
-        try {
-            for (Manufacturer m : dbInstance().getManufacturers()) {
-                manufacturerCbModel.addElement(m);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (Manufacturer m : dbInstance().getManufacturers()) {
+            manufacturerCbModel.addElement(m);
         }
 
 
         if (newItem != null) {
             if (newItem.getManufacturerId() >= 0) {
                 // Set index
-                try {
-                    int ndx = dbInstance().findManufacturerIndex(newItem.getManufacturerId());
-                    manufacturerComboBox.setSelectedIndex(ndx);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                int ndx = dbInstance().findManufacturerIndex(newItem.getManufacturerId());
+                manufacturerComboBox.setSelectedIndex(ndx);
 
                 // Set icon
                 URL url = ManufacturerPanel.class.getResource("/settings/Settings.properties");
@@ -91,7 +83,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
                         url = new File(m.getIconPath()).toURI().toURL();
                         iconLabel.setIcon(resourceManager.readImage(url, 48, 48));
                     }
-                } catch (SQLException | IOException e1) {
+                } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }

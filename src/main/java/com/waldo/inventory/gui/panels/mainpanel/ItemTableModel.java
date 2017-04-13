@@ -72,13 +72,9 @@ public class ItemTableModel extends AbstractTableModel {
                 case 1: // Description
                     return item.getDescription();
                 case 2: // Manufacturer
-                    try {
-                        Manufacturer m = DbManager.dbInstance().findManufacturerById(item.getManufacturerId());
-                        if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
-                            return m.getName();
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    Manufacturer m = DbManager.dbInstance().findManufacturerById(item.getManufacturerId());
+                    if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
+                        return m.getName();
                     }
                     return "";
                 case 3: // Data sheet

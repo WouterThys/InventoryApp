@@ -1,6 +1,5 @@
 package com.waldo.inventory.database;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -290,14 +289,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  ITEMS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Item> getItems() throws SQLException {
+    public List<Item> getItems() {
         if (items == null) {
             updateItems();
         }
         return items;
     }
 
-    private void updateItems() throws SQLException {
+    private void updateItems() {
         items = new ArrayList<>();
 
         String sql = "SELECT * FROM items ORDER BY name";
@@ -324,6 +323,9 @@ public class DbManager implements TableChangedListener {
                     items.add(i);
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch items from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -357,14 +359,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  CATEGORIES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Category> getCategories() throws SQLException {
+    public List<Category> getCategories() {
         if (categories == null) {
             updateCategories();
         }
         return categories;
     }
 
-    private void updateCategories() throws SQLException {
+    private void updateCategories() {
         categories = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY name";
@@ -384,6 +386,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch categories from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         categories.add(0, Category.getUnknownCategory());
     }
@@ -417,14 +422,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  PRODUCTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Product> getProducts() throws SQLException {
+    public List<Product> getProducts() {
         if (products == null) {
             updateProducts();
         }
         return products;
     }
 
-    private void updateProducts() throws SQLException {
+    private void updateProducts() {
         products = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY name";
@@ -445,6 +450,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch products from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
 
         products.add(0, Product.getUnknownProduct());
@@ -479,14 +487,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  TYPES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Type> getTypes() throws SQLException {
+    public List<Type> getTypes() {
         if (types == null) {
             updateTypes();
         }
         return types;
     }
 
-    private void updateTypes() throws SQLException {
+    private void updateTypes() {
         types = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY name";
@@ -507,6 +515,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch types from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         types.add(0, Type.getUnknownType());
     }
@@ -540,14 +551,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  MANUFACTURERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Manufacturer> getManufacturers() throws SQLException {
+    public List<Manufacturer> getManufacturers() {
         if (manufacturers == null) {
             updateManufacturers();
         }
         return manufacturers;
     }
 
-    private void updateManufacturers() throws SQLException {
+    private void updateManufacturers() {
         manufacturers = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Manufacturer.TABLE_NAME + " ORDER BY name";
@@ -568,6 +579,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch items from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
     }
@@ -575,14 +589,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  LOCATIONS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Location> getLocations() throws SQLException {
+    public List<Location> getLocations()   {
         if (locations == null) {
             updateLocations();
         }
         return locations;
     }
 
-    private void updateLocations() throws SQLException {
+    private void updateLocations()    {
         locations = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Location.TABLE_NAME + " ORDER BY name";
@@ -602,6 +616,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch locations from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         locations.add(0, Location.getUnknownLocation());
     }
@@ -609,14 +626,14 @@ public class DbManager implements TableChangedListener {
     /*
     *                  ORDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Order> getOrders() throws SQLException {
+    public List<Order> getOrders()    {
         if (orders == null) {
             updateOrders();
         }
         return orders;
     }
 
-    private void updateOrders() throws SQLException {
+    private void updateOrders()    {
         orders = new ArrayList<>();
 
         String sql = "SELECT * FROM " + Order.TABLE_NAME + " ORDER BY name";
@@ -636,6 +653,9 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch orders from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
     }
@@ -653,7 +673,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Item findItemByName(String name) throws SQLException {
+    public Item findItemByName(String name)    {
         for (Item i : getItems()) {
             if (i.getName().equals(name)) {
                 return i;
@@ -662,7 +682,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Category findCategoryById(long id) throws SQLException {
+    public Category findCategoryById(long id)    {
         for (Category c : getCategories()) {
             if (c.getId() == id) {
                 return c;
@@ -671,7 +691,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Category findCategoryByName(String name) throws SQLException {
+    public Category findCategoryByName(String name)    {
         for (Category c : getCategories()) {
             if (c.getName().equals(name)) {
                 return c;
@@ -680,7 +700,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findCategoryIndex(long categoryNdx) throws SQLException {
+    public int findCategoryIndex(long categoryNdx)    {
         for (int i = 0; i < getCategories().size(); i++) {
             if (getCategories().get(i).getId() == categoryNdx) {
                 return i;
@@ -689,7 +709,7 @@ public class DbManager implements TableChangedListener {
         return -1;
     }
 
-    public Product findProductById(long id) throws SQLException {
+    public Product findProductById(long id)    {
         for (Product p : getProducts()) {
             if (p.getId() == id) {
                 return p;
@@ -698,7 +718,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Product findProductByName(String name) throws SQLException {
+    public Product findProductByName(String name)    {
         for (Product p : getProducts()) {
             if (p.getName().equals(name)) {
                 return p;
@@ -707,7 +727,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findProductIndex(long productNdx) throws SQLException {
+    public int findProductIndex(long productNdx)    {
         for (int i = 0; i < getProducts().size(); i++) {
             if (getProducts().get(i).getId() == productNdx) {
                 return i;
@@ -716,7 +736,7 @@ public class DbManager implements TableChangedListener {
         return -1;
     }
 
-    public Type findTypeById(long id) throws SQLException {
+    public Type findTypeById(long id)    {
         for (Type t : getTypes()) {
             if (t.getId() == id) {
                 return t;
@@ -725,7 +745,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Type findTypeByName(String name) throws SQLException {
+    public Type findTypeByName(String name)    {
         for (Type t : getTypes()) {
             if (t.getName().equals(name)) {
                 return t;
@@ -734,7 +754,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findTypeIndex(long typeNdx) throws SQLException {
+    public int findTypeIndex(long typeNdx)    {
         for (int i = 0; i < getTypes().size(); i++) {
             if (getTypes().get(i).getId() == typeNdx) {
                 return i;
@@ -743,7 +763,7 @@ public class DbManager implements TableChangedListener {
         return -1;
     }
 
-    public Manufacturer findManufacturerById(long id) throws SQLException {
+    public Manufacturer findManufacturerById(long id)    {
        for (Manufacturer m : getManufacturers()) {
            if (m.getId() == id) {
                return m;
@@ -752,7 +772,7 @@ public class DbManager implements TableChangedListener {
        return null;
     }
 
-    public Manufacturer findManufacturerByName(String name) throws SQLException {
+    public Manufacturer findManufacturerByName(String name)    {
         for (Manufacturer m : getManufacturers()) {
             if (m.getName().equals(name)) {
                 return m;
@@ -761,7 +781,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findManufacturerIndex(long manufacturerId) throws SQLException {
+    public int findManufacturerIndex(long manufacturerId)    {
         for (int i = 0; i < getManufacturers().size(); i++) {
             if (getManufacturers().get(i).getId() == manufacturerId) {
                 return i;
@@ -770,7 +790,7 @@ public class DbManager implements TableChangedListener {
         return -1;
     }
 
-    public Location findLocationById(long id) throws SQLException {
+    public Location findLocationById(long id)    {
         for (Location t : getLocations()) {
             if (t.getId() == id) {
                 return t;
@@ -779,7 +799,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Location findLocationByName(String name) throws SQLException {
+    public Location findLocationByName(String name)    {
         for (Location t : getLocations()) {
             if (t.getName().equals(name)) {
                 return t;
@@ -788,7 +808,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findLocationIndex(long typeNdx) throws SQLException {
+    public int findLocationIndex(long typeNdx)    {
         for (int i = 0; i < getLocations().size(); i++) {
             if (getLocations().get(i).getId() == typeNdx) {
                 return i;
@@ -797,7 +817,7 @@ public class DbManager implements TableChangedListener {
         return -1;
     }
 
-    public Order findOrderById(long id) throws SQLException {
+    public Order findOrderById(long id)    {
         for (Order t : getOrders()) {
             if (t.getId() == id) {
                 return t;
@@ -806,7 +826,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public Order findOrderByName(String name) throws SQLException {
+    public Order findOrderByName(String name)    {
         for (Order t : getOrders()) {
             if (t.getName().equals(name)) {
                 return t;
@@ -815,7 +835,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findOrderIndex(long typeNdx) throws SQLException {
+    public int findOrderIndex(long typeNdx)    {
         for (int i = 0; i < getOrders().size(); i++) {
             if (getOrders().get(i).getId() == typeNdx) {
                 return i;
@@ -826,7 +846,7 @@ public class DbManager implements TableChangedListener {
     /*
     *                  OTHER
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Product> getProductListForCategory(long categoryId) throws SQLException {
+    public List<Product> getProductListForCategory(long categoryId)    {
         List<Product> products = new ArrayList<>();
         for (Product p : getProducts()) {
             if (p.getCategoryId() == categoryId) {
@@ -836,7 +856,7 @@ public class DbManager implements TableChangedListener {
         return products;
     }
 
-    public List<Type> getTypeListForProduct(long productId) throws SQLException {
+    public List<Type> getTypeListForProduct(long productId)    {
         List<com.waldo.inventory.classes.Type> types = new ArrayList<>();
         for (Type t : getTypes()) {
             if (t.getProductId() == productId) {
@@ -846,7 +866,7 @@ public class DbManager implements TableChangedListener {
         return types;
     }
 
-    public List<Item> getItemListForCategory(Category c) throws SQLException {
+    public List<Item> getItemListForCategory(Category c)    {
         List<Item> items = new ArrayList<>();
         for (Item i : getItems()) {
             if (i.getCategoryId() == c.getId()) {
@@ -856,7 +876,7 @@ public class DbManager implements TableChangedListener {
         return items;
     }
 
-    public List<Item> getItemListForProduct(Product p) throws SQLException {
+    public List<Item> getItemListForProduct(Product p)    {
         List<Item> items = new ArrayList<>();
         Category c = findCategoryById(p.getCategoryId());
         for (Item i : getItemListForCategory(c)) {
@@ -867,7 +887,7 @@ public class DbManager implements TableChangedListener {
         return items;
     }
 
-    public List<Item> getItemListForType(Type t) throws SQLException {
+    public List<Item> getItemListForType(Type t)    {
         List<Item> items = new ArrayList<>();
         Product p = findProductById(t.getProductId());
         for (Item i : getItemListForProduct(p)) {
@@ -882,7 +902,7 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public List<Item> getItemsForManufacturer(long manufacturerId) throws SQLException {
+    public List<Item> getItemsForManufacturer(long manufacturerId)    {
         List<Item> items = new ArrayList<>();
         for (Item item : getItems()) {
             if (item.getManufacturerId() == manufacturerId) {
@@ -892,7 +912,7 @@ public class DbManager implements TableChangedListener {
         return items;
     }
 
-    public List<Item> getItemsForCategory(long categoryId) throws SQLException {
+    public List<Item> getItemsForCategory(long categoryId)    {
         List<Item> items = new ArrayList<>();
         for (Item item : getItems()) {
             if (item.getCategoryId() == categoryId) {

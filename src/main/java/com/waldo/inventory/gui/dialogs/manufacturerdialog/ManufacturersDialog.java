@@ -86,12 +86,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             }
 
             detailItemDefaultListModel.removeAllElements();
-            try {
-                for (Item item : dbInstance().getItemsForManufacturer(selectedManufacturer.getId())) {
-                    detailItemDefaultListModel.addElement(item);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            for (Item item : dbInstance().getItemsForManufacturer(selectedManufacturer.getId())) {
+                detailItemDefaultListModel.addElement(item);
             }
         }
     }

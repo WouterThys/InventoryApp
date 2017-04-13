@@ -91,12 +91,8 @@ public abstract class ItemListPanelLayout extends JPanel implements
         subDivisionTree.addTreeSelectionListener(this);
 
         // Item table
-        try {
-            tableModel = new ItemTableModel(dbInstance().getItems());
-            itemTable = new ITable(tableModel);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        tableModel = new ItemTableModel(dbInstance().getItems());
+        itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
     }

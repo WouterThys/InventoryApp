@@ -152,22 +152,14 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 break;
             case PRODUCTS:
                 selectionCbModel.removeAllElements();
-                try {
-                    for (Category c : dbInstance().getCategories()) {
-                        selectionCbModel.addElement(c);
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                for (Category c : dbInstance().getCategories()) {
+                    selectionCbModel.addElement(c);
                 }
                 break;
             case TYPES:
                 selectionCbModel.removeAllElements();
-                try {
-                    for (Product p : dbInstance().getProducts()) {
-                        selectionCbModel.addElement(p);
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                for (Product p : dbInstance().getProducts()) {
+                    selectionCbModel.addElement(p);
                 }
                 break;
         }
@@ -225,31 +217,19 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private List<DbObject> search(String searchWord) {
         List<DbObject> foundList = new ArrayList<>();
 
-        try {
-            Category c = dbInstance().findCategoryByName(searchWord);
-            if (c != null) {
-                foundList.add(c);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Category c = dbInstance().findCategoryByName(searchWord);
+        if (c != null) {
+            foundList.add(c);
         }
 
-        try {
-            Product p = dbInstance().findProductByName(searchWord);
-            if (p != null) {
-                foundList.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Product p = dbInstance().findProductByName(searchWord);
+        if (p != null) {
+            foundList.add(p);
         }
 
-        try {
-            Type t= dbInstance().findTypeByName(searchWord);
-            if (t != null) {
-                foundList.add(t);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Type t= dbInstance().findTypeByName(searchWord);
+        if (t != null) {
+            foundList.add(t);
         }
 
         return foundList;

@@ -22,26 +22,22 @@ public class DivisionTreeModel implements TreeModel {
     }
 
     private void initializeTree() {
-        try {
 
-            rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
+        rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
 
-            for (Category category : dbInstance().getCategories()) {
-                DbObjectNode cNode = new DbObjectNode(category, false);
-                rootNode.getChildren().addElement(cNode);
+        for (Category category : dbInstance().getCategories()) {
+            DbObjectNode cNode = new DbObjectNode(category, false);
+            rootNode.getChildren().addElement(cNode);
 
-                for (Product product : dbInstance().getProductListForCategory(category.getId())) {
-                    DbObjectNode pNode = new DbObjectNode(product, false);
-                    cNode.getChildren().addElement(pNode);
+            for (Product product : dbInstance().getProductListForCategory(category.getId())) {
+                DbObjectNode pNode = new DbObjectNode(product, false);
+                cNode.getChildren().addElement(pNode);
 
-                    for (Type type : dbInstance().getTypeListForProduct(product.getId())) {
-                        DbObjectNode tNode = new DbObjectNode(type, false);
-                        pNode.getChildren().add(tNode);
-                    }
+                for (Type type : dbInstance().getTypeListForProduct(product.getId())) {
+                    DbObjectNode tNode = new DbObjectNode(type, false);
+                    pNode.getChildren().add(tNode);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
