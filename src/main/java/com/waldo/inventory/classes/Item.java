@@ -106,6 +106,15 @@ public class Item extends DbObject {
                 return true;
             }
 
+            Location l = DbManager.dbInstance().findLocationById(locationId);
+            if (l != null && l.hasMatch(searchTerm)) {
+                return true;
+            }
+
+//            Order o = DbManager.dbInstance().findOrderById(orderId);
+//            if (o != null && o.hasMatch(searchTerm)) {
+//                return true
+//            }
 
         }
         return false;

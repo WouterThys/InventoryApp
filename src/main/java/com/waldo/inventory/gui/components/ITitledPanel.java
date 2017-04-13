@@ -49,6 +49,7 @@ public class ITitledPanel extends JPanel {
 
         setBorder(titledBorder);
         add(content, BorderLayout.CENTER);
+        updateUI();
     }
 
     public String getTitle() {

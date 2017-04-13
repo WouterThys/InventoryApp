@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 

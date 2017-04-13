@@ -14,17 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ItemListener;
-import java.sql.SQLException;
 
 import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
 
 public abstract class SubDivisionsDialogLayout extends IDialogPanel
-        implements GuiInterface {
+        implements GuiInterface, IObjectSearchPanel.IObjectSearchListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialogLayout.class);
 
@@ -41,7 +39,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     JList<DbObject> detailList;
 
     private IdBToolBar toolBar;
-    ITextField searchField;
+    IObjectSearchPanel searchPanel;
     ITitledPanel detailsPanel;
 
     DefaultComboBoxModel<DbObject> selectionCbModel;
@@ -55,11 +53,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     int selectedSubType; // Selection between categories, products or types
     DbObject selectedObject;
-    Action searchAction;
 
-    ListSelectionListener subDivisionChangedAction;
-    ListSelectionListener detailChangedAction;
-    ItemListener selectionCbIndexChanged;
     DbObjectChangedListener<Category> categoriesChanged;
     DbObjectChangedListener<Product> productsChanged;
     DbObjectChangedListener<Type> typesChanged;
@@ -115,6 +109,36 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         return panel;
     }
 
+    private JPanel createWestPanel() {
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Sub divisions");
+        titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        titledBorder.setTitleColor(Color.gray);
+
+        JPanel westPanel = new JPanel();
+        JScrollPane list = new JScrollPane(subDivisionList);
+
+        SpringLayout layout = new SpringLayout();
+        // Search panel
+        layout.putConstraint(NORTH, searchPanel, 5, NORTH, westPanel);
+        layout.putConstraint(EAST, searchPanel, -5, EAST, westPanel);
+        layout.putConstraint(WEST, searchPanel, 5, WEST, westPanel);
+
+        // Sub division list
+        layout.putConstraint(EAST, list, -5, EAST, westPanel);
+        layout.putConstraint(WEST, list, 5, WEST, westPanel);
+        layout.putConstraint(SOUTH, list, 5, SOUTH, westPanel);
+        layout.putConstraint(NORTH, list, 2, SOUTH, searchPanel);
+
+        // Add stuff
+        westPanel.add(searchPanel);
+        westPanel.add(list);
+        westPanel.setLayout(layout);
+        westPanel.setPreferredSize(new Dimension(300, 500));
+        westPanel.setBorder(titledBorder);
+
+        return westPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -128,21 +152,13 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         // Sub divisions list
         String[] subDivisions = new String[] {"Categories", "Products", "Types"};
         subDivisionList = new JList<>(subDivisions);
-        subDivisionList.addListSelectionListener(subDivisionChangedAction);
 
         // Search field
-        searchField = new ITextField("Search");
-        searchField.setMaximumSize(new Dimension(100,30));
-        searchField.addActionListener(searchAction);
-
-        // Search button
-        JButton searchButton = new JButton(resourceManager.readImage("Common.Search"));
-        searchButton.addActionListener(searchAction);
+        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
 
         // Combo box
         selectionCbModel = new DefaultComboBoxModel<>();
         selectionComboBox = new JComboBox<>(selectionCbModel);
-        selectionComboBox.addItemListener(selectionCbIndexChanged);
 
         // Icon
         iconLabel = new ILabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
@@ -209,7 +225,6 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
         // Details
         detailListModel = new DefaultListModel<>();
         detailList = new JList<>(detailListModel);
-        detailList.addListSelectionListener(detailChangedAction);
 
         selectionLabel = new JLabel("Categories");
         detailsPanel = new ITitledPanel("Categories",
@@ -222,11 +237,13 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        getContentPanel().add(new ITitledPanel("Sub divisions",
-                new JComponent[] {searchField, new JScrollPane(subDivisionList)}
-        ), BorderLayout.WEST);
+        // Left part
+        getContentPanel().add(createWestPanel(), BorderLayout.WEST);
 
+        // Center
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
+
+        // Set dialog buttons
         setPositiveButton("Ok").addActionListener(e -> close());
     }
 

@@ -22,8 +22,6 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialog.class);
-
     public static void showDialog(Application parent) {
         JDialog dialog = new JDialog(parent, "Sub Divisions", true);
         final SubDivisionsDialog sdd = new SubDivisionsDialog(parent, dialog);
@@ -41,19 +39,17 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         });
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(null);
-        //dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);
     }
 
 
-    private int selectedSubNdx = 0;
-
     private SubDivisionsDialog(Application application, JDialog dialog) {
         super(application, dialog);
-        initActions();
         initializeComponents();
         initializeLayouts();
+
+        initActions();
 
         dbInstance().addOnCategoriesChangedListener(categoriesChanged);
         dbInstance().addOnProductsChangedListener(productsChanged);
@@ -61,74 +57,28 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void initActions() {
-        initSearchAction();
-
-        initSubDivisionChangedAction();
-        initDetailChangedListener();
-
-        initSelectionCbIndexChanged();
-    }
-
-    private void initSubDivisionChangedAction() {
-        subDivisionChangedAction = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    JList list = (JList)e.getSource();
-                    selectedSubType = list.getSelectedIndex();
-                    detailsPanel.setTitle((String) list.getSelectedValue());
-                    updateComponents(list.getSelectedIndex()); // Visibilities of components
-                    updateDetailList();
-                    updateSelectionCbItems();
-                }
+        subDivisionList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                JList list = (JList)e.getSource();
+                selectedSubType = list.getSelectedIndex();
+                detailsPanel.setTitle((String) list.getSelectedValue());
+                updateComponents(list.getSelectedIndex()); // Visibilities of components
+                updateDetailList();
+                updateSelectionCbItems();
             }
-        };
-    }
+        });
 
-    private void initSearchAction() {
-        searchAction = new AbstractAction("Search", resourceManager.readImage("Common.Search")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchWord = searchField.getText();
-                if (searchWord.isEmpty()) {
-                    searchField.setError("Enter a search word");
-                } else {
-                    java.util.List<DbObject> foundList = search(searchWord);
-                    if (foundList.size() > 0) {
-                        if (foundList.size() == 1) {
-                            DbObject obj = foundList.get(0);
-                            try {
-                                selectObject(obj);
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                        } else {
+        detailList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                setSelectedObject((DbObject) ((JList)e.getSource()).getSelectedValue());
+            }
+        });
 
-                        }
-                    }
-                }
+        selectionComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                updateDetailList();
             }
-        };
-    }
-    private void initDetailChangedListener() {
-        detailChangedAction = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    setSelectedObject((DbObject) ((JList)e.getSource()).getSelectedValue());
-                }
-            }
-        };
-    }
-    private void initSelectionCbIndexChanged() {
-        selectionCbIndexChanged = new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    updateDetailList();
-                }
-            }
-        };
+        });
     }
 
     private void updateDetailList() {
@@ -184,29 +134,25 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         }
     }
 
-    private void selectObject(DbObject object) throws SQLException, ClassCastException {
-        if (object instanceof Category) {
-            selectedSubNdx = 0;
-        } else if (object instanceof Product) {
-            selectedSubNdx = 1;
-        } else {
-            selectedSubNdx = 2;
-        }
-
-        subDivisionList.setSelectedIndex(selectedSubNdx);
-        switch (selectedSubNdx) {
-            case 0: // Category
+    private void selectObject(DbObject object) throws ClassCastException {
+        switch (DbObject.getType(object)) {
+            case DbObject.TYPE_CATEGORY: {
                 break;
-            case 1: { // Product
+            }
+            case DbObject.TYPE_PRODUCT: {
+                subDivisionList.setSelectedIndex(1);
                 int ndx = dbInstance().findProductIndex(object.getId());
                 if (ndx >= 0) {
                     selectionComboBox.setSelectedIndex(ndx);
                 }
                 break;
             }
-            case 2: { // Type
-                int ndx = dbInstance().getTypeListForProduct(((Type) object).getProductId()).indexOf(object);
-                selectionComboBox.setSelectedIndex(ndx);
+            case DbObject.TYPE_TYPE: {
+                subDivisionList.setSelectedIndex(2);
+                int ndx = dbInstance().findTypeIndex(object.getId());
+                if (ndx >= 0) {
+                    selectionComboBox.setSelectedIndex(ndx);
+                }
                 break;
             }
         }
@@ -214,25 +160,17 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         setSelectedObject(selectedObject);
     }
 
-    private List<DbObject> search(String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-
-        Category c = dbInstance().findCategoryByName(searchWord);
-        if (c != null) {
-            foundList.add(c);
+    @Override
+    public void onDbObjectFound(List<DbObject> foundObjects) {
+        if (foundObjects.size() == 1) {
+            selectObject(foundObjects.get(0));
+        } else {
+            // What with multiple objects??
         }
-
-        Product p = dbInstance().findProductByName(searchWord);
-        if (p != null) {
-            foundList.add(p);
-        }
-
-        Type t= dbInstance().findTypeByName(searchWord);
-        if (t != null) {
-            foundList.add(t);
-        }
-
-        return foundList;
     }
 
+    @Override
+    public void onSearchCleared() {
+        setSelectedObject(selectedObject);
+    }
 }
