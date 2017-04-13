@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -10,17 +11,16 @@ import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialogPanel
-        implements GuiInterface, DbObjectChangedListener<Manufacturer> {
+        implements GuiInterface, DbObjectChangedListener<Manufacturer>, IObjectSearchPanel.IObjectSearchListener {
 
     /*
      *                  COMPONENTS
@@ -28,7 +28,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     JList<Manufacturer> manufacturerList;
     private DefaultListModel<Manufacturer> manufacturerDefaultListModel;
     IdBToolBar toolBar;
-    ITextField searchField;
+    IObjectSearchPanel searchPanel;
 
     ITextField detailName;
     ITextField detailWebsite;
@@ -38,9 +38,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     JList<Item> detailItemList;
     DefaultListModel<Item> detailItemDefaultListModel;
 
-    Action searchAction;
     Action okAction;
-    ListSelectionListener manufacturerChanged;
 
     /*
      *                  VARIABLES
@@ -55,33 +53,108 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private JPanel createListPanelLayout() {
-        JPanel panel = new JPanel();
+    private JPanel createWestPanel() {
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Manufacturers");
+        titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        titledBorder.setTitleColor(Color.gray);
+
+        JPanel westPanel = new JPanel();
+        JScrollPane list = new JScrollPane(manufacturerList);
+
         SpringLayout layout = new SpringLayout();
-        JScrollPane scrollPane = new JScrollPane(manufacturerList);
+        // Search panel
+        layout.putConstraint(NORTH, searchPanel, 5, NORTH, westPanel);
+        layout.putConstraint(EAST, searchPanel, -5, EAST, westPanel);
+        layout.putConstraint(WEST, searchPanel, 5, WEST, westPanel);
 
-        // Search
-        layout.putConstraint(WEST, searchField, 5, WEST, panel);
-        layout.putConstraint(EAST, searchField, -5, EAST, panel);
-        layout.putConstraint(NORTH, searchField, 5, NORTH, panel);
+        // Sub division list
+        layout.putConstraint(EAST, list, -5, EAST, westPanel);
+        layout.putConstraint(WEST, list, 5, WEST, westPanel);
+        layout.putConstraint(SOUTH, list, -5, NORTH, toolBar);
+        layout.putConstraint(NORTH, list, 2, SOUTH, searchPanel);
 
-        // List
-        layout.putConstraint(WEST, scrollPane, 5, WEST, panel);
-        layout.putConstraint(EAST, scrollPane, -5, EAST, panel);
-        layout.putConstraint(NORTH, scrollPane, 5, SOUTH, searchField);
-        layout.putConstraint(SOUTH, scrollPane, 5, NORTH, toolBar);
-
-        // Toolbar
-        layout.putConstraint(WEST, toolBar, 5, WEST, panel);
-        layout.putConstraint(EAST, toolBar, -5, EAST, panel);
-        layout.putConstraint(SOUTH, toolBar, 5, SOUTH, panel);
+        // Tool bar
+        layout.putConstraint(EAST, toolBar, -5, EAST, westPanel);
+        layout.putConstraint(SOUTH, toolBar, -5, SOUTH, westPanel);
+        layout.putConstraint(WEST, toolBar, 5, WEST, westPanel);
 
         // Add stuff
-        panel.add(searchField);
-        panel.add(scrollPane);
-        panel.add(toolBar);
-        panel.setPreferredSize(new Dimension(100, 500));
+        westPanel.add(searchPanel);
+        westPanel.add(list);
+        westPanel.add(toolBar);
+        westPanel.setLayout(layout);
+        westPanel.setPreferredSize(new Dimension(300, 500));
+        westPanel.setBorder(titledBorder);
+
+        return westPanel;
+    }
+
+    private JPanel createManufacturerDetailsPanel(JPanel browsePanel) {
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Info");
+        titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        titledBorder.setTitleColor(Color.gray);
+
+        JPanel panel = new JPanel();
+        SpringLayout layout = new SpringLayout();
+        JScrollPane list = new JScrollPane(detailItemList);
+
+        // Name
+        ILabel nameLabel = new ILabel("Name: ");
+        nameLabel.setHorizontalAlignment(ILabel.RIGHT);
+        nameLabel.setVerticalAlignment(ILabel.CENTER);
+        layout.putConstraint(NORTH, nameLabel, 5, NORTH, panel);
+        layout.putConstraint(WEST, nameLabel, 5, WEST, panel);
+        layout.putConstraint(SOUTH, nameLabel, 0, SOUTH, detailName);
+
+        layout.putConstraint(NORTH, detailName, 5, NORTH, panel);
+        layout.putConstraint(EAST, detailName, -5, EAST, panel);
+        layout.putConstraint(WEST, detailName, 2, EAST, nameLabel);
+        layout.putConstraint(WEST, detailName, 0, WEST, browsePanel);
+
+        // Browse
+        ILabel browseLabel = new ILabel("Web site: ");
+        browseLabel.setHorizontalAlignment(ILabel.RIGHT);
+        browseLabel.setVerticalAlignment(ILabel.CENTER);
+        layout.putConstraint(NORTH, browseLabel, 0, NORTH, browsePanel);
+        layout.putConstraint(WEST, browseLabel, 5, WEST, panel);
+        layout.putConstraint(SOUTH, browseLabel, 0, SOUTH, browsePanel);
+
+        layout.putConstraint(NORTH, browsePanel, 5, SOUTH, detailName);
+        layout.putConstraint(EAST, browsePanel, -5, EAST, panel);
+        layout.putConstraint(WEST, browsePanel, 5, EAST, browseLabel);
+
+        // Logo
+        layout.putConstraint(EAST, detailLogo, -5, EAST, panel);
+        layout.putConstraint(NORTH, detailLogo, 5, SOUTH, browsePanel);
+
+        // Item list
+        ILabel itemLabel = new ILabel("Manufacturer items: ");
+        itemLabel.setHorizontalAlignment(ILabel.RIGHT);
+        itemLabel.setVerticalAlignment(ILabel.CENTER);
+        layout.putConstraint(NORTH, itemLabel, 5, SOUTH, detailLogo);
+        layout.putConstraint(WEST, itemLabel, 5, WEST, panel);
+
+        layout.putConstraint(NORTH, list, 2, SOUTH, itemLabel);
+        layout.putConstraint(EAST, list, -5, EAST, panel);
+        layout.putConstraint(WEST, list, 5, WEST, panel);
+        layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
+
+
+        // Add stuff
+        panel.add(nameLabel);
+        panel.add(detailName);
+
+        panel.add(browseLabel);
+        panel.add(browsePanel);
+
+        panel.add(detailLogo);
+
+        panel.add(itemLabel);
+        panel.add(list);
+
         panel.setLayout(layout);
+        panel.setPreferredSize(new Dimension(400, 500));
+        panel.setBorder(titledBorder);
 
         return panel;
     }
@@ -96,14 +169,11 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         setTitleName("Manufacturers");
 
         // Search
-        searchField = new ITextField("Search");
-        searchField.setMaximumSize(new Dimension(100,30));
-        searchField.addActionListener(searchAction);
+        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_MANUFACTURER);
 
         // Manufacturers list
         manufacturerDefaultListModel = new DefaultListModel<>();
         manufacturerList = new JList<>(manufacturerDefaultListModel);
-        manufacturerList.addListSelectionListener(manufacturerChanged);
 
         toolBar = new IdBToolBar(IdBToolBar.HORIZONTAL) {
             @Override
@@ -118,7 +188,6 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
                     Manufacturer m = dialog.getDbObject();
                     m.save();
                 }
-
             }
 
             @Override
@@ -169,14 +238,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        getContentPanel().add(new ITitledPanel("Manufacturers",
-                new JComponent[] {searchField, new JScrollPane(manufacturerList), toolBar}), BorderLayout.WEST);
-//        getContentPanel().add(new ITitledPanel("Manufacturers",
-//                new JComponent[] {createListPanelLayout()}), BorderLayout.WEST);
-
-        // New JPanel with box layout for details?
-        JPanel details = new JPanel();
-        details.setLayout(new BoxLayout(details, BoxLayout.Y_AXIS));
+        getContentPanel().add(createWestPanel(), BorderLayout.WEST);
 
         // Additional stuff
         JPanel browsePanel = new JPanel(new GridBagLayout());
@@ -188,19 +250,12 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         constraints.weightx = 0.1;
         browsePanel.add(detailsBroweButton, constraints);
 
-        details.add(new ITitledPanel("Info",
-                //new String[] {"Name: ", "Web site: "},
-                new JComponent[] {detailName, browsePanel, detailLogo}));
-        details.add(new ITitledPanel("Items",
-                new JComponent[] {new JScrollPane(detailItemList)}));
+        getContentPanel().add(createManufacturerDetailsPanel(browsePanel), BorderLayout.CENTER);
 
+//        details.add(new ITitledPanel("Items",
+//                new JComponent[] {new JScrollPane(detailItemList)}));
 
-        getContentPanel().add(details, BorderLayout.CENTER);
-
-        setPositiveButton("Ok").addActionListener(okAction);
-
-        setPreferredSize(getPreferredSize());
-        validate();
+        setPositiveButton("Ok");
     }
 
     @Override

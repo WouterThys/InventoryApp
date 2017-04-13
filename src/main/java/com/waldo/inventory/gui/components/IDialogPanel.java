@@ -87,6 +87,10 @@ public abstract class IDialogPanel extends JPanel {
         return positiveButton;
     }
 
+    protected JButton getPositiveButton() {
+        return positiveButton;
+    }
+
     protected void setTitleName(String name) {
         titleNameLabel.setText(name);
     }

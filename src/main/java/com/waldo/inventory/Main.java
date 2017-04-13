@@ -43,18 +43,18 @@ public class Main {
 
     private static void setLookAndFeel() {
 
-//        try {
-//            UIManager.setLookAndFeel(new MetalLookAndFeel() {
-//                @Override
-//                public UIDefaults getDefaults() {
-//                    UIDefaults defaults = super.getDefaults();
-//                    defaults.put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 25));
-//                    return defaults;
-//                }
-//            });
-//        } catch (UnsupportedLookAndFeelException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel() {
+                @Override
+                public UIDefaults getDefaults() {
+                    UIDefaults defaults = super.getDefaults();
+                    defaults.put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+                    return defaults;
+                }
+            });
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
 
 
 //        UIManager.put("Table.selectionForeground", Color.YELLOW);
@@ -68,7 +68,7 @@ public class Main {
 //        } catch (Exception e) {
 //            // If Nimbus is not available, you can set the GUI to another look and feel.
 //        }
-        setAllFonts(new FontUIResource("sansserif", Font.PLAIN, 15));
+        //setAllFonts(new FontUIResource("sansserif", Font.PLAIN, 15));
 
 //        SynthLookAndFeel lookAndFeel = new SynthLookAndFeel();
 //

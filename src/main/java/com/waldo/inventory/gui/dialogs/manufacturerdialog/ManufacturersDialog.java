@@ -13,12 +13,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialog.class);
 
     public static void showDialog(Application parent) {
         JDialog dialog = new JDialog(parent, "Sub Divisions", true);
@@ -35,7 +34,6 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         });
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(null);
-        //dialog.setResizable(false);
         dialog.pack();
         dialog.setVisible(true);
     }
@@ -45,9 +43,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     private ManufacturersDialog(Application application, JDialog dialog) {
         super(application, dialog);
-        initActions();
         initializeComponents();
         initializeLayouts();
+        initActions();
 
         dbInstance().addOnManufacturerChangedListener(this);
 
@@ -55,13 +53,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     private void initActions() {
-        initManufacturerChanged();
-        initOkAction();
-    }
-
-
-    private void initManufacturerChanged() {
-        manufacturerChanged = e -> {
+        manufacturerList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 JList list = (JList) e.getSource();
                 selectedManufacturer = (Manufacturer) list.getSelectedValue();
@@ -71,8 +63,21 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                     clearDetails();
                 }
             }
-        };
+        });
+
+
+        getPositiveButton().addActionListener(e -> {
+            if (detailWebsite.isEdited()) {
+                canClose = false;
+                showSaveDialog();
+            }
+
+            if (canClose) {
+                close();
+            }
+        });
     }
+
 
     private void setDetails() {
         if (selectedManufacturer != null) {
@@ -99,31 +104,19 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         detailItemDefaultListModel.removeAllElements();
     }
 
-    private void initOkAction() {
-        okAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (detailWebsite.isEdited()) {
-                    canClose = false;
-                    showSaveDialog();
-                }
-
-                if (canClose) {
+    private void showSaveDialog() {
+        if (selectedManufacturer != null) {
+            String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
+            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                if (verify()) {
+                    selectedManufacturer.setName(detailName.getText());
+                    selectedManufacturer.setWebsite(detailWebsite.getText());
+                    selectedManufacturer.save();
                     close();
                 }
             }
-        };
-    }
-
-    private void showSaveDialog() {
-        String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
-        if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-            if (verify()) {
-                selectedManufacturer.setName(detailName.getText());
-                selectedManufacturer.setWebsite(detailWebsite.getText());
-                selectedManufacturer.save();
-                close();
-            }
+        } else {
+            close();
         }
     }
 
@@ -137,5 +130,15 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         // Valid website??
         //...
         return ok;
+    }
+
+    @Override
+    public void onDbObjectFound(List<DbObject> foundObjects) {
+
+    }
+
+    @Override
+    public void onSearchCleared() {
+
     }
 }

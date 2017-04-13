@@ -162,11 +162,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
-        if (foundObjects.size() == 1) {
-            selectObject(foundObjects.get(0));
-        } else {
-            // What with multiple objects??
-        }
+        selectObject(foundObjects.get(0)); // Just select first
     }
 
     @Override
