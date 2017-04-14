@@ -3,8 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.manufacturerdialog2.ManufacturerDialog;
-import com.waldo.inventory.gui.dialogs.ordersdialog2.OrdersDialog;
+import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -72,7 +71,7 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener ordersSelected() {
-        OrdersDialog dialog = new OrdersDialog();
+        OrdersDialog dialog = new OrdersDialog(application, "Orders");
         return e -> dialog.setVisible(true);
     }
 

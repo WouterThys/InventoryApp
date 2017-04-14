@@ -115,12 +115,13 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
-
+        Manufacturer mFound = (Manufacturer) foundObjects.get(0);
+        manufacturerList.setSelectedValue(mFound, true);
     }
 
     @Override
     public void onSearchCleared() {
-
+        manufacturerList.setSelectedValue(selectedManufacturer, true);
     }
 
     @Override

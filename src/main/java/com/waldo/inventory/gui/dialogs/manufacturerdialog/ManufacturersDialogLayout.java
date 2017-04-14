@@ -88,71 +88,88 @@ public abstract class ManufacturersDialogLayout extends IDialog
         return westPanel;
     }
 
-    private JPanel createManufacturerDetailsPanel(JPanel browsePanel) {
+    private JPanel createManufacturerDetailsPanel() {
+
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Info");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
-        JPanel panel = new JPanel();
-        SpringLayout layout = new SpringLayout();
-        JScrollPane list = new JScrollPane(detailItemList);
+        JPanel panel = new JPanel(new BorderLayout(5,5));
 
-        // Name
+        // Text fields
+        JPanel textFieldPanel = new JPanel(new GridBagLayout());
+
+        // - Name
         ILabel nameLabel = new ILabel("Name: ");
         nameLabel.setHorizontalAlignment(ILabel.RIGHT);
         nameLabel.setVerticalAlignment(ILabel.CENTER);
-        layout.putConstraint(NORTH, nameLabel, 5, NORTH, panel);
-        layout.putConstraint(WEST, nameLabel, 5, WEST, panel);
-        layout.putConstraint(SOUTH, nameLabel, 0, SOUTH, detailName);
 
-        layout.putConstraint(NORTH, detailName, 5, NORTH, panel);
-        layout.putConstraint(EAST, detailName, -5, EAST, panel);
-        layout.putConstraint(WEST, detailName, 2, EAST, nameLabel);
-        layout.putConstraint(WEST, detailName, 0, WEST, browsePanel);
-
-        // Browse
+        // - Browse
         ILabel browseLabel = new ILabel("Web site: ");
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
-        layout.putConstraint(NORTH, browseLabel, 0, NORTH, browsePanel);
-        layout.putConstraint(WEST, browseLabel, 5, WEST, panel);
-        layout.putConstraint(SOUTH, browseLabel, 0, SOUTH, browsePanel);
 
-        layout.putConstraint(NORTH, browsePanel, 5, SOUTH, detailName);
-        layout.putConstraint(EAST, browsePanel, -5, EAST, panel);
-        layout.putConstraint(WEST, browsePanel, 5, EAST, browseLabel);
+        JPanel browsePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0; constraints.weightx = 1;
+        constraints.gridy = 0; constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        browsePanel.add(detailWebsite, constraints);
+        constraints.gridx = 1; constraints.weightx = 0;
+        constraints.gridy = 0; constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.VERTICAL;
+        detailsBroweButton.setSize(new Dimension(detailsBroweButton.getWidth(), detailWebsite.getHeight()));
+        browsePanel.add(detailsBroweButton, constraints);
 
-        // Logo
-        layout.putConstraint(EAST, detailLogo, -5, EAST, panel);
-        layout.putConstraint(NORTH, detailLogo, 5, SOUTH, browsePanel);
+        // - Add to panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2,2,2,2);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        textFieldPanel.add(nameLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 3;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        textFieldPanel.add(detailName, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(browseLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 3;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        textFieldPanel.add(browsePanel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(detailLogo, gbc);
 
         // Item list
-        ILabel itemLabel = new ILabel("Manufacturer items: ");
-        itemLabel.setHorizontalAlignment(ILabel.RIGHT);
-        itemLabel.setVerticalAlignment(ILabel.CENTER);
-        layout.putConstraint(NORTH, itemLabel, 5, SOUTH, detailLogo);
-        layout.putConstraint(WEST, itemLabel, 5, WEST, panel);
+        JPanel listPanel = new JPanel(new GridBagLayout());
 
-        layout.putConstraint(NORTH, list, 2, SOUTH, itemLabel);
-        layout.putConstraint(EAST, list, -5, EAST, panel);
-        layout.putConstraint(WEST, list, 5, WEST, panel);
-        layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
+        JLabel itemLabel = new JLabel("Items: ");
 
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        listPanel.add(itemLabel, gbc);
 
-        // Add stuff
-        panel.add(nameLabel);
-        panel.add(detailName);
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        listPanel.add(new JScrollPane(detailItemList), gbc);
 
-        panel.add(browseLabel);
-        panel.add(browsePanel);
-
-        panel.add(detailLogo);
-
-        panel.add(itemLabel);
-        panel.add(list);
-
-        panel.setLayout(layout);
-        panel.setPreferredSize(new Dimension(400, 500));
+        // Add all
+        panel.add(textFieldPanel, BorderLayout.NORTH);
+        panel.add(listPanel, BorderLayout.CENTER);
         panel.setBorder(titledBorder);
 
         return panel;
@@ -217,7 +234,7 @@ public abstract class ManufacturersDialogLayout extends IDialog
         detailName.setEnabled(false);
         detailWebsite = new ITextField("Web site");
         detailLogo = new ILabel();
-        detailLogo.setPreferredSize(new Dimension(48,48));
+        //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
         detailsBroweButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
         detailsBroweButton.addActionListener(e -> {
@@ -239,20 +256,9 @@ public abstract class ManufacturersDialogLayout extends IDialog
 
         getContentPanel().add(createWestPanel(), BorderLayout.WEST);
 
-        // Additional stuff
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = createFieldConstraints(0,0);
-        constraints.gridwidth = 1;
-        browsePanel.add(detailWebsite, constraints);
-        constraints = createFieldConstraints(1,0);
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.1;
-        browsePanel.add(detailsBroweButton, constraints);
+        getContentPanel().add(createManufacturerDetailsPanel(), BorderLayout.CENTER);
 
-        getContentPanel().add(createManufacturerDetailsPanel(browsePanel), BorderLayout.CENTER);
-
-//        details.add(new ITitledPanel("Items",
-//                new JComponent[] {new JScrollPane(detailItemList)}));
+        pack();
     }
 
     @Override

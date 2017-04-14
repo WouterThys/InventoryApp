@@ -78,7 +78,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                iconPathTextField.setText(fileChooser.getSelectedFile().getPath());
             }
         });
     }
