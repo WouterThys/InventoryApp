@@ -21,7 +21,7 @@ import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
 
-public abstract class SubDivisionsDialogLayout extends IDialogPanel
+public abstract class SubDivisionsDialogLayout extends IDialog
         implements GuiInterface, IObjectSearchPanel.IObjectSearchListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialogLayout.class);
@@ -35,7 +35,7 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<String> subDivisionList;
 
-    private DefaultListModel<DbObject> detailListModel;
+    DefaultListModel<DbObject> detailListModel;
     JList<DbObject> detailList;
 
     private IdBToolBar toolBar;
@@ -56,13 +56,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
 
     DbObjectChangedListener<Category> categoriesChanged;
     DbObjectChangedListener<Product> productsChanged;
-    DbObjectChangedListener<Type> typesChanged;
+    DbObjectChangedListener<com.waldo.inventory.classes.Type> typesChanged;
 
-    public SubDivisionsDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog, true);
-        setCategoriesChanged();
-        setProductsChanged();
-        setTypesChanged();
+    public SubDivisionsDialogLayout(Application application, String title) {
+        super(application, title);
     }
 
     /*
@@ -189,10 +186,10 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
                         }
                         break;
                     case TYPES:
-                        dialog = new DbObjectDialog<>(application, "New product", new Type());
+                        dialog = new DbObjectDialog<>(application, "New product", new com.waldo.inventory.classes.Type());
                         if (dialog.showDialog() == DbObjectDialog.OK) {
                             Product p = (Product) selectionCbModel.getSelectedItem();
-                            ((Type)dialog.getDbObject()).setProductId(p.getId());
+                            ((com.waldo.inventory.classes.Type)dialog.getDbObject()).setProductId(p.getId());
                             dialog.getDbObject().save();
                         }
                         break;
@@ -242,9 +239,6 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
 
         // Center
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
-
-        // Set dialog buttons
-        setPositiveButton("Ok").addActionListener(e -> close());
     }
 
     @Override
@@ -266,124 +260,6 @@ public abstract class SubDivisionsDialogLayout extends IDialogPanel
                 selectionLabel.setVisible(true);
                 selectionComboBox.setVisible(true);
                 break;
-        }
-    }
-
-    private void setCategoriesChanged() {
-        categoriesChanged = new DbObjectChangedListener<Category>() {
-            @Override
-            public void onAdded(Category object) {
-                updateCategoryList();
-            }
-
-            @Override
-            public void onUpdated(Category object) {
-                updateCategoryList();
-            }
-
-            @Override
-            public void onDeleted(Category object) {
-                updateCategoryList();
-            }
-        };
-    }
-
-    /**
-     * If the view is on types, the cb on top is showing products.
-     * Get the id of which product is selected, than get all types for this product, and add them to the
-     * Detail list
-     */
-    void updateTypeList() {
-        if (selectedSubType == TYPES) {
-            long productId;
-            DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
-            if (obj != null) {
-                productId = obj.getId();
-                if (productId < 0) {
-                    productId = 1; // Unknown
-                }
-                detailListModel.removeAllElements();
-                for (Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
-                    detailListModel.addElement(t);
-                }
-                LOG.debug(obj.getName() + " updated in type list. Product id = " + productId + ". Element count: " + detailListModel.size());
-            } else {
-                LOG.debug("Type list not updated, object is null");
-            }
-        } else {
-            LOG.error("Type notification for change, but selectedSubType is not TYPES: " + selectedSubType);
-        }
-    }
-
-    private void setProductsChanged() {
-        productsChanged = new DbObjectChangedListener<Product>() {
-            @Override
-            public void onAdded(Product object) {
-                updateProductList();
-            }
-
-            @Override
-            public void onUpdated(Product object) {
-                updateProductList();
-            }
-
-            @Override
-            public void onDeleted(Product object) {
-                updateProductList();
-            }
-        };
-    }
-
-    void updateProductList() {
-        if (selectedSubType == PRODUCTS) {
-            long categoryId;
-            DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
-            if (obj != null) {
-                categoryId = obj.getId();
-                if (categoryId < 0) {
-                    categoryId = 1; // Unknown
-                }
-                detailListModel.removeAllElements();
-                for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
-                    detailListModel.addElement(p);
-                }
-                LOG.debug(obj.getName() + " updated in product list. Category id = " + categoryId + ". Element count: " + detailListModel.size());
-            } else {
-                LOG.debug("Category list not updated, object is null");
-            }
-        } else {
-            LOG.error("Product notification for change, but selectedSubType is not PRODUCTS: " + selectedSubType);
-        }
-    }
-
-    private void setTypesChanged() {
-        typesChanged = new DbObjectChangedListener<Type>() {
-            @Override
-            public void onAdded(Type object) {
-                updateTypeList();
-            }
-
-            @Override
-            public void onUpdated(Type object) {
-                updateTypeList();
-            }
-
-            @Override
-            public void onDeleted(Type object) {
-                updateTypeList();
-            }
-        };
-    }
-
-    void updateCategoryList() {
-        if (selectedSubType == CATEGORIES) {
-            detailListModel.removeAllElements();
-            for (Category c : DbManager.dbInstance().getCategories()) {
-                detailListModel.addElement(c);
-            }
-            LOG.debug("Category list updated" + ". Element count: " + detailListModel.size());
-        } else {
-            LOG.error("Category notification for change, but selectedSubType is not CATEGORIES: " + selectedSubType);
         }
     }
 }

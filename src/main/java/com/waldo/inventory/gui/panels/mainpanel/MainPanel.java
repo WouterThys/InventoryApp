@@ -10,11 +10,10 @@ import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.sql.SQLException;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
-public class ItemListPanel extends ItemListPanelLayout {
+public class MainPanel extends MainPanelLayout {
 
     private Application application;
 
@@ -32,8 +31,8 @@ public class ItemListPanel extends ItemListPanelLayout {
     private DbObjectChangedListener<Product> productsChanged;
     private DbObjectChangedListener<Type> typesChanged;
 
-    public ItemListPanel(Application application) {
-        URL url = ItemListPanel.class.getResource("/settings/Settings.properties");
+    public MainPanel(Application application) {
+        URL url = MainPanel.class.getResource("/settings/Settings.properties");
         resourceManager = new ResourceManager(url.getPath());
         this.application = application;
 
@@ -73,57 +72,13 @@ public class ItemListPanel extends ItemListPanelLayout {
                 JTable table = (JTable) e.getSource();
                 if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
-                    try {
-                        selectedItem = EditItemDialog.showDialog(application, selectedItem);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    if (selectedItem != null) {
-                        selectedItem.save();
-                    }
-                }
-                if (e.getClickCount() == 1) {
-                    try {
-                        dataSheetColumnClicked(table.columnAtPoint(e.getPoint()), table.rowAtPoint(e.getPoint()));
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
+                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                    if (dialog.showDialog() == EditItemDialog.OK) {
+                        dialog.getItem().save();
                     }
                 }
             }
         });
-    }
-
-    private void dataSheetColumnClicked(int col, int row) throws SQLException {
-        if (col == 3) { // Data sheet column
-            Item item = getItemAt(row);
-            if (item != null) {
-                String local = item.getLocalDataSheet();
-                String online = item.getOnlineDataSheet();
-                if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
-                    SelectDataSheetDialog.showDialog(application, online, local);
-                } else if (local != null && !local.isEmpty()) {
-                    try {
-                        OpenUtils.openPdf(local);
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(application,
-                                "Error opening the file: " + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        ex.printStackTrace();
-                    }
-                } else if (online != null && !online.isEmpty()) {
-                    try {
-                        OpenUtils.browseLink(online);
-                    } catch (IOException e1) {
-                        JOptionPane.showMessageDialog(application,
-                                "Error opening the file: " + e1.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     private void initializeListeners() {
@@ -156,11 +111,7 @@ public class ItemListPanel extends ItemListPanelLayout {
     }
 
     private void updateItems() {
-        try {
-            updateTable(lastSelectedDivision);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        updateComponents(null);
     }
 
     private void setCategoriesChangedListener() {
@@ -258,17 +209,15 @@ public class ItemListPanel extends ItemListPanelLayout {
             return; // Nothing selected
         }
 
+        selectedItem = null;
         lastSelectedDivision = node.getDbObject();
-        try {
-            application.clearSearch();
-            updateTable(lastSelectedDivision);
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
+        application.clearSearch();
+
+        updateComponents(lastSelectedDivision);
     }
 
     //
-    // Table selction changed
+    // Table selection changed
     //
 
     @Override
@@ -277,7 +226,19 @@ public class ItemListPanel extends ItemListPanelLayout {
             int row = itemTable.getSelectedRow();
             if (row >= 0) {
                 selectedItem = getItemAt(itemTable.getSelectedRow());
+                updateComponents(null);
             }
         }
     }
+
+//    @Override
+//    public void focusGained(FocusEvent e) {
+//        //
+//    }
+//
+//    @Override
+//    public void focusLost(FocusEvent e) {
+//        selectedItem = null;
+//        updateComponents(null);
+//    }
 }

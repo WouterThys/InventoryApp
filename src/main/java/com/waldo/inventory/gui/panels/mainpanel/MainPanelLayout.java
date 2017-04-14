@@ -5,29 +5,26 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.*;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITree;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
+import java.awt.event.FocusListener;
 import java.sql.SQLException;
-import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
-public abstract class ItemListPanelLayout extends JPanel implements
+public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
         TreeModelListener,
         TreeSelectionListener,
-        ListSelectionListener{
+        ListSelectionListener {
 
     /*
      *                  COMPONENTS
@@ -38,6 +35,8 @@ public abstract class ItemListPanelLayout extends JPanel implements
     ITree subDivisionTree;
     DivisionTreeModel treeModel;
 
+    MainDetailPanel detailPanel;
+
 
     /*
      *                  VARIABLES
@@ -47,7 +46,6 @@ public abstract class ItemListPanelLayout extends JPanel implements
     Item selectedItem;
     DbObject lastSelectedDivision;
 
-    MouseAdapter mouseClicked;
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -55,7 +53,7 @@ public abstract class ItemListPanelLayout extends JPanel implements
         return tableModel.getItem(row);
     }
 
-    public void updateTable(DbObject selectedObject) throws SQLException {
+    public void updateTable(DbObject selectedObject) {
         if (selectedObject == null || selectedObject.getName().equals("All")) {
             tableModel.setItemList(dbInstance().getItems());
         } else {
@@ -94,22 +92,36 @@ public abstract class ItemListPanelLayout extends JPanel implements
         tableModel = new ItemTableModel(dbInstance().getItems());
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
+        //itemTable.addFocusListener(this);
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+
+        // Details
+        detailPanel = new MainDetailPanel();
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        add(new JScrollPane(itemTable), BorderLayout.CENTER);
+
+        // Panel them together
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
+        panel.add(detailPanel, BorderLayout.SOUTH);
+
+        // Add
         add(new JScrollPane(subDivisionTree), BorderLayout.WEST);
+        add(panel, BorderLayout.CENTER);
     }
 
     @Override
     public void updateComponents(Object object) {
-        resizeColumnWidth(itemTable);
+        if (object != null) {
+            updateTable((DbObject) object);
+        }
+        detailPanel.updateComponents(selectedItem);
     }
 
-    public void resizeColumnWidth(JTable table) {
+    private void resizeColumnWidth(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
         for (int column = 0; column < table.getColumnCount(); column++) {
             int width = 15; // Min width

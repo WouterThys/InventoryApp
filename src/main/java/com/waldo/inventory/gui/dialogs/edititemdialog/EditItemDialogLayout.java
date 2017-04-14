@@ -1,34 +1,21 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
-import com.waldo.inventory.Utils.ImageUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.LocationPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ManufacturerPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.OrderPanel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.text.NumberFormat;
-import java.util.Vector;
 
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.database.DbManager.dbInstance;
-import static javax.swing.SpringLayout.*;
-import static javax.swing.SpringLayout.HORIZONTAL_CENTER;
-import static javax.swing.SpringLayout.VERTICAL_CENTER;
-
-public abstract class EditItemDialogLayout extends IDialogPanel implements GuiInterface {
+public abstract class EditItemDialogLayout extends IDialog implements GuiInterface {
 
     /*
      *                  COMPONENTS
@@ -44,14 +31,11 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    static Item newItem;
+    Item newItem;
     boolean isNew = false;
 
-    Action createAction;
-    Action cancelAction;
-
-    public EditItemDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog, true);
+    EditItemDialogLayout(Application application, String title) {
+        super(application, title);
     }
 
     /*
@@ -70,7 +54,6 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
         componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
         manufacturerPanel = new ManufacturerPanel(newItem);
-        //manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
         manufacturerPanel.initializeComponents();
 
         locationPanel = new LocationPanel(newItem);
@@ -105,8 +88,7 @@ public abstract class EditItemDialogLayout extends IDialogPanel implements GuiIn
 
         // Buttons
         String txt  = isNew ? "Create" : "Save";
-        setPositiveButton(txt).addActionListener(createAction);
-        setNegativeButton("Cancel").addActionListener(cancelAction);
+        getButtonOK().setText(txt);
     }
 
     @Override

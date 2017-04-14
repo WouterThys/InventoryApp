@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
     private JComboBox<Manufacturer> manufacturerComboBox;
     private DefaultComboBoxModel<Manufacturer> manufacturerCbModel;
     private ILabel iconLabel;
+    private ITextField manufacturerItemNr;
 
     public ManufacturerPanel(Item newItem) {
         this.newItem = newItem;
@@ -46,18 +48,52 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
             }
         });
 
-
         iconLabel = new ILabel();
-        iconLabel.setPreferredSize(new Dimension(48,48));
+        manufacturerItemNr = new ITextField("Mfr. No");
     }
 
     @Override
     public void initializeLayouts() {
-//        add(new ITitledEditPanel("Manufacturer",
-//                new String[] {"Manufcaturer: ", ""},
-//                new JComponent[] {manufacturerComboBox, iconLabel}));
-        add(manufacturerComboBox);
-        add(iconLabel);
+        setLayout(new BorderLayout());
+
+        ILabel manufacturerLabel = new ILabel("Name: ", ILabel.RIGHT);
+        ILabel manufacturerIdLabel = new ILabel("Mfr. No: ", ILabel.RIGHT);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2,2,2,2);
+
+        // Name
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(manufacturerLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(manufacturerComboBox, gbc);
+
+        // Mfr. No
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(manufacturerIdLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(manufacturerItemNr, gbc);
+
+        // Icon
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(iconLabel, gbc);
+
+        // Add to panel
+        setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        add(panel, BorderLayout.NORTH);
     }
 
     @Override

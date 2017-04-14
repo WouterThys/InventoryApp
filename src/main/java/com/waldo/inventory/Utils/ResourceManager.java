@@ -95,7 +95,11 @@ public class ResourceManager {
      */
     public ImageIcon readImage(URL resourceURL) {
         Image img = Toolkit.getDefaultToolkit().createImage(resourceURL);
-        return new ImageIcon(img);
+        if (img == null) {
+            return readImage("Common.UnknownIcon32");
+        } else {
+            return new ImageIcon(img);
+        }
     }
 
     public ImageIcon readImage(String key) {

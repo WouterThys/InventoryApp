@@ -14,9 +14,9 @@ import java.util.List;
 public class ItemTableModel extends AbstractTableModel {
 
     // Names and classes
-    private static final String[] columnNames = {"Name", "Description", "Manufacturer", "Data sheet"};
-    private static final Class[] columnClasses = {String.class, String.class, String.class, Boolean.class };
-    public static final Integer[] columnWidths = {25,50,20,5};
+    private static final String[] columnNames = {"Name", "Description", "Manufacturer"};
+    private static final Class[] columnClasses = {String.class, String.class, String.class};
+    public static final Integer[] columnWidths = {25,55,20};
 
     private List<Item> itemList;
 
@@ -77,8 +77,6 @@ public class ItemTableModel extends AbstractTableModel {
                         return m.getName();
                     }
                     return "";
-                case 3: // Data sheet
-                    return (!item.getLocalDataSheet().isEmpty()) || (!item.getOnlineDataSheet().isEmpty());
 
             }
         }

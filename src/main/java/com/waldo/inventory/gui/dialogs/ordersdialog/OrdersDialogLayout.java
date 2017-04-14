@@ -6,17 +6,14 @@ import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDialogPanel;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
-public class OrdersDialogLayout extends IDialogPanel
+public class OrdersDialogLayout extends IDialog
         implements GuiInterface, DbObjectChangedListener<Order> {
 
     /*
@@ -43,8 +40,8 @@ public class OrdersDialogLayout extends IDialogPanel
      Order selectedOrder;
 
 
-    public OrdersDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog, true);
+    public OrdersDialogLayout(Application application, String title) {
+        super(application, title);
     }
 
     /*
@@ -80,6 +77,7 @@ public class OrdersDialogLayout extends IDialogPanel
             @Override
             protected void add() {
                 DbObjectDialog<Order> dialog = new DbObjectDialog<Order>(application, "New order", new Order());
+                dialog.showDialog();
             }
 
             @Override

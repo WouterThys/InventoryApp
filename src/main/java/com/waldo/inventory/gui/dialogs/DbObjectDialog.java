@@ -2,71 +2,41 @@ package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialogPanel;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 
-public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
+public class DbObjectDialog<T extends DbObject> extends IDialog {
 
     private ITextField nameTextField;
     private ITextField iconPathTextField;
     private JButton browseIconButton;
 
     private T dbObject;
-    private Action createAction;
-
-//    public static DbObject showDialog(Application application, String title) {
-//        dbObject = null;
-//        JDialog dialog = new JDialog(application, title, true);
-//        dialog.getContentPane().add(new DbObjectDialog(null, dialog));
-//        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//        dialog.setLocationByPlatform(true);
-//        dialog.setLocationRelativeTo(null);
-//        dialog.setResizable(false);
-//        dialog.pack();
-//        dialog.setVisible(true);
-//        return dbObject;
-//    }
 
     public T getDbObject() {
         return dbObject;
     }
 
-//    public static int showDialog(Application application, String title, DbObject object) {
-//        JDialog dialog = new JDialog(application, title, true);
-//        //dialog.getContentPane().add(new DbObjectDialog<>(application, dialog, object));
-//        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//        dialog.setLocationByPlatform(true);
-//        dialog.setLocationRelativeTo(application);
-//        dialog.setResizable(false);
-//        dialog.pack();
-//        dialog.setVisible(true);
-//        return returnValue;
-//    }
-
     public int showDialog() {
-        dialog.pack();
-        dialog.setVisible(true);
-        return returnValue;
+        setLocationRelativeTo(application);
+        pack();
+        setVisible(true);
+        return dialogResult;
     }
 
     public DbObjectDialog(Application application, String title) {
-        super(application, new JDialog(application, title, true), false);
+        super(application, title);
 
-        dialog.getContentPane().add(this);
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(application);
-        dialog.setResizable(false);
+        setResizable(false);
+        showTitlePanel(false);
 
         initComponents();
         initLayouts();
@@ -82,7 +52,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
         if (dbObject != null) {
             nameTextField.setText(dbObject.getName());
             iconPathTextField.setText(dbObject.getIconPath());
-            positiveButton.setText("Update");
+            buttonOK.setText("Update");
         }
     }
 
@@ -108,24 +78,21 @@ public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                iconPathTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                iconPathTextField.setText(fileChooser.getSelectedFile().getPath());
             }
         });
+    }
 
-        // Dialog buttons
-        createAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (verify()) {
-                    // Set values
-                    dbObject.setName(nameTextField.getText());
-                    dbObject.setIconPath(iconPathTextField.getText());
-                    returnValue = OK;
-                    // Close dialog
-                    close();
-                }
-            }
-        };
+    @Override
+    protected void onOK() {
+        if (verify()) {
+            // Set values
+            dbObject.setName(nameTextField.getText());
+            dbObject.setIconPath(iconPathTextField.getText());
+            dialogResult = OK;
+            // Close dialog
+            dispose();
+        }
     }
 
     private void initLayouts() {
@@ -147,9 +114,5 @@ public class DbObjectDialog<T extends DbObject> extends IDialogPanel {
                 new String[] {"Name: ", "Icon path: "},
                 new JComponent[] {nameTextField, iconPathPanel}
         ));
-
-        // Dialog buttons
-        setNegativeButton("Cancel");
-        setPositiveButton("Create").addActionListener(createAction);
     }
 }
