@@ -30,8 +30,13 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
         });
 
-        dialog.setLocationRelativeTo(parent);
+        if (parent != null) {
+            dialog.setLocationRelativeTo(parent);
+        } else {
+            dialog.setLocationByPlatform(true);
+        }
         dialog.pack();
+        dialog.setMinimumSize(dialog.getSize());
         dialog.setVisible(true);
         return dialog.dialogResult;
     }

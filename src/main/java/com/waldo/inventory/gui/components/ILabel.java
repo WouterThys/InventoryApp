@@ -46,7 +46,12 @@ public class ILabel extends JLabel {
 
         try {
             url = new File(path).toURI().toURL();
-            setIcon(resourceManager.readImage(url));
+            ImageIcon icon = resourceManager.readImage(url);
+            if (icon.getIconWidth() > 0) {
+                setIcon(icon);
+            } else {
+                setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

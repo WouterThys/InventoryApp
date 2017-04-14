@@ -2,7 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.gui.panels.mainpanel.ItemListPanel;
+import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
 
 public class Application extends JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     private ResourceManager resourceManager;
 
-    private ItemListPanel itemListPanel;
+    private MainPanel mainPanel;
     private TopToolBar toolBar;
 
     public Application() {
@@ -35,26 +34,25 @@ public class Application extends JFrame {
         setJMenuBar(new MenuBar(this));
 
         // Main view
-        itemListPanel = new ItemListPanel(this);
-        add(itemListPanel, BorderLayout.CENTER);
+        mainPanel = new MainPanel(this);
+        add(mainPanel, BorderLayout.CENTER);
 
-        //add(createTablePane(), BorderLayout.CENTER); // TODO: to ItemListPanel
+        // Status bar
+        add(new JLabel("Status"), BorderLayout.PAGE_END);
+
+        //add(createTablePane(), BorderLayout.CENTER); // TODO: to MainPanel
         //add(new QueryPanel(this), BorderLayout.SOUTH);
     }
 
     public Item getSelectedItem() {
-        return itemListPanel.getSelectedItem();
+        return mainPanel.getSelectedItem();
     }
 
     public void setTableItems(java.util.List<Item> tableItems) {
         if (tableItems == null) {
-            try {
-                itemListPanel.updateTable(itemListPanel.getLastSelectedDivision());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            mainPanel.updateTable(mainPanel.getLastSelectedDivision());
         } else {
-            itemListPanel.getTableModel().setItemList(tableItems);
+            mainPanel.getTableModel().setItemList(tableItems);
         }
     }
 

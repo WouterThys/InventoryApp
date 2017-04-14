@@ -18,8 +18,8 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 public class EditItemDialog extends EditItemDialogLayout {
 
     public int showDialog() {
-        setLocationRelativeTo(application);
         pack();
+        setMinimumSize(getSize());
         setVisible(true);
 
         return dialogResult;
@@ -27,6 +27,11 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
+        if (application != null) {
+            setLocationRelativeTo(application);
+        } else {
+            setLocationByPlatform(true);
+        }
         newItem = item;
         isNew = false;
         initializeComponents();

@@ -16,6 +16,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         ManufacturersDialog md = new ManufacturersDialog(parent, "Manufacturers");
         md.setLocationRelativeTo(parent);
         md.pack();
+        md.setMinimumSize(md.getSize());
         md.setVisible(true);
         return md.dialogResult;
     }
