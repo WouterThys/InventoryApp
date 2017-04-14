@@ -3,53 +3,49 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.*;
-import java.io.File;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.awt.event.ItemEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
-    public static void showDialog(Application parent) {
-        JDialog dialog = new JDialog(parent, "Sub Divisions", true);
-        final SubDivisionsDialog sdd = new SubDivisionsDialog(parent, dialog);
-        dialog.getContentPane().add(sdd);
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setLocationByPlatform(true);
+    public static int showDialog(Application parent) {
+        SubDivisionsDialog dialog = new SubDivisionsDialog(parent, "Sub Divisions");
+
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                dbInstance().removeOnCategoriesChangedListener(sdd.categoriesChanged);
-                dbInstance().removeOnProductsChangedListener(sdd.productsChanged);
-                dbInstance().removeOnTypesChangedListener(sdd.typesChanged);
+                dbInstance().removeOnCategoriesChangedListener(dialog.categoriesChanged);
+                dbInstance().removeOnProductsChangedListener(dialog.productsChanged);
+                dbInstance().removeOnTypesChangedListener(dialog.typesChanged);
                 super.windowClosing(e);
             }
         });
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(null);
+
+        dialog.setLocationRelativeTo(parent);
         dialog.pack();
         dialog.setVisible(true);
+        return dialog.dialogResult;
     }
 
 
-    private SubDivisionsDialog(Application application, JDialog dialog) {
-        super(application, dialog);
+    private SubDivisionsDialog(Application application, String title) {
+        super(application, title);
         initializeComponents();
         initializeLayouts();
 
         initActions();
+        setCategoriesChanged();
+        setProductsChanged();
+        setTypesChanged();
 
         dbInstance().addOnCategoriesChangedListener(categoriesChanged);
         dbInstance().addOnProductsChangedListener(productsChanged);
@@ -158,6 +154,111 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         }
         detailList.setSelectedValue(object, true);
         setSelectedObject(selectedObject);
+    }
+
+    private void setCategoriesChanged() {
+        categoriesChanged = new DbObjectChangedListener<Category>() {
+            @Override
+            public void onAdded(Category object) {
+                updateCategoryList();
+            }
+
+            @Override
+            public void onUpdated(Category object) {
+                updateCategoryList();
+            }
+
+            @Override
+            public void onDeleted(Category object) {
+                updateCategoryList();
+            }
+        };
+    }
+
+    /**
+     * If the view is on types, the cb on top is showing products.
+     * Get the id of which product is selected, than get all types for this product, and add them to the
+     * Detail list
+     */
+    private void updateTypeList() {
+        if (selectedSubType == TYPES) {
+            long productId;
+            DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
+            if (obj != null) {
+                productId = obj.getId();
+                if (productId < 0) {
+                    productId = 1; // Unknown
+                }
+                detailListModel.removeAllElements();
+                for (com.waldo.inventory.classes.Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
+                    detailListModel.addElement(t);
+                }
+            }
+        }
+    }
+
+    private void setProductsChanged() {
+        productsChanged = new DbObjectChangedListener<Product>() {
+            @Override
+            public void onAdded(Product object) {
+                updateProductList();
+            }
+
+            @Override
+            public void onUpdated(Product object) {
+                updateProductList();
+            }
+
+            @Override
+            public void onDeleted(Product object) {
+                updateProductList();
+            }
+        };
+    }
+
+    private void updateProductList() {
+        if (selectedSubType == PRODUCTS) {
+            long categoryId;
+            DbObject obj = ((DbObject)selectionCbModel.getSelectedItem());
+            if (obj != null) {
+                categoryId = obj.getId();
+                if (categoryId < 0) {
+                    categoryId = 1; // Unknown
+                }
+                detailListModel.removeAllElements();
+                for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
+                    detailListModel.addElement(p);
+                }
+            }
+        }
+    }
+
+    private void setTypesChanged() {
+        typesChanged = new DbObjectChangedListener<com.waldo.inventory.classes.Type>() {
+            @Override
+            public void onAdded(com.waldo.inventory.classes.Type object) {
+                updateTypeList();
+            }
+
+            @Override
+            public void onUpdated(com.waldo.inventory.classes.Type object) {
+                updateTypeList();
+            }
+
+            @Override
+            public void onDeleted(com.waldo.inventory.classes.Type object) {
+                updateTypeList();
+            }
+        };
+    }
+
+    private void updateCategoryList() {
+        if (selectedSubType == CATEGORIES) {
+            detailListModel.removeAllElements();
+            for (Category c : DbManager.dbInstance().getCategories()) {
+                detailListModel.addElement(c);
+            }
+        }
     }
 
     @Override

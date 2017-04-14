@@ -6,8 +6,6 @@ import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 
 import static javax.swing.SpringLayout.*;
@@ -31,9 +29,9 @@ public abstract class IDialogPanel extends JPanel {
     private ILabel titleIconLabel;
     private ILabel titleNameLabel;
 
-    protected JButton positiveButton;
+    protected JButton buttonOK;
     protected JButton neutralButton;
-    protected JButton negativeButton;
+    protected JButton buttonCancel;
 
     protected ResourceManager resourceManager;
 
@@ -67,10 +65,10 @@ public abstract class IDialogPanel extends JPanel {
     }
 
     protected JButton setNegativeButton(String text) {
-        negativeButton.setVisible(true);
-        negativeButton.setText(text);
+        buttonCancel.setVisible(true);
+        buttonCancel.setText(text);
         buttonsPanel.setVisible(true);
-        return negativeButton;
+        return buttonCancel;
     }
 
     protected JButton setNeutralButton(String text) {
@@ -81,14 +79,14 @@ public abstract class IDialogPanel extends JPanel {
     }
 
     protected JButton setPositiveButton(String text) {
-        positiveButton.setVisible(true);
+        buttonOK.setVisible(true);
         buttonsPanel.setVisible(true);
-        positiveButton.setText(text);
-        return positiveButton;
+        buttonOK.setText(text);
+        return buttonOK;
     }
 
-    protected JButton getPositiveButton() {
-        return positiveButton;
+    protected JButton getButtonOK() {
+        return buttonOK;
     }
 
     protected void setTitleName(String name) {
@@ -108,27 +106,27 @@ public abstract class IDialogPanel extends JPanel {
     }
 
     private JPanel createButtonPanel() {
-        positiveButton = new JButton("Ok");
+        buttonOK = new JButton("Ok");
         neutralButton = new JButton("Meh");
-        negativeButton = new JButton("Cancel");
+        buttonCancel = new JButton("Cancel");
 
-        positiveButton.setVisible(false);
+        buttonOK.setVisible(false);
         neutralButton.setVisible(false);
-        negativeButton.setVisible(false);
+        buttonCancel.setVisible(false);
 
-        positiveButton.setBorder(new RoundedButtonBorder(5));
+        buttonOK.setBorder(new RoundedButtonBorder(5));
         neutralButton.setBorder(new RoundedButtonBorder(5));
-        negativeButton.setBorder(new RoundedButtonBorder(5));
+        buttonCancel.setBorder(new RoundedButtonBorder(5));
 
-        positiveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        negativeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        buttonOK.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        buttonCancel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         neutralButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
-        positiveButton.addActionListener(e -> {
+        buttonOK.addActionListener(e -> {
             returnValue = OK;
             //close();
         });
-        negativeButton.addActionListener(e -> {
+        buttonCancel.addActionListener(e -> {
             returnValue = CANCEL;
             close();
         });
@@ -137,15 +135,15 @@ public abstract class IDialogPanel extends JPanel {
             //close();
         });
 
-        positiveButton.setPreferredSize(new Dimension(90,25));
+        buttonOK.setPreferredSize(new Dimension(90,25));
         neutralButton.setPreferredSize(new Dimension(90,25));
-        negativeButton.setPreferredSize(new Dimension(90,25));
+        buttonCancel.setPreferredSize(new Dimension(90,25));
 
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5,5));
-        panel.add(negativeButton);
+        panel.add(buttonCancel);
         panel.add(neutralButton);
-        panel.add(positiveButton);
+        panel.add(buttonOK);
 
         return panel;
     }

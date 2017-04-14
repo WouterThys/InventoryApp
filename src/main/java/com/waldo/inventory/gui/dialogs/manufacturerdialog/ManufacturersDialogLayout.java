@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -19,7 +20,7 @@ import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.database.DbManager.dbInstance;
 import static javax.swing.SpringLayout.*;
 
-public abstract class ManufacturersDialogLayout extends IDialogPanel
+public abstract class ManufacturersDialogLayout extends IDialog
         implements GuiInterface, DbObjectChangedListener<Manufacturer>, IObjectSearchPanel.IObjectSearchListener {
 
     /*
@@ -27,18 +28,16 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<Manufacturer> manufacturerList;
     private DefaultListModel<Manufacturer> manufacturerDefaultListModel;
-    IdBToolBar toolBar;
-    IObjectSearchPanel searchPanel;
+    private IdBToolBar toolBar;
+    private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
     ITextField detailWebsite;
-    JButton detailsBroweButton;
+    private JButton detailsBroweButton;
     ILabel detailLogo;
 
-    JList<Item> detailItemList;
+    private JList<Item> detailItemList;
     DefaultListModel<Item> detailItemDefaultListModel;
-
-    Action okAction;
 
     /*
      *                  VARIABLES
@@ -46,8 +45,8 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
     Manufacturer selectedManufacturer;
 
 
-    ManufacturersDialogLayout(Application application, JDialog dialog) {
-        super(application, dialog, true);
+    ManufacturersDialogLayout(Application application, String title) {
+        super(application, title);
     }
 
     /*
@@ -183,7 +182,7 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
             @Override
             protected void add() {
-                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
+                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer");
                 if (dialog.showDialog() == DbObjectDialog.OK) {
                     Manufacturer m = dialog.getDbObject();
                     m.save();
@@ -254,8 +253,6 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
 
 //        details.add(new ITitledPanel("Items",
 //                new JComponent[] {new JScrollPane(detailItemList)}));
-
-        setPositiveButton("Ok");
     }
 
     @Override
@@ -265,21 +262,5 @@ public abstract class ManufacturersDialogLayout extends IDialogPanel
         for(Manufacturer m : dbInstance().getManufacturers()) {
             manufacturerDefaultListModel.addElement(m);
         }
-    }
-
-
-    @Override
-    public void onAdded(Manufacturer manufacturer) {
-        updateComponents(null);
-    }
-
-    @Override
-    public void onUpdated(Manufacturer manufacturer) {
-        updateComponents(null);
-    }
-
-    @Override
-    public void onDeleted(Manufacturer manufacturer) {
-        updateComponents(null);
     }
 }

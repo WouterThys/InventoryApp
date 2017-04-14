@@ -36,14 +36,12 @@ public class TopToolBar extends JToolBar implements IObjectSearchPanel.IObjectSe
 
             @Override
             protected void add() {
-                Item newItem = null;
-                try {
-                    newItem = EditItemDialog.showDialog(application);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-                if (newItem != null) {
-                    newItem.save();
+                EditItemDialog dialog = new EditItemDialog(application, "Add item");
+                if (dialog.showDialog() == EditItemDialog.OK) {
+                    Item newItem = dialog.getItem();
+                    if (newItem != null) {
+                        newItem.save();
+                    }
                 }
             }
 
@@ -59,14 +57,12 @@ public class TopToolBar extends JToolBar implements IObjectSearchPanel.IObjectSe
 
             @Override
             protected void update() {
-                Item selectedItem = application.getSelectedItem();
-                try {
-                    selectedItem = EditItemDialog.showDialog(application, selectedItem);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-                if (selectedItem != null) {
-                    selectedItem.save();
+                EditItemDialog dialog = new EditItemDialog(application, "Edit item", application.getSelectedItem());
+                if (dialog.showDialog() == EditItemDialog.OK) {
+                    Item newItem = dialog.getItem();
+                    if (newItem != null) {
+                        newItem.save();
+                    }
                 }
             }
         };

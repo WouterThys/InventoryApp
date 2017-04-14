@@ -10,11 +10,8 @@ import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -73,27 +70,19 @@ public class ItemListPanel extends ItemListPanelLayout {
                 JTable table = (JTable) e.getSource();
                 if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
-                    try {
-                        selectedItem = EditItemDialog.showDialog(application, selectedItem);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    if (selectedItem != null) {
-                        selectedItem.save();
+                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                    if (dialog.showDialog() == EditItemDialog.OK) {
+                        dialog.getItem().save();
                     }
                 }
                 if (e.getClickCount() == 1) {
-                    try {
-                        dataSheetColumnClicked(table.columnAtPoint(e.getPoint()), table.rowAtPoint(e.getPoint()));
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    dataSheetColumnClicked(table.columnAtPoint(e.getPoint()), table.rowAtPoint(e.getPoint()));
                 }
             }
         });
     }
 
-    private void dataSheetColumnClicked(int col, int row) throws SQLException {
+    private void dataSheetColumnClicked(int col, int row) {
         if (col == 3) { // Data sheet column
             Item item = getItemAt(row);
             if (item != null) {
@@ -268,7 +257,7 @@ public class ItemListPanel extends ItemListPanelLayout {
     }
 
     //
-    // Table selction changed
+    // Table selection changed
     //
 
     @Override

@@ -17,64 +17,31 @@ import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
-    public static Item showDialog(Application parent) throws SQLException {
-        newItem = null;
-        JDialog dialog = new JDialog(parent, "Create new Item", true);
-        EditItemDialog layout = new EditItemDialog(parent, dialog);
-        dialog.getContentPane().add(layout);
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                newItem = null;
-                super.windowClosing(e);
-            }
-        });
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(parent);
-        dialog.pack();
-        dialog.setVisible(true);
-        return newItem;
+    public int showDialog() {
+        setLocationRelativeTo(application);
+        pack();
+        setVisible(true);
+
+        return dialogResult;
     }
 
-    public static Item showDialog(Application parent, Item item) throws SQLException {
-        newItem = null;
-        JDialog dialog = new JDialog(parent, "Edit Item", true);
-        dialog.getContentPane().add(new EditItemDialog(parent, dialog, item));
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                newItem = null;
-                super.windowClosing(e);
-            }
-        });
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(parent);
-        dialog.pack();
-        dialog.setVisible(true);
-        return newItem;
-    }
-
-    private EditItemDialog(Application application, JDialog dialog, Item item) throws SQLException {
-        super(application, dialog);
+    public EditItemDialog(Application application, String title, Item item)  {
+        super(application, title);
         newItem = item;
         isNew = false;
         initializeComponents();
-        initActions();
         initializeLayouts();
+        initActions();
         updateComponents(null);
     }
 
-    private EditItemDialog(Application application, JDialog dialog) throws SQLException {
-        this(application, dialog, new Item());
+    public EditItemDialog(Application application, String title) {
+        this(application, title, new Item());
         isNew = false;
     }
 
     private void initActions() {
         // Top Panel
-        initCreateAction();
-        initCancelAction();
         initIconDoubleClicked();
         initTabChangedAction();
 
@@ -83,56 +50,56 @@ public class EditItemDialog extends EditItemDialogLayout {
         initProductChangedAction();
     }
 
-    private void initCreateAction() {
-        createAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (verify()) {
-                    // Component
-                    newItem.setName(componentPanel.getNameFieldValue());
-                    newItem.setDescription(componentPanel.getDescriptionFieldValue());
-                    String priceTxt = componentPanel.getPriceFieldValue();
-                    if (!priceTxt.isEmpty()) {
-                        newItem.setPrice(Double.valueOf(priceTxt));
-                    }
-
-                    try {
-                        newItem.setCategoryId(componentPanel.getCbCategoryId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        newItem.setProductId(componentPanel.getCbProductId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        newItem.setTypeId(componentPanel.getCbTypeId());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
-                    newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
-
-                    // Manufacturer
-                    newItem.setManufacturerId(manufacturerPanel.getSelectedManufacturerId());
-
-                    // Close dialog
-                    close();
-                }
+    @Override
+    protected void onOK() {
+        if (verify()) {
+            // Component
+            newItem.setName(componentPanel.getNameFieldValue());
+            newItem.setDescription(componentPanel.getDescriptionFieldValue());
+            String priceTxt = componentPanel.getPriceFieldValue();
+            if (!priceTxt.isEmpty()) {
+                newItem.setPrice(Double.valueOf(priceTxt));
             }
-        };
-    }
-    private void initCancelAction() {
-        cancelAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                newItem = null;
-                close();
+
+            try {
+                newItem.setCategoryId(componentPanel.getCbCategoryId());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
             }
-        };
+            try {
+                newItem.setProductId(componentPanel.getCbProductId());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            try {
+                newItem.setTypeId(componentPanel.getCbTypeId());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+
+            newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
+            newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
+
+            // Manufacturer
+            newItem.setManufacturerId(manufacturerPanel.getSelectedManufacturerId());
+
+            // Close dialog
+            dialogResult = OK;
+            dispose();
+        }
     }
+
+    @Override
+    protected void onCancel() {
+        newItem = null;
+        dialogResult = CANCEL;
+        dispose();
+    }
+
+    public Item getItem() {
+        return newItem;
+    }
+
     private void initIconDoubleClicked() {
         getTitleIconLabel().addMouseListener(new MouseAdapter() {
             @Override

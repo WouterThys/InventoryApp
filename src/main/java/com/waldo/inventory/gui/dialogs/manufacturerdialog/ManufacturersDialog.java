@@ -4,45 +4,26 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.SQLException;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
 
-    public static void showDialog(Application parent) {
-        JDialog dialog = new JDialog(parent, "Sub Divisions", true);
-        final ManufacturersDialog md = new ManufacturersDialog(parent, dialog);
-        dialog.getContentPane().add(md);
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setLocationByPlatform(true);
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                dbInstance().removeOnManufacturersChangedListener(md);
-                super.windowClosing(e);
-            }
-        });
-        dialog.setLocationByPlatform(true);
-        dialog.setLocationRelativeTo(null);
-        dialog.pack();
-        dialog.setVisible(true);
+    public static int showDialog(Application parent) {
+        ManufacturersDialog md = new ManufacturersDialog(parent, "Manufacturers");
+        md.setLocationRelativeTo(parent);
+        md.pack();
+        md.setVisible(true);
+        return md.dialogResult;
     }
-
 
     private boolean canClose = true;
 
-    private ManufacturersDialog(Application application, JDialog dialog) {
-        super(application, dialog);
+    private ManufacturersDialog(Application application, String title) {
+        super(application, title);
         initializeComponents();
         initializeLayouts();
         initActions();
@@ -64,20 +45,20 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                 }
             }
         });
-
-
-        getPositiveButton().addActionListener(e -> {
-            if (detailWebsite.isEdited()) {
-                canClose = false;
-                showSaveDialog();
-            }
-
-            if (canClose) {
-                close();
-            }
-        });
     }
 
+    @Override
+    protected void onOK() {
+        if (detailWebsite.isEdited()) {
+            canClose = false;
+            showSaveDialog();
+        }
+
+        if (canClose) {
+            dialogResult = OK;
+            dispose();
+        }
+    }
 
     private void setDetails() {
         if (selectedManufacturer != null) {
@@ -112,11 +93,11 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                     selectedManufacturer.setName(detailName.getText());
                     selectedManufacturer.setWebsite(detailWebsite.getText());
                     selectedManufacturer.save();
-                    close();
+                    dispose();
                 }
             }
         } else {
-            close();
+            dispose();
         }
     }
 
@@ -140,5 +121,20 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     @Override
     public void onSearchCleared() {
 
+    }
+
+    @Override
+    public void onAdded(Manufacturer manufacturer) {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onUpdated(Manufacturer manufacturer) {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onDeleted(Manufacturer manufacturer) {
+        updateComponents(null);
     }
 }

@@ -14,7 +14,7 @@ public class ITree extends JTree {
 
         setModel(treeModel);
 
-        URL url = IDialogPanel.class.getResource("/settings/Settings.properties");
+        URL url = ITree.class.getResource("/settings/Settings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());
 
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();

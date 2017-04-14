@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 
@@ -42,7 +43,7 @@ public abstract class IdBToolBar extends JToolBar {
 
 
     private void init() {
-        URL url = IDialogPanel.class.getResource("/settings/Settings.properties");
+        URL url = IdBToolBar.class.getResource("/settings/Settings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());
         refreshAction = new AbstractAction("Refresh", resourceManager.readImage("Toolbar.RefreshIcon")) {
             @Override
@@ -80,6 +81,7 @@ public abstract class IdBToolBar extends JToolBar {
         add(editAction);
 
         setOpaque(false);
+        setBorder(new EmptyBorder(5,5,5,5));
     }
 
 //    private void initialize() {
