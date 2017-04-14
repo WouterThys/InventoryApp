@@ -9,16 +9,16 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
-    private String description = "";
-    private double price = 0;
+    protected String description = "";
+    protected double price = 0;
 
-    private long categoryId = -1;
-    private long productId = -1;
-    private long typeId = -1;
-    private String localDataSheet = "";
-    private String onlineDataSheet = "";
-    private long manufacturerId = -1;
-    private long locationId = -1;
+    protected long categoryId = -1;
+    protected long productId = -1;
+    protected long typeId = -1;
+    protected String localDataSheet = "";
+    protected String onlineDataSheet = "";
+    protected long manufacturerId = -1;
+    protected long locationId = -1;
 
     private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
                 "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet, manufacturerid, locationid) VALUES " +
@@ -36,6 +36,9 @@ public class Item extends DbObject {
         super(TABLE_NAME, insertSql, updateSql);
     }
 
+    protected Item(String tableName, String insertSql, String updateSql) {
+        super(tableName, insertSql, updateSql);
+    }
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException{

@@ -34,7 +34,7 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
     Item newItem;
     boolean isNew = false;
 
-    public EditItemDialogLayout(Application application, String title) {
+    EditItemDialogLayout(Application application, String title) {
         super(application, title);
     }
 
@@ -54,7 +54,6 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
         manufacturerPanel = new ManufacturerPanel(newItem);
-        //manufacturerPanel.setLayout(new BoxLayout(manufacturerPanel, BoxLayout.Y_AXIS));
         manufacturerPanel.initializeComponents();
 
         locationPanel = new LocationPanel(newItem);

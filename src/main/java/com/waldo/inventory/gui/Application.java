@@ -3,20 +3,23 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
+import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.sql.SQLException;
 
 public class Application extends JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     private ResourceManager resourceManager;
 
+    private JTabbedPane tabbedPane;
+
     private MainPanel mainPanel;
+    private OrderPanel orderPanel;
     private TopToolBar toolBar;
 
     public Application() {
@@ -34,8 +37,17 @@ public class Application extends JFrame {
         setJMenuBar(new MenuBar(this));
 
         // Main view
+        // - Create components
         mainPanel = new MainPanel(this);
-        add(mainPanel, BorderLayout.CENTER);
+        orderPanel = new OrderPanel();
+        tabbedPane = new JTabbedPane();
+
+        //  - Add tabs
+        tabbedPane.addTab("Components", resourceManager.readImage("EditItem.InfoIcon"), mainPanel, "Components");
+        tabbedPane.addTab("Orders", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
+
+        // - Add to main view
+        add(tabbedPane, BorderLayout.CENTER);
 
         // Status bar
         add(new JLabel("Status"), BorderLayout.PAGE_END);
