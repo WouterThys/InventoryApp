@@ -13,6 +13,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -29,7 +30,9 @@ public abstract class MainPanelLayout extends JPanel implements
     ItemTableModel tableModel;
 
     ITree subDivisionTree;
-    DivisionTreeModel treeModel;
+    //DivisionTreeModel treeModel;
+    IDbObjectTreeModel treeModel;
+    DefaultMutableTreeNode rootNode;
 
     MainDetailPanel detailPanel;
 
@@ -72,16 +75,36 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
+    private void createNodes(DefaultMutableTreeNode rootNode) {
+        for (Category category : db().getCategories()) {
+            DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
+            rootNode.add(cNode);
+
+            for (Product product : db().getProductListForCategory(category.getId())) {
+                DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(product, true);
+                cNode.add(pNode);
+
+                for (Type type : db().getTypeListForProduct(product.getId())) {
+                    DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(type, false);
+                    pNode.add(tNode);
+                }
+            }
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Sub division tree
-        treeModel = new DivisionTreeModel();
+        rootNode = new DefaultMutableTreeNode(new Category("All"), true);
+        createNodes(rootNode);
+        treeModel = new IDbObjectTreeModel(rootNode);
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);
+        treeModel.setTree(subDivisionTree);
 
         // Item table
         tableModel = new ItemTableModel(db().getItems());

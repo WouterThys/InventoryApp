@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -109,7 +110,7 @@ public class OrdersDialogLayout extends IDialog
     }
 
     @Override
-    public void onUpdated(Order object) {
+    public void onUpdated(Order newOrder, Order oldOrder) {
 
     }
 

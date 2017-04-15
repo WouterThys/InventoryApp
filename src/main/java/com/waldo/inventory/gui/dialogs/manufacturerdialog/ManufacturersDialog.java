@@ -131,7 +131,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     @Override
-    public void onUpdated(Manufacturer manufacturer) {
+    public void onUpdated(Manufacturer newManufacturer, Manufacturer oldManufacturer) {
         updateComponents(null);
     }
 

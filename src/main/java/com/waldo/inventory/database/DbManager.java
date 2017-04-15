@@ -244,65 +244,65 @@ public class DbManager implements TableChangedListener {
     }
 
 
-    private <T extends DbObject> void notifyListeners(int changedHow, T object, List<DbObjectChangedListener<T>> listeners) {
+    private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
         for (DbObjectChangedListener<T> l : listeners) {
             switch (changedHow) {
                 case OBJECT_ADDED:
-                    l.onAdded(object);
+                    l.onAdded(newObject);
                     break;
                 case OBJECT_UPDATED:
-                    l.onUpdated(object);
+                    l.onUpdated(newObject, oldObject);
                     break;
                 case OBJECT_DELETED:
-                    l.onDeleted(object);
+                    l.onDeleted(newObject);
                     break;
             }
         }
     }
 
     @Override
-    public void onTableChanged(String tableName, int changedHow, DbObject object) throws SQLException {
+    public void onTableChanged(String tableName, int changedHow, DbObject newObject, DbObject oldObject) throws SQLException {
         String how = "";
         switch (changedHow) {
             case OBJECT_ADDED: how = "added in "; break;
             case OBJECT_UPDATED: how = "updated in "; break;
             case OBJECT_DELETED: how = "deleted from"; break;
         }
-        LOG.info(object.getName() + " " + how + tableName);
-        Status().setMessage(object.getName() + " " + how + tableName);
+        LOG.info(newObject.getName() + " " + how + tableName);
+        Status().setMessage(newObject.getName() + " " + how + tableName);
 
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
-                notifyListeners(changedHow, (Item)object, onItemsChangedListenerList);
+                notifyListeners(changedHow, (Item)newObject, (Item)oldObject, onItemsChangedListenerList);
                 break;
             case Category.TABLE_NAME:
                 updateCategories();
-                notifyListeners(changedHow, (Category)object, onCategoriesChangedListenerList);
+                notifyListeners(changedHow, (Category)newObject, (Category)oldObject, onCategoriesChangedListenerList);
                 break;
             case Product.TABLE_NAME:
                 updateProducts();
-                notifyListeners(changedHow, (Product)object, onProductsChangedListenerList);
+                notifyListeners(changedHow, (Product)newObject, (Product)oldObject, onProductsChangedListenerList);
                 break;
             case Type.TABLE_NAME:
                 updateTypes();
-                notifyListeners(changedHow, (Type)object, onTypesChangedListenerList);
+                notifyListeners(changedHow, (Type)newObject, (Type)oldObject, onTypesChangedListenerList);
                 break;
             case Manufacturer.TABLE_NAME:
                 updateManufacturers();
-                notifyListeners(changedHow, (Manufacturer)object, onManufacturerChangedListenerList);
+                notifyListeners(changedHow, (Manufacturer)newObject, (Manufacturer)oldObject, onManufacturerChangedListenerList);
                 break;
             case Location.TABLE_NAME:
                 updateLocations();
-                notifyListeners(changedHow, (Location)object, onLocationsChangedListenerList);
+                notifyListeners(changedHow, (Location)newObject, (Location)oldObject, onLocationsChangedListenerList);
                 break;
             case Order.TABLE_NAME:
                 updateOrders();
-                notifyListeners(changedHow, (Order)object, onOrdersChangedListenerList);
+                notifyListeners(changedHow, (Order)newObject, (Order)oldObject, onOrdersChangedListenerList);
                 break;
             case OrderItem.TABLE_NAME:
                 updateOrderItems();
-                notifyListeners(changedHow, (OrderItem)object, onOrderItemsChangedListenerList);
+                notifyListeners(changedHow, (OrderItem)newObject, (OrderItem)oldObject, onOrderItemsChangedListenerList);
                 break;
         }
     }
@@ -378,6 +378,38 @@ public class DbManager implements TableChangedListener {
         worker.execute();
     }
 
+    public Item getItemFromDb(long itemId) {
+        Item i = null;
+        Status().setMessage("Fetching items from DB");
+
+        String sql = "SELECT * FROM items WHERE id = " + itemId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    i = new Item();
+                    i.setId(rs.getLong("id"));
+                    i.setName(rs.getString("name"));
+                    i.setIconPath(rs.getString("iconpath"));
+                    i.setDescription(rs.getString("description"));
+                    i.setPrice(rs.getDouble("price"));
+                    i.setCategoryId(rs.getInt("categoryid"));
+                    i.setProductId(rs.getInt("productid"));
+                    i.setTypeId(rs.getInt("typeid"));
+                    i.setLocalDataSheet(rs.getString("localdatasheet"));
+                    i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
+                    i.setManufacturerId(rs.getLong("manufacturerid"));
+                    i.setLocationId(rs.getLong("locationid"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch items from database: "+ e);
+            e.printStackTrace();
+        }
+        return i;
+    }
+
 
     /*
     *                  CATEGORIES
@@ -415,6 +447,29 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         categories.add(0, Category.getUnknownCategory());
+    }
+
+    public Category getCategoryFromDb(long categoryId) {
+        Category c = null;
+        Status().setMessage("Fetching categories from DB");
+
+        String sql = "SELECT * FROM " + Category.TABLE_NAME + " WHERE id = " + categoryId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    c = new Category();
+                    c.setId(rs.getLong("id"));
+                    c.setName(rs.getString("name"));
+                    c.setIconPath(rs.getString("iconpath"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch categories from database");
+            e.printStackTrace();
+        }
+        return c;
     }
 
     public void getCategoriesAsync(final List<Category> categories) {
@@ -483,6 +538,28 @@ public class DbManager implements TableChangedListener {
         products.add(0, Product.getUnknownProduct());
     }
 
+    public Product getProductFromDb(long productId) {
+        Product p = null;
+        String sql = "SELECT * FROM " + Product.TABLE_NAME + " WHERE id = " + productId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new Product();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+                    p.setCategoryId(rs.getLong("categoryid"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch products from database");
+            e.printStackTrace();
+        }
+        return p;
+    }
+
     public void getProductsAsync(final List<Product> products) {
         if (products != null) {
             products.clear();
@@ -546,6 +623,30 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         types.add(0, Type.getUnknownType());
+    }
+
+    public Type getTypeFromDb(long typeId) {
+        Type t = null;
+        Status().setMessage("Fetching types from DB");
+
+        String sql = "SELECT * FROM " + Type.TABLE_NAME + " WHERE id = " + typeId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    t = new Type();
+                    t.setId(rs.getLong("id"));
+                    t.setName(rs.getString("name"));
+                    t.setIconPath(rs.getString("iconpath"));
+                    t.setProductId(rs.getLong("productid"));
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return t;
     }
 
     public void getTypesAsync(final List<Type> types) {
@@ -613,6 +714,30 @@ public class DbManager implements TableChangedListener {
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
     }
 
+    public Manufacturer getManufacturerFromDb(long manufacturerId) {
+        Manufacturer m = null;
+        Status().setMessage("Fetching manufacturers from DB");
+
+        String sql = "SELECT * FROM " + Manufacturer.TABLE_NAME + " WHERE id = " + manufacturerId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    m = new Manufacturer();
+                    m.setId(rs.getLong("id"));
+                    m.setName(rs.getString("name"));
+                    m.setWebsite(rs.getString("website"));
+                    m.setIconPath(rs.getString("iconpath"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch manufacturers from databasee");
+            e.printStackTrace();
+        }
+       return m;
+    }
+
     /*
     *                  LOCATIONS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -651,6 +776,34 @@ public class DbManager implements TableChangedListener {
         locations.add(0, Location.getUnknownLocation());
     }
 
+    public Location getLocationFromDb(long locationId) {
+        Location l = null;
+        Status().setMessage("Fetching locations from DB");
+
+        String sql = "SELECT * FROM " + Location.TABLE_NAME + " WHERE id = " + locationId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    l = new Location();
+                    l.setId(rs.getLong("id"));
+                    l.setName(rs.getString("name"));
+                    l.setIconPath(rs.getString("iconpath"));
+
+                    if (l.getId() != 1) {
+                        l.setOnTableChangedListener(this);
+                        locations.add(l);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch locations from database");
+            e.printStackTrace();
+        }
+        return l;
+    }
+
     /*
     *                  ORDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -687,6 +840,29 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
+    }
+
+    public Order getOrderFromDb(long orderId) {
+        Order o = null;
+        Status().setMessage("Fetching orders from DB");
+
+        String sql = "SELECT * FROM " + Order.TABLE_NAME + " WHERE id = " + orderId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new Order();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setIconPath(rs.getString("iconpath"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch items from database");
+            e.printStackTrace();
+        }
+        return o;
     }
 
     /*
@@ -731,11 +907,44 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public OrderItem getOrderItemFromDb(long orderItemId) {
+        OrderItem o = null;
+        Status().setMessage("Fetching order items from DB");
+
+        String sql = "SELECT * FROM " + OrderItem.TABLE_NAME + " WHERE id = " + orderItemId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new OrderItem();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setIconPath(rs.getString("iconpath"));
+                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
+                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
+                    o.setOrderDate(rs.getDate("orderdate"));
+                    o.setReceiveDate(rs.getDate("receivedate"));
+                    o.setOrdered(rs.getBoolean("isordered"));
+
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        o.setOnTableChangedListener(this);
+                        orderItems.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch items from database");
+            e.printStackTrace();
+        }
+        return o;
+    }
+
 
     /*
     *                  FINDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public Item findItemById(long id) throws  SQLException {
+    public Item findItemById(long id) {
         for (Item i : getItems()) {
             if(i.getId() == id) {
                 return i;
@@ -914,6 +1123,34 @@ public class DbManager implements TableChangedListener {
         }
         return -1;
     }
+
+    public OrderItem findOrderItemById(long id)    {
+        for (OrderItem t : getOrderItems()) {
+            if (t.getId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public OrderItem findOrderItemByName(String name)    {
+        for (OrderItem t : getOrderItems()) {
+            if (t.getName().equals(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public int findOrderItemIndex(long orderItemId)    {
+        for (int i = 0; i < getOrders().size(); i++) {
+            if (getOrderItems().get(i).getId() == orderItemId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /*
     *                  OTHER
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

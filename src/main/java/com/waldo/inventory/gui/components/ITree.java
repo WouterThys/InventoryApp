@@ -10,9 +10,7 @@ import java.net.URL;
 public class ITree extends JTree {
 
     public ITree (TreeModel treeModel) {
-        super();
-
-        setModel(treeModel);
+        super(treeModel);
 
         URL url = ITree.class.getResource("/settings/Settings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());

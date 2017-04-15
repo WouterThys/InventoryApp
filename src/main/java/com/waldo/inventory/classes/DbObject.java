@@ -25,6 +25,7 @@ public abstract class DbObject {
     public static final int TYPE_MANUFACTURER = 5;
     public static final int TYPE_LOCATION = 6;
     public static final int TYPE_ORDER = 7;
+    public static final int TYPE_ORDER_ITEM = 8;
 
     private String TABLE_NAME;
 
@@ -33,6 +34,7 @@ public abstract class DbObject {
     protected String iconPath = "";
 
     private TableChangedListener onTableChangedListener;
+    private DbObject oldObject;
 
     private String sqlInsert;
     private String sqlUpdate;
@@ -98,6 +100,9 @@ public abstract class DbObject {
                     }
                 }
             } else { // Update
+                // Save old object
+                setOldObject();
+                // Save new object
                 try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
                     update(statement);
                 }
@@ -128,7 +133,7 @@ public abstract class DbObject {
                     LOG.debug("Added object to " + TABLE_NAME);
                     if (onTableChangedListener != null) {
                         try {
-                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this);
+                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this, null);
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -137,7 +142,7 @@ public abstract class DbObject {
                     LOG.debug("Updated object in " + TABLE_NAME);
                     if (onTableChangedListener != null) {
                         try {
-                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this);
+                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this, oldObject);
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -156,6 +161,7 @@ public abstract class DbObject {
     private void doDelete() throws SQLException {
         if (id != -1) {
             LOG.debug("Start deleting in " + TABLE_NAME);
+            setOldObject();
             try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
                 statement.setLong(1, id);
                 statement.execute();
@@ -164,7 +170,7 @@ public abstract class DbObject {
 
             LOG.debug("Deleted object from " + TABLE_NAME);
             if (onTableChangedListener != null) {
-                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, this);
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, oldObject, null);
             }
         }
     }
@@ -203,7 +209,7 @@ public abstract class DbObject {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DbObject) {
-            if (((DbObject) obj).getId() == id) {
+            if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
                 return true;
             }
         }
@@ -214,6 +220,39 @@ public abstract class DbObject {
         return getName().toUpperCase().contains(searchTerm.toUpperCase())
                 || getIconPath().toUpperCase().contains(searchTerm.toUpperCase());
     }
+
+    private void setOldObject() {
+        switch (getType(this)) {
+            case TYPE_UNKNOWN :
+                oldObject = null;
+                break;
+            case TYPE_ITEM:
+                oldObject = DbManager.db().getItemFromDb(id);
+                break;
+            case TYPE_CATEGORY:
+                oldObject = DbManager.db().getCategoryFromDb(id);
+                break;
+            case TYPE_PRODUCT:
+                oldObject = DbManager.db().getProductFromDb(id);
+                break;
+            case TYPE_TYPE:
+                oldObject = DbManager.db().getTypeFromDb(id);
+                break;
+            case TYPE_MANUFACTURER:
+                oldObject = DbManager.db().getManufacturerFromDb(id);
+                break;
+            case TYPE_LOCATION:
+                oldObject = DbManager.db().getLocationFromDb(id);
+                break;
+            case TYPE_ORDER:
+                oldObject = DbManager.db().getOrderFromDb(id);
+                break;
+            case TYPE_ORDER_ITEM:
+                oldObject = DbManager.db().getOrderItemFromDb(id);
+                break;
+        }
+    }
+
 
     public long getId() {
         return id;

@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
@@ -55,6 +56,9 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
+
+
+
     private void initActions() {
         initMouseClicked();
     }
@@ -91,8 +95,8 @@ public class MainPanel extends MainPanelLayout {
             }
 
             @Override
-            public void onUpdated(Item item) {
-                selectedItem = item;
+            public void onUpdated(Item newItem, Item oldItem) {
+                selectedItem = newItem;
                 updateItems();
             }
 
@@ -115,21 +119,17 @@ public class MainPanel extends MainPanelLayout {
         categoriesChanged = new DbObjectChangedListener<Category>() {
             @Override
             public void onAdded(Category category) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+                treeModel.addObject(category);
             }
 
             @Override
-            public void onUpdated(Category category) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
-
+            public void onUpdated(Category newCategory, Category oldCategory) {
+                treeModel.updateObject(newCategory, oldCategory);
             }
 
             @Override
             public void onDeleted(Category category) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+                treeModel.removeObject(category);
             }
         };
     }
@@ -137,21 +137,18 @@ public class MainPanel extends MainPanelLayout {
     private void setProductsChangedListener() {
         productsChanged = new DbObjectChangedListener<Product>() {
             @Override
-            public void onAdded(Product object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onAdded(Product product) {
+                treeModel.addObject(product);
             }
 
             @Override
-            public void onUpdated(Product object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onUpdated(Product newProduct, Product oldProduct) {
+                treeModel.updateObject(newProduct, oldProduct);
             }
 
             @Override
-            public void onDeleted(Product object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onDeleted(Product product) {
+                treeModel.removeObject(product);
             }
         };
     }
@@ -159,21 +156,18 @@ public class MainPanel extends MainPanelLayout {
     private void setTypesChangedListener() {
         typesChanged = new DbObjectChangedListener<Type>() {
             @Override
-            public void onAdded(Type object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onAdded(Type type) {
+                treeModel.addObject(type);
             }
 
             @Override
-            public void onUpdated(Type object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onUpdated(Type newType, Type oldType) {
+                treeModel.updateObject(newType, oldType);
             }
 
             @Override
-            public void onDeleted(Type object) {
-                treeModel.updateTreeData();
-                subDivisionTree.setModel(treeModel);
+            public void onDeleted(Type type) {
+                treeModel.removeObject(type);
             }
         };
     }
@@ -184,7 +178,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        DivisionTreeModel.DbObjectNode node = (DivisionTreeModel.DbObjectNode) subDivisionTree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
 
         if (node == null) {
             lastSelectedDivision = null;
@@ -192,7 +186,7 @@ public class MainPanel extends MainPanelLayout {
         }
 
         selectedItem = null;
-        lastSelectedDivision = node.getDbObject();
+        lastSelectedDivision = (DbObject) node.getUserObject();
         application.clearSearch();
 
         updateComponents(lastSelectedDivision);

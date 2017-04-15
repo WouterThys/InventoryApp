@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -169,7 +170,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
 
             @Override
-            public void onUpdated(Category object) {
+            public void onUpdated(Category newCategory, Category oldCategory) {
                 updateCategoryList();
             }
 
@@ -210,7 +211,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
 
             @Override
-            public void onUpdated(Product object) {
+            public void onUpdated(Product newProduct, Product oldProduct) {
                 updateProductList();
             }
 
@@ -246,7 +247,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
 
             @Override
-            public void onUpdated(com.waldo.inventory.classes.Type object) {
+            public void onUpdated(com.waldo.inventory.classes.Type newType, com.waldo.inventory.classes.Type oldType) {
                 updateTypeList();
             }
 
