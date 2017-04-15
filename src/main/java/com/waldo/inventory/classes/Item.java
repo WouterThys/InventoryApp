@@ -89,32 +89,32 @@ public class Item extends DbObject {
             }
 
             // Covert category, product, type, ...
-            Category c = DbManager.dbInstance().findCategoryById(categoryId);
+            Category c = DbManager.db().findCategoryById(categoryId);
             if (c != null && c.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Product p = DbManager.dbInstance().findProductById(productId);
+            Product p = DbManager.db().findProductById(productId);
             if (p != null && p.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Type t = DbManager.dbInstance().findTypeById(typeId);
+            Type t = DbManager.db().findTypeById(typeId);
             if (t != null && t.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Manufacturer m = DbManager.dbInstance().findManufacturerById(manufacturerId);
+            Manufacturer m = DbManager.db().findManufacturerById(manufacturerId);
             if (m != null && m.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Location l = DbManager.dbInstance().findLocationById(locationId);
+            Location l = DbManager.db().findLocationById(locationId);
             if (l != null && l.hasMatch(searchTerm)) {
                 return true;
             }
 
-//            Order o = DbManager.dbInstance().findOrderById(orderId);
+//            Order o = DbManager.db().findOrderById(orderId);
 //            if (o != null && o.hasMatch(searchTerm)) {
 //                return true
 //            }

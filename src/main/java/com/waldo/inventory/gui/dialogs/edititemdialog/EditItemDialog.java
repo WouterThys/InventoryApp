@@ -5,15 +5,13 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
@@ -66,21 +64,10 @@ public class EditItemDialog extends EditItemDialogLayout {
                 newItem.setPrice(Double.valueOf(priceTxt));
             }
 
-            try {
-                newItem.setCategoryId(componentPanel.getCbCategoryId());
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-            try {
-                newItem.setProductId(componentPanel.getCbProductId());
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-            try {
-                newItem.setTypeId(componentPanel.getCbTypeId());
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            newItem.setCategoryId(componentPanel.getCbCategoryId());
+            newItem.setProductId(componentPanel.getCbProductId());
+            newItem.setTypeId(componentPanel.getCbTypeId());
+
 
             newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
             newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
@@ -169,7 +156,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             ok = false;
         } else {
             if (isNew) {
-                Item check = dbInstance().findItemByName(name);
+                Item check = db().findItemByName(name);
                 if (check != null) {
                     componentPanel.setNameFieldError("Name already exists in items");
                     ok = false;

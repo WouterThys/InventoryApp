@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel.detailpanel;
 
 import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
@@ -11,8 +10,6 @@ import com.waldo.inventory.gui.components.ITextField;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-
-import static com.waldo.inventory.database.DbManager.dbInstance;
 
 public abstract class MainDetailPanelLayout extends JPanel implements GuiInterface {
 
@@ -59,9 +56,13 @@ public abstract class MainDetailPanelLayout extends JPanel implements GuiInterfa
         JPanel componentPanel = new JPanel(new GridBagLayout());
 
         ILabel nameLabel = new ILabel("Name: ", ILabel.RIGHT);
+        nameLabel.setStatusInfo("Item name");
         ILabel divisionLabel = new ILabel("Division: ", ILabel.RIGHT);
+        divisionLabel.setStatusInfo("Item ivision");
         ILabel manufacturerLabel = new ILabel("Manufacturer: ", ILabel.RIGHT);
+        manufacturerLabel.setStatusInfo("Item manufacturer");
         ILabel descriptionLabel = new ILabel("Description: ", ILabel.RIGHT);
+        manufacturerLabel.setStatusInfo("Item description");
 
         // Helping lists
         JComponent[] labels = new JComponent[] {nameLabel, divisionLabel, manufacturerLabel};
@@ -74,7 +75,7 @@ public abstract class MainDetailPanelLayout extends JPanel implements GuiInterfa
             //  - Label
             gbc.gridx = 0; gbc.weightx = 0;
             gbc.gridy = i; gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.NONE;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             componentPanel.add(labels[i], gbc);
             //  - Field
             gbc.gridx = 1; gbc.weightx = 1;
@@ -87,7 +88,7 @@ public abstract class MainDetailPanelLayout extends JPanel implements GuiInterfa
         //  - Label
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy++; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         componentPanel.add(descriptionLabel, gbc);
         //  - Field
         gbc.gridx = 1; gbc.weightx = 1;

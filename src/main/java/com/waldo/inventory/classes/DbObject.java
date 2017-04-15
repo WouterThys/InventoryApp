@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.StringJoiner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -81,7 +80,7 @@ public abstract class DbObject {
     }
 
     private void doSave() throws SQLException {
-        setOnTableChangedListener(DbManager.dbInstance());
+        setOnTableChangedListener(DbManager.db());
 
         long startTime = System.nanoTime();
         try (Connection connection = DbManager.getConnection()){

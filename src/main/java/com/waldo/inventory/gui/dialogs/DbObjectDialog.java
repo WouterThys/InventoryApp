@@ -88,7 +88,12 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         if (verify()) {
             // Set values
             dbObject.setName(nameTextField.getText());
-            dbObject.setIconPath(iconPathTextField.getText());
+            String iconPath = iconPathTextField.getText();
+            if (iconPath != null && !iconPath.isEmpty()) {
+                dbObject.setIconPath(iconPath);
+            } else {
+                dbObject.setIconPath("");
+            }
             dialogResult = OK;
             // Close dialog
             dispose();

@@ -4,10 +4,8 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.gui.components.ITable;
 
 import javax.swing.table.AbstractTableModel;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +70,7 @@ public class ItemTableModel extends AbstractTableModel {
                 case 1: // Description
                     return item.getDescription();
                 case 2: // Manufacturer
-                    Manufacturer m = DbManager.dbInstance().findManufacturerById(item.getManufacturerId());
+                    Manufacturer m = DbManager.db().findManufacturerById(item.getManufacturerId());
                     if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
                         return m.getName();
                     }

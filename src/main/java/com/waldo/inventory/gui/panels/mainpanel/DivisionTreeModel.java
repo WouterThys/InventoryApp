@@ -7,10 +7,9 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.sql.SQLException;
 import java.util.Vector;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class DivisionTreeModel implements TreeModel {
 
@@ -21,19 +20,19 @@ public class DivisionTreeModel implements TreeModel {
        initializeTree();
     }
 
-    private void initializeTree() {
+    public void initializeTree() {
 
         rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
 
-        for (Category category : dbInstance().getCategories()) {
+        for (Category category : db().getCategories()) {
             DbObjectNode cNode = new DbObjectNode(category, false);
             rootNode.getChildren().addElement(cNode);
 
-            for (Product product : dbInstance().getProductListForCategory(category.getId())) {
+            for (Product product : db().getProductListForCategory(category.getId())) {
                 DbObjectNode pNode = new DbObjectNode(product, false);
                 cNode.getChildren().addElement(pNode);
 
-                for (Type type : dbInstance().getTypeListForProduct(product.getId())) {
+                for (Type type : db().getTypeListForProduct(product.getId())) {
                     DbObjectNode tNode = new DbObjectNode(type, false);
                     pNode.getChildren().add(tNode);
                 }

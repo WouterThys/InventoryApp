@@ -8,17 +8,14 @@ import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.FocusListener;
-import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
@@ -55,20 +52,20 @@ public abstract class MainPanelLayout extends JPanel implements
 
     public void updateTable(DbObject selectedObject) {
         if (selectedObject == null || selectedObject.getName().equals("All")) {
-            tableModel.setItemList(dbInstance().getItems());
+            tableModel.setItemList(db().getItems());
         } else {
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
-                    tableModel.setItemList(dbInstance().getItemListForCategory(c));
+                    tableModel.setItemList(db().getItemListForCategory(c));
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Product p = (Product)selectedObject;
-                    tableModel.setItemList(dbInstance().getItemListForProduct(p));
+                    tableModel.setItemList(db().getItemListForProduct(p));
                     break;
                 case DbObject.TYPE_TYPE:
                     Type t = (Type)selectedObject;
-                    tableModel.setItemList(dbInstance().getItemListForType(t));
+                    tableModel.setItemList(db().getItemListForType(t));
                     break;
                 default:
                     break;
@@ -89,7 +86,7 @@ public abstract class MainPanelLayout extends JPanel implements
         subDivisionTree.addTreeSelectionListener(this);
 
         // Item table
-        tableModel = new ItemTableModel(dbInstance().getItems());
+        tableModel = new ItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
         //itemTable.addFocusListener(this);
@@ -115,9 +112,16 @@ public abstract class MainPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) {
+        // Update table if needed
+        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         if (object != null) {
             updateTable((DbObject) object);
         }
+
+        // Update tree
+        treeModel.initializeTree();
+
+        // Update detail panel
         detailPanel.updateComponents(selectedItem);
     }
 

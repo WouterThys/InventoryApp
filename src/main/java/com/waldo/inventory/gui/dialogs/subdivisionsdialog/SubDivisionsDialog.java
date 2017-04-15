@@ -13,7 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
@@ -23,9 +23,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                dbInstance().removeOnCategoriesChangedListener(dialog.categoriesChanged);
-                dbInstance().removeOnProductsChangedListener(dialog.productsChanged);
-                dbInstance().removeOnTypesChangedListener(dialog.typesChanged);
+                db().removeOnCategoriesChangedListener(dialog.categoriesChanged);
+                db().removeOnProductsChangedListener(dialog.productsChanged);
+                db().removeOnTypesChangedListener(dialog.typesChanged);
                 super.windowClosing(e);
             }
         });
@@ -52,9 +52,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         setProductsChanged();
         setTypesChanged();
 
-        dbInstance().addOnCategoriesChangedListener(categoriesChanged);
-        dbInstance().addOnProductsChangedListener(productsChanged);
-        dbInstance().addOnTypesChangedListener(typesChanged);
+        db().addOnCategoriesChangedListener(categoriesChanged);
+        db().addOnProductsChangedListener(productsChanged);
+        db().addOnTypesChangedListener(typesChanged);
     }
 
     private void initActions() {
@@ -103,13 +103,13 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 break;
             case PRODUCTS:
                 selectionCbModel.removeAllElements();
-                for (Category c : dbInstance().getCategories()) {
+                for (Category c : db().getCategories()) {
                     selectionCbModel.addElement(c);
                 }
                 break;
             case TYPES:
                 selectionCbModel.removeAllElements();
-                for (Product p : dbInstance().getProducts()) {
+                for (Product p : db().getProducts()) {
                     selectionCbModel.addElement(p);
                 }
                 break;
@@ -142,7 +142,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
             case DbObject.TYPE_PRODUCT: {
                 subDivisionList.setSelectedIndex(1);
-                int ndx = dbInstance().findProductIndex(object.getId());
+                int ndx = db().findProductIndex(object.getId());
                 if (ndx >= 0) {
                     selectionComboBox.setSelectedIndex(ndx);
                 }
@@ -150,7 +150,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
             case DbObject.TYPE_TYPE: {
                 subDivisionList.setSelectedIndex(2);
-                int ndx = dbInstance().findTypeIndex(object.getId());
+                int ndx = db().findTypeIndex(object.getId());
                 if (ndx >= 0) {
                     selectionComboBox.setSelectedIndex(ndx);
                 }
@@ -195,7 +195,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     productId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                for (com.waldo.inventory.classes.Type t : DbManager.dbInstance().getTypeListForProduct(productId)) {
+                for (com.waldo.inventory.classes.Type t : DbManager.db().getTypeListForProduct(productId)) {
                     detailListModel.addElement(t);
                 }
             }
@@ -231,7 +231,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     categoryId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                for (Product p : DbManager.dbInstance().getProductListForCategory(categoryId)) {
+                for (Product p : DbManager.db().getProductListForCategory(categoryId)) {
                     detailListModel.addElement(p);
                 }
             }
@@ -260,7 +260,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void updateCategoryList() {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
-            for (Category c : DbManager.dbInstance().getCategories()) {
+            for (Category c : DbManager.db().getCategories()) {
                 detailListModel.addElement(c);
             }
         }

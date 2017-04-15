@@ -85,7 +85,7 @@ public class QueryPanel extends JPanel {
         List<String> tableNames;
         String tableNamesString = "";
         try {
-            tableNames = DbManager.dbInstance().getTableNames();
+            tableNames = DbManager.db().getTableNames();
             for(String name : tableNames) {
                 tableNamesString += name.toUpperCase() + "|";
             }

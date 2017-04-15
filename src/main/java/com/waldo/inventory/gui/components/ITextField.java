@@ -75,7 +75,7 @@ public class ITextField extends JTextField implements FocusListener {
         if (this.isEnabled()) {
             return showingHint ? "" : super.getText();
         } else {
-            return super.getText();
+            return super.getText().trim();
         }
     }
 

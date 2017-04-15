@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
-import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -16,8 +15,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
 
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialog
@@ -199,7 +197,7 @@ public abstract class ManufacturersDialogLayout extends IDialog
 
             @Override
             protected void add() {
-                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer");
+                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
                 if (dialog.showDialog() == DbObjectDialog.OK) {
                     Manufacturer m = dialog.getDbObject();
                     m.save();
@@ -265,7 +263,7 @@ public abstract class ManufacturersDialogLayout extends IDialog
     public void updateComponents(Object object) {
         // Get all menus
         manufacturerDefaultListModel.removeAllElements();
-        for(Manufacturer m : dbInstance().getManufacturers()) {
+        for(Manufacturer m : db().getManufacturers()) {
             manufacturerDefaultListModel.addElement(m);
         }
     }

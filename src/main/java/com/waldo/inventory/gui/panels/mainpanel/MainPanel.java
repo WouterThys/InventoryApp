@@ -1,26 +1,20 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class MainPanel extends MainPanelLayout {
 
@@ -41,10 +35,10 @@ public class MainPanel extends MainPanelLayout {
         initActions();
         initializeListeners();
 
-        dbInstance().addOnItemsChangedListener(itemsChanged);
-        dbInstance().addOnCategoriesChangedListener(categoriesChanged);
-        dbInstance().addOnProductsChangedListener(productsChanged);
-        dbInstance().addOnTypesChangedListener(typesChanged);
+        db().addOnItemsChangedListener(itemsChanged);
+        db().addOnCategoriesChangedListener(categoriesChanged);
+        db().addOnProductsChangedListener(productsChanged);
+        db().addOnTypesChangedListener(typesChanged);
 
         updateComponents(null);
     }
@@ -111,7 +105,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void updateItems() {
-        updateComponents(null);
+        updateComponents(lastSelectedDivision); // Just a dummy to select all
     }
 
     private void setCategoriesChangedListener() {
@@ -119,17 +113,17 @@ public class MainPanel extends MainPanelLayout {
             @Override
             public void onAdded(Category object) {
                 //tableModel.fireTable
-                updateComponents(null);
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onUpdated(Category object) {
-                updateComponents(null);
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onDeleted(Category object) {
-                updateComponents(null);
+                updateComponents(lastSelectedDivision);
             }
         };
     }
@@ -138,17 +132,17 @@ public class MainPanel extends MainPanelLayout {
         productsChanged = new DbObjectChangedListener<Product>() {
             @Override
             public void onAdded(Product object) {
-
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onUpdated(Product object) {
-
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onDeleted(Product object) {
-
+                updateComponents(lastSelectedDivision);
             }
         };
     }
@@ -157,17 +151,17 @@ public class MainPanel extends MainPanelLayout {
         typesChanged = new DbObjectChangedListener<Type>() {
             @Override
             public void onAdded(Type object) {
-
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onUpdated(Type object) {
-
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onDeleted(Type object) {
-
+                updateComponents(lastSelectedDivision);
             }
         };
     }

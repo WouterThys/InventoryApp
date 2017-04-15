@@ -15,13 +15,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.Vector;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
 
@@ -51,53 +50,47 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     /*
      *                  PUBLIC METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public long getCbCategoryId() throws SQLException {
-        int ndx = categoryComboBox.getSelectedIndex();
-        if (ndx >= 0) {
-            return dbInstance().getCategories().get(ndx).getId();
-        } else {
-            return UNKNOWN_ID;
+    public long getCbCategoryId()  {
+        Category c = (Category) categoryComboBox.getSelectedItem();
+        if (c != null) {
+            return c.getId();
         }
+        return UNKNOWN_ID;
     }
 
-    public long getCbProductId() throws SQLException {
+    public long getCbProductId() {
         if (productComboBox.isEnabled()) {
-            int ndx = productComboBox.getSelectedIndex();
-            if (ndx >= 0) {
-                return dbInstance().getProducts().get(ndx).getId();
-            } else {
-                return UNKNOWN_ID;
+            Product p = (Product) productComboBox.getSelectedItem();
+            if (p != null) {
+                return p.getId();
             }
-        } else {
-            return UNKNOWN_ID;
         }
+        return UNKNOWN_ID;
     }
 
-    public long getCbTypeId() throws SQLException {
+    public long getCbTypeId() {
         if (typeComboBox.isEnabled()) {
-            int ndx = typeComboBox.getSelectedIndex();
-            if (ndx >= 0) {
-                return dbInstance().getTypes().get(ndx).getId();
-            } else {
-                return UNKNOWN_ID;
+            Type t = (Type) typeComboBox.getSelectedItem();
+            if (t != null) {
+                return t.getId();
             }
-        } else {
-            return UNKNOWN_ID;
         }
+        return UNKNOWN_ID;
+
     }
 
     public void updateProductCbValues(long categoryId) {
         productCbModel.removeAllElements();
-        productCbModel.addElement(dbInstance().getProducts().get(0)); // Add unknown
-        for (Product p : dbInstance().getProductListForCategory(categoryId)) {
+        productCbModel.addElement(db().getProducts().get(0)); // Add unknown
+        for (Product p : db().getProductListForCategory(categoryId)) {
             productCbModel.addElement(p);
         }
     }
 
     public void updateTypeCbValues(long productId) {
         typeCbModel.removeAllElements();
-        typeCbModel.addElement(dbInstance().getTypes().get(0)); // Add unknown
-        for (Type t : dbInstance().getTypeListForProduct(productId)) {
+        typeCbModel.addElement(db().getTypes().get(0)); // Add unknown
+        for (Type t : db().getTypeListForProduct(productId)) {
             typeCbModel.addElement(t);
         }
     }
@@ -109,14 +102,14 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void createCategoryCb() throws SQLException {
+    private void createCategoryCb() {
         int selectedIndex = 0;
         Vector<Category> categoryItems = new Vector<>();
-        for (Category c : dbInstance().getCategories()) {
+        for (Category c : db().getCategories()) {
             categoryItems.add(c);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (c.getId() == newItem.getCategoryId()) {
-                    selectedIndex = dbInstance().getCategories().indexOf(c);
+                    selectedIndex = db().findCategoryIndex(c.getId());
                 }
             }
         }
@@ -126,14 +119,14 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         categoryComboBox.setSelectedIndex(selectedIndex);
     }
 
-    private void createProductCb() throws SQLException {
+    private void createProductCb() {
         int selectedIndex = 0;
         Vector<Product> productStrings = new Vector<>();
-        for (Product p : dbInstance().getProducts()) {
+        for (Product p : db().getProducts()) {
             productStrings.add(p);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (p.getId() == newItem.getProductId()) {
-                    selectedIndex = dbInstance().getProducts().indexOf(p);
+                    selectedIndex = db().findProductIndex(p.getId());
                 }
             }
         }
@@ -143,14 +136,14 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         productComboBox.setSelectedIndex(selectedIndex);
     }
 
-    private void createTypeCb() throws SQLException {
+    private void createTypeCb() {
         int selectedIndex = 0;
         Vector<Type> typeStrings = new Vector<>();
-        for (com.waldo.inventory.classes.Type t : dbInstance().getTypes()) {
+        for (com.waldo.inventory.classes.Type t : db().getTypes()) {
             typeStrings.add(t);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (t.getId() == newItem.getTypeId()) {
-                    selectedIndex = dbInstance().getTypes().indexOf(t);
+                    selectedIndex = db().findTypeIndex(t.getId());
                 }
             }
         }
@@ -162,6 +155,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
 
+    /*
+    *                  LISTENERS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Identification
@@ -185,21 +181,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
 
         // Combo boxes
-        try {
-            createCategoryCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            createProductCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            createTypeCb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        createCategoryCb();
+        createProductCb();
+        createTypeCb();
+
 
         // Local data sheet
         localDataSheetTextField = new ITextField();
@@ -224,6 +209,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     @Override
     public void initializeLayouts() {
+
         // Additional stuff
         JPanel local = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = createFieldConstraints(0,0);
@@ -255,7 +241,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         add(new ITitledEditPanel(
                 "Info",
                 new String[] {"Price: ", "Description: "},
-                new JComponent[] {priceTextField, descriptionTextArea}
+                new JComponent[] {priceTextField, new JScrollPane(descriptionTextArea)}
         ));
     }
 
@@ -269,9 +255,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
         // Combo boxes
-        int cNdx = dbInstance().findCategoryIndex(newItem.getCategoryId());
-        int pNdx = dbInstance().findProductIndex(newItem.getProductId());
-        int tNdx = dbInstance().findTypeIndex(newItem.getTypeId());
+        int cNdx = db().findCategoryIndex(newItem.getCategoryId());
+        int pNdx = db().findProductIndex(newItem.getProductId());
+        int tNdx = db().findTypeIndex(newItem.getTypeId());
         if (cNdx >= 0) {
             categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
 

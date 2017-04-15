@@ -22,22 +22,16 @@ public class Main {
 
         LOG.info("\n \t Starting application \n *******************************************************************\n");
 
-        DbManager.dbInstance().init();
-        DbManager.dbInstance().registerShutDownHook();
+        SwingUtilities.invokeLater(() -> {
+            setLookAndFeel();
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                setLookAndFeel();
-
-                Application app = new Application();
-                app.setTitle("Inventory");
-                app.setMinimumSize(new Dimension(1500,800));
-                app.setLocationByPlatform(true);
-                //app.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                app.setVisible(true);
-            }
+            Application app = new Application();
+            app.setTitle("Inventory");
+            app.setMinimumSize(new Dimension(1500,800));
+            app.setLocationByPlatform(true);
+            //app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            app.setVisible(true);
         });
     }
 

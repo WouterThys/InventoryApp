@@ -33,7 +33,7 @@ public class ITextArea extends JTextArea implements FocusListener {
     }
 
     public ITextArea(String hint) {
-        this(hint, 5, 15);
+        this(hint, 2, 15);
     }
 
     public ITextArea(String hint, int rows, int columns) {
@@ -57,7 +57,7 @@ public class ITextArea extends JTextArea implements FocusListener {
 
     @Override
     public String getText() {
-        return showingHint ? "" : super.getText();
+        return showingHint ? "" : super.getText().trim();
     }
 
     @Override

@@ -76,6 +76,11 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         locationPanel.initializeLayouts();
         orderPanel.initializeLayouts();
 
+        componentPanel.updateComponents(null);
+        manufacturerPanel.updateComponents(null);
+        locationPanel.updateComponents(null);
+        orderPanel.updateComponents(null);
+
         // Add tabs
         tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), manufacturerPanel, "Manufacturer info");
@@ -102,11 +107,6 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
             }
         }
         setTitleName(newItem.getName().trim());
-
-        // Component panel
-        switch (tabbedPane.getSelectedIndex()) {
-            case 0:
-        }
 
         ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
         //componentPanel.updateComponents(null);

@@ -3,11 +3,9 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITitledEditPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +14,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class ManufacturerPanel extends JPanel implements GuiInterface {
 
@@ -99,7 +96,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         manufacturerCbModel.removeAllElements();
-        for (Manufacturer m : dbInstance().getManufacturers()) {
+        for (Manufacturer m : db().getManufacturers()) {
             manufacturerCbModel.addElement(m);
         }
 
@@ -107,14 +104,14 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
         if (newItem != null) {
             if (newItem.getManufacturerId() >= 0) {
                 // Set index
-                int ndx = dbInstance().findManufacturerIndex(newItem.getManufacturerId());
+                int ndx = db().findManufacturerIndex(newItem.getManufacturerId());
                 manufacturerComboBox.setSelectedIndex(ndx);
 
                 // Set icon
                 URL url = ManufacturerPanel.class.getResource("/settings/Settings.properties");
                 ResourceManager resourceManager = new ResourceManager(url.getPath());
                 try {
-                    Manufacturer m = dbInstance().findManufacturerById(newItem.getManufacturerId());
+                    Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());
                     if (m != null && !m.getIconPath().isEmpty()) {
                         url = new File(m.getIconPath()).toURI().toURL();
                         iconLabel.setIcon(resourceManager.readImage(url, 48, 48));

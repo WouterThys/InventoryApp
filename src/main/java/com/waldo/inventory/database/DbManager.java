@@ -2,6 +2,7 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
+import com.waldo.inventory.gui.components.IStatusStrip;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class DbManager implements TableChangedListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(DbManager.class);
@@ -24,7 +27,7 @@ public class DbManager implements TableChangedListener {
     public static final int OBJECT_DELETED = 2;
 
     private static final DbManager INSTANCE = new DbManager();
-    public static DbManager dbInstance() {
+    public static DbManager db() {
         return INSTANCE;
     }
     private BasicDataSource dataSource;
@@ -38,6 +41,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
 
     // Cached lists
     private List<Item> items;
@@ -47,6 +51,7 @@ public class DbManager implements TableChangedListener {
     private List<Manufacturer> manufacturers;
     private List<Location> locations;
     private List<Order> orders;
+    private List<OrderItem> orderItems;
 
     private DbManager() {}
 
@@ -78,6 +83,7 @@ public class DbManager implements TableChangedListener {
 
     private void close() {
         if(dataSource != null) {
+            Status().setMessage("Closing down");
             try {
                 dataSource.close();
             } catch (SQLException e) {
@@ -100,7 +106,7 @@ public class DbManager implements TableChangedListener {
     }
 
     public static Connection getConnection() throws SQLException {
-        return dbInstance().getDataSource().getConnection();
+        return db().getDataSource().getConnection();
     }
 
     public List<String> getTableNames() throws SQLException {
@@ -161,11 +167,14 @@ public class DbManager implements TableChangedListener {
     }
 
     public void addOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
-        if (onOrdersChangedListenerList == null) {
-            onOrdersChangedListenerList = new ArrayList<>();
-        }
         if (!onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
             onOrdersChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnOrderItemsChangedListener(DbObjectChangedListener<OrderItem> dbObjectChangedListener) {
+        if (!onOrderItemsChangedListenerList.contains(dbObjectChangedListener)) {
+            onOrderItemsChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -226,6 +235,14 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public void removeOnOrderItemsChangedListener(DbObjectChangedListener<OrderItem> dbObjectChangedListener) {
+        if (onOrderItemsChangedListenerList != null) {
+            if (onOrderItemsChangedListenerList.contains(dbObjectChangedListener)) {
+                onOrderItemsChangedListenerList.remove(dbObjectChangedListener);
+            }
+        }
+    }
+
 
     private <T extends DbObject> void notifyListeners(int changedHow, T object, List<DbObjectChangedListener<T>> listeners) {
         for (DbObjectChangedListener<T> l : listeners) {
@@ -247,11 +264,12 @@ public class DbManager implements TableChangedListener {
     public void onTableChanged(String tableName, int changedHow, DbObject object) throws SQLException {
         String how = "";
         switch (changedHow) {
-            case OBJECT_ADDED: how = "added"; break;
-            case OBJECT_UPDATED: how = "updated"; break;
-            case OBJECT_DELETED: how = "deleted"; break;
+            case OBJECT_ADDED: how = "added in "; break;
+            case OBJECT_UPDATED: how = "updated in "; break;
+            case OBJECT_DELETED: how = "deleted from"; break;
         }
-        LOG.info(object.getName() + " " + how + " in/from " + tableName);
+        LOG.info(object.getName() + " " + how + tableName);
+        Status().setMessage(object.getName() + " " + how + tableName);
 
         switch (tableName) {
             case Item.TABLE_NAME:
@@ -282,6 +300,10 @@ public class DbManager implements TableChangedListener {
                 updateOrders();
                 notifyListeners(changedHow, (Order)object, onOrdersChangedListenerList);
                 break;
+            case OrderItem.TABLE_NAME:
+                updateOrderItems();
+                notifyListeners(changedHow, (OrderItem)object, onOrderItemsChangedListenerList);
+                break;
         }
     }
 
@@ -298,6 +320,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateItems() {
         items = new ArrayList<>();
+        Status().setMessage("Fetching items from DB");
 
         String sql = "SELECT * FROM items ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -324,7 +347,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch items from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch items from database: "+ e);
             e.printStackTrace();
         }
     }
@@ -368,6 +391,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateCategories() {
         categories = new ArrayList<>();
+        Status().setMessage("Fetching categories from DB");
 
         String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -387,7 +411,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch categories from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch categories from database");
             e.printStackTrace();
         }
         categories.add(0, Category.getUnknownCategory());
@@ -431,6 +455,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateProducts() {
         products = new ArrayList<>();
+        Status().setMessage("Fetching products from DB");
 
         String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -451,7 +476,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch products from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch products from database");
             e.printStackTrace();
         }
 
@@ -496,6 +521,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateTypes() {
         types = new ArrayList<>();
+        Status().setMessage("Fetching types from DB");
 
         String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -516,7 +542,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch types from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
         types.add(0, Type.getUnknownType());
@@ -560,6 +586,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateManufacturers() {
         manufacturers = new ArrayList<>();
+        Status().setMessage("Fetching manufacturers from DB");
 
         String sql = "SELECT * FROM " + Manufacturer.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -580,7 +607,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch items from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch manufacturers from databasee");
             e.printStackTrace();
         }
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
@@ -596,8 +623,9 @@ public class DbManager implements TableChangedListener {
         return locations;
     }
 
-    private void updateLocations()    {
+    private void updateLocations() {
         locations = new ArrayList<>();
+        Status().setMessage("Fetching locations from DB");
 
         String sql = "SELECT * FROM " + Location.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -617,7 +645,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch locations from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch locations from database");
             e.printStackTrace();
         }
         locations.add(0, Location.getUnknownLocation());
@@ -635,6 +663,7 @@ public class DbManager implements TableChangedListener {
 
     private void updateOrders()    {
         orders = new ArrayList<>();
+        Status().setMessage("Fetching orders from DB");
 
         String sql = "SELECT * FROM " + Order.TABLE_NAME + " ORDER BY name";
         try (Connection connection = getConnection()) {
@@ -654,10 +683,52 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch orders from database: "+ e, "Error", JOptionPane.ERROR_MESSAGE);
+            Status().setError("Failed to fetch items from database");
             e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
+    }
+
+    /*
+    *                  ORDER ITEMS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<OrderItem> getOrderItems()    {
+        if (orderItems == null) {
+            updateOrderItems();
+        }
+        return orderItems;
+    }
+
+    private void updateOrderItems()    {
+        orderItems = new ArrayList<>();
+        Status().setMessage("Fetching order items from DB");
+
+        String sql = "SELECT * FROM " + OrderItem.TABLE_NAME + " ORDER BY name";
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    OrderItem o = new OrderItem();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setIconPath(rs.getString("iconpath"));
+                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
+                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
+                    o.setOrderDate(rs.getDate("orderdate"));
+                    o.setReceiveDate(rs.getDate("receivedate"));
+                    o.setOrdered(rs.getBoolean("isordered"));
+
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        o.setOnTableChangedListener(this);
+                        orderItems.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch items from database");
+            e.printStackTrace();
+        }
     }
 
 
@@ -700,9 +771,9 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
-    public int findCategoryIndex(long categoryNdx)    {
+    public int findCategoryIndex(long categoryId)    {
         for (int i = 0; i < getCategories().size(); i++) {
-            if (getCategories().get(i).getId() == categoryNdx) {
+            if (getCategories().get(i).getId() == categoryId) {
                 return i;
             }
         }

@@ -12,6 +12,7 @@ public class ITable extends JTable {
 
         setModel(model);
         setRowHeight(25);
+        setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public void resizeColumns(Integer[] widths) {

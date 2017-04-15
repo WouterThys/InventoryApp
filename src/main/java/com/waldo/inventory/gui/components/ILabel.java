@@ -4,12 +4,19 @@ import com.waldo.inventory.Utils.ResourceManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class ILabel extends JLabel {
+
+    private String statusInfo = "";
 
     public ILabel() {
         super();
@@ -33,6 +40,27 @@ public class ILabel extends JLabel {
 
     public ILabel(String text, int horizontalAlignment) {
         super(text, horizontalAlignment);
+    }
+
+    private void setListener() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!statusInfo.isEmpty()) {
+                    Status().setMessage(statusInfo);
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                Status().clear();
+            }
+        });
+    }
+
+    public void setStatusInfo(String statusInfo) {
+        this.statusInfo = statusInfo;
+        setListener();
     }
 
     public void setFontSize(int size) {

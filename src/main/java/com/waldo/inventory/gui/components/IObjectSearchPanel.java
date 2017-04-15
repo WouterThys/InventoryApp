@@ -17,7 +17,8 @@ import java.util.*;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
@@ -91,6 +92,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         // Found!
         if (foundObjects.size() > 0) {
             setInfo(foundObjects.size() + " object(s) found!");
+            Status().setMessage(foundObjects.size() + " object(s) found!");
             setSearched(true);
             if (objectSearchListener != null) {
                 objectSearchListener.onDbObjectFound(foundObjects);
@@ -112,6 +114,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private void setError(String error) {
         infoLabel.setForeground(Color.RED);
         infoLabel.setText(error);
+        Status().setError(error);
     }
 
     private void clearLabel() {
@@ -121,31 +124,39 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private void setInfo(String info) {
         infoLabel.setForeground(Color.BLACK);
         infoLabel.setText(info);
+        Status().setMessage(info);
     }
 
     private List<DbObject> searchAllKnownObjects(String searchWord) throws SQLException {
         List<DbObject> foundList = new ArrayList<>();
 
         // Categories
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getCategories()), searchWord));
+        Status().setMessage("Searching for: Categories");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getCategories()), searchWord));
 
         // Products
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getProducts()), searchWord));
+        Status().setMessage("Searching for: Products");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getProducts()), searchWord));
 
         // Types
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getTypes()), searchWord));
+        Status().setMessage("Searching for: Types");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getTypes()), searchWord));
 
         // Orders
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getOrders()), searchWord));
+        Status().setMessage("Searching for: Orders");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getOrders()), searchWord));
 
         // Locations
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getLocations()), searchWord));
+        Status().setMessage("Searching for: Locations");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getLocations()), searchWord));
 
         // Manufacturers
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getManufacturers()), searchWord));
+        Status().setMessage("Searching for: Manufacturers");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getManufacturers()), searchWord));
 
         // Items
-        foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getItems()), searchWord));
+        Status().setMessage("Searching for: Items");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getItems()), searchWord));
 
         return foundList;
     }
@@ -155,25 +166,32 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         for (int type : searchOptions) {
             switch (type) {
                 case DbObject.TYPE_CATEGORY:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getCategories()), searchWord));
+                    Status().setMessage("Searching for: Categories");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getCategories()), searchWord));
                     break;
                 case DbObject.TYPE_PRODUCT:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getProducts()), searchWord));
+                    Status().setMessage("Searching for: Products");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getProducts()), searchWord));
                     break;
                 case DbObject.TYPE_TYPE:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getTypes()), searchWord));
+                    Status().setMessage("Searching for: Types");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getTypes()), searchWord));
                     break;
                 case DbObject.TYPE_ORDER:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getOrders()), searchWord));
+                    Status().setMessage("Searching for: Orders");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getOrders()), searchWord));
                     break;
                 case DbObject.TYPE_LOCATION:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getLocations()), searchWord));
+                    Status().setMessage("Searching for: Locations");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getLocations()), searchWord));
                     break;
                 case DbObject.TYPE_MANUFACTURER:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getManufacturers()), searchWord));
+                    Status().setMessage("Searching for: Manufacturers");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getManufacturers()), searchWord));
                     break;
                 case DbObject.TYPE_ITEM:
-                    foundList.addAll(searchForDbObject(new ArrayList<>(dbInstance().getItems()), searchWord));
+                    Status().setMessage("Searching for: Items");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getItems()), searchWord));
                     break;
                 default:
                     break;

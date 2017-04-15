@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.Application;
 import javax.swing.*;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.dbInstance;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
 
@@ -29,7 +29,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         initializeLayouts();
         initActions();
 
-        dbInstance().addOnManufacturerChangedListener(this);
+        db().addOnManufacturerChangedListener(this);
 
         updateComponents(null);
     }
@@ -73,7 +73,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             }
 
             detailItemDefaultListModel.removeAllElements();
-            for (Item item : dbInstance().getItemsForManufacturer(selectedManufacturer.getId())) {
+            for (Item item : db().getItemsForManufacturer(selectedManufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
             }
         }
