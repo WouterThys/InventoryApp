@@ -47,6 +47,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         super(application, title);
         initializeComponents();
         initializeLayouts();
+        updateComponents(null);
 
         initActions();
         setCategoriesChanged();
@@ -105,13 +106,17 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             case PRODUCTS:
                 selectionCbModel.removeAllElements();
                 for (Category c : db().getCategories()) {
-                    selectionCbModel.addElement(c);
+                    if (c.getId() > DbObject.UNKNOWN_ID) {
+                        selectionCbModel.addElement(c);
+                    }
                 }
                 break;
             case TYPES:
                 selectionCbModel.removeAllElements();
                 for (Product p : db().getProducts()) {
-                    selectionCbModel.addElement(p);
+                    if (p.getId() > DbObject.UNKNOWN_ID) {
+                        selectionCbModel.addElement(p);
+                    }
                 }
                 break;
         }
@@ -197,7 +202,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 }
                 detailListModel.removeAllElements();
                 for (com.waldo.inventory.classes.Type t : DbManager.db().getTypeListForProduct(productId)) {
-                    detailListModel.addElement(t);
+                    if (t.getId() > DbObject.UNKNOWN_ID) {
+                        detailListModel.addElement(t);
+                    }
                 }
             }
         }
@@ -233,7 +240,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 }
                 detailListModel.removeAllElements();
                 for (Product p : DbManager.db().getProductListForCategory(categoryId)) {
-                    detailListModel.addElement(p);
+                    if (p.getId() > DbObject.UNKNOWN_ID) {
+                        detailListModel.addElement(p);
+                    }
                 }
             }
         }
@@ -262,9 +271,37 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
             for (Category c : DbManager.db().getCategories()) {
-                detailListModel.addElement(c);
+                if (c.getId() > DbObject.UNKNOWN_ID) {
+                    detailListModel.addElement(c);
+                }
             }
         }
+    }
+
+    @Override
+    public void updateComponents(Object object) {
+        switch (selectedSubType) {
+            case CATEGORIES:
+                selectionLabel.setVisible(false);
+                selectionComboBox.setVisible(false);
+                updateCategoryList();
+                break;
+
+            case PRODUCTS:
+                selectionLabel.setText("Select a category");
+                selectionLabel.setVisible(true);
+                selectionComboBox.setVisible(true);
+                updateProductList();
+                break;
+
+            case TYPES:
+                selectionLabel.setText("Select a product");
+                selectionLabel.setVisible(true);
+                selectionComboBox.setVisible(true);
+                updateTypeList();
+                break;
+        }
+        SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override

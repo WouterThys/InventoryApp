@@ -3,8 +3,6 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -45,7 +43,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
     DefaultComboBoxModel<DbObject> selectionCbModel;
     JComboBox<DbObject> selectionComboBox;
 
-    private JLabel selectionLabel;
+    JLabel selectionLabel;
     ILabel iconLabel;
 
     /*
@@ -67,43 +65,46 @@ public abstract class SubDivisionsDialogLayout extends IDialog
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     private JPanel createDetailsPanel() {
-        JPanel panel = new JPanel();
-        JScrollPane list = new JScrollPane(detailList);
+            JPanel panel = new JPanel(new BorderLayout());
+    JPanel northPanel = new JPanel(new GridBagLayout());
+    JPanel centerPanel = new JPanel(new GridBagLayout());
+    JScrollPane list = new JScrollPane(detailList);
 
-        SpringLayout layout = new SpringLayout();
-        // Label
+    SpringLayout layout = new SpringLayout();
+
+// Label
         layout.putConstraint(WEST, selectionLabel, 5, WEST, panel);
-        layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
+                layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
 
-        // Combobox
-        layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
-        layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
-        layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
+                // Combobox
+                layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
+                layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
+                layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
 
-        // List
-        layout.putConstraint(WEST, list, 5, WEST, panel);
-        layout.putConstraint(NORTH, list, 5, SOUTH, selectionComboBox);
-        layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
-        layout.putConstraint(EAST, list, 0, WEST, toolBar);
+                // List
+                layout.putConstraint(WEST, list, 5, WEST, panel);
+                layout.putConstraint(NORTH, list, 5, SOUTH, selectionComboBox);
+                layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
+                layout.putConstraint(EAST, list, 0, WEST, toolBar);
 
-        // Toolbar
-        layout.putConstraint(EAST, toolBar, -5, EAST, panel);
-        layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
+                // Toolbar
+                layout.putConstraint(EAST, toolBar, -5, EAST, panel);
+                layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
 
-        // Icon
-        layout.putConstraint(EAST, iconLabel,-5, EAST, panel);
-        layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
+                // Icon
+                layout.putConstraint(EAST, iconLabel,-5, EAST, panel);
+                layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
 
-        // Add stuff
-        panel.add(selectionLabel);
-        panel.add(selectionComboBox);
-        panel.add(list);
-        panel.add(toolBar);
-        panel.add(iconLabel);
-        panel.setPreferredSize(new Dimension(400,500));
-        panel.setLayout(layout);
+                // Add stuff
+                panel.add(selectionLabel);
+                panel.add(selectionComboBox);
+                panel.add(list);
+                panel.add(toolBar);
+                panel.add(iconLabel);
+                panel.setPreferredSize(new Dimension(400,500));
+                panel.setLayout(layout);
 
-        return panel;
+                return panel;
     }
 
     private JPanel createWestPanel() {
@@ -154,6 +155,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
         searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
 
         // Combo box
+        selectedSubType = 0;
         selectionCbModel = new DefaultComboBoxModel<>();
         selectionComboBox = new JComboBox<>(selectionCbModel);
 
@@ -240,26 +242,6 @@ public abstract class SubDivisionsDialogLayout extends IDialog
         // Center
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
     }
-
-    @Override
-    public void updateComponents(Object object) {
-        switch (selectedSubType) {
-            case CATEGORIES:
-                selectionLabel.setVisible(false);
-                selectionComboBox.setVisible(false);
-                break;
-
-            case PRODUCTS:
-                selectionLabel.setText("Select a category");
-                selectionLabel.setVisible(true);
-                selectionComboBox.setVisible(true);
-                break;
-
-            case TYPES:
-                selectionLabel.setText("Select a product");
-                selectionLabel.setVisible(true);
-                selectionComboBox.setVisible(true);
-                break;
-        }
-    }
 }
+
+
