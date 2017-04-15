@@ -13,16 +13,32 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class DivisionTreeModel implements TreeModel {
 
-    private DbObjectNode rootNode;
+    private final DbObjectNode rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
     private EventListenerList listenerList = new EventListenerList();
 
     DivisionTreeModel() {
        initializeTree();
     }
 
-    public void initializeTree() {
+    private void initializeTree() {
+        for (Category category : db().getCategories()) {
+            DbObjectNode cNode = new DbObjectNode(category, false);
+            rootNode.getChildren().addElement(cNode);
 
-        rootNode = new DbObjectNode(new Category("All"), false); // Virtual root
+            for (Product product : db().getProductListForCategory(category.getId())) {
+                DbObjectNode pNode = new DbObjectNode(product, false);
+                cNode.getChildren().addElement(pNode);
+
+                for (Type type : db().getTypeListForProduct(product.getId())) {
+                    DbObjectNode tNode = new DbObjectNode(type, false);
+                    pNode.getChildren().add(tNode);
+                }
+            }
+        }
+    }
+
+    public void updateTreeData() {
+        rootNode.getChildren().clear();
 
         for (Category category : db().getCategories()) {
             DbObjectNode cNode = new DbObjectNode(category, false);
@@ -38,6 +54,18 @@ public class DivisionTreeModel implements TreeModel {
                 }
             }
         }
+    }
+
+    public DbObjectNode addCategory(Category category) {
+        DbObjectNode parentNode = rootNode; // Category has root as parent
+        return addDbObjectNode(parentNode, category, false);
+    }
+
+    private DbObjectNode addDbObjectNode(DbObjectNode parent, DbObject dbObject, boolean isLeaf) {
+        DbObjectNode newChildNode = new DbObjectNode(dbObject, isLeaf);
+
+        parent.getChildren().add(newChildNode);
+        return newChildNode;
     }
 
 
@@ -203,7 +231,7 @@ public class DivisionTreeModel implements TreeModel {
         private boolean isLeaf;
         private Vector<DbObjectNode> children = new Vector<>();
 
-        public DbObjectNode(DbObject dbObject, boolean isLeaf) {
+        DbObjectNode(DbObject dbObject, boolean isLeaf) {
             this.dbObject = dbObject;
             this.isLeaf = isLeaf;
         }
@@ -212,15 +240,15 @@ public class DivisionTreeModel implements TreeModel {
             return dbObject.toString();
         }
 
-        public DbObject getDbObject() {
+        DbObject getDbObject() {
             return dbObject;
         }
 
-        public Vector<DbObjectNode> getChildren() {
+        Vector<DbObjectNode> getChildren() {
             return children;
         }
 
-        public boolean isLeaf() {
+        boolean isLeaf() {
             return isLeaf;
         }
     }

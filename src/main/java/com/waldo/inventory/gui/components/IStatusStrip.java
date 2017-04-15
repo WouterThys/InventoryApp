@@ -39,6 +39,11 @@ public class IStatusStrip extends JPanel implements GuiInterface {
         runTimer(MESSAGE_TIME);
     }
 
+    public void holdMessage(String message) {
+        statusLabel.setForeground(Color.DARK_GRAY);
+        statusLabel.setText(message);
+    }
+
     public void setWarning(String warning) {
         statusLabel.setForeground(Color.ORANGE);
         statusLabel.setText(warning);

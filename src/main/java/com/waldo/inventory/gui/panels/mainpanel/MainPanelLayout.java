@@ -19,7 +19,6 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
-        TreeModelListener,
         TreeSelectionListener,
         ListSelectionListener {
 
@@ -80,7 +79,6 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeComponents() {
         // Sub division tree
         treeModel = new DivisionTreeModel();
-        treeModel.addTreeModelListener(this);
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);
@@ -117,9 +115,6 @@ public abstract class MainPanelLayout extends JPanel implements
         if (object != null) {
             updateTable((DbObject) object);
         }
-
-        // Update tree
-        treeModel.initializeTree();
 
         // Update detail panel
         detailPanel.updateComponents(selectedItem);

@@ -43,11 +43,14 @@ public class ILabel extends JLabel {
     }
 
     private void setListener() {
+        if (getMouseListeners() != null && getMouseListeners().length > 0) {
+            return;
+        }
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 if (!statusInfo.isEmpty()) {
-                    Status().setMessage(statusInfo);
+                    Status().holdMessage(statusInfo);
                 }
             }
 

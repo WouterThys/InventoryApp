@@ -58,11 +58,11 @@ public abstract class MainDetailPanelLayout extends JPanel implements GuiInterfa
         ILabel nameLabel = new ILabel("Name: ", ILabel.RIGHT);
         nameLabel.setStatusInfo("Item name");
         ILabel divisionLabel = new ILabel("Division: ", ILabel.RIGHT);
-        divisionLabel.setStatusInfo("Item ivision");
+        divisionLabel.setStatusInfo("Item division");
         ILabel manufacturerLabel = new ILabel("Manufacturer: ", ILabel.RIGHT);
         manufacturerLabel.setStatusInfo("Item manufacturer");
         ILabel descriptionLabel = new ILabel("Description: ", ILabel.RIGHT);
-        manufacturerLabel.setStatusInfo("Item description");
+        descriptionLabel.setStatusInfo("Item description");
 
         // Helping lists
         JComponent[] labels = new JComponent[] {nameLabel, divisionLabel, manufacturerLabel};
