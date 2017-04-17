@@ -140,6 +140,9 @@ public class Item extends DbObject {
 
 
     public String getDescription() {
+        if (description == null) {
+            setDescription("");
+        }
         return description;
     }
 
@@ -180,6 +183,9 @@ public class Item extends DbObject {
     }
 
     public String getLocalDataSheet() {
+        if (localDataSheet == null) {
+            localDataSheet = "";
+        }
         return localDataSheet;
     }
 
@@ -188,6 +194,9 @@ public class Item extends DbObject {
     }
 
     public String getOnlineDataSheet() {
+        if (onlineDataSheet == null) {
+            onlineDataSheet = "";
+        }
         return onlineDataSheet;
     }
 

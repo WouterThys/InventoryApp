@@ -10,17 +10,20 @@ public class Order extends DbObject {
 
     public static final String TABLE_NAME = "orders";
 
-    private Date orderDate;
+    private Date dateOrdered;
     private List<Item> orderItems;
-    private Date lastModifiedDate;
-    private Date receiveDate;
-    private boolean isOrdered;
+    private Date dateModified;
+    private Date dateReceived;
+    private Distributor distributor;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setString(2, iconPath);
-        statement.setDate(3, orderDate);
+        statement.setDate(3, dateOrdered);
+        statement.setDate(4, dateModified);
+        statement.setDate(5, dateReceived);
+        statement.setLong(6, distributor.getId());
         statement.execute();
     }
 
@@ -28,15 +31,18 @@ public class Order extends DbObject {
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
         statement.setString(2, iconPath);
-        statement.setDate(3, orderDate);
-        statement.setLong(4, id); // WHERE id
+        statement.setDate(3, dateOrdered);
+        statement.setDate(4, dateModified);
+        statement.setDate(5, dateReceived);
+        statement.setLong(6, distributor.getId());
+        statement.setLong(7, id); // WHERE id
         statement.execute();
     }
 
     @Override
     public String toString() {
-        if (orderDate != null) {
-            return orderDate.toString();
+        if (dateOrdered != null) {
+            return dateOrdered.toString();
         } else {
             return Date.valueOf(LocalDate.MIN).toString();
         }
@@ -46,10 +52,6 @@ public class Order extends DbObject {
         super(TABLE_NAME);
     }
 
-    public Order(String tableName, String sqlInsert, String sqlUpdate) {
-        super(tableName, sqlInsert, sqlUpdate);
-    }
-
     public static Order getUnknownOrder() {
         Order o = new Order();
         o.setName(UNKNOWN_NAME);
@@ -57,11 +59,50 @@ public class Order extends DbObject {
         return o;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public Date getDateOrdered() {
+        return dateOrdered;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setDateOrdered(Date dateOrdered) {
+        this.dateOrdered = dateOrdered;
+    }
+
+    public List<Item> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<Item> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public Date getDateReceived() {
+        return dateReceived;
+    }
+
+    public void setDateReceived(Date dateReceived) {
+        this.dateReceived = dateReceived;
+    }
+
+    public Distributor getDistributor() {
+        return distributor;
+    }
+
+    public void setDistributor(Distributor distributor) {
+        this.distributor = distributor;
+    }
+
+    public boolean isOrdered() {
+        if (dateReceived != null && dateOrdered != null) {
+            return  (dateReceived.after(dateOrdered));
+        }
+        return false;
     }
 }

@@ -9,4 +9,12 @@ public class Distributor extends DbObject {
     public Distributor() {
         super(TABLE_NAME);
     }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 }

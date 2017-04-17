@@ -42,6 +42,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
 
     // Cached lists
     private List<Item> items;
@@ -52,6 +53,7 @@ public class DbManager implements TableChangedListener {
     private List<Location> locations;
     private List<Order> orders;
     private List<OrderItem> orderItems;
+    private List<Distributor> distributors;
 
     private DbManager() {}
 
@@ -182,6 +184,11 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public void addOnDistributorChangedListener(DbObjectChangedListener<Distributor> dbObjectChangedListener) {
+        if (!onDistributorsChangedListenerList.contains(dbObjectChangedListener)) {
+            onDistributorsChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
 
     public void removeOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (onItemsChangedListenerList != null) {
@@ -247,6 +254,13 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public void removeOnDistributorChangedListener(DbObjectChangedListener<Distributor> dbObjectChangedListener) {
+        if (onDistributorsChangedListenerList != null) {
+            if (onDistributorsChangedListenerList.contains(dbObjectChangedListener)) {
+                onDistributorsChangedListenerList.remove(dbObjectChangedListener);
+            }
+        }
+    }
 
     private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
         for (DbObjectChangedListener<T> l : listeners) {
@@ -794,11 +808,6 @@ public class DbManager implements TableChangedListener {
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconpath"));
-
-                    if (l.getId() != 1) {
-                        l.setOnTableChangedListener(this);
-                        locations.add(l);
-                    }
                 }
             }
         } catch (SQLException e) {
@@ -832,11 +841,16 @@ public class DbManager implements TableChangedListener {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconpath"));
+                    o.setDateOrdered(rs.getDate("dateordered"));
+                    o.setDateModified(rs.getDate("datemodified"));
+                    o.setDateReceived(rs.getDate("datereceived"));
+                    o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setOrderItems(getOrderedItems(o.getId()));
 
-                    if (o.getId() != 1) {
+                    //if (o.getId() != 1) {
                         o.setOnTableChangedListener(this);
                         orders.add(o);
-                    }
+                    //}
                 }
             }
         } catch (SQLException e) {
@@ -889,20 +903,16 @@ public class DbManager implements TableChangedListener {
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-//                    OrderItem o = new OrderItem();
-//                    o.setId(rs.getLong("id"));
-//                    o.setName(rs.getString("name"));
-//                    o.setIconPath(rs.getString("iconpath"));
-//                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
-//                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
-//                    o.setOrderDate(rs.getDate("orderdate"));
-//                    o.setReceiveDate(rs.getDate("receivedate"));
-//                    o.setOrdered(rs.getBoolean("isordered"));
-//
-//                    if (o.getId() != DbObject.UNKNOWN_ID) {
-//                        o.setOnTableChangedListener(this);
-//                        orderItems.add(o);
-//                    }
+                    OrderItem o = new OrderItem();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setOrderId(rs.getLong("orderid"));
+                    o.setItemId(rs.getLong("itemid"));
+
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        o.setOnTableChangedListener(this);
+                        orderItems.add(o);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -921,29 +931,91 @@ public class DbManager implements TableChangedListener {
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-//                    o = new OrderItem();
-//                    o.setId(rs.getLong("id"));
-//                    o.setName(rs.getString("name"));
-//                    o.setIconPath(rs.getString("iconpath"));
-//                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
-//                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
-//                    o.setOrderDate(rs.getDate("orderdate"));
-//                    o.setReceiveDate(rs.getDate("receivedate"));
-//                    o.setOrdered(rs.getBoolean("isordered"));
-//
-//                    if (o.getId() != DbObject.UNKNOWN_ID) {
-//                        o.setOnTableChangedListener(this);
-//                        orderItems.add(o);
-//                    }
+                    o = new OrderItem();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setOrderId(rs.getLong("orderid"));
+                    o.setItemId(rs.getLong("itemid"));
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database");
+            Status().setError("Failed to fetch order item from database");
             e.printStackTrace();
         }
         return o;
     }
 
+    public List<Item> getOrderedItems(long orderId) {
+        List<Item> items = new ArrayList<>();
+        for (OrderItem i : getOrderItems()) {
+            if (i.getOrderId() == orderId) {
+                items.add(findItemById(i.getItemId()));
+            }
+        }
+        return items;
+    }
+
+    /*
+    *                  DISTRIBUTORS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Distributor> getDistributors()    {
+        if (distributors == null) {
+            updateDistributors();
+        }
+        return distributors;
+    }
+
+    private void updateDistributors()    {
+        distributors = new ArrayList<>();
+        Status().setMessage("Fetching distributors from DB");
+
+        String sql = "SELECT * FROM " + Distributor.TABLE_NAME + " ORDER BY name";
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Distributor d = new Distributor();
+                    d.setId(rs.getLong("id"));
+                    d.setName(rs.getString("name"));
+                    d.setIconPath(rs.getString("iconpath"));
+                    d.setWebsite(rs.getString("website"));
+
+                    if (d.getId() != DbObject.UNKNOWN_ID) {
+                        d.setOnTableChangedListener(this);
+                        distributors.add(d);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch distributors from database");
+            e.printStackTrace();
+        }
+    }
+
+    public Distributor getDistributorFromDb(long distributorId) {
+        Distributor d = null;
+        Status().setMessage("Fetching order items from DB");
+
+        String sql = "SELECT * FROM " + Distributor.TABLE_NAME + " WHERE id = " + distributorId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    d = new Distributor();
+                    d.setId(rs.getLong("id"));
+                    d.setName(rs.getString("name"));
+                    d.setIconPath(rs.getString("iconpath"));
+                    d.setWebsite(rs.getString("website"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch distributor from database");
+            e.printStackTrace();
+        }
+        return d;
+    }
 
     /*
     *                  FINDERS
@@ -1153,6 +1225,15 @@ public class DbManager implements TableChangedListener {
             }
         }
         return -1;
+    }
+
+    public Distributor findDistributorById(long distributorId) {
+        for (Distributor d : getDistributors()) {
+            if (d.getId() == distributorId) {
+                return d;
+            }
+        }
+        return null;
     }
 
     /*

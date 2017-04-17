@@ -23,11 +23,7 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
-        <schema name="main" object-types="column, constraint, index, table, dataset trigger, view" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422">
@@ -35,6 +31,8 @@
 select * from categories;
 select * from products;
 select * from types;
+select * from orders;
+select * from orderitems;
 
 select * from  main.sqlite_master where type = 'table';
 
@@ -62,6 +60,7 @@ update products set categoryid = 1 where id = 1;]]></console>
         <condition column="installed_rank" operator="=" value="" active="true" />
       </filter>
     </filter-list>
+    <filter-list connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" dataset="main.orders" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

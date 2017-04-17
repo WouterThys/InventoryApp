@@ -7,29 +7,27 @@ public class OrderItem extends DbObject {
 
     public static final String TABLE_NAME = "orderitems";
 
-    private Order order;
-    private Item item;
+    private long orderId;
+    private long itemId;
 
-    public OrderItem(Order order, Item item) {
+    public OrderItem() {
         super(TABLE_NAME);
-        this.order = order;
-        this.item = item;
     }
 
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
-        statement.setLong(2, order.getId());
-        statement.setLong(3, item.getId());
+        statement.setLong(2, orderId);
+        statement.setLong(3, itemId);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setLong(2, order.getId());
-        statement.setLong(3, item.getId());
+        statement.setLong(2, orderId);
+        statement.setLong(3, itemId);
         statement.setLong(4, id); // WHERE id
         statement.execute();
     }
@@ -45,11 +43,19 @@ public class OrderItem extends DbObject {
         return false;
     }
 
-    public Order getOrder() {
-        return order;
+    public long getOrderId() {
+        return orderId;
     }
 
-    public Item getItem() {
-        return item;
+    public long getItemId() {
+        return itemId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
     }
 }

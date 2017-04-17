@@ -29,6 +29,7 @@ public abstract class DbObject {
     public static final int TYPE_LOCATION = 6;
     public static final int TYPE_ORDER = 7;
     public static final int TYPE_ORDER_ITEM = 8;
+    public static final int TYPE_DISTRIBUTOR = 9;
 
     private String TABLE_NAME;
 
@@ -260,6 +261,9 @@ public abstract class DbObject {
                 break;
             case TYPE_ORDER_ITEM:
                 oldObject = DbManager.db().getOrderItemFromDb(id);
+                break;
+            case TYPE_DISTRIBUTOR:
+                oldObject = DbManager.db().getDistributorFromDb(id);
                 break;
         }
     }
