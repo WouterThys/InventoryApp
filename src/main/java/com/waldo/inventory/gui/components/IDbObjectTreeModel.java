@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui;
+package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;

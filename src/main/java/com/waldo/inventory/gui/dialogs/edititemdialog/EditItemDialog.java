@@ -56,24 +56,10 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
-            // Component
-            newItem.setName(componentPanel.getNameFieldValue());
-            newItem.setDescription(componentPanel.getDescriptionFieldValue());
-            String priceTxt = componentPanel.getPriceFieldValue();
-            if (!priceTxt.isEmpty()) {
-                newItem.setPrice(Double.valueOf(priceTxt));
-            }
-
-            newItem.setCategoryId(componentPanel.getCbCategoryId());
-            newItem.setProductId(componentPanel.getCbProductId());
-            newItem.setTypeId(componentPanel.getCbTypeId());
-
-
-            newItem.setLocalDataSheet(componentPanel.getLocalDataSheetFieldValue());
-            newItem.setOnlineDataSheet(componentPanel.getOnlineDataSheetFieldValue());
-
-            // Manufacturer
-            newItem.setManufacturerId(manufacturerPanel.getSelectedManufacturerId());
+            componentPanel.setComponentValues();
+            manufacturerPanel.setComponentValues();
+            locationPanel.setComponentValues();
+            orderPanel.setComponentValues();
 
             // Close dialog
             dialogResult = OK;
@@ -117,7 +103,15 @@ public class EditItemDialog extends EditItemDialogLayout {
         });
     }
     private void initTabChangedAction() {
-        tabbedPane.addChangeListener(e -> updateComponents(null));
+        tabbedPane.addChangeListener(e -> {
+            // Save values
+            componentPanel.setComponentValues();
+            manufacturerPanel.setComponentValues();
+            locationPanel.setComponentValues();
+            orderPanel.setComponentValues();
+
+            updateComponents(null);
+        });
     }
 
     private void initCategoryChangedAction() {

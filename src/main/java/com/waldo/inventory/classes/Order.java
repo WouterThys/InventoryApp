@@ -4,19 +4,17 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Order extends DbObject {
 
     public static final String TABLE_NAME = "orders";
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath, orderdate) VALUES " +
-            "(?, ?, ?)";
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, orderdate = ? " +
-                    "WHERE id = ?;";
 
     private Date orderDate;
+    private List<Item> orderItems;
+    private Date lastModifiedDate;
+    private Date receiveDate;
+    private boolean isOrdered;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -45,7 +43,7 @@ public class Order extends DbObject {
     }
 
     public Order() {
-        super(TABLE_NAME, insertSql, updateSql);
+        super(TABLE_NAME);
     }
 
     public Order(String tableName, String sqlInsert, String sqlUpdate) {

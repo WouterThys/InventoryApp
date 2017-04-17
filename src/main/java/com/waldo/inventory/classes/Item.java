@@ -9,35 +9,19 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
-    protected String description = "";
-    protected double price = 0;
+    private String description = "";
+    private double price = 0;
 
-    protected long categoryId = -1;
-    protected long productId = -1;
-    protected long typeId = -1;
-    protected String localDataSheet = "";
-    protected String onlineDataSheet = "";
-    protected long manufacturerId = -1;
-    protected long locationId = -1;
-
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-                "name, iconpath, description, price, categoryId, productId, typeId, localdatasheet, onlinedatasheet, manufacturerid, locationid) VALUES " +
-                "(?,   ?,        ?,           ?,     ?,          ?,         ?,      ?,              ?,               ?,              ?)";
-
-
-
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, description = ?, price = ?, categoryId = ?, productId = ?, typeId = ?, localdatasheet = ?, onlinedatasheet = ?, " +
-                    "manufacturerid = ?, locationid = ? " +
-                "WHERE id = ?;";
+    private long categoryId = -1;
+    private long productId = -1;
+    private long typeId = -1;
+    private String localDataSheet = "";
+    private String onlineDataSheet = "";
+    private long manufacturerId = -1;
+    private long locationId = -1;
 
     public Item() {
-        super(TABLE_NAME, insertSql, updateSql);
-    }
-
-    protected Item(String tableName, String insertSql, String updateSql) {
-        super(tableName, insertSql, updateSql);
+        super(TABLE_NAME);
     }
 
     @Override

@@ -6,13 +6,6 @@ import java.sql.SQLException;
 public class Location extends DbObject {
 
     public static final String TABLE_NAME = "locations";
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath) VALUES " +
-            "(?, ?)";
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ? " +
-                    "WHERE id = ?;";
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -30,7 +23,7 @@ public class Location extends DbObject {
     }
 
     public Location() {
-        super(TABLE_NAME, insertSql, updateSql);
+        super(TABLE_NAME);
     }
 
     public Location(String tableName, String sqlInsert, String sqlUpdate) {

@@ -154,6 +154,23 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         typeComboBox.setSelectedIndex(selectedIndex);
     }
 
+    public void setComponentValues() {
+        newItem.setName(getNameFieldValue());
+        newItem.setDescription(getDescriptionFieldValue());
+        String priceTxt = getPriceFieldValue();
+        if (!priceTxt.isEmpty()) {
+            newItem.setPrice(Double.valueOf(priceTxt));
+        }
+
+        newItem.setCategoryId(getCbCategoryId());
+        newItem.setProductId(getCbProductId());
+        newItem.setTypeId(getCbTypeId());
+
+
+        newItem.setLocalDataSheet(getLocalDataSheetFieldValue());
+        newItem.setOnlineDataSheet(getOnlineDataSheetFieldValue());
+    }
+
 
     /*
     *                  LISTENERS

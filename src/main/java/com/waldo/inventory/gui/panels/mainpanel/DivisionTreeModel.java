@@ -56,11 +56,6 @@ public class DivisionTreeModel implements TreeModel {
         }
     }
 
-    public DbObjectNode addCategory(Category category) {
-        DbObjectNode parentNode = rootNode; // Category has root as parent
-        return addDbObjectNode(parentNode, category, false);
-    }
-
     private DbObjectNode addDbObjectNode(DbObjectNode parent, DbObject dbObject, boolean isLeaf) {
         DbObjectNode newChildNode = new DbObjectNode(dbObject, isLeaf);
 

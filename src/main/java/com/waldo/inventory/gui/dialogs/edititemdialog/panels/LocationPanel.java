@@ -17,6 +17,10 @@ public class LocationPanel extends JPanel implements GuiInterface {
         this.newItem = newItem;
     }
 
+    public void setComponentValues() {
+
+    }
+
     @Override
     public void initializeComponents() {
 

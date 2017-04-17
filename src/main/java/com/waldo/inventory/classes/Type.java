@@ -6,18 +6,10 @@ import java.sql.SQLException;
 public class Type extends DbObject {
 
     public static final String TABLE_NAME = "types";
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath, productid) VALUES " +
-            "(?, ?, ?)";
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, productid = ? " +
-                    "WHERE id = ?;";
-
     private long productId;
 
     public Type() {
-        super(TABLE_NAME, insertSql, updateSql);
+        super(TABLE_NAME);
     }
 
     @Override

@@ -32,6 +32,10 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
         this.newItem = newItem;
     }
 
+    public void setComponentValues() {
+        newItem.setManufacturerId(getSelectedManufacturerId());
+    }
+
     @Override
     public void initializeComponents() {
         manufacturerCbModel = new DefaultComboBoxModel<>();

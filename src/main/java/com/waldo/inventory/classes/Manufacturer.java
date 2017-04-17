@@ -6,13 +6,6 @@ import java.sql.SQLException;
 public class Manufacturer extends DbObject {
 
     public static final String TABLE_NAME = "manufacturers";
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath, website) VALUES " +
-            "(?, ?, ?)";
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, website = ?  " +
-                    "WHERE id = ?;";
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -34,11 +27,7 @@ public class Manufacturer extends DbObject {
     private String website = "";
 
     public Manufacturer() {
-        super(TABLE_NAME, insertSql, updateSql);
-    }
-
-    public Manufacturer(String tableName, String sqlInsert, String sqlUpdate) {
-        super(tableName, sqlInsert, sqlUpdate);
+        super(TABLE_NAME);
     }
 
     public static Manufacturer getUnknownManufacturer() {

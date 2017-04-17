@@ -6,18 +6,10 @@ import java.sql.SQLException;
 public class Product extends DbObject {
 
     public static final String TABLE_NAME = "products";
-    private static final String insertSql = "INSERT INTO "+TABLE_NAME+" (" +
-            "name, iconpath, categoryid) VALUES " +
-            "(?, ?, ?)";
-    private static final String updateSql =
-            "UPDATE "+TABLE_NAME+" " +
-                    "SET name = ?, iconpath = ?, categoryid = ? " +
-                    "WHERE id = ?;";
-
     private long categoryId;
 
     public Product() {
-        super(TABLE_NAME, insertSql, updateSql);
+        super(TABLE_NAME);
     }
 
     @Override

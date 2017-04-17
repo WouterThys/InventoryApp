@@ -3,13 +3,13 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.*;
+import com.waldo.inventory.gui.components.IDbObjectTreeModel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;

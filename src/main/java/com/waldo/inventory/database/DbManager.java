@@ -74,6 +74,15 @@ public class DbManager implements TableChangedListener {
         flyway.setDataSource(dataSource);
         flyway.migrate();
 
+        String sql = "PRAGMA foreign_keys=ON;";
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         try {
             tableNames = getTableNames();
         } catch (SQLException e) {
@@ -93,12 +102,7 @@ public class DbManager implements TableChangedListener {
     }
 
     public void registerShutDownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                close();
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
     }
 
     private BasicDataSource getDataSource() {
@@ -885,20 +889,20 @@ public class DbManager implements TableChangedListener {
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    OrderItem o = new OrderItem();
-                    o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
-                    o.setIconPath(rs.getString("iconpath"));
-                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
-                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
-                    o.setOrderDate(rs.getDate("orderdate"));
-                    o.setReceiveDate(rs.getDate("receivedate"));
-                    o.setOrdered(rs.getBoolean("isordered"));
-
-                    if (o.getId() != DbObject.UNKNOWN_ID) {
-                        o.setOnTableChangedListener(this);
-                        orderItems.add(o);
-                    }
+//                    OrderItem o = new OrderItem();
+//                    o.setId(rs.getLong("id"));
+//                    o.setName(rs.getString("name"));
+//                    o.setIconPath(rs.getString("iconpath"));
+//                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
+//                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
+//                    o.setOrderDate(rs.getDate("orderdate"));
+//                    o.setReceiveDate(rs.getDate("receivedate"));
+//                    o.setOrdered(rs.getBoolean("isordered"));
+//
+//                    if (o.getId() != DbObject.UNKNOWN_ID) {
+//                        o.setOnTableChangedListener(this);
+//                        orderItems.add(o);
+//                    }
                 }
             }
         } catch (SQLException e) {
@@ -917,20 +921,20 @@ public class DbManager implements TableChangedListener {
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new OrderItem();
-                    o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
-                    o.setIconPath(rs.getString("iconpath"));
-                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
-                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
-                    o.setOrderDate(rs.getDate("orderdate"));
-                    o.setReceiveDate(rs.getDate("receivedate"));
-                    o.setOrdered(rs.getBoolean("isordered"));
-
-                    if (o.getId() != DbObject.UNKNOWN_ID) {
-                        o.setOnTableChangedListener(this);
-                        orderItems.add(o);
-                    }
+//                    o = new OrderItem();
+//                    o.setId(rs.getLong("id"));
+//                    o.setName(rs.getString("name"));
+//                    o.setIconPath(rs.getString("iconpath"));
+//                    o.setItemToOrder(findItemById(rs.getLong("itemid")));
+//                    o.setLastModifiedDate(rs.getDate("lastmodifieddate"));
+//                    o.setOrderDate(rs.getDate("orderdate"));
+//                    o.setReceiveDate(rs.getDate("receivedate"));
+//                    o.setOrdered(rs.getBoolean("isordered"));
+//
+//                    if (o.getId() != DbObject.UNKNOWN_ID) {
+//                        o.setOnTableChangedListener(this);
+//                        orderItems.add(o);
+//                    }
                 }
             }
         } catch (SQLException e) {
