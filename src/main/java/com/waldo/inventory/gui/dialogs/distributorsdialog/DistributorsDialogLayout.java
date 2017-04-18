@@ -1,9 +1,9 @@
-package com.waldo.inventory.gui.dialogs.manufacturerdialog;
+package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Manufacturer;
+import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -16,40 +16,37 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.IOException;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static javax.swing.SpringLayout.*;
+import static javax.swing.SpringLayout.WEST;
 
-public abstract class ManufacturersDialogLayout extends IDialog implements
+public abstract class DistributorsDialogLayout extends IDialog implements
         GuiInterface,
         ListSelectionListener,
-        DbObjectChangedListener<Manufacturer>,
+        DbObjectChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JList<Manufacturer> manufacturerList;
-    private DefaultListModel<Manufacturer> manufacturerDefaultListModel;
+    JList<Distributor> distributorList;
+    private DefaultListModel<Distributor> distributorDefaultListModel;
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
     ITextField detailWebsite;
-    private JButton detailsBroweButton;
+    private JButton detailsBrowseButton;
     ILabel detailLogo;
-
-    private JList<Item> detailItemList;
-    DefaultListModel<Item> detailItemDefaultListModel;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Manufacturer selectedManufacturer;
+    Distributor selectedDistributor;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ManufacturersDialogLayout(Application application, String title) {
+    DistributorsDialogLayout(Application application, String title) {
         super(application, title);
     }
 
@@ -57,12 +54,12 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private JPanel createWestPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Manufacturers");
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Distributors");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
         JPanel westPanel = new JPanel();
-        JScrollPane list = new JScrollPane(manufacturerList);
+        JScrollPane list = new JScrollPane(distributorList);
 
         SpringLayout layout = new SpringLayout();
         // Search panel
@@ -92,8 +89,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         return westPanel;
     }
 
-    private JPanel createManufacturerDetailsPanel() {
-
+    private JPanel createDistributorsDetailPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Info");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
@@ -122,8 +118,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         constraints.gridx = 1; constraints.weightx = 0;
         constraints.gridy = 0; constraints.weighty = 0;
         constraints.fill = GridBagConstraints.VERTICAL;
-        detailsBroweButton.setSize(new Dimension(detailsBroweButton.getWidth(), detailWebsite.getHeight()));
-        browsePanel.add(detailsBroweButton, constraints);
+        detailsBrowseButton.setSize(new Dimension(detailsBrowseButton.getWidth(), detailWebsite.getHeight()));
+        browsePanel.add(detailsBrowseButton, constraints);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -156,47 +152,47 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.NONE;
         textFieldPanel.add(detailLogo, gbc);
 
-        // Item list
-        JPanel listPanel = new JPanel(new GridBagLayout());
-
-        JLabel itemLabel = new JLabel("Items: ");
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        listPanel.add(itemLabel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        listPanel.add(new JScrollPane(detailItemList), gbc);
+//        // Item list
+//        JPanel listPanel = new JPanel(new GridBagLayout());
+//
+//        JLabel itemLabel = new JLabel("Items: ");
+//
+//        gbc.gridx = 0; gbc.weightx = 0;
+//        gbc.gridy = 0; gbc.weighty = 0;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        listPanel.add(itemLabel, gbc);
+//
+//        gbc.gridx = 0; gbc.weightx = 1;
+//        gbc.gridy = 1; gbc.weighty = 1;
+//        gbc.fill = GridBagConstraints.BOTH;
+//        listPanel.add(new JScrollPane(detailItemList), gbc);
 
         // Add all
-        panel.add(textFieldPanel, BorderLayout.NORTH);
-        panel.add(listPanel, BorderLayout.CENTER);
+        panel.add(textFieldPanel, BorderLayout.CENTER);
+//        panel.add(listPanel, BorderLayout.CENTER);
         panel.setBorder(titledBorder);
 
         return panel;
     }
 
     /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    *                  LISTENERS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(resourceManager.readImage("ManufacturersDialog.TitleIcon"));
-        setTitleName("Manufacturers");
+        setTitleIcon(resourceManager.readImage("DistributorsDialog.TitleIcon"));
+        setTitleName("Distributors");
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_MANUFACTURER);
+        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_DISTRIBUTOR);
 
-        // Manufacturers list
-        manufacturerDefaultListModel = new DefaultListModel<>();
-        manufacturerList = new JList<>(manufacturerDefaultListModel);
-        manufacturerList.addListSelectionListener(this);
+        // Distributor list
+        distributorDefaultListModel = new DefaultListModel<>();
+        distributorList = new JList<>(distributorDefaultListModel);
+        distributorList.addListSelectionListener(this);
 
-        toolBar = new IdBToolBar(IdBToolBar.HORIZONTAL) {
+        toolBar = new IdBToolBar() {
             @Override
             protected void refresh() {
                 updateComponents(null);
@@ -204,30 +200,30 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
 
             @Override
             protected void add() {
-                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
+                DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "New Distributor", new Distributor());
                 if (dialog.showDialog() == DbObjectDialog.OK) {
-                    Manufacturer m = dialog.getDbObject();
-                    m.save();
+                    Distributor d = dialog.getDbObject();
+                    d.save();
                 }
             }
 
             @Override
             protected void delete() {
-                if (selectedManufacturer != null) {
-                    int res = JOptionPane.showConfirmDialog(ManufacturersDialogLayout.this, "Are you sure you want to delete \"" + selectedManufacturer.getName() + "\"?");
+                if (selectedDistributor != null) {
+                    int res = JOptionPane.showConfirmDialog(DistributorsDialogLayout.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
-                        selectedManufacturer.delete();
-                        selectedManufacturer = null;
+                        selectedDistributor.delete();
+                        selectedDistributor = null;
                     }
                 }
             }
 
             @Override
             protected void update() {
-                if (selectedManufacturer != null) {
-                    DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
+                if (selectedDistributor != null) {
+                    DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
                     if (dialog.showDialog() == DbObjectDialog.OK) {
-                        selectedManufacturer.save();
+                        selectedDistributor.save();
                     }
                 }
             }
@@ -239,21 +235,19 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         detailName.setEnabled(false);
         detailWebsite = new ITextField("Web site");
         detailLogo = new ILabel();
-        //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBroweButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
-        detailsBroweButton.addActionListener(e -> {
-            if (!detailWebsite.getText().isEmpty())
+        detailsBrowseButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        detailsBrowseButton.addActionListener(e -> {
+            if (!detailWebsite.getText().isEmpty()) {
                 try {
                     OpenUtils.browseLink(detailWebsite.getText());
                 } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(ManufacturersDialogLayout.this, "Unable to browse: " + detailWebsite.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(DistributorsDialogLayout.this, "Unable to browse: " + detailWebsite.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace();
                 }
+            }
         });
 
-        detailItemDefaultListModel = new DefaultListModel<>();
-        detailItemList = new JList<>(detailItemDefaultListModel);
     }
 
     @Override
@@ -262,25 +256,25 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
 
         getContentPanel().add(createWestPanel(), BorderLayout.WEST);
 
-        getContentPanel().add(createManufacturerDetailsPanel(), BorderLayout.CENTER);
+        getContentPanel().add(createDistributorsDetailPanel(), BorderLayout.CENTER);
 
         pack();
     }
 
     @Override
     public void updateComponents(Object object) {
-        // Get all menus
-        manufacturerDefaultListModel.removeAllElements();
-        for(Manufacturer m : db().getManufacturers()) {
-            if (m.getId() != DbObject.UNKNOWN_ID) {
-                manufacturerDefaultListModel.addElement(m);
+        // Get all
+        distributorDefaultListModel.removeAllElements();
+        for (Distributor d : DbManager.db().getDistributors()) {
+            if (d.getId() != DbObject.UNKNOWN_ID) {
+                distributorDefaultListModel.addElement(d);
             }
         }
 
-        selectedManufacturer = (Manufacturer) object;
+        selectedDistributor = (Distributor) object;
 
-        if (selectedManufacturer != null) {
-            manufacturerList.setSelectedValue(selectedManufacturer, true);
+        if (selectedDistributor != null) {
+            distributorList.setSelectedValue(selectedDistributor, true);
         }
     }
 }

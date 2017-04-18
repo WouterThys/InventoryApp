@@ -18,12 +18,17 @@ import java.util.Enumeration;
 
 public class IDbObjectTreeModel extends DefaultTreeModel {
 
+    public static final int TYPE_DIVISIONS = 0;
+    public static final int TYPE_ORDERS = 1;
+
     private DefaultMutableTreeNode rootNode;
     private ITree tree;
+    private int type;
 
-    public IDbObjectTreeModel(DefaultMutableTreeNode rootNode) {
+    public IDbObjectTreeModel(DefaultMutableTreeNode rootNode, int type) {
         super(rootNode, true);
         this.rootNode = rootNode;
+        this.type = type;
 
         addTreeModelListener(new DbObjectTreeListener());
     }
@@ -71,10 +76,10 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     }
 
     public void addObject(DbObject child) {
-        SwingUtilities.invokeLater(() -> addDbObject(findParent(child), child, true));
+        SwingUtilities.invokeLater(() -> addDbObject(findParent(child), child));
     }
 
-    private DefaultMutableTreeNode addDbObject(DefaultMutableTreeNode parent, DbObject child, boolean shouldBeVisible) {
+    private DefaultMutableTreeNode addDbObject(DefaultMutableTreeNode parent, DbObject child) {
         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 
         if (parent == null) {
@@ -83,32 +88,35 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
 
         insertNodeInto(childNode, parent, parent.getChildCount());
 
-        if (shouldBeVisible)  {
-            tree.scrollPathToVisible(new TreePath(childNode.getPath()));
-        }
-
         return childNode;
     }
 
     private DefaultMutableTreeNode findParent(DbObject child) {
-        switch (DbObject.getType(child)) {
-            case DbObject.TYPE_CATEGORY:
-                return rootNode;
+        if (type == TYPE_DIVISIONS) {
+            switch (DbObject.getType(child)) {
+                case DbObject.TYPE_CATEGORY:
+                    return rootNode;
 
-            case DbObject.TYPE_PRODUCT: {
-                Product p = (Product) child;
-                Category c = DbManager.db().findCategoryById(p.getCategoryId()); // The parent object
-                return findNode(c);
+                case DbObject.TYPE_PRODUCT: {
+                    Product p = (Product) child;
+                    Category c = DbManager.db().findCategoryById(p.getCategoryId()); // The parent object
+                    return findNode(c);
+                }
+
+                case DbObject.TYPE_TYPE: {
+                    Type t = (Type) child;
+                    Product p = DbManager.db().findProductById(t.getProductId()); // The parent object
+                    return findNode(p);
+                }
+
+                default:
+                    return null; // Error
             }
-
-            case DbObject.TYPE_TYPE: {
-                Type t = (Type) child;
-                Product p = DbManager.db().findProductById(t.getProductId()); // The parent object
-                return findNode(p);
-            }
-
-            default: return null; // Error
         }
+        if (type == TYPE_ORDERS) {
+
+        }
+        return null;
     }
 
     private DefaultMutableTreeNode findNode(DbObject object) {

@@ -4,11 +4,11 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
@@ -52,7 +52,7 @@ public class MainPanel extends MainPanelLayout {
         return lastSelectedDivision;
     }
 
-    public ItemTableModel getTableModel() {
+    public IItemTableModel getTableModel() {
         return tableModel;
     }
 
@@ -110,7 +110,7 @@ public class MainPanel extends MainPanelLayout {
 
     private void updateItems() {
         if (lastSelectedDivision == null) {
-            lastSelectedDivision =  ((DivisionTreeModel.DbObjectNode) treeModel.getRoot()).getDbObject();
+            lastSelectedDivision = (DbObject) treeModel.getRoot();
         }
         updateComponents(lastSelectedDivision);
     }

@@ -2,6 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
@@ -44,17 +45,21 @@ public class MenuBar extends JMenuBar {
         JMenuItem manufacturers = new JMenuItem("Manufacturers", resourceManager.readImage("MenuBar.EditManufacturers"));
         manufacturers.addActionListener(manufacturersSelected());
 
-        JMenuItem orders = new JMenuItem("Orders", resourceManager.readImage("MenuBar.EditOrders"));
-        orders.addActionListener(ordersSelected());
+        JMenuItem distributors = new JMenuItem("Distributors", resourceManager.readImage("MenuBar.EditDistributors"));
+        distributors.addActionListener(distributorsSelected());
 
-        JMenuItem locations = new JMenuItem("Locations", resourceManager.readImage("MenuBar.EditLocations"));
-        locations.addActionListener(locationsSelected());
+//        JMenuItem orders = new JMenuItem("Orders", resourceManager.readImage("MenuBar.EditOrders"));
+//        orders.addActionListener(ordersSelected());
+//
+//        JMenuItem locations = new JMenuItem("Locations", resourceManager.readImage("MenuBar.EditLocations"));
+//        locations.addActionListener(locationsSelected());
 
         dbMenu.add(subDivisions);
         dbMenu.addSeparator();
         dbMenu.add(manufacturers);
-        dbMenu.add(orders);
-        dbMenu.add(locations);
+        dbMenu.add(distributors);
+//        dbMenu.add(orders);
+//        dbMenu.add(locations);
 
 
         // Add menus
@@ -70,12 +75,14 @@ public class MenuBar extends JMenuBar {
         return e -> ManufacturersDialog.showDialog(application);
     }
 
-    private ActionListener ordersSelected() {
-        OrdersDialog dialog = new OrdersDialog(application, "Orders");
-        return e -> dialog.setVisible(true);
-    }
+    private ActionListener distributorsSelected() { return  e -> DistributorsDialog.showDialog(application); }
 
-    private ActionListener locationsSelected() {
-        return null;
-    }
+//    private ActionListener ordersSelected() {
+//        OrdersDialog dialog = new OrdersDialog(application, "Orders");
+//        return e -> dialog.setVisible(true);
+//    }
+//
+//    private ActionListener locationsSelected() {
+//        return null;
+//    }
 }

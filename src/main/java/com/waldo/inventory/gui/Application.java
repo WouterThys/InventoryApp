@@ -8,13 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class Application extends JFrame {
+public class Application extends JFrame implements ChangeListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     private ResourceManager resourceManager;
@@ -55,8 +57,9 @@ public class Application extends JFrame {
         // Main view
         // - Create components
         mainPanel = new MainPanel(this);
-        orderPanel = new OrderPanel();
+        orderPanel = new OrderPanel(this);
         tabbedPane = new JTabbedPane();
+        tabbedPane.addChangeListener(this);
         //  - Add tabs
         tabbedPane.addTab("Components", resourceManager.readImage("EditItem.InfoIcon"), mainPanel, "Components");
         tabbedPane.addTab("Orders", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
@@ -84,4 +87,8 @@ public class Application extends JFrame {
         toolBar.clearSearch();
     }
 
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
+    }
 }

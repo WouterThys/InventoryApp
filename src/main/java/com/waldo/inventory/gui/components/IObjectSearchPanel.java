@@ -154,6 +154,10 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         Status().setMessage("Searching for: Manufacturers");
         foundList.addAll(searchForDbObject(new ArrayList<>(db().getManufacturers()), searchWord));
 
+        // Distributors
+        Status().setMessage("Searching for: Distributors");
+        foundList.addAll(searchForDbObject(new ArrayList<>(db().getDistributors()), searchWord));
+
         // Items
         Status().setMessage("Searching for: Items");
         foundList.addAll(searchForDbObject(new ArrayList<>(db().getItems()), searchWord));
@@ -188,6 +192,10 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
                 case DbObject.TYPE_MANUFACTURER:
                     Status().setMessage("Searching for: Manufacturers");
                     foundList.addAll(searchForDbObject(new ArrayList<>(db().getManufacturers()), searchWord));
+                    break;
+                case DbObject.TYPE_DISTRIBUTOR:
+                    Status().setMessage("Searching for: Distributors");
+                    foundList.addAll(searchForDbObject(new ArrayList<>(db().getDistributors()), searchWord));
                     break;
                 case DbObject.TYPE_ITEM:
                     Status().setMessage("Searching for: Items");

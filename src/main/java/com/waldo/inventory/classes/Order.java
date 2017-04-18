@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 
 public class Order extends DbObject {
@@ -18,6 +19,8 @@ public class Order extends DbObject {
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
+        dateModified = new Date(Calendar.getInstance().getTime().getTime());
+
         statement.setString(1, name);
         statement.setString(2, iconPath);
         statement.setDate(3, dateOrdered);
@@ -29,6 +32,8 @@ public class Order extends DbObject {
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
+        dateModified = new Date(Calendar.getInstance().getTime().getTime());
+
         statement.setString(1, name);
         statement.setString(2, iconPath);
         statement.setDate(3, dateOrdered);

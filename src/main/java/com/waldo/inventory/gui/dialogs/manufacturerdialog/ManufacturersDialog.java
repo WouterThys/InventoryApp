@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -27,25 +28,10 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         super(application, title);
         initializeComponents();
         initializeLayouts();
-        initActions();
 
         db().addOnManufacturerChangedListener(this);
 
         updateComponents(null);
-    }
-
-    private void initActions() {
-        manufacturerList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                JList list = (JList) e.getSource();
-                selectedManufacturer = (Manufacturer) list.getSelectedValue();
-                if (selectedManufacturer != null && selectedManufacturer.getId() != DbObject.UNKNOWN_ID) {
-                    setDetails();
-                } else {
-                    clearDetails();
-                }
-            }
-        });
     }
 
     @Override
@@ -127,16 +113,29 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     public void onAdded(Manufacturer manufacturer) {
-        updateComponents(null);
+        updateComponents(manufacturer);
     }
 
     @Override
     public void onUpdated(Manufacturer newManufacturer, Manufacturer oldManufacturer) {
-        updateComponents(null);
+        updateComponents(newManufacturer);
     }
 
     @Override
     public void onDeleted(Manufacturer manufacturer) {
         updateComponents(null);
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            JList list = (JList) e.getSource();
+            selectedManufacturer = (Manufacturer) list.getSelectedValue();
+            if (selectedManufacturer != null && selectedManufacturer.getId() != DbObject.UNKNOWN_ID) {
+                setDetails();
+            } else {
+                clearDetails();
+            }
+        }
     }
 }

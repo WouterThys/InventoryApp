@@ -6,6 +6,7 @@ import com.waldo.inventory.gui.*;
 import com.waldo.inventory.gui.components.IDbObjectTreeModel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IItemTableModel;
 import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
 
 import javax.swing.*;
@@ -27,14 +28,11 @@ public abstract class MainPanelLayout extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITable itemTable;
-    ItemTableModel tableModel;
+    IItemTableModel tableModel;
 
     ITree subDivisionTree;
-    //DivisionTreeModel treeModel;
     IDbObjectTreeModel treeModel;
-    DefaultMutableTreeNode rootNode;
-
-    MainDetailPanel detailPanel;
+    private MainDetailPanel detailPanel;
 
 
     /*
@@ -98,16 +96,16 @@ public abstract class MainPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Sub division tree
-        rootNode = new DefaultMutableTreeNode(new Category("All"), true);
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new Category("All"), true);
         createNodes(rootNode);
-        treeModel = new IDbObjectTreeModel(rootNode);
+        treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_DIVISIONS);
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);
         treeModel.setTree(subDivisionTree);
 
         // Item table
-        tableModel = new ItemTableModel(db().getItems());
+        tableModel = new IItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
         //itemTable.addFocusListener(this);
@@ -141,20 +139,5 @@ public abstract class MainPanelLayout extends JPanel implements
 
         // Update detail panel
         detailPanel.updateComponents(selectedItem);
-    }
-
-    private void resizeColumnWidth(JTable table) {
-        final TableColumnModel columnModel = table.getColumnModel();
-        for (int column = 0; column < table.getColumnCount(); column++) {
-            int width = 15; // Min width
-            for (int row = 0; row < table.getRowCount(); row++) {
-                TableCellRenderer renderer = table.getCellRenderer(row, column);
-                Component comp = table.prepareRenderer(renderer, row, column);
-                width = Math.max(comp.getPreferredSize().width +1 , width);
-            }
-            if(width > 300)
-                width=300;
-            columnModel.getColumn(column).setPreferredWidth(width);
-        }
     }
 }

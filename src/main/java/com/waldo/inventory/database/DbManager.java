@@ -322,6 +322,10 @@ public class DbManager implements TableChangedListener {
                 updateOrderItems();
                 notifyListeners(changedHow, (OrderItem)newObject, (OrderItem)oldObject, onOrderItemsChangedListenerList);
                 break;
+            case Distributor.TABLE_NAME:
+                updateDistributors();
+                notifyListeners(changedHow, (Distributor)newObject, (Distributor)oldObject, onDistributorsChangedListenerList);
+                break;
         }
     }
 
@@ -847,10 +851,10 @@ public class DbManager implements TableChangedListener {
                     o.setDistributor(findDistributorById(rs.getLong("distributorid")));
                     o.setOrderItems(getOrderedItems(o.getId()));
 
-                    //if (o.getId() != 1) {
+                    if (o.getId() != 1) {
                         o.setOnTableChangedListener(this);
                         orders.add(o);
-                    //}
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -948,7 +952,7 @@ public class DbManager implements TableChangedListener {
     public List<Item> getOrderedItems(long orderId) {
         List<Item> items = new ArrayList<>();
         for (OrderItem i : getOrderItems()) {
-            if (i.getOrderId() == orderId) {
+            if (i.getOrderId() == orderId || orderId == -1) {
                 items.add(findItemById(i.getItemId()));
             }
         }

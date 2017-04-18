@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.mainpanel;
+package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemTableModel extends AbstractTableModel {
+public class IItemTableModel extends AbstractTableModel {
 
     // Names and classes
     private static final String[] columnNames = {"Name", "Description", "Manufacturer"};
@@ -18,11 +18,11 @@ public class ItemTableModel extends AbstractTableModel {
 
     private List<Item> itemList;
 
-    public ItemTableModel() {
+    public IItemTableModel() {
         itemList = new ArrayList<>();
     }
 
-    public ItemTableModel(List<Item> itemList) {
+    public IItemTableModel(List<Item> itemList) {
         this.itemList = itemList;
         itemList.sort(new Item.ItemComparator());
     }
