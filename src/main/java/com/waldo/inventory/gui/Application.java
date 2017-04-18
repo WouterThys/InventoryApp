@@ -19,13 +19,15 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class Application extends JFrame implements ChangeListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+    public static final int TAB_ITEMS = 0;
+    public static final int TAB_ORDERS = 1;
+
     private ResourceManager resourceManager;
 
-    private JTabbedPane tabbedPane;
+    public JTabbedPane tabbedPane;
 
     private MainPanel mainPanel;
     private OrderPanel orderPanel;
-    private TopToolBar toolBar;
 
     public Application() {
         // Status
@@ -49,11 +51,13 @@ public class Application extends JFrame implements ChangeListener {
         add(Status(), BorderLayout.PAGE_END);
         Status().setMessage("Initializing");
 
-        // Toolbar
-        toolBar = new TopToolBar(this);
-        add(toolBar, BorderLayout.PAGE_START);
+        // Toolbars
+//        toolBar = new TopToolBar(this);
+//        add(toolBar, BorderLayout.PAGE_START);
+
         // Menu
         setJMenuBar(new MenuBar(this));
+
         // Main view
         // - Create components
         mainPanel = new MainPanel(this);
@@ -84,11 +88,13 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void clearSearch() {
-        toolBar.clearSearch();
+        mainPanel.getToolBar().clearSearch();
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
+
+        // Tabs
         ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
     }
 }

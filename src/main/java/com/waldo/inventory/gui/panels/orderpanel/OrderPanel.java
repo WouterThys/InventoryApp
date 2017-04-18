@@ -1,33 +1,28 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 
 public class OrderPanel extends OrderPanelLayout {
 
-    private Application application;
-
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Order> ordersChanged;
 
     public OrderPanel(Application application) {
-        URL url = MainPanel.class.getResource("/settings/Settings.properties");
-        resourceManager = new ResourceManager(url.getPath());
-        this.application = application;
+        super(application);
 
         initializeComponents();
         initializeLayouts();
@@ -161,5 +156,29 @@ public class OrderPanel extends OrderPanelLayout {
                 updateComponents(null);
             }
         }
+    }
+
+    //
+    //  Tool bar listener
+    //
+
+    @Override
+    public void onToolBarRefresh() {
+
+    }
+
+    @Override
+    public void onToolBarAdd() {
+
+    }
+
+    @Override
+    public void onToolBarDelete() {
+
+    }
+
+    @Override
+    public void onToolBarEdit() {
+
     }
 }

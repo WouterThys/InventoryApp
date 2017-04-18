@@ -8,7 +8,6 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -23,7 +22,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         GuiInterface,
         ListSelectionListener,
         DbObjectChangedListener<Distributor>,
-        IObjectSearchPanel.IObjectSearchListener {
+        IObjectSearchPanel.IObjectSearchListener,
+        IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
@@ -192,42 +192,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         distributorList = new JList<>(distributorDefaultListModel);
         distributorList.addListSelectionListener(this);
 
-        toolBar = new IdBToolBar() {
-            @Override
-            protected void refresh() {
-                updateComponents(null);
-            }
-
-            @Override
-            protected void add() {
-                DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "New Distributor", new Distributor());
-                if (dialog.showDialog() == DbObjectDialog.OK) {
-                    Distributor d = dialog.getDbObject();
-                    d.save();
-                }
-            }
-
-            @Override
-            protected void delete() {
-                if (selectedDistributor != null) {
-                    int res = JOptionPane.showConfirmDialog(DistributorsDialogLayout.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
-                    if (res == JOptionPane.OK_OPTION) {
-                        selectedDistributor.delete();
-                        selectedDistributor = null;
-                    }
-                }
-            }
-
-            @Override
-            protected void update() {
-                if (selectedDistributor != null) {
-                    DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
-                    if (dialog.showDialog() == DbObjectDialog.OK) {
-                        selectedDistributor.save();
-                    }
-                }
-            }
-        };
+        toolBar = new IdBToolBar(this);
         toolBar.setFloatable(false);
 
         // Details

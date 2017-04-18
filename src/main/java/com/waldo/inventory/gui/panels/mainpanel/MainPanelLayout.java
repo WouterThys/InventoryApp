@@ -3,26 +3,23 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.*;
-import com.waldo.inventory.gui.components.IDbObjectTreeModel;
-import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITree;
-import com.waldo.inventory.gui.components.IItemTableModel;
-import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
-        ListSelectionListener {
+        ListSelectionListener,
+        IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
@@ -32,16 +29,28 @@ public abstract class MainPanelLayout extends JPanel implements
 
     ITree subDivisionTree;
     IDbObjectTreeModel treeModel;
-    private MainDetailPanel detailPanel;
+    private ItemDetailPanel detailPanel;
+    TopToolBar topToolBar;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ResourceManager resourceManager;
+    Application application;
 
     Item selectedItem;
     DbObject lastSelectedDivision;
+
+    /*
+     *                  CONSTRUCTOR
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public MainPanelLayout(Application application) {
+        this.application = application;
+
+        URL url = MainPanel.class.getResource("/settings/Settings.properties");
+        resourceManager = new ResourceManager(url.getPath());
+    }
 
     /*
      *                  PRIVATE METHODS
@@ -104,6 +113,9 @@ public abstract class MainPanelLayout extends JPanel implements
         subDivisionTree.addTreeSelectionListener(this);
         treeModel.setTree(subDivisionTree);
 
+        // Tool bar
+        topToolBar = new TopToolBar(application, this);
+
         // Item table
         tableModel = new IItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
@@ -112,7 +124,7 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
-        detailPanel = new MainDetailPanel();
+        detailPanel = new ItemDetailPanel();
     }
 
     @Override
@@ -123,6 +135,7 @@ public abstract class MainPanelLayout extends JPanel implements
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         panel.add(detailPanel, BorderLayout.SOUTH);
+        panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
         add(new JScrollPane(subDivisionTree), BorderLayout.WEST);

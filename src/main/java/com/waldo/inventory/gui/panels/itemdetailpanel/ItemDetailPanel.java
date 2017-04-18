@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.mainpanel.detailpanel;
+package com.waldo.inventory.gui.panels.itemdetailpanel;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
@@ -12,11 +12,11 @@ import java.io.IOException;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class MainDetailPanel extends MainDetailPanelLayout {
+public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private Item selectedItem;
 
-    public MainDetailPanel() {
+    public ItemDetailPanel() {
         super();
         initializeComponents();
         initializeLayouts();

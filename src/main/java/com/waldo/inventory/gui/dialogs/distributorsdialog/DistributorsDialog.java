@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -148,4 +149,41 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         updateComponents(null);
     }
 
+    //
+    //  Toolbar listener
+    //
+    @Override
+    public void onToolBarRefresh() {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onToolBarAdd() {
+        DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "New Distributor", new Distributor());
+        if (dialog.showDialog() == DbObjectDialog.OK) {
+            Distributor d = dialog.getDbObject();
+            d.save();
+        }
+    }
+
+    @Override
+    public void onToolBarDelete() {
+        if (selectedDistributor != null) {
+            int res = JOptionPane.showConfirmDialog(DistributorsDialog.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                selectedDistributor.delete();
+                selectedDistributor = null;
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit() {
+        if (selectedDistributor != null) {
+            DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
+            if (dialog.showDialog() == DbObjectDialog.OK) {
+                selectedDistributor.save();
+            }
+        }
+    }
 }

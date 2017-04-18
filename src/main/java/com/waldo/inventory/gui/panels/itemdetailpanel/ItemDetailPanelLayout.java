@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.mainpanel.detailpanel;
+package com.waldo.inventory.gui.panels.itemdetailpanel;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.Application;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
-public abstract class MainDetailPanelLayout extends JPanel implements GuiInterface {
+public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
     /*
      *                  COMPONENTS
@@ -36,8 +36,8 @@ public abstract class MainDetailPanelLayout extends JPanel implements GuiInterfa
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    MainDetailPanelLayout() {
-        URL url = MainDetailPanelLayout.class.getResource("/settings/Settings.properties");
+    ItemDetailPanelLayout() {
+        URL url = ItemDetailPanelLayout.class.getResource("/settings/Settings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 

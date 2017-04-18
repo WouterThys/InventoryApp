@@ -7,9 +7,6 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.DbObjectDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -19,10 +16,10 @@ import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
 
-public abstract class SubDivisionsDialogLayout extends IDialog
-        implements GuiInterface, IObjectSearchPanel.IObjectSearchListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SubDivisionsDialogLayout.class);
+public abstract class SubDivisionsDialogLayout extends IDialog implements
+        GuiInterface,
+        IObjectSearchPanel.IObjectSearchListener,
+        IdBToolBar.IdbToolBarListener {
 
     static final int CATEGORIES = 0;
     static final int PRODUCTS = 1;
@@ -37,7 +34,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
     JList<DbObject> detailList;
 
     private IdBToolBar toolBar;
-    IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel searchPanel;
     ITitledPanel detailsPanel;
 
     DefaultComboBoxModel<DbObject> selectionCbModel;
@@ -65,46 +62,44 @@ public abstract class SubDivisionsDialogLayout extends IDialog
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     private JPanel createDetailsPanel() {
-            JPanel panel = new JPanel(new BorderLayout());
-    JPanel northPanel = new JPanel(new GridBagLayout());
-    JPanel centerPanel = new JPanel(new GridBagLayout());
-    JScrollPane list = new JScrollPane(detailList);
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane list = new JScrollPane(detailList);
 
-    SpringLayout layout = new SpringLayout();
+        SpringLayout layout = new SpringLayout();
 
-// Label
+        // Label
         layout.putConstraint(WEST, selectionLabel, 5, WEST, panel);
-                layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
+        layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
 
-                // Combobox
-                layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
-                layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
-                layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
+        // Combobox
+        layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
+        layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
+        layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
 
-                // List
-                layout.putConstraint(WEST, list, 5, WEST, panel);
-                layout.putConstraint(NORTH, list, 5, SOUTH, selectionComboBox);
-                layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
-                layout.putConstraint(EAST, list, 0, WEST, toolBar);
+        // List
+        layout.putConstraint(WEST, list, 5, WEST, panel);
+        layout.putConstraint(NORTH, list, 5, SOUTH, selectionComboBox);
+        layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
+        layout.putConstraint(EAST, list, 0, WEST, toolBar);
 
-                // Toolbar
-                layout.putConstraint(EAST, toolBar, -5, EAST, panel);
-                layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
+        // Toolbar
+        layout.putConstraint(EAST, toolBar, -5, EAST, panel);
+        layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
 
-                // Icon
-                layout.putConstraint(EAST, iconLabel,-5, EAST, panel);
-                layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
+        // Icon
+        layout.putConstraint(EAST, iconLabel, -5, EAST, panel);
+        layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
 
-                // Add stuff
-                panel.add(selectionLabel);
-                panel.add(selectionComboBox);
-                panel.add(list);
-                panel.add(toolBar);
-                panel.add(iconLabel);
-                panel.setPreferredSize(new Dimension(400,500));
-                panel.setLayout(layout);
+        // Add stuff
+        panel.add(selectionLabel);
+        panel.add(selectionComboBox);
+        panel.add(list);
+        panel.add(toolBar);
+        panel.add(iconLabel);
+        panel.setPreferredSize(new Dimension(400, 500));
+        panel.setLayout(layout);
 
-                return panel;
+        return panel;
     }
 
     private JPanel createWestPanel() {
@@ -148,7 +143,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
         setTitleIcon(resourceManager.readImage("SubDivisionDialog.TitleIcon"));
 
         // Sub divisions list
-        String[] subDivisions = new String[] {"Categories", "Products", "Types"};
+        String[] subDivisions = new String[]{"Categories", "Products", "Types"};
         subDivisionList = new JList<>(subDivisions);
 
         // Search field
@@ -163,62 +158,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
         iconLabel = new ILabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
 
         // Toolbar
-        toolBar = new IdBToolBar(IdBToolBar.VERTICAL) {
-            @Override
-            protected void refresh() {
-                updateComponents(null);
-            }
-
-            @Override
-            protected void add() {
-                DbObjectDialog dialog;
-                switch (selectedSubType) {
-                    case CATEGORIES:
-                        dialog = new DbObjectDialog<>(application, "New category", new Category());
-                        if (dialog.showDialog() == DbObjectDialog.OK) {
-                            dialog.getDbObject().save();
-                        }
-                        break;
-                    case PRODUCTS:
-                        dialog = new DbObjectDialog<>(application, "New product", new Product());
-                        if (dialog.showDialog() == DbObjectDialog.OK) {
-                            Category c = (Category) selectionCbModel.getSelectedItem();
-                            ((Product)dialog.getDbObject()).setCategoryId(c.getId());
-                            dialog.getDbObject().save();
-                        }
-                        break;
-                    case TYPES:
-                        dialog = new DbObjectDialog<>(application, "New product", new com.waldo.inventory.classes.Type());
-                        if (dialog.showDialog() == DbObjectDialog.OK) {
-                            Product p = (Product) selectionCbModel.getSelectedItem();
-                            ((com.waldo.inventory.classes.Type)dialog.getDbObject()).setProductId(p.getId());
-                            dialog.getDbObject().save();
-                        }
-                        break;
-                }
-            }
-
-            @Override
-            protected void delete() {
-                if (selectedObject != null) {
-                    int res = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete \"" + selectedObject.getName() + "\"?");
-                    if (res == JOptionPane.OK_OPTION) {
-                        selectedObject.delete();
-                        selectedObject = null;
-                    }
-                }
-            }
-
-            @Override
-            protected void update() {
-                if (selectedObject != null) {
-                    DbObjectDialog dialog = new DbObjectDialog<>(application, "Update " + selectedObject.getName(), selectedObject);
-                    if (dialog.showDialog() == DbObjectDialog.OK) {
-                        selectedObject.save();
-                    }
-                }
-            }
-        };
+        toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
         toolBar.setFloatable(false);
 
         // Details
@@ -227,7 +167,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog
 
         selectionLabel = new JLabel("Categories");
         detailsPanel = new ITitledPanel("Categories",
-                new JComponent[] {createDetailsPanel()});
+                new JComponent[]{createDetailsPanel()});
 
         subDivisionList.setSelectedIndex(0);
     }

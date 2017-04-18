@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -135,6 +136,41 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                 setDetails();
             } else {
                 clearDetails();
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarRefresh() {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onToolBarAdd() {
+        DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
+        if (dialog.showDialog() == DbObjectDialog.OK) {
+            Manufacturer m = dialog.getDbObject();
+            m.save();
+        }
+    }
+
+    @Override
+    public void onToolBarDelete() {
+        if (selectedManufacturer != null) {
+            int res = JOptionPane.showConfirmDialog(ManufacturersDialog.this, "Are you sure you want to delete \"" + selectedManufacturer.getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                selectedManufacturer.delete();
+                selectedManufacturer = null;
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit() {
+        if (selectedManufacturer != null) {
+            DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
+            if (dialog.showDialog() == DbObjectDialog.OK) {
+                selectedManufacturer.save();
             }
         }
     }

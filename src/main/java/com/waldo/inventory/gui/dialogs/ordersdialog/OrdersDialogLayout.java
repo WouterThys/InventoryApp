@@ -69,29 +69,8 @@ public class OrdersDialogLayout extends IDialog
         orderList = new JList<>(orderDefaultListModel);
         orderList.addListSelectionListener(orderChanged);
 
-        toolBar = new IdBToolBar() {
-            @Override
-            protected void refresh() {
-                updateComponents(null);
-            }
-
-            @Override
-            protected void add() {
-                DbObjectDialog<Order> dialog = new DbObjectDialog<Order>(application, "New order", new Order());
-                dialog.showDialog();
-            }
-
-            @Override
-            protected void delete() {
-
-            }
-
-            @Override
-            protected void update() {
-
-            }
-        };
-        toolBar.setFloatable(false);
+        //toolBar = new IdBToolBar();
+        //toolBar.setFloatable(false);
     }
 
     @Override

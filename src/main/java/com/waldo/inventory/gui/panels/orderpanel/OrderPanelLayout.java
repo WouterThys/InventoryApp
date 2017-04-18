@@ -2,25 +2,28 @@ package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDbObjectTreeModel;
-import com.waldo.inventory.gui.components.IItemTableModel;
-import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITree;
-import com.waldo.inventory.gui.panels.mainpanel.detailpanel.MainDetailPanel;
+import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
+import com.waldo.inventory.gui.panels.orderdetailpanel.OrderDetailPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 
 public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
-        ListSelectionListener {
+        ListSelectionListener,
+        IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
@@ -30,16 +33,29 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     ITree ordersTree;
     IDbObjectTreeModel treeModel;
-    private MainDetailPanel detailPanel;
+    private ItemDetailPanel itemDetailPanel;
+    private OrderDetailPanel orderDetailPanel;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ResourceManager resourceManager;
+    Application application;
 
     Item selectedItem;
     DbObject lastSelectedOrder;
+    TopToolBar topToolBar;
+
+    /*
+     *                  CONSTRUCTOR
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public OrderPanelLayout(Application application) {
+        this.application = application;
+
+        URL url = MainPanel.class.getResource("/settings/Settings.properties");
+        resourceManager = new ResourceManager(url.getPath());
+    }
 
     /*
      *                  PRIVATE METHODS
@@ -94,6 +110,9 @@ public abstract class OrderPanelLayout extends JPanel implements
         ordersTree.addTreeSelectionListener(this);
         treeModel.setTree(ordersTree);
 
+        // Tool bar
+        topToolBar = new TopToolBar(application, this);
+
         // Item table
         tableModel = new IItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
@@ -102,7 +121,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
-        detailPanel = new MainDetailPanel();
+        itemDetailPanel = new ItemDetailPanel();
     }
 
     @Override
@@ -112,7 +131,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         // Panel them together
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
-        panel.add(detailPanel, BorderLayout.SOUTH);
+        panel.add(itemDetailPanel, BorderLayout.SOUTH);
 
         // Add
         add(new JScrollPane(ordersTree), BorderLayout.WEST);
@@ -128,6 +147,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
 
         // Update detail panel
-        detailPanel.updateComponents(selectedItem);
+        itemDetailPanel.updateComponents(selectedItem);
     }
 }

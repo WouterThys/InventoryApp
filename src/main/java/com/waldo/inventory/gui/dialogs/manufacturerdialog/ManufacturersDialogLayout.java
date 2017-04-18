@@ -23,7 +23,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         GuiInterface,
         ListSelectionListener,
         DbObjectChangedListener<Manufacturer>,
-        IObjectSearchPanel.IObjectSearchListener {
+        IObjectSearchPanel.IObjectSearchListener,
+        IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
@@ -196,42 +197,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         manufacturerList = new JList<>(manufacturerDefaultListModel);
         manufacturerList.addListSelectionListener(this);
 
-        toolBar = new IdBToolBar(IdBToolBar.HORIZONTAL) {
-            @Override
-            protected void refresh() {
-                updateComponents(null);
-            }
-
-            @Override
-            protected void add() {
-                DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
-                if (dialog.showDialog() == DbObjectDialog.OK) {
-                    Manufacturer m = dialog.getDbObject();
-                    m.save();
-                }
-            }
-
-            @Override
-            protected void delete() {
-                if (selectedManufacturer != null) {
-                    int res = JOptionPane.showConfirmDialog(ManufacturersDialogLayout.this, "Are you sure you want to delete \"" + selectedManufacturer.getName() + "\"?");
-                    if (res == JOptionPane.OK_OPTION) {
-                        selectedManufacturer.delete();
-                        selectedManufacturer = null;
-                    }
-                }
-            }
-
-            @Override
-            protected void update() {
-                if (selectedManufacturer != null) {
-                    DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
-                    if (dialog.showDialog() == DbObjectDialog.OK) {
-                        selectedManufacturer.save();
-                    }
-                }
-            }
-        };
+        toolBar = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
         toolBar.setFloatable(false);
 
         // Details

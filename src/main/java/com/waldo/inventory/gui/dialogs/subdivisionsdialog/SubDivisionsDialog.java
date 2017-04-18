@@ -3,10 +3,10 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
@@ -301,7 +301,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 updateTypeList();
                 break;
         }
-        SwingUtilities.invokeLater(() -> repaint());
+        SwingUtilities.invokeLater(this::repaint);
     }
 
     @Override
@@ -312,5 +312,60 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     @Override
     public void onSearchCleared() {
         setSelectedObject(selectedObject);
+    }
+
+    @Override
+    public void onToolBarRefresh() {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onToolBarAdd() {
+        DbObjectDialog dialog;
+        switch (selectedSubType) {
+            case CATEGORIES:
+                dialog = new DbObjectDialog<>(application, "New category", new Category());
+                if (dialog.showDialog() == DbObjectDialog.OK) {
+                    dialog.getDbObject().save();
+                }
+                break;
+            case PRODUCTS:
+                dialog = new DbObjectDialog<>(application, "New product", new Product());
+                if (dialog.showDialog() == DbObjectDialog.OK) {
+                    Category c = (Category) selectionCbModel.getSelectedItem();
+                    ((Product)dialog.getDbObject()).setCategoryId(c.getId());
+                    dialog.getDbObject().save();
+                }
+                break;
+            case TYPES:
+                dialog = new DbObjectDialog<>(application, "New product", new com.waldo.inventory.classes.Type());
+                if (dialog.showDialog() == DbObjectDialog.OK) {
+                    Product p = (Product) selectionCbModel.getSelectedItem();
+                    ((com.waldo.inventory.classes.Type)dialog.getDbObject()).setProductId(p.getId());
+                    dialog.getDbObject().save();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onToolBarDelete() {
+        if (selectedObject != null) {
+            int res = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete \"" + selectedObject.getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                selectedObject.delete();
+                selectedObject = null;
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit() {
+        if (selectedObject != null) {
+            DbObjectDialog dialog = new DbObjectDialog<>(application, "Update " + selectedObject.getName(), selectedObject);
+            if (dialog.showDialog() == DbObjectDialog.OK) {
+                selectedObject.save();
+            }
+        }
     }
 }

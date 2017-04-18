@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
@@ -19,17 +20,13 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class MainPanel extends MainPanelLayout {
 
-    private Application application;
-
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Category> categoriesChanged;
     private DbObjectChangedListener<Product> productsChanged;
     private DbObjectChangedListener<Type> typesChanged;
 
     public MainPanel(Application application) {
-        URL url = MainPanel.class.getResource("/settings/Settings.properties");
-        resourceManager = new ResourceManager(url.getPath());
-        this.application = application;
+        super(application);
 
         initializeComponents();
         initializeLayouts();
@@ -56,7 +53,9 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
-
+    public TopToolBar getToolBar() {
+        return topToolBar;
+    }
 
 
     private void initActions() {
@@ -64,10 +63,9 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void initMouseClicked() {
-        itemTable.addMouseListener( new MouseAdapter() {
+        itemTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JTable table = (JTable) e.getSource();
                 if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
@@ -207,14 +205,49 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
-//    @Override
-//    public void focusGained(FocusEvent e) {
-//        //
-//    }
-//
-//    @Override
-//    public void focusLost(FocusEvent e) {
-//        selectedItem = null;
-//        updateComponents(null);
-//    }
+    //
+    //  Tool bar listener
+    //
+
+    @Override
+    public void onToolBarRefresh() {
+
+    }
+
+    @Override
+    public void onToolBarAdd() {
+        EditItemDialog dialog = new EditItemDialog(application, "Add item");
+        if (dialog.showDialog() == EditItemDialog.OK) {
+            Item newItem = dialog.getItem();
+            if (newItem != null) {
+                newItem.save();
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarDelete() {
+        Item selectedItem = application.getSelectedItem();
+        if (selectedItem != null) {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
+                selectedItem.delete();
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit() {
+        Item selected = application.getSelectedItem();
+        if (selected != null) {
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selected);
+            if (dialog.showDialog() == EditItemDialog.OK) {
+                Item newItem = dialog.getItem();
+                if (newItem != null) {
+                    newItem.save();
+                }
+            }
+        }
+    }
+
 }
+
