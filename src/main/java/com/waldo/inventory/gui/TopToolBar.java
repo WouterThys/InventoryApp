@@ -17,37 +17,38 @@ public class TopToolBar extends JToolBar implements IObjectSearchPanel.IObjectSe
 
     private IdBToolBar mainViewToolBar;
     private IObjectSearchPanel searchPanel;
-    private JToolBar contentPane;
+    private JPanel contentPane;
 
     public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener){
         this.application = application;
 
         // Layout
-        setLayout(new BorderLayout(2,2));
         setFloatable(false);
+        setRollover(true);
 
         // Tool bars
         mainViewToolBar = new IdBToolBar(toolBarListener);
         mainViewToolBar.setFloatable(false);
-        contentPane = new JToolBar(JToolBar.HORIZONTAL);
-        contentPane.setFloatable(false);
+        contentPane = new JPanel();
+        contentPane.setOpaque(false);
 
         // Search stuff: search only for items
         searchPanel = new IObjectSearchPanel(true, this, DbObject.TYPE_ITEM);
 
         // Add
-        add(mainViewToolBar, BorderLayout.WEST);
+        add(mainViewToolBar);
         addSeparator();
-        add(contentPane, BorderLayout.CENTER);
+        add(contentPane);
+        add(Box.createHorizontalGlue());
         addSeparator();
-        add(searchPanel, BorderLayout.EAST);
+        add(searchPanel);
     }
 
     public void clearSearch() {
         searchPanel.clearSearch();
     }
 
-    public JToolBar getContentPane() {
+    public JPanel getContentPane() {
         return contentPane;
     }
 

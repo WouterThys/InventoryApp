@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.ResourceManager;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import java.awt.*;
 import java.net.URL;
 
 public class ITree extends JTree {
@@ -21,6 +22,5 @@ public class ITree extends JTree {
         renderer.setLeafIcon(resourceManager.readImage("DivisionTree.LeafIcon"));
 
         setCellRenderer(renderer);
-
     }
 }

@@ -98,7 +98,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void updateItems() {
         if (lastSelectedOrder == null) {
-            lastSelectedOrder = (DbObject) treeModel.getRoot();
+            lastSelectedOrder = (Order) treeModel.getRoot();
         }
         updateComponents(lastSelectedOrder);
     }
@@ -137,7 +137,7 @@ public class OrderPanel extends OrderPanelLayout {
         }
 
         selectedItem = null;
-        lastSelectedOrder = (DbObject) node.getUserObject();
+        lastSelectedOrder = (Order) node.getUserObject();
         application.clearSearch();
 
         updateComponents(lastSelectedOrder);

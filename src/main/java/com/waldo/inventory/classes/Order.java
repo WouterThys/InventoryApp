@@ -57,6 +57,11 @@ public class Order extends DbObject {
         super(TABLE_NAME);
     }
 
+    public Order(String name) {
+        super(TABLE_NAME);
+        this.name = name;
+    }
+
     public static Order getUnknownOrder() {
         Order o = new Order();
         o.setName(UNKNOWN_NAME);
