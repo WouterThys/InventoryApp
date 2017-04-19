@@ -52,7 +52,9 @@ delete from items where id = 31;
 
 update products set categoryid = 10 where id = 12;
 
-update products set categoryid = 1 where id = 1;]]></console>
+update products set categoryid = 1 where id = 1;
+
+DELETE FROM orderitems WHERE orderid = 17 AND itemid = 28;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">

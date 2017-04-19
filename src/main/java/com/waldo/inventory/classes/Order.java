@@ -1,5 +1,7 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -100,6 +102,29 @@ public class Order extends DbObject {
         o.setName(UNKNOWN_NAME);
         o.setId(UNKNOWN_ID);
         return o;
+    }
+
+    public void addItemToList(Item item) {
+        if (item != null) {
+            if (!orderItems.contains(item)) {
+                orderItems.add(item);
+                setDateModified(new Date(System.currentTimeMillis()));
+                save();
+            }
+        }
+    }
+
+    public void removeItemFromList(Item item) {
+        if (item != null) {
+            if (orderItems.contains(item)) {
+                DbManager.db().removeItemFromOrder(item, this);
+
+                orderItems.remove(item);
+                setDateModified(new Date(System.currentTimeMillis()));
+
+                save();
+            }
+        }
     }
 
     public Date getDateOrdered() {

@@ -1,5 +1,6 @@
 package com.waldo.inventory.database;
 
+import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,7 +56,13 @@ public class DbManager implements TableChangedListener {
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
 
-    private DbManager() {}
+    // Scrips
+    private ResourceManager scriptResource;
+
+    private DbManager() {
+        URL url = DbObject.class.getResource("/db/scripts/scripts.properties");
+        scriptResource = new ResourceManager(url.getPath());
+    }
 
     public void init() {
         dataSource = new BasicDataSource();
@@ -285,8 +293,10 @@ public class DbManager implements TableChangedListener {
             case OBJECT_UPDATED: how = "updated in "; break;
             case OBJECT_DELETED: how = "deleted from"; break;
         }
+
         LOG.info(newObject.getName() + " " + how + tableName);
         Status().setMessage(newObject.getName() + " " + how + tableName);
+
 
         switch (tableName) {
             case Item.TABLE_NAME:
@@ -962,6 +972,27 @@ public class DbManager implements TableChangedListener {
             }
         }
         return items;
+    }
+
+    public void removeItemFromOrder(Item item, Order order) {
+        Status().setMessage("Removing \""+item.toString()+"\" from \""+order.toString());
+
+        String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setLong(1, order.getId());
+                stmt.setLong(2, item.getId());
+                stmt.execute();
+
+                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETED, OrderItem.createDummyOrderItem(order, item), null);
+            } catch (SQLException e) {
+                Status().setError("Failed to detele item from order");
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to detele item from order");
+            e.printStackTrace();
+        }
     }
 
     /*

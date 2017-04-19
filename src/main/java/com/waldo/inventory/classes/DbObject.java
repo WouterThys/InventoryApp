@@ -45,7 +45,7 @@ public abstract class DbObject {
     private String sqlUpdate;
     private String sqlDelete;
 
-    protected ResourceManager scriptResource;
+    protected static ResourceManager scriptResource;
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);

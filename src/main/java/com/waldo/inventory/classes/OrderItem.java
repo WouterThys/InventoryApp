@@ -43,6 +43,14 @@ public class OrderItem extends DbObject {
         return false;
     }
 
+    public static OrderItem createDummyOrderItem(Order order, Item item) {
+        OrderItem oi = new OrderItem();
+        oi.setItemId(item.getId());
+        oi.setOrderId(order.getId());
+        oi.setCanBeSaved(false);
+        return oi;
+    }
+
     public long getOrderId() {
         return orderId;
     }

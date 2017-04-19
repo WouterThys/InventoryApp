@@ -93,11 +93,24 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void addItemToOrder(Item item, Order order) {
-        // Set tab
-        tabbedPane.setSelectedIndex(TAB_ORDERS);
+        try {
+            beginWait();
+            // Set tab
+            tabbedPane.setSelectedIndex(TAB_ORDERS);
 
-        // Add
-        orderPanel.addItemToOrder(item, order);
+            // Add
+            orderPanel.addItemToOrder(item, order);
+        } finally {
+            endWait();
+        }
+    }
+
+    public void beginWait() {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+
+    public void endWait() {
+        this.setCursor(Cursor.getDefaultCursor());
     }
 
     @Override

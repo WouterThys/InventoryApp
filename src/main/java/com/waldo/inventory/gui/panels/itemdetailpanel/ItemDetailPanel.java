@@ -80,9 +80,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void orderItem(Item item) {
         OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item);
-        if (dialog.showDialog() == IDialog.OK) {
-
-        }
+        dialog.showDialog();
     }
 
     private void updateIcon(Item item) {
