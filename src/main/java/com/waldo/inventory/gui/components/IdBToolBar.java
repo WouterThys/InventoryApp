@@ -99,7 +99,7 @@ public class IdBToolBar extends JToolBar {
         super.setBorder(titledBorder);
     }
 
-    public void setRefreshEnabled(boolean enabled) {
+    public void setRefreshActionEnabled(boolean enabled) {
         refreshAction.setEnabled(enabled);
     }
 

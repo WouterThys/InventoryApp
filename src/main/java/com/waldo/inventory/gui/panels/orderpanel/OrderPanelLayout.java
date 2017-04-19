@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
@@ -25,7 +26,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        ActionListener {
 
     /*
      *                  COMPONENTS
@@ -40,6 +42,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel toolbarDateOrdered;
     private ILabel toolbarDateReceived;
     private ILabel toolbarDateModified;
+    private JButton toolbarOrderButton;
     private JComboBox<Distributor> toolbarDistributorCb;
     /*
      *                  VARIABLES
@@ -125,12 +128,20 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     private void updateEnabledComponents() {
         // Orders
-        if (lastSelectedOrder == null || lastSelectedOrder.isUnknown() || !lastSelectedOrder.canBeSaved()) {
+        if (lastSelectedOrder == null || lastSelectedOrder.isUnknown() || !lastSelectedOrder.canBeSaved() || lastSelectedOrder.isOrdered()) {
             orderToolBar.setEditActionEnabled(false);
             orderToolBar.setDeleteActionEnabled(false);
+            topToolBar.setAddActionEnabled(false);
+            topToolBar.setRefreshActionEnabled(false);
+            toolbarOrderButton.setEnabled(false);
+            toolbarDistributorCb.setEnabled(false);
         } else {
             orderToolBar.setEditActionEnabled(true);
             orderToolBar.setDeleteActionEnabled(true);
+            topToolBar.setAddActionEnabled(true);
+            topToolBar.setRefreshActionEnabled(true);
+            toolbarOrderButton.setEnabled(tableModel.getRowCount() > 0);
+            toolbarDistributorCb.setEnabled(true);
         }
 
         // Items
@@ -143,6 +154,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
 
         topToolBar.setSearchEnabled(tableModel.getRowCount() > 0);
+
     }
 
     private void updateVisibleComponents() {
@@ -170,10 +182,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         westPanel.add(dateLabel, gbc);
 
-        toolbarDateOrdered = new ILabel();
-        toolbarDateOrdered.setEnabled(false);
-        toolbarDateOrdered.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateOrdered.setVerticalAlignment(ILabel.CENTER);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -190,10 +198,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.insets = new Insets(2,2,2,2);
         westPanel.add(receivedLabel, gbc);
 
-        toolbarDateReceived = new ILabel();
-        toolbarDateReceived.setEnabled(false);
-        toolbarDateReceived.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateReceived.setVerticalAlignment(ILabel.CENTER);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -210,10 +214,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.insets = new Insets(2,2,2,2);
         westPanel.add(modifiedLabel, gbc);
 
-        toolbarDateModified = new ILabel();
-        toolbarDateModified.setEnabled(false);
-        toolbarDateModified.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateModified.setVerticalAlignment(ILabel.CENTER);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 2; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -227,16 +227,19 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         eastPanel.add(distributorLabel, gbc);
 
-        DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
-        for (Distributor d : DbManager.db().getDistributors()) {
-            distributorCbModel.addElement(d);
-        }
-        toolbarDistributorCb = new JComboBox<>(distributorCbModel);
         gbc.gridx = 3; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         eastPanel.add(toolbarDistributorCb, gbc);
 
+        // Order button
+        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        eastPanel.add(toolbarOrderButton, gbc);
+
+        // Create panel
         orderTbPanel = new JPanel(new BorderLayout());
         orderTbPanel.add(westPanel, BorderLayout.WEST);
         orderTbPanel.add(eastPanel, BorderLayout.EAST);
@@ -260,6 +263,40 @@ public abstract class OrderPanelLayout extends JPanel implements
         ordersTree = new ITree(treeModel);
         ordersTree.addTreeSelectionListener(this);
         treeModel.setTree(ordersTree);
+
+        // Item table
+        tableModel = new IItemTableModel();
+        itemTable = new ITable(tableModel);
+        itemTable.getSelectionModel().addListSelectionListener(this);
+        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+
+        // Details
+        itemDetailPanel = new ItemDetailPanel(application);
+
+        // Tool bar
+        toolbarDateOrdered = new ILabel();
+        toolbarDateOrdered.setEnabled(false);
+        toolbarDateOrdered.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateOrdered.setVerticalAlignment(ILabel.CENTER);
+
+        toolbarDateReceived = new ILabel();
+        toolbarDateReceived.setEnabled(false);
+        toolbarDateReceived.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateReceived.setVerticalAlignment(ILabel.CENTER);
+
+        toolbarDateModified = new ILabel();
+        toolbarDateModified.setEnabled(false);
+        toolbarDateModified.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateModified.setVerticalAlignment(ILabel.CENTER);
+
+        DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
+        for (Distributor d : DbManager.db().getDistributors()) {
+            distributorCbModel.addElement(d);
+        }
+        toolbarDistributorCb = new JComboBox<>(distributorCbModel);
+
+        toolbarOrderButton = new JButton("Order!");
+        toolbarOrderButton.addActionListener(this);
 
         // Tool bars
         orderToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
@@ -297,15 +334,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         orderToolBar.setFloatable(false);
         topToolBar = new TopToolBar(application, this);
         topToolBar.getContentPane().add(createOrderToolbar());
-
-        // Item table
-        tableModel = new IItemTableModel();
-        itemTable = new ITable(tableModel);
-        itemTable.getSelectionModel().addListSelectionListener(this);
-        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
-
-        // Details
-        itemDetailPanel = new ItemDetailPanel(application);
     }
 
     @Override

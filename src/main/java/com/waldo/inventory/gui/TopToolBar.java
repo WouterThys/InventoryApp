@@ -4,10 +4,8 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -68,8 +66,8 @@ public class TopToolBar extends JPanel implements IObjectSearchPanel.IObjectSear
         application.setTableItems(null); // Should set the table to the selected sub category
     }
 
-    public void setRefreshEnabled(boolean enabled) {
-        mainViewToolBar.setRefreshEnabled(enabled);
+    public void setRefreshActionEnabled(boolean enabled) {
+        mainViewToolBar.setRefreshActionEnabled(enabled);
     }
 
     public void setAddActionEnabled(boolean enabled) {

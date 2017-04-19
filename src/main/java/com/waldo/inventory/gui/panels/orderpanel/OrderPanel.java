@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -237,6 +238,14 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarEdit() {
+
+    }
+
+    //
+    // OrderButton click listener
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
     }
 }
