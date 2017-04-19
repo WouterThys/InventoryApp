@@ -9,42 +9,81 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.SqlDateModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
-public class OrdersDialogLayout extends IDialog
-        implements GuiInterface {
+public abstract class OrdersDialogLayout extends IDialog
+        implements GuiInterface, ActionListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField nameField;
     JComboBox<Distributor> distributorCb;
-    DefaultComboBoxModel<Distributor> distributorCbModel;
+    private DefaultComboBoxModel<Distributor> distributorCbModel;
+
+    JCheckBox isOrderedCb;
+    JDatePickerImpl orderedDatePicker;
+    JDatePickerImpl receivedDatePicker;
+
 
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    boolean showDates;
 
-    public OrdersDialogLayout(Application application, String title) {
+    /*
+    *                  CONSTRUCTOR
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public OrdersDialogLayout(Application application, String title, boolean showDates) {
         super(application, title);
+        this.showDates = showDates;
+        showTitlePanel(false);
+    }
+
+    public OrdersDialogLayout(Dialog dialog, String title, boolean showDates) {
+        super(dialog, title);
+        this.showDates = showDates;
         showTitlePanel(false);
     }
 
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    protected void enableDatePickers(boolean enable) {
+        orderedDatePicker.getComponent(0).setEnabled(enable);
+        orderedDatePicker.getComponent(1).setEnabled(enable);
+        receivedDatePicker.getComponent(0).setEnabled(enable);
+        receivedDatePicker.getComponent(1).setEnabled(enable);
+    }
 
 
     /*
-    *                  LISTENERS
+     *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         nameField = new ITextField("Order name");
         distributorCbModel = new DefaultComboBoxModel<>();
         distributorCb = new JComboBox<>(distributorCbModel);
+
+        isOrderedCb = new JCheckBox("Is ordered");
+        isOrderedCb.addActionListener(this);
+
+        SqlDateModel model = new SqlDateModel();
+        JDatePanelImpl datePanel = new JDatePanelImpl(model);
+        orderedDatePicker = new JDatePickerImpl(datePanel);
+
+        model = new SqlDateModel();
+        datePanel = new JDatePanelImpl(model);
+        receivedDatePicker = new JDatePickerImpl(datePanel);
+
+        enableDatePickers(false);
     }
 
     @Override
@@ -80,6 +119,54 @@ public class OrdersDialogLayout extends IDialog
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         getContentPanel().add(distributorCb, gbc);
+
+        if (showDates) {
+            // Date check box
+            gbc.gridx = 1;
+            gbc.weightx = 0;
+            gbc.gridy = 2;
+            gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            isOrderedCb.setHorizontalAlignment(JLabel.RIGHT);
+            isOrderedCb.setVerticalAlignment(JLabel.CENTER);
+            getContentPanel().add(isOrderedCb, gbc);
+
+            // Date ordered
+            ILabel orderedLabel = new ILabel("Date ordered: ");
+            orderedLabel.setHorizontalAlignment(JLabel.RIGHT);
+            orderedLabel.setVerticalAlignment(JLabel.CENTER);
+            gbc.gridx = 0;
+            gbc.weightx = 0;
+            gbc.gridy = 3;
+            gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            getContentPanel().add(orderedLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            gbc.gridy = 3;
+            gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            getContentPanel().add(orderedDatePicker, gbc);
+
+            // Date received
+            ILabel receivedLabel = new ILabel("Date received: ");
+            receivedLabel.setHorizontalAlignment(JLabel.RIGHT);
+            receivedLabel.setVerticalAlignment(JLabel.CENTER);
+            gbc.gridx = 0;
+            gbc.weightx = 0;
+            gbc.gridy = 4;
+            gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            getContentPanel().add(receivedLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            gbc.gridy = 4;
+            gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            getContentPanel().add(receivedDatePicker, gbc);
+        }
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
     }

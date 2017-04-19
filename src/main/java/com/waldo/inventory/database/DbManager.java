@@ -2,12 +2,10 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
-import com.waldo.inventory.gui.components.IStatusStrip;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.awt.datatransfer.DataTransferer;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -863,7 +861,7 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
-        orders.sort(new Order.OrderComparator());
+        orders.sort(new Order.OrderAllOrders());
     }
 
     public Order getOrderFromDb(long orderId) {

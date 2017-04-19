@@ -2,6 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import org.slf4j.Logger;
@@ -91,10 +92,16 @@ public class Application extends JFrame implements ChangeListener {
         mainPanel.getToolBar().clearSearch();
     }
 
+    public void addItemToOrder(Item item, Order order) {
+        // Set tab
+        tabbedPane.setSelectedIndex(TAB_ORDERS);
+
+        // Add
+        orderPanel.addItemToOrder(item, order);
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
-
-        // Tabs
         ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
     }
 }

@@ -40,12 +40,12 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel toolbarDateOrdered;
     private ILabel toolbarDateReceived;
     private ILabel toolbarDateModified;
-    private DefaultComboBoxModel<Distributor> distributorCbModel;
     private JComboBox<Distributor> toolbarDistributorCb;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
     ResourceManager resourceManager;
     Application application;
 
@@ -80,19 +80,19 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     public void updateToolBar(Order order) {
         if (order.getDateOrdered() != null) {
-            toolbarDateOrdered.setText(sdf.format(order.getDateOrdered()));
+            toolbarDateOrdered.setText(dateFormatShort.format(order.getDateOrdered()));
         } else {
             toolbarDateOrdered.setText("Not ordered yet");
         }
 
         if (order.getDateReceived() != null) {
-            toolbarDateReceived.setText(sdf.format(order.getDateReceived()));
+            toolbarDateReceived.setText(dateFormatShort.format(order.getDateReceived()));
         } else {
             toolbarDateReceived.setText("Not received yet");
         }
 
         if (order.getDateModified() != null) {
-            toolbarDateModified.setText(sdf.format(order.getDateModified()));
+            toolbarDateModified.setText(dateFormatLong.format(order.getDateModified()));
         } else {
             toolbarDateModified.setText(" / ");
         }
@@ -227,7 +227,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         eastPanel.add(distributorLabel, gbc);
 
-        distributorCbModel = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
         for (Distributor d : DbManager.db().getDistributors()) {
             distributorCbModel.addElement(d);
         }
@@ -270,7 +270,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
             @Override
             public void onToolBarAdd() {
-                OrdersDialog dialog = new OrdersDialog(application, "New order");
+                OrdersDialog dialog = new OrdersDialog(application, "New order", true);
                 if (dialog.showDialog() == IDialog.OK) {
                     // Add order
                     Order o = dialog.getOrder();
@@ -305,7 +305,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
-        itemDetailPanel = new ItemDetailPanel();
+        itemDetailPanel = new ItemDetailPanel(application);
     }
 
     @Override

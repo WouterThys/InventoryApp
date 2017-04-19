@@ -40,11 +40,17 @@ public abstract class IDialog extends JDialog {
 
     public IDialog(Frame owner) {
         super(owner);
+        if (owner instanceof Application) {
+            this.application = (Application) owner;
+        }
         initializeDialog();
     }
 
     public IDialog(Frame owner, String title) {
         super(owner, title);
+        if (owner instanceof Application) {
+            this.application = (Application) owner;
+        }
         initializeDialog();
     }
 

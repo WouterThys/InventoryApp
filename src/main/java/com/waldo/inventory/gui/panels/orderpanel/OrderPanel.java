@@ -3,6 +3,8 @@ package com.waldo.inventory.gui.panels.orderpanel;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IItemTableModel;
@@ -13,6 +15,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -20,6 +23,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Order> ordersChanged;
+    private DbObjectChangedListener<OrderItem> orderItemsChanged;
 
     public OrderPanel(Application application) {
         super(application);
@@ -31,6 +35,7 @@ public class OrderPanel extends OrderPanelLayout {
 
         db().addOnItemsChangedListener(itemsChanged);
         db().addOnOrdersChangedListener(ordersChanged);
+        db().addOnOrderItemsChangedListener(orderItemsChanged);
 
         updateComponents(null);
     }
@@ -47,7 +52,15 @@ public class OrderPanel extends OrderPanelLayout {
         return tableModel;
     }
 
+    public void addItemToOrder(Item item, Order order) {
+        // Add to data base
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItemId(item.getId());
+        orderItem.setOrderId(order.getId());
+        orderItem.setName(item.toString() + " - " + order.toString());
 
+        orderItem.save();
+    }
 
 
     private void initActions() {
@@ -72,6 +85,7 @@ public class OrderPanel extends OrderPanelLayout {
     private void initializeListeners() {
         setItemsChangedListener();
         setOrdersChangedListener();
+        setOrderItemsChangedListener();
     }
 
     private void setItemsChangedListener() {
@@ -121,6 +135,31 @@ public class OrderPanel extends OrderPanelLayout {
             public void onDeleted(Order order) {
                 treeModel.removeObject(order);
                 updateComponents(null);
+            }
+        };
+    }
+
+    private void setOrderItemsChangedListener() {
+        orderItemsChanged = new DbObjectChangedListener<OrderItem>() {
+            @Override
+            public void onAdded(OrderItem orderItem) {
+                Order order = DbManager.db().findOrderById(orderItem.getOrderId());
+                Item item = DbManager.db().findItemById(orderItem.getItemId());
+
+                order.getOrderItems().add(item);
+                order.setDateModified(new Date(System.currentTimeMillis()));
+
+                updateComponents(order);
+            }
+
+            @Override
+            public void onUpdated(OrderItem newOrderItem, OrderItem oldOrderItem) {
+
+            }
+
+            @Override
+            public void onDeleted(OrderItem orderItem) {
+
             }
         };
     }

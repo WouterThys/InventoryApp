@@ -3,8 +3,11 @@ package com.waldo.inventory.gui.panels.itemdetailpanel;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
+import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +19,8 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private Item selectedItem;
 
-    public ItemDetailPanel() {
-        super();
+    public ItemDetailPanel(Application application) {
+        super(application);
         initializeComponents();
         initializeLayouts();
         initActions();
@@ -41,6 +44,8 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void initActions() {
         dataSheetButton.addActionListener(e -> openDataSheet(selectedItem));
+        orderButton.addActionListener(e -> orderItem(selectedItem));
+
     }
 
     private void openDataSheet(Item item) {
@@ -70,6 +75,13 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
                     e1.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void orderItem(Item item) {
+        OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item);
+        if (dialog.showDialog() == IDialog.OK) {
+
         }
     }
 

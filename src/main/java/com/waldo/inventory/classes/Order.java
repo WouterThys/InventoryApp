@@ -1,11 +1,9 @@
 package com.waldo.inventory.classes;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -15,7 +13,7 @@ public class Order extends DbObject {
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;
-    private List<Item> orderItems;
+    private List<Item> orderItems = new ArrayList<>();
     private Date dateModified;
     private Date dateReceived;
     private Distributor distributor;
@@ -52,11 +50,15 @@ public class Order extends DbObject {
         if (dateOrdered != null) {
             return dateOrdered.toString();
         } else {
-            return super.toString();
+            if (isUnknown() || !canBeSaved()) {
+                return super.toString();
+            } else {
+                return dateModified.toString() + " - " + super.toString();
+            }
         }
     }
 
-    public static class OrderComparator implements Comparator<Order> {
+    public static class OrderAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
             if (o1.isUnknown()) {
@@ -74,6 +76,13 @@ public class Order extends DbObject {
             } else { // None ordered
                 return o1.getDateModified().compareTo(o2.getDateModified());
             }
+        }
+    }
+
+    public static class OrderUnordered implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            return o1.getDateModified().compareTo(o2.getDateModified());
         }
     }
 

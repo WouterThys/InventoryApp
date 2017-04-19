@@ -124,7 +124,7 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
-        detailPanel = new ItemDetailPanel();
+        detailPanel = new ItemDetailPanel(application);
     }
 
     @Override
