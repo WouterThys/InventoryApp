@@ -310,7 +310,13 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object object) {}
 
+    @Override
+    public void setEnabled(boolean enabled) {
+            searchField.setEnabled(enabled);
+            searchButton.setEnabled(enabled);
+            infoLabel.setEnabled(enabled);
+            advancedLabel.setEnabled(enabled);
     }
 }

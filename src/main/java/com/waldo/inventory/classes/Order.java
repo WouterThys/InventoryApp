@@ -1,10 +1,13 @@
 package com.waldo.inventory.classes;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 
 public class Order extends DbObject {
@@ -49,7 +52,28 @@ public class Order extends DbObject {
         if (dateOrdered != null) {
             return dateOrdered.toString();
         } else {
-            return Date.valueOf(LocalDate.MIN).toString();
+            return super.toString();
+        }
+    }
+
+    public static class OrderComparator implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            if (o1.isUnknown()) {
+                return 1;
+            }
+            if (o2.isUnknown()) {
+                return -1;
+            }
+            if (o1.isOrdered() && o2.isOrdered()) { // Both ordered
+                return o1.getDateOrdered().compareTo(o2.dateOrdered);
+            } else if (o1.isOrdered() && !o2.isOrdered()) { // o1 ordered
+                return 1;
+            } else if (!o1.isOrdered() && o2.isOrdered()) { // o2 ordered
+                return -1;
+            } else { // None ordered
+                return o1.getDateModified().compareTo(o2.getDateModified());
+            }
         }
     }
 

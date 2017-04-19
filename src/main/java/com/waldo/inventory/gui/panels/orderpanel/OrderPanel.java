@@ -108,16 +108,19 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onAdded(Order order) {
                 treeModel.addObject(order);
+                updateComponents(order);
             }
 
             @Override
             public void onUpdated(Order newOrder, Order oldOrder) {
                 treeModel.updateObject(newOrder, oldOrder);
+                updateComponents(newOrder);
             }
 
             @Override
             public void onDeleted(Order order) {
                 treeModel.removeObject(order);
+                updateComponents(null);
             }
         };
     }
@@ -164,7 +167,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarRefresh() {
-
+        updateComponents(lastSelectedOrder);
     }
 
     @Override

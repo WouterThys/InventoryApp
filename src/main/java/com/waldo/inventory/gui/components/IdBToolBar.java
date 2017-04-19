@@ -18,6 +18,10 @@ public class IdBToolBar extends JToolBar {
         void onToolBarEdit();
     }
 
+    private Action refreshAction;
+    private Action addAction;
+    private Action deleteAction;
+    private Action editAction;
     private TitledBorder titledBorder;
     private IdbToolBarListener toolBarListener;
 
@@ -41,12 +45,6 @@ public class IdBToolBar extends JToolBar {
         init(listener);
     }
 
-//    protected abstract void refresh();
-//    protected abstract void add();
-//    protected abstract void delete();
-//    protected abstract void update();
-
-
     private void init(IdbToolBarListener listener) {
         this.toolBarListener = listener;
 
@@ -55,28 +53,28 @@ public class IdBToolBar extends JToolBar {
         ResourceManager resourceManager = new ResourceManager(url.getPath());
 
         // Actions
-        Action refreshAction = new AbstractAction("Refresh", resourceManager.readImage("Toolbar.RefreshIcon")) {
+        refreshAction = new AbstractAction("Refresh", resourceManager.readImage("Toolbar.RefreshIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarRefresh();
             }
         };
 
-        Action addAction = new AbstractAction("Add", resourceManager.readImage("Toolbar.AddIcon")) {
+        addAction = new AbstractAction("Add", resourceManager.readImage("Toolbar.AddIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarAdd();
             }
         };
 
-        Action deleteAction = new AbstractAction("Delete", resourceManager.readImage("Toolbar.DeleteIcon")) {
+        deleteAction = new AbstractAction("Delete", resourceManager.readImage("Toolbar.DeleteIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarDelete();
             }
         };
 
-        Action editAction = new AbstractAction("Update", resourceManager.readImage("Toolbar.EditIcon")) {
+        editAction = new AbstractAction("Update", resourceManager.readImage("Toolbar.EditIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarEdit();
@@ -101,9 +99,19 @@ public class IdBToolBar extends JToolBar {
         super.setBorder(titledBorder);
     }
 
-    public void setBorderTitle(String title) {
-        if (titledBorder != null) {
-            titledBorder.setTitle(title);
-        }
+    public void setRefreshEnabled(boolean enabled) {
+        refreshAction.setEnabled(enabled);
+    }
+
+    public void setAddActionEnabled(boolean enabled) {
+        addAction.setEnabled(enabled);
+    }
+
+    public void setDeleteActionEnabled(boolean enabled) {
+        deleteAction.setEnabled(enabled);
+    }
+
+    public void setEditActionEnabled(boolean enabled) {
+        editAction.setEnabled(enabled);
     }
 }

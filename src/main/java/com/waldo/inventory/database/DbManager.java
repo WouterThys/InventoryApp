@@ -7,6 +7,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.awt.datatransfer.DataTransferer;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -862,6 +863,7 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
+        orders.sort(new Order.OrderComparator());
     }
 
     public Order getOrderFromDb(long orderId) {
@@ -878,6 +880,11 @@ public class DbManager implements TableChangedListener {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconpath"));
+                    o.setDateOrdered(rs.getDate("dateordered"));
+                    o.setDateModified(rs.getDate("datemodified"));
+                    o.setDateReceived(rs.getDate("datereceived"));
+                    o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setOrderItems(getOrderedItems(o.getId()));
                 }
             }
         } catch (SQLException e) {

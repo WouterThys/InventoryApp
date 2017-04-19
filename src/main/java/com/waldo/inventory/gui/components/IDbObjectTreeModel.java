@@ -1,19 +1,12 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.gui.components.ITree;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.util.Enumeration;
 
 public class IDbObjectTreeModel extends DefaultTreeModel {
@@ -40,6 +33,23 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     public void clear() {
         rootNode.removeAllChildren();
         reload();
+    }
+
+    public void expandNodes(int startingIndex, int rowCount){
+        for(int i=startingIndex;i<rowCount;++i){
+            tree.expandRow(i);
+        }
+
+        if(tree.getRowCount()!=rowCount){
+            expandNodes(rowCount, tree.getRowCount());
+        }
+    }
+
+    public void setSelectedObject(DbObject object) {
+        DefaultMutableTreeNode node = findNode(object);
+        if (node != null) {
+            tree.setSelectionPath(new TreePath(node));
+        }
     }
 
     public void removeCurrentNode() {
@@ -82,6 +92,10 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     private DefaultMutableTreeNode addDbObject(DefaultMutableTreeNode parent, DbObject child) {
         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 
+        if (type == TYPE_ORDERS) {
+            childNode.setAllowsChildren(false);
+        }
+
         if (parent == null) {
             parent = rootNode;
         }
@@ -114,7 +128,11 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
             }
         }
         if (type == TYPE_ORDERS) {
-
+            if(((Order)child).isOrdered()) {
+                return (DefaultMutableTreeNode) rootNode.getChildAt(0); // Ordered
+            } else {
+                return (DefaultMutableTreeNode) rootNode.getChildAt(1); // Not ordered
+            }
         }
         return null;
     }
@@ -125,7 +143,7 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
 
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = e.nextElement();
-            if (node.getUserObject().equals(object)) {
+            if (object.equals(node.getUserObject())) {
                 return node;
             }
         }

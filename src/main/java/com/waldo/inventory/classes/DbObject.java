@@ -39,6 +39,7 @@ public abstract class DbObject {
 
     private TableChangedListener onTableChangedListener;
     private DbObject oldObject;
+    private boolean canBeSaved = true;
 
     private String sqlInsert;
     private String sqlUpdate;
@@ -84,6 +85,12 @@ public abstract class DbObject {
         if (dbObject instanceof Category) return TYPE_CATEGORY;
         if (dbObject instanceof Product) return TYPE_PRODUCT;
         if (dbObject instanceof Type) return TYPE_TYPE;
+        if (dbObject instanceof Distributor) return TYPE_DISTRIBUTOR;
+        if (dbObject instanceof Location) return TYPE_LOCATION;
+        if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;
+        if (dbObject instanceof Order) return TYPE_ORDER;
+        if (dbObject instanceof OrderItem) return TYPE_ORDER_ITEM;
+
         return TYPE_UNKNOWN;
     }
 
@@ -124,6 +131,10 @@ public abstract class DbObject {
     }
 
     public void save() {
+        if (!canBeSaved) {
+            JOptionPane.showMessageDialog(null, "\""+name+"\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         final long saveId = id;
         SwingWorker worker = new SwingWorker() {
             @Override
@@ -186,25 +197,28 @@ public abstract class DbObject {
     }
 
     public void delete() {
-        SwingWorker worker = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                doDelete();
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    get(10, TimeUnit.SECONDS);
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    JOptionPane.showMessageDialog(null, "Error deleting \""+name+"\". \n Exception: " + e.getMessage(),"Delete error" ,JOptionPane.ERROR_MESSAGE);
-                    LOG.error("Failed to delete object.", e);
+        if (canBeSaved) {
+            SwingWorker worker = new SwingWorker() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    doDelete();
+                    return null;
                 }
-            }
-        };
-        worker.execute();
 
+                @Override
+                protected void done() {
+                    try {
+                        get(10, TimeUnit.SECONDS);
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        JOptionPane.showMessageDialog(null, "Error deleting \"" + name + "\". \n Exception: " + e.getMessage(), "Delete error", JOptionPane.ERROR_MESSAGE);
+                        LOG.error("Failed to delete object.", e);
+                    }
+                }
+            };
+            worker.execute();
+        } else {
+            JOptionPane.showMessageDialog(null, "\""+name+"\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
@@ -213,7 +227,9 @@ public abstract class DbObject {
             return "(No name)";
         }
         if (id == -1) {
-            return name + "*";
+            if (canBeSaved) {
+                return name + "*";
+            }
         }
         return name;
     }
@@ -223,6 +239,9 @@ public abstract class DbObject {
         if (obj instanceof DbObject) {
             if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
                 return true;
+            }
+            if (id < 0 || ((DbObject) obj).getId() < 0) {
+                return name.equals(((DbObject) obj).getName());
             }
         }
         return false;
@@ -268,6 +287,9 @@ public abstract class DbObject {
         }
     }
 
+    public boolean isUnknown() {
+        return id == UNKNOWN_ID;
+    }
 
     public long getId() {
         return id;
@@ -278,6 +300,9 @@ public abstract class DbObject {
     }
 
     public String getName() {
+        if (name == null) {
+            name = "";
+        }
         return name;
     }
 
@@ -298,5 +323,13 @@ public abstract class DbObject {
 
     public void setOnTableChangedListener(TableChangedListener tableChangedListenerListener) {
         this.onTableChangedListener = tableChangedListenerListener;
+    }
+
+    public boolean canBeSaved() {
+        return canBeSaved;
+    }
+
+    public void setCanBeSaved(boolean canBeSaved) {
+        this.canBeSaved = canBeSaved;
     }
 }
