@@ -166,9 +166,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         newItem.setProductId(getCbProductId());
         newItem.setTypeId(getCbTypeId());
 
-
         newItem.setLocalDataSheet(getLocalDataSheetFieldValue());
         newItem.setOnlineDataSheet(getOnlineDataSheetFieldValue());
+
+        // TODO: remove here
+        newItem.setLocationId(1);
     }
 
 

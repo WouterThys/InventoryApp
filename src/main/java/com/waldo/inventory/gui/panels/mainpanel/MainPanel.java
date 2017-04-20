@@ -108,7 +108,7 @@ public class MainPanel extends MainPanelLayout {
 
     private void updateItems() {
         if (lastSelectedDivision == null) {
-            lastSelectedDivision = (DbObject) treeModel.getRoot();
+            lastSelectedDivision = (DbObject) ((DefaultMutableTreeNode)treeModel.getRoot()).getUserObject();
         }
         updateComponents(lastSelectedDivision);
     }

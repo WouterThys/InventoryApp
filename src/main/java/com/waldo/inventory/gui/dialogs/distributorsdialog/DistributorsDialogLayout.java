@@ -53,6 +53,11 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    protected void updateEnabledComponents() {
+        toolBar.setEditActionEnabled((selectedDistributor != null));
+        toolBar.setDeleteActionEnabled((selectedDistributor != null));
+    }
+
     private JPanel createWestPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Distributors");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
@@ -237,6 +242,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         }
 
         selectedDistributor = (Distributor) object;
+        updateEnabledComponents();
 
         if (selectedDistributor != null) {
             distributorList.setSelectedValue(selectedDistributor, true);

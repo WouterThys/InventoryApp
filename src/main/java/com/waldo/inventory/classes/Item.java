@@ -27,15 +27,30 @@ public class Item extends DbObject {
     @Override
     protected void insert(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, description);
-        statement.setDouble(4, price);
-        statement.setLong(5, categoryId);
-        statement.setLong(6, productId);
-        statement.setLong(7, typeId);
-        statement.setString(8, localDataSheet);
-        statement.setString(9, onlineDataSheet);
+        statement.setString(9, iconPath);
+        statement.setString(2, description);
+        statement.setDouble(3, price);
+        if (categoryId < UNKNOWN_ID) {
+            categoryId = UNKNOWN_ID;
+        }
+        statement.setLong(4, categoryId);
+        if (productId < UNKNOWN_ID) {
+            productId = UNKNOWN_ID;
+        }
+        statement.setLong(5, productId);
+        if (typeId < UNKNOWN_ID) {
+            typeId = UNKNOWN_ID;
+        }
+        statement.setLong(6, typeId);
+        statement.setString(7, localDataSheet);
+        statement.setString(8, onlineDataSheet);
+        if (manufacturerId < UNKNOWN_ID) {
+            manufacturerId = UNKNOWN_ID;
+        }
         statement.setLong(10, manufacturerId);
+        if (locationId < UNKNOWN_ID) {
+            locationId = UNKNOWN_ID;
+        }
         statement.setLong(11, locationId);
         statement.execute();
     }
@@ -43,15 +58,30 @@ public class Item extends DbObject {
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, description);
-        statement.setDouble(4, price);
-        statement.setLong(5, categoryId);
-        statement.setLong(6, productId);
-        statement.setLong(7, typeId);
-        statement.setString(8, localDataSheet);
-        statement.setString(9, onlineDataSheet);
+        statement.setString(9, iconPath);
+        statement.setString(2, description);
+        statement.setDouble(3, price);
+        if (categoryId < UNKNOWN_ID) {
+            categoryId = UNKNOWN_ID;
+        }
+        statement.setLong(4, categoryId);
+        if (productId < UNKNOWN_ID) {
+            productId = UNKNOWN_ID;
+        }
+        statement.setLong(5, productId);
+        if (typeId < UNKNOWN_ID) {
+            typeId = UNKNOWN_ID;
+        }
+        statement.setLong(6, typeId);
+        statement.setString(7, localDataSheet);
+        statement.setString(8, onlineDataSheet);
+        if (manufacturerId < UNKNOWN_ID) {
+            manufacturerId = UNKNOWN_ID;
+        }
         statement.setLong(10, manufacturerId);
+        if (locationId < UNKNOWN_ID) {
+            locationId = UNKNOWN_ID;
+        }
         statement.setLong(11, locationId);
 
         statement.setLong(12, id); // WHERE id

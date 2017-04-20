@@ -74,7 +74,7 @@ public class ImageUtils {
 
             String extension = ImageUtils.getExtension(f);
             if (extension != null) {
-                if (extension.equals(ImageUtils.jpeg) || extension.equals(ImageUtils.jpg) || extension.equals(ImageUtils.png)) {
+                if (extension.equals(ImageUtils.jpeg) || extension.equals(ImageUtils.jpg) || extension.equals(ImageUtils.png) || extension.equals(ImageUtils.gif)) {
                     return true;
                 }
             } else {
@@ -85,7 +85,7 @@ public class ImageUtils {
 
         @Override
         public String getDescription() {
-            return "Jpeg, jpg and png images";
+            return "Jpeg, jpg, png and gif images";
         }
     }
 }

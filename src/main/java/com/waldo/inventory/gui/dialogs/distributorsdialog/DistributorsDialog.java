@@ -107,7 +107,8 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         if (!e.getValueIsAdjusting()) {
             JList list = (JList) e.getSource();
             selectedDistributor = (Distributor) list.getSelectedValue();
-            if (selectedDistributor != null && selectedDistributor.getId() != DbObject.UNKNOWN_ID) {
+            updateEnabledComponents();
+            if (selectedDistributor != null && !selectedDistributor.isUnknown()) {
                 setDetails();
             } else {
                 clearDetails();

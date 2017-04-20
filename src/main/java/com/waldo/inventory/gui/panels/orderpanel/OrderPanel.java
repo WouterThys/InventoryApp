@@ -113,7 +113,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void updateItems() {
         if (lastSelectedOrder == null) {
-            lastSelectedOrder = (Order) treeModel.getRoot();
+            lastSelectedOrder = (Order) ((DefaultMutableTreeNode)treeModel.getRoot()).getUserObject();
         }
         updateComponents(lastSelectedOrder);
     }

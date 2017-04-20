@@ -143,6 +143,7 @@ public abstract class DbObject {
                     LOG.debug("Start save.");
                     doSave();
                 } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Failed to save object: " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                     LOG.error("Failed to save object.", e);
                 }
                 return null;

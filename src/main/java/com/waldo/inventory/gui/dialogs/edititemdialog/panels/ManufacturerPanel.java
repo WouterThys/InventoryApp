@@ -118,7 +118,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
                     Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());
                     if (m != null && !m.getIconPath().isEmpty()) {
                         url = new File(m.getIconPath()).toURI().toURL();
-                        iconLabel.setIcon(resourceManager.readImage(url, 48, 48));
+                        iconLabel.setIcon(resourceManager.readImage(url));
                     }
                 } catch (IOException e1) {
                     e1.printStackTrace();
