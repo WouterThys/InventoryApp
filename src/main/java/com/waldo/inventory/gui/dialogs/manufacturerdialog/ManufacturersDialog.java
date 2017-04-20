@@ -101,6 +101,10 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         return ok;
     }
 
+    //
+    // Search listener
+    //
+
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
         Manufacturer mFound = (Manufacturer) foundObjects.get(0);
@@ -112,6 +116,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         manufacturerList.setSelectedValue(selectedManufacturer, true);
     }
 
+    //
+    // Manufacturer listener
+    //
     @Override
     public void onAdded(Manufacturer manufacturer) {
         updateComponents(manufacturer);
@@ -127,18 +134,27 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         updateComponents(null);
     }
 
+
+    //
+    // List selection listener
+    //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
+        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             JList list = (JList) e.getSource();
-            selectedManufacturer = (Manufacturer) list.getSelectedValue();
-            if (selectedManufacturer != null && selectedManufacturer.getId() != DbObject.UNKNOWN_ID) {
+            //selectedManufacturer = (Manufacturer) list.getSelectedValue();
+            updateComponents(list.getSelectedValue());
+            if (selectedManufacturer != null && !selectedManufacturer.isUnknown()) {
                 setDetails();
             } else {
                 clearDetails();
             }
         }
     }
+
+    //
+    // Tool bar
+    //
 
     @Override
     public void onToolBarRefresh() {

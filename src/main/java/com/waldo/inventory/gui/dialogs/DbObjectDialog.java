@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;

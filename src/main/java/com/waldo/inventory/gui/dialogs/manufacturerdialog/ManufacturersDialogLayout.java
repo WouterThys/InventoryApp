@@ -8,7 +8,6 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -36,7 +35,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
 
     ITextField detailName;
     ITextField detailWebsite;
-    private JButton detailsBroweButton;
+    private JButton detailsBrowseButton;
     ILabel detailLogo;
 
     private JList<Item> detailItemList;
@@ -57,6 +56,17 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private void updateEnabledComponents() {
+        if (selectedManufacturer == null || selectedManufacturer.isUnknown()) {
+            toolBar.setDeleteActionEnabled(false);
+            toolBar.setEditActionEnabled(false);
+        } else {
+            toolBar.setDeleteActionEnabled(true);
+            toolBar.setEditActionEnabled(true);
+        }
+    }
+
+
     private JPanel createWestPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Manufacturers");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
@@ -123,8 +133,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         constraints.gridx = 1; constraints.weightx = 0;
         constraints.gridy = 0; constraints.weighty = 0;
         constraints.fill = GridBagConstraints.VERTICAL;
-        detailsBroweButton.setSize(new Dimension(detailsBroweButton.getWidth(), detailWebsite.getHeight()));
-        browsePanel.add(detailsBroweButton, constraints);
+        detailsBrowseButton.setSize(new Dimension(detailsBrowseButton.getWidth(), detailWebsite.getHeight()));
+        browsePanel.add(detailsBrowseButton, constraints);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -207,8 +217,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         detailLogo = new ILabel();
         //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBroweButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
-        detailsBroweButton.addActionListener(e -> {
+        detailsBrowseButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        detailsBrowseButton.addActionListener(e -> {
             if (!detailWebsite.getText().isEmpty())
                 try {
                     OpenUtils.browseLink(detailWebsite.getText());
@@ -235,18 +245,24 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object object) {
-        // Get all menus
-        manufacturerDefaultListModel.removeAllElements();
-        for(Manufacturer m : db().getManufacturers()) {
-            if (m.getId() != DbObject.UNKNOWN_ID) {
-                manufacturerDefaultListModel.addElement(m);
+        try {
+            application.beginWait();
+            // Get all menus
+            manufacturerDefaultListModel.removeAllElements();
+            for (Manufacturer m : db().getManufacturers()) {
+                if (!m.isUnknown()) {
+                    manufacturerDefaultListModel.addElement(m);
+                }
             }
-        }
 
-        selectedManufacturer = (Manufacturer) object;
+            selectedManufacturer = (Manufacturer) object;
+            updateEnabledComponents();
 
-        if (selectedManufacturer != null) {
-            manufacturerList.setSelectedValue(selectedManufacturer, true);
+            if (selectedManufacturer != null) {
+                manufacturerList.setSelectedValue(selectedManufacturer, true);
+            }
+        } finally {
+            application.endWait();
         }
     }
 }

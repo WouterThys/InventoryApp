@@ -30,6 +30,8 @@ public class Application extends JFrame implements ChangeListener {
     private MainPanel mainPanel;
     private OrderPanel orderPanel;
 
+    private boolean updating = false;
+
     public Application() {
         // Status
         Status().init();
@@ -105,12 +107,18 @@ public class Application extends JFrame implements ChangeListener {
         }
     }
 
+    public boolean isUpdating() {
+        return updating;
+    }
+
     public void beginWait() {
+        updating = true;
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     public void endWait() {
         this.setCursor(Cursor.getDefaultCursor());
+        updating = false;
     }
 
     @Override
