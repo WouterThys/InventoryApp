@@ -68,7 +68,10 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener subDivisionsSelected() {
-        return e -> SubDivisionsDialog.showDialog(application);
+        return e -> {
+            SubDivisionsDialog divisionsDialog = new SubDivisionsDialog(application, "Sub divisions");
+            divisionsDialog.showDialog();
+        };
     }
 
     private ActionListener manufacturersSelected() {

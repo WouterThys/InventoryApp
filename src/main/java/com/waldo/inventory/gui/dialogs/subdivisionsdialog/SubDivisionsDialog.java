@@ -18,32 +18,16 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
-    public static int showDialog(Application parent) {
-        SubDivisionsDialog dialog = new SubDivisionsDialog(parent, "Sub Divisions");
-
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                db().removeOnCategoriesChangedListener(dialog.categoriesChanged);
-                db().removeOnProductsChangedListener(dialog.productsChanged);
-                db().removeOnTypesChangedListener(dialog.typesChanged);
-                super.windowClosing(e);
-            }
-        });
-
-        if (parent != null) {
-            dialog.setLocationRelativeTo(parent);
-        } else {
-            dialog.setLocationByPlatform(true);
-        }
-        dialog.pack();
-        dialog.setMinimumSize(dialog.getSize());
-        dialog.setVisible(true);
-        return dialog.dialogResult;
+    public int showDialog() {
+        setLocationRelativeTo(application);
+        pack();
+        setMinimumSize(getSize());
+        setVisible(true);
+        return dialogResult;
     }
 
 
-    private SubDivisionsDialog(Application application, String title) {
+    public SubDivisionsDialog(Application application, String title) {
         super(application, title);
         initializeComponents();
         initializeLayouts();
@@ -61,7 +45,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
     private void initActions() {
         subDivisionList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting() && !application.isUpdating()) {
                 JList list = (JList)e.getSource();
                 selectedSubType = list.getSelectedIndex();
                 detailsPanel.setTitle((String) list.getSelectedValue());
@@ -72,14 +56,16 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         });
 
         detailList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting() && !application.isUpdating()) {
                 setSelectedObject((DbObject) ((JList)e.getSource()).getSelectedValue());
+                updateEnabledComponents();
             }
         });
 
         selectionComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 updateDetailList();
+                updateEnabledComponents();
             }
         });
     }
@@ -106,7 +92,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             case PRODUCTS:
                 selectionCbModel.removeAllElements();
                 for (Category c : db().getCategories()) {
-                    if (c.getId() > DbObject.UNKNOWN_ID) {
+                    if (!c.isUnknown()) {
                         selectionCbModel.addElement(c);
                     }
                 }
@@ -114,7 +100,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             case TYPES:
                 selectionCbModel.removeAllElements();
                 for (Product p : db().getProducts()) {
-                    if (p.getId() > DbObject.UNKNOWN_ID) {
+                    if (!p.isUnknown()) {
                         selectionCbModel.addElement(p);
                     }
                 }
@@ -202,7 +188,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 }
                 detailListModel.removeAllElements();
                 for (com.waldo.inventory.classes.Type t : DbManager.db().getTypeListForProduct(productId)) {
-                    if (t.getId() > DbObject.UNKNOWN_ID) {
+                    if (!t.isUnknown()) {
                         detailListModel.addElement(t);
                     }
                 }
@@ -240,7 +226,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 }
                 detailListModel.removeAllElements();
                 for (Product p : DbManager.db().getProductListForCategory(categoryId)) {
-                    if (p.getId() > DbObject.UNKNOWN_ID) {
+                    if (!p.isUnknown()) {
                         detailListModel.addElement(p);
                     }
                 }
@@ -271,7 +257,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
             for (Category c : DbManager.db().getCategories()) {
-                if (c.getId() > DbObject.UNKNOWN_ID) {
+                if (!c.isUnknown()) {
                     detailListModel.addElement(c);
                 }
             }
@@ -280,30 +266,59 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
     @Override
     public void updateComponents(Object object) {
-        switch (selectedSubType) {
-            case CATEGORIES:
-                selectionLabel.setVisible(false);
-                selectionComboBox.setVisible(false);
-                updateCategoryList();
-                break;
+        try {
+            application.beginWait();
+            // Update
+            switch (selectedSubType) {
+                case CATEGORIES:
+                    selectionLabel.setVisible(false);
+                    selectionComboBox.setVisible(false);
+                    updateCategoryList();
+                    break;
 
-            case PRODUCTS:
-                selectionLabel.setText("Select a category");
-                selectionLabel.setVisible(true);
-                selectionComboBox.setVisible(true);
-                updateProductList();
-                break;
+                case PRODUCTS:
+                    selectionLabel.setText("Select a category");
+                    selectionLabel.setVisible(true);
+                    selectionComboBox.setVisible(true);
+                    updateProductList();
+                    break;
 
-            case TYPES:
-                selectionLabel.setText("Select a product");
-                selectionLabel.setVisible(true);
-                selectionComboBox.setVisible(true);
-                updateTypeList();
-                break;
+                case TYPES:
+                    selectionLabel.setText("Select a product");
+                    selectionLabel.setVisible(true);
+                    selectionComboBox.setVisible(true);
+                    updateTypeList();
+                    break;
+            }
+            updateEnabledComponents();
+            SwingUtilities.invokeLater(this::repaint);
+        } finally {
+            application.endWait();
         }
-        SwingUtilities.invokeLater(this::repaint);
     }
 
+    //
+    // Dialog Listeners
+    //
+    @Override
+    protected void onOK() {
+        db().removeOnCategoriesChangedListener(categoriesChanged);
+        db().removeOnProductsChangedListener(productsChanged);
+        db().removeOnTypesChangedListener(typesChanged);
+        super.onOK();
+    }
+
+    @Override
+    protected void onCancel() {
+        db().removeOnCategoriesChangedListener(categoriesChanged);
+        db().removeOnProductsChangedListener(productsChanged);
+        db().removeOnTypesChangedListener(typesChanged);
+        super.onCancel();
+    }
+
+    //
+    // Search Listeners
+    //
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
         selectObject(foundObjects.get(0)); // Just select first
@@ -314,6 +329,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         setSelectedObject(selectedObject);
     }
 
+    //
+    // Tool bar listeners
+    //
     @Override
     public void onToolBarRefresh() {
         updateComponents(null);

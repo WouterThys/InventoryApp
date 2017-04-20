@@ -61,6 +61,16 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    void updateEnabledComponents() {
+        if (selectedObject == null) {
+            toolBar.setDeleteActionEnabled(false);
+            toolBar.setEditActionEnabled(false);
+        } else {
+            toolBar.setDeleteActionEnabled(true);
+            toolBar.setEditActionEnabled(true);
+        }
+    }
+
     private JPanel createDetailsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         JScrollPane list = new JScrollPane(detailList);
