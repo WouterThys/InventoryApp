@@ -56,7 +56,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             detailWebsite.setTextBeforeEdit(selectedDistributor.getWebsite());
 
             if (!selectedDistributor.getIconPath().isEmpty()) {
-                detailLogo.setIcon(selectedDistributor.getIconPath(), 48,48);
+                detailLogo.setIcon(selectedDistributor.getIconPath());
             } else {
                 detailLogo.setIcon(resourceManager.readImage("Common.UnknownIcon48"));
             }
@@ -104,10 +104,9 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
+        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             JList list = (JList) e.getSource();
-            selectedDistributor = (Distributor) list.getSelectedValue();
-            updateEnabledComponents();
+            updateComponents(list.getSelectedValue());
             if (selectedDistributor != null && !selectedDistributor.isUnknown()) {
                 setDetails();
             } else {
