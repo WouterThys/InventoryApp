@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36fd7e16-0309-4518-8f75-f0c4236fa64c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/inventory.db" afterPath="$PROJECT_DIR$/data/inventory.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/subdivisionsdialog/SubDivisionsDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/subdivisionsdialog/SubDivisionsDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanel.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanelLayout.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanelLayout.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -31,8 +26,8 @@
       <file leaf-file-name="OrderPanelLayout.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="373" column="9" lean-forward="true" selection-start-line="367" selection-start-column="8" selection-end-line="373" selection-end-column="9" />
+            <state relative-caret-position="5535">
+              <caret line="373" column="9" lean-forward="false" selection-start-line="367" selection-start-column="8" selection-end-line="373" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -43,11 +38,9 @@
       <file leaf-file-name="MainPanel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-244">
+            <state relative-caret-position="1230">
               <caret line="108" column="17" lean-forward="false" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="17" />
               <folding>
-                <element signature="e#1949#2441#0" expanded="true" />
-                <element signature="e#2440#2441#0" expanded="true" />
                 <element signature="method#onToolBarAdd#0;class#MainPanel#0" expanded="false" />
                 <element signature="method#onToolBarDelete#0;class#MainPanel#0" expanded="false" />
                 <element signature="method#onToolBarEdit#0;class#MainPanel#0" expanded="false" />
@@ -59,7 +52,7 @@
       <file leaf-file-name="MainPanelLayout.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanelLayout.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
+            <state relative-caret-position="1245">
               <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
               <folding />
             </state>
@@ -69,11 +62,9 @@
       <file leaf-file-name="SubDivisionsDialog.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/subdivisionsdialog/SubDivisionsDialog.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1019">
+            <state relative-caret-position="823">
               <caret line="222" column="44" lean-forward="false" selection-start-line="222" selection-start-column="44" selection-end-line="222" selection-end-column="44" />
               <folding>
-                <element signature="e#5417#5418#0" expanded="true" />
-                <element signature="e#5469#5470#0" expanded="true" />
                 <element signature="method#onToolBarAdd#0;class#SubDivisionsDialog#0" expanded="false" />
                 <element signature="method#onToolBarDelete#0;class#SubDivisionsDialog#0" expanded="false" />
                 <element signature="method#onToolBarEdit#0;class#SubDivisionsDialog#0" expanded="false" />
@@ -250,7 +241,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -669,6 +659,7 @@
       </pane>
       <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1303,10 +1294,10 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5016575" sideWeight="0.52347916" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25856355" sideWeight="0.4765208" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25856355" sideWeight="0.4765208" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25773746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26040554" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="MaxCompute Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="MaxCompute Job Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Running Info" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1316,7 +1307,7 @@
       <window_info id="Running Result" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="MaxCompute Project Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3127072" sideWeight="0.5688367" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3127072" sideWeight="0.5688367" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1590,37 +1581,6 @@
             <element signature="method#getItemListForType#0;class#DbManager#0" expanded="false" />
             <element signature="method#getItemsForManufacturer#0;class#DbManager#0" expanded="false" />
             <element signature="method#getItemsForCategory#0;class#DbManager#0" expanded="false" />
-            <marker date="1492642069570" expanded="true" signature="4573:4624" ph=" SELECT statement (SQLITE_MASTER)" />
-            <marker date="1492642069570" expanded="true" signature="14401:14434" ph=" SELECT statement (ITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="16646:16676" ph=" SELECT statement (ITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="16646:16677" ph=" SELECT statement (ITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="18378:18433" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1492642069570" expanded="true" signature="19472:19514" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1492642069570" expanded="true" signature="19472:19524" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1492642069570" expanded="true" signature="19472:19525" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1492642069570" expanded="true" signature="21467:21521" ph=" SELECT statement (PRODUCTS)" />
-            <marker date="1492642069570" expanded="true" signature="22549:22600" ph=" SELECT statement (PRODUCTS)" />
-            <marker date="1492642069570" expanded="true" signature="22549:22601" ph=" SELECT statement (PRODUCTS)" />
-            <marker date="1492642069570" expanded="true" signature="24552:24603" ph=" SELECT statement (TYPES)" />
-            <marker date="1492642069570" expanded="true" signature="25687:25725" ph=" SELECT statement (TYPES)" />
-            <marker date="1492642069570" expanded="true" signature="25687:25735" ph=" SELECT statement (TYPES)" />
-            <marker date="1492642069570" expanded="true" signature="25687:25736" ph=" SELECT statement (TYPES)" />
-            <marker date="1492642069570" expanded="true" signature="27754:27813" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1492642069570" expanded="true" signature="28938:28984" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1492642069570" expanded="true" signature="28938:28994" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1492642069570" expanded="true" signature="28938:28995" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1492642069570" expanded="true" signature="30187:30242" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1492642069570" expanded="true" signature="31259:31301" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1492642069570" expanded="true" signature="31259:31311" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1492642069570" expanded="true" signature="31259:31312" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1492642069570" expanded="true" signature="32410:32462" ph=" SELECT statement (ORDERS)" />
-            <marker date="1492642069570" expanded="true" signature="33843:33892" ph=" SELECT statement (ORDERS)" />
-            <marker date="1492642069570" expanded="true" signature="33843:33893" ph=" SELECT statement (ORDERS)" />
-            <marker date="1492642069570" expanded="true" signature="35371:35427" ph=" SELECT statement (ORDERS)" />
-            <marker date="1492642069570" expanded="true" signature="36461:36514" ph=" SELECT statement (ORDERITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="36461:36515" ph=" SELECT statement (ORDERITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="38982:39040" ph=" SELECT statement (ORDERITEMS)" />
-            <marker date="1492642069570" expanded="true" signature="40103:40159" ph=" SELECT statement (ORDERITEMS)" />
           </folding>
         </state>
       </provider>
@@ -1636,7 +1596,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="428">
           <caret line="82" column="20" lean-forward="false" selection-start-line="82" selection-start-column="20" selection-end-line="82" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1644,9 +1603,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
           <caret line="49" column="30" lean-forward="true" selection-start-line="49" selection-start-column="30" selection-end-line="49" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1661,7 +1617,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-477340">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1698,27 +1653,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="db://[inventory] CONSOLE - inventory">
-      <provider selected="true" editor-type-id="0.CONSOLE">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" current-schema="">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="db://[inventory] CONSOLE - inventory">
-      <provider selected="true" editor-type-id="0.CONSOLE">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" current-schema="">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="db://[inventory] CONSOLE - inventory">
-      <provider selected="true" editor-type-id="0.CONSOLE">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" current-schema="">
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="db://[inventory] CONSOLE - inventory" />
+    <entry file="db://[inventory] CONSOLE - inventory" />
+    <entry file="db://[inventory] CONSOLE - inventory" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
@@ -1730,11 +1667,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="db://[inventory] CONSOLE - inventory">
-      <provider selected="true" editor-type-id="0.CONSOLE">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" current-schema="" />
-      </provider>
-    </entry>
+    <entry file="db://[inventory] CONSOLE - inventory" />
     <entry file="file://$PROJECT_DIR$/logs/db.log">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-32569">
@@ -1747,7 +1680,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-133">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1763,7 +1695,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="215">
           <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1771,7 +1702,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" column="29" lean-forward="true" selection-start-line="25" selection-start-column="29" selection-end-line="25" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1779,7 +1709,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
           <caret line="35" column="80" lean-forward="false" selection-start-line="35" selection-start-column="80" selection-end-line="35" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1853,7 +1782,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="240" column="31" lean-forward="false" selection-start-line="240" selection-start-column="31" selection-end-line="240" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1887,9 +1815,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
           <caret line="109" column="77" lean-forward="false" selection-start-line="109" selection-start-column="77" selection-end-line="109" selection-end-column="77" />
-          <folding>
-            <element signature="method#onDbObjectFound#0;class#DistributorsDialog#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1930,8 +1855,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="373" column="9" lean-forward="true" selection-start-line="367" selection-start-column="8" selection-end-line="373" selection-end-column="9" />
+        <state relative-caret-position="5535">
+          <caret line="373" column="9" lean-forward="false" selection-start-line="367" selection-start-column="8" selection-end-line="373" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1940,11 +1865,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-244">
+        <state relative-caret-position="1230">
           <caret line="108" column="17" lean-forward="false" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="17" />
           <folding>
-            <element signature="e#1949#2441#0" expanded="true" />
-            <element signature="e#2440#2441#0" expanded="true" />
             <element signature="method#onToolBarAdd#0;class#MainPanel#0" expanded="false" />
             <element signature="method#onToolBarDelete#0;class#MainPanel#0" expanded="false" />
             <element signature="method#onToolBarEdit#0;class#MainPanel#0" expanded="false" />
@@ -1954,7 +1877,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/mainpanel/MainPanelLayout.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
+        <state relative-caret-position="1245">
           <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
           <folding />
         </state>
@@ -1962,11 +1885,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/subdivisionsdialog/SubDivisionsDialog.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1019">
+        <state relative-caret-position="823">
           <caret line="222" column="44" lean-forward="false" selection-start-line="222" selection-start-column="44" selection-end-line="222" selection-end-column="44" />
           <folding>
-            <element signature="e#5417#5418#0" expanded="true" />
-            <element signature="e#5469#5470#0" expanded="true" />
             <element signature="method#onToolBarAdd#0;class#SubDivisionsDialog#0" expanded="false" />
             <element signature="method#onToolBarDelete#0;class#SubDivisionsDialog#0" expanded="false" />
             <element signature="method#onToolBarEdit#0;class#SubDivisionsDialog#0" expanded="false" />
