@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -178,6 +179,11 @@ public abstract class OrdersDialogLayout extends IDialog
             if (d.getId() != DbObject.UNKNOWN_ID) {
                 distributorCbModel.addElement(d);
             }
+        }
+
+        if (object != null) {
+            nameField.setText(((Order) object).getName());
+            distributorCb.setSelectedItem(((Order) object).getDistributor());
         }
     }
 }

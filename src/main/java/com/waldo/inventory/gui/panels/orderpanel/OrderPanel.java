@@ -181,10 +181,9 @@ public class OrderPanel extends OrderPanelLayout {
         }
 
         selectedItem = null;
-        lastSelectedOrder = (Order) node.getUserObject();
         application.clearSearch();
 
-        updateComponents(lastSelectedOrder);
+        updateComponents(node.getUserObject());
     }
 
     //
@@ -203,7 +202,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     //
-    //  Tool bar listener
+    //  Item tool bar listener
     //
 
     @Override

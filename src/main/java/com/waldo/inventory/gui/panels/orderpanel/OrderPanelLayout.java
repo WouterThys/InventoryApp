@@ -328,7 +328,14 @@ public abstract class OrderPanelLayout extends JPanel implements
 
             @Override
             public void onToolBarEdit() {
-                // Edit order (if possible?)
+                if (lastSelectedOrder != null) {
+                    OrdersDialog dialog = new OrdersDialog(application, "New order", lastSelectedOrder);
+                    if (dialog.showDialog() == IDialog.OK) {
+                        // Add order
+                        Order o = dialog.getOrder();
+                        o.save();
+                    }
+                }
             }
         });
         orderToolBar.setFloatable(false);
@@ -358,10 +365,12 @@ public abstract class OrderPanelLayout extends JPanel implements
     @Override
     public void updateComponents(Object object) { // Has last selected order
         // Update table if needed
-        lastSelectedOrder = (Order) object;
-        if (lastSelectedOrder != null) {
-            updateTable(lastSelectedOrder);
-            updateToolBar(lastSelectedOrder);
+        if (object != null) {
+            if (lastSelectedOrder == null || !lastSelectedOrder.equals(object)) {
+                lastSelectedOrder = (Order) object;
+                updateTable(lastSelectedOrder);
+                updateToolBar(lastSelectedOrder);
+            }
         }
 
         treeModel.expandNodes(0, ordersTree.getRowCount());

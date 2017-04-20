@@ -30,6 +30,14 @@ public class OrdersDialog extends OrdersDialogLayout {
         updateComponents(null);
     }
 
+    public OrdersDialog(Application application, String title, Order order) {
+        super(application, title, false);
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents(order);
+    }
+
     public OrdersDialog(Dialog dialog, String title, boolean showDates) {
         super(dialog, title, showDates);
 
@@ -67,9 +75,7 @@ public class OrdersDialog extends OrdersDialogLayout {
             if (received == null) {
                 JOptionPane.showMessageDialog(this, "Fill in received date you fool!", "Error", JOptionPane.ERROR_MESSAGE);
                 ok = false;
-            }
-
-            if (ordered != null && received != null) {
+            } else {
                 if (ordered.after(received)) {
                     JOptionPane.showMessageDialog(this, "Fill in received after orderd date you fool!", "Error", JOptionPane.ERROR_MESSAGE);
                     ok = false;
@@ -83,15 +89,18 @@ public class OrdersDialog extends OrdersDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
-            order = new Order();
+            if (order == null) {
+                order = new Order();
+            }
             order.setName(nameField.getText());
             order.setDistributor((Distributor) distributorCb.getSelectedItem());
 
-            order.setDateOrdered((Date) orderedDatePicker.getModel().getValue());
-            order.setDateReceived((Date) receivedDatePicker.getModel().getValue());
+            if (showDates && isOrderedCb.isSelected()) {
+                order.setDateOrdered((Date) orderedDatePicker.getModel().getValue());
+                order.setDateReceived((Date) receivedDatePicker.getModel().getValue());
+            }
 
-            dialogResult = OK;
-            dispose();
+            super.onOK();
         }
     }
 
