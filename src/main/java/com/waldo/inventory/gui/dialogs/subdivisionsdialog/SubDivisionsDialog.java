@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -130,22 +131,19 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void selectObject(DbObject object) throws ClassCastException {
         switch (DbObject.getType(object)) {
             case DbObject.TYPE_CATEGORY: {
+                subDivisionList.setSelectedIndex(0);
                 break;
             }
             case DbObject.TYPE_PRODUCT: {
                 subDivisionList.setSelectedIndex(1);
-                int ndx = db().findProductIndex(object.getId());
-                if (ndx >= 0) {
-                    selectionComboBox.setSelectedIndex(ndx);
-                }
+                Category c = db().findCategoryById(((Product)object).getCategoryId());
+                selectionComboBox.setSelectedItem(c);
                 break;
             }
             case DbObject.TYPE_TYPE: {
                 subDivisionList.setSelectedIndex(2);
-                int ndx = db().findTypeIndex(object.getId());
-                if (ndx >= 0) {
-                    selectionComboBox.setSelectedIndex(ndx);
-                }
+                Product p = db().findProductById(((com.waldo.inventory.classes.Type)object).getProductId());
+                selectionComboBox.setSelectedItem(p);
                 break;
             }
         }

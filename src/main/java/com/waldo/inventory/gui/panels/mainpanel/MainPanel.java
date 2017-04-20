@@ -176,18 +176,19 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
+        if (!application.isUpdating()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
 
-        if (node == null) {
-            lastSelectedDivision = null;
-            return; // Nothing selected
+            if (node == null) {
+                lastSelectedDivision = null;
+                return; // Nothing selected
+            }
+
+            selectedItem = null;
+            application.clearSearch();
+
+            updateComponents(node.getUserObject());
         }
-
-        selectedItem = null;
-        lastSelectedDivision = (DbObject) node.getUserObject();
-        application.clearSearch();
-
-        updateComponents(lastSelectedDivision);
     }
 
     //
@@ -196,11 +197,11 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
+        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             int row = itemTable.getSelectedRow();
             if (row >= 0) {
                 selectedItem = getItemAt(itemTable.getSelectedRow());
-                updateComponents(null);
+                updateComponents(lastSelectedDivision);
             }
         }
     }
@@ -211,7 +212,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarRefresh() {
-
+        updateComponents(lastSelectedDivision);
     }
 
     @Override

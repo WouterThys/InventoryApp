@@ -16,6 +16,7 @@ import static com.waldo.inventory.database.DbManager.db;
 public class EditItemDialog extends EditItemDialogLayout {
 
     public int showDialog() {
+        setLocationRelativeTo(application);
         pack();
         setMinimumSize(getSize());
         setVisible(true);

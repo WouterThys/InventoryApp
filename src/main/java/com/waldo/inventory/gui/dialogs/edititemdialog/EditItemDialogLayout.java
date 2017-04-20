@@ -98,18 +98,23 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
     @Override
     public void updateComponents(Object object) {
-        if (!newItem.getIconPath().isEmpty()) {
-            try {
-                URL url = new File(newItem.getIconPath()).toURI().toURL();
-                setTitleIcon(resourceManager.readImage(url, 48,48));
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            application.beginWait();
+            if (!newItem.getIconPath().isEmpty()) {
+                try {
+                    URL url = new File(newItem.getIconPath()).toURI().toURL();
+                    setTitleIcon(resourceManager.readImage(url, 48, 48));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        setTitleName(newItem.getName().trim());
+            setTitleName(newItem.getName().trim());
 
-        ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
-        //componentPanel.updateComponents(null);
+            ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(null);
+            //componentPanel.updateComponents(null);
+        } finally {
+            application.endWait();
+        }
     }
 
     /*

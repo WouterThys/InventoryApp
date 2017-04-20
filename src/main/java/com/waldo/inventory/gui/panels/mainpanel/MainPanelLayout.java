@@ -55,6 +55,16 @@ public abstract class MainPanelLayout extends JPanel implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private void updateEnabledComponents() {
+        if (selectedItem == null) {
+            topToolBar.setDeleteActionEnabled(false);
+            topToolBar.setEditActionEnabled(false);
+        } else {
+            topToolBar.setDeleteActionEnabled(true);
+            topToolBar.setEditActionEnabled(true);
+        }
+    }
+
     Item getItemAt(int row)  {
         return tableModel.getItem(row);
     }
@@ -144,13 +154,24 @@ public abstract class MainPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) {
-        // Update table if needed
-        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
-        if (object != null) {
-            updateTable((DbObject) object);
-        }
+        try {
+            application.beginWait();
 
-        // Update detail panel
-        detailPanel.updateComponents(selectedItem);
+            // Update table if needed
+            if (object != null) {
+                if (lastSelectedDivision == null || !lastSelectedDivision.equals(object)) {
+                    lastSelectedDivision = (DbObject) object;
+                    updateTable((DbObject) object);
+                }
+            }
+
+            // Enabled components
+            updateEnabledComponents();
+
+            // Update detail panel
+            detailPanel.updateComponents(selectedItem);
+        } finally {
+            application.endWait();
+        }
     }
 }
