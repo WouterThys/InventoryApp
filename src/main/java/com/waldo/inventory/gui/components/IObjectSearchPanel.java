@@ -46,9 +46,8 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private JCheckBox advancedCheckbox2;
     private JCheckBox advancedCheckbox3;
 
-    public IObjectSearchPanel(boolean hasAdvancedSearchOption, IObjectSearchListener objectSearchListener) {
+    public IObjectSearchPanel(boolean hasAdvancedSearchOption) {
         this.hasAdvancedSearchOption = hasAdvancedSearchOption;
-        this.objectSearchListener = objectSearchListener;
 
         URL url = TopToolBar.class.getResource("/settings/Settings.properties");
         resourceManager = new ResourceManager(url.getPath());
@@ -58,9 +57,17 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         updateComponents(null);
     }
 
-    public IObjectSearchPanel(boolean hasAdvancedSearchOption, IObjectSearchListener objectSearchListener, int... searchOptions) {
-        this(hasAdvancedSearchOption, objectSearchListener);
+    public IObjectSearchPanel(boolean hasAdvancedSearchOption, int... searchOptions) {
+        this(hasAdvancedSearchOption);
         this.searchOptions = searchOptions;
+    }
+
+    public void addSearchListener(IObjectSearchListener listener) {
+        this.objectSearchListener = listener;
+    }
+
+    public void removeSearchListener() {
+        this.objectSearchListener = null;
     }
 
     public interface IObjectSearchListener {

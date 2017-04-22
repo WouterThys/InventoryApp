@@ -7,8 +7,10 @@ import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -149,12 +152,13 @@ public class OrderPanel extends OrderPanelLayout {
 
                 order.addItemToList(item);
 
-                updateComponents(order);
+                setSelectedItem(item);
             }
 
             @Override
             public void onUpdated(OrderItem newOrderItem, OrderItem oldOrderItem) {
-
+                Order order = DbManager.db().findOrderById(newOrderItem.getOrderId());
+                updateComponents(order);
             }
 
             @Override
@@ -164,6 +168,35 @@ public class OrderPanel extends OrderPanelLayout {
                 updateComponents(order);
             }
         };
+    }
+
+    private void setSelectedItem(Item selectedItem) {
+        try {
+            application.beginWait();
+            this.selectedItem = selectedItem;
+            // Tree
+            treeModel.setSelectedObject(lastSelectedOrder);
+
+            // Items
+            updateTable(lastSelectedOrder);
+            selectItem(selectedItem);
+            itemDetailPanel.updateComponents(selectedItem);
+
+        } finally {
+            application.endWait();
+        }
+    }
+
+    private void selectItem(Item selectedItem) {
+        if (selectedItem != null) {
+            List<Item> itemList = getTableModel().getItemList();
+            if (itemList != null) {
+                int ndx = itemList.indexOf(selectedItem);
+                if (ndx >= 0 && ndx < itemList.size()) {
+                    itemTable.setRowSelectionInterval(ndx, ndx);
+                }
+            }
+        }
     }
 
 
@@ -217,7 +250,15 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarAdd() {
-
+        if (lastSelectedOrder != null && !lastSelectedOrder.isUnknown() && lastSelectedOrder.canBeSaved()) {
+            OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
+            if (dialog.showDialog() == IDialog.OK) {
+                Item itemToOrder = dialog.getItemToOrder();
+                if (itemToOrder != null) {
+                    addItemToOrder(itemToOrder, lastSelectedOrder);
+                }
+            }
+        }
     }
 
     @Override

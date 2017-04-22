@@ -157,7 +157,8 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         subDivisionList = new JList<>(subDivisions);
 
         // Search field
-        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
+        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
+        searchPanel.addSearchListener(this);
 
         // Combo box
         selectedSubType = 0;

@@ -41,7 +41,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     public EditItemDialog(Application application, String title) {
         this(application, title, new Item());
-        isNew = false;
+        isNew = true;
     }
 
     private void initActions() {
@@ -145,7 +145,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     private boolean verify() {
         boolean ok = true;
 
-        String name = componentPanel.getNameFieldValue();
+        String name = componentPanel.getNameFieldValue().trim();
         if (name.isEmpty()) {
             componentPanel.setNameFieldError("Name can not be empty");
             ok = false;

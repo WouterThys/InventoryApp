@@ -33,7 +33,8 @@ public class TopToolBar extends JPanel implements IObjectSearchPanel.IObjectSear
         contentPane.setOpaque(false);
 
         // Search stuff: search only for items
-        searchPanel = new IObjectSearchPanel(true, this, DbObject.TYPE_ITEM);
+        searchPanel = new IObjectSearchPanel(true, DbObject.TYPE_ITEM);
+        searchPanel.addSearchListener(this);
 
         // Add
         add(mainViewToolBar, BorderLayout.WEST);

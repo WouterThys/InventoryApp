@@ -39,7 +39,7 @@ public abstract class OrdersDialogLayout extends IDialog
     boolean showDates;
 
     /*
-    *                  CONSTRUCTOR
+    *                  CONSTRUCTORS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public OrdersDialogLayout(Application application, String title, boolean showDates) {
         super(application, title);

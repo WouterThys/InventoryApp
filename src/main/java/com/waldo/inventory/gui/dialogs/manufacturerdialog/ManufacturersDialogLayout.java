@@ -200,7 +200,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         setTitleName("Manufacturers");
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_MANUFACTURER);
+        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_MANUFACTURER);
+        searchPanel.addSearchListener(this);
 
         // Manufacturers list
         manufacturerDefaultListModel = new DefaultListModel<>();

@@ -12,14 +12,6 @@ import java.sql.Date;
 
 public class OrdersDialog extends OrdersDialogLayout {
 
-    public int showDialog() {
-        setLocationRelativeTo(application);
-        pack();
-        setMinimumSize(getSize());
-        setVisible(true);
-        return dialogResult;
-    }
-
     private Order order;
 
     public OrdersDialog(Application application, String title, boolean showDates) {

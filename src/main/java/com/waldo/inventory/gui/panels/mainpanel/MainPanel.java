@@ -191,7 +191,7 @@ public class MainPanel extends MainPanelLayout {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             int row = itemTable.getSelectedRow();
             if (row >= 0) {
-                selectedItem = getItemAt(itemTable.getSelectedRow());
+                selectedItem = getItemAt(row);
                 updateComponents(lastSelectedDivision);
             }
         }

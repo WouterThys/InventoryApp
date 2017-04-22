@@ -14,6 +14,7 @@ import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -36,7 +37,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     ITree ordersTree;
     IDbObjectTreeModel treeModel;
-    private ItemDetailPanel itemDetailPanel;
+    ItemDetailPanel itemDetailPanel;
 
     private ILabel toolbarDateOrdered;
     private ILabel toolbarDateReceived;
@@ -70,7 +71,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         return tableModel.getItem(row);
     }
 
-    private void updateTable(Order selectedOrder) {
+    void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
         }
@@ -123,7 +124,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     private void updateEnabledComponents() {
         // Orders
-        if (lastSelectedOrder == null || lastSelectedOrder.isUnknown() || !lastSelectedOrder.canBeSaved() || lastSelectedOrder.isOrdered()) {
+        if (lastSelectedOrder == null || lastSelectedOrder.isUnknown() || !lastSelectedOrder.canBeSaved()) {
             orderToolBar.setEditActionEnabled(false);
             orderToolBar.setDeleteActionEnabled(false);
             topToolBar.setAddActionEnabled(false);
@@ -135,9 +136,10 @@ public abstract class OrderPanelLayout extends JPanel implements
             orderToolBar.setDeleteActionEnabled(true);
             topToolBar.setAddActionEnabled(true);
             topToolBar.setRefreshActionEnabled(true);
-            toolbarOrderButton.setEnabled(tableModel.getRowCount() > 0);
             toolbarDistributorCb.setEnabled(true);
         }
+
+        toolbarOrderButton.setEnabled(tableModel.getRowCount() > 0);
 
         // Items
         if (selectedItem == null) {
@@ -147,8 +149,6 @@ public abstract class OrderPanelLayout extends JPanel implements
             topToolBar.setEditActionEnabled(true);
             topToolBar.setDeleteActionEnabled(true);
         }
-
-        topToolBar.setSearchEnabled(tableModel.getRowCount() > 0);
 
     }
 
@@ -260,8 +260,12 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeModel.setTree(ordersTree);
 
         // Item table
-        tableModel = new IItemTableModel();
+        tableModel = new IItemTableModel(
+                new String[] {"Name", "Description", "Manufacturer", "Amount", "Price", "Total"},
+                new Class[] {String.class, String.class, String.class, Number.class, Double.class, Double.class});
         itemTable = new ITable(tableModel);
+        TableColumn tableColumn = itemTable.getColumnModel().getColumn(3);
+        tableColumn.setCellEditor(new IItemTableModel.SpinnerEditor());
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 

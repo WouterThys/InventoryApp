@@ -89,6 +89,14 @@ public abstract class IDialog extends JDialog {
         initializeDialog();
     }
 
+    public int showDialog() {
+        setLocationRelativeTo(application);
+        pack();
+        setMinimumSize(getSize());
+        setVisible(true);
+        return dialogResult;
+    }
+
     private void initializeDialog() {
 
         URL url = IDialog.class.getResource("/settings/Settings.properties");

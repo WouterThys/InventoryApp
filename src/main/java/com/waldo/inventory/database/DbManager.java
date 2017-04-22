@@ -1071,7 +1071,7 @@ public class DbManager implements TableChangedListener {
 
     public Item findItemByName(String name)    {
         for (Item i : getItems()) {
-            if (i.getName().equals(name)) {
+            if (i.getName().toUpperCase().equals(name.toUpperCase())) {
                 return i;
             }
         }

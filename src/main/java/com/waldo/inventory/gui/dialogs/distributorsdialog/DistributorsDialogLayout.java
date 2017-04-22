@@ -190,7 +190,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         setTitleName("Distributors");
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, this, DbObject.TYPE_DISTRIBUTOR);
+        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_DISTRIBUTOR);
+        searchPanel.addSearchListener(this);
 
         // Distributor list
         distributorDefaultListModel = new DefaultListModel<>();
