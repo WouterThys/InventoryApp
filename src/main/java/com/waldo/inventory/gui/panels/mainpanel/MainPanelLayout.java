@@ -130,6 +130,7 @@ public abstract class MainPanelLayout extends JPanel implements
     void itemAdded(Item addedItem) {
         try {
             application.beginWait();
+            selectedItem = addedItem;
             // Find and select in tree
             selectDivision(addedItem);
             // Update table items
@@ -137,7 +138,7 @@ public abstract class MainPanelLayout extends JPanel implements
             // Select in items
             selectItem(addedItem);
             // Update detail panel
-            detailPanel.updateComponents(selectedItem);
+            detailPanel.updateComponents(addedItem);
         } finally {
             application.endWait();
         }
