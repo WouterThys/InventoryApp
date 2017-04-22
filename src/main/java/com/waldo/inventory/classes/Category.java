@@ -17,6 +17,7 @@ public class Category extends DbObject {
         Category unknown =  new Category();
         unknown.setName(UNKNOWN_NAME);
         unknown.setId(UNKNOWN_ID);
+        unknown.setCanBeSaved(false);
         return unknown;
     }
 }

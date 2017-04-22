@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -14,7 +13,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -88,29 +86,22 @@ public class MainPanel extends MainPanelLayout {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
             public void onAdded(Item item) {
-                selectedItem = item;
-                updateItems();
+                itemAdded(item);
+                //updateComponents(lastSelectedDivision); // Give it non-null value
             }
 
             @Override
             public void onUpdated(Item newItem, Item oldItem) {
                 selectedItem = newItem;
-                updateItems();
+                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onDeleted(Item item) {
                 selectedItem = null;
-                updateItems();
+                updateComponents(lastSelectedDivision);
             }
         };
-    }
-
-    private void updateItems() {
-        if (lastSelectedDivision == null) {
-            lastSelectedDivision = (DbObject) ((DefaultMutableTreeNode)treeModel.getRoot()).getUserObject();
-        }
-        updateComponents(lastSelectedDivision);
     }
 
     private void setCategoriesChangedListener() {

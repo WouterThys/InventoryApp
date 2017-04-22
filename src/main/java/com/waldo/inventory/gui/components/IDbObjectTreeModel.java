@@ -48,7 +48,17 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     public void setSelectedObject(DbObject object) {
         DefaultMutableTreeNode node = findNode(object);
         if (node != null) {
-            tree.setSelectionPath(new TreePath(node));
+            TreeNode[] nodes = getPathToRoot(node);
+            TreePath path = new TreePath(nodes);
+            tree.setExpandsSelectedPaths(true);
+            tree.setSelectionPath(path);
+            tree.scrollPathToVisible(path);
+
+
+//            TreePath path = new TreePath(node);
+//            tree.setExpandsSelectedPaths(true);
+//            tree.setSelectionPath(path);
+//            tree.scrollPathToVisible(path);
         }
     }
 

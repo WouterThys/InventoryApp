@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -11,8 +10,6 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;

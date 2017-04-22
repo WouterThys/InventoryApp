@@ -34,6 +34,7 @@ public class Manufacturer extends DbObject {
         Manufacturer m = new Manufacturer();
         m.setName(UNKNOWN_NAME);
         m.setId(UNKNOWN_ID);
+        m.setCanBeSaved(false);
         return m;
     }
 

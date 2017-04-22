@@ -101,6 +101,7 @@ public class Order extends DbObject {
         Order o = new Order();
         o.setName(UNKNOWN_NAME);
         o.setId(UNKNOWN_ID);
+        o.setCanBeSaved(false);
         return o;
     }
 

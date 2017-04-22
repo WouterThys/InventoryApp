@@ -33,6 +33,10 @@ public class IItemTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public List<Item> getItemList() {
+        return itemList;
+    }
+
     public Item getItem(int index) {
         if (index >= 0 && index < itemList.size()) {
             return itemList.get(index);

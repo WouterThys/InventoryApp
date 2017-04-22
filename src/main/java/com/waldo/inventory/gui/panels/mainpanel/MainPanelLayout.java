@@ -12,6 +12,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.net.URL;
+import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -56,7 +58,7 @@ public abstract class MainPanelLayout extends JPanel implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        if (selectedItem == null) {
+        if (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved()) {
             topToolBar.setDeleteActionEnabled(false);
             topToolBar.setEditActionEnabled(false);
         } else {
@@ -73,22 +75,71 @@ public abstract class MainPanelLayout extends JPanel implements
         if (selectedObject == null || selectedObject.getName().equals("All")) {
             tableModel.setItemList(db().getItems());
         } else {
+            java.util.List<Item> itemList = new ArrayList<>();
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
-                    tableModel.setItemList(db().getItemListForCategory(c));
+                    itemList = db().getItemListForCategory(c);
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Product p = (Product)selectedObject;
-                    tableModel.setItemList(db().getItemListForProduct(p));
+                    itemList = db().getItemListForProduct(p);
                     break;
                 case DbObject.TYPE_TYPE:
                     Type t = (Type)selectedObject;
-                    tableModel.setItemList(db().getItemListForType(t));
+                    itemList = db().getItemListForType(t);
                     break;
                 default:
                     break;
             }
+
+            tableModel.setItemList(itemList);
+        }
+    }
+
+    private void selectItem(Item selectedItem) {
+        if (selectedItem != null) {
+            List<Item> itemList = tableModel.getItemList();
+            if (itemList != null) {
+                int ndx = itemList.indexOf(selectedItem);
+                if (ndx >= 0 && ndx < itemList.size()) {
+                    itemTable.setRowSelectionInterval(ndx, ndx);
+                }
+            }
+        }
+    }
+
+    private void selectDivision(Item selectedItem) {
+        if (selectedItem.getTypeId() > DbObject.UNKNOWN_ID) {
+            lastSelectedDivision = db().findTypeById(selectedItem.getTypeId());
+        } else {
+            if (selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
+                lastSelectedDivision = db().findProductById(selectedItem.getProductId());
+            } else {
+                if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+                    lastSelectedDivision = db().findCategoryById(selectedItem.getCategoryId());
+                } else {
+                    lastSelectedDivision = null; //??
+                }
+            }
+        }
+
+        treeModel.setSelectedObject(lastSelectedDivision);
+    }
+
+    void itemAdded(Item addedItem) {
+        try {
+            application.beginWait();
+            // Find and select in tree
+            selectDivision(addedItem);
+            // Update table items
+            updateTable(lastSelectedDivision);
+            // Select in items
+            selectItem(addedItem);
+            // Update detail panel
+            detailPanel.updateComponents(selectedItem);
+        } finally {
+            application.endWait();
         }
     }
 
@@ -115,12 +166,16 @@ public abstract class MainPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Sub division tree
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new Category("All"), true);
+        Category virtualRoot = new Category("All");
+        virtualRoot.setCanBeSaved(false);
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
         createNodes(rootNode);
         treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_DIVISIONS);
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);
+        subDivisionTree.setExpandsSelectedPaths(true);
+        subDivisionTree.setScrollsOnExpand(true);
         treeModel.setTree(subDivisionTree);
 
         // Tool bar

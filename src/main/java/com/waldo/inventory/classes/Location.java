@@ -34,6 +34,7 @@ public class Location extends DbObject {
         Location l = new Location();
         l.setName(UNKNOWN_NAME);
         l.setId(UNKNOWN_ID);
+        l.setCanBeSaved(false);
         return l;
     }
 

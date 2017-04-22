@@ -155,8 +155,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     public void setComponentValues() {
-        newItem.setName(getNameFieldValue());
-        newItem.setDescription(getDescriptionFieldValue());
+        newItem.setName(getNameFieldValue().trim());
+        newItem.setDescription(getDescriptionFieldValue().trim());
         String priceTxt = getPriceFieldValue();
         if (!priceTxt.isEmpty()) {
             newItem.setPrice(Double.valueOf(priceTxt));

@@ -1,7 +1,8 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -9,7 +10,6 @@ import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
-import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -17,7 +17,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -49,23 +48,19 @@ public abstract class OrderPanelLayout extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
-    ResourceManager resourceManager;
     Application application;
 
     Item selectedItem;
     Order lastSelectedOrder;
-    IdBToolBar orderToolBar;
-    TopToolBar topToolBar;
-    JPanel orderTbPanel;
+    private IdBToolBar orderToolBar;
+    private TopToolBar topToolBar;
+    private JPanel orderTbPanel;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public OrderPanelLayout(Application application) {
         this.application = application;
-
-        URL url = MainPanel.class.getResource("/settings/Settings.properties");
-        resourceManager = new ResourceManager(url.getPath());
     }
 
     /*
@@ -75,13 +70,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         return tableModel.getItem(row);
     }
 
-    public void updateTable(Order selectedOrder) {
+    private void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
         }
     }
 
-    public void updateToolBar(Order order) {
+    private void updateToolBar(Order order) {
         if (order.getDateOrdered() != null) {
             toolbarDateOrdered.setText(dateFormatShort.format(order.getDateOrdered()));
         } else {

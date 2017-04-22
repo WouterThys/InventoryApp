@@ -34,6 +34,7 @@ public class Type extends DbObject {
         unknown.setName(UNKNOWN_NAME);
         unknown.setId(UNKNOWN_ID);
         unknown.setProductId(UNKNOWN_ID);
+        unknown.setCanBeSaved(false);
         return unknown;
     }
 
