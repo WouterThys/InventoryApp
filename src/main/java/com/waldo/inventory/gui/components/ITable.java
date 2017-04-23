@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.components;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 
 public class ITable extends JTable {
 
@@ -12,7 +14,6 @@ public class ITable extends JTable {
 
         setModel(model);
         setRowHeight(25);
-        setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public void resizeColumns(Integer[] widths) {
@@ -29,4 +30,12 @@ public class ITable extends JTable {
         }
     }
 
+    @Override
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        Component component = super.prepareRenderer(renderer, row, column);
+        int rendererWidth = component.getPreferredSize().width;
+        TableColumn tableColumn = getColumnModel().getColumn(column);
+        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+        return component;
+    }
 }

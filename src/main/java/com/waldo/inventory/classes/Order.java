@@ -128,6 +128,17 @@ public class Order extends DbObject {
         }
     }
 
+    public void updateItemReferences() {
+        if (distributor != null && orderItems.size() > 0) {
+            for (OrderItem oi : orderItems) {
+                PartNumber partNumber = DbManager.db().findPartNumber(distributor.getId(), oi.getItemId());
+                if (partNumber != null) {
+                    oi.setItemRef(partNumber.getItemRef());
+                }
+            }
+        }
+    }
+
     public Date getDateOrdered() {
         return dateOrdered;
     }

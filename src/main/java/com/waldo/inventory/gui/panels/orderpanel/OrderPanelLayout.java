@@ -18,6 +18,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -70,6 +72,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
+            selectedOrder.updateItemReferences();
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
         }
     }
@@ -265,6 +268,14 @@ public abstract class OrderPanelLayout extends JPanel implements
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSpinner spinner = (JSpinner) e.getSource();
+                if (selectedItem != null) {
+                    selectedItem.setAmount((int) spinner.getValue());
+
+                    SwingUtilities.invokeLater(() ->  {
+                        selectedItem.save();
+                        tableModel.fireTableDataChanged();
+                    });
+                }
             }
         });
 
@@ -295,6 +306,18 @@ public abstract class OrderPanelLayout extends JPanel implements
             distributorCbModel.addElement(d);
         }
         toolbarDistributorCb = new JComboBox<>(distributorCbModel);
+//        toolbarDistributorCb.addItemListener(event -> {
+//            if (event.getStateChange() == ItemEvent.SELECTED) {
+//                if (lastSelectedOrder != null) {
+//                    lastSelectedOrder.setDistributor((Distributor) toolbarDistributorCb.getSelectedItem());
+//                    lastSelectedOrder.updateItemReferences();
+//                    SwingUtilities.invokeLater(() -> {
+//                        lastSelectedOrder.save();
+//                        tableModel.fireTableDataChanged();
+//                    });
+//                }
+//            }
+//        });
 
         toolbarOrderButton = new JButton("Order!");
         toolbarOrderButton.addActionListener(this);

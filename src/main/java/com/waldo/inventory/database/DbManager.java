@@ -1068,7 +1068,7 @@ public class DbManager implements TableChangedListener {
 
 
     /*
-    *                  DISTRIBUTORS
+    *                  PART NUMBERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<PartNumber> getPartNumbers()    {
         if (partNumbers == null) {
@@ -1124,6 +1124,34 @@ public class DbManager implements TableChangedListener {
                     pn.setDistributorId(rs.getLong("distributorid"));
                     pn.setItemId(rs.getLong("itemid"));
                     pn.setItemRef(rs.getString("distributoritemref"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch part number from database");
+            e.printStackTrace();
+        }
+        return pn;
+    }
+
+    public PartNumber findPartNumberFromDb(long distributorId, long itemId) {
+        PartNumber pn = null;
+        String sql = scriptResource.readString("partnumbers.sqlFindItemRef");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+                stmt.setLong(1, distributorId);
+                stmt.setLong(2, itemId);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        pn = new PartNumber();
+                        pn.setId(rs.getLong("id"));
+                        pn.setName(rs.getString("name"));
+                        pn.setIconPath(rs.getString("iconpath"));
+                        pn.setDistributorId(rs.getLong("distributorid"));
+                        pn.setItemId(rs.getLong("itemid"));
+                        pn.setItemRef(rs.getString("distributoritemref"));
+                    }
                 }
             }
         } catch (SQLException e) {

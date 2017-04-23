@@ -1,11 +1,9 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.gui.components.IItemTableModel;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -84,7 +82,7 @@ public class IOrderItemTableModel extends AbstractTableModel {
                 case 5: // Price
                     return orderItem.getItem().getPrice();
                 case 6: // Total
-                    return orderItem.getAmount() * orderItem.getAmount(); // Amount * price
+                    return orderItem.getAmount() * orderItem.getItem().getPrice(); // Amount * price
             }
         }
         return null;

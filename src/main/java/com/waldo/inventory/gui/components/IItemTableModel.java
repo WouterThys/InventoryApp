@@ -5,14 +5,8 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.DbManager;
 
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 
 public class IItemTableModel extends AbstractTableModel {
