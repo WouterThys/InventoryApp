@@ -44,6 +44,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
+    // Part numbers...
 
     // Cached lists
     private List<Item> items;
@@ -55,6 +56,7 @@ public class DbManager implements TableChangedListener {
     private List<Order> orders;
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
+    private List<PartNumber> partNumbers;
 
     // Scrips
     private ResourceManager scriptResource;
@@ -297,7 +299,6 @@ public class DbManager implements TableChangedListener {
         LOG.info(newObject.getName() + " " + how + tableName);
         Status().setMessage(newObject.getName() + " " + how + tableName);
 
-
         switch (tableName) {
             case Item.TABLE_NAME:
                 updateItems();
@@ -334,6 +335,10 @@ public class DbManager implements TableChangedListener {
             case Distributor.TABLE_NAME:
                 updateDistributors();
                 notifyListeners(changedHow, (Distributor)newObject, (Distributor)oldObject, onDistributorsChangedListenerList);
+                break;
+            case PartNumber.TABLE_NAME:
+                updatePartNumbers();
+                // Listeners.. ?
                 break;
         }
     }
@@ -927,6 +932,8 @@ public class DbManager implements TableChangedListener {
                     o.setName(rs.getString("name"));
                     o.setOrderId(rs.getLong("orderid"));
                     o.setItemId(rs.getLong("itemid"));
+                    o.setAmount(rs.getInt("amount"));
+                    o.setItemRef(rs.getString("itemref"));
 
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         o.setOnTableChangedListener(this);
@@ -955,6 +962,8 @@ public class DbManager implements TableChangedListener {
                     o.setName(rs.getString("name"));
                     o.setOrderId(rs.getLong("orderid"));
                     o.setItemId(rs.getLong("itemid"));
+                    o.setAmount(rs.getInt("amount"));
+                    o.setItemRef(rs.getString("itemref"));
                 }
             }
         } catch (SQLException e) {
@@ -964,27 +973,27 @@ public class DbManager implements TableChangedListener {
         return o;
     }
 
-    public List<Item> getOrderedItems(long orderId) {
-        List<Item> items = new ArrayList<>();
+    public List<OrderItem> getOrderedItems(long orderId) {
+        List<OrderItem> items = new ArrayList<>();
         for (OrderItem i : getOrderItems()) {
             if (i.getOrderId() == orderId || orderId == -1) {
-                items.add(findItemById(i.getItemId()));
+                items.add(i);
             }
         }
         return items;
     }
 
-    public void removeItemFromOrder(Item item, Order order) {
-        Status().setMessage("Removing \""+item.toString()+"\" from \""+order.toString());
+    public void removeItemFromOrder(OrderItem orderItem) {
+        Status().setMessage("Removing \""+orderItem.getItem().toString()+"\" from \""+orderItem.getOrder().toString());
 
         String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setLong(1, order.getId());
-                stmt.setLong(2, item.getId());
+                stmt.setLong(1, orderItem.getOrderId());
+                stmt.setLong(2, orderItem.getItemId());
                 stmt.execute();
 
-                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETED, OrderItem.createDummyOrderItem(order, item), null);
+                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETED, OrderItem.createDummyOrderItem(orderItem.getOrder(), orderItem.getItem()), null);
             } catch (SQLException e) {
                 Status().setError("Failed to detele item from order");
                 e.printStackTrace();
@@ -1055,6 +1064,73 @@ public class DbManager implements TableChangedListener {
             e.printStackTrace();
         }
         return d;
+    }
+
+
+    /*
+    *                  DISTRIBUTORS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<PartNumber> getPartNumbers()    {
+        if (partNumbers == null) {
+            updatePartNumbers();
+        }
+        return partNumbers;
+    }
+
+    private void updatePartNumbers()    {
+        partNumbers = new ArrayList<>();
+        Status().setMessage("Fetching part numbers from DB");
+
+        String sql = scriptResource.readString(PartNumber.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    PartNumber pn = new PartNumber();
+                    pn.setId(rs.getLong("id"));
+                    pn.setName(rs.getString("name"));
+                    pn.setIconPath(rs.getString("iconpath"));
+                    pn.setDistributorId(rs.getLong("distributorid"));
+                    pn.setItemId(rs.getLong("itemid"));
+                    pn.setItemRef(rs.getString("distributoritemref"));
+
+                    if (pn.getId() != DbObject.UNKNOWN_ID) {
+                        pn.setOnTableChangedListener(this);
+                        partNumbers.add(pn);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch part numbers from database");
+            e.printStackTrace();
+        }
+    }
+
+    public PartNumber getPartNumberFromDb(long partNumberId) {
+        PartNumber pn = null;
+        Status().setMessage("Fetching part number from DB");
+
+        String sql = "SELECT * FROM " + PartNumber.TABLE_NAME + " WHERE id = " + partNumberId;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    pn = new PartNumber();
+                    pn.setId(rs.getLong("id"));
+                    pn.setName(rs.getString("name"));
+                    pn.setIconPath(rs.getString("iconpath"));
+                    pn.setDistributorId(rs.getLong("distributorid"));
+                    pn.setItemId(rs.getLong("itemid"));
+                    pn.setItemRef(rs.getString("distributoritemref"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch part number from database");
+            e.printStackTrace();
+        }
+        return pn;
     }
 
     /*
@@ -1271,6 +1347,15 @@ public class DbManager implements TableChangedListener {
         for (Distributor d : getDistributors()) {
             if (d.getId() == distributorId) {
                 return d;
+            }
+        }
+        return null;
+    }
+
+    public PartNumber findPartNumber(long distributorId, long itemId) {
+        for (PartNumber pn : getPartNumbers()) {
+            if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
+                return pn;
             }
         }
         return null;

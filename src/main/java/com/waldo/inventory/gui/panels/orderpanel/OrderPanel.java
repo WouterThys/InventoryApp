@@ -8,7 +8,7 @@ import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IItemTableModel;
+import com.waldo.inventory.gui.components.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
@@ -44,7 +44,7 @@ public class OrderPanel extends OrderPanelLayout {
         updateComponents(null);
     }
 
-    public Item getSelectedItem() {
+    public OrderItem getSelectedItem() {
         return selectedItem;
     }
 
@@ -52,7 +52,7 @@ public class OrderPanel extends OrderPanelLayout {
         return lastSelectedOrder;
     }
 
-    public IItemTableModel getTableModel() {
+    public IOrderItemTableModel getTableModel() {
         return tableModel;
     }
 
@@ -96,20 +96,20 @@ public class OrderPanel extends OrderPanelLayout {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
             public void onAdded(Item item) {
-                selectedItem = item;
-                updateItems();
+                //selectedItem = DbManager.db().findOrderItem(lastSelectedOrder.getId());
+                //updateItems();
             }
 
             @Override
             public void onUpdated(Item newItem, Item oldItem) {
-                selectedItem = newItem;
-                updateItems();
+                //selectedItem = newItem;
+                //updateItems();
             }
 
             @Override
             public void onDeleted(Item item) {
-                selectedItem = null;
-                updateItems();
+                //selectedItem = null;
+                //updateItems();
             }
         };
     }
@@ -148,11 +148,8 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onAdded(OrderItem orderItem) {
                 Order order = DbManager.db().findOrderById(orderItem.getOrderId());
-                Item item = DbManager.db().findItemById(orderItem.getItemId());
-
-                order.addItemToList(item);
-
-                setSelectedItem(item);
+                order.addItemToList(orderItem);
+                setSelectedItem(orderItem);
             }
 
             @Override
@@ -170,7 +167,7 @@ public class OrderPanel extends OrderPanelLayout {
         };
     }
 
-    private void setSelectedItem(Item selectedItem) {
+    private void setSelectedItem(OrderItem selectedItem) {
         try {
             application.beginWait();
             this.selectedItem = selectedItem;
@@ -187,9 +184,9 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
-    private void selectItem(Item selectedItem) {
+    private void selectItem(OrderItem selectedItem) {
         if (selectedItem != null) {
-            List<Item> itemList = getTableModel().getItemList();
+            List<OrderItem> itemList = getTableModel().getItemList();
             if (itemList != null) {
                 int ndx = itemList.indexOf(selectedItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
@@ -228,7 +225,7 @@ public class OrderPanel extends OrderPanelLayout {
         if (!e.getValueIsAdjusting()) {
             int row = itemTable.getSelectedRow();
             if (row >= 0) {
-                selectedItem = getItemAt(itemTable.getSelectedRow());
+                selectedItem = getTableModel().getItem(itemTable.getSelectedRow());
                 updateComponents(lastSelectedOrder);
             }
         }

@@ -58,9 +58,9 @@ public class EditItemDialog extends EditItemDialogLayout {
     protected void onOK() {
         if (verify()) {
             componentPanel.setComponentValues();
-            manufacturerPanel.setComponentValues();
-            locationPanel.setComponentValues();
-            orderPanel.setComponentValues();
+            editItemManufacturerPanel.setComponentValues();
+            editItemLocationPanel.setComponentValues();
+            editItemOrderPanel.setComponentValues();
 
             // Close dialog
             dialogResult = OK;
@@ -107,9 +107,9 @@ public class EditItemDialog extends EditItemDialogLayout {
         tabbedPane.addChangeListener(e -> {
             // Save values
             componentPanel.setComponentValues();
-            manufacturerPanel.setComponentValues();
-            locationPanel.setComponentValues();
-            orderPanel.setComponentValues();
+            editItemManufacturerPanel.setComponentValues();
+            editItemLocationPanel.setComponentValues();
+            editItemOrderPanel.setComponentValues();
 
             updateComponents(null);
         });

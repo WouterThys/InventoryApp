@@ -15,7 +15,7 @@ public class Order extends DbObject {
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;
-    private List<Item> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
     private Date dateModified;
     private Date dateReceived;
     private Distributor distributor;
@@ -105,7 +105,7 @@ public class Order extends DbObject {
         return o;
     }
 
-    public void addItemToList(Item item) {
+    public void addItemToList(OrderItem item) {
         if (item != null) {
             if (!orderItems.contains(item)) {
                 orderItems.add(item);
@@ -115,10 +115,10 @@ public class Order extends DbObject {
         }
     }
 
-    public void removeItemFromList(Item item) {
+    public void removeItemFromList(OrderItem item) {
         if (item != null) {
             if (orderItems.contains(item)) {
-                DbManager.db().removeItemFromOrder(item, this);
+                DbManager.db().removeItemFromOrder(item);
 
                 orderItems.remove(item);
                 setDateModified(new Date(System.currentTimeMillis()));
@@ -136,11 +136,11 @@ public class Order extends DbObject {
         this.dateOrdered = dateOrdered;
     }
 
-    public List<Item> getOrderItems() {
+    public List<OrderItem> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<Item> orderItems) {
+    public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 

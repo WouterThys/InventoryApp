@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
-public class LocationPanel extends JPanel implements GuiInterface {
+public class EditItemLocationPanel extends JPanel implements GuiInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(ComponentPanel.class);
 
     private Item newItem;
 
-    public LocationPanel(Item newItem) {
+    public EditItemLocationPanel(Item newItem) {
         this.newItem = newItem;
     }
 

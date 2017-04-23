@@ -5,9 +5,9 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.LocationPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ManufacturerPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.OrderPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemLocationPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemManufacturerPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,9 +23,9 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
     JTabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    ManufacturerPanel manufacturerPanel;
-    LocationPanel locationPanel;
-    OrderPanel orderPanel;
+    EditItemManufacturerPanel editItemManufacturerPanel;
+    EditItemLocationPanel editItemLocationPanel;
+    EditItemOrderPanel editItemOrderPanel;
 
 
     /*
@@ -53,16 +53,16 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         componentPanel.initializeComponents();
         componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
-        manufacturerPanel = new ManufacturerPanel(newItem);
-        manufacturerPanel.initializeComponents();
+        editItemManufacturerPanel = new EditItemManufacturerPanel(newItem);
+        editItemManufacturerPanel.initializeComponents();
 
-        locationPanel = new LocationPanel(newItem);
-        locationPanel.setLayout(new BoxLayout(locationPanel, BoxLayout.Y_AXIS));
-        locationPanel.initializeComponents();
+        editItemLocationPanel = new EditItemLocationPanel(newItem);
+        editItemLocationPanel.setLayout(new BoxLayout(editItemLocationPanel, BoxLayout.Y_AXIS));
+        editItemLocationPanel.initializeComponents();
 
-        orderPanel = new OrderPanel(newItem);
-        orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.Y_AXIS));
-        orderPanel.initializeComponents();
+        editItemOrderPanel = new EditItemOrderPanel(newItem);
+        editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
+        editItemOrderPanel.initializeComponents();
 
     }
 
@@ -72,20 +72,20 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
         // Component panel
         componentPanel.initializeLayouts();
-        manufacturerPanel.initializeLayouts();
-        locationPanel.initializeLayouts();
-        orderPanel.initializeLayouts();
+        editItemManufacturerPanel.initializeLayouts();
+        editItemLocationPanel.initializeLayouts();
+        editItemOrderPanel.initializeLayouts();
 
         componentPanel.updateComponents(null);
-        manufacturerPanel.updateComponents(null);
-        locationPanel.updateComponents(null);
-        orderPanel.updateComponents(null);
+        editItemManufacturerPanel.updateComponents(null);
+        editItemLocationPanel.updateComponents(null);
+        editItemOrderPanel.updateComponents(null);
 
         // Add tabs
         tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
-        tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), manufacturerPanel, "Manufacturer info");
-        tabbedPane.addTab("Location", resourceManager.readImage("EditItem.LocationIcon"), locationPanel, "Location info");
-        tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Order info");
+        tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
+        tabbedPane.addTab("Location", resourceManager.readImage("EditItem.LocationIcon"), editItemLocationPanel, "Location info");
+        tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
         tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add

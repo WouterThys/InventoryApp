@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.panels.orderpanel;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -12,8 +13,7 @@ import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
@@ -33,7 +33,7 @@ public abstract class OrderPanelLayout extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITable itemTable;
-    IItemTableModel tableModel;
+    IOrderItemTableModel tableModel;
 
     ITree ordersTree;
     IDbObjectTreeModel treeModel;
@@ -51,7 +51,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
     Application application;
 
-    Item selectedItem;
+    OrderItem selectedItem;
     Order lastSelectedOrder;
     private IdBToolBar orderToolBar;
     private TopToolBar topToolBar;
@@ -67,9 +67,6 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Item getItemAt(int row)  {
-        return tableModel.getItem(row);
-    }
 
     void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
@@ -260,12 +257,17 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeModel.setTree(ordersTree);
 
         // Item table
-        tableModel = new IItemTableModel(
-                new String[] {"Name", "Description", "Manufacturer", "Amount", "Price", "Total"},
-                new Class[] {String.class, String.class, String.class, Number.class, Double.class, Double.class});
+        tableModel = new IOrderItemTableModel();
         itemTable = new ITable(tableModel);
-        TableColumn tableColumn = itemTable.getColumnModel().getColumn(3);
-        tableColumn.setCellEditor(new IItemTableModel.SpinnerEditor());
+
+        TableColumn tableColumn = itemTable.getColumnModel().getColumn(4);
+        tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSpinner spinner = (JSpinner) e.getSource();
+            }
+        });
+
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -378,6 +380,10 @@ public abstract class OrderPanelLayout extends JPanel implements
         updateEnabledComponents();
 
         // Update detail panel
-        itemDetailPanel.updateComponents(selectedItem);
+        if (selectedItem != null) {
+            itemDetailPanel.updateComponents(selectedItem.getItem());
+        } else {
+            itemDetailPanel.updateComponents(null);
+        }
     }
 }

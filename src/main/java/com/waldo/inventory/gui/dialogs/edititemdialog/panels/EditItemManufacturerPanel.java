@@ -6,8 +6,6 @@ import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +15,7 @@ import java.net.URL;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class ManufacturerPanel extends JPanel implements GuiInterface {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ComponentPanel.class);
+public class EditItemManufacturerPanel extends JPanel implements GuiInterface {
 
     private Item newItem;
 
@@ -28,7 +24,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
     private ILabel iconLabel;
     private ITextField manufacturerItemNr;
 
-    public ManufacturerPanel(Item newItem) {
+    public EditItemManufacturerPanel(Item newItem) {
         this.newItem = newItem;
     }
 
@@ -112,7 +108,7 @@ public class ManufacturerPanel extends JPanel implements GuiInterface {
                 manufacturerComboBox.setSelectedIndex(ndx);
 
                 // Set icon
-                URL url = ManufacturerPanel.class.getResource("/settings/Settings.properties");
+                URL url = EditItemManufacturerPanel.class.getResource("/settings/Settings.properties");
                 ResourceManager resourceManager = new ResourceManager(url.getPath());
                 try {
                     Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());
