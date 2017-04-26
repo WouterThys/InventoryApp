@@ -11,6 +11,7 @@ import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 
@@ -79,7 +80,8 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                iconPathTextField.setText(fileChooser.getSelectedFile().getPath());
+                //iconPathTextField.setText(fileChooser.getSelectedFile().getPath());
+                iconPathTextField.setText(fileChooser.getSelectedFile().getName());
             }
         });
     }

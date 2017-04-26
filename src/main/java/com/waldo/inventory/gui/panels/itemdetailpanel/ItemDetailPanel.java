@@ -84,7 +84,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void updateIcon(Item item) {
-        iconLabel.setIcon(item.getIconPath());
+        iconLabel.setIcon(resourceManager.readItemImage(item.getIconPath()));
         iconLabel.setHorizontalAlignment(ILabel.CENTER);
         iconLabel.setVerticalAlignment(ILabel.CENTER);
         iconLabel.setPreferredSize(new Dimension(150,150));

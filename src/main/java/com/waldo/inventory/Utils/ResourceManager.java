@@ -1,5 +1,7 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanelLayout;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -7,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
@@ -94,21 +97,49 @@ public class ResourceManager {
      * @return
      */
     public ImageIcon readImage(URL resourceURL) {
-        Image img = Toolkit.getDefaultToolkit().createImage(resourceURL);
-        if (img == null) {
+        Image img = null;
+        try {
+            img = ImageIO.read(resourceURL);
+        } catch (IOException e) {
             return readImage("Common.UnknownIcon32");
-        } else {
+        }
+        if (img != null) {
             return new ImageIcon(img);
         }
+        return null;
     }
 
     public ImageIcon readImage(String key) {
         return new ImageIcon(Toolkit.getDefaultToolkit().createImage(resourceURL + readString(key)));
     }
 
-    public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {
-        Image img = ImageIO.read(resourceURL);
-        return new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    public ImageIcon readItemImage(String name) {
+        String path = "";
+        File f;
+        try {
+            //path = new File(".").getCanonicalPath();
+            //path += new File(readString("Paths.DefaultItemImagePath") + name).toURI().toURL();
+            String base = new File(".").getCanonicalPath();
+            f = new File(base, readString("Paths.DefaultItemImagePath") + name);
+            return readImage(f.toURI().toURL());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ImageIcon readImage(URL resourceURL, int width, int height) {
+
+        Image img;
+        try {
+            img = ImageIO.read(resourceURL);
+        } catch (IOException e) {
+            return readImage("Common.UnknownIcon32");
+        }
+        if (img != null) {
+            return new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH));
+        }
+        return null;
 //        if (img != null) {
 //            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 //            Graphics2D graphics2D = bufferedImage.createGraphics();

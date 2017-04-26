@@ -91,7 +91,8 @@ public class EditItemDialog extends EditItemDialogLayout {
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
                     if (fileChooser.showDialog(EditItemDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                        newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
+                        //newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
+                        newItem.setIconPath(fileChooser.getSelectedFile().getName());
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
                             lbl.setIcon(resourceManager.readImage(url, 48,48));
