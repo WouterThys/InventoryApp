@@ -1,0 +1,2 @@
+
+UPDATE items SET name = 'TL071', description = 'Op amp', price = 5, categoryId = 0, productId = 0, typeId = 0, localdatasheet = '/home/waldo/Dropbox/elentrik/datasheets/opamp/tl071-557172.pdf', onlinedatasheet = 'https://www.youtube.com/watch?v=VmiazFHzpP8' WHERE id = 1;

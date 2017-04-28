@@ -1,0 +1,1372 @@
+2017-04-12 18:16:34,798  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:16:34,984  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:16:35,383  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,387 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:16:35,402  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:16:35,403 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:16:35,405  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,405 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:16:35,407  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,408 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:16:35,409  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,409 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:16:35,410  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,410 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:16:35,411  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:16:35,412 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:16:35,440  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:16:35,665  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.126s)
+2017-04-12 18:16:35,667  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:16:35,681  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:16:35,682  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:16:35,683  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:17:22,530  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:22,531 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:17:22,532  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:22,532 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:17:22,532  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:22,533 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:17:22,533  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:22,533 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:17:22,533  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:22,534 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:17:31,562  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:17:31,677  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:17:31,918  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,918 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:17:31,930  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:31,931 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:17:31,934  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,934 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:17:31,936  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,938 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:17:31,941  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,942 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:17:31,943  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,943 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:17:31,944  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:31,945 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:17:31,972  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:17:32,096  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.047s)
+2017-04-12 18:17:32,097  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:17:32,112  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:17:32,113  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:17:32,114  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:17:36,370  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:36,370 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:17:36,371  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:36,371 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:17:36,371  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:36,371 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:17:36,372  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:36,372 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:17:36,372  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:36,372 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:17:43,076  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:17:43,163  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:17:43,436  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,437 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:17:43,450  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:43,450 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:17:43,452  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,453 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:17:43,454  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,455 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:17:43,456  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,456 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:17:43,457  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,458 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:17:43,459  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:17:43,459 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:17:43,484  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:17:43,601  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.042s)
+2017-04-12 18:17:43,603  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:17:43,613  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:17:43,614  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:17:43,615  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:17:55,793  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:55,794 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:17:55,794  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:55,794 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:17:55,795  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:55,795 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:17:55,795  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:55,796 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:17:55,796  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:17:55,796 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:18:16,563  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:18:16,706  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:18:16,988  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:16,992 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:18:17,006  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:17,007 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:18:17,009  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:17,009 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:18:17,011  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:17,012 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:18:17,013  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:17,013 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:18:17,014  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:17,015 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:18:17,015  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:18:17,016 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:18:17,043  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:18:17,161  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.039s)
+2017-04-12 18:18:17,163  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:18:17,174  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:18:17,175  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:18:17,176  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:18:27,888  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:27,890 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:18:27,891  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:27,891 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:18:27,891  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:27,891 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:18:27,892  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:27,892 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:18:27,892  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:18:27,893 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:19:03,686  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:19:03,759  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:19:04,061  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,065 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:19:04,081  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:04,081 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:19:04,083  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,084 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:19:04,086  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,086 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:19:04,087  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,088 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:19:04,089  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,089 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:19:04,090  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:19:04,091 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:19:04,118  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:19:04,235  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.038s)
+2017-04-12 18:19:04,237  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:19:04,246  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:19:04,246  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:19:04,248  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:19:09,630  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:09,631 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:19:09,633  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:09,633 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:19:09,633  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:09,633 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:19:09,634  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:09,634 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:19:09,634  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:19:09,635 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:23:29,454  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:23:29,539  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:23:29,846  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,851 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:23:29,866  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:23:29,867 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:23:29,869  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,870 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:23:29,872  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,872 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:23:29,873  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,873 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:23:29,874  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,875 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:23:29,876  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:23:29,876 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:23:29,903  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:23:30,031  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.040s)
+2017-04-12 18:23:30,033  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:23:30,045  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:23:30,046  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:23:30,048  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:28:41,882  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:41,883 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:28:41,883  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:41,884 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:28:41,884  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:41,884 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:28:41,885  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:41,885 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:28:41,885  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:41,885 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:28:46,335  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:28:46,435  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:28:46,678  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,679 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:28:46,692  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:46,692 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:28:46,694  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,694 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:28:46,695  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,696 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:28:46,697  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,697 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:28:46,698  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,699 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:28:46,699  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:28:46,700 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:28:46,723  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:28:46,836  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.033s)
+2017-04-12 18:28:46,838  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:28:46,848  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:28:46,849  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:28:46,850  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:28:52,554  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:52,555 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:28:52,555  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:52,555 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:28:52,556  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:52,556 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:28:52,556  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:52,557 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:28:52,557  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:28:52,557 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:32:07,385  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:32:07,487  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:32:07,733  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,734 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:32:07,746  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:07,747 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:32:07,749  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,749 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:32:07,751  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,751 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:32:07,752  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,753 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:32:07,753  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,754 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:32:07,755  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:32:07,755 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:32:07,779  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:32:07,886  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.035s)
+2017-04-12 18:32:07,887  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:32:07,898  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:32:07,898  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:32:07,899  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:32:13,388  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:13,388 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:32:13,388  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:13,389 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:32:13,389  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:13,389 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:32:13,390  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:13,390 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:32:13,390  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:32:13,390 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:39:20,811  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:39:20,905  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:39:21,175  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,176 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:39:21,189  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:21,190 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:39:21,192  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,192 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:39:21,194  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,195 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:39:21,196  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,196 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:39:21,197  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,198 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:39:21,198  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:39:21,199 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:39:21,223  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:39:21,326  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.032s)
+2017-04-12 18:39:21,327  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:39:21,337  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:39:21,338  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:39:21,339  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:39:27,725  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:27,726 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:39:27,726  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:27,726 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:39:27,727  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:27,727 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:39:27,727  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:27,727 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:39:27,728  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:39:27,728 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:40:27,847  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:40:27,945  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:40:28,225  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,226 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:40:28,241  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:28,242 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:40:28,244  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,245 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:40:28,248  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,248 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:40:28,249  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,249 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:40:28,251  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,251 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:40:28,252  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:28,252 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:40:28,275  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:40:28,387  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.039s)
+2017-04-12 18:40:28,388  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:40:28,398  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:40:28,399  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:40:28,400  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:40:32,819  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:32,819 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:40:32,820  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:32,820 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:40:32,820  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:32,820 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:40:32,821  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:32,821 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:40:32,821  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:32,822 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:40:38,119  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:40:38,186  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:40:38,546  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,550 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:40:38,566  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:38,567 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:40:38,569  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,569 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:40:38,571  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,572 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:40:38,573  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,573 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:40:38,574  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,574 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:40:38,575  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:40:38,576 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:40:38,606  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:40:38,738  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.044s)
+2017-04-12 18:40:38,740  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:40:38,750  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:40:38,750  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:40:38,752  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:40:44,339  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:44,341 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:40:44,341  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:44,341 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:40:44,342  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:44,342 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:40:44,344  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:44,344 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:40:44,345  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:40:44,345 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:45:47,814  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:45:47,881  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:45:48,155  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,156 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:45:48,167  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:48,168 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:45:48,169  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,170 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:45:48,171  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,171 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:45:48,172  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,173 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:45:48,173  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,174 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:45:48,174  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:45:48,175 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:45:48,194  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:45:48,300  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.032s)
+2017-04-12 18:45:48,302  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:45:48,312  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:45:48,313  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:45:48,315  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:45:52,577  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:52,577 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:45:52,578  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:52,578 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:45:52,579  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:52,579 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:45:52,579  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:52,579 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:45:52,580  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:45:52,580 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:50:44,561  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:50:44,679  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:50:44,945  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,950 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:50:44,965  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:50:44,966 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:50:44,968  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,968 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:50:44,970  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,971 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:50:44,972  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,972 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:50:44,973  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,974 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:50:44,975  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:50:44,977 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:50:45,006  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:50:45,126  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.041s)
+2017-04-12 18:50:45,128  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:50:45,138  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:50:45,139  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:50:45,141  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:51:22,112  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:51:22,113 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:51:22,114  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:51:22,114 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:51:22,114  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:51:22,115 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:51:22,116  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:51:22,116 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 18:51:22,117  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:51:22,117 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 18:55:58,135  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 18:55:58,265  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 18:55:58,563  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,568 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 18:55:58,583  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 18:55:58,583 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 18:55:58,585  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,585 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 18:55:58,587  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,587 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 18:55:58,588  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,588 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 18:55:58,589  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,590 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 18:55:58,590  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 18:55:58,590 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 18:55:58,615  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 18:55:58,744  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.051s)
+2017-04-12 18:55:58,746  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 18:55:58,761  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 18:55:58,762  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 18:55:58,763  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:01:03,345  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:01:03,346 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:01:03,347  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:01:03,347 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:01:03,347  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:01:03,347 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:01:03,348  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:01:03,348 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:01:03,349  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:01:03,349 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:03:13,778  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:03:13,922  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:03:14,209  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,213 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:03:14,229  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:03:14,229 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:03:14,237  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,237 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:03:14,239  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,240 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:03:14,241  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,241 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:03:14,242  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,243 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:03:14,246  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:03:14,246 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:03:14,273  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:03:14,430  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.060s)
+2017-04-12 19:03:14,431  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:03:14,442  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:03:14,442  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:03:14,444  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:05:21,721  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:05:21,722 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:05:21,722  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:05:21,722 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:05:21,723  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:05:21,723 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:05:21,723  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:05:21,723 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:05:21,724  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:05:21,724 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:16:17,268  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:16:17,383  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:16:17,663  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,667 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:16:17,681  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:16:17,682 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:16:17,684  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,684 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:16:17,686  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,687 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:16:17,687  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,688 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:16:17,688  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,689 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:16:17,690  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:16:17,690 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:16:17,717  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:16:17,838  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.038s)
+2017-04-12 19:16:17,839  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:16:17,854  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:16:17,854  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:16:17,856  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:18:17,664  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:17,665 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:18:17,665  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:17,665 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:18:17,666  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:17,666 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:18:17,666  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:17,666 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:18:17,667  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:17,667 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:18:44,113  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:18:44,195  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:18:44,485  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,489 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:18:44,504  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:18:44,505 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:18:44,507  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,507 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:18:44,509  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,510 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:18:44,510  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,510 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:18:44,511  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,512 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:18:44,512  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:18:44,513 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:18:44,543  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:18:44,676  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.052s)
+2017-04-12 19:18:44,680  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:18:44,690  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:18:44,691  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:18:44,693  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:20:10,691  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:20:10,691 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:20:10,692  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:20:10,692 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:20:10,692  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:20:10,693 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:20:10,693  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:20:10,693 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:20:10,693  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:20:10,694 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:21:19,810  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:21:19,902  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:21:20,183  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,184 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:21:20,198  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:20,198 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:21:20,200  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,200 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:21:20,202  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,202 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:21:20,203  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,204 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:21:20,205  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,205 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:21:20,206  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:21:20,206 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:21:20,228  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:21:20,336  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.035s)
+2017-04-12 19:21:20,337  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:21:20,347  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:21:20,348  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:21:20,349  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:21:25,975  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:25,976 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:21:25,976  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:25,977 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:21:25,977  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:25,977 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:21:25,978  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:25,978 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:21:25,978  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:21:25,978 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:22:05,359  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:22:05,436  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:22:05,724  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,730 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:22:05,746  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:05,746 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:22:05,748  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,749 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:22:05,750  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,751 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:22:05,751  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,752 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:22:05,753  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,753 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:22:05,753  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:22:05,754 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:22:05,779  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:22:05,938  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.060s)
+2017-04-12 19:22:05,939  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:22:05,953  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:22:05,953  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:22:05,955  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:22:14,007  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:14,007 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:22:14,008  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:14,008 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:22:14,008  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:14,009 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:22:14,009  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:14,009 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:22:14,010  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:22:14,010 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:28:48,478  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:28:48,602  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:28:48,943  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,950 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:28:48,970  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:28:48,971 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:28:48,973  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,974 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:28:48,976  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,977 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:28:48,978  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,978 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:28:48,979  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,980 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:28:48,981  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:28:48,981 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:28:49,012  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:28:49,150  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.047s)
+2017-04-12 19:28:49,151  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:28:49,163  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:28:49,164  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:28:49,166  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:29:34,506  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:34,506 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:29:34,506  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:34,507 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:29:34,507  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:34,507 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:29:34,508  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:34,508 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:29:34,508  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:34,508 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:29:37,427  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:29:37,555  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:29:37,889  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,894 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:29:37,910  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:29:37,911 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:29:37,913  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,914 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:29:37,916  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,916 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:29:37,917  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,918 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:29:37,919  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,919 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:29:37,920  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:29:37,922 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:29:37,955  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:29:38,089  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.040s)
+2017-04-12 19:29:38,091  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:29:38,107  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:29:38,108  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:29:38,110  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:30:46,814  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:46,814 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:30:46,814  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:46,815 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:30:46,815  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:46,815 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:30:46,815  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:46,816 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:30:46,816  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:46,816 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:30:50,083  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:30:50,162  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:30:50,496  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,497 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:30:50,509  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:50,510 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:30:50,511  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,512 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:30:50,514  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,514 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:30:50,515  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,516 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:30:50,517  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,517 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:30:50,518  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:30:50,519 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:30:50,543  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:30:50,654  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.036s)
+2017-04-12 19:30:50,656  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:30:50,665  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:30:50,666  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:30:50,667  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:30:57,532  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:57,532 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:30:57,533  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:57,533 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:30:57,533  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:57,534 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:30:57,534  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:57,534 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:30:57,534  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:30:57,535 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:31:01,396  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:31:01,573  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:31:01,913  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,918 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:31:01,933  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:31:01,933 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:31:01,935  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,935 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:31:01,937  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,938 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:31:01,939  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,939 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:31:01,940  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,940 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:31:01,941  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:31:01,941 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:31:01,968  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:31:02,085  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.039s)
+2017-04-12 19:31:02,086  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:31:02,097  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:31:02,098  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:31:02,099  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:32:32,180  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:32:32,201 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:32:32,220  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:32:32,237 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:32:32,257  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:32:32,275 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:32:32,295  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:32:32,312 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:32:32,343  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:32:32,367 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:35:33,197  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:35:33,256  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:35:33,537  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,537 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:35:33,548  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:33,549 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:35:33,550  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,551 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:35:33,553  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,553 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:35:33,554  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,554 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:35:33,555  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,556 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:35:33,556  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:35:33,557 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:35:33,578  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:35:33,710  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.046s)
+2017-04-12 19:35:33,712  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:35:33,722  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:35:33,723  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:35:33,724  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:35:43,849  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:43,849 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:35:43,851  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:43,851 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:35:43,851  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:43,851 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:35:43,851  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:43,852 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:35:43,852  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:35:43,852 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:36:14,399  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:36:14,469  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:36:14,736  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,737 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:36:14,749  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:14,750 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:36:14,751  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,751 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:36:14,753  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,754 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:36:14,754  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,755 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:36:14,755  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,756 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:36:14,756  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:36:14,757 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:36:14,780  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:36:14,898  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.042s)
+2017-04-12 19:36:14,899  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:36:14,909  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:36:14,910  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:36:14,911  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:36:28,897  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:28,897 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:36:28,898  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:28,898 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:36:28,898  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:28,899 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:36:28,899  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:28,899 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:36:28,899  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:36:28,900 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:40:29,186  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:40:29,340  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:40:29,644  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,649 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:40:29,665  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:40:29,666 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:40:29,668  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,668 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:40:29,670  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,671 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:40:29,672  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,672 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:40:29,673  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,674 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:40:29,675  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:40:29,675 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:40:29,705  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:40:29,840  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.040s)
+2017-04-12 19:40:29,842  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:40:29,852  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:40:29,852  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:40:29,854  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:44:12,640  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:44:12,706  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:44:12,972  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,972 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:44:12,984  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:12,984 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:44:12,986  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,986 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:44:12,988  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,989 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:44:12,990  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,990 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:44:12,991  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,992 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:44:12,992  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:44:12,993 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:44:13,015  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:44:13,124  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.041s)
+2017-04-12 19:44:13,132  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:44:13,149  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:44:13,150  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:44:13,152  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:44:16,281  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:16,282 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:44:16,282  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:16,282 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:44:16,283  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:16,283 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:44:16,283  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:16,284 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:44:16,284  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:44:16,284 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 19:54:54,013  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 19:54:54,113  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 19:54:54,358  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,358 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 19:54:54,372  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:54:54,373 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 19:54:54,374  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,375 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 19:54:54,379  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,379 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:54:54,380  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,382 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:54:54,383  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,384 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:54:54,385  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 19:54:54,386 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 19:54:54,411  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 19:54:54,514  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.034s)
+2017-04-12 19:54:54,516  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:54:54,529  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 19:54:54,530  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 19:54:54,531  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 19:55:59,882 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Category list updated. Element count: 4
+2017-04-12 19:56:02,344 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Category list not updated, object is null
+2017-04-12 19:56:02,346 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Unknown updated in product list. Category id = 1. Element count: 1
+2017-04-12 19:56:03,001 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Unknown updated in type list. Product id = 1. Element count: 1
+2017-04-12 19:56:03,002 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Unknown updated in type list. Product id = 1. Element count: 1
+2017-04-12 19:56:04,720 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Amplifier IC updated in type list. Product id = 3. Element count: 2
+2017-04-12 19:56:06,584 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialogLayout - Embedded Processors & Controllers updated in type list. Product id = 2. Element count: 1
+2017-04-12 19:56:20,755  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:56:20,756 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 19:56:20,756  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:56:20,756 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 19:56:20,756  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:56:20,757 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 19:56:20,757  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:56:20,757 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 19:56:20,757  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 19:56:20,758 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:24:31,915  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:32,030 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:24:32,030  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:32,030 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:24:32,031  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:32,031 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:24:32,031  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:32,032 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:24:32,032  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:32,033 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:24:41,298  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:24:41,737  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:24:42,271  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,279 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:24:42,293  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:24:42,293 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:24:42,295  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,295 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:24:42,297  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,297 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:24:42,298  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,298 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:24:42,299  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,299 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:24:42,300  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:24:42,300 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:24:42,366  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:24:42,618  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.099s)
+2017-04-12 21:24:42,619  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:24:42,628  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:24:42,629  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:24:42,631  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:25:01,211  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:01,213 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:25:01,213  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:01,213 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:25:01,214  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:01,214 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:25:01,214  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:01,215 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:25:01,215  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:01,215 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:25:24,950  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:25:25,032  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:25:25,461  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,466 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:25:25,482  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:25:25,482 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:25:25,487  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,487 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:25:25,489  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,490 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:25:25,491  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,491 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:25:25,492  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,493 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:25:25,493  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:25:25,494 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:25:25,523  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:25:25,662  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.061s)
+2017-04-12 21:25:25,665  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:25:25,676  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:25:25,677  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:25:25,678  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:28:12,558  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:12,558 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:28:12,558  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:12,559 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:28:12,559  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:12,559 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:28:12,560  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:12,560 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:28:12,560  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:12,561 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:28:16,150  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:28:16,254  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:28:16,491  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,491 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:28:16,503  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:28:16,503 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:28:16,505  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,505 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:28:16,506  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,507 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:28:16,508  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,508 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:28:16,509  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,509 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:28:16,510  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:28:16,510 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:28:16,533  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:28:16,657  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.043s)
+2017-04-12 21:28:16,658  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:28:16,668  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:28:16,669  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:28:16,670  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:29:13,540  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:13,541 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:29:13,542  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:13,542 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:29:13,542  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:13,542 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:29:13,543  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:13,543 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:29:13,543  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:13,543 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:29:18,966  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:29:19,116  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:29:19,462  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,466 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:29:19,484  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:29:19,484 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:29:19,486  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,487 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:29:19,489  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,489 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:29:19,491  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,491 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:29:19,492  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,492 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:29:19,493  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:29:19,493 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:29:19,524  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:29:19,662  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.045s)
+2017-04-12 21:29:19,664  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:29:19,678  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:29:19,679  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:29:19,680  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:30:40,383  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:30:40,384 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:30:40,384  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:30:40,385 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:30:40,385  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:30:40,385 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:30:40,386  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:30:40,386 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:30:40,386  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:30:40,387 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:31:03,539  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:31:03,637  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:31:03,927  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,928 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:31:03,941  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:31:03,941 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:31:03,943  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,943 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:31:03,945  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,945 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:31:03,946  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,947 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:31:03,947  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,948 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:31:03,948  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:31:03,949 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:31:03,982  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:31:04,089  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.038s)
+2017-04-12 21:31:04,091  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:31:04,100  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:31:04,101  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:31:04,102  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:43:24,503  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:24,636 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:43:24,636  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:24,636 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:43:24,636  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:24,637 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:43:24,637  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:24,637 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:43:24,637  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:24,638 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:43:50,418  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:43:51,108  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:43:51,739  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,765 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:43:51,782  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:43:51,783 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:43:51,785  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,785 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:43:51,787  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,787 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:43:51,788  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,788 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:43:51,789  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,789 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:43:51,790  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:43:51,790 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:43:51,814  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:43:52,003  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.102s)
+2017-04-12 21:43:52,005  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:43:52,015  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:43:52,016  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:43:52,017  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:44:56,296  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:44:56,297 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:44:56,297  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:44:56,297 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:44:56,298  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:44:56,298 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:44:56,298  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:44:56,298 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:44:56,299  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:44:56,299 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 21:50:00,763  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 21:50:01,006  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 21:50:01,326  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,327 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 21:50:01,339  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:01,339 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 21:50:01,341  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,341 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 21:50:01,343  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,344 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:50:01,345  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,345 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:50:01,346  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,346 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:50:01,347  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 21:50:01,347 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 21:50:01,386  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 21:50:01,608  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.137s)
+2017-04-12 21:50:01,615  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:50:01,627  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 21:50:01,628  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 21:50:01,629  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 21:50:33,665  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:33,666 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 21:50:33,666  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:33,666 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 21:50:33,667  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:33,667 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 21:50:33,667  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:33,667 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 21:50:33,668  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 21:50:33,668 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 22:05:29,607  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 22:05:29,720  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 22:05:30,029  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,030 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 22:05:30,043  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:05:30,043 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 22:05:30,045  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,045 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 22:05:30,047  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,047 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:05:30,048  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,048 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:05:30,049  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,049 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:05:30,050  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:05:30,051 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 22:05:30,074  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 22:05:30,204  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.046s)
+2017-04-12 22:05:30,206  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:05:30,217  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 22:05:30,218  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 22:05:30,220  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:06:06,520  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:06,520 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:06:06,521  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:06,521 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:06:06,521  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:06,521 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:06:06,522  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:06,522 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 22:06:06,522  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:06,522 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 22:06:10,725  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 22:06:10,846  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 22:06:11,128  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,129 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 22:06:11,142  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:11,142 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 22:06:11,151  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,153 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 22:06:11,154  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,158 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:06:11,160  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,160 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:06:11,162  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,162 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:06:11,163  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:06:11,163 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 22:06:11,195  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 22:06:11,323  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.048s)
+2017-04-12 22:06:11,324  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:06:11,338  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 22:06:11,339  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 22:06:11,340  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:06:34,025  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:34,026 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:06:34,026  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:34,026 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:06:34,027  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:34,027 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:06:34,027  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:34,028 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 22:06:34,028  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:06:34,028 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 22:07:02,222  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 22:07:02,354  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 22:07:02,776  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,784 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 22:07:02,803  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:07:02,803 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 22:07:02,805  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,805 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 22:07:02,819  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,820 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:07:02,820  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,822 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:07:02,825  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,825 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:07:02,826  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:07:02,827 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 22:07:02,860  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 22:07:02,991  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.040s)
+2017-04-12 22:07:02,993  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:07:03,007  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 22:07:03,007  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 22:07:03,009  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:08:19,663  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:19,663 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:08:19,664  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:19,664 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:08:19,665  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:19,665 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:08:19,665  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:19,665 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 22:08:19,666  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:19,666 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-12 22:08:38,498  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-12 22:08:38,640  INFO main org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-12 22:08:38,949  INFO main jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,953 DEBUG main jdbc.connection - open connections:  1 (1)
+2017-04-12 22:08:38,969  INFO main jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:08:38,969 DEBUG main jdbc.connection - open connections:  none
+2017-04-12 22:08:38,971  INFO main jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,972 DEBUG main jdbc.connection - open connections:  2 (1)
+2017-04-12 22:08:38,974  INFO main jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,974 DEBUG main jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:08:38,975  INFO main jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,975 DEBUG main jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:08:38,976  INFO main jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,977 DEBUG main jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:08:38,978  INFO main jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-12 22:08:38,978 DEBUG main jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-12 22:08:39,007  INFO main org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-12 22:08:39,162  INFO main org.flywaydb.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.058s)
+2017-04-12 22:08:39,163  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:08:39,173  INFO main org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 9.2
+2017-04-12 22:08:39,173  INFO main org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-12 22:08:39,174  INFO main org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-12 22:36:32,539  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:36:32,633 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-12 22:36:32,634  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:36:32,634 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-12 22:36:32,634  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:36:32,635 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-12 22:36:32,635  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:36:32,635 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-12 22:36:32,635  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-12 22:36:32,636 DEBUG Thread-0 jdbc.connection - open connections:  none

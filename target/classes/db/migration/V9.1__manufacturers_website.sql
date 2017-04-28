@@ -1,0 +1,1 @@
+ALTER TABLE manufacturers ADD COLUMN website VARCHAR(1024);

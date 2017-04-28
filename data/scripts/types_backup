@@ -1,0 +1,30 @@
+PRAGMA foreign_keys = 0;
+
+CREATE TABLE sqlitestudio_temp_table AS SELECT *
+                                          FROM types;
+
+DROP TABLE types;
+
+CREATE TABLE types (
+    id        INTEGER        PRIMARY KEY AUTOINCREMENT,
+    name      VARCHAR (128)  NOT NULL,
+    productid INTEGER        REFERENCES products (id) 
+                             NOT NULL ON CONFLICT ABORT,
+    iconpath  VARCHAR (1024) 
+);
+
+INSERT INTO types (
+                      id,
+                      name,
+                      productid,
+                      iconpath
+                  )
+                  SELECT id,
+                         name,
+                         productid,
+                         iconpath
+                    FROM sqlitestudio_temp_table;
+
+DROP TABLE sqlitestudio_temp_table;
+
+PRAGMA foreign_keys = 1;

@@ -1,0 +1,76 @@
+2017-04-16 00:34:11,813  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-16 00:34:15,088  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-16 00:34:15,417  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,426 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-16 00:34:15,440  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:34:15,441 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-16 00:34:15,443  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,443 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-16 00:34:15,445  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,445 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-16 00:34:15,446  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,446 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-16 00:34:15,447  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,447 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-16 00:34:15,448  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 00:34:15,448 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-16 00:34:15,505  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-16 00:34:15,810  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 12 migrations (execution time 00:00.156s)
+2017-04-16 00:34:15,812  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-16 00:34:15,822  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 10
+2017-04-16 00:34:15,822  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-16 00:34:15,823  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-16 00:34:47,938 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-16 00:34:47,943 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Location panel: update components.
+2017-04-16 00:34:47,943 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-16 00:34:47,958 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-16 00:34:51,970 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Location panel: update components.
+2017-04-16 00:34:54,098 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-16 00:35:02,652  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:35:02,653 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-16 00:35:02,654  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:35:02,655 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-16 00:35:02,655  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:35:02,656 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-16 00:35:02,657  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:35:02,658 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-16 00:35:02,659  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 00:35:02,660 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-16 13:00:07,583  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-16 13:00:09,088  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-16 13:00:09,354  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,361 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-16 13:00:09,372  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:00:09,373 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-16 13:00:09,374  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,375 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-16 13:00:09,376  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,377 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-16 13:00:09,378  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,378 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-16 13:00:09,379  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,379 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-16 13:00:09,380  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-16 13:00:09,380 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-16 13:00:09,403  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-16 13:00:09,577  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 12 migrations (execution time 00:00.097s)
+2017-04-16 13:00:09,578  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-16 13:00:09,584  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 10
+2017-04-16 13:00:09,585  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-16 13:00:09,586  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-16 13:05:03,691  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:05:03,691 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-16 13:05:03,692  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:05:03,692 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-16 13:05:03,692  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:05:03,693 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-16 13:05:03,693  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:05:03,693 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-16 13:05:03,694  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-16 13:05:03,694 DEBUG Thread-0 jdbc.connection - open connections:  none

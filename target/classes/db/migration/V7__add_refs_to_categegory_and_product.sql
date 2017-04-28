@@ -1,0 +1,2 @@
+ALTER TABLE products ADD COLUMN categoryid INTEGER;
+ALTER TABLE types ADD COLUMN productid INTEGER;
