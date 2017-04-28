@@ -5,7 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemLocationPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemManufacturerPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 
@@ -24,7 +24,7 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
     ComponentPanel componentPanel;
     EditItemManufacturerPanel editItemManufacturerPanel;
-    EditItemLocationPanel editItemLocationPanel;
+    EditItemStockPanel editItemStockPanel;
     EditItemOrderPanel editItemOrderPanel;
 
 
@@ -56,9 +56,9 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         editItemManufacturerPanel = new EditItemManufacturerPanel(newItem);
         editItemManufacturerPanel.initializeComponents();
 
-        editItemLocationPanel = new EditItemLocationPanel(newItem);
-        editItemLocationPanel.setLayout(new BoxLayout(editItemLocationPanel, BoxLayout.Y_AXIS));
-        editItemLocationPanel.initializeComponents();
+        editItemStockPanel = new EditItemStockPanel(newItem);
+        editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
+        editItemStockPanel.initializeComponents();
 
         editItemOrderPanel = new EditItemOrderPanel(newItem);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
@@ -73,18 +73,18 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         // Component panel
         componentPanel.initializeLayouts();
         editItemManufacturerPanel.initializeLayouts();
-        editItemLocationPanel.initializeLayouts();
+        editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
 
         componentPanel.updateComponents(null);
         editItemManufacturerPanel.updateComponents(null);
-        editItemLocationPanel.updateComponents(null);
+        editItemStockPanel.updateComponents(null);
         editItemOrderPanel.updateComponents(null);
 
         // Add tabs
         tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
+        tabbedPane.addTab("Stock", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
         tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
-        tabbedPane.addTab("Location", resourceManager.readImage("EditItem.LocationIcon"), editItemLocationPanel, "Location info");
         tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
         tabbedPane.setPreferredSize(new Dimension(600, 600));
 

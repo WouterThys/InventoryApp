@@ -377,6 +377,8 @@ public class DbManager implements TableChangedListener {
                     i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
                     i.setManufacturerId(rs.getLong("manufacturerid"));
                     i.setLocationId(rs.getLong("locationid"));
+                    i.setAmount(rs.getInt("amount"));
+                    i.setAmountType(rs.getInt("amounttype"));
 
                     i.setOnTableChangedListener(this);
                     items.add(i);
@@ -437,6 +439,8 @@ public class DbManager implements TableChangedListener {
                     i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
                     i.setManufacturerId(rs.getLong("manufacturerid"));
                     i.setLocationId(rs.getLong("locationid"));
+                    i.setAmount(rs.getInt("amount"));
+                    i.setAmountType(rs.getInt("amounttype"));
                 }
             }
         } catch (SQLException e) {

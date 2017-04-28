@@ -19,6 +19,8 @@ public class Item extends DbObject {
     private String onlineDataSheet = "";
     private long manufacturerId = -1;
     private long locationId = -1;
+    private int amount = 0;
+    private int amountType = 0;
 
     public Item() {
         super(TABLE_NAME);
@@ -52,6 +54,8 @@ public class Item extends DbObject {
             locationId = UNKNOWN_ID;
         }
         statement.setLong(11, locationId);
+        statement.setInt(12, amount);
+        statement.setInt(13, amountType);
         statement.execute();
     }
 
@@ -83,8 +87,10 @@ public class Item extends DbObject {
             locationId = UNKNOWN_ID;
         }
         statement.setLong(11, locationId);
+        statement.setInt(12, amount);
+        statement.setInt(13, amountType);
 
-        statement.setLong(12, id); // WHERE id
+        statement.setLong(14, id); // WHERE id
         statement.execute();
     }
 
@@ -248,5 +254,21 @@ public class Item extends DbObject {
 
     public void setLocationId(long locationId) {
         this.locationId = locationId;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public int getAmountType() {
+        return amountType;
+    }
+
+    public void setAmountType(int amountType) {
+        this.amountType = amountType;
     }
 }

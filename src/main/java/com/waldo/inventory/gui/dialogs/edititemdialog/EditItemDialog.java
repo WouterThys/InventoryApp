@@ -59,7 +59,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (verify()) {
             componentPanel.setComponentValues();
             editItemManufacturerPanel.setComponentValues();
-            editItemLocationPanel.setComponentValues();
+            editItemStockPanel.setComponentValues();
             editItemOrderPanel.setComponentValues();
 
             // Close dialog
@@ -108,7 +108,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             // Save values
             componentPanel.setComponentValues();
             editItemManufacturerPanel.setComponentValues();
-            editItemLocationPanel.setComponentValues();
+            editItemStockPanel.setComponentValues();
             editItemOrderPanel.setComponentValues();
 
             updateComponents(null);
