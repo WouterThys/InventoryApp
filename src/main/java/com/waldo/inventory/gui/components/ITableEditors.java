@@ -1,11 +1,15 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.ResourceManager;
+
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.EventObject;
 
@@ -76,6 +80,32 @@ public class ITableEditors {
                 JOptionPane.showMessageDialog(null, "Invalid value, discarding");
             }
             return super.stopCellEditing();
+        }
+    }
+
+    public static class AmountRenderer extends DefaultTableCellRenderer {
+
+        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/Settings.properties").getPath());
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == 0) {
+                ILabel lblText = new ILabel(String.valueOf(value));
+                lblText.setForeground(Color.WHITE);
+                Font f = lblText.getFont();
+                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize()-5));
+                ILabel lblIcon;
+                if ((int)value > 0) {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                } else {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                }
+                lblIcon.setLayout(new GridBagLayout());
+                lblIcon.add(lblText);
+                return lblIcon;
+            } else {
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
         }
     }
 }

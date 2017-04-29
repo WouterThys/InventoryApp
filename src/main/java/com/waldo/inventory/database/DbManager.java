@@ -379,6 +379,7 @@ public class DbManager implements TableChangedListener {
                     i.setLocationId(rs.getLong("locationid"));
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
+                    i.setOrderState(rs.getInt("orderstate"));
 
                     i.setOnTableChangedListener(this);
                     items.add(i);
@@ -441,6 +442,7 @@ public class DbManager implements TableChangedListener {
                     i.setLocationId(rs.getLong("locationid"));
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
+                    i.setOrderState(rs.getInt("orderstate"));
                 }
             }
         } catch (SQLException e) {

@@ -12,8 +12,8 @@ import java.util.List;
 public class IItemTableModel extends AbstractTableModel {
 
     // Names and classes
-    private static final String[] columnNames = {"Name", "Description", "Manufacturer"};
-    private static final Class[] columnClasses = {String.class, String.class, String.class};
+    private static final String[] columnNames = {"", "Name", "Description", "Manufacturer"};
+    private static final Class[] columnClasses = {ILabel.class, String.class, String.class, String.class};
 
     private List<Item> itemList;
 
@@ -68,11 +68,13 @@ public class IItemTableModel extends AbstractTableModel {
         Item item = getItem(rowIndex);
         if (item != null) {
             switch (columnIndex) {
-                case 0: // Name
+                case 0: // Amount label
+                    return item.getAmount();
+                case 1: // Name
                     return item.getName();
-                case 1: // Description
+                case 2: // Description
                     return item.getDescription();
-                case 2: // Manufacturer
+                case 3: // Manufacturer
                     Manufacturer m = DbManager.db().findManufacturerById(item.getManufacturerId());
                     if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
                         return m.getName();

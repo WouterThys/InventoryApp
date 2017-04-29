@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 
 import java.sql.*;
@@ -20,7 +21,8 @@ public class Item extends DbObject {
     private long manufacturerId = -1;
     private long locationId = -1;
     private int amount = 0;
-    private int amountType = 0;
+    private int amountType = Statics.ItemAmountTypes.NONE;
+    private int orderState = Statics.ItemOrderState.NONE;
 
     public Item() {
         super(TABLE_NAME);
@@ -56,6 +58,7 @@ public class Item extends DbObject {
         statement.setLong(11, locationId);
         statement.setInt(12, amount);
         statement.setInt(13, amountType);
+        statement.setInt(14, orderState);
         statement.execute();
     }
 
@@ -89,8 +92,9 @@ public class Item extends DbObject {
         statement.setLong(11, locationId);
         statement.setInt(12, amount);
         statement.setInt(13, amountType);
+        statement.setInt(14, orderState);
 
-        statement.setLong(14, id); // WHERE id
+        statement.setLong(15, id); // WHERE id
         statement.execute();
     }
 
@@ -270,5 +274,13 @@ public class Item extends DbObject {
 
     public void setAmountType(int amountType) {
         this.amountType = amountType;
+    }
+
+    public int getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(int orderState) {
+        this.orderState = orderState;
     }
 }

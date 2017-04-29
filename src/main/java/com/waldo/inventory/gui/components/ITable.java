@@ -32,10 +32,17 @@ public class ITable extends JTable {
 
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+
+        // Width
         Component component = super.prepareRenderer(renderer, row, column);
         int rendererWidth = component.getPreferredSize().width;
         TableColumn tableColumn = getColumnModel().getColumn(column);
-        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+        if (renderer instanceof ITableEditors.AmountRenderer) {
+            tableColumn.setMaxWidth(36);
+        } else {
+            tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+        }
+
         return component;
     }
 }
