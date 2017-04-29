@@ -42,7 +42,7 @@ public class Application extends JFrame implements ChangeListener {
         db().registerShutDownHook();
 
         // Resource manager
-        URL url = Application.class.getResource("/settings/Settings.properties");
+        URL url = Application.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
 
         // Components

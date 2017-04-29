@@ -108,7 +108,7 @@ public class EditItemManufacturerPanel extends JPanel implements GuiInterface {
                 manufacturerComboBox.setSelectedIndex(ndx);
 
                 // Set icon
-                URL url = EditItemManufacturerPanel.class.getResource("/settings/Settings.properties");
+                URL url = EditItemManufacturerPanel.class.getResource("/settings/IconSettings.properties");
                 ResourceManager resourceManager = new ResourceManager(url.getPath());
                 try {
                     Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());

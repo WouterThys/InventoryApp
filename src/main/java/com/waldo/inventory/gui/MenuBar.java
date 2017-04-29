@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ public class MenuBar extends JMenuBar {
 
     public MenuBar(Application application) {
         this.application = application;
-        URL url = Error.class.getResource("/settings/Settings.properties");
+        URL url = Error.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
 
         initializeComponents();

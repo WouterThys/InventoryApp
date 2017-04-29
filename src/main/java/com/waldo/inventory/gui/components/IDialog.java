@@ -99,7 +99,7 @@ public abstract class IDialog extends JDialog {
 
     private void initializeDialog() {
 
-        URL url = IDialog.class.getResource("/settings/Settings.properties");
+        URL url = IDialog.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
 
         setContentPane(createPanels());

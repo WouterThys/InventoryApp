@@ -50,7 +50,7 @@ public abstract class MainPanelLayout extends JPanel implements
     public MainPanelLayout(Application application) {
         this.application = application;
 
-        URL url = MainPanel.class.getResource("/settings/Settings.properties");
+        URL url = MainPanel.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 

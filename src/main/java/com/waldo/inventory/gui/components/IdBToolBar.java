@@ -49,7 +49,7 @@ public class IdBToolBar extends JToolBar {
         this.toolBarListener = listener;
 
         // Resource manager
-        URL url = IdBToolBar.class.getResource("/settings/Settings.properties");
+        URL url = IdBToolBar.class.getResource("/settings/IconSettings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());
 
         // Actions

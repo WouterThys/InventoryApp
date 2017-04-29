@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -72,7 +71,7 @@ public class ILabel extends JLabel {
     }
 
     public void setIcon(String path) {
-        URL url = ILabel.class.getResource("/settings/Settings.properties");
+        URL url = ILabel.class.getResource("/settings/IconSettings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());
 
         try {
@@ -89,7 +88,7 @@ public class ILabel extends JLabel {
     }
 
     public void setIcon(String path, int width, int height) {
-        URL url = ILabel.class.getResource("/settings/Settings.properties");
+        URL url = ILabel.class.getResource("/settings/IconSettings.properties");
         ResourceManager resourceManager = new ResourceManager(url.getPath());
 
         try {

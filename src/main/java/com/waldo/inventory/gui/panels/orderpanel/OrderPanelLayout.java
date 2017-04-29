@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
@@ -18,8 +17,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -41,9 +38,11 @@ public abstract class OrderPanelLayout extends JPanel implements
     IDbObjectTreeModel treeModel;
     ItemDetailPanel itemDetailPanel;
 
-    private ILabel toolbarDateOrdered;
-    private ILabel toolbarDateReceived;
-    private ILabel toolbarDateModified;
+    private ILabel toolbarTotalItemsLbl;
+    private ILabel toolbarTotalPriceLbl;
+    private ILabel toolbarDateOrderedLbl;
+    private ILabel toolbarDateReceivedLbl;
+    private ILabel toolbarDateModifiedLbl;
     private JButton toolbarOrderButton;
     private JComboBox<Distributor> toolbarDistributorCb;
     /*
@@ -78,22 +77,25 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     private void updateToolBar(Order order) {
+        toolbarTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
+        toolbarTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
+
         if (order.getDateOrdered() != null) {
-            toolbarDateOrdered.setText(dateFormatShort.format(order.getDateOrdered()));
+            toolbarDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
         } else {
-            toolbarDateOrdered.setText("Not ordered yet");
+            toolbarDateOrderedLbl.setText("Not ordered yet");
         }
 
         if (order.getDateReceived() != null) {
-            toolbarDateReceived.setText(dateFormatShort.format(order.getDateReceived()));
+            toolbarDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
         } else {
-            toolbarDateReceived.setText("Not received yet");
+            toolbarDateReceivedLbl.setText("Not received yet");
         }
 
         if (order.getDateModified() != null) {
-            toolbarDateModified.setText(dateFormatLong.format(order.getDateModified()));
+            toolbarDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
         } else {
-            toolbarDateModified.setText(" / ");
+            toolbarDateModifiedLbl.setText(" / ");
         }
 
         if (order.getDistributor() != null) {
@@ -163,25 +165,58 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     private JPanel createOrderToolbar() {
         JPanel westPanel = new JPanel(new GridBagLayout());
+        JPanel centerPanel = new JPanel(new GridBagLayout());
         JPanel eastPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
+        // Total items
+        ILabel itemCntLabel = new ILabel("Item count: ");
+        itemCntLabel.setHorizontalAlignment(ILabel.RIGHT);
+        itemCntLabel.setVerticalAlignment(ILabel.CENTER);
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        westPanel.add(itemCntLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(2,2,2,20);
+        westPanel.add(toolbarTotalItemsLbl, gbc);
+
+        // Total price
+        ILabel totalPriceLabel = new ILabel("Total price: ");
+        itemCntLabel.setHorizontalAlignment(ILabel.RIGHT);
+        itemCntLabel.setVerticalAlignment(ILabel.CENTER);
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        westPanel.add(totalPriceLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(2,2,2,20);
+        westPanel.add(toolbarTotalPriceLbl, gbc);
+
         // Order date
-        ILabel dateLabel = new ILabel("Date ordered: ");
+        ILabel dateLabel = new ILabel("Ordered: ");
         dateLabel.setHorizontalAlignment(ILabel.RIGHT);
         dateLabel.setVerticalAlignment(ILabel.CENTER);
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.insets = new Insets(2,2,2,2);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        westPanel.add(dateLabel, gbc);
+        centerPanel.add(dateLabel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2,2,2,20);
-        westPanel.add(toolbarDateOrdered, gbc);
+        centerPanel.add(toolbarDateOrderedLbl, gbc);
 
         // Received date
         ILabel receivedLabel = new ILabel("Date received: ");
@@ -191,13 +226,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.gridy =1 ; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2,2,2,2);
-        westPanel.add(receivedLabel, gbc);
+        centerPanel.add(receivedLabel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2,2,2,20);
-        westPanel.add(toolbarDateReceived, gbc);
+        centerPanel.add(toolbarDateReceivedLbl, gbc);
 
         // Modified date
         ILabel modifiedLabel = new ILabel("Date modified: ");
@@ -207,28 +242,28 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.gridy =2 ; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2,2,2,2);
-        westPanel.add(modifiedLabel, gbc);
+        centerPanel.add(modifiedLabel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 2; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2,2,2,20);
-        westPanel.add(toolbarDateModified, gbc);
+        centerPanel.add(toolbarDateModifiedLbl, gbc);
 
         // Distributor
         ILabel distributorLabel = new ILabel("Order by: ");
-        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         eastPanel.add(distributorLabel, gbc);
 
-        gbc.gridx = 3; gbc.weightx = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         eastPanel.add(toolbarDistributorCb, gbc);
 
         // Order button
-        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
@@ -237,6 +272,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         // Create panel
         orderTbPanel = new JPanel(new BorderLayout());
         orderTbPanel.add(westPanel, BorderLayout.WEST);
+        orderTbPanel.add(centerPanel, BorderLayout.CENTER);
         orderTbPanel.add(eastPanel, BorderLayout.EAST);
         orderTbPanel.setVisible(false);
 
@@ -274,6 +310,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                     SwingUtilities.invokeLater(() ->  {
                         selectedItem.save();
                         tableModel.fireTableDataChanged();
+                        updateToolBar(lastSelectedOrder);
                     });
                 }
             }
@@ -286,20 +323,30 @@ public abstract class OrderPanelLayout extends JPanel implements
         itemDetailPanel = new ItemDetailPanel(application);
 
         // Tool bar
-        toolbarDateOrdered = new ILabel();
-        toolbarDateOrdered.setEnabled(false);
-        toolbarDateOrdered.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateOrdered.setVerticalAlignment(ILabel.CENTER);
+        toolbarTotalPriceLbl = new ILabel();
+        toolbarTotalPriceLbl.setEnabled(false);
+        toolbarTotalPriceLbl.setHorizontalAlignment(ILabel.LEFT);
+        toolbarTotalPriceLbl.setVerticalAlignment(ILabel.CENTER);
 
-        toolbarDateReceived = new ILabel();
-        toolbarDateReceived.setEnabled(false);
-        toolbarDateReceived.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateReceived.setVerticalAlignment(ILabel.CENTER);
+        toolbarTotalItemsLbl = new ILabel();
+        toolbarTotalItemsLbl.setEnabled(false);
+        toolbarTotalItemsLbl.setHorizontalAlignment(ILabel.LEFT);
+        toolbarTotalItemsLbl.setVerticalAlignment(ILabel.CENTER);
 
-        toolbarDateModified = new ILabel();
-        toolbarDateModified.setEnabled(false);
-        toolbarDateModified.setHorizontalAlignment(ILabel.LEFT);
-        toolbarDateModified.setVerticalAlignment(ILabel.CENTER);
+        toolbarDateOrderedLbl = new ILabel();
+        toolbarDateOrderedLbl.setEnabled(false);
+        toolbarDateOrderedLbl.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateOrderedLbl.setVerticalAlignment(ILabel.CENTER);
+
+        toolbarDateReceivedLbl = new ILabel();
+        toolbarDateReceivedLbl.setEnabled(false);
+        toolbarDateReceivedLbl.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateReceivedLbl.setVerticalAlignment(ILabel.CENTER);
+
+        toolbarDateModifiedLbl = new ILabel();
+        toolbarDateModifiedLbl.setEnabled(false);
+        toolbarDateModifiedLbl.setHorizontalAlignment(ILabel.LEFT);
+        toolbarDateModifiedLbl.setVerticalAlignment(ILabel.CENTER);
 
         DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
         for (Distributor d : DbManager.db().getDistributors()) {

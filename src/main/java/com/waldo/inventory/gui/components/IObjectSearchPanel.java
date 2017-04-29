@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -49,7 +48,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     public IObjectSearchPanel(boolean hasAdvancedSearchOption) {
         this.hasAdvancedSearchOption = hasAdvancedSearchOption;
 
-        URL url = TopToolBar.class.getResource("/settings/Settings.properties");
+        URL url = TopToolBar.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
 
         initializeComponents();

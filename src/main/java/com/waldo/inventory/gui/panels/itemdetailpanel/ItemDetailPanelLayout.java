@@ -38,7 +38,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ItemDetailPanelLayout(Application application) {
         this.application = application;
-        URL url = ItemDetailPanelLayout.class.getResource("/settings/Settings.properties");
+        URL url = ItemDetailPanelLayout.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 

@@ -2,6 +2,9 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -139,6 +142,14 @@ public class Order extends DbObject {
         }
     }
 
+    public double getTotalPrice() {
+        double total = 0;
+        for (OrderItem oi : getOrderItems()) {
+            total += oi.getAmount() + oi.getItem().getPrice();
+        }
+        return Math.round(total);
+    }
+
     public Date getDateOrdered() {
         return dateOrdered;
     }
@@ -180,9 +191,20 @@ public class Order extends DbObject {
     }
 
     public boolean isOrdered() {
-        if (dateReceived != null && dateOrdered != null) {
-            return  (dateReceived.after(dateOrdered));
+        return (dateOrdered != null);
+    }
+
+    public boolean isReceived() {
+        return dateReceived != null;
+    }
+
+    public List<OrderItem> missingOrderReferences() {
+        List<OrderItem> items = new ArrayList<>();
+        for (OrderItem oi : getOrderItems()) {
+            if (oi.getItemRef() == null || oi.getItemRef().isEmpty()) {
+                items.add(oi);
+            }
         }
-        return false;
+        return items;
     }
 }

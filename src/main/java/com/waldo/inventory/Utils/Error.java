@@ -19,7 +19,7 @@ public class Error {
         this.errorType = errorType;
         this.message = message;
 
-        URL url = Error.class.getResource("/settings/Settings.properties");
+        URL url = Error.class.getResource("/settings/IconSettings.properties");
         resourceManager = new ResourceManager(url.getPath());
     }
 

@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.EventObject;
 
@@ -87,7 +86,7 @@ public class ITableEditors {
 
     public static class AmountRenderer extends DefaultTableCellRenderer {
 
-        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/Settings.properties").getPath());
+        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/IconSettings.properties").getPath());
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -107,7 +106,7 @@ public class ITableEditors {
                         lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
                     }
                 }
-                
+
                 lblIcon.setLayout(new GridBagLayout());
                 lblIcon.add(lblText);
                 return lblIcon;
