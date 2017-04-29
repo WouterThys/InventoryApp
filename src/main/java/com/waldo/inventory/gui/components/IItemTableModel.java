@@ -69,7 +69,7 @@ public class IItemTableModel extends AbstractTableModel {
         if (item != null) {
             switch (columnIndex) {
                 case 0: // Amount label
-                    return item.getAmount();
+                    return item;
                 case 1: // Name
                     return item.getName();
                 case 2: // Description

@@ -37,6 +37,9 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
             ref = ref.trim();
             try {
                 Distributor d = (Distributor) distributorCb.getSelectedItem();
+                if (newItem.getId() < 0) {
+                    newItem.save();
+                }
                 partNumber = db().findPartNumber(d.getId(), newItem.getId());
                 if (partNumber == null) {
                     partNumber = new PartNumber();
@@ -46,7 +49,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                 partNumber.setItemRef(ref);
                 partNumber.save();
             } finally {
-                ;
+
             }
         } else {
             itemRefField.setError("No reference");
@@ -62,15 +65,14 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                 Distributor d = (Distributor) e.getItem();
                 if (d != null) {
                     // Save item if not saved yet
-                    if (newItem.getId() < 0) {
-                        newItem.save();
-                    }
-                    // Find ref
-                    partNumber = db().findPartNumber(d.getId(), newItem.getId());
-                    if (partNumber != null) {
-                        itemRefField.setText(partNumber.getItemRef());
-                    } else {
-                        itemRefField.setText("");
+                    if (newItem.getId() > 0) {
+                        // Find ref
+                        partNumber = db().findPartNumber(d.getId(), newItem.getId());
+                        if (partNumber != null) {
+                            itemRefField.setText(partNumber.getItemRef());
+                        } else {
+                            itemRefField.setText("");
+                        }
                     }
                 }
             }

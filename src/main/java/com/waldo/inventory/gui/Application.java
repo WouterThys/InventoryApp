@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
@@ -99,6 +100,9 @@ public class Application extends JFrame implements ChangeListener {
             beginWait();
             // Set tab
             tabbedPane.setSelectedIndex(TAB_ORDERS);
+
+            // Update item
+            item.setOrderState(Statics.ItemOrderState.ORDERED);
 
             // Add
             orderPanel.addItemToOrder(item, order);

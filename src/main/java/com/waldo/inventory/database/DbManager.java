@@ -1,6 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -380,6 +381,9 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
+                    if (isItemInCurrentOrders(i.getId())) {
+                        i.setOrderState(Statics.ItemOrderState.ORDERED);
+                    }
 
                     i.setOnTableChangedListener(this);
                     items.add(i);
@@ -1472,5 +1476,16 @@ public class DbManager implements TableChangedListener {
             }
         }
         return items;
+    }
+
+    public boolean isItemInCurrentOrders(long itemId) {
+        for (OrderItem oi : getOrderItems()) {
+            if (!oi.getOrder().isOrdered()) {
+                if (oi.getItemId() == itemId) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

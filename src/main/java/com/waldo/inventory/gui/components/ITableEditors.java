@@ -1,6 +1,8 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Item;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -90,16 +92,22 @@ public class ITableEditors {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
-                ILabel lblText = new ILabel(String.valueOf(value));
+                Item item = (Item) value;
+                ILabel lblText = new ILabel(String.valueOf(item.getAmount()));
                 lblText.setForeground(Color.WHITE);
                 Font f = lblText.getFont();
                 lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize()-5));
                 ILabel lblIcon;
-                if ((int)value > 0) {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                if (item.getOrderState() > Statics.ItemOrderState.NONE) {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.blue"));
                 } else {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                    if (item.getAmount() > 0) {
+                        lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                    } else {
+                        lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                    }
                 }
+                
                 lblIcon.setLayout(new GridBagLayout());
                 lblIcon.add(lblText);
                 return lblIcon;

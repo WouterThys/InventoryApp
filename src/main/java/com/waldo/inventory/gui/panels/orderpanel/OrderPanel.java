@@ -177,7 +177,7 @@ public class OrderPanel extends OrderPanelLayout {
             // Items
             updateTable(lastSelectedOrder);
             selectItem(selectedItem);
-            itemDetailPanel.updateComponents(selectedItem);
+            itemDetailPanel.updateComponents(selectedItem.getItem());
 
         } finally {
             application.endWait();
