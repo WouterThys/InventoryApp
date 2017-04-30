@@ -338,6 +338,10 @@ public class OrderPanel extends OrderPanelLayout {
             if (dialog.showDialog() == IDialog.OK) {
                 Item itemToOrder = dialog.getItemToOrder();
                 if (itemToOrder != null) {
+                    // Update item
+                    itemToOrder.setOrderState(Statics.ItemOrderState.PLANNED);
+                    itemToOrder.save();
+
                     addItemToOrder(itemToOrder, lastSelectedOrder);
                 }
             }
