@@ -38,14 +38,14 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
         if (orderItem != null) {
             String itemRef = itemRefTf.getText().trim();
             // Order item
-            orderItem.setAmount((int)amountTf.getValue());
+            int amount = ((Number)amountTf.getValue()).intValue();
+            orderItem.setAmount(amount);
             orderItem.setItemRef(itemRef);
             orderItem.save();
-
             // Reference tabel
             PartNumber number = DbManager.db().findPartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
             if (number == null) {
-                if (itemRef != null && !itemRef.isEmpty()) {
+                if (!itemRef.isEmpty()) {
                     number = new PartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
                     number.setItemRef(itemRef);
                     number.save();

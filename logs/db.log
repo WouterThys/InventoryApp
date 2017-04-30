@@ -7571,3 +7571,857 @@
 2017-04-30 20:42:18,552 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
 2017-04-30 20:42:18,552  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
 2017-04-30 20:42:18,552 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:46:28,737  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:46:29,458  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:46:29,743  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,743 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:46:29,757  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:29,757 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:46:29,760  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,760 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:46:29,762  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,763 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:46:29,763  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,764 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:46:29,765  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,765 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:46:29,766  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:46:29,766 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:46:29,807  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:46:30,047  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.132s)
+2017-04-30 20:46:30,048  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:46:30,075  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:46:30,084  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:46:30,085  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:46:34,579  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:34,580 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:46:34,580  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:34,581 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:46:34,581  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:34,581 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:46:34,582  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:34,582 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:46:34,582  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:46:34,583 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:47:18,415  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:47:19,272  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:47:19,589  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,590 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:47:19,604  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:19,604 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:47:19,607  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,608 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:47:19,610  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,610 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:47:19,611  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,612 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:47:19,613  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,613 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:47:19,614  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:47:19,615 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:47:19,675  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:47:19,897  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.131s)
+2017-04-30 20:47:19,898  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:47:19,912  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:47:19,913  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:47:19,914  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:47:32,192  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:32,192 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:47:32,193  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:32,193 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:47:32,193  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:32,194 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:47:32,194  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:32,194 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:47:32,195  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:47:32,195 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:49:19,892  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:49:20,664  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:49:21,042  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,043 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:49:21,075  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:49:21,076 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:49:21,079  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,080 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:49:21,083  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,084 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:49:21,085  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,085 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:49:21,086  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,089 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:49:21,090  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:49:21,090 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:49:21,143  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:49:21,320  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.064s)
+2017-04-30 20:49:21,323  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:49:21,336  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:49:21,337  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:49:21,338  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:49:46,276 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:49:46,280 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:49:46,500 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 223ms
+2017-04-30 20:49:46,507 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to products
+2017-04-30 20:49:46,508  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Thermistor added in products
+2017-04-30 20:50:09,890 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:50:09,891 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:50:10,022 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 131ms
+2017-04-30 20:50:10,025 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to types
+2017-04-30 20:50:10,025  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTC Thermistors added in types
+2017-04-30 20:50:17,707 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 20:50:17,719 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 20:51:04,498 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:51:04,499 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:51:04,639 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 20:51:04,641 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 20:51:04,641  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 added in items
+2017-04-30 20:51:16,506 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:51:16,507 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:51:16,701 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 194ms
+2017-04-30 20:51:16,703 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orders
+2017-04-30 20:51:16,704  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 added in orders
+2017-04-30 20:51:17,966 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:51:17,967 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:51:18,169 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 202ms
+2017-04-30 20:51:18,172 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:51:18,172 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:51:18,529 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 357ms
+2017-04-30 20:51:18,548 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 20:51:18,548  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 updated in items
+2017-04-30 20:51:18,569 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 20:51:18,569  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 20:51:18,584 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:51:18,585 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:51:18,712 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 127ms
+2017-04-30 20:51:18,788 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 20:51:18,794  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 20:52:20,366  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:52:20,367 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:52:20,367  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:52:20,368 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:52:20,368  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:52:20,368 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:52:20,369  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:52:20,369 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:52:20,369  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:52:20,369 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:53:48,405  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:53:49,180  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:53:49,439  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,440 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:53:49,456  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:53:49,456 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:53:49,460  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,465 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:53:49,467  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,468 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:53:49,477  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,477 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:53:49,478  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,479 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:53:49,480  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:53:49,480 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:53:49,534  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:53:49,791  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.096s)
+2017-04-30 20:53:49,796  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:53:49,817  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:53:49,818  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:53:49,820  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:54:16,094 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:54:16,098 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:54:16,278 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 182ms
+2017-04-30 20:54:16,285 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 20:54:16,286  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 20:54:58,763  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:54:58,764 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:54:58,764  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:54:58,764 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:54:58,765  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:54:58,765 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:54:58,765  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:54:58,765 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:54:58,766  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:54:58,766 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:55:01,190  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:55:01,847  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:55:02,102  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,104 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:55:02,121  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:55:02,131 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:55:02,134  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,134 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:55:02,137  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,138 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:55:02,140  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,141 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:55:02,142  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,142 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:55:02,143  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:55:02,143 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:55:02,208  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:55:02,399  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.088s)
+2017-04-30 20:55:02,401  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:55:02,426  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:55:02,427  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:55:02,429  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:58:10,347  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:10,348 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:58:10,348  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:10,349 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:58:10,349  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:10,349 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:58:10,349  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:10,350 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:58:10,350  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:10,350 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 20:58:19,819  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 20:58:20,792  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 20:58:21,178  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,178 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 20:58:21,200  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 20:58:21,200 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 20:58:21,203  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,204 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 20:58:21,206  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,206 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 20:58:21,207  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,208 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 20:58:21,209  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,210 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 20:58:21,211  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 20:58:21,211 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 20:58:21,267  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 20:58:21,467  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.088s)
+2017-04-30 20:58:21,472  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:58:21,495  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 20:58:21,501  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 20:58:21,505  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 20:58:43,314 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:58:43,318 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:58:43,620 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 305ms
+2017-04-30 20:58:43,622 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:58:43,623 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:58:43,754 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 131ms
+2017-04-30 20:58:43,759 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 20:58:43,760  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 20:58:43,783 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 20:58:43,784  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 20:58:54,217 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:58:54,218 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:58:54,340 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 20:58:54,342 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:58:54,343 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:58:54,467 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 20:58:54,471 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 20:58:54,472  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 20:58:54,499 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in partnumbers
+2017-04-30 20:58:54,500  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  updated in partnumbers
+2017-04-30 20:59:08,176 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:59:08,177 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:59:08,538 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 361ms
+2017-04-30 20:59:08,539 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 20:59:08,540 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 20:59:08,804 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 264ms
+2017-04-30 20:59:08,809 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 20:59:08,810  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 20:59:08,825 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in partnumbers
+2017-04-30 20:59:08,825  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  updated in partnumbers
+2017-04-30 21:00:14,684 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:00:14,686 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:00:14,808 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 122ms
+2017-04-30 21:00:14,810 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to manufacturers
+2017-04-30 21:00:14,811  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Seeed Studio added in manufacturers
+2017-04-30 21:00:50,001 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:00:50,002 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:00:50,123 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 121ms
+2017-04-30 21:00:50,127 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to products
+2017-04-30 21:00:50,128  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Engineering Tools added in products
+2017-04-30 21:01:19,686 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:01:19,687 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:01:19,843 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 156ms
+2017-04-30 21:01:19,846 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to types
+2017-04-30 21:01:19,847  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Development Tools added in types
+2017-04-30 21:01:24,270 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:01:24,278 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:02:25,418 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:25,418 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:25,616 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 197ms
+2017-04-30 21:02:25,618 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:02:25,618  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 added in items
+2017-04-30 21:02:29,039 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:29,039 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:29,228 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 188ms
+2017-04-30 21:02:29,229 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:29,229 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:29,353 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:02:29,401 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:02:29,402  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 updated in items
+2017-04-30 21:02:29,441 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:02:29,441  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 21:02:29,449 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:29,450 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:29,577 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 127ms
+2017-04-30 21:02:29,607 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:02:29,608  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:02:43,167 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:43,167 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:43,283 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 116ms
+2017-04-30 21:02:43,284 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:02:43,285 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:02:43,409 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:02:43,413 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:02:43,413  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:02:43,425 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:02:43,426  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:03:44,215 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:03:44,216 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:03:44,420 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 204ms
+2017-04-30 21:03:44,422 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to manufacturers
+2017-04-30 21:03:44,423  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3M Elecronic Solutions Division added in manufacturers
+2017-04-30 21:04:13,937 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:04:13,938 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:04:14,108 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 170ms
+2017-04-30 21:04:14,110 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to products
+2017-04-30 21:04:14,110  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Flat cables added in products
+2017-04-30 21:04:16,440 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:04:16,443 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:05:01,412 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:01,413 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:01,576 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 163ms
+2017-04-30 21:05:01,578 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:05:01,578  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH added in items
+2017-04-30 21:05:04,177 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:04,178 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:04,347 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 169ms
+2017-04-30 21:05:04,348 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:04,348 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:04,472 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:05:04,507 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:05:04,508  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH updated in items
+2017-04-30 21:05:04,525 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:05:04,525  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 21:05:04,533 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:04,534 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:04,708 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 173ms
+2017-04-30 21:05:04,733 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:05:04,734  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:05:22,041 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:22,041 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:22,170 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 128ms
+2017-04-30 21:05:22,170 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:05:22,171 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:05:22,286 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 115ms
+2017-04-30 21:05:22,288 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:05:22,289  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:05:22,307 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:05:22,308  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:06:15,312 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:06:15,416 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:07:00,735 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:00,748 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:01,095 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 358ms
+2017-04-30 21:07:01,096 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:07:01,096  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 added in items
+2017-04-30 21:07:04,021 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:04,022 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:04,189 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 167ms
+2017-04-30 21:07:04,190 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:04,190 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:04,316 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 126ms
+2017-04-30 21:07:04,350 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:07:04,350  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 updated in items
+2017-04-30 21:07:04,380 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:07:04,380  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 21:07:04,387 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:04,388 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:04,532 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 144ms
+2017-04-30 21:07:04,714 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:07:04,715  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:07:14,141 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:14,142 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:14,304 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 162ms
+2017-04-30 21:07:14,305 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:14,306 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:14,421 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 116ms
+2017-04-30 21:07:14,424 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:07:14,424  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:07:14,435 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:07:14,435  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:07:20,348 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:20,349 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:20,511 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 161ms
+2017-04-30 21:07:20,511 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:07:20,512 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:07:20,636 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:07:20,637 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:07:20,637  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:07:20,649 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in partnumbers
+2017-04-30 21:07:20,650  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  updated in partnumbers
+2017-04-30 21:08:19,111 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:08:19,162 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:08:19,484 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 353ms
+2017-04-30 21:08:19,487 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to manufacturers
+2017-04-30 21:08:19,487  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Harwin added in manufacturers
+2017-04-30 21:08:28,066 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:08:28,106 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:09:19,572 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:19,573 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:19,754 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 180ms
+2017-04-30 21:09:19,755 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:09:19,756  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 added in items
+2017-04-30 21:09:33,608 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:33,609 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:33,738 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 129ms
+2017-04-30 21:09:33,739 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:33,739 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:33,872 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 132ms
+2017-04-30 21:09:33,898 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:09:33,898  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 updated in items
+2017-04-30 21:09:33,937 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:09:33,937  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 21:09:33,954 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:33,955 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:34,221 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 266ms
+2017-04-30 21:09:34,244 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:09:34,244  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:09:48,391 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:48,392 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:48,566 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 174ms
+2017-04-30 21:09:48,567 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:48,567 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:48,691 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:09:48,693 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:09:48,693  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:09:48,707 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:09:48,708  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:09:53,232 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:09:53,247 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:09:58,662 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:09:58,663 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:09:58,807 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 144ms
+2017-04-30 21:09:58,809 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:09:58,810  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 updated in items
+2017-04-30 21:10:36,270 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:10:36,300 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:11:20,902 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:20,903 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:21,104 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 200ms
+2017-04-30 21:11:21,106 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:11:21,107  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 added in items
+2017-04-30 21:11:23,276 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:23,277 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:23,468 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 191ms
+2017-04-30 21:11:23,469 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:23,469 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:23,593 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:11:23,619 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:11:23,620  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 updated in items
+2017-04-30 21:11:23,646 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:11:23,646  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 - 2017-04-30 - Oven V1 added in orderitems
+2017-04-30 21:11:23,652 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:23,653 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:23,801 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 148ms
+2017-04-30 21:11:23,827 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:11:23,827  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:11:36,140 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:36,140 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:36,252 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 111ms
+2017-04-30 21:11:36,252 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:11:36,253 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:11:36,360 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 107ms
+2017-04-30 21:11:36,362 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:11:36,363  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:11:36,375 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:11:36,375  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:12:12,287 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:12,288 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:12,454 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 166ms
+2017-04-30 21:12:12,484 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:12:12,484  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:12:12,508 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:12,509 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:12,629 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 119ms
+2017-04-30 21:12:12,637 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:12:12,637  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 - 2017-04-30 - Oven V1 updated in orderitems
+2017-04-30 21:12:41,895 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:41,896 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:42,017 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 121ms
+2017-04-30 21:12:42,022 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:12:42,022  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:12:46,841 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:46,842 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,002 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 160ms
+2017-04-30 21:12:47,003 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,003 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,144 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:47,145 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,145 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,294 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 148ms
+2017-04-30 21:12:47,294 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,295 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,437 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 142ms
+2017-04-30 21:12:47,437 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,438 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,579 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 141ms
+2017-04-30 21:12:47,579 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,580 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,720 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 141ms
+2017-04-30 21:12:47,721 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:47,721 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:47,854 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 132ms
+2017-04-30 21:12:47,868 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,868  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 updated in items
+2017-04-30 21:12:47,884 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,885  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH updated in items
+2017-04-30 21:12:47,905 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,905  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 updated in items
+2017-04-30 21:12:47,922 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,922  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 updated in items
+2017-04-30 21:12:47,936 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,936  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 updated in items
+2017-04-30 21:12:47,950 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:47,951  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 updated in items
+2017-04-30 21:12:47,971 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:12:47,971  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:12:51,785 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:51,785 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:51,944 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 158ms
+2017-04-30 21:12:51,944 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:51,945 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,085 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:52,086 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,086 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,227 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:52,227 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,228 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,377 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 149ms
+2017-04-30 21:12:52,377 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,378 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,527 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 149ms
+2017-04-30 21:12:52,527 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,528 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,669 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:52,669 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,669 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,794 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:12:52,794 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,794 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:52,919 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:12:52,919 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:52,920 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:53,062 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 142ms
+2017-04-30 21:12:53,063 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:53,063 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:53,204 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:53,204 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:53,205 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:53,345 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:53,346 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:53,346 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:53,487 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 140ms
+2017-04-30 21:12:53,487 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:12:53,488 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:12:53,612 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:12:53,614 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,614  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 updated in items
+2017-04-30 21:12:53,630 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,630  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH updated in items
+2017-04-30 21:12:53,647 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,648  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 updated in items
+2017-04-30 21:12:53,666 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,667  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 updated in items
+2017-04-30 21:12:53,702 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,703  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 updated in items
+2017-04-30 21:12:53,717 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,717  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 updated in items
+2017-04-30 21:12:53,732 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,732  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 103020012 updated in items
+2017-04-30 21:12:53,747 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,747  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 3365/09-CUT-LENGTH updated in items
+2017-04-30 21:12:53,794 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,794  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 90635-1102 updated in items
+2017-04-30 21:12:53,811 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,811  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-9990246 updated in items
+2017-04-30 21:12:53,826 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,827  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - PTFM101B1G0 updated in items
+2017-04-30 21:12:53,849 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:12:53,849  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - M20-7821246 updated in items
+2017-04-30 21:12:53,869 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:12:53,869  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Oven V1 updated in orders
+2017-04-30 21:13:02,551  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:02,552 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:13:02,553  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:02,553 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:13:02,553  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:02,553 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:13:02,554  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:02,554 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:13:02,554  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:02,554 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 21:13:12,451  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 21:13:15,810  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 21:13:16,048  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,050 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 21:13:16,062  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:13:16,062 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 21:13:16,064  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,065 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:13:16,067  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,067 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:13:16,068  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,068 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:13:16,069  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,069 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:13:16,070  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:13:16,070 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 21:13:16,128  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 21:13:16,561  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.320s)
+2017-04-30 21:13:16,563  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:13:16,572  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 21:13:16,573  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 21:13:16,574  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:14:44,954 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:14:44,977 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:14:45,101 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 126ms
+2017-04-30 21:14:45,106 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orders
+2017-04-30 21:14:45,106  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - eee added in orders
+2017-04-30 21:14:47,569  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:14:47,569 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:14:47,571  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:14:47,572 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:14:47,572  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:14:47,573 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:14:47,575  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:14:47,575 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:14:47,576  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:14:47,576 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 21:15:45,871  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 21:15:46,511  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 21:15:46,775  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,777 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 21:15:46,793  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:15:46,794 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 21:15:46,797  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,798 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:15:46,801  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,802 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:15:46,804  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,805 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:15:46,806  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,806 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:15:46,807  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:15:46,807 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 21:15:46,874  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 21:15:47,039  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.086s)
+2017-04-30 21:15:47,041  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:15:47,052  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 21:15:47,053  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 21:15:47,055  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:16:30,676 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:16:30,712 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:16:31,112 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 418ms
+2017-04-30 21:16:31,115 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orders
+2017-04-30 21:16:31,116  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - aaaaa added in orders
+2017-04-30 21:16:33,068  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:16:33,069 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:16:33,070  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:16:33,070 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:16:33,070  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:16:33,070 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:16:33,071  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:16:33,071 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:16:33,071  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:16:33,072 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-04-30 21:17:45,563  INFO main com.waldo.inventory.Main - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-04-30 21:17:49,342  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-04-30 21:17:49,682  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,683 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-04-30 21:17:49,695  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:17:49,695 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-04-30 21:17:49,697  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,698 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:17:49,699  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,700 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:17:49,700  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,701 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:17:49,701  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,702 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:17:49,702  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-04-30 21:17:49,703 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-04-30 21:17:49,744  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:data/inventory.db (SQLite 3.0)
+2017-04-30 21:17:50,088  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 26 migrations (execution time 00:00.249s)
+2017-04-30 21:17:50,090  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:17:50,103  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 14.4
+2017-04-30 21:17:50,104  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-04-30 21:17:50,108  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-04-30 21:19:26,527 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:19:26,584 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:21:09,953 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:21:09,967 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:21:10,158 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 204ms
+2017-04-30 21:21:10,165 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to items
+2017-04-30 21:21:10,166  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - LMP90080MHE/NOPB added in items
+2017-04-30 21:21:11,545 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:21:11,593 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:21:21,987 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:21:21,988 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:21:22,408 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 419ms
+2017-04-30 21:21:22,410 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:21:22,411  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - LMP90080MHE/NOPB updated in items
+2017-04-30 21:24:01,017 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:24:01,061 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:24:09,975 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:24:09,976 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:24:10,171 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 195ms
+2017-04-30 21:24:10,174 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:24:10,174  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 76650-0008 updated in items
+2017-04-30 21:24:47,156 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:24:47,157 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:24:47,358 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 201ms
+2017-04-30 21:24:47,361 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orders
+2017-04-30 21:24:47,361  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Refill Stuff added in orders
+2017-04-30 21:24:48,305 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:24:48,305 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:24:48,437 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 131ms
+2017-04-30 21:24:48,439 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:24:48,439 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:24:48,563 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:24:48,582 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:24:48,582  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 76650-0008 updated in items
+2017-04-30 21:24:48,605 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:24:48,605  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 76650-0008 - 2017-04-30 - Refill Stuff added in orderitems
+2017-04-30 21:24:48,628 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:24:48,643 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:24:48,779 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 135ms
+2017-04-30 21:24:48,823 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:24:48,823  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Refill Stuff updated in orders
+2017-04-30 21:25:03,392 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:25:03,393 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:25:03,526 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 134ms
+2017-04-30 21:25:03,528 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:25:03,528 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:25:03,652 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:25:03,653 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:25:03,654  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 76650-0008 - 2017-04-30 - Refill Stuff updated in orderitems
+2017-04-30 21:25:03,778 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:25:03,779  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:25:11,263 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:25:11,284 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:25:16,579 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:25:16,580 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:25:16,718 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 138ms
+2017-04-30 21:25:16,721 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:25:16,722  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 76650-0008 updated in items
+2017-04-30 21:25:58,285 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:25:58,318 DEBUG AWT-EventQueue-0 com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel - Component panel: update components.
+2017-04-30 21:26:07,781 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:07,781 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:07,954 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 173ms
+2017-04-30 21:26:07,956 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:26:07,957  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - BD13910S updated in items
+2017-04-30 21:26:24,453 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:24,454 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:24,588 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 134ms
+2017-04-30 21:26:24,589 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:24,590 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:24,713 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:26:24,741 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:26:24,742  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - BD13910S updated in items
+2017-04-30 21:26:24,782 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:26:24,783  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - BD13910S - 2017-04-30 - Refill Stuff added in orderitems
+2017-04-30 21:26:24,789 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:24,790 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:24,913 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 123ms
+2017-04-30 21:26:24,934 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:26:24,935  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Refill Stuff updated in orders
+2017-04-30 21:26:37,808 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:37,809 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:37,936 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 127ms
+2017-04-30 21:26:37,937 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:26:37,937 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:26:38,045 DEBUG SwingWorker-pool-1-thread-6 com.waldo.inventory.classes.DbObject - Connection was open for: 107ms
+2017-04-30 21:26:38,047 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:26:38,047  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - BD13910S - 2017-04-30 - Refill Stuff updated in orderitems
+2017-04-30 21:26:38,059 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:26:38,059  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:27:37,671 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:27:37,671 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:27:37,811 DEBUG SwingWorker-pool-1-thread-7 com.waldo.inventory.classes.DbObject - Connection was open for: 139ms
+2017-04-30 21:27:37,813 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:27:37,813  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 1-2199298-4  - 2017-04-30 - Refill Stuff added in orderitems
+2017-04-30 21:27:37,820 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:27:37,820 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:27:37,954 DEBUG SwingWorker-pool-1-thread-8 com.waldo.inventory.classes.DbObject - Connection was open for: 134ms
+2017-04-30 21:27:37,969 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:27:37,970  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Refill Stuff updated in orders
+2017-04-30 21:27:54,082 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:27:54,083 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:27:54,211 DEBUG SwingWorker-pool-1-thread-9 com.waldo.inventory.classes.DbObject - Connection was open for: 128ms
+2017-04-30 21:27:54,212 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:27:54,212 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:27:54,345 DEBUG SwingWorker-pool-1-thread-10 com.waldo.inventory.classes.DbObject - Connection was open for: 132ms
+2017-04-30 21:27:54,346 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:27:54,347  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - 1-2199298-4  - 2017-04-30 - Refill Stuff updated in orderitems
+2017-04-30 21:27:54,363 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:27:54,363  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:28:27,841 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:28:27,841 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:28:27,971 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.classes.DbObject - Connection was open for: 130ms
+2017-04-30 21:28:27,972 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:28:27,973 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:28:28,105 DEBUG SwingWorker-pool-1-thread-2 com.waldo.inventory.classes.DbObject - Connection was open for: 132ms
+2017-04-30 21:28:28,137 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in items
+2017-04-30 21:28:28,138  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - DILB28P-223TLF updated in items
+2017-04-30 21:28:28,159 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to orderitems
+2017-04-30 21:28:28,159  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - DILB28P-223TLF - 2017-04-30 - Refill Stuff added in orderitems
+2017-04-30 21:28:28,169 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:28:28,170 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:28:28,296 DEBUG SwingWorker-pool-1-thread-3 com.waldo.inventory.classes.DbObject - Connection was open for: 126ms
+2017-04-30 21:28:28,315 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orders
+2017-04-30 21:28:28,315  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - Refill Stuff updated in orders
+2017-04-30 21:28:43,992 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:28:43,993 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:28:44,128 DEBUG SwingWorker-pool-1-thread-4 com.waldo.inventory.classes.DbObject - Connection was open for: 135ms
+2017-04-30 21:28:44,129 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Start save.
+2017-04-30 21:28:44,130 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection is open
+2017-04-30 21:28:44,254 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.classes.DbObject - Connection was open for: 124ms
+2017-04-30 21:28:44,255 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Updated object in orderitems
+2017-04-30 21:28:44,256  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager - DILB28P-223TLF - 2017-04-30 - Refill Stuff updated in orderitems
+2017-04-30 21:28:44,267 DEBUG AWT-EventQueue-0 com.waldo.inventory.classes.DbObject - Added object to partnumbers
+2017-04-30 21:28:44,268  INFO AWT-EventQueue-0 com.waldo.inventory.database.DbManager -  added in partnumbers
+2017-04-30 21:29:20,777  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:29:20,777 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-04-30 21:29:20,778  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:29:20,778 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-04-30 21:29:20,779  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:29:20,779 DEBUG Thread-0 jdbc.connection - open connections:  2 3 (2)
+2017-04-30 21:29:20,780  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:29:20,780 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
+2017-04-30 21:29:20,781  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-04-30 21:29:20,781 DEBUG Thread-0 jdbc.connection - open connections:  none

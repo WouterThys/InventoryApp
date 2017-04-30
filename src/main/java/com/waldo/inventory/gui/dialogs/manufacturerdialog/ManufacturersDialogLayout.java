@@ -29,7 +29,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<Manufacturer> manufacturerList;
-    private DefaultListModel<Manufacturer> manufacturerDefaultListModel;
+    DefaultListModel<Manufacturer> manufacturerDefaultListModel;
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
@@ -56,7 +56,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void updateEnabledComponents() {
+    void updateEnabledComponents() {
         if (selectedManufacturer == null || selectedManufacturer.isUnknown()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
@@ -242,28 +242,5 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         getContentPanel().add(createManufacturerDetailsPanel(), BorderLayout.CENTER);
 
         pack();
-    }
-
-    @Override
-    public void updateComponents(Object object) {
-        try {
-            application.beginWait();
-            // Get all menus
-            manufacturerDefaultListModel.removeAllElements();
-            for (Manufacturer m : db().getManufacturers()) {
-                if (!m.isUnknown()) {
-                    manufacturerDefaultListModel.addElement(m);
-                }
-            }
-
-            selectedManufacturer = (Manufacturer) object;
-            updateEnabledComponents();
-
-            if (selectedManufacturer != null) {
-                manufacturerList.setSelectedValue(selectedManufacturer, true);
-            }
-        } finally {
-            application.endWait();
-        }
     }
 }

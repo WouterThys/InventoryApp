@@ -102,6 +102,35 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     //
+    // Update listener
+    //
+
+    @Override
+    public void updateComponents(Object object) {
+        try {
+            application.beginWait();
+            // Get all menus
+            manufacturerDefaultListModel.removeAllElements();
+            for (Manufacturer m : db().getManufacturers()) {
+                if (!m.isUnknown()) {
+                    manufacturerDefaultListModel.addElement(m);
+                }
+            }
+
+            selectedManufacturer = (Manufacturer) object;
+            updateEnabledComponents();
+
+            if (selectedManufacturer != null) {
+                manufacturerList.setSelectedValue(selectedManufacturer, true);
+                setDetails();
+            }
+        } finally {
+            application.endWait();
+        }
+    }
+
+
+    //
     // Search listener
     //
 
