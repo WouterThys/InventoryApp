@@ -182,7 +182,15 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onUpdated(Order newOrder, Order oldOrder) {
                 treeModel.updateObject(newOrder, oldOrder);
-                SwingUtilities.invokeLater(() -> orderChanged(newOrder));
+                application.beginWait();
+                selectOrder(newOrder);
+                application.endWait();
+                if (selectedOrderItem != null) {
+                    itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                    if (!newOrder.isOrdered()) {
+                        orderItemDetailPanel.updateComponents(selectedOrderItem);
+                    }
+                }
             }
 
             @Override
@@ -289,9 +297,7 @@ public class OrderPanel extends OrderPanelLayout {
                 return; // Nothing selected
             }
 
-            selectedOrderItem = null;
             application.clearSearch();
-
             updateComponents(node.getUserObject());
         }
     }

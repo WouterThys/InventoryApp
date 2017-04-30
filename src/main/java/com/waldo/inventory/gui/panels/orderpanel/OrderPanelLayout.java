@@ -528,6 +528,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                     lastSelectedOrder = (Order) object;
                     updateTable(lastSelectedOrder);
                     updateToolBar(lastSelectedOrder);
+                    selectedOrderItem = null;
                 }
             }
 
