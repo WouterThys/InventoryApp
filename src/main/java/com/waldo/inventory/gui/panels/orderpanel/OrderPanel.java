@@ -17,7 +17,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -44,11 +43,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     public OrderItem getSelectedItem() {
-        return selectedItem;
-    }
-
-    public DbObject getLastSelectedOrder() {
-        return lastSelectedOrder;
+        return selectedOrderItem;
     }
 
     public IOrderItemTableModel getTableModel() {
@@ -74,9 +69,8 @@ public class OrderPanel extends OrderPanelLayout {
         itemTable.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) { // TODO: go to orders tab?
-                    Item selectedItem = application.getSelectedItem();
-                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                if (e.getClickCount() == 2) {
+                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedOrderItem.getItem());
                     if (dialog.showDialog() == EditItemDialog.OK) {
                         dialog.getItem().save();
                     }
@@ -95,19 +89,19 @@ public class OrderPanel extends OrderPanelLayout {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
             public void onAdded(Item item) {
-                //selectedItem = DbManager.db().findOrderItem(lastSelectedOrder.getId());
+                //selectedOrderItem = DbManager.db().findOrderItem(lastSelectedOrder.getId());
                 //updateItems();
             }
 
             @Override
             public void onUpdated(Item newItem, Item oldItem) {
-                //selectedItem = newItem;
+                //selectedOrderItem = newItem;
                 //updateItems();
             }
 
             @Override
             public void onDeleted(Item item) {
-                //selectedItem = null;
+                //selectedOrderItem = null;
                 //updateItems();
             }
         };
@@ -125,13 +119,13 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onAdded(Order order) {
                 treeModel.addObject(order);
-                updateComponents(order);
+                SwingUtilities.invokeLater(() -> orderChanged(order));
             }
 
             @Override
             public void onUpdated(Order newOrder, Order oldOrder) {
                 treeModel.updateObject(newOrder, oldOrder);
-                updateComponents(newOrder);
+                SwingUtilities.invokeLater(() -> orderChanged(newOrder));
             }
 
             @Override
@@ -140,6 +134,23 @@ public class OrderPanel extends OrderPanelLayout {
                 updateComponents(null);
             }
         };
+    }
+
+    private void orderChanged(Order changedOrder) {
+        try {
+            application.beginWait();
+            // Find and select in tree
+            selectOrder(changedOrder);
+            // Update table items
+            updateTable(changedOrder);
+            // Select in items
+            selectOrderItem(selectedOrderItem);
+            // Update detail panel
+            itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+            orderItemDetailPanel.updateComponents(selectedOrderItem);
+        } finally {
+            application.endWait();
+        }
     }
 
     private void setOrderItemsChangedListener() {
@@ -160,7 +171,7 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onDeleted(OrderItem orderItem) {
                 Order order = DbManager.db().findOrderById(orderItem.getOrderId());
-                selectedItem = null;
+                selectedOrderItem = null;
                 updateComponents(order);
             }
         };
@@ -169,7 +180,7 @@ public class OrderPanel extends OrderPanelLayout {
     private void setSelectedItem(OrderItem selectedItem) {
         try {
             application.beginWait();
-            this.selectedItem = selectedItem;
+            this.selectedOrderItem = selectedItem;
             // Tree
             treeModel.setSelectedObject(lastSelectedOrder);
 
@@ -177,6 +188,7 @@ public class OrderPanel extends OrderPanelLayout {
             updateTable(lastSelectedOrder);
             selectItem(selectedItem);
             itemDetailPanel.updateComponents(selectedItem.getItem());
+            orderItemDetailPanel.updateComponents(selectedItem);
 
         } finally {
             application.endWait();
@@ -209,7 +221,7 @@ public class OrderPanel extends OrderPanelLayout {
             return; // Nothing selected
         }
 
-        selectedItem = null;
+        //selectedOrderItem = null;
         application.clearSearch();
 
         updateComponents(node.getUserObject());
@@ -224,7 +236,7 @@ public class OrderPanel extends OrderPanelLayout {
         if (!e.getValueIsAdjusting()) {
             int row = itemTable.getSelectedRow();
             if (row >= 0) {
-                selectedItem = getTableModel().getItem(itemTable.getSelectedRow());
+                selectedOrderItem = getTableModel().getItem(itemTable.getSelectedRow());
                 updateComponents(lastSelectedOrder);
             }
         }
@@ -259,12 +271,12 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarDelete() {
-        if (selectedItem != null) {
-            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + selectedItem.toString() + "\" from order \""+lastSelectedOrder.toString()+"\"?");
+        if (selectedOrderItem != null) {
+            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + selectedOrderItem.toString() + "\" from order \""+lastSelectedOrder.toString()+"\"?");
             if (res == JOptionPane.OK_OPTION) {
                 try {
                     application.beginWait();
-                    lastSelectedOrder.removeItemFromList(selectedItem);
+                    lastSelectedOrder.removeItemFromList(selectedOrderItem);
                 } finally {
                     application.endWait();
                 }
@@ -274,7 +286,6 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarEdit() {
-
     }
 
     //
@@ -287,7 +298,8 @@ public class OrderPanel extends OrderPanelLayout {
         if (orderFile.isSuccess()) {
             OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
             infoDialog.showDialog();
-
+            lastSelectedOrder.setOrderFile(orderFile);
+            lastSelectedOrder.save();
         } else {
             String msg = "Order failed with next errors: ";
             for (String s : orderFile.getErrorMessages()) {

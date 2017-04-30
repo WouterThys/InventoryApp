@@ -21,6 +21,16 @@ public class OrderFile {
         this.order = order;
     }
 
+    public void loadOrderFile(String fileName) {
+        if (order.getDistributor() != null && fileName != null && !fileName.isEmpty()) {
+            orderType = (int) order.getDistributor().getId();
+            orderFile = new File(".","OrderFiles/"+fileName);
+            success = true;
+        } else {
+            success = false;
+        }
+    }
+
     public void createOrderFile() {
         if (!isClearToOrder()) {
             success = false;
@@ -113,24 +123,26 @@ public class OrderFile {
         return orderFile;
     }
 
-    public void setOrderFile(File orderFile) {
-        this.orderFile = orderFile;
+    public String getOrderFileName() {
+        if (orderFile != null) {
+            return orderFile.getName();
+        }
+        return "";
+    }
+
+    public String getOrderFilePath() {
+        if (orderFile != null) {
+            return orderFile.getPath();
+        }
+        return "";
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
     public List<String> getErrorMessages() {
         return errorMessages;
-    }
-
-    public void setErrorMessages(List<String> errorMessages) {
-        this.errorMessages = errorMessages;
     }
 
     public Order getOrder() {
@@ -139,9 +151,5 @@ public class OrderFile {
 
     public int getOrderType() {
         return orderType;
-    }
-
-    public void setOrderType(int orderType) {
-        this.orderType = orderType;
     }
 }

@@ -21,15 +21,16 @@ public class ITextField extends JTextField implements FocusListener {
     private boolean showingHint = false;
     private String beforeEditText = "";
     private boolean edited = false;
+    private IEditedListener editedListener;
 
-    private final Border line = BorderFactory.createLineBorder(Color.GRAY, 2, true);
-    private final Border thinLine = BorderFactory.createLineBorder(Color.GRAY, 1, true);
-    private final Border empty = new EmptyBorder(4,4,4,4);
-    private final Border focusBorder = new CompoundBorder(line, empty);
-    private final Border normalBorder = new CompoundBorder(thinLine, empty);
+//    private final Border line = BorderFactory.createLineBorder(Color.GRAY, 2, true);
+//    private final Border thinLine = BorderFactory.createLineBorder(Color.GRAY, 1, true);
+//    private final Border empty = new EmptyBorder(4,4,4,4);
+//    private final Border focusBorder = new CompoundBorder(line, empty);
+//    private final Border normalBorder = new CompoundBorder(thinLine, empty);
 
     private String originalText = hint;
-    private Border originalBorder = empty;
+//    private Border originalBorder = empty;
     private String originalToolTip = "";
 
     private Error error;
@@ -49,7 +50,7 @@ public class ITextField extends JTextField implements FocusListener {
         this.hint = hint;
         this.addFocusListener(this);
         this.setForeground(Color.gray);
-        this.setBorder(normalBorder);
+//        this.setBorder(normalBorder);
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
         showingHint = !hint.isEmpty();
@@ -59,6 +60,9 @@ public class ITextField extends JTextField implements FocusListener {
     @Override
     public void setText(String t) {
         super.setText(t);
+        if (editedListener != null) {
+            editedListener.onValueChanged(this, originalText, t);
+        }
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
         }
@@ -83,7 +87,7 @@ public class ITextField extends JTextField implements FocusListener {
     public void focusGained(FocusEvent e) {
         if (this.isEnabled()) {
             this.setForeground(Color.BLACK);
-            this.setBorder(focusBorder);
+//            this.setBorder(focusBorder);
             this.setOpaque(true);
             if (this.getText().isEmpty()) {
                 setText("");
@@ -94,7 +98,7 @@ public class ITextField extends JTextField implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         if (this.isEnabled()) {
-            this.setBorder(normalBorder);
+//            this.setBorder(normalBorder);
             if (this.getText().isEmpty()) {
                 this.setForeground(Color.gray);
                 setText(hint);
@@ -102,18 +106,22 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
+    public void addEditedListener(IEditedListener listener) {
+        this.editedListener = listener;
+    }
+
     public void setError(String errorText) {
         if (errorText != null) {
             originalText = this.getText();
-            originalBorder = this.getBorder();
+//            originalBorder = this.getBorder();
             originalToolTip = this.getToolTipText();
             error = new Error(Error.ERROR, errorText);
-            this.setBorder(new IconBorder(error.getImage(), originalBorder));
+//            this.setBorder(new IconBorder(error.getImage(), originalBorder));
             this.setToolTipText(error.getMessage());
         } else {
             error = null;
             this.setText(originalText);
-            this.setBorder(originalBorder);
+//            this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
         }
     }
@@ -121,15 +129,15 @@ public class ITextField extends JTextField implements FocusListener {
     public void setWarning(String warningText) {
         if (warningText != null) {
             originalText = this.getText();
-            originalBorder = this.getBorder();
+//            originalBorder = this.getBorder();
             originalToolTip = this.getToolTipText();
             error = new Error(Error.WARNING, warningText);
-            this.setBorder(new IconBorder(error.getImage(), originalBorder));
+//            this.setBorder(new IconBorder(error.getImage(), originalBorder));
             this.setToolTipText(error.getMessage());
         } else {
             error = null;
             this.setText(originalText);
-            this.setBorder(originalBorder);
+//            this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
         }
     }

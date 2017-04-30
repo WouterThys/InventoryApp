@@ -86,14 +86,15 @@ public class MainPanel extends MainPanelLayout {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
             public void onAdded(Item item) {
-                itemAdded(item);
+                itemChanged(item);
                 //updateComponents(lastSelectedDivision); // Give it non-null value
             }
 
             @Override
             public void onUpdated(Item newItem, Item oldItem) {
-                selectedItem = newItem;
-                updateComponents(lastSelectedDivision);
+                itemChanged(newItem);
+                //selectedItem = newItem;
+                //updateComponents(lastSelectedDivision);
             }
 
             @Override

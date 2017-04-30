@@ -42,6 +42,10 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         }
     }
 
+    public void setOrderButtonVisible(boolean visible) {
+        orderButton.setVisible(visible);
+    }
+
     private void initActions() {
         dataSheetButton.addActionListener(e -> openDataSheet(selectedItem));
         orderButton.addActionListener(e -> orderItem(selectedItem));

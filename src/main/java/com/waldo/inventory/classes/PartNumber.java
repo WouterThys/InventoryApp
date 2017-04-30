@@ -15,6 +15,12 @@ public class PartNumber extends DbObject {
         super(TABLE_NAME);
     }
 
+    public PartNumber(long distributorId, long itemId) {
+        super(TABLE_NAME);
+        this.distributorId = distributorId;
+        this.itemId = itemId;
+    }
+
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {

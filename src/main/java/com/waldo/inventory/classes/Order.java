@@ -22,6 +22,7 @@ public class Order extends DbObject {
     private Date dateModified;
     private Date dateReceived;
     private Distributor distributor;
+    private OrderFile orderFile = new OrderFile(this);
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -33,6 +34,7 @@ public class Order extends DbObject {
         statement.setDate(4, dateModified);
         statement.setDate(5, dateReceived);
         statement.setLong(6, distributor.getId());
+        statement.setString(7, orderFile.getOrderFileName());
         statement.execute();
     }
 
@@ -46,7 +48,8 @@ public class Order extends DbObject {
         statement.setDate(4, dateModified);
         statement.setDate(5, dateReceived);
         statement.setLong(6, distributor.getId());
-        statement.setLong(7, id); // WHERE id
+        statement.setString(7, orderFile.getOrderFileName());
+        statement.setLong(8, id); // WHERE id
         statement.execute();
     }
 
@@ -150,6 +153,10 @@ public class Order extends DbObject {
         return Math.round(total);
     }
 
+    public boolean hasOrderFile() {
+        return orderFile.isSuccess();
+    }
+
     public Date getDateOrdered() {
         return dateOrdered;
     }
@@ -196,6 +203,18 @@ public class Order extends DbObject {
 
     public boolean isReceived() {
         return dateReceived != null;
+    }
+
+    public OrderFile getOrderFile() {
+        return orderFile;
+    }
+
+    public void setOrderFile(OrderFile orderFile) {
+        this.orderFile = orderFile;
+    }
+
+    public void setOrderFile(String fileName) {
+        orderFile.loadOrderFile(fileName);
     }
 
     public List<OrderItem> missingOrderReferences() {

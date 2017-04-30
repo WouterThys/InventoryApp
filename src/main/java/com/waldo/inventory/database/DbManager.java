@@ -873,6 +873,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateModified(rs.getDate("datemodified"));
                     o.setDateReceived(rs.getDate("datereceived"));
                     o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
 
                     if (o.getId() != 1) {
@@ -907,6 +908,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateModified(rs.getDate("datemodified"));
                     o.setDateReceived(rs.getDate("datereceived"));
                     o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
                 }
             }

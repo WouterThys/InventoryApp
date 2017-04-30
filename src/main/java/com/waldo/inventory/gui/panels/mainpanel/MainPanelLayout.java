@@ -127,7 +127,7 @@ public abstract class MainPanelLayout extends JPanel implements
         treeModel.setSelectedObject(lastSelectedDivision);
     }
 
-    void itemAdded(Item addedItem) {
+    void itemChanged(Item addedItem) {
         try {
             application.beginWait();
             selectedItem = addedItem;

@@ -95,7 +95,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.BOTH;
-        componentPanel.add(descriptionTextArea, gbc);
+        componentPanel.add(new JScrollPane(descriptionTextArea), gbc);
 
         return componentPanel;
     }
@@ -138,6 +138,8 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         manufacturerTextField.setEnabled(false);
         descriptionTextArea= new ITextArea();
         descriptionTextArea.setEnabled(false);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setWrapStyleWord(true);
 
         dataSheetButton = new JButton("Data sheet");
         orderButton = new JButton("Order");

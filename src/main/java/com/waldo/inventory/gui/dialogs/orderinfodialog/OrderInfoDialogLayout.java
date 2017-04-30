@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.orderinfodialog;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.OrderFile;
 import com.waldo.inventory.gui.Application;
@@ -9,24 +8,21 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialogLayout;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialogLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.net.URL;
 
 
-public class OrderInfoDialogLayout extends IDialog implements GuiInterface {
-
+public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterface {
 
     private ITextField orderNameTf;
     private ITextArea orderInfoTf;
     private ITextField orderFilePathTf;
     private ITextField orderFileNameTf;
-    private ITextField orderDistributorUrlTf;
-    private JButton orderUrlBrowseBtn;
+    ITextField orderDistributorUrlTf;
+    JButton orderUrlBrowseBtn;
 
     private ResourceManager stringResource;
 
@@ -52,15 +48,6 @@ public class OrderInfoDialogLayout extends IDialog implements GuiInterface {
         orderDistributorUrlTf = new ITextField();
         orderDistributorUrlTf.setEditable(false);
         orderUrlBrowseBtn = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
-        orderUrlBrowseBtn.addActionListener(e -> {
-            if (!orderDistributorUrlTf.getText().isEmpty())
-                try {
-                    OpenUtils.browseLink(orderDistributorUrlTf.getText());
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(OrderInfoDialogLayout.this, "Unable to browse: " + orderDistributorUrlTf.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-        });
     }
 
     @Override
