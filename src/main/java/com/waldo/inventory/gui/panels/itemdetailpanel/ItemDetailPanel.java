@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
+import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
 import javax.swing.*;
@@ -49,7 +50,10 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     private void initActions() {
         dataSheetButton.addActionListener(e -> openDataSheet(selectedItem));
         orderButton.addActionListener(e -> orderItem(selectedItem));
-
+        historyButton.addActionListener(e -> {
+            HistoryDialog dialog = new HistoryDialog(application, selectedItem.getName(), selectedItem);
+            dialog.showDialog();
+        });
     }
 
     private void openDataSheet(Item item) {

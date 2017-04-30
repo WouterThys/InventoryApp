@@ -7,10 +7,9 @@ import com.waldo.inventory.classes.Item;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.text.ParseException;
 import java.util.EventObject;
 
@@ -115,6 +114,97 @@ public class ITableEditors {
             } else {
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
+        }
+    }
+
+    public static class ButtonRenderer extends JButton implements TableCellRenderer {
+
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (isSelected) {
+                setForeground(table.getSelectionForeground());
+                setBackground(table.getSelectionBackground());
+            } else {
+                setForeground(table.getForeground());
+                setBackground(UIManager.getColor("Button.background"));
+            }
+
+            if (value != null) {
+                if (value instanceof String) {
+                    setText(value.toString());
+                }
+                if (value instanceof ImageIcon) {
+                    setIcon((ImageIcon)value);
+                }
+            }
+
+
+            return this;
+        }
+    }
+
+    public static class ButtonEditor extends DefaultCellEditor {
+
+        protected JButton button;
+        private String label;
+        private ImageIcon icon;
+        private boolean isPushed;
+
+        public ButtonEditor(JCheckBox checkBox){
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(e -> {
+                fireEditingStopped();
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            if (isSelected) {
+                button.setForeground(table.getSelectionForeground());
+                button.setBackground(table.getSelectionBackground());
+            } else {
+                button.setForeground(table.getForeground());
+                button.setBackground(table.getBackground());
+            }
+
+            if (value != null) {
+                if (value instanceof String) {
+                    label = value.toString();
+                    button.setText(label);
+                }
+                if (value instanceof ImageIcon) {
+                    icon = (ImageIcon) value;
+                    button.setIcon(icon);
+                }
+            }
+
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                // Do stuff??
+                System.out.println("Pushed it");
+            }
+            isPushed = false;
+            return label;
+        }
+
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
         }
     }
 }

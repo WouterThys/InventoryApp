@@ -1401,6 +1401,16 @@ public class DbManager implements TableChangedListener {
         return null;
     }
 
+    public List<Order> findOrdersForItem(long itemId) {
+        List<Order> orders = new ArrayList<>();
+        for (OrderItem oi : getOrderItems()) {
+            if (oi.getItemId() == itemId) {
+                orders.add(oi.getOrder());
+            }
+        }
+        return orders;
+    }
+
     /*
     *                  OTHER
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
