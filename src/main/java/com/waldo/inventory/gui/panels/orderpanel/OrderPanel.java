@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -15,8 +16,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -63,6 +67,59 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void initActions() {
         initMouseClicked();
+
+        // Order
+        tbOrderButton.addActionListener(e -> {
+            OrderFile orderFile = new OrderFile(lastSelectedOrder);
+            orderFile.createOrderFile();
+            if (orderFile.isSuccess()) {
+                OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
+                infoDialog.showDialog();
+                lastSelectedOrder.setOrderFile(orderFile);
+                lastSelectedOrder.save();
+            } else {
+                String msg = "Order failed with next errors: ";
+                for (String s : orderFile.getErrorMessages()) {
+                    msg += s + "\n\n";
+                }
+                JOptionPane.showMessageDialog(OrderPanel.this, msg, "Order errors", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Set ordered
+        tbSetOrderedBtn.addActionListener(e -> {
+            if (!lastSelectedOrder.isOrdered()) {
+                setOrdered();
+            } else if (lastSelectedOrder.isOrdered() && !lastSelectedOrder.isReceived()) {
+                setReceived();
+            }
+        });
+    }
+
+    private void setOrdered() {
+        lastSelectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
+        try {
+            application.beginWait();
+            lastSelectedOrder.setItemStates(Statics.ItemOrderState.ORDERED);
+            lastSelectedOrder.save();
+            recreateNodes();
+            orderItemDetailPanel.updateComponents(null);
+        } finally {
+            application.endWait();
+        }
+    }
+
+    private void setReceived() {
+        lastSelectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
+        try {
+            application.beginWait();
+            lastSelectedOrder.setItemStates(Statics.ItemOrderState.NONE);
+            lastSelectedOrder.updateItemAmounts();
+            lastSelectedOrder.save();
+            updateComponents(lastSelectedOrder);
+        } finally {
+            application.endWait();
+        }
     }
 
     private void initMouseClicked() {
@@ -146,8 +203,14 @@ public class OrderPanel extends OrderPanelLayout {
             // Select in items
             selectOrderItem(selectedOrderItem);
             // Update detail panel
-            itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-            orderItemDetailPanel.updateComponents(selectedOrderItem);
+            if (selectedOrderItem != null) {
+                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                if (!changedOrder.isOrdered()) {
+                    orderItemDetailPanel.updateComponents(selectedOrderItem);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             application.endWait();
         }
@@ -159,6 +222,7 @@ public class OrderPanel extends OrderPanelLayout {
             public void onAdded(OrderItem orderItem) {
                 Order order = DbManager.db().findOrderById(orderItem.getOrderId());
                 order.addItemToList(orderItem);
+                lastSelectedOrder = order;
                 setSelectedItem(orderItem);
             }
 
@@ -188,8 +252,11 @@ public class OrderPanel extends OrderPanelLayout {
             updateTable(lastSelectedOrder);
             selectItem(selectedItem);
             itemDetailPanel.updateComponents(selectedItem.getItem());
-            orderItemDetailPanel.updateComponents(selectedItem);
-
+            if (!lastSelectedOrder.isOrdered()) {
+                orderItemDetailPanel.updateComponents(selectedItem);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             application.endWait();
         }
@@ -214,17 +281,19 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
+        if (!application.isUpdating()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
 
-        if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved() ){
-            lastSelectedOrder = null;
-            return; // Nothing selected
+            if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved()) {
+                lastSelectedOrder = null;
+                return; // Nothing selected
+            }
+
+            selectedOrderItem = null;
+            application.clearSearch();
+
+            updateComponents(node.getUserObject());
         }
-
-        //selectedOrderItem = null;
-        application.clearSearch();
-
-        updateComponents(node.getUserObject());
     }
 
     //
@@ -286,26 +355,5 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarEdit() {
-    }
-
-    //
-    // OrderButton click listener
-    //
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        OrderFile orderFile = new OrderFile(lastSelectedOrder);
-        orderFile.createOrderFile();
-        if (orderFile.isSuccess()) {
-            OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
-            infoDialog.showDialog();
-            lastSelectedOrder.setOrderFile(orderFile);
-            lastSelectedOrder.save();
-        } else {
-            String msg = "Order failed with next errors: ";
-            for (String s : orderFile.getErrorMessages()) {
-                msg += s + "\n\n";
-            }
-            JOptionPane.showMessageDialog(OrderPanel.this, msg, "Order errors", JOptionPane.ERROR_MESSAGE);
-        }
     }
 }

@@ -14,5 +14,6 @@ public class Statics {
         public static final int NONE = 0;
         public static final int ORDERED = 1;
         public static final int RECEIVED = 2;
+        public static final int PLANNED = 3;
     }
 }

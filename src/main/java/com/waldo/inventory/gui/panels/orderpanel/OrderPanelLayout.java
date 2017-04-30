@@ -28,8 +28,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener,
-        ActionListener {
+        IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
@@ -52,11 +51,11 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbDateOrderedLbl;
     private ILabel tbDateReceivedLbl;
     private ILabel tbDateModifiedLbl;
-    private JButton tbOrderButton;
+    JButton tbOrderButton;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
-    private JButton tbViewOrderFileBtn;
-    private JButton tbSetOrderedBtn;
+    JButton tbViewOrderFileBtn;
+    JButton tbSetOrderedBtn;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -116,17 +115,25 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
         tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
 
-        if (order.getDateOrdered() != null) {
+        if (order.isOrdered()) {
             tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
+            tbSetOrderedBtn.setText("Set received");
         } else {
             tbDateOrderedLbl.setText("Not ordered");
+            tbSetOrderedBtn.setText("Set ordered");
         }
 
-        if (order.getDateReceived() != null) {
+        if (order.isReceived()) {
             tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
+            tbSetOrderedBtn.setVisible(false);
+            tbOrderButton.setText("Order again");
         } else {
             tbDateReceivedLbl.setText("Not received");
+            tbSetOrderedBtn.setVisible(true);
+            tbOrderButton.setText("Order!");
         }
+
+        tbOrderButton.setVisible(!order.isOrdered() || order.isReceived());
 
         if (order.getDateModified() != null) {
             tbDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
@@ -158,6 +165,12 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
         }
+    }
+
+    public void recreateNodes() {
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
+        rootNode.removeAllChildren();
+        createNodes(rootNode);
     }
 
     private void updateEnabledComponents() {
@@ -411,7 +424,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         });
 
         tbOrderButton = new JButton("Order!");
-        tbOrderButton.addActionListener(this);
 
         tbSetOrderedBtn = new JButton("Set ordered");
         tbViewOrderFileBtn = new JButton("View Order file");
@@ -504,27 +516,38 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) { // Has last selected order
-        // Update table if needed
-        if (object != null) {
-            if (lastSelectedOrder == null || !lastSelectedOrder.equals(object)) {
-                lastSelectedOrder = (Order) object;
-                updateTable(lastSelectedOrder);
-                updateToolBar(lastSelectedOrder);
-            }
+        if (application.isUpdating()) {
+            return;
         }
+        try {
+            application.beginWait();
 
-        treeModel.expandNodes(0, ordersTree.getRowCount());
+            // Update table if needed
+            if (object != null) {
+                if (lastSelectedOrder == null || !lastSelectedOrder.equals(object)) {
+                    lastSelectedOrder = (Order) object;
+                    updateTable(lastSelectedOrder);
+                    updateToolBar(lastSelectedOrder);
+                }
+            }
 
-        updateVisibleComponents();
-        updateEnabledComponents();
+            treeModel.expandNodes(0, ordersTree.getRowCount());
 
-        // Update detail panel
-        if (selectedOrderItem != null) {
-            itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-            orderItemDetailPanel.updateComponents(selectedOrderItem);
-        } else {
-            itemDetailPanel.updateComponents(null);
-            orderItemDetailPanel.updateComponents(null);
+            updateVisibleComponents();
+            updateEnabledComponents();
+
+            // Update detail panel
+            if (selectedOrderItem != null) {
+                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                if (!lastSelectedOrder.isOrdered()) {
+                    orderItemDetailPanel.updateComponents(selectedOrderItem);
+                }
+            } else {
+                itemDetailPanel.updateComponents(null);
+                orderItemDetailPanel.updateComponents(null);
+            }
+        } finally {
+            application.endWait();
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -55,8 +57,8 @@ public class Order extends DbObject {
 
     @Override
     public String toString() {
-        if (dateOrdered != null) {
-            return dateOrdered.toString();
+        if (isOrdered()) {
+            return dateOrdered.toString() + " - " + super.toString();
         } else {
             if (isUnknown() || !canBeSaved()) {
                 return super.toString();
@@ -124,6 +126,8 @@ public class Order extends DbObject {
     public void removeItemFromList(OrderItem item) {
         if (item != null) {
             if (orderItems.contains(item)) {
+                item.getItem().setOrderState(Statics.ItemOrderState.NONE);
+                item.getItem().save();
                 DbManager.db().removeItemFromOrder(item);
 
                 orderItems.remove(item);
@@ -155,6 +159,21 @@ public class Order extends DbObject {
 
     public boolean hasOrderFile() {
         return orderFile.isSuccess();
+    }
+
+    public void setItemStates(int state) {
+        for (OrderItem oi : getOrderItems()) {
+            oi.getItem().setOrderState(state);
+            oi.getItem().save();
+        }
+    }
+
+    public void updateItemAmounts() {
+        for (OrderItem oi : getOrderItems()) {
+            int current = oi.getItem().getAmount();
+            oi.getItem().setAmount(current + oi.getAmount());
+            oi.getItem().save();
+        }
     }
 
     public Date getDateOrdered() {

@@ -36,7 +36,7 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
 
     private void saveOrderItem() {
         if (orderItem != null) {
-            String itemRef = itemRefTf.getText();
+            String itemRef = itemRefTf.getText().trim();
             // Order item
             orderItem.setAmount((int)amountTf.getValue());
             orderItem.setItemRef(itemRef);

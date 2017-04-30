@@ -381,9 +381,9 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
-                    if (isItemInCurrentOrders(i.getId())) {
-                        i.setOrderState(Statics.ItemOrderState.ORDERED);
-                    }
+//                    if (isItemInCurrentOrders(i.getId())) {
+//                        i.setOrderState(Statics.ItemOrderState.ORDERED);
+//                    }
 
                     i.setOnTableChangedListener(this);
                     items.add(i);

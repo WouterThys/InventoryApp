@@ -38,24 +38,32 @@ public class OrderFile {
         }
 
         orderType = (int)order.getDistributor().getId();
-
-        switch (orderType) {
-            case 2: // Mouser
-                orderFile = createMouserOrderFile();
-                success = true;
-                break;
-
-            case 3: // Farnell
-                try {
-                    orderFile = createFarnellOrderFile(order);
-                    success = true;
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    errorMessages.add(e.getMessage());
-                    success = false;
-                }
-                break;
+        try {
+            orderFile = createOrderFile(order);
+            success = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            errorMessages.add(e.getMessage());
+            success = false;
         }
+
+//        switch (orderType) {
+//            case 2: // Mouser
+//                orderFile = createMouserOrderFile();
+//                success = true;
+//                break;
+//
+//            case 3: // Farnell
+//                try {
+//                    orderFile = createOrderFile(order);
+//                    success = true;
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                    errorMessages.add(e.getMessage());
+//                    success = false;
+//                }
+//                break;
+//        }
     }
 
     private boolean isClearToOrder() {
@@ -93,7 +101,7 @@ public class OrderFile {
         return null;
     }
 
-    private File createFarnellOrderFile(Order order) throws FileNotFoundException {
+    private File createOrderFile(Order order) throws FileNotFoundException {
         File orderFile = new File(".","OrderFiles/"+createOrderFileName(order));
         PrintWriter pw = new PrintWriter(orderFile);
         StringBuilder sb = new StringBuilder();

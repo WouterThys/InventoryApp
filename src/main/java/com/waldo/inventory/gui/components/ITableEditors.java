@@ -97,8 +97,10 @@ public class ITableEditors {
                 Font f = lblText.getFont();
                 lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize()-5));
                 ILabel lblIcon;
-                if (item.getOrderState() > Statics.ItemOrderState.NONE) {
+                if (item.getOrderState() == Statics.ItemOrderState.ORDERED) {
                     lblIcon = new ILabel(resourceManager.readImage("Ball.blue"));
+                } else if (item.getOrderState() == Statics.ItemOrderState.PLANNED) {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.yellow"));
                 } else {
                     if (item.getAmount() > 0) {
                         lblIcon = new ILabel(resourceManager.readImage("Ball.green"));

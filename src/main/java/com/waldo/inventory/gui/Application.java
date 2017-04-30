@@ -102,7 +102,8 @@ public class Application extends JFrame implements ChangeListener {
             tabbedPane.setSelectedIndex(TAB_ORDERS);
 
             // Update item
-            item.setOrderState(Statics.ItemOrderState.ORDERED);
+            item.setOrderState(Statics.ItemOrderState.PLANNED);
+            item.save();
 
             // Add
             orderPanel.addItemToOrder(item, order);
