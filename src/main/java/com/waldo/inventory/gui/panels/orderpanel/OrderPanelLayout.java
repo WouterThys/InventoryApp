@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -105,7 +106,7 @@ public abstract class OrderPanelLayout extends JPanel implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    void updateTable(Order selectedOrder) {
+    public void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
             selectedOrder.updateItemReferences();
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
@@ -530,6 +531,9 @@ public abstract class OrderPanelLayout extends JPanel implements
                     updateTable(lastSelectedOrder);
                     updateToolBar(lastSelectedOrder);
                     selectedOrderItem = null;
+
+                    // Search list
+                    topToolBar.setSearchList(new ArrayList<>(lastSelectedOrder.getOrderItems()));
                 }
             }
 
@@ -541,7 +545,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             // Update detail panel
             if (selectedOrderItem != null) {
                 itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-                if (!lastSelectedOrder.isOrdered()) {
+                if (lastSelectedOrder != null && !lastSelectedOrder.isOrdered()) {
                     orderItemDetailPanel.updateComponents(selectedOrderItem);
                 }
             } else {

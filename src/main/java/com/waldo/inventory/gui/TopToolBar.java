@@ -52,14 +52,9 @@ public class TopToolBar extends JPanel implements IObjectSearchPanel.IObjectSear
         return contentPane;
     }
 
-
     @Override
     public void onDbObjectFound(java.util.List<DbObject> foundObject) {
-        List<Item> foundItems = new ArrayList<>(foundObject.size());
-        for (DbObject object : foundObject) {
-            foundItems.add((Item)object);
-        }
-        application.setTableItems(foundItems);
+        application.setTableItems(foundObject);
     }
 
     @Override
@@ -85,5 +80,11 @@ public class TopToolBar extends JPanel implements IObjectSearchPanel.IObjectSear
 
     public void setSearchEnabled(boolean enabled) {
         searchPanel.setEnabled(enabled);
+    }
+
+    public void setSearchList(List<DbObject> searchList) {
+        if (searchPanel != null) {
+            searchPanel.setSearchList(searchList);
+        }
     }
 }

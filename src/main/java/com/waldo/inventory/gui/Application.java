@@ -2,8 +2,10 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.net.URL;
+import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -83,11 +86,35 @@ public class Application extends JFrame implements ChangeListener {
         return mainPanel.getSelectedItem();
     }
 
-    public void setTableItems(java.util.List<Item> tableItems) {
-        if (tableItems == null) {
-            mainPanel.updateTable(mainPanel.getLastSelectedDivision());
-        } else {
-            mainPanel.getTableModel().setItemList(tableItems);
+    public void setTableItems(java.util.List<DbObject> foundObject) {
+
+        switch (tabbedPane.getSelectedIndex()) {
+            case TAB_ITEMS:
+                if (foundObject == null) {
+                    mainPanel.updateTable(mainPanel.getLastSelectedDivision());
+                } else {
+                    java.util.List<Item> foundItems = new ArrayList<>(foundObject.size());
+                    for (DbObject object : foundObject) {
+                        foundItems.add((Item)object);
+                    }
+                    mainPanel.getTableModel().setItemList(foundItems);
+                }
+                break;
+
+            case TAB_ORDERS:
+                if (foundObject == null) {
+                    orderPanel.updateTable(orderPanel.getLastSelectedOrder());
+                } else {
+                    java.util.List<OrderItem> foundItems = new ArrayList<>(foundObject.size());
+                    for (DbObject object : foundObject) {
+                        foundItems.add((OrderItem)object);
+                    }
+                    orderPanel.getTableModel().setItemList(foundItems);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
