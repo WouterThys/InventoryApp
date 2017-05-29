@@ -14,18 +14,9 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
 
-    public static int showDialog(Application parent) {
-        ManufacturersDialog md = new ManufacturersDialog(parent, "Manufacturers");
-        md.setLocationRelativeTo(parent);
-        md.pack();
-        md.setMinimumSize(md.getSize());
-        md.setVisible(true);
-        return md.dialogResult;
-    }
-
     private boolean canClose = true;
 
-    private ManufacturersDialog(Application application, String title) {
+    public ManufacturersDialog(Application application, String title) {
         super(application, title);
         initializeComponents();
         initializeLayouts();

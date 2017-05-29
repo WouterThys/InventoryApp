@@ -176,7 +176,7 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onAdded(Order order) {
                 treeModel.addObject(order);
-                SwingUtilities.invokeLater(() -> orderChanged(order));
+                orderChanged(order);
             }
 
             @Override
@@ -206,8 +206,6 @@ public class OrderPanel extends OrderPanelLayout {
             application.beginWait();
             // Find and select in tree
             selectOrder(changedOrder);
-            // Update table items
-            updateTable(changedOrder);
             // Select in items
             selectOrderItem(selectedOrderItem);
             // Update detail panel

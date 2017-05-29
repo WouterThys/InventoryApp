@@ -7,8 +7,8 @@ public class HistoryDialog extends HistoryDialogLayout {
 
 
 
-    public HistoryDialog(Application application, String title, Item item) {
-        super(application, title);
+    public HistoryDialog(Application application, Item item) {
+        super(application);
 
         initializeComponents();
         initializeLayouts();

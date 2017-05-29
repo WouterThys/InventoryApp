@@ -51,7 +51,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         dataSheetButton.addActionListener(e -> openDataSheet(selectedItem));
         orderButton.addActionListener(e -> orderItem(selectedItem));
         historyButton.addActionListener(e -> {
-            HistoryDialog dialog = new HistoryDialog(application, selectedItem.getName(), selectedItem);
+            HistoryDialog dialog = new HistoryDialog(application, selectedItem);
             dialog.showDialog();
         });
     }

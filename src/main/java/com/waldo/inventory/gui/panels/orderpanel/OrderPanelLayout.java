@@ -54,7 +54,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     JButton tbOrderButton;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
-    JButton tbViewOrderFileBtn;
+    private JButton tbViewOrderFileBtn;
     JButton tbSetOrderedBtn;
     /*
      *                  VARIABLES
@@ -85,6 +85,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         lastSelectedOrder = order;
         if (order != null) {
             treeModel.setSelectedObject(lastSelectedOrder);
+            updateTable(lastSelectedOrder);
         }
     }
 
@@ -167,7 +168,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public void recreateNodes() {
+    void recreateNodes() {
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
         rootNode.removeAllChildren();
         createNodes(rootNode);

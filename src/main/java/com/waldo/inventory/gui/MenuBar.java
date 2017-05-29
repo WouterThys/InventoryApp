@@ -74,7 +74,10 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener manufacturersSelected() {
-        return e -> ManufacturersDialog.showDialog(application);
+        return (e -> {
+            ManufacturersDialog dialog = new ManufacturersDialog(application, "Manufacturers");
+            dialog.showDialog();
+        });
     }
 
     private ActionListener distributorsSelected() { return  e -> DistributorsDialog.showDialog(application); }

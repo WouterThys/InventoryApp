@@ -126,6 +126,14 @@ public class Application extends JFrame implements ChangeListener {
         updating = false;
     }
 
+    public void setSelectedTab(int tab) {
+        tabbedPane.setSelectedIndex(tab);
+    }
+
+    public OrderPanel getOrderPanel() {
+        return orderPanel;
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);

@@ -176,6 +176,15 @@ public class Order extends DbObject {
         }
     }
 
+    public OrderItem findOrderItemInOrder(long itemId) {
+        for (OrderItem oi : getOrderItems()) {
+            if (oi.getItemId() == itemId) {
+                return oi;
+            }
+        }
+        return null;
+    }
+
     public Date getDateOrdered() {
         return dateOrdered;
     }
