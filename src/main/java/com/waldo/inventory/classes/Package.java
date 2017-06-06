@@ -43,6 +43,21 @@ public class Package extends DbObject {
         statement.execute();
     }
 
+    public static Package getUnknownPackage() {
+        Package p = new Package();
+        p.setName(UNKNOWN_NAME);
+        p.setId(UNKNOWN_ID);
+        p.setCanBeSaved(false);
+        return p;
+    }
+
+    public static Package createDummyPackage() {
+        Package p = new Package();
+        p.setName("");
+        p.setCanBeSaved(false);
+        return p;
+    }
+
     public long getTypeId() {
         return typeId;
     }

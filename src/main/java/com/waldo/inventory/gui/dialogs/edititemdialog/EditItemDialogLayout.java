@@ -49,7 +49,7 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
         // Panels
         componentPanel = new ComponentPanel(newItem);
-        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
+//        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
         componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
@@ -86,7 +86,7 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         tabbedPane.addTab("Stock  ", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
         tabbedPane.addTab("Manufacturer  ", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
         tabbedPane.addTab("Order  ", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
-        tabbedPane.setPreferredSize(new Dimension(600, 600));
+        //tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add
         getContentPanel().add(tabbedPane);

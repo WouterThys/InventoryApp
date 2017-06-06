@@ -13,54 +13,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36fd7e16-0309-4518-8f75-f0c4236fa64c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/chip/cpu16.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/chip/cpu24.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/chip/cpu32.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/chip/cpu48.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageTypeDialogLayout.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageTypeTypeDialog.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/db/migration/V15.1__package_stuff.sql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/db/migration/V15.2__package_stuff_with_fk.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject$2.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/DbObject.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/OrderItem.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/OrderItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$2.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$3.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$4.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager$4.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/database/DbManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/Application.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/Application.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/MenuBar.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/MenuBar.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/TopToolBar.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/TopToolBar.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel$2.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/IObjectSearchPanel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/DbObjectDialog.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/DbObjectDialog.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout$2.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/InventoryApp_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/InventoryApp_jar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/db/migration/V15.3__item_add_package.sql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/Main$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/Main$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/Main.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/Main.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/Item$ItemComparator.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/Item$ItemComparator.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/Item.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/classes/Item.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/ILabel$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/ILabel$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/ILabel.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/components/ILabel.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel$1.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.class" afterPath="$PROJECT_DIR$/target/classes/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/inventory.db" afterPath="$PROJECT_DIR$/data/inventory.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logs/db.log" afterPath="$PROJECT_DIR$/logs/db.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logs/inventory.log" afterPath="$PROJECT_DIR$/logs/inventory.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/OrderItem.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/OrderItem.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Item.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Item.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/MenuBar.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/MenuBar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IObjectSearchPanel.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IObjectSearchPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/DbObjectDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/DbObjectDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.java" afterPath="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties" afterPath="$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/settings/IconSettings.properties" afterPath="$PROJECT_DIR$/src/main/resources/settings/IconSettings.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/db/scripts/scripts.properties" afterPath="$PROJECT_DIR$/target/classes/db/scripts/scripts.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/settings/IconSettings.properties" afterPath="$PROJECT_DIR$/target/classes/settings/IconSettings.properties" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -84,7 +62,7 @@
       <content type="file-editors">
         <state>
           <leaf>
-            <file leaf-file-name="ManufacturersDialog.java" pinned="false" current-in-tab="true">
+            <file leaf-file-name="ManufacturersDialog.java" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialog.java">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="499">
@@ -94,11 +72,11 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="ManufacturersDialogLayout.java" pinned="false" current-in-tab="false">
+            <file leaf-file-name="ManufacturersDialogLayout.java" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialogLayout.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="2405">
-                    <caret line="180" column="39" lean-forward="true" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="39" />
+                  <state relative-caret-position="260">
+                    <caret line="148" column="8" lean-forward="true" selection-start-line="148" selection-start-column="8" selection-end-line="152" selection-end-column="44" />
                     <folding />
                   </state>
                 </provider>
@@ -112,21 +90,183 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="EditItemDialogLayout.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java">
+      <file leaf-file-name="Item.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Item.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="87" column="34" lean-forward="false" selection-start-line="87" selection-start-column="34" selection-end-line="87" selection-end-column="34" />
+            <state relative-caret-position="184">
+              <caret line="62" column="41" lean-forward="false" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
+              <folding>
+                <element signature="e#8238#8239#0" expanded="true" />
+                <element signature="e#8270#8271#0" expanded="true" />
+                <element signature="e#8318#8319#0" expanded="true" />
+                <element signature="e#8360#8361#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DbManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="493" column="56" lean-forward="false" selection-start-line="493" selection-start-column="56" selection-end-line="493" selection-end-column="56" />
+              <folding>
+                <element signature="method#getItems#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateItems#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getItemsAsync#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getCategories#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateCategories#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getCategoryFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getCategoriesAsync#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getProducts#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateProducts#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getProductFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getProductsAsync#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getTypes#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateTypes#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getTypeFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getTypesAsync#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getManufacturers#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateManufacturers#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getManufacturerFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getLocations#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateLocations#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getLocationFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getOrders#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateOrders#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getOrderFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getOrderItems#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateOrderItems#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getOrderItemFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getOrderedItems#0;class#DbManager#0" expanded="false" />
+                <element signature="method#removeItemFromOrder#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getDistributors#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updateDistributors#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getDistributorFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPartNumbers#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updatePartNumbers#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPartNumberFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPartNumberFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPackageTypes#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updatePackageTypes#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPackageTypeFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPackages#0;class#DbManager#0" expanded="false" />
+                <element signature="method#updatePackages#0;class#DbManager#0" expanded="false" />
+                <element signature="method#getPackageFromDb#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findItemById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findItemByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findCategoryById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findCategoryByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findCategoryIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findProductById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findProductByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findProductIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findTypeById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findTypeByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findTypeIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findManufacturerById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findManufacturerByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findManufacturerIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findLocationById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findLocationByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findLocationIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderItemById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderItemByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrderItemIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findDistributorById#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPartNumber#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findOrdersForItem#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPackageTypeByIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPackageTypeByName#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPackageByIndex#0;class#DbManager#0" expanded="false" />
+                <element signature="method#findPackageByName#0;class#DbManager#0" expanded="false" />
+                <marker date="1496780925348" expanded="true" signature="5015:5066" ph=" SELECT statement (SQLITE_MASTER)" />
+                <marker date="1496780925348" expanded="true" signature="16700:16733" ph=" SELECT statement (ITEMS)" />
+                <marker date="1496780925348" expanded="true" signature="19345:19376" ph=" SELECT statement (ITEMS)" />
+                <marker date="1496780925348" expanded="true" signature="21316:21371" ph=" SELECT statement (CATEGORIES)" />
+                <marker date="1496780925348" expanded="true" signature="22410:22463" ph=" SELECT statement (CATEGORIES)" />
+                <marker date="1496780925348" expanded="true" signature="24405:24459" ph=" SELECT statement (PRODUCTS)" />
+                <marker date="1496780925348" expanded="true" signature="25487:25539" ph=" SELECT statement (PRODUCTS)" />
+                <marker date="1496780925348" expanded="true" signature="27490:27541" ph=" SELECT statement (TYPES)" />
+                <marker date="1496780925348" expanded="true" signature="28625:28674" ph=" SELECT statement (TYPES)" />
+                <marker date="1496780925348" expanded="true" signature="30692:30751" ph=" SELECT statement (MANUFACTURERS)" />
+                <marker date="1496780925348" expanded="true" signature="31876:31933" ph=" SELECT statement (MANUFACTURERS)" />
+                <marker date="1496780925348" expanded="true" signature="33125:33180" ph=" SELECT statement (LOCATIONS)" />
+                <marker date="1496780925348" expanded="true" signature="34197:34250" ph=" SELECT statement (LOCATIONS)" />
+                <marker date="1496780925348" expanded="true" signature="35348:35400" ph=" SELECT statement (ORDERS)" />
+                <marker date="1496780925348" expanded="true" signature="36844:36894" ph=" SELECT statement (ORDERS)" />
+                <marker date="1496780925348" expanded="true" signature="38435:38491" ph=" SELECT statement (ORDERITEMS)" />
+                <marker date="1496780925348" expanded="true" signature="39638:39692" ph=" SELECT statement (ORDERITEMS)" />
+                <marker date="1496780925348" expanded="true" signature="42331:42389" ph=" SELECT statement (DISTRIBUTORS)" />
+                <marker date="1496780925348" expanded="true" signature="43452:43508" ph=" SELECT statement (DISTRIBUTORS)" />
+                <marker date="1496780925348" expanded="true" signature="45987:46042" ph=" SELECT statement (DISTRIBUTORS)" />
+                <marker date="1496780925348" expanded="true" signature="49597:49653" ph=" SELECT statement (PACKAGETYPES)" />
+                <marker date="1496780925348" expanded="true" signature="51908:51960" ph=" SELECT statement (PARTNUMBERS)" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EditItemDialog.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="465">
+              <caret line="119" column="13" lean-forward="false" selection-start-line="119" selection-start-column="13" selection-end-line="119" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ComponentPanel.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EditItemDialogLayout.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="589">
+              <caret line="112" column="67" lean-forward="false" selection-start-line="112" selection-start-column="67" selection-end-line="112" selection-end-column="67" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ComponentPanel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2220">
-              <caret line="172" column="25" lean-forward="false" selection-start-line="172" selection-start-column="25" selection-end-line="172" selection-end-column="25" />
+            <state relative-caret-position="251">
+              <caret line="440" column="26" lean-forward="false" selection-start-line="440" selection-start-column="26" selection-end-line="440" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Package.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="206">
+              <caret line="68" column="23" lean-forward="false" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DbObject.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="206">
+              <caret line="147" column="0" lean-forward="false" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scripts.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="298">
+              <caret line="34" column="250" lean-forward="false" selection-start-line="34" selection-start-column="250" selection-end-line="34" selection-end-column="250" />
               <folding />
             </state>
           </provider>
@@ -144,12 +284,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>UNKNOW</find>
-      <find>UNI</find>
-      <find>UNKNOWN</find>
-      <find>updateCompo</find>
-      <find>unknown</find>
-      <find>selectedItem</find>
       <find>updateComponents</find>
       <find>update</find>
       <find>updateType</find>
@@ -174,6 +308,12 @@
       <find>orderButton</find>
       <find>tbViewOrderDetailsBtn</find>
       <find>isUnknwon</find>
+      <find>tabbedPane</find>
+      <find>componentPanel</find>
+      <find>iconLabel</find>
+      <find>amountTf</find>
+      <find>packageTypeComboBox</find>
+      <find>itemTable</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -195,13 +335,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/resources/settings/Strings.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IEditedListener.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IFormattedTextField.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextField.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITextArea.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderitemdetailpanel/OrderItemDetailPanelLayout.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PartNumber.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/orderinfodialog/OrderInfoDialogLayout.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/orderinfodialog/OrderInfoDialog.java" />
@@ -227,10 +360,8 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java" />
         <option value="$PROJECT_DIR$/src/main/resources/db/migration/V15.1_package_stuff.sql" />
-        <option value="$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/OrderItem.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" />
         <option value="$PROJECT_DIR$/src/main/resources/db/migration/V15.1__package_stuff_with_fk.sql" />
         <option value="$PROJECT_DIR$/src/main/resources/settings/IconSettings.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IObjectSearchPanel.java" />
@@ -239,13 +370,22 @@
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/DbObjectDialog.java" />
         <option value="[inventory] CONSOLE - inventory" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/MenuBar.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageDialogLayout.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageTypeDialogLayout.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/packagedialog/PackageTypeTypeDialog.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/db/migration/V14.5__item_add_package.sql" />
+        <option value="$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Item.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java" />
       </list>
     </option>
   </component>
@@ -600,6 +740,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InventoryApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InventoryApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -885,13 +1039,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1488383528388</updated>
-    </task>
-    <task id="LOCAL-00053" summary="Created IdBToolBar&#10;">
-      <created>1490909111635</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1490909111636</updated>
     </task>
     <task id="LOCAL-00054" summary="Manufacturer dialog">
       <created>1491078001376</created>
@@ -1229,7 +1376,14 @@
       <option name="project" value="LOCAL" />
       <updated>1496083951102</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="Added package type detail">
+      <created>1496773314271</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1496773314274</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1342,7 +1496,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Adding items to orders" />
     <MESSAGE value="Deleting item from order" />
     <MESSAGE value="Order button and more enable stuff" />
     <MESSAGE value="Editing order (bugs)" />
@@ -1367,7 +1520,8 @@
     <MESSAGE value="Commit after long time" />
     <MESSAGE value="Getting rid of some warnings" />
     <MESSAGE value="Searching in orders" />
-    <option name="LAST_COMMIT_MESSAGE" value="Searching in orders" />
+    <MESSAGE value="Added package type detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added package type detail" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1402,6 +1556,12 @@
           <properties />
           <option name="timeStamp" value="567" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java</url>
+          <line>439</line>
+          <properties />
+          <option name="timeStamp" value="569" />
+        </line-breakpoint>
         <line-breakpoint type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/treetable/TreeTableModelAdapter.java</url>
           <line>20</line>
@@ -1418,7 +1578,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="569" />
+      <option name="time" value="570" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -1433,95 +1593,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/OrderFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="41" column="39" lean-forward="false" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IDbObjectTreeModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-822">
-          <caret line="94" column="10" lean-forward="false" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/distributorsdialog/DistributorsDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/distributorsdialog/DistributorsDialogLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2430">
-          <caret line="180" column="5" lean-forward="false" selection-start-line="180" selection-start-column="5" selection-end-line="180" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/IItemTableModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="11" column="23" lean-forward="false" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="11" column="11" lean-forward="false" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/ordersearchitemdialog/OrderSearchItemDialogLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="52" column="31" lean-forward="false" selection-start-line="52" selection-start-column="31" selection-end-line="52" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/historydialog/HistoryDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="48" lean-forward="false" selection-start-line="9" selection-start-column="48" selection-end-line="9" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/historydialog/HistoryTableModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="19" column="4" lean-forward="false" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="100" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITableEditors.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="307" column="8" lean-forward="false" selection-start-line="307" selection-start-column="8" selection-end-line="307" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/inventory.db">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
           <caret line="23" column="7" lean-forward="false" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="21" column="7" lean-forward="true" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1586,6 +1661,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2700">
           <caret line="196" column="16" lean-forward="false" selection-start-line="196" selection-start-column="16" selection-end-line="196" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1855#1856#0" expanded="false" />
+            <element signature="e#1912#1913#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1604,13 +1684,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderitemdetailpanel/OrderItemDetailPanelLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="17" column="14" lean-forward="false" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderitemdetailpanel/OrderItemDetailPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1623,6 +1696,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2025">
           <caret line="144" column="19" lean-forward="false" selection-start-line="144" selection-start-column="8" selection-end-line="144" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1639,15 +1713,8 @@
         <state relative-caret-position="195">
           <caret line="46" column="48" lean-forward="false" selection-start-line="46" selection-start-column="48" selection-end-line="46" selection-end-column="48" />
           <folding>
-            <element signature="e#1290#1291#0" expanded="true" />
+            <element signature="e#1290#1291#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -1655,107 +1722,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2220">
-          <caret line="1608" column="38" lean-forward="false" selection-start-line="1608" selection-start-column="38" selection-end-line="1608" selection-end-column="38" />
-          <folding>
-            <element signature="method#getItems#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateItems#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getItemsAsync#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getItemFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getCategories#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateCategories#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getCategoryFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getCategoriesAsync#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getProducts#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateProducts#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getProductFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getProductsAsync#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getTypes#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateTypes#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getTypeFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getTypesAsync#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getManufacturers#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateManufacturers#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getManufacturerFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getLocations#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateLocations#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getLocationFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getOrders#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateOrders#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getOrderFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getOrderItems#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateOrderItems#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getOrderItemFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getOrderedItems#0;class#DbManager#0" expanded="false" />
-            <element signature="method#removeItemFromOrder#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getDistributors#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updateDistributors#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getDistributorFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getPartNumbers#0;class#DbManager#0" expanded="false" />
-            <element signature="method#updatePartNumbers#0;class#DbManager#0" expanded="false" />
-            <element signature="method#getPartNumberFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findPartNumberFromDb#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findItemById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findItemByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findCategoryById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findCategoryByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findCategoryIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findProductById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findProductByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findProductIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findTypeById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findTypeByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findTypeIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findManufacturerById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findManufacturerByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findManufacturerIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findLocationById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findLocationByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findLocationIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderItemById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderItemByName#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrderItemIndex#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findDistributorById#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findPartNumber#0;class#DbManager#0" expanded="false" />
-            <element signature="method#findOrdersForItem#0;class#DbManager#0" expanded="false" />
-            <marker date="1496694415641" expanded="true" signature="5015:5066" ph=" SELECT statement (SQLITE_MASTER)" />
-            <marker date="1496694415641" expanded="true" signature="16700:16733" ph=" SELECT statement (ITEMS)" />
-            <marker date="1496694415641" expanded="true" signature="19284:19315" ph=" SELECT statement (ITEMS)" />
-            <marker date="1496694415641" expanded="true" signature="21194:21249" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1496694415641" expanded="true" signature="22288:22341" ph=" SELECT statement (CATEGORIES)" />
-            <marker date="1496694415641" expanded="true" signature="24283:24337" ph=" SELECT statement (PRODUCTS)" />
-            <marker date="1496694415641" expanded="true" signature="25365:25417" ph=" SELECT statement (PRODUCTS)" />
-            <marker date="1496694415641" expanded="true" signature="27368:27419" ph=" SELECT statement (TYPES)" />
-            <marker date="1496694415641" expanded="true" signature="28503:28552" ph=" SELECT statement (TYPES)" />
-            <marker date="1496694415641" expanded="true" signature="30570:30629" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1496694415641" expanded="true" signature="31754:31811" ph=" SELECT statement (MANUFACTURERS)" />
-            <marker date="1496694415641" expanded="true" signature="33003:33058" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1496694415641" expanded="true" signature="34075:34128" ph=" SELECT statement (LOCATIONS)" />
-            <marker date="1496694415641" expanded="true" signature="35226:35278" ph=" SELECT statement (ORDERS)" />
-            <marker date="1496694415641" expanded="true" signature="36722:36772" ph=" SELECT statement (ORDERS)" />
-            <marker date="1496694415641" expanded="true" signature="38313:38369" ph=" SELECT statement (ORDERITEMS)" />
-            <marker date="1496694415641" expanded="true" signature="39516:39570" ph=" SELECT statement (ORDERITEMS)" />
-            <marker date="1496694415641" expanded="true" signature="42209:42267" ph=" SELECT statement (DISTRIBUTORS)" />
-            <marker date="1496694415641" expanded="true" signature="43330:43386" ph=" SELECT statement (DISTRIBUTORS)" />
-            <marker date="1496694415641" expanded="true" signature="45865:45920" ph=" SELECT statement (DISTRIBUTORS)" />
-            <marker date="1496694415641" expanded="true" signature="49475:49531" ph=" SELECT statement (PACKAGETYPES)" />
-            <marker date="1496694415641" expanded="true" signature="51778:51830" ph=" SELECT statement (PARTNUMBERS)" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -1764,6 +1730,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="2" lean-forward="false" selection-start-line="14" selection-start-column="2" selection-end-line="14" selection-end-column="2" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1819,30 +1786,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="517" column="0" lean-forward="false" selection-start-line="517" selection-start-column="0" selection-end-line="517" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialogLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2405">
-          <caret line="180" column="39" lean-forward="true" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="499">
-          <caret line="210" column="9" lean-forward="true" selection-start-line="205" selection-start-column="8" selection-end-line="210" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/DbObjectDialog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="244">
@@ -1872,39 +1815,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="23" column="28" lean-forward="false" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/MenuBar.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="522">
           <caret line="89" column="27" lean-forward="false" selection-start-line="89" selection-start-column="27" selection-end-line="89" selection-end-column="27" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="19" column="28" lean-forward="false" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1936,18 +1851,298 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Utils/ResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="87" column="34" lean-forward="false" selection-start-line="87" selection-start-column="34" selection-end-line="87" selection-end-column="34" />
+        <state relative-caret-position="214">
+          <caret line="95" column="21" lean-forward="false" selection-start-line="95" selection-start-column="21" selection-end-line="95" selection-end-column="21" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ILabel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="151" column="29" lean-forward="false" selection-start-line="151" selection-start-column="29" selection-end-line="151" selection-end-column="29" />
+          <folding>
+            <element signature="e#3593#3594#0" expanded="true" />
+            <element signature="e#3646#3647#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="44" column="37" lean-forward="true" selection-start-line="44" selection-start-column="37" selection-end-line="44" selection-end-column="37" />
+          <folding>
+            <element signature="e#1131#1881#0" expanded="true" />
+            <element signature="e#1880#1881#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="499">
+          <caret line="210" column="9" lean-forward="true" selection-start-line="205" selection-start-column="8" selection-end-line="210" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITitledEditPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="16" column="11" lean-forward="false" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderitemdetailpanel/OrderItemDetailPanelLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="56" column="41" lean-forward="true" selection-start-line="55" selection-start-column="19" selection-end-line="56" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Manufacturer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="38" column="5" lean-forward="true" selection-start-line="32" selection-start-column="4" selection-end-line="38" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/PackageType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="41" column="26" lean-forward="false" selection-start-line="41" selection-start-column="26" selection-end-line="41" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/components/ITableEditors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-615">
+          <caret line="28" column="15" lean-forward="false" selection-start-line="28" selection-start-column="15" selection-end-line="28" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/panels/orderpanel/OrderPanelLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2426">
+          <caret line="359" column="57" lean-forward="false" selection-start-line="359" selection-start-column="57" selection-end-line="359" selection-end-column="57" />
+          <folding>
+            <element signature="e#13958#13959#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemManufacturerPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="451">
+          <caret line="119" column="25" lean-forward="false" selection-start-line="119" selection-start-column="25" selection-end-line="119" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/db/migration/V12.1__update_items_with_named_constraints.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/manufacturerdialog/ManufacturersDialogLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="148" column="8" lean-forward="true" selection-start-line="148" selection-start-column="8" selection-end-line="152" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/db/migration/V15.3__item_add_package.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="584">
+          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/db/scripts/scripts.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="34" column="250" lean-forward="false" selection-start-line="34" selection-start-column="250" selection-end-line="34" selection-end-column="250" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/database/DbManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="493" column="56" lean-forward="false" selection-start-line="493" selection-start-column="56" selection-end-line="493" selection-end-column="56" />
+          <folding>
+            <element signature="method#getItems#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateItems#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getItemsAsync#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getCategories#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateCategories#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getCategoryFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getCategoriesAsync#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getProducts#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateProducts#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getProductFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getProductsAsync#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getTypes#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateTypes#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getTypeFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getTypesAsync#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getManufacturers#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateManufacturers#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getManufacturerFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getLocations#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateLocations#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getLocationFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getOrders#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateOrders#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getOrderFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getOrderItems#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateOrderItems#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getOrderItemFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getOrderedItems#0;class#DbManager#0" expanded="false" />
+            <element signature="method#removeItemFromOrder#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getDistributors#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updateDistributors#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getDistributorFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPartNumbers#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updatePartNumbers#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPartNumberFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPartNumberFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPackageTypes#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updatePackageTypes#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPackageTypeFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPackages#0;class#DbManager#0" expanded="false" />
+            <element signature="method#updatePackages#0;class#DbManager#0" expanded="false" />
+            <element signature="method#getPackageFromDb#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findItemById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findItemByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findCategoryById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findCategoryByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findCategoryIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findProductById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findProductByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findProductIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findTypeById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findTypeByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findTypeIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findManufacturerById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findManufacturerByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findManufacturerIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findLocationById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findLocationByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findLocationIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderItemById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderItemByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrderItemIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findDistributorById#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPartNumber#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findOrdersForItem#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPackageTypeByIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPackageTypeByName#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPackageByIndex#0;class#DbManager#0" expanded="false" />
+            <element signature="method#findPackageByName#0;class#DbManager#0" expanded="false" />
+            <marker date="1496780925348" expanded="true" signature="5015:5066" ph=" SELECT statement (SQLITE_MASTER)" />
+            <marker date="1496780925348" expanded="true" signature="16700:16733" ph=" SELECT statement (ITEMS)" />
+            <marker date="1496780925348" expanded="true" signature="19345:19376" ph=" SELECT statement (ITEMS)" />
+            <marker date="1496780925348" expanded="true" signature="21316:21371" ph=" SELECT statement (CATEGORIES)" />
+            <marker date="1496780925348" expanded="true" signature="22410:22463" ph=" SELECT statement (CATEGORIES)" />
+            <marker date="1496780925348" expanded="true" signature="24405:24459" ph=" SELECT statement (PRODUCTS)" />
+            <marker date="1496780925348" expanded="true" signature="25487:25539" ph=" SELECT statement (PRODUCTS)" />
+            <marker date="1496780925348" expanded="true" signature="27490:27541" ph=" SELECT statement (TYPES)" />
+            <marker date="1496780925348" expanded="true" signature="28625:28674" ph=" SELECT statement (TYPES)" />
+            <marker date="1496780925348" expanded="true" signature="30692:30751" ph=" SELECT statement (MANUFACTURERS)" />
+            <marker date="1496780925348" expanded="true" signature="31876:31933" ph=" SELECT statement (MANUFACTURERS)" />
+            <marker date="1496780925348" expanded="true" signature="33125:33180" ph=" SELECT statement (LOCATIONS)" />
+            <marker date="1496780925348" expanded="true" signature="34197:34250" ph=" SELECT statement (LOCATIONS)" />
+            <marker date="1496780925348" expanded="true" signature="35348:35400" ph=" SELECT statement (ORDERS)" />
+            <marker date="1496780925348" expanded="true" signature="36844:36894" ph=" SELECT statement (ORDERS)" />
+            <marker date="1496780925348" expanded="true" signature="38435:38491" ph=" SELECT statement (ORDERITEMS)" />
+            <marker date="1496780925348" expanded="true" signature="39638:39692" ph=" SELECT statement (ORDERITEMS)" />
+            <marker date="1496780925348" expanded="true" signature="42331:42389" ph=" SELECT statement (DISTRIBUTORS)" />
+            <marker date="1496780925348" expanded="true" signature="43452:43508" ph=" SELECT statement (DISTRIBUTORS)" />
+            <marker date="1496780925348" expanded="true" signature="45987:46042" ph=" SELECT statement (DISTRIBUTORS)" />
+            <marker date="1496780925348" expanded="true" signature="49597:49653" ph=" SELECT statement (PACKAGETYPES)" />
+            <marker date="1496780925348" expanded="true" signature="51908:51960" ph=" SELECT statement (PARTNUMBERS)" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/EditItemOrderPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/DbObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="147" column="0" lean-forward="false" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Package.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="68" column="23" lean-forward="false" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/classes/Item.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="62" column="41" lean-forward="false" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
+          <folding>
+            <element signature="e#8238#8239#0" expanded="true" />
+            <element signature="e#8270#8271#0" expanded="true" />
+            <element signature="e#8318#8319#0" expanded="true" />
+            <element signature="e#8360#8361#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/panels/ComponentPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2220">
-          <caret line="172" column="25" lean-forward="false" selection-start-line="172" selection-start-column="25" selection-end-line="172" selection-end-column="25" />
+        <state relative-caret-position="251">
+          <caret line="440" column="26" lean-forward="false" selection-start-line="440" selection-start-column="26" selection-end-line="440" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialogLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="112" column="67" lean-forward="false" selection-start-line="112" selection-start-column="67" selection-end-line="112" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/waldo/inventory/gui/dialogs/edititemdialog/EditItemDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="119" column="13" lean-forward="false" selection-start-line="119" selection-start-column="13" selection-end-line="119" selection-end-column="13" />
           <folding />
         </state>
       </provider>

@@ -40,7 +40,7 @@ public class EditItemManufacturerPanel extends JPanel implements GuiInterface {
             Manufacturer m = (Manufacturer) e.getItem();
             if (m != null) {
                 if (!m.getIconPath().isEmpty()) {
-                    iconLabel.setIcon(m.getIconPath());
+                    iconLabel.setIcon(m.getIconPath(), 100, 100);
                 }
             }
         });
@@ -113,10 +113,11 @@ public class EditItemManufacturerPanel extends JPanel implements GuiInterface {
                 try {
                     Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());
                     if (m != null && !m.getIconPath().isEmpty()) {
-                        url = new File(m.getIconPath()).toURI().toURL();
-                        iconLabel.setIcon(resourceManager.readImage(url));
+//                        url = new File(m.getIconPath()).toURI().toURL();
+//                        ImageIcon icon = resourceManager.readImage(url);
+                        iconLabel.setIcon(m.getIconPath(), 100,100);
                     }
-                } catch (IOException e1) {
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }

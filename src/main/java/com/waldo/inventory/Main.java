@@ -38,7 +38,13 @@ public class Main {
                 @Override
                 public UIDefaults getDefaults() {
                     UIDefaults defaults = super.getDefaults();
+
                     defaults.put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+//                    defaults.put("TabbedPane:TabbedPaneTabArea[Disabled].backgroundPainter", null);
+//                    defaults.put("TabbedPane:TabbedPaneTabArea[Enabled+MouseOver].backgroundPainter", null);
+//                    defaults.put("TabbedPane:TabbedPaneTabArea[Enabled+Pressed].backgroundPainter", null);
+//                    defaults.put("TabbedPane:TabbedPaneTabArea[Enabled].backgroundPainter", null);
+
                     return defaults;
                 }
             });
@@ -84,6 +90,28 @@ public class Main {
                 UIManager.put (key, f);
         }
     }
+
+    private static void updateLookAndFeel() {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+                    e.printStackTrace();
+                }
+                UIManager.getLookAndFeelDefaults().put(
+                        "TabbedPane:TabbedPaneTabArea[Disabled].backgroundPainter", null);
+                UIManager.getLookAndFeelDefaults().put(
+                        "TabbedPane:TabbedPaneTabArea[Enabled+MouseOver].backgroundPainter", null);
+                UIManager.getLookAndFeelDefaults().put(
+                        "TabbedPane:TabbedPaneTabArea[Enabled+Pressed].backgroundPainter", null);
+                UIManager.getLookAndFeelDefaults().put(
+                        "TabbedPane:TabbedPaneTabArea[Enabled].backgroundPainter", null);
+                break;
+            }
+        }
+    }
+
 
 }
 

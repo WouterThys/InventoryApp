@@ -15,6 +15,13 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
+    private static final int COMPONENT_TAB = 0;
+    private static final int STOCK_TAB = 1;
+    private static final int MANUFACTURER_TAB = 2;
+    private static final int ORDER_TAB = 3;
+
+    private int currentTabIndex = 0;
+
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
         if (application != null) {
@@ -96,11 +103,23 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
     private void initTabChangedAction() {
         tabbedPane.addChangeListener(e -> {
-            // Save values
-            componentPanel.setComponentValues();
-            editItemManufacturerPanel.setComponentValues();
-            editItemStockPanel.setComponentValues();
-            editItemOrderPanel.setComponentValues();
+            // Save values depending on tab
+            switch (currentTabIndex) {
+                case COMPONENT_TAB:
+                    componentPanel.setComponentValues();
+                    break;
+                case STOCK_TAB:
+                    editItemManufacturerPanel.setComponentValues();
+                    break;
+                case MANUFACTURER_TAB:
+                    editItemStockPanel.setComponentValues();
+                    break;
+                case ORDER_TAB:
+                    editItemOrderPanel.setComponentValues();
+                    break;
+            }
+
+            currentTabIndex = tabbedPane.getSelectedIndex();
 
             updateComponents(null);
         });

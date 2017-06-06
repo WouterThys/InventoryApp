@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 
@@ -23,6 +24,7 @@ public class Item extends DbObject {
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderState.NONE;
+    private long packageId = -1;
 
     public Item() {
         super(TABLE_NAME);
@@ -59,6 +61,7 @@ public class Item extends DbObject {
         statement.setInt(12, amount);
         statement.setInt(13, amountType);
         statement.setInt(14, orderState);
+        statement.setLong(15, packageId);
         statement.execute();
     }
 
@@ -93,8 +96,9 @@ public class Item extends DbObject {
         statement.setInt(12, amount);
         statement.setInt(13, amountType);
         statement.setInt(14, orderState);
+        statement.setLong(15, packageId);
 
-        statement.setLong(15, id); // WHERE id
+        statement.setLong(16, id); // WHERE id
         statement.execute();
     }
 
@@ -135,6 +139,11 @@ public class Item extends DbObject {
 
             Location l = DbManager.db().findLocationById(locationId);
             if (l != null && l.hasMatch(searchTerm)) {
+                return true;
+            }
+
+            Package pa = DbManager.db().findPackageByIndex(packageId);
+            if (pa != null && pa.hasMatch(searchTerm)) {
                 return true;
             }
 
@@ -282,5 +291,13 @@ public class Item extends DbObject {
 
     public void setOrderState(int orderState) {
         this.orderState = orderState;
+    }
+
+    public long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(long packageId) {
+        this.packageId = packageId;
     }
 }

@@ -424,6 +424,7 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
+                    i.setPackageId(rs.getLong("packageid"));
 //                    if (isItemInCurrentOrders(i.getId())) {
 //                        i.setOrderState(Statics.ItemOrderState.ORDERED);
 //                    }
@@ -490,6 +491,7 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
+                    i.setPackageId(rs.getLong("packageid"));
                 }
             }
         } catch (SQLException e) {
@@ -1275,8 +1277,8 @@ public class DbManager implements TableChangedListener {
     }
 
     /*
-*                  PACKAGES
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    *                  PACKAGES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<Package> getPackages()    {
         if (packages == null) {
             updatePackages();
