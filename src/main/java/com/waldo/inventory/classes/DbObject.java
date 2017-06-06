@@ -30,6 +30,8 @@ public abstract class DbObject {
     public static final int TYPE_ORDER = 7;
     public static final int TYPE_ORDER_ITEM = 8;
     public static final int TYPE_DISTRIBUTOR = 9;
+    public static final int TYPE_PACKAGE_TYPE = 10;
+    public static final int TYPE_PACKAGE = 11;
 
     private String TABLE_NAME;
 
@@ -90,6 +92,8 @@ public abstract class DbObject {
         if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;
         if (dbObject instanceof Order) return TYPE_ORDER;
         if (dbObject instanceof OrderItem) return TYPE_ORDER_ITEM;
+        if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
+        if (dbObject instanceof Package) return TYPE_PACKAGE;
 
         return TYPE_UNKNOWN;
     }
@@ -284,6 +288,12 @@ public abstract class DbObject {
                 break;
             case TYPE_DISTRIBUTOR:
                 oldObject = DbManager.db().getDistributorFromDb(id);
+                break;
+            case TYPE_PACKAGE_TYPE:
+                oldObject = DbManager.db().getPackageTypeFromDb(id);
+                break;
+            case TYPE_PACKAGE:
+                oldObject = DbManager.db().getPackageFromDb(id);
                 break;
         }
     }

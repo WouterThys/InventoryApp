@@ -45,13 +45,7 @@ public class OrderItem extends DbObject {
 
     @Override
     public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-           
-
-        }
-        return false;
+        return super.hasMatch(searchTerm);
     }
 
     public static OrderItem createDummyOrderItem(Order order, Item item) {

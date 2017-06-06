@@ -11,13 +11,10 @@ import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.orderitemdetailpanel.OrderItemDetailPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +52,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     JButton tbOrderButton;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
-    private JButton tbViewOrderFileBtn;
+    private JButton tbViewOrderDetailsBtn;
     JButton tbSetOrderedBtn;
     /*
      *                  VARIABLES
@@ -322,7 +319,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.gridy = 0; gbc.weighty = 1;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        tbOrderFilePanel.add(tbViewOrderFileBtn, gbc);
+        tbOrderFilePanel.add(tbViewOrderDetailsBtn, gbc);
 
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 1;
@@ -381,7 +378,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application);
-        itemDetailPanel.setOrderButtonVisible(false);
+        //itemDetailPanel.setOrderButtonVisible(false);
 
         orderItemDetailPanel = new OrderItemDetailPanel(application);
 
@@ -428,7 +425,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderButton = new JButton("Order!");
 
         tbSetOrderedBtn = new JButton("Set ordered");
-        tbViewOrderFileBtn = new JButton("View Order file");
+        tbViewOrderDetailsBtn = new JButton("Order details");
 
         // Tool bars
         orderToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {

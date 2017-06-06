@@ -197,6 +197,14 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         Status().setMessage("Searching for: Items");
         foundList.addAll(searchForObject(new ArrayList<>(db().getItems()), searchWord));
 
+        // Package types
+        Status().setMessage("Searching for: Package types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+
+        // Package
+        Status().setMessage("Searching for: Packages");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getPackages()), searchWord));
+
         return foundList;
     }
 
@@ -235,6 +243,14 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
                 case DbObject.TYPE_ITEM:
                     Status().setMessage("Searching for: Items");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getItems()), searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE_TYPE:
+                    Status().setMessage("Searching for: PackageType");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE:
+                    Status().setMessage("Searching for: Package");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackages()), searchWord));
                     break;
                 default:
                     break;
@@ -277,6 +293,14 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
                     break;
                 case DbObject.TYPE_ITEM:
                     Status().setMessage("Searching for: Items");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE_TYPE:
+                    Status().setMessage("Searching for: PackageTypes");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE:
+                    Status().setMessage("Searching for: Packages");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 default:

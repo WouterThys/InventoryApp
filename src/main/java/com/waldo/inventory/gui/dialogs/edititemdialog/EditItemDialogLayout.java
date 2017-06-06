@@ -82,10 +82,10 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
         editItemOrderPanel.updateComponents(null);
 
         // Add tabs
-        tabbedPane.addTab("Component", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
-        tabbedPane.addTab("Stock", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("Manufacturer", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
-        tabbedPane.addTab("Order", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
+        tabbedPane.addTab("Component  ", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
+        tabbedPane.addTab("Stock  ", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
+        tabbedPane.addTab("Manufacturer  ", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
+        tabbedPane.addTab("Order  ", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
         tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add

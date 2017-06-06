@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeTypeDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -47,6 +48,9 @@ public class MenuBar extends JMenuBar {
         JMenuItem distributors = new JMenuItem("Distributors", resourceManager.readImage("MenuBar.EditDistributors"));
         distributors.addActionListener(distributorsSelected());
 
+        JMenuItem packages = new JMenuItem("Packages", resourceManager.readImage("MenuBar.Packages"));
+        packages.addActionListener(packagesSelected());
+
 //        JMenuItem orders = new JMenuItem("Orders", resourceManager.readImage("MenuBar.EditOrders"));
 //        orders.addActionListener(ordersSelected());
 //
@@ -57,6 +61,7 @@ public class MenuBar extends JMenuBar {
         dbMenu.addSeparator();
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);
+        dbMenu.add(packages);
 //        dbMenu.add(orders);
 //        dbMenu.add(locations);
 
@@ -76,6 +81,13 @@ public class MenuBar extends JMenuBar {
     private ActionListener manufacturersSelected() {
         return (e -> {
             ManufacturersDialog dialog = new ManufacturersDialog(application, "Manufacturers");
+            dialog.showDialog();
+        });
+    }
+
+    private ActionListener packagesSelected() {
+        return (e -> {
+            PackageTypeTypeDialog dialog = new PackageTypeTypeDialog(application, "Package Types");
             dialog.showDialog();
         });
     }

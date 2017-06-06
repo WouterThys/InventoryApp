@@ -53,7 +53,11 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         if (dbObject != null) {
             nameTextField.setText(dbObject.getName());
             iconPathTextField.setText(dbObject.getIconPath());
-            buttonOK.setText("Update");
+            if (dbObject.getId() < DbObject.UNKNOWN_ID) {
+                buttonOK.setText("Save");
+            } else {
+                buttonOK.setText("Update");
+            }
         }
     }
 
