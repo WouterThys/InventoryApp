@@ -1,9 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
@@ -47,7 +45,6 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     // Part numbers...
 
     // Cached lists
@@ -62,7 +59,6 @@ public class DbManager implements TableChangedListener {
     private List<Distributor> distributors;
     private List<PartNumber> partNumbers;
     private List<PackageType> packageTypes;
-    private List<Package> packages;
 
     // Scrips
     private ResourceManager scriptResource;
@@ -211,12 +207,6 @@ public class DbManager implements TableChangedListener {
         }
     }
 
-    public void addOnPackageChangedListener(DbObjectChangedListener<Package> dbObjectChangedListener) {
-        if (!onPackageChangedListenerList.contains(dbObjectChangedListener)) {
-            onPackageChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
     public void removeOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (onItemsChangedListenerList != null) {
             if (onItemsChangedListenerList.contains(dbObjectChangedListener)) {
@@ -297,14 +287,6 @@ public class DbManager implements TableChangedListener {
         }
     }
 
-    public void removeOnPackageChangedListener(DbObjectChangedListener<Package> dbObjectChangedListener) {
-        if (onPackageChangedListenerList != null) {
-            if (onPackageChangedListenerList.contains(dbObjectChangedListener)) {
-                onPackageChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
 
 
     private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
@@ -380,10 +362,6 @@ public class DbManager implements TableChangedListener {
                 updatePackageTypes();
                 notifyListeners(changedHow, (PackageType)newObject, (PackageType)oldObject, onPackageTypesChangedListenerList);
                 break;
-            case Package.TABLE_NAME:
-                updatePackages();
-                notifyListeners(changedHow, (Package)newObject, (Package)oldObject, onPackageChangedListenerList);
-                break;
         }
     }
 
@@ -424,7 +402,10 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
-                    i.setPackageId(rs.getLong("packageid"));
+                    i.setPackageTypeId(rs.getLong("packagetypeid"));
+                    i.setPins(rs.getInt("pins"));
+                    i.setWidth(rs.getDouble("width"));
+                    i.setHeight(rs.getDouble("height"));
 //                    if (isItemInCurrentOrders(i.getId())) {
 //                        i.setOrderState(Statics.ItemOrderState.ORDERED);
 //                    }
@@ -491,7 +472,10 @@ public class DbManager implements TableChangedListener {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amounttype"));
                     i.setOrderState(rs.getInt("orderstate"));
-                    i.setPackageId(rs.getLong("packageid"));
+                    i.setPackageTypeId(rs.getLong("packagetypeid"));
+                    i.setPins(rs.getInt("pins"));
+                    i.setWidth(rs.getDouble("width"));
+                    i.setHeight(rs.getDouble("height"));
                 }
             }
         } catch (SQLException e) {
@@ -1276,71 +1260,6 @@ public class DbManager implements TableChangedListener {
         return pt;
     }
 
-    /*
-    *                  PACKAGES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Package> getPackages()    {
-        if (packages == null) {
-            updatePackages();
-        }
-        return packages;
-    }
-
-    private void updatePackages()    {
-        packages = new ArrayList<>();
-        Status().setMessage("Fetching packages from DB");
-
-        String sql = scriptResource.readString(Package.TABLE_NAME + ".sqlSelectAll");
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    Package p = new Package();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-                    p.setTypeId(rs.getLong("typeid"));
-                    p.setPins(rs.getInt("pins"));
-                    p.setHeight(rs.getInt("height"));
-                    p.setWidth(rs.getInt("width"));
-
-                    if (p.getId() != DbObject.UNKNOWN_ID) {
-                        p.setOnTableChangedListener(this);
-                        packages.add(p);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch part numbers from database");
-            e.printStackTrace();
-        }
-    }
-
-    public Package getPackageFromDb(long packageId) {
-        Package p = null;
-        Status().setMessage("Fetching part number from DB");
-
-        String sql = "SELECT * FROM " + Package.TABLE_NAME + " WHERE id = " + packageId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new Package();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-                    p.setTypeId(rs.getLong("typeid"));
-                    p.setPins(rs.getInt("pins"));
-                    p.setHeight(rs.getInt("height"));
-                    p.setWidth(rs.getInt("width"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch package from database");
-            e.printStackTrace();
-        }
-        return p;
-    }
 
     /*
     *                  FINDERS
@@ -1593,24 +1512,6 @@ public class DbManager implements TableChangedListener {
         for (PackageType pt : getPackageTypes()) {
             if (pt.getName().equals(name)) {
                 return pt;
-            }
-        }
-        return null;
-    }
-
-    public Package findPackageByIndex(long id) {
-        for (Package p : getPackages()) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public Package findPackageByName(String name) {
-        for (Package p : getPackages()) {
-            if (p.getName().equals(name)) {
-                return p;
             }
         }
         return null;

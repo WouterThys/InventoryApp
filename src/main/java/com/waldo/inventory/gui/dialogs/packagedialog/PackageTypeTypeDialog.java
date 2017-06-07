@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;

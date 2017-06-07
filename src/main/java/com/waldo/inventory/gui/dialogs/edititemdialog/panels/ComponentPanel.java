@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     // Package info
     private JComboBox<PackageType> packageTypeComboBox;
     private JSpinner packagePinsSp;
-    private JSpinner packageWidthSp, packageHeightSp;
+    private IFormattedTextField packageWidthTf, packageHeightTf;
 
     // Basic info
     private JTextField idTextField;
@@ -124,12 +123,25 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         newItem.setLocationId(1);
 
         // Package
-        Package p = getPackageInfo();
-        if (p.getId() <= UNKNOWN_ID) {
-            p.setId(-1); // Force save
+//        Package p = getPackageInfo();
+//        if (p.getId() <= UNKNOWN_ID) {
+//            p.setId(-1); // Force save
+//        }
+//        p.save();
+//        newItem.setPackageId(p.getId());
+        PackageType pt = (PackageType) packageTypeComboBox.getSelectedItem();
+        if (pt != null) {
+            newItem.setPackageTypeId(pt.getId());
         }
-        p.save();
-        newItem.setPackageId(p.getId());
+        newItem.setPins((Integer) packagePinsSp.getValue());
+        String heightTxt = packageHeightTf.getText();
+        if (!heightTxt.isEmpty()) {
+            newItem.setHeight(Double.valueOf(heightTxt));
+        }
+        String widthTxt = packageWidthTf.getText();
+        if (!widthTxt.isEmpty()) {
+            newItem.setWidth(Double.valueOf(widthTxt));
+        }
 
     }
 
@@ -247,10 +259,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         packageTypeComboBox.insertItemAt(PackageType.createDummyPackageType(), 0);
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         packagePinsSp = new JSpinner(spinnerModel);
-        spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        packageWidthSp = new JSpinner(spinnerModel);
-        spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        packageHeightSp = new JSpinner(spinnerModel);
+
+        packageWidthTf = new IFormattedTextField(NumberFormat.getNumberInstance()); //new ITextField("Width");
+        packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
         //packagePinsSp.addEditedListener(this);
     }
 
@@ -318,8 +329,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // - extra
         JPanel dimPanel = new JPanel();
-        dimPanel.add(packageWidthSp);
-        dimPanel.add(packageHeightSp);
+        dimPanel.add(packageWidthTf);
+        dimPanel.add(packageHeightTf);
 
         // - type
         gbc.gridx = 0; gbc.weightx = 0;
@@ -437,18 +448,16 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
 
         // Package
-        Package p = db().findPackageByIndex(newItem.getPackageId());
+        PackageType p = db().findPackageTypeByIndex(newItem.getPackageTypeId());
         if (p != null && !p.isUnknown()) {
-            packageTypeComboBox.setSelectedItem(p.getPackageType());
-            packageWidthSp.setValue(p.getWidth());
-            packageHeightSp.setValue(p.getHeight());
-            packagePinsSp.setValue(p.getPins());
+            packageTypeComboBox.setSelectedItem(p);
         } else {
             packageTypeComboBox.setSelectedIndex(0);
-            packageWidthSp.setValue(0);
-            packageHeightSp.setValue(0);
-            packagePinsSp.setValue(0);
         }
+        packagePinsSp.setValue(newItem.getPins());
+        packageHeightTf.setText(String.valueOf(newItem.getHeight()));
+        packageWidthTf.setText(String.valueOf(newItem.getWidth()));
+
     }
 
     /*
@@ -503,20 +512,19 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         return typeComboBox;
     }
 
+    public PackageType getPackageType() {
+        return (PackageType) packageTypeComboBox.getSelectedItem();
+    }
 
-    public Package getPackageInfo() {
-        Package p = new Package();
-        PackageType pt = (PackageType) packageTypeComboBox.getSelectedItem();
-        if (pt != null) {
-            p.setPackageType(pt);
-        } else {
-            p.setPackageType(PackageType.getUnknownPackageType());
-        }
-        p.setId(newItem.getPackageId());
-        p.setWidth((Integer) packageWidthSp.getValue());
-        p.setHeight((Integer) packageHeightSp.getValue());
-        p.setPins((Integer) packagePinsSp.getValue());
+    public int getPinsFieldValue() {
+        return (int) packagePinsSp.getValue();
+    }
 
-        return p;
+    public String getWidthFieldValue() {
+        return packageWidthTf.getText();
+    }
+
+    public String getHeightFieldValue() {
+        return packageHeightTf.getText();
     }
 }

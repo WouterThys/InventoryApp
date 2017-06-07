@@ -93,7 +93,6 @@ public abstract class DbObject {
         if (dbObject instanceof Order) return TYPE_ORDER;
         if (dbObject instanceof OrderItem) return TYPE_ORDER_ITEM;
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
-        if (dbObject instanceof Package) return TYPE_PACKAGE;
 
         return TYPE_UNKNOWN;
     }
@@ -291,9 +290,6 @@ public abstract class DbObject {
                 break;
             case TYPE_PACKAGE_TYPE:
                 oldObject = DbManager.db().getPackageTypeFromDb(id);
-                break;
-            case TYPE_PACKAGE:
-                oldObject = DbManager.db().getPackageFromDb(id);
                 break;
         }
     }

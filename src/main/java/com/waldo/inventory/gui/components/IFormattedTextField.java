@@ -25,18 +25,22 @@ public class IFormattedTextField extends JFormattedTextField {
 
     public IFormattedTextField(Format format) {
         super(format);
+        setColumns(15);
     }
 
     public IFormattedTextField(JFormattedTextField.AbstractFormatter formatter) {
         super(formatter);
+        setColumns(15);
     }
 
     public IFormattedTextField(JFormattedTextField.AbstractFormatterFactory factory) {
         super(factory);
+        setColumns(15);
     }
 
     public IFormattedTextField(JFormattedTextField.AbstractFormatterFactory factory, Object currentValue) {
         super(factory, currentValue);
+        setColumns(15);
     }
 
     public IFormattedTextField(Object object) {
