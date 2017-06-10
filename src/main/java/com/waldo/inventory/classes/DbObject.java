@@ -256,7 +256,7 @@ public abstract class DbObject {
                 || getIconPath().toUpperCase().contains(searchTerm.toUpperCase());
     }
 
-    public abstract DbObject createCopy(DbObject original);
+    public abstract DbObject createCopy();
 
     public void copyBaseFields(DbObject newObject) {
         newObject.setId(getId());

@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.IconBorder;
+import com.waldo.inventory.classes.DbObject;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,15 +15,15 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class ITextArea extends JTextArea implements FocusListener, DocumentListener {
+public class ITextArea extends JTextArea implements FocusListener {
 
     private String hint = "";
     private boolean showingHint = false;
     private String beforeEditText = "";
     private boolean edited = false;
-    private IEditedListener editedListener;
     private String originalText = hint;
     private String originalToolTip = "";
+    private BindingListener documentListener;
 
     private Error error;
 
@@ -43,27 +44,33 @@ public class ITextArea extends JTextArea implements FocusListener, DocumentListe
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
         showingHint = !hint.isEmpty();
-        this.getDocument().addDocumentListener(this);
         addMenu();
     }
 
-    public void addEditedListener(IEditedListener listener) {
-        this.editedListener = listener;
+    public void addEditedListener(IEditedListener listener, String fieldName) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName);
+        this.getDocument().addDocumentListener(documentListener);
     }
 
     @Override
     public void setText(String t) {
-        super.setText(t);
-        if (editedListener != null) {
-            editedListener.onValueChanged(this, originalText, t);
+        if (documentListener != null) {
+            documentListener.setEnabled(false);
         }
+        super.setText(t);
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
+        }
+        if (documentListener != null) {
+            documentListener.setEnabled(true);
         }
     }
 
 
-
+    @Deprecated
     public void setTextBeforeEdit(String t) {
         beforeEditText = t;
         super.setText(t);
@@ -162,26 +169,5 @@ public class ITextArea extends JTextArea implements FocusListener, DocumentListe
         menu.add( paste );
 
         setComponentPopupMenu(menu);
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        updated();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        updated();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        updated();
-    }
-
-    private void updated() {
-        if (editedListener != null) {
-            editedListener.onValueChanged(this, beforeEditText, getText());
-        }
     }
 }

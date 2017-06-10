@@ -39,6 +39,20 @@ public class Manufacturer extends DbObject {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Manufacturer)) {
+                return false;
+            }
+            if (!(((Manufacturer)obj).getWebsite().equals(getWebsite()))) {
+                return false;
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean hasMatch(String searchTerm) {
         if (super.hasMatch(searchTerm)) {
             return true;
@@ -48,10 +62,10 @@ public class Manufacturer extends DbObject {
     }
 
     @Override
-    public Manufacturer createCopy(DbObject original) {
+    public Manufacturer createCopy() {
         Manufacturer manufacturer = new Manufacturer();
         copyBaseFields(manufacturer);
-        manufacturer.setWebsite(((Manufacturer)original).getWebsite());
+        manufacturer.setWebsite(getWebsite());
         return manufacturer;
     }
 

@@ -170,26 +170,26 @@ public class Item extends DbObject {
     }
 
     @Override
-    public Item createCopy(DbObject original) {
+    public Item createCopy() {
         Item item = new Item();
         copyBaseFields(item);
 
-        item.setDescription(((Item)original).getDescription());
-        item.setPrice(((Item)original).getPrice());
-        item.setCategoryId(((Item)original).getCategoryId());
-        item.setProductId(((Item)original).getProductId());
-        item.setTypeId(((Item)original).getTypeId());
-        item.setLocalDataSheet(((Item)original).getLocalDataSheet());
-        item.setOnlineDataSheet(((Item)original).getOnlineDataSheet());
-        item.setManufacturerId(((Item)original).getManufacturerId());
-        item.setLocationId(((Item)original).getLocationId());
-        item.setAmount(((Item)original).getAmount());
-        item.setAmountType(((Item)original).getAmountType());
-        item.setOrderState(((Item)original).getOrderState());
-        item.setPackageTypeId(((Item)original).getPackageTypeId());
-        item.setPins(((Item)original).getPins());
-        item.setWidth(((Item)original).getWidth());
-        item.setHeight(((Item)original).getHeight());
+        item.setDescription(getDescription());
+        item.setPrice(getPrice());
+        item.setCategoryId(getCategoryId());
+        item.setProductId(getProductId());
+        item.setTypeId(getTypeId());
+        item.setLocalDataSheet(getLocalDataSheet());
+        item.setOnlineDataSheet(getOnlineDataSheet());
+        item.setManufacturerId(getManufacturerId());
+        item.setLocationId(getLocationId());
+        item.setAmount(getAmount());
+        item.setAmountType(getAmountType());
+        item.setOrderState(getOrderState());
+        item.setPackageTypeId(getPackageTypeId());
+        item.setPins(getPins());
+        item.setWidth(getWidth());
+        item.setHeight(getHeight());
 
         return item;
     }

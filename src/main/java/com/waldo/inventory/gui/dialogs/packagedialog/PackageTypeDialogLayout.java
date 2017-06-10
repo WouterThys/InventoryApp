@@ -39,6 +39,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     PackageType selectedPackageType;
+    PackageType originalPackageType;
 
     /*
      *                  CONSTRUCTOR
@@ -183,9 +184,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         detailDescription = new ITextArea("Description", 20, 15);
         detailDescription.setLineWrap(true); // Go to next line when area is full
         detailDescription.setWrapStyleWord(true); // Don't cut words in two
-        detailDescription.addEditedListener(this);
-//        packageTypeCbModel = new DefaultComboBoxModel<>();
-//        detailTypeCb = new JComboBox<>(packageTypeCbModel);
+        detailDescription.addEditedListener(this, "description");
     }
 
     @Override

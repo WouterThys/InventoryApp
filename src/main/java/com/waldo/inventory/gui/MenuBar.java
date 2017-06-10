@@ -4,7 +4,7 @@ import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeTypeDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -87,7 +87,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener packagesSelected() {
         return (e -> {
-            PackageTypeTypeDialog dialog = new PackageTypeTypeDialog(application, "Package Types");
+            PackageTypeDialog dialog = new PackageTypeDialog(application, "Package Types");
             dialog.showDialog();
         });
     }

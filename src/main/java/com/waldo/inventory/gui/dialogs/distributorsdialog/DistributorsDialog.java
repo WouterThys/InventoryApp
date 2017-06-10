@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -39,9 +40,9 @@ public class DistributorsDialog extends DistributorsDialogLayout {
 
     @Override
     protected void onOK() {
-        if (detailWebsite.isEdited()) {
+        if (checkChange()) {
             canClose = false;
-            showSaveDialog();
+            showSaveDialog(true);
         }
 
         if (canClose) {
@@ -50,10 +51,19 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         }
     }
 
+    @Override
+    protected void onNeutral() {
+        if (verify()) {
+            selectedDistributor.save();
+            selectedDistributor = selectedDistributor.createCopy();
+            getButtonNeutral().setEnabled(false);
+        }
+    }
+
     private void setDetails() {
         if (selectedDistributor != null) {
-            detailName.setTextBeforeEdit(selectedDistributor.getName());
-            detailWebsite.setTextBeforeEdit(selectedDistributor.getWebsite());
+            detailName.setText(selectedDistributor.getName());
+            detailWebsite.setText(selectedDistributor.getWebsite());
 
             if (!selectedDistributor.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedDistributor.getIconPath());
@@ -72,7 +82,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         // List
     }
 
-    private void showSaveDialog() {
+    private void showSaveDialog(boolean closeAfter) {
         if (selectedDistributor != null) {
             String msg = selectedDistributor.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
@@ -80,12 +90,19 @@ public class DistributorsDialog extends DistributorsDialogLayout {
                     selectedDistributor.setName(detailName.getText());
                     selectedDistributor.setWebsite(detailWebsite.getText());
                     selectedDistributor.save();
-                    dispose();
+                    originalDistributor = selectedDistributor.createCopy();
+                    if (canClose) {
+                        dispose();
+                    }
                 }
             }
         } else {
-            dispose();
+            if (closeAfter) {
+                dialogResult = OK;
+                dispose();
+            }
         }
+        canClose = true;
     }
 
     private boolean verify() {
@@ -98,6 +115,10 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         return ok;
     }
 
+    private boolean checkChange() {
+        return (selectedDistributor != null) && !(selectedDistributor.equals(originalDistributor));
+    }
+
 
     //
     // List selection changed
@@ -106,7 +127,13 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             JList list = (JList) e.getSource();
-            updateComponents(list.getSelectedValue());
+            Object selected = list.getSelectedValue();
+
+            if (checkChange()) {
+                showSaveDialog(false);
+            }
+            getButtonNeutral().setEnabled(false);
+            updateComponents(selected);
             if (selectedDistributor != null && !selectedDistributor.isUnknown()) {
                 setDetails();
             } else {
@@ -173,6 +200,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             if (res == JOptionPane.OK_OPTION) {
                 selectedDistributor.delete();
                 selectedDistributor = null;
+                originalDistributor = null;
             }
         }
     }
@@ -183,7 +211,21 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedDistributor.save();
+                originalDistributor = selectedDistributor.createCopy();
             }
         }
+    }
+
+    //
+    // Website changed
+    //
+    @Override
+    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+        getButtonNeutral().setEnabled(checkChange());
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return selectedDistributor;
     }
 }

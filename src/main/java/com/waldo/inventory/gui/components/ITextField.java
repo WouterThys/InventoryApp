@@ -19,16 +19,14 @@ public class ITextField extends JTextField implements FocusListener {
 
     private String hint = "";
     private boolean showingHint = false;
-    @Deprecated
     private String beforeEditText = "";
     private boolean edited = false;
     private IEditedListener editedListener;
     private String originalText = hint;
     private String originalToolTip = "";
+    private BindingListener documentListener;
 
     private Error error;
-
-    private DocumentListener documentListener;
 
     public ITextField() {
         this("", 15);
@@ -52,12 +50,15 @@ public class ITextField extends JTextField implements FocusListener {
 
     @Override
     public void setText(String t) {
-        super.setText(t);
-        if (editedListener != null) {
-            editedListener.onValueChanged(this, originalText, t);
+        if (documentListener != null) {
+            documentListener.setEnabled(false);
         }
+        super.setText(t);
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
+        }
+        if (documentListener != null) {
+            documentListener.setEnabled(true);
         }
     }
 
@@ -107,8 +108,12 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
-    public void addEditedListener(IEditedListener listener) {
-        this.editedListener = listener;
+    public void addEditedListener(IEditedListener listener, String fieldName) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName);
+        this.getDocument().addDocumentListener(documentListener);
     }
 
     public void setError(String errorText) {
@@ -151,6 +156,7 @@ public class ITextField extends JTextField implements FocusListener {
         this.edited = edited;
     }
 
+    @Deprecated
     public void setTrackingField(final JTextComponent textField) {
         this.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -170,27 +176,29 @@ public class ITextField extends JTextField implements FocusListener {
         });
     }
 
+    @Deprecated
     public void setTrackingField(final JLabel textField) {
-        documentListener = new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-        };
-
-        this.getDocument().addDocumentListener(documentListener);
+//        documentListener = new DocumentListener() {
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                textField.setText(ITextField.this.getText());
+//            }
+//
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                textField.setText(ITextField.this.getText());
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                textField.setText(ITextField.this.getText());
+//            }
+//        };
+//
+//        this.getDocument().addDocumentListener(documentListener);
     }
 
+    @Deprecated
     public void removeTrackingField() {
         if (documentListener != null) {
             this.getDocument().removeDocumentListener(documentListener);

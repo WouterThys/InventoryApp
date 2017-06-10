@@ -55,12 +55,12 @@ public class PartNumber extends DbObject {
     }
 
     @Override
-    public PartNumber createCopy(DbObject original) {
+    public PartNumber createCopy() {
         PartNumber partNumber = new PartNumber();
         copyBaseFields(partNumber);
-        partNumber.setDistributorId(((PartNumber)original).getDistributorId());
-        partNumber.setItemId(((PartNumber)original).getItemId());
-        partNumber.setItemRef(((PartNumber)original).getItemRef());
+        partNumber.setDistributorId(getDistributorId());
+        partNumber.setItemId(getItemId());
+        partNumber.setItemRef(getItemRef());
         return partNumber;
     }
 

@@ -70,15 +70,15 @@ public class Order extends DbObject {
     }
 
     @Override
-    public Order createCopy(DbObject original) {
+    public Order createCopy() {
         Order order = new Order();
         copyBaseFields(order);
-        order.setDateOrdered(((Order)original).getDateOrdered());
-        order.setOrderItems(((Order)original).getOrderItems());
-        order.setDateModified(((Order)original).getDateModified());
-        order.setDateReceived(((Order)original).getDateReceived());
-        order.setDistributor(((Order)original).getDistributor());
-        order.setOrderFile(((Order)original).getOrderFile());
+        order.setDateOrdered(getDateOrdered());
+        order.setOrderItems(getOrderItems());
+        order.setDateModified(getDateModified());
+        order.setDateReceived(getDateReceived());
+        order.setDistributor(getDistributor());
+        order.setOrderFile(getOrderFile());
 
         return order;
     }

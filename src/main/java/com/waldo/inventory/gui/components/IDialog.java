@@ -180,9 +180,9 @@ public abstract class IDialog extends JDialog {
         buttonNeutral.addActionListener(e -> onNeutral());
 
         JPanel buttonBox = new JPanel(new GridLayout(1,2,5,5));
+        buttonBox.add(buttonNeutral);
         buttonBox.add(buttonOK);
         buttonBox.add(buttonCancel);
-        buttonBox.add(buttonNeutral);
         buttonBox.setBorder(new EmptyBorder(0,5,5,5));
 
         JPanel panel = new JPanel(new BorderLayout(5,5));
@@ -230,7 +230,9 @@ public abstract class IDialog extends JDialog {
         return buttonCancel;
     }
 
-    protected JButton getButtonNeutral() { return buttonNeutral; }
+    protected JButton getButtonNeutral() {
+        return buttonNeutral;
+    }
 
     protected void setNuttonNeutralVisible(boolean visible) {
         buttonNeutral.setVisible(visible);

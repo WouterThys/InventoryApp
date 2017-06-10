@@ -23,7 +23,8 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
         DbObjectChangedListener<Manufacturer>,
         IObjectSearchPanel.IObjectSearchListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        IEditedListener {
 
     /*
      *                  COMPONENTS
@@ -45,6 +46,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Manufacturer selectedManufacturer;
+    Manufacturer originalManufacturer;
 
     /*
      *                  CONSTRUCTOR
@@ -198,6 +200,9 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         // Title
         setTitleIcon(resourceManager.readImage("ManufacturersDialog.TitleIcon"));
         setTitleName("Manufacturers");
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setText("Save");
+        getButtonNeutral().setEnabled(false);
 
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_MANUFACTURER);
@@ -215,6 +220,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
         detailWebsite = new ITextField("Web site");
+        detailWebsite.addEditedListener(this, "website");
         detailLogo = new ILabel();
         //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);

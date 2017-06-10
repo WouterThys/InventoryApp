@@ -14,7 +14,7 @@ public class Category extends DbObject {
     }
 
     @Override
-    public Category createCopy(DbObject original) {
+    public Category createCopy() {
         Category category = new Category();
         copyBaseFields(category);
         return category;

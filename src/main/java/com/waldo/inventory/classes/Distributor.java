@@ -43,10 +43,24 @@ public class Distributor extends DbObject {
     }
 
     @Override
-    public Distributor createCopy(DbObject original) {
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Distributor)) {
+                return false;
+            }
+            if (!(((Distributor)obj).getWebsite().equals(getWebsite()))) {
+                return false;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Distributor createCopy() {
         Distributor distributor = new Distributor();
         copyBaseFields(distributor);
-        distributor.setWebsite(((Distributor)original).getWebsite());
+        distributor.setWebsite(getWebsite());
         return distributor;
     }
 

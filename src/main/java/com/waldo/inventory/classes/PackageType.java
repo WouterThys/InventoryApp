@@ -1,7 +1,10 @@
 package com.waldo.inventory.classes;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class PackageType extends DbObject {
 
@@ -29,15 +32,29 @@ public class PackageType extends DbObject {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof PackageType)) {
+                return false;
+            }
+            if (!(((PackageType)obj).getDescription().equals(getDescription()))) {
+                return false;
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean hasMatch(String searchTerm) {
         return super.hasMatch(searchTerm);
     }
 
     @Override
-    public PackageType createCopy(DbObject original) {
+    public PackageType createCopy() {
         PackageType packageType = new PackageType();
         copyBaseFields(packageType);
-        packageType.setDescription(((PackageType)original).getDescription());
+        packageType.setDescription(getDescription());
         return packageType;
     }
 

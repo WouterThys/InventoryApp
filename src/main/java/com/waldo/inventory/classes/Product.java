@@ -30,10 +30,10 @@ public class Product extends DbObject {
     }
 
     @Override
-    public Product createCopy(DbObject original) {
+    public Product createCopy() {
         Product product = new Product();
         copyBaseFields(product);
-        product.setCategoryId(((Product)original).getCategoryId());
+        product.setCategoryId(getCategoryId());
         return product;
     }
 

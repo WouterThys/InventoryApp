@@ -49,13 +49,13 @@ public class OrderItem extends DbObject {
     }
 
     @Override
-    public OrderItem createCopy(DbObject original) {
+    public OrderItem createCopy() {
         OrderItem orderItem = new OrderItem();
         copyBaseFields(orderItem);
-        orderItem.setOrderId(((OrderItem)original).getOrderId());
-        orderItem.setItemId(((OrderItem)original).getItemId());
-        orderItem.setAmount(((OrderItem)original).getAmount());
-        orderItem.setItemRef(((OrderItem)original).getItemRef());
+        orderItem.setOrderId(getOrderId());
+        orderItem.setItemId(getItemId());
+        orderItem.setAmount(getAmount());
+        orderItem.setItemRef(getItemRef());
         return orderItem;
     }
 

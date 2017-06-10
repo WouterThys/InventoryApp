@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -28,9 +29,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     protected void onOK() {
-        if (detailWebsite.isEdited()) {
+        if (checkChange()) {
             canClose = false;
-            showSaveDialog();
+            showSaveDialog(true);
         }
 
         if (canClose) {
@@ -39,10 +40,20 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         }
     }
 
+    @Override
+    protected void onNeutral() {
+        if (verify()) {
+            selectedManufacturer.save();
+            originalManufacturer = selectedManufacturer.createCopy();
+            getButtonNeutral().setEnabled(false);
+        }
+
+    }
+
     private void setDetails() {
         if (selectedManufacturer != null) {
-            detailName.setTextBeforeEdit(selectedManufacturer.getName());
-            detailWebsite.setTextBeforeEdit(selectedManufacturer.getWebsite());
+            detailName.setText(selectedManufacturer.getName());
+            detailWebsite.setText(selectedManufacturer.getWebsite());
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedManufacturer.getIconPath(), 48,48);
@@ -64,7 +75,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         detailItemDefaultListModel.removeAllElements();
     }
 
-    private void showSaveDialog() {
+    private void showSaveDialog(boolean closeAfter) {
         if (selectedManufacturer != null) {
             String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
@@ -72,12 +83,20 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                     selectedManufacturer.setName(detailName.getText());
                     selectedManufacturer.setWebsite(detailWebsite.getText());
                     selectedManufacturer.save();
-                    dispose();
+                    originalManufacturer = selectedManufacturer.createCopy();
+                    if (closeAfter) {
+                        dialogResult = OK;
+                        dispose();
+                    }
                 }
             }
         } else {
-            dispose();
+            if (closeAfter) {
+                dialogResult = OK;
+                dispose();
+            }
         }
+        canClose = true;
     }
 
     private boolean verify() {
@@ -90,6 +109,10 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         // Valid website??
         //...
         return ok;
+    }
+
+    private boolean checkChange() {
+        return (selectedManufacturer != null) && !(selectedManufacturer.equals(originalManufacturer));
     }
 
     //
@@ -112,8 +135,11 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             updateEnabledComponents();
 
             if (selectedManufacturer != null) {
+                originalManufacturer = selectedManufacturer.createCopy();
                 manufacturerList.setSelectedValue(selectedManufacturer, true);
                 setDetails();
+            } else {
+                originalManufacturer = null;
             }
         } finally {
             application.endWait();
@@ -162,8 +188,13 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             JList list = (JList) e.getSource();
-            //selectedManufacturer = (Manufacturer) list.getSelectedValue();
-            updateComponents(list.getSelectedValue());
+            Object selected = list.getSelectedValue();
+
+            if (checkChange()) {
+                showSaveDialog(false);
+            }
+            getButtonNeutral().setEnabled(false);
+            updateComponents(selected);
             if (selectedManufacturer != null && !selectedManufacturer.isUnknown()) {
                 setDetails();
             } else {
@@ -197,6 +228,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             if (res == JOptionPane.OK_OPTION) {
                 selectedManufacturer.delete();
                 selectedManufacturer = null;
+                originalManufacturer = null;
             }
         }
     }
@@ -207,7 +239,21 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedManufacturer.save();
+                originalManufacturer = selectedManufacturer.createCopy();
             }
         }
+    }
+
+    //
+    // Web site changed
+    //
+    @Override
+    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+        getButtonNeutral().setEnabled(checkChange());
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return selectedManufacturer;
     }
 }

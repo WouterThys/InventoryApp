@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderitemdetailpanel;
 
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -52,7 +53,7 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
     @Override
     public void initializeComponents() {
         itemRefTf = new ITextField("Item ref");
-        itemRefTf.addEditedListener(this);
+        itemRefTf.addEditedListener(this, "itemRef");
         amountTf = new IFormattedTextField(NumberFormat.getNumberInstance());
         amountTf.addEditedListener(this);
 
@@ -148,8 +149,18 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
         }
     }
 
+    //
+    // Edit change listener
+    //
     @Override
     public void onValueChanged(Component component, Object previousValue, Object newValue) {
         saveBtn.setEnabled(true);
     }
+
+    @Override
+    public DbObject getGuiObject() {
+        return null;
+    }
+
+
 }

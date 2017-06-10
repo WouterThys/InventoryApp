@@ -23,7 +23,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
         DbObjectChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        IEditedListener {
 
     /*
      *                  COMPONENTS
@@ -42,6 +43,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Distributor selectedDistributor;
+    Distributor originalDistributor;
 
     /*
      *                  CONSTRUCTOR
@@ -188,6 +190,9 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         // Title
         setTitleIcon(resourceManager.readImage("DistributorsDialog.TitleIcon"));
         setTitleName("Distributors");
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setText("Save");
+        getButtonNeutral().setEnabled(false);
 
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_DISTRIBUTOR);
@@ -205,6 +210,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
         detailWebsite = new ITextField("Web site");
+        detailWebsite.addEditedListener(this, "website");
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
         detailsBrowseButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
@@ -248,7 +254,10 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             updateEnabledComponents();
 
             if (selectedDistributor != null) {
+                originalDistributor = selectedDistributor.createCopy();
                 distributorList.setSelectedValue(selectedDistributor, true);
+            } else {
+                selectedDistributor = null;
             }
         } finally {
             application.endWait();

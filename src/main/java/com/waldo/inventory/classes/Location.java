@@ -31,7 +31,7 @@ public class Location extends DbObject {
     }
 
     @Override
-    public Location createCopy(DbObject original) {
+    public Location createCopy() {
         Location location = new Location();
         copyBaseFields(location);
         return location;
