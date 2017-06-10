@@ -48,6 +48,17 @@ public class OrderItem extends DbObject {
         return super.hasMatch(searchTerm);
     }
 
+    @Override
+    public OrderItem createCopy(DbObject original) {
+        OrderItem orderItem = new OrderItem();
+        copyBaseFields(orderItem);
+        orderItem.setOrderId(((OrderItem)original).getOrderId());
+        orderItem.setItemId(((OrderItem)original).getItemId());
+        orderItem.setAmount(((OrderItem)original).getAmount());
+        orderItem.setItemRef(((OrderItem)original).getItemRef());
+        return orderItem;
+    }
+
     public static OrderItem createDummyOrderItem(Order order, Item item) {
         OrderItem oi = new OrderItem();
         oi.setItemId(item.getId());

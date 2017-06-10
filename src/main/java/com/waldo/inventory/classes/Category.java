@@ -14,11 +14,9 @@ public class Category extends DbObject {
     }
 
     @Override
-    public DbObject createCopy(DbObject original) {
+    public Category createCopy(DbObject original) {
         Category category = new Category();
-        category.setId(original.getId());
-        category.setName(original.getName());
-        category.setIconPath(original.getIconPath());
+        copyBaseFields(category);
         return category;
     }
 

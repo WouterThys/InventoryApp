@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 
@@ -66,6 +67,20 @@ public class Order extends DbObject {
                 return dateModified.toString() + " - " + super.toString();
             }
         }
+    }
+
+    @Override
+    public Order createCopy(DbObject original) {
+        Order order = new Order();
+        copyBaseFields(order);
+        order.setDateOrdered(((Order)original).getDateOrdered());
+        order.setOrderItems(((Order)original).getOrderItems());
+        order.setDateModified(((Order)original).getDateModified());
+        order.setDateReceived(((Order)original).getDateReceived());
+        order.setDistributor(((Order)original).getDistributor());
+        order.setOrderFile(((Order)original).getOrderFile());
+
+        return order;
     }
 
     public static class OrderAllOrders implements Comparator<Order> {

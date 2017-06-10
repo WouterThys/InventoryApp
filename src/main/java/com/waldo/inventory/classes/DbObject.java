@@ -258,6 +258,14 @@ public abstract class DbObject {
 
     public abstract DbObject createCopy(DbObject original);
 
+    public void copyBaseFields(DbObject newObject) {
+        newObject.setId(getId());
+        newObject.setName(getName());
+        newObject.setIconPath(getIconPath());
+        newObject.setCanBeSaved(false);
+
+    }
+
     private void setOldObject() {
         switch (getType(this)) {
             case TYPE_UNKNOWN :

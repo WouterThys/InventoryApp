@@ -19,6 +19,7 @@ public class ITextField extends JTextField implements FocusListener {
 
     private String hint = "";
     private boolean showingHint = false;
+    @Deprecated
     private String beforeEditText = "";
     private boolean edited = false;
     private IEditedListener editedListener;
@@ -60,6 +61,7 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
+    @Deprecated
     public void setTextBeforeEdit(String t) {
         beforeEditText = t;
         super.setText(t);

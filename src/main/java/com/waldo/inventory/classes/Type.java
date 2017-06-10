@@ -29,6 +29,14 @@ public class Type extends DbObject {
         statement.execute();
     }
 
+    @Override
+    public Type createCopy(DbObject original) {
+        Type type = new Type();
+        copyBaseFields(type);
+        type.setProductId(((Type)original).getProductId());
+        return type;
+    }
+
     public static Type getUnknownType() {
         Type unknown =  new Type();
         unknown.setName(UNKNOWN_NAME);

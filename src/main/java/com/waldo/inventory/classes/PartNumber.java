@@ -54,6 +54,16 @@ public class PartNumber extends DbObject {
         return false;
     }
 
+    @Override
+    public PartNumber createCopy(DbObject original) {
+        PartNumber partNumber = new PartNumber();
+        copyBaseFields(partNumber);
+        partNumber.setDistributorId(((PartNumber)original).getDistributorId());
+        partNumber.setItemId(((PartNumber)original).getItemId());
+        partNumber.setItemRef(((PartNumber)original).getItemRef());
+        return partNumber;
+    }
+
 
     public long getDistributorId() {
         return distributorId;

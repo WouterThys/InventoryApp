@@ -169,6 +169,31 @@ public class Item extends DbObject {
         return false;
     }
 
+    @Override
+    public Item createCopy(DbObject original) {
+        Item item = new Item();
+        copyBaseFields(item);
+
+        item.setDescription(((Item)original).getDescription());
+        item.setPrice(((Item)original).getPrice());
+        item.setCategoryId(((Item)original).getCategoryId());
+        item.setProductId(((Item)original).getProductId());
+        item.setTypeId(((Item)original).getTypeId());
+        item.setLocalDataSheet(((Item)original).getLocalDataSheet());
+        item.setOnlineDataSheet(((Item)original).getOnlineDataSheet());
+        item.setManufacturerId(((Item)original).getManufacturerId());
+        item.setLocationId(((Item)original).getLocationId());
+        item.setAmount(((Item)original).getAmount());
+        item.setAmountType(((Item)original).getAmountType());
+        item.setOrderState(((Item)original).getOrderState());
+        item.setPackageTypeId(((Item)original).getPackageTypeId());
+        item.setPins(((Item)original).getPins());
+        item.setWidth(((Item)original).getWidth());
+        item.setHeight(((Item)original).getHeight());
+
+        return item;
+    }
+
     public static class ItemComparator implements Comparator<Item> {
         @Override
         public int compare(Item i1, Item i2) {

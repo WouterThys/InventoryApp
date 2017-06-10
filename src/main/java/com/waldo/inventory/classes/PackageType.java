@@ -33,6 +33,14 @@ public class PackageType extends DbObject {
         return super.hasMatch(searchTerm);
     }
 
+    @Override
+    public PackageType createCopy(DbObject original) {
+        PackageType packageType = new PackageType();
+        copyBaseFields(packageType);
+        packageType.setDescription(((PackageType)original).getDescription());
+        return packageType;
+    }
+
     public static PackageType createDummyPackageType() {
         PackageType p = new PackageType();
         p.setName("");

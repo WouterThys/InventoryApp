@@ -42,6 +42,14 @@ public class Distributor extends DbObject {
         return false;
     }
 
+    @Override
+    public Distributor createCopy(DbObject original) {
+        Distributor distributor = new Distributor();
+        copyBaseFields(distributor);
+        distributor.setWebsite(((Distributor)original).getWebsite());
+        return distributor;
+    }
+
     public String getWebsite() {
         if (website == null) {
             website = "";

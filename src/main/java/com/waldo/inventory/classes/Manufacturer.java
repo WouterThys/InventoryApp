@@ -47,6 +47,14 @@ public class Manufacturer extends DbObject {
         }
     }
 
+    @Override
+    public Manufacturer createCopy(DbObject original) {
+        Manufacturer manufacturer = new Manufacturer();
+        copyBaseFields(manufacturer);
+        manufacturer.setWebsite(((Manufacturer)original).getWebsite());
+        return manufacturer;
+    }
+
     public String getWebsite() {
         if (website == null) {
             return "";

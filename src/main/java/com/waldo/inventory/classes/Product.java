@@ -29,6 +29,14 @@ public class Product extends DbObject {
         statement.execute();
     }
 
+    @Override
+    public Product createCopy(DbObject original) {
+        Product product = new Product();
+        copyBaseFields(product);
+        product.setCategoryId(((Product)original).getCategoryId());
+        return product;
+    }
+
     public static Product getUnknownProduct() {
         Product unknown =  new Product();
         unknown.setName(UNKNOWN_NAME);

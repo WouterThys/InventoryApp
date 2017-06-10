@@ -30,6 +30,13 @@ public class Location extends DbObject {
         super(tableName, sqlInsert, sqlUpdate);
     }
 
+    @Override
+    public Location createCopy(DbObject original) {
+        Location location = new Location();
+        copyBaseFields(location);
+        return location;
+    }
+
     public static Location getUnknownLocation() {
         Location l = new Location();
         l.setName(UNKNOWN_NAME);
