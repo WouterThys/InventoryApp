@@ -105,7 +105,6 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     public void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
-            selectedOrder.updateItemReferences();
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
         }
     }
@@ -416,8 +415,19 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (lastSelectedOrder != null) {
-                    lastSelectedOrder.setDistributor((Distributor) tbDistributorCb.getSelectedItem());
-                    updateTable(lastSelectedOrder);
+                    Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
+                    if (lastSelectedOrder.getDistributor().getId() != d.getId()) {
+//                        SwingUtilities.invokeLater(() ->  {
+//                            lastSelectedOrder.setDistributor(d);
+//                            lastSelectedOrder.save();
+//                            updateTable(lastSelectedOrder);
+//                        });
+                        lastSelectedOrder.setDistributor(d);
+                        lastSelectedOrder.updateItemReferences();
+                        lastSelectedOrder.save();
+                        selectedOrderItem = null;
+                        updateTable(lastSelectedOrder);
+                    }
                 }
             }
         });

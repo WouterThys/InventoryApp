@@ -7,23 +7,21 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class ITextArea extends JTextArea implements FocusListener {
+public class ITextArea extends JTextArea implements FocusListener, DocumentListener {
 
     private String hint = "";
     private boolean showingHint = false;
-
-//    private final Border line = BorderFactory.createLineBorder(Color.GRAY, 2, true);
-//    private final Border thinLine = BorderFactory.createLineBorder(Color.GRAY, 1, true);
-//    private final Border empty = new EmptyBorder(4,4,4,4);
-//    private final Border focusBorder = new CompoundBorder(line, empty);
-//    private final Border normalBorder = new CompoundBorder(thinLine, empty);
-
+    private String beforeEditText = "";
+    private boolean edited = false;
+    private IEditedListener editedListener;
     private String originalText = hint;
-//    private Border originalBorder = empty;
     private String originalToolTip = "";
 
     private Error error;
@@ -45,14 +43,45 @@ public class ITextArea extends JTextArea implements FocusListener {
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
         showingHint = !hint.isEmpty();
+        this.getDocument().addDocumentListener(this);
+        addMenu();
+    }
+
+    public void addEditedListener(IEditedListener listener) {
+        this.editedListener = listener;
     }
 
     @Override
     public void setText(String t) {
         super.setText(t);
+        if (editedListener != null) {
+            editedListener.onValueChanged(this, originalText, t);
+        }
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
         }
+    }
+
+
+
+    public void setTextBeforeEdit(String t) {
+        beforeEditText = t;
+        super.setText(t);
+        if (t != null && hint != null && !hint.isEmpty()) {
+            showingHint = t.equals(hint);
+        }
+    }
+
+    public void clearText() {
+        super.setText("");
+    }
+
+    public boolean isEdited() {
+        return (edited || !getText().equals(beforeEditText));
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 
     @Override
@@ -111,6 +140,48 @@ public class ITextArea extends JTextArea implements FocusListener {
             this.setText(originalText);
 //            this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
+        }
+    }
+
+    private void addMenu() {
+        JPopupMenu menu = new JPopupMenu();
+
+        Action cut = new DefaultEditorKit.CutAction();
+        cut.putValue(Action.NAME, "Cut");
+        cut.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
+        menu.add( cut );
+
+        Action copy = new DefaultEditorKit.CopyAction();
+        copy.putValue(Action.NAME, "Copy");
+        copy.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
+        menu.add( copy );
+
+        Action paste = new DefaultEditorKit.PasteAction();
+        paste.putValue(Action.NAME, "Paste");
+        paste.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
+        menu.add( paste );
+
+        setComponentPopupMenu(menu);
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        updated();
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        updated();
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        updated();
+    }
+
+    private void updated() {
+        if (editedListener != null) {
+            editedListener.onValueChanged(this, beforeEditText, getText());
         }
     }
 }

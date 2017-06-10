@@ -7,6 +7,8 @@ public class PackageType extends DbObject {
 
     public static final String TABLE_NAME = "packagetypes";
 
+    private String description;
+
     public PackageType() {
         super(TABLE_NAME);
     }
@@ -14,13 +16,15 @@ public class PackageType extends DbObject {
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
+        statement.setString(2, description);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
-        statement.setLong(2, id); // WHERE id
+        statement.setString(2, description);
+        statement.setLong(3, id); // WHERE id
         statement.execute();
     }
 
@@ -42,5 +46,16 @@ public class PackageType extends DbObject {
         p.setId(UNKNOWN_ID);
         p.setCanBeSaved(false);
         return p;
+    }
+
+    public String getDescription() {
+        if (description == null) {
+            description = "";
+        }
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

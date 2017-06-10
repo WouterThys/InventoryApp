@@ -13,6 +13,15 @@ public class Category extends DbObject {
         setName(name);
     }
 
+    @Override
+    public DbObject createCopy(DbObject original) {
+        Category category = new Category();
+        category.setId(original.getId());
+        category.setName(original.getName());
+        category.setIconPath(original.getIconPath());
+        return category;
+    }
+
     public static Category getUnknownCategory() {
         Category unknown =  new Category();
         unknown.setName(UNKNOWN_NAME);

@@ -143,7 +143,13 @@ public class Order extends DbObject {
             for (OrderItem oi : orderItems) {
                 PartNumber partNumber = DbManager.db().findPartNumber(distributor.getId(), oi.getItemId());
                 if (partNumber != null) {
-                    oi.setItemRef(partNumber.getItemRef());
+                    if (!oi.getItemRef().equals(partNumber.getItemRef())) {
+                        oi.setItemRef(partNumber.getItemRef());
+                        oi.save();
+                    }
+                } else {
+                    oi.setItemRef("");
+                    oi.save();
                 }
             }
         }

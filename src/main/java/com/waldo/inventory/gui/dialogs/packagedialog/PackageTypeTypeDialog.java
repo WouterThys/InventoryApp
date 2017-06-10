@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.util.List;
 
 public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
@@ -26,6 +27,7 @@ public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
     private void setDetails() {
         if (selectedPackageType != null) {
             detailName.setTextBeforeEdit(selectedPackageType.getName());
+            detailDescription.setTextBeforeEdit(selectedPackageType.getDescription());
 
 //            packageTypeCbModel.removeAllElements();
 //            for (PackageType pt : DbManager.db().getPackageTypes()) {
@@ -39,24 +41,8 @@ public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
     }
 
     private void clearDetails() {
-        detailName.setText("");
-//        detailTypeCb.setSelectedIndex(-1);
-    }
-
-    private void showSaveDialog() {
-        if (selectedPackageType != null) {
-            String msg = selectedPackageType.getName() + " is edited, do you want to save?";
-            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                if (verify()) {
-                    selectedPackageType.setName(detailName.getText());
-//                    selectedPackageType.setPackageType((PackageType) detailTypeCb.getSelectedItem());
-                    selectedPackageType.save();
-                    dispose();
-                }
-            }
-        } else {
-            dispose();
-        }
+        detailName.clearText();
+        detailDescription.clearText();
     }
 
     private boolean verify() {
@@ -72,23 +58,54 @@ public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
     }
 
 
+    private void showSaveDialog(boolean closeAfter) {
+        if (selectedPackageType != null) {
+            String msg = selectedPackageType.getName() + " is edited, do you want to save?";
+            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                if (verify()) {
+                    selectedPackageType.setDescription(detailDescription.getText());
+                    selectedPackageType.save();
+                    if (closeAfter) {
+                        dispose();
+                    }
+                }
+            }
+        } else {
+            if (closeAfter) {
+                dispose();
+            }
+        }
+        canClose = true;
+    }
+
+    private void checkChange(boolean closeAfter) {
+        if ((selectedPackageType != null) && !(selectedPackageType.getDescription().equals(detailDescription.getText()))) {
+            canClose = false;
+            showSaveDialog(closeAfter);
+        }
+
+        if (canClose && closeAfter) {
+            dialogResult = OK;
+            dispose();
+        }
+    }
+
+
     //
     // Dialog
     //
     @Override
     protected void onOK() {
-//        PackageType pt = (PackageType) detailTypeCb.getSelectedItem();
-//        if (pt != null && selectedPackageType != null) {
-//            if (pt.getId() != selectedPackageType.getId()) {
-//                canClose = false;
-//                showSaveDialog();
-//            }
-//        }
+        checkChange(true);
+    }
 
-        if (canClose) {
-            dialogResult = OK;
-            dispose();
+    @Override
+    protected void onNeutral() {
+        if (verify()) {
+            selectedPackageType.setDescription(detailDescription.getText());
+            selectedPackageType.save();
         }
+        getButtonNeutral().setEnabled(false);
     }
 
     //
@@ -179,7 +196,11 @@ public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             JList list = (JList) e.getSource();
-            updateComponents(list.getSelectedValue());
+            Object selected = list.getSelectedValue();
+
+            checkChange(false);
+
+            updateComponents(selected);
             if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
                 setDetails();
             } else {
@@ -205,5 +226,13 @@ public class PackageTypeTypeDialog extends PackageTypeDialogLayout {
     @Override
     public void onDeleted(PackageType object) {
         updateComponents(null);
+    }
+
+    //
+    // Text area description changed
+    //
+    @Override
+    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+        getButtonNeutral().setEnabled(true);
     }
 }

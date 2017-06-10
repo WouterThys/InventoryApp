@@ -20,7 +20,8 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener,
         DbObjectChangedListener<PackageType>,
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        IEditedListener {
 
 
     /*
@@ -32,8 +33,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-//    JComboBox<PackageType> detailTypeCb;
-//    DefaultComboBoxModel<PackageType> packageTypeCbModel;
+    ITextArea detailDescription;
 
     /*
      *                  VARIABLES
@@ -54,9 +54,11 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         if (selectedPackageType == null || selectedPackageType.isUnknown()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
+            detailDescription.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
             toolBar.setEditActionEnabled(true);
+            detailDescription.setEnabled(true);
         }
     }
 
@@ -111,10 +113,10 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         nameLabel.setHorizontalAlignment(ILabel.RIGHT);
         nameLabel.setVerticalAlignment(ILabel.CENTER);
 
-        // Type
-//        ILabel typeLabel = new ILabel("Type: ");
-//        typeLabel.setHorizontalAlignment(ILabel.RIGHT);
-//        typeLabel.setVerticalAlignment(ILabel.CENTER);
+        // Description
+        ILabel descriptionLabel = new ILabel("Description: ");
+        descriptionLabel.setHorizontalAlignment(ILabel.RIGHT);
+        descriptionLabel.setVerticalAlignment(ILabel.CENTER);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -132,15 +134,16 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         gbc.anchor = GridBagConstraints.EAST;
         textFieldPanel.add(detailName, gbc);
 
-//        gbc.gridx = 0; gbc.weightx = 0;
-//        gbc.gridy = 1; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.NONE;
-//        textFieldPanel.add(typeLabel, gbc);
-//
-//        gbc.gridx = 1; gbc.weightx = 3;
-//        gbc.gridy = 1; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        textFieldPanel.add(detailTypeCb, gbc);
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(descriptionLabel, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 3;
+        gbc.gridy = 2; gbc.weighty = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        textFieldPanel.add(detailDescription, gbc);
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.CENTER);
@@ -154,9 +157,12 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Title
+        // Title and neutral button
         setTitleIcon(resourceManager.readImage("PackageDialog.TitleIcon"));
         setTitleName("Package Types");
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setText("Save");
+        getButtonNeutral().setEnabled(false);
 
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_PACKAGE, DbObject.TYPE_PACKAGE_TYPE);
@@ -174,6 +180,10 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
+        detailDescription = new ITextArea("Description", 20, 15);
+        detailDescription.setLineWrap(true); // Go to next line when area is full
+        detailDescription.setWrapStyleWord(true); // Don't cut words in two
+        detailDescription.addEditedListener(this);
 //        packageTypeCbModel = new DefaultComboBoxModel<>();
 //        detailTypeCb = new JComboBox<>(packageTypeCbModel);
     }

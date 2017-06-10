@@ -1225,6 +1225,7 @@ public class DbManager implements TableChangedListener {
                     PackageType pt = new PackageType();
                     pt.setId(rs.getLong("id"));
                     pt.setName(rs.getString("name"));
+                    pt.setDescription(rs.getString("description"));
 
                     if (pt.getId() != DbObject.UNKNOWN_ID) {
                         pt.setOnTableChangedListener(this);
@@ -1251,6 +1252,7 @@ public class DbManager implements TableChangedListener {
                     pt = new PackageType();
                     pt.setId(rs.getLong("id"));
                     pt.setName(rs.getString("name"));
+                    pt.setDescription(rs.getString("description"));
                 }
             }
         } catch (SQLException e) {

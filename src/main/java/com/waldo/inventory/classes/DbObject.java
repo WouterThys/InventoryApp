@@ -256,6 +256,8 @@ public abstract class DbObject {
                 || getIconPath().toUpperCase().contains(searchTerm.toUpperCase());
     }
 
+    public abstract DbObject createCopy(DbObject original);
+
     private void setOldObject() {
         switch (getType(this)) {
             case TYPE_UNKNOWN :

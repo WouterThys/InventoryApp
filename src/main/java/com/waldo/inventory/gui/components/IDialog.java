@@ -28,6 +28,7 @@ public abstract class IDialog extends JDialog {
 
     protected JButton buttonOK;
     protected JButton buttonCancel;
+    protected JButton buttonNeutral;
 
     protected ResourceManager resourceManager;
     protected Application application;
@@ -171,13 +172,17 @@ public abstract class IDialog extends JDialog {
     private JPanel createButtonPanel() {
         buttonOK = new JButton("OK");
         buttonCancel = new JButton("Cancel");
+        buttonNeutral = new JButton("");
+        buttonNeutral.setVisible(false);
 
         buttonOK.addActionListener( e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
+        buttonNeutral.addActionListener(e -> onNeutral());
 
         JPanel buttonBox = new JPanel(new GridLayout(1,2,5,5));
         buttonBox.add(buttonOK);
         buttonBox.add(buttonCancel);
+        buttonBox.add(buttonNeutral);
         buttonBox.setBorder(new EmptyBorder(0,5,5,5));
 
         JPanel panel = new JPanel(new BorderLayout(5,5));
@@ -193,6 +198,11 @@ public abstract class IDialog extends JDialog {
 
     protected void onCancel() {
         dialogResult = CANCEL;
+        dispose();
+    }
+
+    protected void onNeutral() {
+        dialogResult = NEUTRAL;
         dispose();
     }
 
@@ -218,6 +228,12 @@ public abstract class IDialog extends JDialog {
 
     protected JButton getButtonCancel() {
         return buttonCancel;
+    }
+
+    protected JButton getButtonNeutral() { return buttonNeutral; }
+
+    protected void setNuttonNeutralVisible(boolean visible) {
+        buttonNeutral.setVisible(visible);
     }
 
     protected void setTitleIcon(ImageIcon titleIcon) {

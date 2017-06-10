@@ -22,15 +22,7 @@ public class ITextField extends JTextField implements FocusListener {
     private String beforeEditText = "";
     private boolean edited = false;
     private IEditedListener editedListener;
-
-//    private final Border line = BorderFactory.createLineBorder(Color.GRAY, 2, true);
-//    private final Border thinLine = BorderFactory.createLineBorder(Color.GRAY, 1, true);
-//    private final Border empty = new EmptyBorder(4,4,4,4);
-//    private final Border focusBorder = new CompoundBorder(line, empty);
-//    private final Border normalBorder = new CompoundBorder(thinLine, empty);
-
     private String originalText = hint;
-//    private Border originalBorder = empty;
     private String originalToolTip = "";
 
     private Error error;
@@ -70,7 +62,14 @@ public class ITextField extends JTextField implements FocusListener {
 
     public void setTextBeforeEdit(String t) {
         beforeEditText = t;
-        setText(t);
+        super.setText(t);
+        if (t != null && hint != null && !hint.isEmpty()) {
+            showingHint = t.equals(hint);
+        }
+    }
+
+    public void clearText() {
+        super.setText("");
     }
 
 
