@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
+import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
 import com.waldo.inventory.gui.dialogs.orderinfodialog.OrderInfoDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
@@ -96,6 +97,14 @@ public class OrderPanel extends OrderPanelLayout {
                 }
             } else if (lastSelectedOrder.isOrdered() && !lastSelectedOrder.isReceived()) {
                 setReceived();
+            }
+        });
+
+        // Details
+        tbViewOrderDetailsBtn.addActionListener(e -> {
+            if (lastSelectedOrder != null) {
+                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", lastSelectedOrder);
+                dialog.showDialog();
             }
         });
     }

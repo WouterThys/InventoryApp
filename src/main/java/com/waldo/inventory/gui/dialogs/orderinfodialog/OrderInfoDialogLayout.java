@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderinfodialog;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.OrderFile;
 import com.waldo.inventory.gui.Application;
@@ -56,16 +57,7 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
     @Override
     public void initializeLayouts() {
 
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0; constraints.weightx = 1;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        browsePanel.add(orderDistributorUrlTf, constraints);
-        constraints.gridx = 1; constraints.weightx = 0;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        browsePanel.add(orderUrlBrowseBtn, constraints);
+        JPanel browsePanel = PanelUtils.createBrowsePanel(orderDistributorUrlTf, orderUrlBrowseBtn);
 
         ILabel[] labels = {
                 new ILabel("Name: "),

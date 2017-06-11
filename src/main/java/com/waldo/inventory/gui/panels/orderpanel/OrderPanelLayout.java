@@ -52,7 +52,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     JButton tbOrderButton;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
-    private JButton tbViewOrderDetailsBtn;
+    JButton tbViewOrderDetailsBtn;
     JButton tbSetOrderedBtn;
     /*
      *                  VARIABLES

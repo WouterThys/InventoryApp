@@ -11,7 +11,7 @@ import com.waldo.inventory.gui.components.ITextField;
 import javax.swing.*;
 import java.awt.*;
 
-public class OrderConfirmDialogLayout extends IDialog implements GuiInterface {
+public abstract class OrderConfirmDialogLayout extends IDialog implements GuiInterface {
 
     Order order;
 

@@ -18,9 +18,9 @@ public class Order extends DbObject {
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;
-    private List<OrderItem> orderItems = new ArrayList<>();
     private Date dateModified;
     private Date dateReceived;
+    private List<OrderItem> orderItems = new ArrayList<>();
     private Distributor distributor;
     private OrderFile orderFile = new OrderFile(this);
     private String orderReference;
@@ -250,8 +250,24 @@ public class Order extends DbObject {
         return distributor;
     }
 
+    public long getDistributorId() {
+        if (distributor == null) {
+            return UNKNOWN_ID;
+        } else {
+            return distributor.getId();
+        }
+    }
+
     public void setDistributor(Distributor distributor) {
         this.distributor = distributor;
+    }
+
+    public void setDistributor(String id) {
+        try {
+            this.distributor = DbManager.db().findDistributorById(Long.valueOf(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isOrdered() {
