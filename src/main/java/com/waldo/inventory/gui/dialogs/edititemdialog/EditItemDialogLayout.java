@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemManufacturerPanel;
@@ -15,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class EditItemDialogLayout extends IDialog implements GuiInterface {
+public abstract class EditItemDialogLayout extends IDialog implements
+        GuiInterface,
+        IEditedListener {
 
     /*
      *                  COMPONENTS
@@ -32,7 +35,9 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item newItem;
+    Item originalItem;
     boolean isNew = false;
+    boolean initialized = false;
 
     EditItemDialogLayout(Application application, String title) {
         super(application, title);
@@ -44,19 +49,23 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
     @Override
     public void initializeComponents() {
+        // Save button
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setText("Save");
+        getButtonNeutral().setEnabled(false);
+
         // Tabbed pane
         tabbedPane = new JTabbedPane();
 
         // Panels
-        componentPanel = new ComponentPanel(newItem);
+        componentPanel = new ComponentPanel(newItem, this);
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
-        componentPanel.setNameTextFieldTracker(getTitleNameLabel());
 
         editItemManufacturerPanel = new EditItemManufacturerPanel(newItem);
         editItemManufacturerPanel.initializeComponents();
 
-        editItemStockPanel = new EditItemStockPanel(newItem);
+        editItemStockPanel = new EditItemStockPanel(newItem, this);
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
@@ -90,15 +99,12 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
 
         // Add
         getContentPanel().add(tabbedPane);
-
-        // Buttons
-        String txt  = isNew ? "Create" : "Save";
-        getButtonOK().setText(txt);
     }
 
     @Override
     public void updateComponents(Object object) {
         try {
+            initialized = false;
             application.beginWait();
             if (!newItem.getIconPath().isEmpty()) {
                 try {
@@ -114,6 +120,7 @@ public abstract class EditItemDialogLayout extends IDialog implements GuiInterfa
             //componentPanel.updateComponents(null);
         } finally {
             application.endWait();
+            initialized = true;
         }
     }
 

@@ -1,14 +1,21 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.IComboBox;
+import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ISpinner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class EditItemStockPanel extends JPanel implements GuiInterface {
 
@@ -17,16 +24,15 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     private Item newItem;
 
-    private JSpinner amountSpinner;
+    // Listener
+    private IEditedListener editedListener;
+
+    private ISpinner amountSpinner;
     private JComboBox<String> amountTypeCb;
 
-    public EditItemStockPanel(Item newItem) {
+    public EditItemStockPanel(Item newItem, IEditedListener editedListener) {
         this.newItem = newItem;
-    }
-
-    public void setComponentValues() {
-        newItem.setAmount((int)amountSpinner.getValue());
-        newItem.setAmountType(amountTypeCb.getSelectedIndex());
+        this.editedListener = editedListener;
     }
 
     private JPanel createAmountPanel() {
@@ -79,10 +85,30 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        amountSpinner = new JSpinner(spinnerModel);
+        amountSpinner = new ISpinner(spinnerModel);
+        amountSpinner.addEditedListener(editedListener, "amount");
 
         DefaultComboBoxModel<String> cbModel = new DefaultComboBoxModel<>(amountTypes);
         amountTypeCb = new JComboBox<>(cbModel);
+        amountTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (editedListener != null) {
+                    try {
+                        DbObject guiObject = editedListener.getGuiObject();
+                        if (guiObject != null) {
+                            String newVal = String.valueOf(e.getItem());
+                            Item i = (Item) guiObject;
+
+                            String oldVal = String.valueOf(i.getAmountType());
+
+                            editedListener.onValueChanged(amountTypeCb, "amountType", oldVal, newVal);
+                        }
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     @Override

@@ -55,7 +55,7 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
         itemRefTf = new ITextField("Item ref");
         itemRefTf.addEditedListener(this, "itemRef");
         amountTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        amountTf.addEditedListener(this);
+        amountTf.addEditedListener(this, "amount");
 
         addBtn = new JButton("+");
         addBtn.setPreferredSize(new Dimension(100,30));
@@ -153,7 +153,7 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
     // Edit change listener
     //
     @Override
-    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         saveBtn.setEnabled(true);
     }
 

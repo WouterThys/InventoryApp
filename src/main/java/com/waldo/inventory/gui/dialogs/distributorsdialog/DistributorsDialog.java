@@ -91,7 +91,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
                     selectedDistributor.setWebsite(detailWebsite.getText());
                     selectedDistributor.save();
                     originalDistributor = selectedDistributor.createCopy();
-                    if (canClose) {
+                    if (closeAfter) {
                         dispose();
                     }
                 }
@@ -220,7 +220,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     // Website changed
     //
     @Override
-    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
     }
 

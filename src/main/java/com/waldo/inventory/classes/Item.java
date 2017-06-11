@@ -194,6 +194,35 @@ public class Item extends DbObject {
         return item;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Item)) {
+                return false;
+            } else {
+                Item ref = (Item) obj;
+                if (!(ref.getDescription().equals(getDescription()))) { return false; }
+                if (!(ref.getPrice() == getPrice())) return false;
+                if (!(ref.getCategoryId() == getCategoryId())) return false;
+                if (!(ref.getProductId() == getProductId())) return false;
+                if (!(ref.getTypeId() == getTypeId())) return false;
+                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) return false;
+                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) return false;
+                if (!(ref.getManufacturerId() == getManufacturerId())) return false;
+                if (!(ref.getLocationId() == getLocationId())) return false;
+                if (!(ref.getAmount() == getAmount())) return false;
+                if (!(ref.getAmountType() == getAmountType())) return false;
+                if (!(ref.getOrderState() == getOrderState())) return false;
+                if (!(ref.getPackageTypeId() == getPackageTypeId())) return false;
+                if (!(ref.getPins() == getPins())) return false;
+                if (!(ref.getWidth() == getWidth())) return false;
+                if (!(ref.getHeight() == getHeight())) return false;
+             }
+        }
+        return result;
+    }
+
     public static class ItemComparator implements Comparator<Item> {
         @Override
         public int compare(Item i1, Item i2) {
@@ -225,6 +254,15 @@ public class Item extends DbObject {
         }
     }
 
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
     public String getDescription() {
         if (description == null) {
@@ -245,12 +283,28 @@ public class Item extends DbObject {
         this.price = price;
     }
 
+    public void setPrice(String price) {
+        try {
+            this.price = Double.valueOf(price);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public long getCategoryId() {
         return categoryId;
     }
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        try {
+            this.categoryId = Long.valueOf(categoryId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public long getProductId() {
@@ -261,12 +315,28 @@ public class Item extends DbObject {
         this.productId = productId;
     }
 
+    public void setProductId(String productId) {
+        try {
+            this.productId = Long.valueOf(productId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public long getTypeId() {
         return typeId;
     }
 
     public void setTypeId(long typeId) {
         this.typeId = typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        try {
+            this.typeId = Long.valueOf(typeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getLocalDataSheet() {
@@ -315,12 +385,28 @@ public class Item extends DbObject {
         this.amount = amount;
     }
 
+    public void setAmount(String amount) {
+        try {
+            this.amount = Integer.valueOf(amount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getAmountType() {
         return amountType;
     }
 
     public void setAmountType(int amountType) {
         this.amountType = amountType;
+    }
+
+    public void setAmountType(String amountType) {
+        try {
+            this.amountType = Integer.valueOf(amountType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getOrderState() {
@@ -331,12 +417,28 @@ public class Item extends DbObject {
         this.orderState = orderState;
     }
 
+    public void setOrderState(String orderState) {
+        try {
+            this.orderState = Integer.valueOf(orderState);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public long getPackageTypeId() {
         return packageTypeId;
     }
 
     public void setPackageTypeId(long packageTypeId) {
         this.packageTypeId = packageTypeId;
+    }
+
+    public void setPackageTypeId(String packageTypeId) {
+        try {
+            this.packageTypeId = Long.valueOf(packageTypeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getPins() {
@@ -347,6 +449,14 @@ public class Item extends DbObject {
         this.pins = pins;
     }
 
+    public void setPins(String pins) {
+        try {
+            this.pins = Integer.valueOf(pins);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public double getWidth() {
         return width;
     }
@@ -355,11 +465,27 @@ public class Item extends DbObject {
         this.width = width;
     }
 
+    public void setWidth(String width) {
+        try {
+            this.width = Integer.valueOf(width);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public double getHeight() {
         return height;
     }
 
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    public void setHeight(String height) {
+        try {
+            this.height = Integer.valueOf(height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

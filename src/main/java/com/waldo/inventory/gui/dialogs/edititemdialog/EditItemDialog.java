@@ -5,6 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     private static final int ORDER_TAB = 3;
 
     private int currentTabIndex = 0;
+    private boolean canClose = true;
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
@@ -30,6 +32,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             setLocationByPlatform(true);
         }
         newItem = item;
+        originalItem = newItem.createCopy();
         isNew = false;
         initializeComponents();
         initializeLayouts();
@@ -54,15 +57,24 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     @Override
     protected void onOK() {
-        if (verify()) {
-            componentPanel.setComponentValues();
-            editItemManufacturerPanel.setComponentValues();
-            editItemStockPanel.setComponentValues();
-            editItemOrderPanel.setComponentValues();
+        if (checkChange()) {
+            canClose = false;
+            showSaveDialog(true);
+        }
 
-            // Close dialog
+        if (canClose) {
             dialogResult = OK;
             dispose();
+        }
+    }
+
+    @Override
+    protected void onNeutral() {
+        if (verify()) {
+            setItemValues();
+            newItem.save();
+            originalItem = newItem.createCopy();
+            getButtonNeutral().setEnabled(false);
         }
     }
 
@@ -71,6 +83,39 @@ public class EditItemDialog extends EditItemDialogLayout {
         newItem = null;
         dialogResult = CANCEL;
         dispose();
+    }
+
+    private void setItemValues() {
+        //componentPanel.setComponentValues();
+        editItemManufacturerPanel.setComponentValues();
+        //editItemStockPanel.setComponentValues();
+        editItemOrderPanel.setComponentValues();
+    }
+
+    private boolean checkChange() {
+        return (newItem != null) && !(newItem.equals(originalItem));
+    }
+
+    private void showSaveDialog(boolean closeAfter) {
+        if (newItem != null) {
+            String msg = newItem.getName() + " is edited, do you want to save?";
+            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                if (verify()) {
+                    setItemValues();
+                    newItem.save();
+                    originalItem = newItem.createCopy();
+                    if (closeAfter) {
+                        dispose();
+                    }
+                }
+            }
+        } else {
+            if (closeAfter) {
+                dialogResult = OK;
+                dispose();
+            }
+        }
+        canClose = true;
     }
 
     public Item getItem() {
@@ -106,13 +151,13 @@ public class EditItemDialog extends EditItemDialogLayout {
             // Save values depending on tab
             switch (currentTabIndex) {
                 case COMPONENT_TAB:
-                    componentPanel.setComponentValues();
+                    //componentPanel.setComponentValues();
                     break;
                 case STOCK_TAB:
                     editItemManufacturerPanel.setComponentValues();
                     break;
                 case MANUFACTURER_TAB:
-                    editItemStockPanel.setComponentValues();
+                    //editItemStockPanel.setComponentValues();
                     break;
                 case ORDER_TAB:
                     editItemOrderPanel.setComponentValues();
@@ -180,5 +225,23 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
 
+    //
+    // Values changed
+    //
+    @Override
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
+        if (fieldName.equals("Name")) {
+            getTitleNameLabel().setText(String.valueOf(newValue));
+        }
+        getButtonNeutral().setEnabled(checkChange());
+    }
 
+    @Override
+    public DbObject getGuiObject() {
+        if (initialized) {
+            return newItem;
+        } else {
+            return null;
+        }
+    }
 }

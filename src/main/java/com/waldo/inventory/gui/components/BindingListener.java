@@ -65,10 +65,10 @@ public class BindingListener implements DocumentListener {
                     Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);
                     Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                    String oldTxt = (String) getMethod.invoke(guiObject);
+                    String oldTxt = String.valueOf(getMethod.invoke(guiObject));
                     setMethod.invoke(guiObject, newTxt);
 
-                    editedListener.onValueChanged(component, oldTxt, newTxt);
+                    editedListener.onValueChanged(component, fieldName, oldTxt, newTxt);
                 }
             }
         } catch (BadLocationException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {

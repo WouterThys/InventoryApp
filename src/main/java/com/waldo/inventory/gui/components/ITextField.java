@@ -148,63 +148,6 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
-    public boolean isEdited() {
-        return (edited || !getText().equals(beforeEditText));
-    }
-
-    public void setEdited(boolean edited) {
-        this.edited = edited;
-    }
-
-    @Deprecated
-    public void setTrackingField(final JTextComponent textField) {
-        this.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                textField.setText(ITextField.this.getText());
-            }
-        });
-    }
-
-    @Deprecated
-    public void setTrackingField(final JLabel textField) {
-//        documentListener = new DocumentListener() {
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                textField.setText(ITextField.this.getText());
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                textField.setText(ITextField.this.getText());
-//            }
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                textField.setText(ITextField.this.getText());
-//            }
-//        };
-//
-//        this.getDocument().addDocumentListener(documentListener);
-    }
-
-    @Deprecated
-    public void removeTrackingField() {
-        if (documentListener != null) {
-            this.getDocument().removeDocumentListener(documentListener);
-        }
-    }
-
     private void addMenu() {
         JPopupMenu menu = new JPopupMenu();
 

@@ -234,7 +234,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     // Field value changed
     //
     @Override
-    public void onValueChanged(Component component, Object previousValue, Object newValue) {
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
     }
 

@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ImageUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.GuiInterface;
@@ -27,32 +28,36 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private Item newItem;
 
+    // Listener
+    private IEditedListener editedListener;
+
     // Tabbed pane
     private JTabbedPane tabbedPane;
 
     // Package info
-    private JComboBox<PackageType> packageTypeComboBox;
-    private JSpinner packagePinsSp;
+    private IComboBox<PackageType> packageTypeComboBox;
+    private ISpinner packagePinsSp;
     private IFormattedTextField packageWidthTf, packageHeightTf;
 
     // Basic info
-    private JTextField idTextField;
+    private ITextField idTextField;
     private ITextField nameTextField;
-    private JTextArea descriptionTextArea;
+    private ITextArea descriptionTextArea;
     private ITextField priceTextField;
-    private JComboBox<Category> categoryComboBox;
-    private JComboBox<Product> productComboBox;
+    private IComboBox<Category> categoryComboBox;
+    private IComboBox<Product> productComboBox;
     private DefaultComboBoxModel<Product> productCbModel;
     private DefaultComboBoxModel<Type> typeCbModel;
-    private JComboBox<Type> typeComboBox;
+    private IComboBox<Type> typeComboBox;
 
     // Data sheet
-    private JTextField localDataSheetTextField;
+    private ITextField localDataSheetTextField;
     private JButton localDataSheetButton;
-    private JTextField onlineDataSheetTextField;
+    private ITextField onlineDataSheetTextField;
 
-    public ComponentPanel(Item newItem) {
+    public ComponentPanel(Item newItem, @NotNull IEditedListener listener) {
         this.newItem = newItem;
+        this.editedListener = listener;
     }
 
     /*
@@ -103,52 +108,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
     }
 
-    public void setComponentValues() {
-        // Basic
-        newItem.setName(getNameFieldValue().trim());
-        newItem.setDescription(getDescriptionFieldValue().trim());
-        String priceTxt = getPriceFieldValue();
-        if (!priceTxt.isEmpty()) {
-            newItem.setPrice(Double.valueOf(priceTxt));
-        }
-
-        newItem.setCategoryId(getCbCategoryId());
-        newItem.setProductId(getCbProductId());
-        newItem.setTypeId(getCbTypeId());
-
-        newItem.setLocalDataSheet(getLocalDataSheetFieldValue());
-        newItem.setOnlineDataSheet(getOnlineDataSheetFieldValue());
-
-        // TODO: remove here
-        newItem.setLocationId(1);
-
-        // Package
-//        Package p = getPackageInfo();
-//        if (p.getId() <= UNKNOWN_ID) {
-//            p.setId(-1); // Force save
-//        }
-//        p.save();
-//        newItem.setPackageId(p.getId());
-        PackageType pt = (PackageType) packageTypeComboBox.getSelectedItem();
-        if (pt != null) {
-            newItem.setPackageTypeId(pt.getId());
-        }
-        newItem.setPins((Integer) packagePinsSp.getValue());
-        String heightTxt = packageHeightTf.getText();
-        if (!heightTxt.isEmpty()) {
-            newItem.setHeight(Double.valueOf(heightTxt));
-        }
-        String widthTxt = packageWidthTf.getText();
-        if (!widthTxt.isEmpty()) {
-            newItem.setWidth(Double.valueOf(widthTxt));
-        }
-
-    }
-
-    public void setNameTextFieldTracker(JLabel label) {
-        nameTextField.setTrackingField(label);
-    }
-
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -165,7 +124,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
 
         DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
-        categoryComboBox = new JComboBox<>(categoryCbModel);
+        categoryComboBox = new IComboBox<>(categoryCbModel);
+        categoryComboBox.addEditedListener(editedListener, "categoryId");
         categoryComboBox.setSelectedIndex(selectedIndex);
     }
 
@@ -182,7 +142,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
 
         productCbModel = new DefaultComboBoxModel<>(productStrings);
-        productComboBox = new JComboBox<>(productCbModel);
+        productComboBox = new IComboBox<>(productCbModel);
+        productComboBox.addEditedListener(editedListener, "productId");
         productComboBox.setSelectedIndex(selectedIndex);
     }
 
@@ -199,7 +160,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
 
         typeCbModel = new DefaultComboBoxModel<>(typeStrings);
-        typeComboBox = new JComboBox<>(typeCbModel);
+        typeComboBox = new IComboBox<>(typeCbModel);
+        typeComboBox.addEditedListener(editedListener, "typeId");
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedIndex(selectedIndex);
     }
@@ -211,9 +173,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         idTextField.setEnabled(false);
 
         nameTextField = new ITextField();
+        nameTextField.addEditedListener(editedListener, "name");
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
         descriptionTextArea.setWrapStyleWord(true); // Don't cut words in two
+        descriptionTextArea.addEditedListener(editedListener, "description");
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -223,6 +187,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = new ITextField();
+        priceTextField.addEditedListener(editedListener, "price");
 
         // Combo boxes
         createCategoryCb();
@@ -231,7 +196,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // Local data sheet
         localDataSheetTextField = new ITextField();
-        localDataSheetTextField.setToolTipText(localDataSheetTextField.getText());
+        localDataSheetTextField.addEditedListener(editedListener, "localDataSheet");
         localDataSheetButton = new JButton(ImageUtils.loadImageIcon("folder"));
         localDataSheetButton.addActionListener(new AbstractAction() {
             @Override
@@ -248,6 +213,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // Online data sheet
         onlineDataSheetTextField = new ITextField();
+        onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
     }
 
     private void initializePackageComponents() {
@@ -255,14 +221,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         for (PackageType pt : db().getPackageTypes()) {
             packageTypeCbModel.addElement(pt);
         }
-        packageTypeComboBox = new JComboBox<>(packageTypeCbModel);
+        packageTypeComboBox = new IComboBox<>(packageTypeCbModel);
+        packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
         packageTypeComboBox.insertItemAt(PackageType.createDummyPackageType(), 0);
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        packagePinsSp = new JSpinner(spinnerModel);
+        packagePinsSp = new ISpinner(spinnerModel);
+        packagePinsSp.addEditedListener(editedListener, "pins");
 
-        packageWidthTf = new IFormattedTextField(NumberFormat.getNumberInstance()); //new ITextField("Width");
+        packageWidthTf = new IFormattedTextField(NumberFormat.getNumberInstance());
+        packageWidthTf.addEditedListener(editedListener, "width");
         packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        //packagePinsSp.addEditedListener(this);
+        packageHeightTf.addEditedListener(editedListener, "height");
     }
 
     private JPanel createBasicPanel() {
@@ -393,17 +362,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void initializeLayouts() {
         // Add tabs
         //tabbedPane.addTab("Basic  ", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
-        tabbedPane.addTab(null, createBasicPanel());
-        tabbedPane.addTab(null, createPackagePanel());
+        tabbedPane.addTab("Basic", createBasicPanel());
+        tabbedPane.addTab("Details", createPackagePanel());
 
-        // Create vertical labels to render tab titles
-        JLabel labTab1 = new JLabel("Basic ");
-        labTab1.setUI(ILabel.createVerticalLabel(false)); // true/false to make it upwards/downwards
-        tabbedPane.setTabComponentAt(0, labTab1); // For component1
-
-        JLabel labTab2 = new JLabel("Package ");
-        labTab2.setUI(ILabel.createVerticalLabel(false));
-        tabbedPane.setTabComponentAt(1, labTab2); // For component2
+//        // Create vertical labels to render tab titles
+//        JLabel labTab1 = new JLabel("Basic ");
+//        labTab1.setUI(ILabel.createVerticalLabel(false)); // true/false to make it upwards/downwards
+//        tabbedPane.setTabComponentAt(0, labTab1); // For component1
+//
+//        JLabel labTab2 = new JLabel("Package ");
+//        labTab2.setUI(ILabel.createVerticalLabel(false));
+//        tabbedPane.setTabComponentAt(1, labTab2); // For component2
 
         add(tabbedPane);
     }
