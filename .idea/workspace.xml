@@ -66,7 +66,7 @@
     </SUITE>
   </component>
   <component name="CreatePatchCommitExecutor">
-    <option name="PATCH_PATH" value="" />
+    <option name="PATCH_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="DockManager">
     <window id="2">
@@ -1152,13 +1152,6 @@
       <option name="presentableId" value="Default" />
       <updated>1488383528388</updated>
     </task>
-    <task id="LOCAL-00061" summary="Cleaned up exceptions and catched all in dbmanager">
-      <created>1492107400011</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1492107400011</updated>
-    </task>
     <task id="LOCAL-00062" summary="Search in sub divisions dialog">
       <created>1492109989332</created>
       <option name="number" value="00062" />
@@ -1495,7 +1488,14 @@
       <option name="project" value="LOCAL" />
       <updated>1497189111647</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="Order on mouser">
+      <created>1497196060102</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1497196060102</updated>
+    </task>
+    <option name="localTasksCounter" value="111" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1608,7 +1608,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="merged master" />
     <MESSAGE value="Selecting values from table and tree" />
     <MESSAGE value="Adding and selecting items" />
     <MESSAGE value="Amount spinner" />
@@ -1633,7 +1632,8 @@
     <MESSAGE value="save button in db dialogs" />
     <MESSAGE value="Item dialog with save stuff" />
     <MESSAGE value="More on save stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="More on save stuff" />
+    <MESSAGE value="Order on mouser" />
+    <option name="LAST_COMMIT_MESSAGE" value="Order on mouser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
