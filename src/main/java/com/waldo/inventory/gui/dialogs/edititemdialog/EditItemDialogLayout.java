@@ -7,11 +7,9 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemManufacturerPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +24,6 @@ public abstract class EditItemDialogLayout extends IDialog implements
     JTabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    EditItemManufacturerPanel editItemManufacturerPanel;
     EditItemStockPanel editItemStockPanel;
     EditItemOrderPanel editItemOrderPanel;
 
@@ -62,9 +59,6 @@ public abstract class EditItemDialogLayout extends IDialog implements
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
 
-        editItemManufacturerPanel = new EditItemManufacturerPanel(newItem);
-        editItemManufacturerPanel.initializeComponents();
-
         editItemStockPanel = new EditItemStockPanel(newItem, this);
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
@@ -81,19 +75,16 @@ public abstract class EditItemDialogLayout extends IDialog implements
 
         // Component panel
         componentPanel.initializeLayouts();
-        editItemManufacturerPanel.initializeLayouts();
         editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
 
         componentPanel.updateComponents(null);
-        editItemManufacturerPanel.updateComponents(null);
         editItemStockPanel.updateComponents(null);
         editItemOrderPanel.updateComponents(null);
 
         // Add tabs
         tabbedPane.addTab("Component  ", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Stock  ", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("Manufacturer  ", resourceManager.readImage("EditItem.ManufacturerIcon"), editItemManufacturerPanel, "Manufacturer info");
         tabbedPane.addTab("Order  ", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
         //tabbedPane.setPreferredSize(new Dimension(600, 600));
 

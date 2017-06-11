@@ -65,8 +65,8 @@ public class BindingListener implements DocumentListener {
                     Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);
                     Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                    String oldTxt = String.valueOf(getMethod.invoke(guiObject));
-                    setMethod.invoke(guiObject, newTxt);
+                    String oldTxt = String.valueOf(getMethod.invoke(guiObject)).trim();
+                    setMethod.invoke(guiObject, newTxt.trim());
 
                     editedListener.onValueChanged(component, fieldName, oldTxt, newTxt);
                 }

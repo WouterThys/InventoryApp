@@ -369,6 +369,14 @@ public class Item extends DbObject {
         this.manufacturerId = manufacturerId;
     }
 
+    public void setManufacturerId(String manufacturerId) {
+        try {
+            this.manufacturerId = Long.valueOf(manufacturerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public long getLocationId() {
         return locationId;
     }

@@ -87,7 +87,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     private void setItemValues() {
         //componentPanel.setComponentValues();
-        editItemManufacturerPanel.setComponentValues();
+        //editItemManufacturerPanel.setComponentValues();
         //editItemStockPanel.setComponentValues();
         editItemOrderPanel.setComponentValues();
     }
@@ -154,7 +154,7 @@ public class EditItemDialog extends EditItemDialogLayout {
                     //componentPanel.setComponentValues();
                     break;
                 case STOCK_TAB:
-                    editItemManufacturerPanel.setComponentValues();
+                    //editItemManufacturerPanel.setComponentValues();
                     break;
                 case MANUFACTURER_TAB:
                     //editItemStockPanel.setComponentValues();

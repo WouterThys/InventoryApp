@@ -137,7 +137,7 @@ public abstract class IDialog extends JDialog {
 
         dialogPanel.add(titlePanel, BorderLayout.NORTH);
         dialogPanel.add(contentPanel, BorderLayout.CENTER);
-        dialogPanel.add(buttonPanel, BorderLayout.SOUTH);
+        dialogPanel.add(buttonPanel, BorderLayout.AFTER_LAST_LINE);
 
         return dialogPanel;
     }
