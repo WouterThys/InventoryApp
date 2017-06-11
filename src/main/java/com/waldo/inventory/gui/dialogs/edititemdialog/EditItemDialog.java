@@ -71,7 +71,6 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
-            setItemValues();
             newItem.save();
             originalItem = newItem.createCopy();
             getButtonNeutral().setEnabled(false);
@@ -85,13 +84,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         dispose();
     }
 
-    private void setItemValues() {
-        //componentPanel.setComponentValues();
-        //editItemManufacturerPanel.setComponentValues();
-        //editItemStockPanel.setComponentValues();
-        editItemOrderPanel.setComponentValues();
-    }
-
     private boolean checkChange() {
         return (newItem != null) && !(newItem.equals(originalItem));
     }
@@ -101,7 +93,6 @@ public class EditItemDialog extends EditItemDialogLayout {
             String msg = newItem.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-                    setItemValues();
                     newItem.save();
                     originalItem = newItem.createCopy();
                     if (closeAfter) {
@@ -148,21 +139,6 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
     private void initTabChangedAction() {
         tabbedPane.addChangeListener(e -> {
-            // Save values depending on tab
-            switch (currentTabIndex) {
-                case COMPONENT_TAB:
-                    //componentPanel.setComponentValues();
-                    break;
-                case STOCK_TAB:
-                    //editItemManufacturerPanel.setComponentValues();
-                    break;
-                case MANUFACTURER_TAB:
-                    //editItemStockPanel.setComponentValues();
-                    break;
-                case ORDER_TAB:
-                    editItemOrderPanel.setComponentValues();
-                    break;
-            }
 
             currentTabIndex = tabbedPane.getSelectedIndex();
 

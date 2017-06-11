@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.orderinfodialog.OrderInfoDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
@@ -89,7 +90,10 @@ public class OrderPanel extends OrderPanelLayout {
         // Set ordered
         tbSetOrderedBtn.addActionListener(e -> {
             if (!lastSelectedOrder.isOrdered()) {
-                setOrdered();
+                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", lastSelectedOrder);
+                if (dialog.showDialog() == IDialog.OK) {
+                    setOrdered();
+                }
             } else if (lastSelectedOrder.isOrdered() && !lastSelectedOrder.isReceived()) {
                 setReceived();
             }

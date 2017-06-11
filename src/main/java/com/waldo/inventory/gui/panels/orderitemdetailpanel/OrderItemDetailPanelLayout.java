@@ -27,20 +27,12 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
     JButton minBtn;
     JButton saveBtn;
 
-    /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ResourceManager resourceManager;
-    Application application;
     OrderItem orderItem;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     OrderItemDetailPanelLayout(Application application) {
-        this.application = application;
-        URL url = ItemDetailPanelLayout.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
     }
 
     /*
@@ -143,8 +135,8 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
         } else {
             orderItem = (OrderItem) object;
             setVisible(true);
-            itemRefTf.setTextBeforeEdit(orderItem.getItemRef());
-            amountTf.setValueBeforeEdit(orderItem.getAmount());
+            itemRefTf.setText(orderItem.getItemRef());
+            amountTf.setValue(orderItem.getAmount());
             saveBtn.setEnabled(false);
         }
     }
@@ -159,7 +151,7 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
 
     @Override
     public DbObject getGuiObject() {
-        return null;
+        return orderItem;
     }
 
 

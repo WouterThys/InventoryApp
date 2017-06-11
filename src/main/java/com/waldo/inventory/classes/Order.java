@@ -1,13 +1,10 @@
 package com.waldo.inventory.classes;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 
-import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -26,6 +23,8 @@ public class Order extends DbObject {
     private Date dateReceived;
     private Distributor distributor;
     private OrderFile orderFile = new OrderFile(this);
+    private String orderReference;
+    private String trackingNumber;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -38,6 +37,8 @@ public class Order extends DbObject {
         statement.setDate(5, dateReceived);
         statement.setLong(6, distributor.getId());
         statement.setString(7, orderFile.getOrderFileName());
+        statement.setString(8, orderReference);
+        statement.setString(9, trackingNumber);
         statement.execute();
     }
 
@@ -52,7 +53,9 @@ public class Order extends DbObject {
         statement.setDate(5, dateReceived);
         statement.setLong(6, distributor.getId());
         statement.setString(7, orderFile.getOrderFileName());
-        statement.setLong(8, id); // WHERE id
+        statement.setString(8, orderReference);
+        statement.setString(9, trackingNumber);
+        statement.setLong(10, id); // WHERE id
         statement.execute();
     }
 
@@ -79,6 +82,8 @@ public class Order extends DbObject {
         order.setDateReceived(getDateReceived());
         order.setDistributor(getDistributor());
         order.setOrderFile(getOrderFile());
+        order.setOrderReference(getOrderReference());
+        order.setTrackingNumber(getTrackingNumber());
 
         return order;
     }
@@ -173,9 +178,12 @@ public class Order extends DbObject {
     public double getTotalPrice() {
         double total = 0;
         for (OrderItem oi : getOrderItems()) {
-            total += oi.getAmount() + oi.getItem().getPrice();
+            total += ((double) oi.getAmount() * oi.getItem().getPrice());
         }
-        return Math.round(total);
+
+        BigDecimal bd = new BigDecimal(total);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public boolean hasOrderFile() {
@@ -274,5 +282,27 @@ public class Order extends DbObject {
             }
         }
         return items;
+    }
+
+    public String getOrderReference() {
+        if (orderReference == null) {
+            orderReference = "";
+        }
+        return orderReference;
+    }
+
+    public void setOrderReference(String orderReference) {
+        this.orderReference = orderReference;
+    }
+
+    public String getTrackingNumber() {
+        if (trackingNumber == null) {
+            trackingNumber = "";
+        }
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
     }
 }

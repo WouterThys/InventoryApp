@@ -27,10 +27,6 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         this.newItem = newItem;
     }
 
-    public void setComponentValues() {
-
-    }
-
     private void setPartNumber() {
         String ref = itemRefField.getText();
         if (ref != null && !ref.isEmpty()) {

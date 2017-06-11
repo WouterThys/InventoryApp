@@ -11,6 +11,8 @@ import java.util.List;
 
 public class OrderFile {
 
+    public static final String SEPARATOR = ",";
+
     private Order order;
     private File orderFile;
     private boolean success = false;
@@ -107,7 +109,7 @@ public class OrderFile {
         StringBuilder sb = new StringBuilder();
 
         for (OrderItem oi : order.getOrderItems()) {
-            sb.append(oi.getItemRef()).append(',');
+            sb.append(oi.getItemRef()).append(SEPARATOR);
             sb.append(oi.getAmount()).append('\n');
             //String description = oi.getItem().getDescription().replace(',', ' ');
             //sb.append(description).append('\n');

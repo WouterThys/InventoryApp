@@ -12,10 +12,13 @@ import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialogLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.net.URL;
 
 
 public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterface {
+
+    private OrderFile orderFile;
 
     private ITextField orderNameTf;
     private ITextArea orderInfoTf;
@@ -109,20 +112,53 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            OrderFile orderFile = (OrderFile) object;
+            orderFile = (OrderFile) object;
 
             orderNameTf.setText(orderFile.getOrder().getName());
             orderFileNameTf.setText(orderFile.getOrderFile().getName());
             orderFilePathTf.setText(orderFile.getOrderFile().getAbsolutePath());
-            orderDistributorUrlTf.setText(stringResource.readString("OrderInfo.FarnellUrl"));
+            orderInfoTf.setEnabled(orderFile.getOrderType() == 2);
 
             switch (orderFile.getOrderType()) {
                 case 2: // Mouser
+                    orderDistributorUrlTf.setText(stringResource.readString("OrderInfo.MouserUrl"));
+                    String txt = createMouserOrderText();
+                    orderInfoTf.setText(txt);
                     break;
                 case 3: // Farnell
+                    orderDistributorUrlTf.setText(stringResource.readString("OrderInfo.FarnellUrl"));
                     orderInfoTf.setText(stringResource.readString("OrderInfo.Farnell"));
                     break;
             }
         }
+    }
+
+    private String createMouserOrderText() {
+        String result = "";
+        if (orderFile != null) {
+            File order = orderFile.getOrderFile();
+            if (order.exists()) {
+                BufferedReader bufferedReader = null;
+                try {
+                    bufferedReader = new BufferedReader(new FileReader(order));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        String[] parts = line.split(OrderFile.SEPARATOR);
+                        result += parts[0] + " " + parts[1] + "\n";
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bufferedReader != null) {
+                        try {
+                            bufferedReader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

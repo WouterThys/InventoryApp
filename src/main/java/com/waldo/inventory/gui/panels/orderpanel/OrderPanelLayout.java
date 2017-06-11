@@ -124,14 +124,14 @@ public abstract class OrderPanelLayout extends JPanel implements
         if (order.isReceived()) {
             tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
             tbSetOrderedBtn.setVisible(false);
-            tbOrderButton.setText("Order again");
+            //tbOrderButton.setText("Order again");
         } else {
             tbDateReceivedLbl.setText("Not received");
             tbSetOrderedBtn.setVisible(true);
             tbOrderButton.setText("Order!");
         }
 
-        tbOrderButton.setVisible(!order.isOrdered() || order.isReceived());
+        tbOrderButton.setVisible(!order.isOrdered());// || order.isReceived());
 
         if (order.getDateModified() != null) {
             tbDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
@@ -185,7 +185,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             orderToolBar.setDeleteActionEnabled(true);
             topToolBar.setAddActionEnabled(true);
             topToolBar.setRefreshActionEnabled(true);
-            tbDistributorCb.setEnabled(true);
+            tbDistributorCb.setEnabled(!lastSelectedOrder.isOrdered());
         }
 
         tbOrderButton.setEnabled(tableModel.getRowCount() > 0);

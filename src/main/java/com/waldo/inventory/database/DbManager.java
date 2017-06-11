@@ -904,6 +904,8 @@ public class DbManager implements TableChangedListener {
                     o.setDistributor(findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
+                    o.setOrderReference(rs.getString("orderreference"));
+                    o.setTrackingNumber(rs.getString("trackingnumber"));
 
                     if (o.getId() != 1) {
                         o.setOnTableChangedListener(this);
@@ -939,6 +941,8 @@ public class DbManager implements TableChangedListener {
                     o.setDistributor(findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
+                    o.setOrderReference(rs.getString("orderreference"));
+                    o.setTrackingNumber(rs.getString("trackingnumber"));
                 }
             }
         } catch (SQLException e) {
