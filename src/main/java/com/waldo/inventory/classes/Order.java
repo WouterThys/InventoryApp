@@ -88,6 +88,29 @@ public class Order extends DbObject {
         return order;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Order)) {
+                return false;
+            } else {
+                Order ref = (Order) obj;
+
+                if (!compareIfEqual(ref.getDateOrdered(), getDateOrdered())) return false;
+                if (!compareIfEqual(ref.getDateReceived(), getDateReceived())) return false;
+                //if (!compareIfEqual(ref.getDateModified(), getDateModified())) return false;
+                if (!(ref.getOrderItems().equals(getOrderItems()))) return false;
+                if (!(ref.getDistributor().equals(getDistributor()))) return false;
+                if (!(ref.getOrderFile().equals(getOrderFile()))) return false;
+                if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
+                if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
+
+            }
+        }
+        return result;
+    }
+
     public static class OrderAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
@@ -212,6 +235,16 @@ public class Order extends DbObject {
             }
         }
         return null;
+    }
+
+    private boolean compareIfEqual(Date d1, Date d2) {
+        if (d1 == null && d2 == null) {
+            return true;
+        } else if (d1 != null && d2 == null || d1 == null) {
+            return false;
+        } else {
+            return d1.equals(d2);
+        }
     }
 
     public Date getDateOrdered() {

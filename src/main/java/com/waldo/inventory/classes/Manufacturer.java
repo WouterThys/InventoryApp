@@ -40,7 +40,7 @@ public class Manufacturer extends DbObject {
 
     @Override
     public boolean equals(Object obj) {
-        boolean result =  super.equals(obj);
+        boolean result = super.equals(obj);
         if (result) {
             if (!(obj instanceof Manufacturer)) {
                 return false;

@@ -67,9 +67,10 @@ public class MainPanel extends MainPanelLayout {
                 if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-                    if (dialog.showDialog() == EditItemDialog.OK) {
-                        dialog.getItem().save();
-                    }
+//                    if (dialog.showDialog() == EditItemDialog.OK) {
+//                        dialog.getItem().save();
+//                    }
+                    dialog.showDialog();
                 }
             }
         });
@@ -210,12 +211,13 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void onToolBarAdd() {
         EditItemDialog dialog = new EditItemDialog(application, "Add item");
-        if (dialog.showDialog() == EditItemDialog.OK) {
-            Item newItem = dialog.getItem();
-            if (newItem != null) {
-                newItem.save();
-            }
-        }
+        dialog.showDialog();
+//        if (dialog.showDialog() == EditItemDialog.OK) {
+//            Item newItem = dialog.getItem();
+//            if (newItem != null) {
+//                newItem.save();
+//            }
+//        }
     }
 
     @Override

@@ -141,9 +141,10 @@ public class OrderPanel extends OrderPanelLayout {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedOrderItem.getItem());
-                    if (dialog.showDialog() == EditItemDialog.OK) {
-                        dialog.getItem().save();
-                    }
+//                    if (dialog.showDialog() == EditItemDialog.OK) {
+//                        dialog.getItem().save();
+//                    }
+                    dialog.showDialog();
                 }
             }
         });

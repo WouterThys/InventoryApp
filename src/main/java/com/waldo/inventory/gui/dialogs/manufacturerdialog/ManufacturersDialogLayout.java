@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
@@ -126,17 +127,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
 
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0; constraints.weightx = 1;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        browsePanel.add(detailWebsite, constraints);
-        constraints.gridx = 1; constraints.weightx = 0;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        detailsBrowseButton.setSize(new Dimension(detailsBrowseButton.getWidth(), detailWebsite.getHeight()));
-        browsePanel.add(detailsBrowseButton, constraints);
+        JPanel browsePanel = PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();

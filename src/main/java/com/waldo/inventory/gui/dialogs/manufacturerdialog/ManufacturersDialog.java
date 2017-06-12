@@ -80,8 +80,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-                    selectedManufacturer.setName(detailName.getText());
-                    selectedManufacturer.setWebsite(detailWebsite.getText());
+//                    selectedManufacturer.setName(detailName.getText());
+//                    selectedManufacturer.setWebsite(detailWebsite.getText());
                     selectedManufacturer.save();
                     originalManufacturer = selectedManufacturer.createCopy();
                     if (closeAfter) {

@@ -126,6 +126,9 @@ public abstract class IDialog extends JDialog {
                 e -> onOK(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Default no resize
+        setResizable(false);
     }
 
     private JPanel createPanels() {

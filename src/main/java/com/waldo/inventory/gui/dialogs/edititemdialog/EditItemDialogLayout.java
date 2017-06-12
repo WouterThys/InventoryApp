@@ -90,6 +90,7 @@ public abstract class EditItemDialogLayout extends IDialog implements
 
         // Add
         getContentPanel().add(tabbedPane);
+        pack();
     }
 
     @Override

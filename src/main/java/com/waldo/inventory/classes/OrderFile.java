@@ -1,8 +1,6 @@
 package com.waldo.inventory.classes;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,8 +97,32 @@ public class OrderFile {
     }
 
 
-    private File createMouserOrderFile() {
-        return null;
+    public String getRawOrderString() {
+            String result = "";
+            if (orderFile != null) {
+                 if (orderFile.exists()) {
+                    BufferedReader bufferedReader = null;
+                    try {
+                        bufferedReader = new BufferedReader(new FileReader(orderFile));
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            result += line + "\n";
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (bufferedReader != null) {
+                            try {
+                                bufferedReader.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+
     }
 
     private File createOrderFile(Order order) throws FileNotFoundException {

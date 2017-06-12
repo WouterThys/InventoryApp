@@ -192,6 +192,9 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
 
         // Center
         getContentPanel().add(detailsPanel, BorderLayout.CENTER);
+
+        // Pack
+        pack();
     }
 }
 

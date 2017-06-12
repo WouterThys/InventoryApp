@@ -14,6 +14,7 @@ import com.waldo.inventory.gui.components.ITableEditors;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
@@ -94,7 +95,9 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
 
     @Override
     public void initializeLayouts() {
-        getContentPanel().add(new JScrollPane(historyTable));
+        getContentPanel().setLayout(new BorderLayout());
+        getContentPanel().add(new JScrollPane(historyTable), BorderLayout.CENTER);
+        pack();
     }
 
     @Override
