@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -95,6 +96,7 @@ public class ITableEditors {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
+
                 Item item = (Item) value;
                 ILabel lblText = new ILabel(String.valueOf(item.getAmount()));
                 lblText.setForeground(Color.WHITE);
@@ -111,6 +113,33 @@ public class ITableEditors {
                     } else {
                         lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
                     }
+                }
+
+                lblIcon.setLayout(new GridBagLayout());
+                lblIcon.add(lblText);
+                return lblIcon;
+            } else {
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        }
+    }
+
+    public static class CheckRenderer extends DefaultTableCellRenderer {
+
+        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/IconSettings.properties").getPath());
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == 0) {
+
+                TableObject object = (TableObject) value;
+                ILabel lblText = new ILabel();
+
+                ILabel lblIcon;
+                if (object.isValid()) {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                } else {
+                    lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
                 }
 
                 lblIcon.setLayout(new GridBagLayout());

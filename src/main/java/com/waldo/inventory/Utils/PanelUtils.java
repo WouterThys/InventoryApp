@@ -40,4 +40,16 @@ public class PanelUtils {
         return browsePanel;
     }
 
+    public static JPanel createFileOpenPanel(ITextField fileTf, JButton openBtn) {
+        JPanel iconPathPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = createFieldConstraints(0,0);
+        constraints.gridwidth = 1;
+        iconPathPanel.add(fileTf, constraints);
+        constraints = createFieldConstraints(1,0);
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.1;
+        iconPathPanel.add(openBtn, constraints);
+        return iconPathPanel;
+    }
+
 }

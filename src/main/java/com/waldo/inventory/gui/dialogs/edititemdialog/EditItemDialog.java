@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import java.awt.*;

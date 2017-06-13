@@ -1,8 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Utils.ImageUtils;
-import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -16,7 +15,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Vector;
 
@@ -201,7 +199,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Local data sheet
         localDataSheetTextField = new ITextField();
         localDataSheetTextField.addEditedListener(editedListener, "localDataSheet");
-        localDataSheetButton = new JButton(ImageUtils.loadImageIcon("folder"));
+        localDataSheetButton = new JButton(FileUtils.loadImageIcon("folder"));
         localDataSheetButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

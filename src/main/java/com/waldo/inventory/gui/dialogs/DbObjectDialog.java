@@ -1,18 +1,15 @@
 package com.waldo.inventory.gui.dialogs;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
-import com.waldo.inventory.gui.dialogs.imagefiledialog.ImageFileChooser;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 
 public class DbObjectDialog<T extends DbObject> extends IDialog {
 
@@ -109,14 +106,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
 
         // Additional stuff
-        JPanel iconPathPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = createFieldConstraints(0,0);
-        constraints.gridwidth = 1;
-        iconPathPanel.add(iconPathTextField, constraints);
-        constraints = createFieldConstraints(1,0);
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.1;
-        iconPathPanel.add(browseIconButton, constraints);
+        JPanel iconPathPanel = PanelUtils.createFileOpenPanel(iconPathTextField, browseIconButton);
 
         // Add all
         getContentPanel().add(new ITitledEditPanel(

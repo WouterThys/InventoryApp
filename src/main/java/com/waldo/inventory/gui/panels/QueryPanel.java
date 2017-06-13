@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels;
 
-import com.waldo.inventory.Utils.ImageUtils;
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.statics.SqlKeyWords;
@@ -36,7 +36,7 @@ public class QueryPanel extends JPanel {
     }
 
     private void initActions() {
-        executeAction = new AbstractAction("Execute", ImageUtils.loadImageIcon("execute")) {
+        executeAction = new AbstractAction("Execute", FileUtils.loadImageIcon("execute")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -45,7 +45,7 @@ public class QueryPanel extends JPanel {
             }
         };
 
-        executeAllAction = new AbstractAction("Execute all", ImageUtils.loadImageIcon("execute_all")) {
+        executeAllAction = new AbstractAction("Execute all", FileUtils.loadImageIcon("execute_all")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -53,7 +53,7 @@ public class QueryPanel extends JPanel {
             }
         };
 
-        clearAction = new AbstractAction("Clear", ImageUtils.loadImageIcon("clear")) {
+        clearAction = new AbstractAction("Clear", FileUtils.loadImageIcon("clear")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryTextArea.setText("");

@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.Error;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
+import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
@@ -51,24 +52,25 @@ public class MenuBar extends JMenuBar {
         JMenuItem packages = new JMenuItem("Packages", resourceManager.readImage("MenuBar.Packages"));
         packages.addActionListener(packagesSelected());
 
-//        JMenuItem orders = new JMenuItem("Orders", resourceManager.readImage("MenuBar.EditOrders"));
-//        orders.addActionListener(ordersSelected());
-//
-//        JMenuItem locations = new JMenuItem("Locations", resourceManager.readImage("MenuBar.EditLocations"));
-//        locations.addActionListener(locationsSelected());
-
         dbMenu.add(subDivisions);
         dbMenu.addSeparator();
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);
         dbMenu.add(packages);
-//        dbMenu.add(orders);
-//        dbMenu.add(locations);
+
+        // Tools menu
+        JMenu toolsMenu = new JMenu("Tools");
+
+        JMenuItem importFromCsv = new JMenuItem("Import from csv", resourceManager.readImage("MenuBar.Import"));
+        importFromCsv.addActionListener(importFromCsvSelected());
+
+        toolsMenu.add(importFromCsv);
 
 
         // Add menus
         add(fileMenu);
         add(dbMenu);
+        add(toolsMenu);
     }
 
     private ActionListener subDivisionsSelected() {
@@ -93,6 +95,13 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener distributorsSelected() { return  e -> DistributorsDialog.showDialog(application); }
+
+    private ActionListener importFromCsvSelected() {
+        return (e -> {
+            ReadCsvDialog dialog = new ReadCsvDialog(application, "Import csv");
+            dialog.showDialog();
+        });
+    }
 
 //    private ActionListener ordersSelected() {
 //        OrdersDialog dialog = new OrdersDialog(application, "Orders");
