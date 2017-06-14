@@ -17,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -134,6 +135,25 @@ public class Application extends JFrame implements ChangeListener {
 
             // Add
             orderPanel.addItemToOrder(item, order);
+        } finally {
+            endWait();
+        }
+    }
+
+    public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+        try {
+            beginWait();
+            // Set tab
+            tabbedPane.setSelectedIndex(TAB_ORDERS);
+
+            // Update items
+            for (Item item : itemsToOrder) {
+                item.setOrderState(Statics.ItemOrderState.PLANNED);
+                item.save();
+            }
+
+            // Add
+            orderPanel.addItemsToOrder(itemsToOrder, order);
         } finally {
             endWait();
         }

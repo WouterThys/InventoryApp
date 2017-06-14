@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 import com.waldo.inventory.gui.components.ILabel;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,13 @@ public class TableModel extends AbstractTableModel {
     private List<TableObject> objectList;
 
     public TableModel() {
-        columnNames = new String[] {"Check", "Reference"};
+        columnNames = new String[] {"Check", "Name"};
         columnClasses = new Class[] {ILabel.class, String.class};
         objectList = new ArrayList<>();
     }
 
     public TableModel(String[] extraNames) {
-        columnNames = new String[]{"Check", "Reference"};
+        columnNames = new String[]{"Check", "Name"};
         columnNames = ArrayUtils.addAll(columnNames, extraNames);
         columnClasses = new Class[] {ILabel.class, String.class};
         Class[] extraClasses = new Class[extraNames.length];
@@ -40,6 +41,10 @@ public class TableModel extends AbstractTableModel {
     public void setObjectList(List<TableObject> objectList) {
         this.objectList = objectList;
         fireTableDataChanged();
+    }
+
+    public boolean hasData() {
+        return ((objectList != null) && (objectList.size() > 0));
     }
 
     public TableObject getObject(int index) {
@@ -67,6 +72,15 @@ public class TableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return columnClasses[columnIndex];
+    }
+
+    @Override
+    public void fireTableDataChanged() {
+        fireTableChanged(new TableModelEvent(this, //tableModel
+                0, //firstRow
+                getRowCount() - 1, //lastRow
+                TableModelEvent.ALL_COLUMNS, //column
+                TableModelEvent.UPDATE)); //changeType
     }
 
     @Override

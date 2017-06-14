@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
@@ -111,13 +112,13 @@ public abstract class MainPanelLayout extends JPanel implements
 
     private void selectDivision(Item selectedItem) {
         if (selectedItem.getTypeId() > DbObject.UNKNOWN_ID) {
-            lastSelectedDivision = db().findTypeById(selectedItem.getTypeId());
+            lastSelectedDivision = sm().findTypeById(selectedItem.getTypeId());
         } else {
             if (selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
-                lastSelectedDivision = db().findProductById(selectedItem.getProductId());
+                lastSelectedDivision = sm().findProductById(selectedItem.getProductId());
             } else {
                 if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-                    lastSelectedDivision = db().findCategoryById(selectedItem.getCategoryId());
+                    lastSelectedDivision = sm().findCategoryById(selectedItem.getCategoryId());
                 } else {
                     lastSelectedDivision = null; //??
                 }
@@ -188,6 +189,7 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
+        itemTable.setOpaque(true);
 
         // Details
         detailPanel = new ItemDetailPanel(application);

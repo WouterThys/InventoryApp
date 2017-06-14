@@ -9,6 +9,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.util.Enumeration;
 
+import static com.waldo.inventory.database.SearchManager.sm;
+
 public class IDbObjectTreeModel extends DefaultTreeModel {
 
     public static final int TYPE_DIVISIONS = 0;
@@ -123,13 +125,13 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
 
                 case DbObject.TYPE_PRODUCT: {
                     Product p = (Product) child;
-                    Category c = DbManager.db().findCategoryById(p.getCategoryId()); // The parent object
+                    Category c = sm().findCategoryById(p.getCategoryId()); // The parent object
                     return findNode(c);
                 }
 
                 case DbObject.TYPE_TYPE: {
                     Type t = (Type) child;
-                    Product p = DbManager.db().findProductById(t.getProductId()); // The parent object
+                    Product p = sm().findProductById(t.getProductId()); // The parent object
                     return findNode(p);
                 }
 

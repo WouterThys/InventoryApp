@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class OrderPanel extends OrderPanelLayout {
 
@@ -64,6 +65,17 @@ public class OrderPanel extends OrderPanelLayout {
         orderItem.setName(item.toString() + " - " + order.toString());
 
         orderItem.save();
+    }
+
+    public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+        for (Item item : itemsToOrder) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setItemId(item.getId());
+            orderItem.setOrderId(order.getId());
+            orderItem.setName(item.toString() + " - " + order.toString());
+
+            orderItem.save();
+        }
     }
 
 
@@ -240,7 +252,7 @@ public class OrderPanel extends OrderPanelLayout {
         orderItemsChanged = new DbObjectChangedListener<OrderItem>() {
             @Override
             public void onAdded(OrderItem orderItem) {
-                Order order = DbManager.db().findOrderById(orderItem.getOrderId());
+                Order order = sm().findOrderById(orderItem.getOrderId());
                 order.addItemToList(orderItem);
                 lastSelectedOrder = order;
                 setSelectedItem(orderItem);
@@ -248,13 +260,13 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onUpdated(OrderItem newOrderItem, OrderItem oldOrderItem) {
-                Order order = DbManager.db().findOrderById(newOrderItem.getOrderId());
+                Order order = sm().findOrderById(newOrderItem.getOrderId());
                 updateComponents(order);
             }
 
             @Override
             public void onDeleted(OrderItem orderItem) {
-                Order order = DbManager.db().findOrderById(orderItem.getOrderId());
+                Order order = sm().findOrderById(orderItem.getOrderId());
                 selectedOrderItem = null;
                 updateComponents(order);
             }

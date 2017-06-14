@@ -1,10 +1,13 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Comparator;
+
+import static com.waldo.inventory.database.SearchManager.*;
 
 public class OrderItem extends DbObject {
 
@@ -104,14 +107,14 @@ public class OrderItem extends DbObject {
 
     public Order getOrder() {
         if (order == null) {
-            order = DbManager.db().findOrderById(orderId);
+            order = sm().findOrderById(orderId);
         }
         return order;
     }
 
     public Item getItem() {
         if (item == null) {
-            item = DbManager.db().findItemById(itemId);
+            item = sm().findItemById(itemId);
         }
         return item;
     }

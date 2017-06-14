@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import java.util.Vector;
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.*;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
 
@@ -120,7 +122,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             categoryItems.add(c);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (c.getId() == newItem.getCategoryId()) {
-                    selectedIndex = db().findCategoryIndex(c.getId());
+                    selectedIndex = sm().findCategoryIndex(c.getId());
                 }
             }
         }
@@ -138,7 +140,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             productStrings.add(p);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (p.getId() == newItem.getProductId()) {
-                    selectedIndex = db().findProductIndex(p.getId());
+                    selectedIndex = sm().findProductIndex(p.getId());
                 }
             }
         }
@@ -156,7 +158,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             typeStrings.add(t);
             if (newItem.getId() >= 0) { // Not a new item -> set combobox to value
                 if (t.getId() == newItem.getTypeId()) {
-                    selectedIndex = db().findTypeIndex(t.getId());
+                    selectedIndex = sm().findTypeIndex(t.getId());
                 }
             }
         }
@@ -444,9 +446,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
         // Combo boxes
-        int cNdx = db().findCategoryIndex(newItem.getCategoryId());
-        int pNdx = db().findProductIndex(newItem.getProductId());
-        int tNdx = db().findTypeIndex(newItem.getTypeId());
+        int cNdx = sm().findCategoryIndex(newItem.getCategoryId());
+        int pNdx = sm().findProductIndex(newItem.getProductId());
+        int tNdx = sm().findTypeIndex(newItem.getTypeId());
         if (cNdx >= 0) {
             categoryComboBox.setSelectedIndex(cNdx); // This should also set the product combo box values
 
@@ -474,7 +476,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
 
         // Package
-        PackageType p = db().findPackageTypeByIndex(newItem.getPackageTypeId());
+        PackageType p = sm().findPackageTypeById(newItem.getPackageTypeId());
         if (p != null && !p.isUnknown()) {
             packageTypeComboBox.setSelectedItem(p);
         } else {
@@ -487,12 +489,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Manufacturer
         if (newItem.getManufacturerId() >= 0) {
             // Set index
-            int ndx = db().findManufacturerIndex(newItem.getManufacturerId());
+            int ndx = sm().findManufacturerIndex(newItem.getManufacturerId());
             manufacturerComboBox.setSelectedIndex(ndx);
 
             // Set icon
             try {
-                Manufacturer m = db().findManufacturerById(newItem.getManufacturerId());
+                Manufacturer m = sm().findManufacturerById(newItem.getManufacturerId());
                 if (m != null && !m.getIconPath().isEmpty()) {
                     iconLabel.setIcon(m.getIconPath(), 100,100);
                 }

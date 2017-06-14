@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.database.SearchManager.*;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class DbManager implements TableChangedListener {
@@ -901,7 +902,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateOrdered(rs.getDate("dateordered"));
                     o.setDateModified(rs.getDate("datemodified"));
                     o.setDateReceived(rs.getDate("datereceived"));
-                    o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
                     o.setOrderReference(rs.getString("orderreference"));
@@ -938,7 +939,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateOrdered(rs.getDate("dateordered"));
                     o.setDateModified(rs.getDate("datemodified"));
                     o.setDateReceived(rs.getDate("datereceived"));
-                    o.setDistributor(findDistributorById(rs.getLong("distributorid")));
+                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
                     o.setOrderItems(getOrderedItems(o.getId()));
                     o.setOrderReference(rs.getString("orderreference"));
@@ -1267,261 +1268,7 @@ public class DbManager implements TableChangedListener {
     }
 
 
-    /*
-    *                  FINDERS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public Item findItemById(long id) {
-        for (Item i : getItems()) {
-            if(i.getId() == id) {
-                return i;
-            }
-        }
-        return null;
-    }
 
-    public Item findItemByName(String name)    {
-        for (Item i : getItems()) {
-            if (i.getName().toUpperCase().equals(name.toUpperCase())) {
-                return i;
-            }
-        }
-        return null;
-    }
-
-    public Category findCategoryById(long id)    {
-        for (Category c : getCategories()) {
-            if (c.getId() == id) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public Category findCategoryByName(String name)    {
-        for (Category c : getCategories()) {
-            if (c.getName().equals(name)) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public int findCategoryIndex(long categoryId)    {
-        for (int i = 0; i < getCategories().size(); i++) {
-            if (getCategories().get(i).getId() == categoryId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Product findProductById(long id)    {
-        for (Product p : getProducts()) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public Product findProductByName(String name)    {
-        for (Product p : getProducts()) {
-            if (p.getName().equals(name)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public int findProductIndex(long productNdx)    {
-        for (int i = 0; i < getProducts().size(); i++) {
-            if (getProducts().get(i).getId() == productNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Type findTypeById(long id)    {
-        for (Type t : getTypes()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public Type findTypeByName(String name)    {
-        for (Type t : getTypes()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findTypeIndex(long typeNdx)    {
-        for (int i = 0; i < getTypes().size(); i++) {
-            if (getTypes().get(i).getId() == typeNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Manufacturer findManufacturerById(long id)    {
-       for (Manufacturer m : getManufacturers()) {
-           if (m.getId() == id) {
-               return m;
-           }
-       }
-       return null;
-    }
-
-    public Manufacturer findManufacturerByName(String name)    {
-        for (Manufacturer m : getManufacturers()) {
-            if (m.getName().equals(name)) {
-                return m;
-            }
-        }
-        return null;
-    }
-
-    public int findManufacturerIndex(long manufacturerId)    {
-        for (int i = 0; i < getManufacturers().size(); i++) {
-            if (getManufacturers().get(i).getId() == manufacturerId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Location findLocationById(long id)    {
-        for (Location t : getLocations()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public Location findLocationByName(String name)    {
-        for (Location t : getLocations()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findLocationIndex(long typeNdx)    {
-        for (int i = 0; i < getLocations().size(); i++) {
-            if (getLocations().get(i).getId() == typeNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Order findOrderById(long id)    {
-        for (Order t : getOrders()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public Order findOrderByName(String name)    {
-        for (Order t : getOrders()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findOrderIndex(long typeNdx)    {
-        for (int i = 0; i < getOrders().size(); i++) {
-            if (getOrders().get(i).getId() == typeNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public OrderItem findOrderItemById(long id)    {
-        for (OrderItem t : getOrderItems()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public OrderItem findOrderItemByName(String name)    {
-        for (OrderItem t : getOrderItems()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findOrderItemIndex(long orderItemId)    {
-        for (int i = 0; i < getOrders().size(); i++) {
-            if (getOrderItems().get(i).getId() == orderItemId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public Distributor findDistributorById(long distributorId) {
-        for (Distributor d : getDistributors()) {
-            if (d.getId() == distributorId) {
-                return d;
-            }
-        }
-        return null;
-    }
-
-    public PartNumber findPartNumber(long distributorId, long itemId) {
-        for (PartNumber pn : getPartNumbers()) {
-            if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
-                return pn;
-            }
-        }
-        return null;
-    }
-
-    public List<Order> findOrdersForItem(long itemId) {
-        List<Order> orders = new ArrayList<>();
-        for (OrderItem oi : getOrderItems()) {
-            if (oi.getItemId() == itemId) {
-                orders.add(oi.getOrder());
-            }
-        }
-        return orders;
-    }
-
-    public PackageType findPackageTypeByIndex (long id) {
-        for (PackageType pt : getPackageTypes()) {
-            if (pt.getId() == id) {
-                return pt;
-            }
-        }
-        return null;
-    }
-
-    public PackageType findPackageTypeByName(String name) {
-        for (PackageType pt : getPackageTypes()) {
-            if (pt.getName().equals(name)) {
-                return pt;
-            }
-        }
-        return null;
-    }
 
     /*
     *                  OTHER
@@ -1558,7 +1305,7 @@ public class DbManager implements TableChangedListener {
 
     public List<Item> getItemListForProduct(Product p)    {
         List<Item> items = new ArrayList<>();
-        Category c = findCategoryById(p.getCategoryId());
+        Category c = sm().findCategoryById(p.getCategoryId());
         for (Item i : getItemListForCategory(c)) {
             if (i.getProductId() == p.getId()) {
                 items.add(i);
@@ -1569,7 +1316,7 @@ public class DbManager implements TableChangedListener {
 
     public List<Item> getItemListForType(Type t)    {
         List<Item> items = new ArrayList<>();
-        Product p = findProductById(t.getProductId());
+        Product p = sm().findProductById(t.getProductId());
         for (Item i : getItemListForProduct(p)) {
             if (i.getTypeId() == t.getId()) {
                 items.add(i);

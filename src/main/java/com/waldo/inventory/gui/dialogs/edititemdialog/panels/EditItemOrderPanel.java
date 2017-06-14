@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class EditItemOrderPanel extends JPanel implements GuiInterface {
 
@@ -36,7 +37,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                 if (newItem.getId() < 0) {
                     newItem.save();
                 }
-                partNumber = db().findPartNumber(d.getId(), newItem.getId());
+                partNumber = sm().findPartNumber(d.getId(), newItem.getId());
                 if (partNumber == null) {
                     partNumber = new PartNumber();
                 }
@@ -63,7 +64,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                     // Save item if not saved yet
                     if (newItem.getId() > 0) {
                         // Find ref
-                        partNumber = db().findPartNumber(d.getId(), newItem.getId());
+                        partNumber = sm().findPartNumber(d.getId(), newItem.getId());
                         if (partNumber != null) {
                             itemRefField.setText(partNumber.getItemRef());
                         } else {

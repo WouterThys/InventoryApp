@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
@@ -52,7 +53,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         List<DbObject> foundObjects = new ArrayList<>();
 
         // Find orders
-        foundObjects.addAll(DbManager.db().findOrdersForItem(item.getId()));
+        foundObjects.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
 
         // Later: find projects and other stuff??
 

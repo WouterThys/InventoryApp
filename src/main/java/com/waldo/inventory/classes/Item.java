@@ -2,9 +2,12 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.*;
 import java.util.Comparator;
+
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Item extends DbObject {
 
@@ -130,32 +133,32 @@ public class Item extends DbObject {
             }
 
             // Covert category, product, type, ...
-            Category c = DbManager.db().findCategoryById(categoryId);
+            Category c = sm().findCategoryById(categoryId);
             if (c != null && c.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Product p = DbManager.db().findProductById(productId);
+            Product p = sm().findProductById(productId);
             if (p != null && p.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Type t = DbManager.db().findTypeById(typeId);
+            Type t = sm().findTypeById(typeId);
             if (t != null && t.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Manufacturer m = DbManager.db().findManufacturerById(manufacturerId);
+            Manufacturer m = sm().findManufacturerById(manufacturerId);
             if (m != null && m.hasMatch(searchTerm)) {
                 return true;
             }
 
-            Location l = DbManager.db().findLocationById(locationId);
+            Location l = sm().findLocationById(locationId);
             if (l != null && l.hasMatch(searchTerm)) {
                 return true;
             }
 
-            PackageType pt = DbManager.db().findPackageTypeByIndex(packageTypeId);
+            PackageType pt = sm().findPackageTypeById(packageTypeId);
             if (pt != null && pt.hasMatch(searchTerm)) {
                 return true;
             }

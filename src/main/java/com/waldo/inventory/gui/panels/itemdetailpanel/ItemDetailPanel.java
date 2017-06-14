@@ -15,6 +15,7 @@ import java.awt.*;
 import java.io.IOException;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
@@ -103,18 +104,18 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         StringBuilder builder = new StringBuilder();
 
         if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            builder.append(" / ").append(db().findCategoryById(item.getCategoryId()).getName());
+            builder.append(" / ").append(sm().findCategoryById(item.getCategoryId()).getName());
             if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                builder.append(" / ").append(db().findProductById(item.getProductId()).getName());
+                builder.append(" / ").append(sm().findProductById(item.getProductId()).getName());
                 if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                    builder.append(" / ").append(db().findTypeById(item.getTypeId()).getName());
+                    builder.append(" / ").append(sm().findTypeById(item.getTypeId()).getName());
                 }
             }
         }
         divisionTextField.setText(builder.toString());
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-            manufacturerTextField.setText(db().findManufacturerById(item.getManufacturerId()).getName());
+            manufacturerTextField.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
         } else {
             manufacturerTextField.setText("");
         }

@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
@@ -133,13 +134,13 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
             case DbObject.TYPE_PRODUCT: {
                 subDivisionList.setSelectedIndex(1);
-                Category c = db().findCategoryById(((Product)object).getCategoryId());
+                Category c = sm().findCategoryById(((Product)object).getCategoryId());
                 selectionComboBox.setSelectedItem(c);
                 break;
             }
             case DbObject.TYPE_TYPE: {
                 subDivisionList.setSelectedIndex(2);
-                Product p = db().findProductById(((com.waldo.inventory.classes.Type)object).getProductId());
+                Product p = sm().findProductById(((com.waldo.inventory.classes.Type)object).getProductId());
                 selectionComboBox.setSelectedItem(p);
                 break;
             }

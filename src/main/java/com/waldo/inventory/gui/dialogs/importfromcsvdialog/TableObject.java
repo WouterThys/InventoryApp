@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.classes.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,12 @@ import java.util.List;
 public class TableObject {
 
     private String itemReference; // Reference from csv
-    private long itemId; // Reference to known item
+    private Item item; // Reference to known item
     private List<String> extraData;
+    private int found = 0;
 
     public boolean isValid() {
-        if (itemId <= DbObject.UNKNOWN_ID) {
-            return false;
-        }
-        return (DbManager.db().findItemById(itemId)) != null;
+        return (item != null && item.getId() > DbObject.UNKNOWN_ID);
     }
 
     public String getItemReference() {
@@ -27,12 +25,12 @@ public class TableObject {
         this.itemReference = itemReference;
     }
 
-    public long getItemId() {
-        return itemId;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public List<String> getExtraData() {
@@ -42,7 +40,25 @@ public class TableObject {
         return extraData;
     }
 
+    public int getFound() {
+        return found;
+    }
+
+    public void setFound(int found) {
+        this.found = found;
+    }
+
     public void setExtraData(List<String> extraData) {
         this.extraData = extraData;
+    }
+
+    @Override
+    public String toString() {
+        return "TableObject{" +
+                "itemReference='" + itemReference + '\'' +
+                ", item=" + item +
+                ", extraData=" + extraData +
+                ", found=" + found +
+                '}';
     }
 }

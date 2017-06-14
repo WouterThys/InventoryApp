@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout {
 
@@ -22,11 +23,27 @@ public class OrderItemDialog extends OrderItemDialogLayout {
     }
 
     private Item itemToOrder;
+    private List<Item> itemsToOrderList;
+    private boolean orderList = false;
 
     public OrderItemDialog(Application application, String title, Item itemToOrder) {
         super(application, title);
 
         this.itemToOrder = itemToOrder;
+        this.orderList = false;
+
+        DbManager.db().addOnOrdersChangedListener(this);
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents(null);
+    }
+
+    public OrderItemDialog(Application application, String title, List<Item> itemsToOrder) {
+        super(application, title);
+
+        this.itemsToOrderList = itemsToOrder;
+        this.orderList = true;
 
         DbManager.db().addOnOrdersChangedListener(this);
 
@@ -46,8 +63,12 @@ public class OrderItemDialog extends OrderItemDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
-            // Add item to list
-            application.addItemToOrder(itemToOrder, (Order) orderCb.getSelectedItem());
+            // Add item(s) to list
+            if (orderList) {
+                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+            } else {
+                application.addItemToOrder(itemToOrder, (Order) orderCb.getSelectedItem());
+            }
 
             // Close
             DbManager.db().removeOnOrdersChangedListener(this);

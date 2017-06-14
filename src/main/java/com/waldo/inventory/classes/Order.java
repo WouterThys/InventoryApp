@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.waldo.inventory.database.SearchManager.*;
 
 public class Order extends DbObject {
 
@@ -184,7 +187,7 @@ public class Order extends DbObject {
     public void updateItemReferences() {
         if (distributor != null && orderItems.size() > 0) {
             for (OrderItem oi : orderItems) {
-                PartNumber partNumber = DbManager.db().findPartNumber(distributor.getId(), oi.getItemId());
+                PartNumber partNumber = sm().findPartNumber(distributor.getId(), oi.getItemId());
                 if (partNumber != null) {
                     if (!oi.getItemRef().equals(partNumber.getItemRef())) {
                         oi.setItemRef(partNumber.getItemRef());
@@ -297,7 +300,7 @@ public class Order extends DbObject {
 
     public void setDistributor(String id) {
         try {
-            this.distributor = DbManager.db().findDistributorById(Long.valueOf(id));
+            this.distributor = sm().findDistributorById(Long.valueOf(id));
         } catch (Exception e) {
             e.printStackTrace();
         }

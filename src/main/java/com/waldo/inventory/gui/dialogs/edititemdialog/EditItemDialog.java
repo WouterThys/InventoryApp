@@ -13,6 +13,7 @@ import java.net.URL;
 
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
@@ -182,7 +183,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             ok = false;
         } else {
             if (isNew) {
-                Item check = db().findItemByName(name);
+                Item check = sm().findItemByName(name);
                 if (check != null) {
                     componentPanel.setNameFieldError("Name already exists in items");
                     ok = false;

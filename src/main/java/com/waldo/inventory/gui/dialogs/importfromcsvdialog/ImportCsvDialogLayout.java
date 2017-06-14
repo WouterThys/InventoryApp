@@ -14,19 +14,24 @@ import java.util.List;
 
 public abstract class ImportCsvDialogLayout extends IDialog implements
         GuiInterface,
-        ListSelectionListener {
+        ListSelectionListener,
+        TableObjectPanel.IItemSelectedListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     TableModel tableModel;
-    ITable table;
+    ITable objectTable;
+
+    TableObjectPanel tableObjectPanel;
 
     /*
     *                  VARIABLES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     String[] tableColumnNames;
     List<TableObject> tableObjects;
+
+    TableObject selectedTableObject;
 
     /*
      *                  CONSTRUCTOR
@@ -55,17 +60,23 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
         } else {
             tableModel = new TableModel();
         }
-        table = new ITable(tableModel);
-        table.getSelectionModel().addListSelectionListener(this);
-        table.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
-        table.setDefaultRenderer(ILabel.class, new ITableEditors.CheckRenderer());
+        objectTable = new ITable(tableModel);
+        objectTable.getSelectionModel().addListSelectionListener(this);
+        objectTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        objectTable.setDefaultRenderer(ILabel.class, new ITableEditors.CheckRenderer());
+        objectTable.setOpaque(true);
+
+        // Object panel
+        tableObjectPanel = new TableObjectPanel(this, application);
     }
 
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        getContentPanel().add(new JScrollPane(table), BorderLayout.CENTER);
+        getContentPanel().add(new JScrollPane(objectTable), BorderLayout.CENTER);
+        getContentPanel().add(tableObjectPanel, BorderLayout.SOUTH);
+        setMinimumSize(new Dimension(1200,600));
 
         pack();
     }
@@ -73,7 +84,15 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object object) {
         if (tableObjects != null) {
-            tableModel.setObjectList(tableObjects);
+
+            if (!tableModel.hasData()) {
+                tableModel.setObjectList(tableObjects);
+            }
+
+            selectedTableObject = (TableObject) object;
+            tableObjectPanel.updateComponents(selectedTableObject);
         }
+
+
     }
 }

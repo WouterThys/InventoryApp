@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class IOrderItemTableModel extends AbstractTableModel {
                 case 1: // Description
                     return orderItem.getItem().getDescription();
                 case 2: // Manufacturer
-                    Manufacturer m = DbManager.db().findManufacturerById(orderItem.getItem().getManufacturerId());
+                    Manufacturer m = SearchManager.sm().findManufacturerById(orderItem.getItem().getManufacturerId());
                     if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
                         return m.getName();
                     }

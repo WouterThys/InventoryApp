@@ -134,15 +134,24 @@ public class ITableEditors {
 
                 TableObject object = (TableObject) value;
                 ILabel lblText = new ILabel();
+                lblText.setForeground(Color.WHITE);
+                Font f = lblText.getFont();
+                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
 
                 ILabel lblIcon;
                 if (object.isValid()) {
                     lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
                 } else {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                    if (object.getFound() == 0) {
+                        lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                    } else {
+                        lblIcon = new ILabel(resourceManager.readImage("Ball.yellow"));
+                        lblText.setText(String.valueOf(object.getFound()));
+                    }
                 }
 
                 lblIcon.setLayout(new GridBagLayout());
+                lblIcon.setOpaque(true);
                 lblIcon.add(lblText);
                 return lblIcon;
             } else {
