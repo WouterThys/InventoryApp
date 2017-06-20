@@ -10,12 +10,15 @@ import com.waldo.inventory.gui.components.ITableEditors;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 public abstract class ImportCsvDialogLayout extends IDialog implements
         GuiInterface,
         ListSelectionListener,
-        TableObjectPanel.IItemSelectedListener {
+        TableObjectPanel.IItemSelectedListener,
+        MouseListener {
 
     /*
      *                  COMPONENTS
@@ -65,6 +68,7 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
         objectTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         objectTable.setDefaultRenderer(ILabel.class, new ITableEditors.CheckRenderer());
         objectTable.setOpaque(true);
+        objectTable.addMouseListener(this);
 
         // Object panel
         tableObjectPanel = new TableObjectPanel(this, application);

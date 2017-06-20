@@ -283,6 +283,7 @@ public class TableObjectPanel extends JPanel implements
         searchPanel.addSearchListener(this);
 
         toolBar = new IdBToolBar(toolbarListener());
+        toolBar.setFloatable(false);
 
     }
 

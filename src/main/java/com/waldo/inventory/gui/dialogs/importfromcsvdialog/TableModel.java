@@ -114,4 +114,11 @@ public class TableModel extends AbstractTableModel {
         }
         return null;
     }
+
+    public void removeRow(int row) {
+        objectList.remove(row);
+        fireTableRowsDeleted(row, row);
+    }
+
+
 }

@@ -14,6 +14,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,6 +120,53 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
         // Set items ordered?
     }
 
+    private void deleteTableObjects(List<TableObject> objectsToDelete) {
+        SwingUtilities.invokeLater(() -> {
+            int result = JOptionPane.CANCEL_OPTION;
+            if (objectsToDelete.size() == 1) {
+                result = JOptionPane.showConfirmDialog(
+                        ImportCsvDialog.this,
+                        "Are you sure you want to delete " + objectsToDelete.get(0).getItemReference() + "?",
+                        "Confirm delete",
+                        JOptionPane.YES_NO_OPTION);
+            } else if (objectsToDelete.size() > 1) {
+                result = JOptionPane.showConfirmDialog(
+                        ImportCsvDialog.this,
+                        "Are you sure you want to delete " + objectsToDelete.size() + " items?",
+                        "Confirm delete",
+                        JOptionPane.YES_NO_OPTION);
+            }
+
+            if (result == JOptionPane.OK_OPTION) {
+                for (TableObject row : objectsToDelete) {
+                    ((TableModel) objectTable.getModel()).removeRow(tableModel.getObjectList().indexOf(row));
+                }
+            }
+        });
+    }
+
+    private JPopupMenu createDeletePopup() {
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem deleteItem = new JMenuItem("Delete", resourceManager.readImage("Toolbar.DeleteIcon"));
+        deleteItem.addActionListener(e -> {
+            // Get selected values
+            int[] selectedRows = objectTable.getSelectedRows();
+            if (selectedRows.length > 0) {
+                List<TableObject> toDelete = new ArrayList<>(selectedRows.length);
+                for (int row : selectedRows) {
+                    TableObject to = tableModel.getObject(row);
+                    if (to != null) {
+                        toDelete.add(to);
+                    }
+                }
+                // Delete them
+                deleteTableObjects(toDelete);
+            }
+        });
+        popup.add(deleteItem);
+        return popup;
+    }
+
     //
     // List item selected
     //
@@ -170,5 +220,36 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
                 order(itemsToOrder);
             }
         }
+    }
+
+    //
+    // Table clicked
+    //
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            JPopupMenu popup = createDeletePopup();
+            popup.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
