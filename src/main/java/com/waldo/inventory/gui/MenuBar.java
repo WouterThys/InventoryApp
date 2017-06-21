@@ -1,7 +1,5 @@
 package com.waldo.inventory.gui;
 
-import com.waldo.inventory.Utils.Error;
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
@@ -10,17 +8,15 @@ import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.net.URL;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class MenuBar extends JMenuBar {
 
-    private ResourceManager resourceManager;
     private final Application application;
 
     public MenuBar(Application application) {
         this.application = application;
-        URL url = Error.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
 
         initializeComponents();
     }
@@ -29,7 +25,7 @@ public class MenuBar extends JMenuBar {
         // File menu
         JMenu fileMenu = new JMenu("File");
 
-        JMenuItem openItem = new JMenuItem("Open", resourceManager.readImage("MenuBar.OpenIcon"));
+        JMenuItem openItem = new JMenuItem("Open", imageResource.readImage("MenuBar.OpenIcon"));
         JMenuItem closeItem = new JMenuItem(("Exit"));
 
         fileMenu.add(openItem);
@@ -40,16 +36,16 @@ public class MenuBar extends JMenuBar {
         // Database menu
         JMenu dbMenu = new JMenu("Database");
 
-        JMenuItem subDivisions = new JMenuItem("Sub divisions", resourceManager.readImage("MenuBar.EditSubDivisionsIcon"));
+        JMenuItem subDivisions = new JMenuItem("Sub divisions", imageResource.readImage("MenuBar.EditSubDivisionsIcon"));
         subDivisions.addActionListener(subDivisionsSelected());
 
-        JMenuItem manufacturers = new JMenuItem("Manufacturers", resourceManager.readImage("MenuBar.EditManufacturers"));
+        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readImage("MenuBar.EditManufacturers"));
         manufacturers.addActionListener(manufacturersSelected());
 
-        JMenuItem distributors = new JMenuItem("Distributors", resourceManager.readImage("MenuBar.EditDistributors"));
+        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readImage("MenuBar.EditDistributors"));
         distributors.addActionListener(distributorsSelected());
 
-        JMenuItem packages = new JMenuItem("Packages", resourceManager.readImage("MenuBar.Packages"));
+        JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("MenuBar.Packages"));
         packages.addActionListener(packagesSelected());
 
         dbMenu.add(subDivisions);
@@ -61,7 +57,7 @@ public class MenuBar extends JMenuBar {
         // Tools menu
         JMenu toolsMenu = new JMenu("Tools");
 
-        JMenuItem importFromCsv = new JMenuItem("Import from csv", resourceManager.readImage("MenuBar.Import"));
+        JMenuItem importFromCsv = new JMenuItem("Import from csv", imageResource.readImage("MenuBar.Import"));
         importFromCsv.addActionListener(importFromCsvSelected());
 
         toolsMenu.add(importFromCsv);

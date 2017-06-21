@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class EditItemDialogLayout extends IDialog implements
         GuiInterface,
         IEditedListener {
@@ -24,8 +26,8 @@ public abstract class EditItemDialogLayout extends IDialog implements
     JTabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    EditItemStockPanel editItemStockPanel;
-    EditItemOrderPanel editItemOrderPanel;
+    private EditItemStockPanel editItemStockPanel;
+    private EditItemOrderPanel editItemOrderPanel;
 
 
     /*
@@ -83,9 +85,9 @@ public abstract class EditItemDialogLayout extends IDialog implements
         editItemOrderPanel.updateComponents(null);
 
         // Add tabs
-        tabbedPane.addTab("Component  ", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
-        tabbedPane.addTab("Stock  ", resourceManager.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("Order  ", resourceManager.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
+        tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
+        tabbedPane.addTab("Stock  ", imageResource.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
+        tabbedPane.addTab("Order  ", imageResource.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
         //tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add
@@ -101,7 +103,7 @@ public abstract class EditItemDialogLayout extends IDialog implements
             if (!newItem.getIconPath().isEmpty()) {
                 try {
                     URL url = new File(newItem.getIconPath()).toURI().toURL();
-                    setTitleIcon(resourceManager.readImage(url, 48, 48));
+                    setTitleIcon(imageResource.readImage(url, 48, 48));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

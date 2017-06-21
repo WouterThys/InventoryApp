@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class DistributorsDialog extends DistributorsDialogLayout {
 
@@ -68,7 +69,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             if (!selectedDistributor.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedDistributor.getIconPath());
             } else {
-                detailLogo.setIcon(resourceManager.readImage("Common.UnknownIcon48"));
+                detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }
 
             // List?

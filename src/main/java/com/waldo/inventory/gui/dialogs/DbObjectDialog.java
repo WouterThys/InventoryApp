@@ -11,6 +11,8 @@ import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import javax.swing.*;
 import java.io.File;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public class DbObjectDialog<T extends DbObject> extends IDialog {
 
     private ITextField nameTextField;
@@ -73,7 +75,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         iconPathTextField = new ITextField();
 
         // File chooser
-        browseIconButton = new JButton(resourceManager.readImage("Common.BrowseIcon"));
+        browseIconButton = new JButton(imageResource.readImage("Common.BrowseIcon"));
         browseIconButton.addActionListener(e -> {
             JFileChooser fileChooser = ImageFileChooser.getFileChooser();
             fileChooser.setCurrentDirectory(new File("./Images/"));

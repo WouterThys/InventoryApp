@@ -15,6 +15,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.IOException;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.WEST;
 
@@ -188,7 +189,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(resourceManager.readImage("DistributorsDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("DistributorsDialog.TitleIcon"));
         setTitleName("Distributors");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -213,7 +214,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         detailWebsite.addEditedListener(this, "website");
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBrowseButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        detailsBrowseButton = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
         detailsBrowseButton.addActionListener(e -> {
             if (!detailWebsite.getText().isEmpty()) {
                 try {

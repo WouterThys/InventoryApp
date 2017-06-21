@@ -13,6 +13,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class OrderDetailsDialogLayout extends IDialog implements
         GuiInterface,
         IEditedListener {
@@ -20,7 +22,7 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
     Order order;
     Order originalOrder;
 
-    JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPane;
 
     ITextField dateOrderedTf;
     ITextField dateReceivedTf;
@@ -38,7 +40,6 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
 
     JPanel orderFileView;
     ITextArea orderFileTa;
-    JTable orderFileTable;
     DefaultTableModel tableModel;
 
     ITextField orderUrlTf;
@@ -48,10 +49,6 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
 
     OrderDetailsDialogLayout(Application application, String title) {
         super(application, title);
-    }
-
-    void updateEnabledComponents() {
-
     }
 
     void fillTableData(DefaultTableModel model, String rawData) {
@@ -172,7 +169,7 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title and save button
-        setTitleIcon(resourceManager.readImage("OrdersDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("OrdersDialog.TitleIcon"));
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
@@ -207,18 +204,18 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
         distributorCb.addEditedListener(this, "distributor");
         distributorWebsiteTf = new ITextField("Web site");
         distributorWebsiteTf.setEnabled(false);
-        distributorsBrowseBtn = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        distributorsBrowseBtn = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
 
         // Order file
         orderFileTa = new ITextArea("Order file");
         orderFileTa.setEnabled(false);
         tableModel = new DefaultTableModel();
-        orderFileTable = new JTable(tableModel);
+        JTable orderFileTable = new JTable(tableModel);
         orderFileTable.setEnabled(false);
         orderUrlTf = new ITextField("Order url");
         orderUrlTf.setEnabled(false);
-        orderUrlBrowseBtn = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
-        copyToClipboardBtn = new JButton(resourceManager.readImage("Common.Copy"));
+        orderUrlBrowseBtn = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
+        copyToClipboardBtn = new JButton(imageResource.readImage("Common.Copy"));
         copyToClipboardBtn.setToolTipText("Copy to clipboard");
         formattedBtn = new JToggleButton("Format", false);
 

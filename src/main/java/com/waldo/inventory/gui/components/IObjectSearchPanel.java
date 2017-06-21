@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Product;
@@ -8,22 +7,20 @@ import com.waldo.inventory.classes.Type;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.TopToolBar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
-    private ResourceManager resourceManager;
     private SearchManager searchManager;
     private IObjectSearchListener objectSearchListener;
 
@@ -42,10 +39,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private JCheckBox advancedCheckbox2;
     private JCheckBox advancedCheckbox3;
 
-    public IObjectSearchPanel(boolean hasAdvancedSearchOption) {
-        URL url = TopToolBar.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
-
+    private IObjectSearchPanel(boolean hasAdvancedSearchOption) {
         searchManager = new SearchManager();
         searchManager.setHasAdvancedSearchOption(hasAdvancedSearchOption);
 
@@ -109,9 +103,9 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private void setSearched(boolean searched) {
         searchManager.setSearched(searched);
         if (searched) {
-            searchButton.setIcon(resourceManager.readImage("Common.SearchDelete"));
+            searchButton.setIcon(imageResource.readImage("Common.SearchDelete"));
         } else {
-            searchButton.setIcon(resourceManager.readImage("Common.Search"));
+            searchButton.setIcon(imageResource.readImage("Common.Search"));
         }
     }
 
@@ -284,7 +278,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         });
 
         // Search button
-        searchButton = new JButton(resourceManager.readImage("Common.Search"));
+        searchButton = new JButton(imageResource.readImage("Common.Search"));
         searchButton.addActionListener(e -> {
             if (searchManager.isSearched()) {
                 clearSearch();

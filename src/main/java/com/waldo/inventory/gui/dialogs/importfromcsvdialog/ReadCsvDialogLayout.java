@@ -11,7 +11,8 @@ import com.waldo.inventory.gui.dialogs.filechooserdialog.CsvFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemListener;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ReadCsvDialogLayout extends IDialog implements GuiInterface {
 
@@ -21,7 +22,7 @@ public abstract class ReadCsvDialogLayout extends IDialog implements GuiInterfac
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField fileNameTf;
-    JButton fileNameOpenBtn;
+    private JButton fileNameOpenBtn;
 
     JCheckBox useHeaderCb;
     ISpinner headerRowSp;
@@ -50,12 +51,12 @@ public abstract class ReadCsvDialogLayout extends IDialog implements GuiInterfac
     public void initializeComponents() {
         // Title
         setTitleName(getTitle());
-        setTitleIcon(resourceManager.readImage("ReadCsvDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("ReadCsvDialog.TitleIcon"));
         getButtonOK().setText("Import");
 
         // File
         fileNameTf = new ITextField("File path");
-        fileNameOpenBtn = new JButton(resourceManager.readImage("Common.BrowseIcon"));
+        fileNameOpenBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
         fileNameOpenBtn.addActionListener(e -> {
             JFileChooser fileChooser = CsvFileChooser.getFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

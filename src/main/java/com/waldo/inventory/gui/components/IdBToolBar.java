@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -8,6 +9,8 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.net.URL;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IdBToolBar extends JToolBar {
 
@@ -48,33 +51,29 @@ public class IdBToolBar extends JToolBar {
     private void init(IdbToolBarListener listener) {
         this.toolBarListener = listener;
 
-        // Resource manager
-        URL url = IdBToolBar.class.getResource("/settings/IconSettings.properties");
-        ResourceManager resourceManager = new ResourceManager(url.getPath());
-
         // Actions
-        refreshAction = new AbstractAction("Refresh", resourceManager.readImage("Toolbar.RefreshIcon")) {
+        refreshAction = new AbstractAction("Refresh", imageResource.readImage("Toolbar.RefreshIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarRefresh();
             }
         };
 
-        addAction = new AbstractAction("Add", resourceManager.readImage("Toolbar.AddIcon")) {
+        addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.AddIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarAdd();
             }
         };
 
-        deleteAction = new AbstractAction("Delete", resourceManager.readImage("Toolbar.DeleteIcon")) {
+        deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.DeleteIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarDelete();
             }
         };
 
-        editAction = new AbstractAction("Update", resourceManager.readImage("Toolbar.EditIcon")) {
+        editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.EditIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolBarListener.onToolBarEdit();

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -9,7 +8,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URL;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class IDialog extends JDialog {
 
@@ -30,7 +30,6 @@ public abstract class IDialog extends JDialog {
     protected JButton buttonCancel;
     protected JButton buttonNeutral;
 
-    protected ResourceManager resourceManager;
     protected Application application;
 
     protected int dialogResult = -1;
@@ -100,9 +99,6 @@ public abstract class IDialog extends JDialog {
 
     private void initializeDialog() {
 
-        URL url = IDialog.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
-
         setContentPane(createPanels());
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -147,7 +143,7 @@ public abstract class IDialog extends JDialog {
 
     private JPanel createTitlePanel() {
         // Components
-        titleIconLabel = new ILabel(resourceManager.readImage("Common.UnknownIcon48"));
+        titleIconLabel = new ILabel(imageResource.readImage("Common.UnknownIcon48"));
         titleIconLabel.setPreferredSize(new Dimension(48,48));
         titleNameLabel = new ILabel("?");
         titleNameLabel.setFontSize(36);

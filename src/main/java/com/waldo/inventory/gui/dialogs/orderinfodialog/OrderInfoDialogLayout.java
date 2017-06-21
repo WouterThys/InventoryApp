@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderinfodialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.OrderFile;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -9,12 +8,15 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialogLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 
 public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterface {
@@ -28,14 +30,9 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
     ITextField orderDistributorUrlTf;
     JButton orderUrlBrowseBtn;
 
-    private ResourceManager stringResource;
-
     OrderInfoDialogLayout(Application application,String title) {
         super(application, title);
         showTitlePanel(false);
-
-        URL url = OrdersDialogLayout.class.getResource("/settings/Strings.properties");
-        stringResource = new ResourceManager(url.getPath());
     }
 
 
@@ -51,7 +48,7 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
         orderFileNameTf.setEditable(false);
         orderDistributorUrlTf = new ITextField();
         orderDistributorUrlTf.setEditable(false);
-        orderUrlBrowseBtn = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        orderUrlBrowseBtn = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
     }
 
     @Override
@@ -113,13 +110,13 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
 
             switch (orderFile.getOrderType()) {
                 case 2: // Mouser
-                    orderDistributorUrlTf.setText(stringResource.readString("OrderInfo.MouserUrl"));
+                    orderDistributorUrlTf.setText(application.stringResource.readString("OrderInfo.MouserUrl"));
                     String txt = createMouserOrderText();
                     orderInfoTf.setText(txt);
                     break;
                 case 3: // Farnell
-                    orderDistributorUrlTf.setText(stringResource.readString("OrderInfo.FarnellUrl"));
-                    orderInfoTf.setText(stringResource.readString("OrderInfo.Farnell"));
+                    orderDistributorUrlTf.setText(application.stringResource.readString("OrderInfo.FarnellUrl"));
+                    orderInfoTf.setText(application.stringResource.readString("OrderInfo.Farnell"));
                     break;
             }
         }

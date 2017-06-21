@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ImportCsvDialog extends ImportCsvDialogLayout {
 
@@ -147,7 +148,7 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
 
     private JPopupMenu createDeletePopup() {
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem deleteItem = new JMenuItem("Delete", resourceManager.readImage("Toolbar.DeleteIcon"));
+        JMenuItem deleteItem = new JMenuItem("Delete", imageResource.readImage("Toolbar.DeleteIcon"));
         deleteItem.addActionListener(e -> {
             // Get selected values
             int[] selectedRows = objectTable.getSelectedRows();

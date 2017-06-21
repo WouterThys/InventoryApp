@@ -15,7 +15,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -28,7 +27,9 @@ public class Application extends JFrame implements ChangeListener {
     public static final int TAB_ITEMS = 0;
     public static final int TAB_ORDERS = 1;
 
-    private ResourceManager resourceManager;
+    public static ResourceManager imageResource;
+    public static ResourceManager stringResource;
+    public static ResourceManager scriptResource;
 
     public JTabbedPane tabbedPane;
 
@@ -41,13 +42,14 @@ public class Application extends JFrame implements ChangeListener {
         // Status
         Status().init();
 
+        // Resource manager
+        imageResource = new ResourceManager("settings/IconSettings.properties");
+        stringResource = new ResourceManager("settings/Strings.properties");
+        scriptResource = new ResourceManager("db/scripts/scripts.properties");
+
         // Initialize dB
         db().init();
         db().registerShutDownHook();
-
-        // Resource manager
-        URL url = Application.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
 
         // Components
         initComponents();
@@ -73,8 +75,8 @@ public class Application extends JFrame implements ChangeListener {
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
-        tabbedPane.addTab("Components", resourceManager.readImage("EditItem.InfoIcon"), mainPanel, "Components");
-        tabbedPane.addTab("Orders", resourceManager.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
+        tabbedPane.addTab("Components", imageResource.readImage("EditItem.InfoIcon"), mainPanel, "Components");
+        tabbedPane.addTab("Orders", imageResource.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 

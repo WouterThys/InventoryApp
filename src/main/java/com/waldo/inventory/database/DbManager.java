@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class DbManager implements TableChangedListener {
@@ -61,13 +62,7 @@ public class DbManager implements TableChangedListener {
     private List<PartNumber> partNumbers;
     private List<PackageType> packageTypes;
 
-    // Scrips
-    private ResourceManager scriptResource;
-
-    private DbManager() {
-        URL url = DbObject.class.getResource("/db/scripts/scripts.properties");
-        scriptResource = new ResourceManager(url.getPath());
-    }
+    private DbManager() {}
 
     public void init() {
         dataSource = new BasicDataSource();

@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.WEST;
 
@@ -159,7 +160,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title and neutral button
-        setTitleIcon(resourceManager.readImage("PackageDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("PackageDialog.TitleIcon"));
         setTitleName("Package Types");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

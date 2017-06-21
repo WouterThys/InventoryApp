@@ -420,7 +420,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeLayouts() {
         // Add tabs
-        //tabbedPane.addTab("Basic  ", resourceManager.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
+        //tabbedPane.addTab("Basic  ", imageResource.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Basic", createBasicPanel());
         tabbedPane.addTab("Details", createDetailsPanel());
 

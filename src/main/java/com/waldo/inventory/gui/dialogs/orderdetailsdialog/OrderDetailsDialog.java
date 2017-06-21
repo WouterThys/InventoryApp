@@ -1,19 +1,18 @@
 package com.waldo.inventory.gui.dialogs.orderdetailsdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialogLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
+
+import static com.waldo.inventory.gui.Application.stringResource;
 
 public class OrderDetailsDialog extends OrderDetailsDialogLayout {
 
@@ -181,9 +180,6 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout {
                 }
                 // Table for formatted order file
                 if (order.getDistributor() != null) {
-                    URL url = OrdersDialogLayout.class.getResource("/settings/Strings.properties");
-                    ResourceManager stringResource = new ResourceManager(url.getPath());
-
                     if (order.getDistributor().getId() == 2) { // Mouser
                         orderUrlTf.setText(stringResource.readString("OrderInfo.MouserUrl"));
                     }

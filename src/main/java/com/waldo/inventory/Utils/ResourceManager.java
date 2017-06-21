@@ -16,23 +16,19 @@ import java.util.logging.Logger;
 public class ResourceManager {
 
     private Properties properties;
-    private String propertiesFile;
     private String resourceURL;
 
-    /**
-     *
-     * @param propertiesFile
-     */
-    public ResourceManager(String propertiesFile) {
-        this.propertiesFile = propertiesFile;
-        resourceURL = propertiesFile.substring(0, propertiesFile.lastIndexOf("/"));
-        resourceURL = propertiesFile.substring(0, resourceURL.lastIndexOf("/")+1);
+
+    public ResourceManager(String propertiesUrl, String fileName) {
+        this.resourceURL = propertiesUrl;
         properties = new Properties();
+
         try {
-            properties.load(new FileInputStream(propertiesFile));
-        } catch (IOException ex) {
+            properties.load(getClass().getClassLoader().getResourceAsStream(propertiesUrl + fileName));
+        } catch (Exception ex) {
             Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
 

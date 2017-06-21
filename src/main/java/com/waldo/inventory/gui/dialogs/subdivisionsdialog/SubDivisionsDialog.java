@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
@@ -115,11 +116,11 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 try {
                     iconLabel.setIcon(selectedObject.getIconPath());
                 } catch (Exception e) {
-                    iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+                    iconLabel.setIcon(imageResource.readImage("Common.UnknownIcon32"));
                     e.printStackTrace();
                 }
             } else {
-                iconLabel.setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+                iconLabel.setIcon(imageResource.readImage("Common.UnknownIcon32"));
             }
         } else {
             iconLabel.setIcon((Icon) null);

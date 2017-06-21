@@ -18,6 +18,8 @@ import java.awt.event.*;
 import java.text.ParseException;
 import java.util.EventObject;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public class ITableEditors {
 
     public abstract static class SpinnerEditor extends DefaultCellEditor implements ChangeListener {
@@ -91,8 +93,6 @@ public class ITableEditors {
 
     public static class AmountRenderer extends DefaultTableCellRenderer {
 
-        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/IconSettings.properties").getPath());
-
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
@@ -104,14 +104,14 @@ public class ITableEditors {
                 lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
                 ILabel lblIcon;
                 if (item.getOrderState() == Statics.ItemOrderState.ORDERED) {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.blue"));
+                    lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
                 } else if (item.getOrderState() == Statics.ItemOrderState.PLANNED) {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.yellow"));
+                    lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
                 } else {
                     if (item.getAmount() > 0) {
-                        lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                        lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                     } else {
-                        lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
                     }
                 }
 
@@ -126,8 +126,6 @@ public class ITableEditors {
 
     public static class CheckRenderer extends DefaultTableCellRenderer {
 
-        ResourceManager resourceManager = new ResourceManager(IItemTableModel.class.getResource("/settings/IconSettings.properties").getPath());
-
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
@@ -140,12 +138,12 @@ public class ITableEditors {
 
                 ILabel lblIcon;
                 if (object.isValid()) {
-                    lblIcon = new ILabel(resourceManager.readImage("Ball.green"));
+                    lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                 } else {
                     if (object.getFound() == 0) {
-                        lblIcon = new ILabel(resourceManager.readImage("Ball.red"));
+                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
                     } else {
-                        lblIcon = new ILabel(resourceManager.readImage("Ball.yellow"));
+                        lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
                         lblText.setText(String.valueOf(object.getFound()));
                     }
                 }

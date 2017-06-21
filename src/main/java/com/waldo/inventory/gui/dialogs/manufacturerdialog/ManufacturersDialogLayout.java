@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.IOException;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialog implements
@@ -189,7 +190,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(resourceManager.readImage("ManufacturersDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("ManufacturersDialog.TitleIcon"));
         setTitleName("Manufacturers");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -215,7 +216,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         detailLogo = new ILabel();
         //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBrowseButton = new JButton(resourceManager.readImage("Common.BrowseWebSiteIcon"));
+        detailsBrowseButton = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
         detailsBrowseButton.addActionListener(e -> {
             if (!detailWebsite.getText().isEmpty())
                 try {

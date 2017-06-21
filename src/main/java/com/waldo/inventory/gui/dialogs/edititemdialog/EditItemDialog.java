@@ -14,6 +14,7 @@ import java.net.URL;
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
@@ -129,7 +130,7 @@ public class EditItemDialog extends EditItemDialogLayout {
                         newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
-                            lbl.setIcon(resourceManager.readImage(url, 48,48));
+                            lbl.setIcon(imageResource.readImage(url, 48,48));
                         } catch (IOException e2) {
                             e2.printStackTrace();
                         }

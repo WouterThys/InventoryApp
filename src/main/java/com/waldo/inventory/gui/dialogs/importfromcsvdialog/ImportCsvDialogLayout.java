@@ -14,6 +14,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class ImportCsvDialogLayout extends IDialog implements
         GuiInterface,
         ListSelectionListener,
@@ -54,7 +56,7 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title
         setTitleName(getTitle());
-        setTitleIcon(resourceManager.readImage("ReadCsvDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("ReadCsvDialog.TitleIcon"));
         getButtonOK().setText("Import");
 
         // Table

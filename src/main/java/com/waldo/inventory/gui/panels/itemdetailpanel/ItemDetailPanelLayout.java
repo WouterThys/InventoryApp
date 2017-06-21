@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.itemdetailpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
@@ -9,7 +8,6 @@ import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
@@ -30,7 +28,6 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ResourceManager resourceManager;
     Application application;
 
     /*
@@ -38,8 +35,6 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ItemDetailPanelLayout(Application application) {
         this.application = application;
-        URL url = ItemDetailPanelLayout.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
     }
 
     /*

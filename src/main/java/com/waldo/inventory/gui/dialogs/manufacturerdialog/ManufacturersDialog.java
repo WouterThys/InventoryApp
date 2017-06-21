@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
 
@@ -58,7 +59,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             if (!selectedManufacturer.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedManufacturer.getIconPath(), 48,48);
             } else {
-                detailLogo.setIcon(resourceManager.readImage("Common.UnknownIcon48"));
+                detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }
 
             detailItemDefaultListModel.removeAllElements();

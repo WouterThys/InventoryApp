@@ -1,18 +1,17 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.database.*;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
-import com.waldo.inventory.gui.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.net.URL;
 import java.sql.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.waldo.inventory.gui.Application.scriptResource;
 
 public abstract class DbObject {
 
@@ -47,8 +46,6 @@ public abstract class DbObject {
     private String sqlUpdate;
     private String sqlDelete;
 
-    protected static ResourceManager scriptResource;
-
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setString(2, iconPath);
@@ -64,9 +61,6 @@ public abstract class DbObject {
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
-
-        URL url = DbObject.class.getResource("/db/scripts/scripts.properties");
-        scriptResource = new ResourceManager(url.getPath());
 
         this.sqlInsert = scriptResource.readString(tableName + "." + "sqlInsert");
         this.sqlUpdate = scriptResource.readString(tableName + "." + "sqlUpdate");

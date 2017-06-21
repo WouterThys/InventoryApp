@@ -1,8 +1,9 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.gui.*;
+import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
 
@@ -11,8 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -39,7 +39,6 @@ public abstract class MainPanelLayout extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ResourceManager resourceManager;
     Application application;
 
     Item selectedItem;
@@ -48,11 +47,8 @@ public abstract class MainPanelLayout extends JPanel implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public MainPanelLayout(Application application) {
+    MainPanelLayout(Application application) {
         this.application = application;
-
-        URL url = MainPanel.class.getResource("/settings/IconSettings.properties");
-        resourceManager = new ResourceManager(url.getPath());
     }
 
     /*

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ILabel extends JLabel {
@@ -73,16 +74,14 @@ public class ILabel extends JLabel {
     }
 
     public void setIcon(String path) {
-        URL url = ILabel.class.getResource("/settings/IconSettings.properties");
-        ResourceManager resourceManager = new ResourceManager(url.getPath());
-
+        URL url;
         try {
             url = new File(path).toURI().toURL();
-            ImageIcon icon = resourceManager.readImage(url);
+            ImageIcon icon = imageResource.readImage(url);
             if (icon.getIconWidth() > 0) {
                 setIcon(icon);
             } else {
-                setIcon(resourceManager.readImage("Common.UnknownIcon32"));
+                setIcon(imageResource.readImage("Common.UnknownIcon32"));
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -90,12 +89,10 @@ public class ILabel extends JLabel {
     }
 
     public void setIcon(String path, int width, int height) {
-        URL url = ILabel.class.getResource("/settings/IconSettings.properties");
-        ResourceManager resourceManager = new ResourceManager(url.getPath());
-
+        URL url;
         try {
             url = new File(path).toURI().toURL();
-            setIcon(resourceManager.readImage(url, width, height));
+            setIcon(imageResource.readImage(url, width, height));
         } catch (IOException e) {
             e.printStackTrace();
         }

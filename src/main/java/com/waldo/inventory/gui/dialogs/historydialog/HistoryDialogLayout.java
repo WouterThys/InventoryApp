@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
 
     private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -113,7 +115,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
                     case DbObject.TYPE_ORDER:
                         Order order = (Order) o;
                         tableModel.addRow(new Object[] {
-                                resourceManager.readImage("HistoryDialog.OrderIcon"),
+                                imageResource.readImage("HistoryDialog.OrderIcon"),
                                 order,
                                 dateFormatLong.format(order.getDateModified()),
                                 "Go"
@@ -125,7 +127,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
             }
 
             setTitleName(historyItem.getName());
-            setTitleIcon(resourceManager.readImage(historyItem.getIconPath()));
+            setTitleIcon(imageResource.readImage(historyItem.getIconPath()));
         }
 
     }

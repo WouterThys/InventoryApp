@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 import static javax.swing.SpringLayout.EAST;
 import static javax.swing.SpringLayout.SOUTH;
@@ -150,7 +151,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title
         setTitleName("Sub Divisions");
-        setTitleIcon(resourceManager.readImage("SubDivisionDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("SubDivisionDialog.TitleIcon"));
 
         // Sub divisions list
         String[] subDivisions = new String[]{"Categories", "Products", "Types"};
@@ -166,7 +167,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         selectionComboBox = new JComboBox<>(selectionCbModel);
 
         // Icon
-        iconLabel = new ILabel(resourceManager.readImage("SubDivisionDialog.EditIcon"));
+        iconLabel = new ILabel(imageResource.readImage("SubDivisionDialog.EditIcon"));
 
         // Toolbar
         toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
