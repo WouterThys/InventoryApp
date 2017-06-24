@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
+import java.io.File;
 import java.sql.SQLException;
 
 public class Main {
@@ -18,10 +19,13 @@ public class Main {
 
         LOG.info("\n \t Starting application \n *******************************************************************\n");
 
+        String startUpPath = new File("").getAbsolutePath() + File.separator;
+        LOG.info("Start application at " + startUpPath);
+
         SwingUtilities.invokeLater(() -> {
             setLookAndFeel();
 
-            Application app = new Application();
+            Application app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setMinimumSize(new Dimension(1500,800));
             app.setLocationByPlatform(true);
@@ -49,7 +53,7 @@ public class Main {
                 }
             });
         } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
+            LOG.error("Error settings look and feel.", e);
         }
 
 
@@ -77,7 +81,6 @@ public class Main {
 //                    + lookAndFeel
 //                    + "), for some reason.");
 //            System.err.println("Using the default look and feel.");
-//            e.printStackTrace();
 //        }
     }
 
@@ -97,7 +100,7 @@ public class Main {
                 try {
                     UIManager.setLookAndFeel(info.getClassName());
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-                    e.printStackTrace();
+                    LOG.error("Error loading Nimbus look and feel", e);
                 }
                 UIManager.getLookAndFeelDefaults().put(
                         "TabbedPane:TabbedPaneTabArea[Disabled].backgroundPainter", null);

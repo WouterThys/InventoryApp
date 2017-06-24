@@ -1,6 +1,8 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ResourceManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicLabelUI;
@@ -17,6 +19,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ILabel extends JLabel {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ILabel.class);
 
     private String statusInfo = "";
 
@@ -84,7 +88,7 @@ public class ILabel extends JLabel {
                 setIcon(imageResource.readImage("Common.UnknownIcon32"));
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOG.error("Error settning icon.", e);
         }
     }
 
@@ -94,7 +98,7 @@ public class ILabel extends JLabel {
             url = new File(path).toURI().toURL();
             setIcon(imageResource.readImage(url, width, height));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error settning icon.", e);
         }
     }
 

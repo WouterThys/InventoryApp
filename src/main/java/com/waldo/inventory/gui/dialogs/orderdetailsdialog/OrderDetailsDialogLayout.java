@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderDetailsDialogLayout extends IDialog implements
         GuiInterface,
@@ -65,7 +66,7 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
             model.addColumn("Amount", amounts);
             model.fireTableDataChanged();
         } catch (Exception e) {
-            e.printStackTrace();
+            Status().setError("Error filling table data.", e);
         }
     }
 

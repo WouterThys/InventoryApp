@@ -3,6 +3,8 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.Comparator;
@@ -11,6 +13,7 @@ import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Item extends DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Item.class);
     public static final String TABLE_NAME = "items";
 
     private String description = "";
@@ -290,7 +293,7 @@ public class Item extends DbObject {
         try {
             this.price = Double.valueOf(price);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting price.", e);
         }
     }
 
@@ -306,7 +309,7 @@ public class Item extends DbObject {
         try {
             this.categoryId = Long.valueOf(categoryId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting category id.", e);
         }
     }
 
@@ -322,7 +325,7 @@ public class Item extends DbObject {
         try {
             this.productId = Long.valueOf(productId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting product id.", e);
         }
     }
 
@@ -338,7 +341,7 @@ public class Item extends DbObject {
         try {
             this.typeId = Long.valueOf(typeId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting type id.", e);
         }
     }
 
@@ -376,7 +379,7 @@ public class Item extends DbObject {
         try {
             this.manufacturerId = Long.valueOf(manufacturerId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting manufacturer id.", e);
         }
     }
 
@@ -400,7 +403,7 @@ public class Item extends DbObject {
         try {
             this.amount = Integer.valueOf(amount);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting amount.", e);
         }
     }
 
@@ -416,7 +419,7 @@ public class Item extends DbObject {
         try {
             this.amountType = Integer.valueOf(amountType);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting amount type.", e);
         }
     }
 
@@ -432,7 +435,7 @@ public class Item extends DbObject {
         try {
             this.orderState = Integer.valueOf(orderState);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting order state.", e);
         }
     }
 
@@ -448,7 +451,7 @@ public class Item extends DbObject {
         try {
             this.packageTypeId = Long.valueOf(packageTypeId);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting package type.", e);
         }
     }
 
@@ -464,7 +467,7 @@ public class Item extends DbObject {
         try {
             this.pins = Integer.valueOf(pins);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting pins.", e);
         }
     }
 
@@ -480,7 +483,7 @@ public class Item extends DbObject {
         try {
             this.width = Integer.valueOf(width);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting width.", e);
         }
     }
 
@@ -496,7 +499,7 @@ public class Item extends DbObject {
         try {
             this.height = Integer.valueOf(height);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting height.", e);
         }
     }
 }

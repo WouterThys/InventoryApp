@@ -16,6 +16,8 @@ import java.sql.SQLException;
 import java.util.TimerTask;
 import java.util.List;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class QueryPanel extends JPanel {
 
     private Application app;
@@ -91,7 +93,7 @@ public class QueryPanel extends JPanel {
             }
             tableNamesString = tableNamesString.substring(0, tableNamesString.length()-2); // remove last | again
         } catch (SQLException e) {
-            e.printStackTrace();
+            Status().setError("Error initializing.", e);
         }
 
         final String finalTableNamesString = tableNamesString;
@@ -204,7 +206,7 @@ public class QueryPanel extends JPanel {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Status().setError("Failed to execute query: " + query, e);
             setError("Failed to execute query: " + query);
         }
     }

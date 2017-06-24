@@ -1,6 +1,5 @@
 package com.waldo.inventory.database;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.*;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -9,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,10 +62,10 @@ public class DbManager implements TableChangedListener {
 
     private DbManager() {}
 
-    public void init() {
+    public void init(String dbFile) {
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        dataSource.setUrl("jdbc:log4jdbc:sqlite:data/inventory.db");
+        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + dbFile);
         dataSource.setUsername("waldo");
         dataSource.setPassword("");
         dataSource.setMaxIdle(600);
@@ -89,13 +87,13 @@ public class DbManager implements TableChangedListener {
                 stmt.execute();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Error reading from db.", e);
         }
 
         try {
             tableNames = getTableNames();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Error initializing db.", e);
         }
     }
 
@@ -105,7 +103,7 @@ public class DbManager implements TableChangedListener {
             try {
                 dataSource.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.error("Error closing db.", e);
             }
         }
     }
@@ -412,7 +410,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database: "+ e);
-            e.printStackTrace();
         }
     }
 
@@ -476,7 +473,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database: "+ e);
-            e.printStackTrace();
         }
         return i;
     }
@@ -515,7 +511,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch categories from database");
-            e.printStackTrace();
         }
         categories.add(0, Category.getUnknownCategory());
     }
@@ -538,7 +533,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch categories from database");
-            e.printStackTrace();
         }
         return c;
     }
@@ -603,7 +597,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch products from database");
-            e.printStackTrace();
         }
 
         products.add(0, Product.getUnknownProduct());
@@ -626,7 +619,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch products from database");
-            e.printStackTrace();
         }
         return p;
     }
@@ -691,7 +683,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
         types.add(0, Type.getUnknownType());
     }
@@ -715,7 +706,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
         return t;
     }
@@ -780,7 +770,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch manufacturers from databasee");
-            e.printStackTrace();
         }
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
     }
@@ -804,7 +793,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch manufacturers from databasee");
-            e.printStackTrace();
         }
        return m;
     }
@@ -842,7 +830,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch locations from database");
-            e.printStackTrace();
         }
         locations.add(0, Location.getUnknownLocation());
     }
@@ -865,7 +852,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch locations from database");
-            e.printStackTrace();
         }
         return l;
     }
@@ -911,7 +897,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database");
-            e.printStackTrace();
         }
         orders.add(0, Order.getUnknownOrder());
         orders.sort(new Order.OrderAllOrders());
@@ -943,7 +928,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database");
-            e.printStackTrace();
         }
         return o;
     }
@@ -984,7 +968,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database");
-            e.printStackTrace();
         }
     }
 
@@ -1009,7 +992,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch order item from database");
-            e.printStackTrace();
         }
         return o;
     }
@@ -1037,11 +1019,9 @@ public class DbManager implements TableChangedListener {
                 onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETED, OrderItem.createDummyOrderItem(orderItem.getOrder(), orderItem.getItem()), null);
             } catch (SQLException e) {
                 Status().setError("Failed to detele item from order");
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             Status().setError("Failed to detele item from order");
-            e.printStackTrace();
         }
     }
 
@@ -1079,7 +1059,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch distributors from database");
-            e.printStackTrace();
         }
     }
 
@@ -1102,7 +1081,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch distributor from database");
-            e.printStackTrace();
         }
         return d;
     }
@@ -1144,7 +1122,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch part numbers from database");
-            e.printStackTrace();
         }
     }
 
@@ -1169,7 +1146,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch part number from database");
-            e.printStackTrace();
         }
         return pn;
     }
@@ -1197,7 +1173,7 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch part number from database");
-            e.printStackTrace();
+            LOG.error("Error in findPartNumberFromDb.", e);
         }
         return pn;
     }
@@ -1235,7 +1211,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch package types from database");
-            e.printStackTrace();
         }
     }
 
@@ -1257,7 +1232,6 @@ public class DbManager implements TableChangedListener {
             }
         } catch (SQLException e) {
             Status().setError("Failed to fetch package type from database");
-            e.printStackTrace();
         }
         return pt;
     }

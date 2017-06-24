@@ -3,28 +3,28 @@ package com.waldo.inventory.Utils;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class ResourceManager {
 
     private Properties properties;
-    private String resourceURL;
+    private InputStream resourceInput;
+    private String resourceFileName;
 
 
     public ResourceManager(String propertiesUrl, String fileName) {
-        this.resourceURL = propertiesUrl;
         properties = new Properties();
-
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(propertiesUrl + fileName));
+            resourceFileName = propertiesUrl + fileName;
+            resourceInput = getClass().getClassLoader().getResourceAsStream(resourceFileName);
+            properties.load(resourceInput);
         } catch (Exception ex) {
             Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,7 +99,22 @@ public class ResourceManager {
     }
 
     public ImageIcon readImage(String key) {
-        return new ImageIcon(Toolkit.getDefaultToolkit().createImage(resourceURL + readString(key)));
+        InputStream is = null;
+        try {
+            is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key));
+            return new ImageIcon(ImageIO.read(is));
+        } catch (Exception e) {
+            Status().setError("Error loading image icon " + key, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    Status().setError("Error closing input stream", e);
+                }
+            }
+        }
+        return null;
     }
 
     public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {

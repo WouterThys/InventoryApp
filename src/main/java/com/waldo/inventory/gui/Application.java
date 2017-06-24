@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class Application extends JFrame implements ChangeListener {
     public static final int TAB_ITEMS = 0;
     public static final int TAB_ORDERS = 1;
 
+    public static String startUpPath;
+    //public static ResourceManager settingsResource;
     public static ResourceManager imageResource;
     public static ResourceManager stringResource;
     public static ResourceManager scriptResource;
@@ -37,23 +40,39 @@ public class Application extends JFrame implements ChangeListener {
     private OrderPanel orderPanel;
 
     private boolean updating = false;
+    private String dbFileName = "";
 
-    public Application() {
+    public Application(String startUpPath) {
+        Application.startUpPath = startUpPath;
         // Status
         Status().init();
 
         // Resource manager
-        imageResource = new ResourceManager("settings/IconSettings.properties");
-        stringResource = new ResourceManager("settings/Strings.properties");
-        scriptResource = new ResourceManager("db/scripts/scripts.properties");
+        try {
+            imageResource = new ResourceManager("settings/", "IconSettings.properties");
+            stringResource = new ResourceManager("settings/", "Strings.properties");
+            scriptResource = new ResourceManager("db/scripts/", "scripts.properties");
+        } catch (Exception e) {
+            LOG.error("Error initializing resources.", e);
+            //System.exit(-1);
+        }
 
         // Initialize dB
-        db().init();
+        dbFileName = startUpPath + "inventory.db";
+        File check = new File(dbFileName);
+        if (check.exists()) {
+            LOG.info("Reading db at " + dbFileName);
+            db().init(dbFileName);
+        } else {
+            LOG.error("No db file found at: " + dbFileName);
+            //System.exit(-1);
+        }
         db().registerShutDownHook();
 
         // Components
         initComponents();
     }
+
 
     private void initComponents() {
         setLayout(new BorderLayout());

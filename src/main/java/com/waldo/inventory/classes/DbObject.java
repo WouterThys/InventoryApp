@@ -154,7 +154,7 @@ public abstract class DbObject {
                         try {
                             onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this, null);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            LOG.error("Error calling onTableChangedListener.", e);
                         }
                     }
                 } else { // Update
@@ -163,7 +163,7 @@ public abstract class DbObject {
                         try {
                             onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this, oldObject);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            LOG.error("Error calling onTableChangedListener.", e);
                         }
                     }
                 }

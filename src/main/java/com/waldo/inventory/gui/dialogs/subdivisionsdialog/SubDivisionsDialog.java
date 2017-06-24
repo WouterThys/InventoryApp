@@ -15,6 +15,7 @@ import java.util.List;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
@@ -117,7 +118,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     iconLabel.setIcon(selectedObject.getIconPath());
                 } catch (Exception e) {
                     iconLabel.setIcon(imageResource.readImage("Common.UnknownIcon32"));
-                    e.printStackTrace();
+                    Status().setError("Error reading icon, setting default value.", e);
                 }
             } else {
                 iconLabel.setIcon(imageResource.readImage("Common.UnknownIcon32"));

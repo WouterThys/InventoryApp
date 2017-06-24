@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 
 public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterface {
@@ -136,13 +137,13 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
                         result += parts[0] + " " + parts[1] + "\n";
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Status().setError("Error creating Mouser order text.", e);
                 } finally {
                     if (bufferedReader != null) {
                         try {
                             bufferedReader.close();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Status().setError("Error closing buffered reader.", e);
                         }
                     }
                 }

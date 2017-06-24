@@ -1,14 +1,15 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.gui.GuiInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class IStatusStrip extends JPanel implements GuiInterface {
 
+    private static final Logger LOG = LoggerFactory.getLogger(IStatusStrip.class);
     private static final IStatusStrip INSTANCE = new IStatusStrip();
     private static final int ERROR_TIME = 5000; // milli seconds
     private static final int WARN_TIME = 3000; // milli seconds
@@ -54,6 +55,11 @@ public class IStatusStrip extends JPanel implements GuiInterface {
         statusLabel.setForeground(Color.RED);
         statusLabel.setText(error);
         runTimer(ERROR_TIME);
+    }
+
+    public void setError(String error, Throwable throwable) {
+        LOG.error(error, throwable);
+        setError(error);
     }
 
     private void runTimer(int delay) {

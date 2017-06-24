@@ -1,6 +1,8 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.Date;
@@ -9,8 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.startUpPath;
+
 public class OrderFile {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OrderFile.class);
     public static final String SEPARATOR = ",";
 
     private Order order;
@@ -24,12 +29,13 @@ public class OrderFile {
     }
 
     public void loadOrderFile(String fileName) {
+        success = false;
         if (order.getDistributor() != null && fileName != null && !fileName.isEmpty()) {
             orderType = (int) order.getDistributor().getId();
-            orderFile = new File(".","OrderFiles/"+fileName);
-            success = true;
-        } else {
-            success = false;
+            orderFile = new File(startUpPath + "orderfiles" + File.separator+ fileName);
+            if (orderFile.exists()) {
+                success = true;
+            }
         }
     }
 
@@ -44,7 +50,7 @@ public class OrderFile {
             orderFile = createOrderFile(order);
             success = true;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("File not found.", e);
             errorMessages.add(e.getMessage());
             success = false;
         }
@@ -60,7 +66,6 @@ public class OrderFile {
 //                    orderFile = createOrderFile(order);
 //                    success = true;
 //                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
 //                    errorMessages.add(e.getMessage());
 //                    success = false;
 //                }

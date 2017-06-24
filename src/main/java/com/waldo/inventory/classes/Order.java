@@ -2,7 +2,8 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,10 +15,11 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Order extends DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Order.class);
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;
@@ -302,7 +304,7 @@ public class Order extends DbObject {
         try {
             this.distributor = sm().findDistributorById(Long.valueOf(id));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error setting distributor.", e);
         }
     }
 

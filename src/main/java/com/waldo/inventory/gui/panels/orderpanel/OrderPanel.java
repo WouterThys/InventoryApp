@@ -27,6 +27,7 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class OrderPanel extends OrderPanelLayout {
 
@@ -242,7 +243,7 @@ public class OrderPanel extends OrderPanelLayout {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Status().setError("Error in order changed", e);
         } finally {
             application.endWait();
         }
@@ -288,7 +289,7 @@ public class OrderPanel extends OrderPanelLayout {
                 orderItemDetailPanel.updateComponents(selectedItem);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Status().setError("Error in setting selected item.", e);
         } finally {
             application.endWait();
         }
