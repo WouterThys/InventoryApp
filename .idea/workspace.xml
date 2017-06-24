@@ -776,13 +776,6 @@
       <option name="presentableId" value="Default" />
       <updated>1488383528388</updated>
     </task>
-    <task id="LOCAL-00068" summary="Just some updates&#10;">
-      <created>1492250354988</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1492250354988</updated>
-    </task>
     <task id="LOCAL-00069" summary="Updating tree model">
       <created>1492265415001</created>
       <option name="number" value="00069" />
@@ -1119,7 +1112,14 @@
       <option name="project" value="LOCAL" />
       <updated>1497985892296</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="Loose ends">
+      <created>1498309267192</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1498309267193</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1232,7 +1232,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Order state, amount in table" />
     <MESSAGE value="Some order fixes" />
     <MESSAGE value="Create farnell order" />
     <MESSAGE value="Separate order tool bars&#10;" />
@@ -1257,7 +1256,8 @@
     <MESSAGE value="Order details dialog finished" />
     <MESSAGE value="Import from csv is getting pretty advanced" />
     <MESSAGE value="Import from csv is getting pretty advanced2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Import from csv is getting pretty advanced2" />
+    <MESSAGE value="Loose ends" />
+    <option name="LAST_COMMIT_MESSAGE" value="Loose ends" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
