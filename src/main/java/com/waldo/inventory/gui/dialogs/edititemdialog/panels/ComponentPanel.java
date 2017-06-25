@@ -23,6 +23,7 @@ import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
 
@@ -201,7 +202,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Local data sheet
         localDataSheetTextField = new ITextField();
         localDataSheetTextField.addEditedListener(editedListener, "localDataSheet");
-        localDataSheetButton = new JButton(FileUtils.loadImageIcon("folder"));
+        localDataSheetButton = new JButton(imageResource.readImage("Common.BrowseIcon"));
         localDataSheetButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

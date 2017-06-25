@@ -109,7 +109,7 @@ public class OrderFile {
     }
 
     private File createOrderFile(Order order) throws FileNotFoundException {
-        File orderFile = new File(".","OrderFiles/"+createOrderFileName(order));
+        File orderFile = new File(startUpPath + "orderfiles" + File.separator + createOrderFileName(order));
         PrintWriter pw = new PrintWriter(orderFile);
         StringBuilder sb = new StringBuilder();
 

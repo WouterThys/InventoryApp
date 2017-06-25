@@ -31,7 +31,7 @@ public class FileUtils {
 
     public static ImageIcon loadImageIcon(final String name) {
         try {
-            return new ImageIcon(FileUtils.class.getResource("/data/icons/" + name + "/" + name + "16" + ".png"));
+            return new ImageIcon(FileUtils.class.getResource("/src/main/resources/icons/" + name + "/" + name + "16" + ".png"));
         } catch (Exception e) {
             Status().setError("Error loading image icon " + name, e);
         }

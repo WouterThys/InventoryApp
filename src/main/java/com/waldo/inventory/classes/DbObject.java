@@ -40,7 +40,7 @@ public abstract class DbObject {
 
     private TableChangedListener onTableChangedListener;
     private DbObject oldObject;
-    private boolean canBeSaved = true;
+    protected boolean canBeSaved = true;
 
     private String sqlInsert;
     private String sqlUpdate;
@@ -95,7 +95,7 @@ public abstract class DbObject {
         this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + tableName + " WHERE id = ?");
     }
 
-    private void doSave() throws SQLException {
+    protected void doSave() throws SQLException {
         setOnTableChangedListener(DbManager.db());
 
         long startTime = System.nanoTime();
@@ -177,7 +177,7 @@ public abstract class DbObject {
         }
     }
 
-    private void doDelete() throws SQLException {
+    protected void doDelete() throws SQLException {
         if (id != -1) {
             LOG.debug("Start deleting in " + TABLE_NAME);
             setOldObject();

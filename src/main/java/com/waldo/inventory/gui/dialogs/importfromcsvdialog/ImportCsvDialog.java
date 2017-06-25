@@ -75,8 +75,16 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
                 String[] usefulRows = Arrays.copyOfRange(rawRows, firstRow, rawRows.length);
                 String headerRow;
                 if (useHeader) {
-                    tableColumnNames = usefulRows[0].split(",");
-                    tableColumnNames = ArrayUtils.removeElement(tableColumnNames, valueColumn);
+                    String[] names = usefulRows[0].split(",");
+                    //tableColumnNames = ArrayUtils.removeElement(names, valueColumn);
+                    tableColumnNames = new String[names.length-1];
+                    int cnt = 0;
+                    for (int i = 0; i < names.length; i++) {
+                        if (i != valueColumn) {
+                            tableColumnNames[cnt] = names[i];
+                            cnt++;
+                        }
+                    }
                     usefulRows = Arrays.copyOfRange(usefulRows, 1, usefulRows.length);
                 }
 

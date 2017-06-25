@@ -73,8 +73,8 @@ public class Item extends DbObject {
         }
         statement.setLong(15, packageTypeId);
         statement.setInt(16, pins);
-        statement.setDouble(17, width);
-        statement.setDouble(18, height);
+        statement.setDouble(17, getWidth());
+        statement.setDouble(18, getHeight());
         statement.execute();
     }
 
@@ -114,8 +114,8 @@ public class Item extends DbObject {
         }
         statement.setLong(15, packageTypeId);
         statement.setInt(16, pins);
-        statement.setDouble(17, width);
-        statement.setDouble(18, height);
+        statement.setDouble(17, getWidth());
+        statement.setDouble(18, getHeight());
 
         statement.setLong(19, id); // WHERE id
         statement.execute();
@@ -291,7 +291,9 @@ public class Item extends DbObject {
 
     public void setPrice(String price) {
         try {
-            this.price = Double.valueOf(price);
+            if (!price.isEmpty()) {
+                this.price = Double.valueOf(price);
+            }
         } catch (Exception e) {
             LOG.error("Error setting price.", e);
         }
@@ -481,7 +483,9 @@ public class Item extends DbObject {
 
     public void setWidth(String width) {
         try {
-            this.width = Integer.valueOf(width);
+            if (!width.isEmpty()) {
+                this.width = Integer.valueOf(width);
+            }
         } catch (Exception e) {
             LOG.error("Error setting width.", e);
         }
@@ -497,7 +501,9 @@ public class Item extends DbObject {
 
     public void setHeight(String height) {
         try {
-            this.height = Integer.valueOf(height);
+            if (!height.isEmpty()) {
+                this.height = Integer.valueOf(height);
+            }
         } catch (Exception e) {
             LOG.error("Error setting height.", e);
         }

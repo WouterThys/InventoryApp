@@ -77,13 +77,13 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     }
 
     public void removeObject(DbObject child) {
-        SwingUtilities.invokeLater(() -> {
+        //SwingUtilities.invokeLater(() -> {
             DefaultMutableTreeNode childNode = findNode(child);
             if (childNode != null) {
                 removeNodeFromParent(childNode);
             }
             reload();
-        });
+        //});
     }
 
     public void updateObject(DbObject newChild, DbObject oldChild) {

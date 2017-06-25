@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class ITextField extends JTextField implements FocusListener {
 
     private String hint = "";
@@ -53,7 +55,11 @@ public class ITextField extends JTextField implements FocusListener {
         if (documentListener != null) {
             documentListener.setEnabled(false);
         }
-        super.setText(t);
+        try {
+            super.setText(t);
+        } catch (Exception e) {
+            Status().setError("Error setting text." , e);
+        }
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
         }

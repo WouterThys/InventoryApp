@@ -145,7 +145,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         gbc.gridy = 2; gbc.weighty = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        textFieldPanel.add(detailDescription, gbc);
+        textFieldPanel.add(new JScrollPane(detailDescription), gbc);
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.CENTER);

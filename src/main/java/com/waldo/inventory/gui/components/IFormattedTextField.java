@@ -11,7 +11,6 @@ import java.text.Format;
 
 public class IFormattedTextField extends JFormattedTextField {
 
-    private String beforeEditText = "";
     private Object beforeEditValue = null;
     private boolean edited = false;
     private BindingListener documentListener;
@@ -47,24 +46,31 @@ public class IFormattedTextField extends JFormattedTextField {
         super(object);
     }
 
-    public void setTextBeforeEdit(String t) {
-        beforeEditText = t;
-        super.setText(t);
-    }
-
     public void addEditedListener(IEditedListener listener, String fieldName) {
         if (documentListener != null) {
             this.getDocument().removeDocumentListener(documentListener);
         }
         documentListener = new BindingListener(this, listener, fieldName);
         this.getDocument().addDocumentListener(documentListener);
+        documentListener.setEnabled(true);
     }
 
-    @Deprecated
-    public void setValueBeforeEdit(Object valueBeforeEdit) {
-        beforeEditValue = valueBeforeEdit;
-        super.setValue(valueBeforeEdit);
+    @Override
+    public void setValue(Object value) {
+        if (documentListener != null) {
+            documentListener.setEnabled(true);
+        }
+        super.setValue(value);
+//        if (documentListener != null) {
+//            documentListener.setEnabled(true);
+//        }
     }
+
+    //    @Deprecated
+//    public void setValueBeforeEdit(Object valueBeforeEdit) {
+//        beforeEditValue = valueBeforeEdit;
+//        super.setValue(valueBeforeEdit);
+//    }
 
     public void setError(String errorText) {
         if (errorText != null) {

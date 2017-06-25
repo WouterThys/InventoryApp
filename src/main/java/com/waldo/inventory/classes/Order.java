@@ -5,6 +5,7 @@ import com.waldo.inventory.database.DbManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
@@ -14,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 
@@ -107,13 +111,45 @@ public class Order extends DbObject {
                 //if (!compareIfEqual(ref.getDateModified(), getDateModified())) return false;
                 if (!(ref.getOrderItems().equals(getOrderItems()))) return false;
                 if (!(ref.getDistributor().equals(getDistributor()))) return false;
-                if (!(ref.getOrderFile().equals(getOrderFile()))) return false;
+                //if (!(ref.getOrderFile().equals(getOrderFile()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
 
             }
         }
         return result;
+    }
+
+    @Override
+    public void delete() {
+            if (canBeSaved) {
+                SwingWorker worker = new SwingWorker() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        // First delete all OrderItems
+                        for (OrderItem orderItem : getOrderItems()) {
+                            removeItemFromList(orderItem);
+                        }
+
+                        // Delete Order itself
+                        doDelete();
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get(10, TimeUnit.SECONDS);
+                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            JOptionPane.showMessageDialog(null, "Error deleting \"" + name + "\". \n Exception: " + e.getMessage(), "Delete error", JOptionPane.ERROR_MESSAGE);
+                            LOG.error("Failed to delete object.", e);
+                        }
+                    }
+                };
+                worker.execute();
+            } else {
+                JOptionPane.showMessageDialog(null, "\""+name+"\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
+            }
     }
 
     public static class OrderAllOrders implements Comparator<Order> {
@@ -174,11 +210,14 @@ public class Order extends DbObject {
     public void removeItemFromList(OrderItem item) {
         if (item != null) {
             if (orderItems.contains(item)) {
+                // Update the item of the order item
                 item.getItem().setOrderState(Statics.ItemOrderState.NONE);
                 item.getItem().save();
+                // Remove OrderItem from db
                 DbManager.db().removeItemFromOrder(item);
-
+                // Remove from list
                 orderItems.remove(item);
+                // Update modification date
                 setDateModified(new Date(System.currentTimeMillis()));
 
                 save();

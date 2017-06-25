@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -148,6 +149,48 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
+    private List<OrderItem> getSelectedOrderItems() {
+        List<OrderItem> selectedOrderItems = new ArrayList<>();
+        int[] selectedRows = itemTable.getSelectedRows();
+        if (selectedRows.length > 0) {
+            for (int row : selectedRows) {
+                OrderItem oi = tableModel.getItem(row);
+                if (oi != null) {
+                    selectedOrderItems.add(oi);
+                }
+            }
+        }
+        return selectedOrderItems;
+    }
+
+    private void deleteSelectedOrderItems(final List<OrderItem> itemsToDelete) {
+        if (lastSelectedOrder == null) {
+            return;
+        }
+        SwingUtilities.invokeLater(() -> {
+            int result = JOptionPane.CANCEL_OPTION;
+            if (itemsToDelete.size() == 1) {
+                result = JOptionPane.showConfirmDialog(
+                        OrderPanel.this,
+                        "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
+                        "Confirm delete",
+                        JOptionPane.YES_NO_OPTION);
+            } else if (itemsToDelete.size() > 1) {
+                result = JOptionPane.showConfirmDialog(
+                        OrderPanel.this,
+                        "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+                        "Confirm delete",
+                        JOptionPane.YES_NO_OPTION);
+            }
+
+            if (result == JOptionPane.OK_OPTION) {
+                for (OrderItem item : itemsToDelete) {
+                    lastSelectedOrder.removeItemFromList(item);
+                }
+            }
+        });
+    }
+
     private void initMouseClicked() {
         itemTable.addMouseListener( new MouseAdapter() {
             @Override
@@ -223,6 +266,7 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onDeleted(Order order) {
                 treeModel.removeObject(order);
+                recreateNodes();
                 updateComponents(null);
             }
         };
@@ -375,17 +419,18 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarDelete() {
-        if (selectedOrderItem != null) {
-            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + selectedOrderItem.toString() + "\" from order \""+lastSelectedOrder.toString()+"\"?");
-            if (res == JOptionPane.OK_OPTION) {
-                try {
-                    application.beginWait();
-                    lastSelectedOrder.removeItemFromList(selectedOrderItem);
-                } finally {
-                    application.endWait();
-                }
-            }
-        }
+//        if (selectedOrderItem != null) {
+//            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + selectedOrderItem.toString() + "\" from order \""+lastSelectedOrder.toString()+"\"?");
+//            if (res == JOptionPane.OK_OPTION) {
+//                try {
+//                    application.beginWait();
+//                    lastSelectedOrder.removeItemFromList(selectedOrderItem);
+//                } finally {
+//                    application.endWait();
+//                }
+//            }
+//        }
+        deleteSelectedOrderItems(getSelectedOrderItems());
     }
 
     @Override

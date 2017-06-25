@@ -93,4 +93,9 @@ public class IOrderItemTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return ((columnIndex == 3) || (columnIndex == 4)); // Reference and price are editable
     }
+
+    public void removeRow(int row) {
+        itemList.remove(row);
+        fireTableRowsDeleted(row, row);
+    }
 }

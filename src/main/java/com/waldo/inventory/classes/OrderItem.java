@@ -1,16 +1,16 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Comparator;
 
-import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class OrderItem extends DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OrderItem.class);
     public static final String TABLE_NAME = "orderitems";
 
     private long orderId;
@@ -92,6 +92,16 @@ public class OrderItem extends DbObject {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public void setAmount(String amount) {
+        try {
+            if (!amount.isEmpty()) {
+                this.amount = Integer.valueOf(amount);
+            }
+        } catch (Exception e) {
+            LOG.error("Error setting amount.", e);
+        }
     }
 
     public String getItemRef() {

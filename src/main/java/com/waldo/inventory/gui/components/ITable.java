@@ -1,11 +1,14 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.classes.DbObject;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.*;
 
 public class ITable extends JTable {
 
@@ -45,4 +48,16 @@ public class ITable extends JTable {
 
         return component;
     }
+//
+//    public java.util.List<DbObject> getSelectedObjects() {
+//        java.util.List<DbObject> selectedObjects = new ArrayList<>();
+//        int[] selectedRows = getSelectedRows();
+//        if (selectedRows.length > 0) {
+//            for (int row : selectedRows) {
+//
+//            }
+//        }
+//
+//        return selectedObjects;
+//    }
 }

@@ -28,7 +28,7 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
     TableModel tableModel;
     ITable objectTable;
 
-    TableObjectPanel tableObjectPanel;
+    TableObjectPanel tableObjectPanel; // Bottom panel with list of found objects and stuff
 
     /*
     *                  VARIABLES

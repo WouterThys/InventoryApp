@@ -12,6 +12,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,12 +77,11 @@ public class TableObjectPanel extends JPanel implements
         if (foundItem != null && tableObject.isValid()) {
             foundItemOrderBtn.setEnabled(true);
             toolBar.setDeleteActionEnabled(true);
-            toolBar.setEditActionEnabled(true);
         } else {
             foundItemOrderBtn.setEnabled(false);
             toolBar.setDeleteActionEnabled(false);
-            toolBar.setEditActionEnabled(false);
         }
+        toolBar.setEditActionEnabled(foundItem != null);
         foundItemSelectBtn.setEnabled(foundItem != null);
     }
 
@@ -276,6 +278,7 @@ public class TableObjectPanel extends JPanel implements
         tableModel = new IItemTableModel();
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
+        itemTable.addMouseListener(mouseDoubleClicked());
         itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
 
@@ -354,4 +357,25 @@ public class TableObjectPanel extends JPanel implements
             updateFoundItem(item);
         }
     }
+
+    //
+    // Mouse double clicked in table
+    //
+    private MouseListener mouseDoubleClicked() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    if (foundItem != null) {
+                        EditItemDialog dialog = new EditItemDialog(application, "Edit item", foundItem);
+                        if (dialog.showDialog() == IDialog.OK) {
+                            foundItem = dialog.getItem();
+                            searchPanel.search(foundItem.getName());
+                        }
+                    }
+                }
+            }
+        };
+    }
+
 }
