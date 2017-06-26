@@ -108,8 +108,15 @@ public class Application extends JFrame implements ChangeListener {
         return mainPanel.getSelectedItem();
     }
 
-    public void setTableItems(java.util.List<DbObject> foundObject) {
+    public void setSelectedItem(Item selectedItem) {
+        mainPanel.selectItem(selectedItem);
+    }
 
+    public void setSelectedOrderItem(OrderItem selectedOrderItem) {
+        //orderPanel.setSelectedItem(selectedOrderItem); // TODO
+    }
+
+    public void setTableItems(java.util.List<DbObject> foundObject) {
         switch (tabbedPane.getSelectedIndex()) {
             case TAB_ITEMS:
                 if (foundObject == null) {

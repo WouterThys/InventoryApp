@@ -3,7 +3,6 @@ package com.waldo.inventory.database;
 import com.waldo.inventory.classes.*;
 import org.slf4j.Logger;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,8 @@ public class SearchManager {
     private boolean hasAdvancedSearchOption;
     private int[] searchOptions;
     private List<DbObject> searchList;
+    private List<DbObject> resultList = new ArrayList<>();
+    private int currentResultNdx = 0;
 
     public SearchManager() {
     }
@@ -62,7 +63,30 @@ public class SearchManager {
             }
         }
 
+        currentResultNdx = 0;
+        resultList = foundObjects;
         return foundObjects;
+    }
+
+    public void clearSearch() {
+        resultList.clear();
+        currentResultNdx = 0;
+    }
+
+    public DbObject getNextFoundObject() {
+        currentResultNdx++;
+        if (currentResultNdx >= resultList.size()) {
+            currentResultNdx = 0;
+        }
+        return resultList.get(currentResultNdx);
+    }
+
+    public DbObject getPreviousFoundObject() {
+        currentResultNdx--;
+        if (currentResultNdx < 0) {
+            currentResultNdx = resultList.size()-1;
+        }
+        return resultList.get(currentResultNdx);
     }
 
 
@@ -275,6 +299,10 @@ public class SearchManager {
 
     public void setSearchList(List<DbObject> searchList) {
         this.searchList = searchList;
+    }
+
+    public List<DbObject> getResultList() {
+        return resultList;
     }
 
     /*

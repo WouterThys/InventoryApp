@@ -94,7 +94,7 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
-    private void selectItem(Item selectedItem) {
+    public void selectItem(Item selectedItem) {
         if (selectedItem != null) {
             List<Item> itemList = tableModel.getItemList();
             if (itemList != null) {

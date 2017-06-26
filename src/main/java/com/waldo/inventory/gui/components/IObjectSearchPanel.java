@@ -10,10 +10,7 @@ import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -23,11 +20,15 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
     private SearchManager searchManager;
     private IObjectSearchListener objectSearchListener;
+    private IObjectSearchBtnListener objectSearchBtnListener;
 
     private ITextField searchField;
     private JButton searchButton;
     private ILabel infoLabel;
     private ILabel advancedLabel;
+    private JPanel btnPanel;
+    private IImageButton previousBtn;
+    private IImageButton nextBtn;
 
     private JToolBar advancedToolBar;
     private JComboBox<Category> advancedCategoryCb;
@@ -57,6 +58,10 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         this.objectSearchListener = listener;
     }
 
+    public void addSearchBtnListener(IObjectSearchBtnListener listener) {
+        this.objectSearchBtnListener = listener;
+    }
+
     public void removeSearchListener() {
         this.objectSearchListener = null;
     }
@@ -64,6 +69,11 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     public interface IObjectSearchListener {
         void onDbObjectFound(java.util.List<DbObject> foundObjects);
         void onSearchCleared();
+    }
+
+    public interface IObjectSearchBtnListener {
+        void nextSearchObject(DbObject next);
+        void previousSearchObject(DbObject previous);
     }
 
     public void setSearchOptions(int... options) {
@@ -75,9 +85,11 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     public void clearSearch() {
-
+        searchManager.clearSearch();
         setSearched(false);
         clearLabel();
+
+        btnPanel.setVisible(false);
 
         if (objectSearchListener != null) {
             objectSearchListener.onSearchCleared();
@@ -91,6 +103,11 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         if (foundObjects.size() > 0) {
             setInfo(foundObjects.size() + " object(s) found!");
             Status().setMessage(foundObjects.size() + " object(s) found!");
+
+            if (objectSearchBtnListener != null && foundObjects.size() > 1) {
+                btnPanel.setVisible(true);
+            }
+
             setSearched(true);
             if (objectSearchListener != null) {
                 objectSearchListener.onDbObjectFound(foundObjects);
@@ -206,6 +223,18 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         }
     }
 
+    private void getNextFoundItem() {
+        if (objectSearchBtnListener != null && searchManager.getResultList().size() > 1) {
+            objectSearchBtnListener.previousSearchObject(searchManager.getPreviousFoundObject());
+        }
+    }
+
+    private void getPreviousFoundItem() {
+        if (objectSearchBtnListener != null && searchManager.getResultList().size() > 1) {
+            objectSearchBtnListener.nextSearchObject(searchManager.getNextFoundObject());
+        }
+    }
+
     private JPanel createAdvancedPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -309,6 +338,27 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         infoLabel = new ILabel();
         infoLabel.setFont(new Font(f.getName(), f.getStyle(), 12));
 
+        // Next and prev buttons
+        btnPanel = new JPanel();
+        btnPanel.setVisible(false);
+        previousBtn = new IImageButton(
+                imageResource.readImage("Common.ArrowRight"),
+                imageResource.readImage("Common.ArrowRightActive"),
+                imageResource.readImage("Common.ArrowRightActive"),
+                imageResource.readImage("Common.ArrowRightDisabled"));
+        previousBtn.setBorder(BorderFactory.createEmptyBorder());
+        previousBtn.setContentAreaFilled(false);
+        nextBtn = new IImageButton(
+                imageResource.readImage("Common.ArrowLeft"),
+                imageResource.readImage("Common.ArrowLeftActive"),
+                imageResource.readImage("Common.ArrowLeftActive"),
+                imageResource.readImage("Common.ArrowLeftDisabled"));
+        nextBtn.setBorder(BorderFactory.createEmptyBorder());
+        nextBtn.setContentAreaFilled(false);
+
+        previousBtn.addActionListener(e -> getPreviousFoundItem());
+        nextBtn.addActionListener(e -> getNextFoundItem());
+
         // Advanced toolbar
         advancedToolBar = new JToolBar();
         createCategoryCb();
@@ -344,6 +394,13 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(infoLabel, gbc);
+
+        btnPanel.add(nextBtn);
+        btnPanel.add(previousBtn);
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(btnPanel, gbc);
 
         if (searchManager.isHasAdvancedSearchOption()) {
             gbc.gridx = 1; gbc.weightx = 0;
