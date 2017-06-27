@@ -1,14 +1,10 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.gui.Application;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.net.URL;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -25,7 +21,6 @@ public class IdBToolBar extends JToolBar {
     private Action addAction;
     private Action deleteAction;
     private Action editAction;
-    private TitledBorder titledBorder;
     private IdbToolBarListener toolBarListener;
 
     public IdBToolBar(IdbToolBarListener listener) {
@@ -92,7 +87,7 @@ public class IdBToolBar extends JToolBar {
     }
 
     public void setBorder(String title) {
-        titledBorder = BorderFactory.createTitledBorder(title);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(title);
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
         super.setBorder(titledBorder);

@@ -87,12 +87,23 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
+//    public void selectOrderItem(OrderItem orderItem) {
+//        if (orderItem != null && lastSelectedOrder != null) {
+//            List<OrderItem> orderItems = lastSelectedOrder.getOrderItems();
+//            if (orderItems != null) {
+//                int ndx = orderItems.indexOf(orderItem);
+//                if (ndx >= 0 && ndx < orderItems.size()) {
+//                    itemTable.setRowSelectionInterval(ndx, ndx);
+//                }
+//            }
+//        }
+//    }
     public void selectOrderItem(OrderItem orderItem) {
-        if (orderItem != null && lastSelectedOrder != null) {
-            List<OrderItem> orderItems = lastSelectedOrder.getOrderItems();
-            if (orderItems != null) {
-                int ndx = orderItems.indexOf(orderItem);
-                if (ndx >= 0 && ndx < orderItems.size()) {
+        if (orderItem != null) {
+            List<OrderItem> itemList = tableModel.getItemList();
+            if (itemList != null) {
+                int ndx = itemList.indexOf(orderItem);
+                if (ndx >= 0 && ndx < itemList.size()) {
                     itemTable.setRowSelectionInterval(ndx, ndx);
                 }
             }
@@ -417,11 +428,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (lastSelectedOrder != null) {
                     Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
                     if (lastSelectedOrder.getDistributor().getId() != d.getId()) {
-//                        SwingUtilities.invokeLater(() ->  {
-//                            lastSelectedOrder.setDistributor(d);
-//                            lastSelectedOrder.save();
-//                            updateTable(lastSelectedOrder);
-//                        });
                         lastSelectedOrder.setDistributor(d);
                         lastSelectedOrder.updateItemReferences();
                         lastSelectedOrder.save();
@@ -544,7 +550,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
 
-            treeModel.expandNodes(0, ordersTree.getRowCount());
+            //treeModel.expandNodes(0, ordersTree.getRowCount());
 
             updateVisibleComponents();
             updateEnabledComponents();

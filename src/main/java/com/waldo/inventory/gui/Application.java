@@ -113,7 +113,7 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void setSelectedOrderItem(OrderItem selectedOrderItem) {
-        //orderPanel.setSelectedItem(selectedOrderItem); // TODO
+        orderPanel.selectOrderItem(selectedOrderItem); // TODO
     }
 
     public void setTableItems(java.util.List<DbObject> foundObject) {

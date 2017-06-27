@@ -318,7 +318,7 @@ public class OrderPanel extends OrderPanelLayout {
         };
     }
 
-    private void setSelectedItem(OrderItem selectedItem) {
+    public void setSelectedItem(OrderItem selectedItem) {
         try {
             application.beginWait();
             this.selectedOrderItem = selectedItem;

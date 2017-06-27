@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
+import com.sun.xml.internal.ws.api.message.Packet;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.DbManager;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -10,6 +10,7 @@ import javax.swing.tree.*;
 import java.util.Enumeration;
 
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class IDbObjectTreeModel extends DefaultTreeModel {
 
@@ -77,28 +78,34 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     }
 
     public void removeObject(DbObject child) {
-        //SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             DefaultMutableTreeNode childNode = findNode(child);
             if (childNode != null) {
                 removeNodeFromParent(childNode);
             }
             reload();
-        //});
+            expandNodes(0, tree.getRowCount());
+        });
     }
 
     public void updateObject(DbObject newChild, DbObject oldChild) {
-        //SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             DefaultMutableTreeNode node = findNode(oldChild);
             if (node != null) {
                 node.setUserObject(newChild);
                 nodeChanged(node);
             }
             reload();
-        //});
+            expandNodes(0, tree.getRowCount());
+        });
     }
 
     public void addObject(DbObject child) {
-        SwingUtilities.invokeLater(() -> addDbObject(findParent(child), child));
+        SwingUtilities.invokeLater(() -> {
+            addDbObject(findParent(child), child);
+            expandNodes(0, tree.getRowCount());
+        });
+        //addDbObject(findParent(child), child);
     }
 
     private DefaultMutableTreeNode addDbObject(DefaultMutableTreeNode parent, DbObject child) {
@@ -112,7 +119,11 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
             parent = rootNode;
         }
 
-        insertNodeInto(childNode, parent, parent.getChildCount());
+        try {
+            insertNodeInto(childNode, parent, parent.getChildCount());
+        } catch(Exception e){
+            Status().setError("Error adding object. ", e);
+        }
 
         return childNode;
     }
