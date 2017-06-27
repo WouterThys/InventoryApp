@@ -5,6 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ITabbedPane;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +28,7 @@ public abstract class EditItemDialogLayout extends IDialog implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JTabbedPane tabbedPane;
+    ITabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
     private EditItemStockPanel editItemStockPanel;
@@ -57,7 +59,10 @@ public abstract class EditItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Tabbed pane
-        tabbedPane = new JTabbedPane();
+        tabbedPane = new ITabbedPane(JTabbedPane.LEFT);
+        ITabbedPane.AbstractTabRenderer renderer = (ITabbedPane.AbstractTabRenderer) tabbedPane.getTabRenderer();
+        renderer.setPrototypeText("go banana");
+        renderer.setHorizontalTextAlignment(SwingConstants.TRAILING);
 
         // Panels
         componentPanel = new ComponentPanel(newItem, this);
@@ -94,7 +99,13 @@ public abstract class EditItemDialogLayout extends IDialog implements
         //tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        getContentPanel().add(separator);
         getContentPanel().add(tabbedPane);
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        getContentPanel().add(separator);
         pack();
     }
 

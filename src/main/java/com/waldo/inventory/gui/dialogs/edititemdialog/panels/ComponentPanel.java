@@ -412,7 +412,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+        tabbedPane = new JTabbedPane(JTabbedPane.NORTH);
 
         initializeBasicComponents();
         initializeDetailsComponents();

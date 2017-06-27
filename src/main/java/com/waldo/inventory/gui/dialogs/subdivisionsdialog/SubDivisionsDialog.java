@@ -327,6 +327,16 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         setSelectedObject(selectedObject);
     }
 
+    @Override
+    public void nextSearchObject(DbObject next) {
+        selectObject(next);
+    }
+
+    @Override
+    public void previousSearchObject(DbObject previous) {
+        selectObject(previous);
+    }
+
     //
     // Tool bar listeners
     //

@@ -101,8 +101,13 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
         // Found!
         if (foundObjects.size() > 0) {
-            setInfo(foundObjects.size() + " object(s) found!");
-            Status().setMessage(foundObjects.size() + " object(s) found!");
+            if (foundObjects.size() == 1) {
+                setInfo("1 object found!");
+                Status().setMessage("1 object(s) found!");
+            } else {
+                setInfo(foundObjects.size() + " object(s) found!");
+                Status().setMessage(foundObjects.size() + " object(s) found!");
+            }
 
             if (objectSearchBtnListener != null && foundObjects.size() > 1) {
                 btnPanel.setVisible(true);

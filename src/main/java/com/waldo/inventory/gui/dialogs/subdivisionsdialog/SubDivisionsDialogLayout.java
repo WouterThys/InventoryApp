@@ -20,6 +20,7 @@ import static javax.swing.SpringLayout.SOUTH;
 public abstract class SubDivisionsDialogLayout extends IDialog implements
         GuiInterface,
         IObjectSearchPanel.IObjectSearchListener,
+        IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener {
 
     static final int CATEGORIES = 0;
@@ -82,7 +83,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         layout.putConstraint(WEST, selectionLabel, 5, WEST, panel);
         layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
 
-        // Combobox
+        // Combo box
         layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
         layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
         layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
@@ -160,6 +161,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         // Search field
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
         searchPanel.addSearchListener(this);
+        searchPanel.addSearchBtnListener(this);
 
         // Combo box
         selectedSubType = 0;

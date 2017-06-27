@@ -113,10 +113,9 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
 
-        add(createAmountPanel());
-
+        add(createAmountPanel(), BorderLayout.NORTH);
     }
 
     @Override
