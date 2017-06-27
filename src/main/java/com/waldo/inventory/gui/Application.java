@@ -108,6 +108,10 @@ public class Application extends JFrame implements ChangeListener {
         return mainPanel.getSelectedItem();
     }
 
+    public OrderItem getSelectedOrderItem() {
+        return orderPanel.getSelectedOrderItem();
+    }
+
     public void setSelectedItem(Item selectedItem) {
         mainPanel.selectItem(selectedItem);
     }
@@ -138,7 +142,7 @@ public class Application extends JFrame implements ChangeListener {
                     for (DbObject object : foundObject) {
                         foundItems.add((OrderItem)object);
                     }
-                    orderPanel.getTableModel().setItemList(foundItems);
+                    orderPanel.getTableModel().setOrderItemList(foundItems);
                 }
                 break;
 
@@ -203,6 +207,10 @@ public class Application extends JFrame implements ChangeListener {
 
     public void setSelectedTab(int tab) {
         tabbedPane.setSelectedIndex(tab);
+    }
+
+    public int getSelectedTab() {
+        return tabbedPane.getSelectedIndex();
     }
 
     public OrderPanel getOrderPanel() {

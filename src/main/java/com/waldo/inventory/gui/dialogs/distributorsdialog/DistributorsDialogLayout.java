@@ -24,6 +24,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
         DbObjectChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener,
+        IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -198,6 +199,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_DISTRIBUTOR);
         searchPanel.addSearchListener(this);
+        searchPanel.addSearchBtnListener(this);
 
         // Distributor list
         distributorDefaultListModel = new DefaultListModel<>();

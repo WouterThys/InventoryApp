@@ -163,6 +163,16 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         manufacturerList.setSelectedValue(selectedManufacturer, true);
     }
 
+    @Override
+    public void nextSearchObject(DbObject next) {
+        manufacturerList.setSelectedValue(next, true);
+    }
+
+    @Override
+    public void previousSearchObject(DbObject previous) {
+        manufacturerList.setSelectedValue(previous, true);
+    }
+
     //
     // Manufacturer listener
     //

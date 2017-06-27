@@ -116,7 +116,7 @@ public class OrderFile {
         for (OrderItem oi : order.getOrderItems()) {
             sb.append(oi.getItemRef()).append(SEPARATOR);
             sb.append(oi.getAmount()).append('\n');
-            //String description = oi.getItem().getDescription().replace(',', ' ');
+            //String description = oi.getOrderItem().getDescription().replace(',', ' ');
             //sb.append(description).append('\n');
         }
 

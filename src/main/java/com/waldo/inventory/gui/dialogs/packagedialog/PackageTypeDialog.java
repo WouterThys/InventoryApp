@@ -188,6 +188,16 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         packageList.setSelectedValue(selectedPackageType, true);
     }
 
+    @Override
+    public void nextSearchObject(DbObject next) {
+        packageList.setSelectedValue(next, true);
+    }
+
+    @Override
+    public void previousSearchObject(DbObject previous) {
+        packageList.setSelectedValue(previous, true);
+    }
+
     //
     // List selected
     //
@@ -242,4 +252,6 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     public DbObject getGuiObject() {
         return selectedPackageType;
     }
+
+
 }

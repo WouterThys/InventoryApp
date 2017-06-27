@@ -31,7 +31,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ITable itemTable;
+    ITable orderItemTable;
     IOrderItemTableModel tableModel;
 
     ITree ordersTree;
@@ -93,18 +93,19 @@ public abstract class OrderPanelLayout extends JPanel implements
 //            if (orderItems != null) {
 //                int ndx = orderItems.indexOf(orderItem);
 //                if (ndx >= 0 && ndx < orderItems.size()) {
-//                    itemTable.setRowSelectionInterval(ndx, ndx);
+//                    orderItemTable.setRowSelectionInterval(ndx, ndx);
 //                }
 //            }
 //        }
 //    }
     public void selectOrderItem(OrderItem orderItem) {
         if (orderItem != null) {
-            List<OrderItem> itemList = tableModel.getItemList();
+            List<OrderItem> itemList = tableModel.getOrderItemList();
             if (itemList != null) {
                 int ndx = itemList.indexOf(orderItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
-                    itemTable.setRowSelectionInterval(ndx, ndx);
+                    orderItemTable.setRowSelectionInterval(ndx, ndx);
+                    orderItemTable.scrollRectToVisible(new Rectangle(orderItemTable.getCellRect(ndx, 0, true)));
                 }
             }
         }
@@ -116,7 +117,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     public void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
-            tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
+            tableModel.setOrderItemList(db().getOrderedItems(selectedOrder.getId()));
         }
     }
 
@@ -364,9 +365,9 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IOrderItemTableModel();
-        itemTable = new ITable(tableModel);
+        orderItemTable = new ITable(tableModel);
 
-        TableColumn tableColumn = itemTable.getColumnModel().getColumn(4);
+        TableColumn tableColumn = orderItemTable.getColumnModel().getColumn(4);
         tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -383,8 +384,8 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
         });
 
-        itemTable.getSelectionModel().addListSelectionListener(this);
-        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        orderItemTable.getSelectionModel().addListSelectionListener(this);
+        orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application);
@@ -506,7 +507,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         JPanel detailPanels = new JPanel(new BorderLayout());
         JPanel westPanel = new JPanel(new BorderLayout());
 
-        tablePanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
+        tablePanel.add(new JScrollPane(orderItemTable), BorderLayout.CENTER);
         tablePanel.add(bottomToolBar, BorderLayout.PAGE_END);
 
         centerPanel.add(tablePanel, BorderLayout.CENTER);
@@ -550,7 +551,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
 
-            //treeModel.expandNodes(0, ordersTree.getRowCount());
+            treeModel.expandNodes(0, ordersTree.getRowCount());
 
             updateVisibleComponents();
             updateEnabledComponents();

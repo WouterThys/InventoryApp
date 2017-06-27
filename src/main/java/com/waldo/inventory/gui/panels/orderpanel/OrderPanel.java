@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -17,8 +16,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -51,7 +48,7 @@ public class OrderPanel extends OrderPanelLayout {
         updateComponents(null);
     }
 
-    public OrderItem getSelectedItem() {
+    public OrderItem getSelectedOrderItem() {
         return selectedOrderItem;
     }
 
@@ -151,10 +148,10 @@ public class OrderPanel extends OrderPanelLayout {
 
     private List<OrderItem> getSelectedOrderItems() {
         List<OrderItem> selectedOrderItems = new ArrayList<>();
-        int[] selectedRows = itemTable.getSelectedRows();
+        int[] selectedRows = orderItemTable.getSelectedRows();
         if (selectedRows.length > 0) {
             for (int row : selectedRows) {
-                OrderItem oi = tableModel.getItem(row);
+                OrderItem oi = tableModel.getOrderItem(row);
                 if (oi != null) {
                     selectedOrderItems.add(oi);
                 }
@@ -192,13 +189,13 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void initMouseClicked() {
-        itemTable.addMouseListener( new MouseAdapter() {
+        orderItemTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedOrderItem.getItem());
 //                    if (dialog.showDialog() == EditItemDialog.OK) {
-//                        dialog.getItem().save();
+//                        dialog.getOrderItem().save();
 //                    }
                     dialog.showDialog();
                 }
@@ -341,11 +338,11 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void selectItem(OrderItem selectedItem) {
         if (selectedItem != null) {
-            List<OrderItem> itemList = getTableModel().getItemList();
+            List<OrderItem> itemList = getTableModel().getOrderItemList();
             if (itemList != null) {
                 int ndx = itemList.indexOf(selectedItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
-                    itemTable.setRowSelectionInterval(ndx, ndx);
+                    orderItemTable.setRowSelectionInterval(ndx, ndx);
                 }
             }
         }
@@ -378,9 +375,9 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            int row = itemTable.getSelectedRow();
+            int row = orderItemTable.getSelectedRow();
             if (row >= 0) {
-                selectedOrderItem = getTableModel().getItem(itemTable.getSelectedRow());
+                selectedOrderItem = getTableModel().getOrderItem(orderItemTable.getSelectedRow());
                 updateComponents(lastSelectedOrder);
             }
         }

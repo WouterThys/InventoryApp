@@ -25,6 +25,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
         DbObjectChangedListener<Manufacturer>,
         IObjectSearchPanel.IObjectSearchListener,
+        IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -199,6 +200,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_MANUFACTURER);
         searchPanel.addSearchListener(this);
+        searchPanel.addSearchBtnListener(this);
 
         // Manufacturers list
         manufacturerDefaultListModel = new DefaultListModel<>();

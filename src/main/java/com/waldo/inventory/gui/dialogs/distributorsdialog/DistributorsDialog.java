@@ -158,6 +158,16 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         distributorList.setSelectedValue(selectedDistributor, true);
     }
 
+    @Override
+    public void nextSearchObject(DbObject next) {
+        distributorList.setSelectedValue(next, true);
+    }
+
+    @Override
+    public void previousSearchObject(DbObject previous) {
+        distributorList.setSelectedValue(previous, true);
+    }
+
 
     //
     //  Distributor changed listeners

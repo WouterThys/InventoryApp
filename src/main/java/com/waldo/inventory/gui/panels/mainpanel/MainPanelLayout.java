@@ -101,6 +101,7 @@ public abstract class MainPanelLayout extends JPanel implements
                 int ndx = itemList.indexOf(selectedItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
                     itemTable.setRowSelectionInterval(ndx, ndx);
+                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
                 }
             }
         }

@@ -19,6 +19,7 @@ import static javax.swing.SpringLayout.WEST;
 public abstract class PackageTypeDialogLayout extends IDialog implements
         GuiInterface,
         IObjectSearchPanel.IObjectSearchListener,
+        IObjectSearchPanel.IObjectSearchBtnListener,
         DbObjectChangedListener<PackageType>,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
@@ -169,6 +170,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         // Search
         searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_PACKAGE, DbObject.TYPE_PACKAGE_TYPE);
         searchPanel.addSearchListener(this);
+        searchPanel.addSearchBtnListener(this);
 
         // Packages list
         packageDefaultListModel = new DefaultListModel<>();

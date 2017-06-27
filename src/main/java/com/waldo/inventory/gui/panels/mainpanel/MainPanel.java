@@ -68,7 +68,7 @@ public class MainPanel extends MainPanelLayout {
                     Item selectedItem = application.getSelectedItem();
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
 //                    if (dialog.showDialog() == EditItemDialog.OK) {
-//                        dialog.getItem().save();
+//                        dialog.getOrderItem().save();
 //                    }
                     dialog.showDialog();
                 }
@@ -213,7 +213,7 @@ public class MainPanel extends MainPanelLayout {
         EditItemDialog dialog = new EditItemDialog(application, "Add item");
         dialog.showDialog();
 //        if (dialog.showDialog() == EditItemDialog.OK) {
-//            Item newItem = dialog.getItem();
+//            Item newItem = dialog.getOrderItem();
 //            if (newItem != null) {
 //                newItem.save();
 //            }

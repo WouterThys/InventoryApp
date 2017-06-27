@@ -74,7 +74,15 @@ public class TopToolBar extends JPanel implements
     @Override
     public void onSearchCleared() {
         application.setTableItems(null); // Should set the table to the selected sub category
-        application.setSelectedItem(application.getSelectedItem());
+        switch (application.getSelectedTab()) {
+            case Application.TAB_ITEMS:
+                application.setSelectedItem(application.getSelectedItem());
+                break;
+            case Application.TAB_ORDERS:
+                application.setSelectedOrderItem(application.getSelectedOrderItem());
+                break;
+        }
+
     }
 
     @Override

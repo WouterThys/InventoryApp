@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 
 import javax.swing.table.AbstractTableModel;
@@ -15,35 +14,35 @@ public class IOrderItemTableModel extends AbstractTableModel {
     private static final String[] columnNames = {"Name", "Description", "Manufacturer", "Reference", "Amount", "Price", "Total"};
     private static final Class[] columnClasses = {String.class, String.class, String.class, String.class, Number.class, Double.class, Double.class};
 
-    private List<OrderItem> itemList;
+    private List<OrderItem> orderItemList;
 
     public IOrderItemTableModel() {
-        itemList = new ArrayList<>();
+        orderItemList = new ArrayList<>();
     }
 
-    public IOrderItemTableModel(List<OrderItem> itemList) {
-        this.itemList = itemList;
+    public IOrderItemTableModel(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
-    public void setItemList(List<OrderItem> itemList) {
-        this.itemList = itemList;
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
         fireTableDataChanged();
     }
 
-    public List<OrderItem> getItemList() {
-        return itemList;
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
     }
 
-    public OrderItem getItem(int index) {
-        if (index >= 0 && index < itemList.size()) {
-            return itemList.get(index);
+    public OrderItem getOrderItem(int index) {
+        if (index >= 0 && index < orderItemList.size()) {
+            return orderItemList.get(index);
         }
         return null;
     }
 
     @Override
     public int getRowCount() {
-        return itemList.size();
+        return orderItemList.size();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class IOrderItemTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderItem orderItem = getItem(rowIndex);
+        OrderItem orderItem = getOrderItem(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
                 case 0: // Name
@@ -95,7 +94,7 @@ public class IOrderItemTableModel extends AbstractTableModel {
     }
 
     public void removeRow(int row) {
-        itemList.remove(row);
+        orderItemList.remove(row);
         fireTableRowsDeleted(row, row);
     }
 }
