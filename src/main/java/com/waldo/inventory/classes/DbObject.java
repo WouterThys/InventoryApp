@@ -31,6 +31,9 @@ public abstract class DbObject {
     public static final int TYPE_DISTRIBUTOR = 9;
     public static final int TYPE_PACKAGE_TYPE = 10;
     public static final int TYPE_PACKAGE = 11;
+    public static final int TYPE_PROJECT = 12;
+    public static final int TYPE_PROJECT_DIRECTORY = 13;
+    public static final int TYPE_PROJECT_TYPE = 14;
 
     private String TABLE_NAME;
 
@@ -87,6 +90,9 @@ public abstract class DbObject {
         if (dbObject instanceof Order) return TYPE_ORDER;
         if (dbObject instanceof OrderItem) return TYPE_ORDER_ITEM;
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
+        if (dbObject instanceof Project) return TYPE_PROJECT;
+        if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
+        if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
 
         return TYPE_UNKNOWN;
     }
@@ -257,7 +263,6 @@ public abstract class DbObject {
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
         newObject.setCanBeSaved(false);
-
     }
 
     private void setOldObject() {
@@ -294,6 +299,15 @@ public abstract class DbObject {
                 break;
             case TYPE_PACKAGE_TYPE:
                 oldObject = DbManager.db().getPackageTypeFromDb(id);
+                break;
+            case TYPE_PROJECT:
+                oldObject = DbManager.db().getProjectFromDb(id);
+                break;
+            case TYPE_PROJECT_DIRECTORY:
+                oldObject = DbManager.db().getProjectDirectoryFromDb(id);
+                break;
+            case TYPE_PROJECT_TYPE:
+                oldObject = DbManager.db().getProjectTypeFromDb(id);
                 break;
         }
     }

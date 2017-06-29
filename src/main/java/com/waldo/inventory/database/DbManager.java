@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +42,9 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
     // Part numbers...
 
     // Cached lists
@@ -59,6 +59,10 @@ public class DbManager implements TableChangedListener {
     private List<Distributor> distributors;
     private List<PartNumber> partNumbers;
     private List<PackageType> packageTypes;
+    private List<Project> projects;
+    private List<ProjectDirectory> projectDirectories;
+    private List<ProjectType> projectTypes;
+    private List<ProjectTypeLink> projectTypeLinks;
 
     private DbManager() {}
 
@@ -195,9 +199,27 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public void addOnProjectChangedListener(DbObjectChangedListener<Project> dbObjectChangedListener) {
+        if (!onProjectChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
     public void addOnPackageTypeChangedListener(DbObjectChangedListener<PackageType> dbObjectChangedListener) {
         if (!onPackageTypesChangedListenerList.contains(dbObjectChangedListener)) {
             onPackageTypesChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnProjectDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
+        if (!onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectDirectoryChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectType> dbObjectChangedListener) {
+        if (!onProjectTypeChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectTypeChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -281,6 +303,30 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+    public void removeOnProjectsChangedListener(DbObjectChangedListener<Project> dbObjectChangedListener) {
+        if (onProjectChangedListenerList != null) {
+            if (onProjectChangedListenerList.contains(dbObjectChangedListener)) {
+                onProjectChangedListenerList.remove(dbObjectChangedListener);
+            }
+        }
+    }
+
+    public void removeOnProjectsDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
+        if (onProjectDirectoryChangedListenerList != null) {
+            if (onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
+                onProjectDirectoryChangedListenerList.remove(dbObjectChangedListener);
+            }
+        }
+    }
+
+    public void removeOnProjectTypesChangedListener(DbObjectChangedListener<ProjectType> dbObjectChangedListener) {
+        if (onProjectTypeChangedListenerList != null) {
+            if (onProjectTypeChangedListenerList.contains(dbObjectChangedListener)) {
+                onProjectTypeChangedListenerList.remove(dbObjectChangedListener);
+            }
+        }
+    }
+
 
 
     private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
@@ -355,6 +401,18 @@ public class DbManager implements TableChangedListener {
             case PackageType.TABLE_NAME:
                 updatePackageTypes();
                 notifyListeners(changedHow, (PackageType)newObject, (PackageType)oldObject, onPackageTypesChangedListenerList);
+                break;
+            case Project.TABLE_NAME:
+                updateProjects();
+                notifyListeners(changedHow, (Project)newObject, (Project)oldObject, onProjectChangedListenerList);
+                break;
+            case ProjectDirectory.TABLE_NAME:
+                updateProjectDirectories();
+                notifyListeners(changedHow, (ProjectDirectory)newObject, (ProjectDirectory)oldObject, onProjectDirectoryChangedListenerList);
+                break;
+            case ProjectType.TABLE_NAME:
+                updateProjectTypes();
+                notifyListeners(changedHow, (ProjectType)newObject, (ProjectType)oldObject, onProjectTypeChangedListenerList);
                 break;
         }
     }
@@ -1236,7 +1294,222 @@ public class DbManager implements TableChangedListener {
         return pt;
     }
 
+    /*
+    *                  PROJECTS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Project> getProjects()    {
+        if (projects == null) {
+            updateProjects();
+        }
+        return projects;
+    }
 
+    private void updateProjects()    {
+        projects = new ArrayList<>();
+        Status().setMessage("Fetching projects from DB");
+
+        String sql = scriptResource.readString(Project.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Project p = new Project();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+
+                    // ProjectDirectories are fetched in object itself
+
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        p.setOnTableChangedListener(this);
+                        projects.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch projects from database");
+        }
+    }
+
+    public Project getProjectFromDb(long id) {
+        Project p = null;
+        Status().setMessage("Fetching project from DB");
+
+        String sql = "SELECT * FROM " + Project.TABLE_NAME + " WHERE id = " + id;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new Project();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch project from database");
+        }
+        return p;
+    }
+
+    /*
+    *                  PROJECT DIRECTORIES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ProjectDirectory> getProjectDirectories()    {
+        if (projectDirectories == null) {
+            updateProjectDirectories();
+        }
+        return projectDirectories;
+    }
+
+    private void updateProjectDirectories()    {
+        projectDirectories = new ArrayList<>();
+        Status().setMessage("Fetching projectDirectories from DB");
+
+        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ProjectDirectory p = new ProjectDirectory();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+
+                    p.setDirectory(rs.getString("directory"));
+                    p.setProjectId(rs.getLong("projectid"));
+
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        p.setOnTableChangedListener(this);
+                        projectDirectories.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch projectDirectories from database");
+        }
+    }
+
+    public ProjectDirectory getProjectDirectoryFromDb(long id) {
+        ProjectDirectory p = null;
+        Status().setMessage("Fetching projectDirecty from DB");
+
+        String sql = "SELECT * FROM " + ProjectDirectory.TABLE_NAME + " WHERE id = " + id;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ProjectDirectory();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+
+                    p.setDirectory(rs.getString("directory"));
+                    p.setProjectId(rs.getLong("projectid"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch projectDirecty from database");
+        }
+        return p;
+    }
+
+    /*
+    *                  PROJECT TYPES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ProjectType> getProjectTypes()    {
+        if (projectTypes == null) {
+            updateProjectTypes();
+        }
+        return projectTypes;
+    }
+
+    private void updateProjectTypes()    {
+        projectTypes = new ArrayList<>();
+        Status().setMessage("Fetching ProjectType from DB");
+
+        String sql = scriptResource.readString(ProjectType.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ProjectType p = new ProjectType();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+
+                    p.setExtension(rs.getString("extension"));
+
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        p.setOnTableChangedListener(this);
+                        projectTypes.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch ProjectType from database");
+        }
+    }
+
+    public ProjectType getProjectTypeFromDb(long id) {
+        ProjectType p = null;
+        Status().setMessage("Fetching ProjectType from DB");
+
+        String sql = "SELECT * FROM " + ProjectType.TABLE_NAME + " WHERE id = " + id;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ProjectType();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+
+                    p.setExtension(rs.getString("extension"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch ProjectType from database");
+        }
+        return p;
+    }
+
+
+    /*
+    *                  PROJECT TYPE LINKS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ProjectTypeLink> getProjectTypeLinks()    {
+        if (projectTypeLinks == null) {
+            updateProjectTypeLinks();
+        }
+        return projectTypeLinks;
+    }
+
+    private void updateProjectTypeLinks()    {
+        projectTypeLinks = new ArrayList<>();
+        Status().setMessage("Fetching projectTypeLinks from DB");
+
+        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ProjectTypeLink p = new ProjectTypeLink();
+                    p.setId(rs.getLong("id"));
+                    p.setProjectDirectoryId(rs.getLong("projectdirectoryid"));
+                    p.setProjectTypeId(rs.getLong("projecttypeid"));
+
+                    projectTypeLinks.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch ProjectTypeLink from database");
+        }
+    }
 
 
     /*
@@ -1327,5 +1600,25 @@ public class DbManager implements TableChangedListener {
             }
         }
         return false;
+    }
+
+    public List<ProjectDirectory> getProjectDirectoryListForProject(long projectId) {
+        List<ProjectDirectory> directories = new ArrayList<>();
+        for (ProjectDirectory directory : getProjectDirectories()) {
+            if (directory.getProjectId() == projectId) {
+                directories.add(directory);
+            }
+        }
+        return directories;
+    }
+
+    public List<ProjectType> getProjectTypesForProjectDirectory(long directoryId) {
+        List<ProjectType> projectTypes = new ArrayList<>();
+        for (ProjectTypeLink ptl : getProjectTypeLinks()) {
+            if(ptl.getProjectDirectoryId() == directoryId) {
+                projectTypes.add(ptl.getProjectType());
+            }
+        }
+        return projectTypes;
     }
 }

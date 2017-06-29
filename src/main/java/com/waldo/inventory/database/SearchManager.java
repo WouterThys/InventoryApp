@@ -129,6 +129,18 @@ public class SearchManager {
         Status().setMessage("Searching for: Package types");
         foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
 
+        // Projects
+        Status().setMessage("Searching for: Projects");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
+
+        // Project directories
+        Status().setMessage("Searching for: Project directories");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
+
+        // Project types
+        Status().setMessage("Searching for: Project types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
+
         return foundList;
     }
 
@@ -186,6 +198,18 @@ public class SearchManager {
                     Status().setMessage("Searching for: PackageType");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
                     break;
+                case DbObject.TYPE_PROJECT:
+                    Status().setMessage("Searching for: Projects");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
+                    break;
+                case DbObject.TYPE_PROJECT_DIRECTORY:
+                    Status().setMessage("Searching for: Project directories");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
+                    break;
+                case DbObject.TYPE_PROJECT_TYPE:
+                    Status().setMessage("Searching for: Project types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
+                    break;
                 default:
                     break;
             }
@@ -235,6 +259,18 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PACKAGE:
                     Status().setMessage("Searching for: Packages");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_PROJECT:
+                    Status().setMessage("Searching for: Projects");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_PROJECT_DIRECTORY:
+                    Status().setMessage("Searching for: Project directories");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_PROJECT_TYPE:
+                    Status().setMessage("Searching for: Project types");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 default:
@@ -556,6 +592,33 @@ public class SearchManager {
         for (PackageType pt : db().getPackageTypes()) {
             if (pt.getName().equals(name)) {
                 return pt;
+            }
+        }
+        return null;
+    }
+
+    public Project findProjectById(long id) {
+        for (Project p : db().getProjects()) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public ProjectDirectory findProjectDirectoryById(long id) {
+        for (ProjectDirectory p : db().getProjectDirectories()) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public ProjectType findProjectTypeById(long id) {
+        for (ProjectType p : db().getProjectTypes()) {
+            if (p.getId() == id) {
+                return p;
             }
         }
         return null;
