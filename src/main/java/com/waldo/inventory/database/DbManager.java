@@ -1440,6 +1440,7 @@ public class DbManager implements TableChangedListener {
                     ProjectType p = new ProjectType();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
 
                     p.setExtension(rs.getString("extension"));
 
@@ -1620,5 +1621,22 @@ public class DbManager implements TableChangedListener {
             }
         }
         return projectTypes;
+    }
+
+    public List<Project> getProjectForProjectType(long id) {
+        List<Project> projects = new ArrayList<>();
+        for(Project project : getProjects()) {
+            for (ProjectDirectory pd : project.getProjectDirectories()) {
+                for (ProjectType pt : pd.getProjectTypes()) {
+                    if (pt.getId() == id) {
+                        if (!projects.contains(project)) {
+                            projects.add(project);
+                        }
+                    }
+                }
+            }
+
+        }
+        return projects;
     }
 }

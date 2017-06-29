@@ -4,6 +4,7 @@ import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
+import com.waldo.inventory.gui.dialogs.projecttypesdialog.ProjectTypesDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -48,11 +49,16 @@ public class MenuBar extends JMenuBar {
         JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("MenuBar.Packages"));
         packages.addActionListener(packagesSelected());
 
+        JMenuItem projectTypes = new JMenuItem("Project types", imageResource.readImage("MenuBar.Project"));
+        projectTypes.addActionListener(projectTypesSelected());
+
         dbMenu.add(subDivisions);
         dbMenu.addSeparator();
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);
         dbMenu.add(packages);
+        dbMenu.addSeparator();
+        dbMenu.add(projectTypes);
 
         // Tools menu
         JMenu toolsMenu = new JMenu("Tools");
@@ -96,6 +102,13 @@ public class MenuBar extends JMenuBar {
         return (e -> {
             ReadCsvDialog dialog = new ReadCsvDialog(application, "Import csv");
             dialog.showDialog();
+        });
+    }
+
+    private ActionListener projectTypesSelected() {
+        return (e -> {
+           ProjectTypesDialog dialog = new ProjectTypesDialog(application, "Project types");
+           dialog.showDialog();
         });
     }
 
