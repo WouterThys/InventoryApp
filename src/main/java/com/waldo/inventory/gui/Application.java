@@ -2,12 +2,10 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
+import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,17 +25,18 @@ public class Application extends JFrame implements ChangeListener {
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
     public static final int TAB_ITEMS = 0;
     public static final int TAB_ORDERS = 1;
+    public static final int TAB_PROJECTS = 2;
 
     public static String startUpPath;
-    //public static ResourceManager settingsResource;
     public static ResourceManager imageResource;
     public static ResourceManager stringResource;
     public static ResourceManager scriptResource;
 
-    public JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPane;
 
     private MainPanel mainPanel;
     private OrderPanel orderPanel;
+    private ProjectPanel projectPanel;
 
     private boolean updating = false;
     private String dbFileName = "";
@@ -91,11 +90,14 @@ public class Application extends JFrame implements ChangeListener {
         // - Create components
         mainPanel = new MainPanel(this);
         orderPanel = new OrderPanel(this);
+        projectPanel = new ProjectPanel(this);
+
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
         tabbedPane.addTab("Components", imageResource.readImage("EditItem.InfoIcon"), mainPanel, "Components");
         tabbedPane.addTab("Orders", imageResource.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
+        tabbedPane.addTab("Projects", imageResource.readImage("EditItem.ProjectIcon"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 
@@ -112,12 +114,20 @@ public class Application extends JFrame implements ChangeListener {
         return orderPanel.getSelectedOrderItem();
     }
 
+    public Project getSelectedProject() {
+        return projectPanel.getSelectedProject();
+    }
+
     public void setSelectedItem(Item selectedItem) {
         mainPanel.selectItem(selectedItem);
     }
 
     public void setSelectedOrderItem(OrderItem selectedOrderItem) {
-        orderPanel.selectOrderItem(selectedOrderItem); // TODO
+        orderPanel.selectOrderItem(selectedOrderItem);
+    }
+
+    public void setSelectedProject(Project selectedProject) {
+        projectPanel.selectProject(selectedProject);
     }
 
     public void setTableItems(java.util.List<DbObject> foundObject) {
@@ -146,13 +156,35 @@ public class Application extends JFrame implements ChangeListener {
                 }
                 break;
 
+            case TAB_PROJECTS:
+                if (foundObject == null) {
+                    // TODO: update project panel
+                } else {
+                    List<Project> foundProjects = new ArrayList<>(foundObject.size());
+                    for (DbObject object : foundObject) {
+                        foundProjects.add((Project)object);
+                    }
+                    // TODO: update project panel
+                }
+
             default:
                 break;
         }
     }
 
     public void clearSearch() {
-        mainPanel.getToolBar().clearSearch();
+        switch (tabbedPane.getSelectedIndex()) {
+            case TAB_ITEMS:
+                mainPanel.getToolBar().clearSearch();
+                break;
+            case TAB_ORDERS:
+                orderPanel.getToolBar().clearSearch();
+                break;
+            case TAB_PROJECTS:
+                projectPanel.getToolBar().clearSearch();
+                break;
+        }
+
     }
 
     public void addItemToOrder(Item item, Order order) {

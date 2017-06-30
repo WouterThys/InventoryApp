@@ -16,6 +16,8 @@ public class ITree extends JTree {
         renderer.setOpenIcon(imageResource.readImage("DivisionTree.OpenIcon"));
         renderer.setLeafIcon(imageResource.readImage("DivisionTree.LeafIcon"));
 
+        // TODO set icon of tree project type
+
         setCellRenderer(renderer);
     }
 }

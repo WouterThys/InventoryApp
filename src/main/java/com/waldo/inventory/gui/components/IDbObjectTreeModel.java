@@ -16,6 +16,7 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
 
     public static final int TYPE_DIVISIONS = 0;
     public static final int TYPE_ORDERS = 1;
+    public static final int TYPE_PROJECTS = 2;
 
     private DefaultMutableTreeNode rootNode;
     private ITree tree;
@@ -155,6 +156,12 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
                 return (DefaultMutableTreeNode) rootNode.getChildAt(0); // Ordered
             } else {
                 return (DefaultMutableTreeNode) rootNode.getChildAt(1); // Not ordered
+            }
+        }
+        if (type == TYPE_PROJECTS) {
+            if (DbObject.getType(child) == DbObject.TYPE_PROJECT_TYPE) { // Types are children of projects, types have no children
+                Project p = null; // TODO find project of project type
+                findNode(null);
             }
         }
         return null;

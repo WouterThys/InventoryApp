@@ -29,7 +29,7 @@ public class MainPanel extends MainPanelLayout {
         initializeComponents();
         initializeLayouts();
         initActions();
-        initializeListeners();
+        initListeners();
 
         db().addOnItemsChangedListener(itemsChanged);
         db().addOnCategoriesChangedListener(categoriesChanged);
@@ -76,7 +76,7 @@ public class MainPanel extends MainPanelLayout {
         });
     }
 
-    private void initializeListeners() {
+    private void initListeners() {
         setItemsChangedListener();
         setCategoriesChangedListener();
         setProductsChangedListener();

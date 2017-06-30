@@ -40,7 +40,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     OrderItemDetailPanel orderItemDetailPanel;
 
     private IdBToolBar orderToolBar;
-    private TopToolBar topToolBar;
+    protected TopToolBar topToolBar;
     private JToolBar bottomToolBar;
     private JPanel orderTbPanel;
 
@@ -475,7 +475,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             @Override
             public void onToolBarEdit() {
                 if (lastSelectedOrder != null) {
-                    OrdersDialog dialog = new OrdersDialog(application, "New order", lastSelectedOrder);
+                    OrdersDialog dialog = new OrdersDialog(application, "Edit order", lastSelectedOrder);
                     if (dialog.showDialog() == IDialog.OK) {
                         // Add order
                         Order o = dialog.getOrder();

@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -54,6 +55,10 @@ public class OrderPanel extends OrderPanelLayout {
 
     public IOrderItemTableModel getTableModel() {
         return tableModel;
+    }
+
+    public TopToolBar getToolBar() {
+        return topToolBar;
     }
 
     public void addItemToOrder(Item item, Order order) {

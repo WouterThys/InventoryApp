@@ -20,56 +20,61 @@ public class Project extends DbObject {
         statement.execute();
     }
 
-        @Override
-        protected void update(PreparedStatement statement) throws SQLException{
-            statement.setString(1, name);
-            statement.setString(2, iconPath);
-            statement.setLong(3, id); // WHERE id
-            statement.execute();
-        }
+    @Override
+    protected void update(PreparedStatement statement) throws SQLException {
+        statement.setString(1, name);
+        statement.setString(2, iconPath);
+        statement.setLong(3, id); // WHERE id
+        statement.execute();
+    }
 
-        public Project() {
-            super(TABLE_NAME);
-        }
+    public Project() {
+        super(TABLE_NAME);
+    }
 
-        public static Project getUnknownProject() {
-            Project p = new Project();
-            p.setName(UNKNOWN_NAME);
-            p.setId(UNKNOWN_ID);
-            p.setCanBeSaved(false);
-            return p;
-        }
+    public Project(String name) {
+        super(TABLE_NAME);
+        setName(name);
+    }
 
-        @Override
-        public boolean equals(Object obj) {
-            boolean result = super.equals(obj);
-            if (result) {
-                if (!(obj instanceof Project)) {
-                    return false;
-                }
-                if (!(((Project)obj).getProjectDirectories().equals(getProjectDirectories()))) {
-                    return false;
-                }
+    public static Project getUnknownProject() {
+        Project p = new Project();
+        p.setName(UNKNOWN_NAME);
+        p.setId(UNKNOWN_ID);
+        p.setCanBeSaved(false);
+        return p;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Project)) {
+                return false;
             }
-            return result;
-        }
-
-        @Override
-        public boolean hasMatch(String searchTerm) {
-            if (super.hasMatch(searchTerm)) {
-                return true;
-            } else {
-                return false; // TODO
+            if (!(((Project) obj).getProjectDirectories().equals(getProjectDirectories()))) {
+                return false;
             }
         }
+        return result;
+    }
 
-        @Override
-        public Product createCopy() {
-            Product product = new Product();
-            copyBaseFields(product);
-            // Directories will be fetched from db when the getter is called
-            return product;
+    @Override
+    public boolean hasMatch(String searchTerm) {
+        if (super.hasMatch(searchTerm)) {
+            return true;
+        } else {
+            return false; // TODO
         }
+    }
+
+    @Override
+    public Product createCopy() {
+        Product product = new Product();
+        copyBaseFields(product);
+        // Directories will be fetched from db when the getter is called
+        return product;
+    }
 
     public List<ProjectDirectory> getProjectDirectories() {
         if (projectDirectories == null) {

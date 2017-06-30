@@ -52,7 +52,7 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     /*
-     *                  PRIVATE METHODS
+     *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
         if (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved()) {
