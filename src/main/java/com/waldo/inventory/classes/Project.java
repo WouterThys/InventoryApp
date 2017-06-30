@@ -120,9 +120,16 @@ public class Project extends DbObject {
 
     public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory) {
         for (ProjectType type : DbManager.db().getProjectTypes()) {
-            List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension());
-            for (File f : foundFiles) {
-                projectDirectory.addProjectType(type, f);
+            List<File> foundFiles;
+            if (type.isOpenAsFolder()) {
+                if(FileUtils.isOrContains(new File(projectDirectory.getDirectory()), type.getExtension())) {
+                    projectDirectory.addProjectType(type, new File(projectDirectory.getDirectory()));
+                }
+            } else {
+                foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension());
+                for (File f : foundFiles) {
+                    projectDirectory.addProjectType(type, f);
+                }
             }
         }
     }

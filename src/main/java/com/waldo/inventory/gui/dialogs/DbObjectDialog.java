@@ -117,4 +117,19 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
                 new JComponent[] {nameTextField, iconPathPanel}
         ));
     }
+
+    @Override
+    public void initializeComponents() {
+
+    }
+
+    @Override
+    public void initializeLayouts() {
+
+    }
+
+    @Override
+    public void updateComponents(Object object) {
+
+    }
 }

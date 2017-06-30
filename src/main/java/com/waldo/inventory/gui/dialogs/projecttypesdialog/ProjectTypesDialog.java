@@ -2,12 +2,16 @@ package com.waldo.inventory.gui.dialogs.projecttypesdialog;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
+import com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog.DetectionDialog;
+import com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog.LauncherDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -53,10 +57,6 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     private void setDetails() {
         if (selectedProjectType != null) {
             detailName.setText(selectedProjectType.getName());
-            detailExtension.setText(selectedProjectType.getExtension());
-            detailOpenAsFolder.setSelected(selectedProjectType.isOpenAsFolder());
-            detailUseDefaultLauncher.setSelected(selectedProjectType.isUseDefaultLauncher());
-            detailLauncherPath.setText(selectedProjectType.getLauncherPath());
 
             if (!selectedProjectType.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedProjectType.getIconPath(), 48,48);
@@ -73,12 +73,8 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     private void clearDetails() {
         detailName.setText("");
-        detailExtension.setText("");
         detailLogo.setIcon((Icon) null);
         detailProjectModel.removeAllElements();
-        detailOpenAsFolder.setSelected(false);
-        detailUseDefaultLauncher.setSelected(true);
-        detailLauncherPath.setText("");
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -265,10 +261,6 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
-
-        if (component.equals(detailUseDefaultLauncher)) {
-            detailLauncherPath.setEnabled(!detailUseDefaultLauncher.isSelected());
-        }
     }
 
     @Override
@@ -276,4 +268,40 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
         return selectedProjectType;
     }
 
+    //
+    // Buttons clicked
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+
+        if (selectedProjectType != null) {
+            if (source == detailLauncherBtn) {
+                LauncherDialog dialog = new LauncherDialog(application, "Launcher",
+                        selectedProjectType.isUseDefaultLauncher(),
+                        selectedProjectType.getLauncherPath());
+
+                if (dialog.showDialog() == IDialog.OK) {
+                    selectedProjectType.setUseDefaultLauncher(dialog.isUseDefaultLauncher());
+                    selectedProjectType.setLauncherPath(dialog.getLauncherPath());
+                    getButtonNeutral().setEnabled(checkChange());
+                }
+            }
+            if (source == detailDetectionBtn) {
+                DetectionDialog dialog = new DetectionDialog(application, "Detection",
+                        selectedProjectType.getExtension(),
+                        selectedProjectType.isOpenAsFolder(),
+                        selectedProjectType.isMatchExtension(),
+                        selectedProjectType.isUseParentFolder());
+
+                if (dialog.showDialog() == IDialog.OK) {
+                    selectedProjectType.setExtension(dialog.getExtension());
+                    selectedProjectType.setOpenAsFolder(dialog.isOpenAsFolder());
+                    selectedProjectType.setMatchExtension(dialog.isMatchExtension());
+                    selectedProjectType.setUseParentFolder(dialog.isUseParentFolder());
+                    getButtonNeutral().setEnabled(checkChange());
+                }
+            }
+        }
+    }
 }

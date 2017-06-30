@@ -1,53 +1,47 @@
 package com.waldo.inventory.gui.dialogs.projecttypesdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.CsvFileChooser;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.ShellFileChooser;
-import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialogLayout;
 
 import javax.swing.*;
 import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ProjectTypesDialogLayout extends IDialog implements
-        GuiInterface,
         ListSelectionListener,
         DbObjectChangedListener<ProjectType>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
-        IEditedListener {
+        IEditedListener,
+        ActionListener {
 
     /*
- *                  COMPONENTS
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    *                  COMPONENTS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<ProjectType> projectTypeList;
     DefaultListModel<ProjectType> projectTypeModel;
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    ITextField detailExtension;
     ILabel detailLogo;
-    ICheckBox detailOpenAsFolder;
-    ICheckBox detailUseDefaultLauncher;
-    ITextField detailLauncherPath;
-    JButton launcherFileBtn;
 
     private JList<Project> detailProjectList;
     DefaultListModel<Project> detailProjectModel;
+
+    JButton detailLauncherBtn;
+    JButton detailDetectionBtn;
 
     /*
      *                  VARIABLES
@@ -69,9 +63,13 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         if (selectedProjectType == null || selectedProjectType.isUnknown()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
+            detailLauncherBtn.setEnabled(false);
+            detailDetectionBtn.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
             toolBar.setEditActionEnabled(true);
+            detailLauncherBtn.setEnabled(true);
+            detailDetectionBtn.setEnabled(true);
         }
     }
 
@@ -128,18 +126,10 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         nameLabel.setHorizontalAlignment(ILabel.RIGHT);
         nameLabel.setVerticalAlignment(ILabel.CENTER);
 
-        // - Extension
-        ILabel extensionLabel = new ILabel("Extension: ");
-        extensionLabel.setHorizontalAlignment(ILabel.RIGHT);
-        extensionLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Launcher path
-        ILabel launcherLabel = new ILabel("Launcher: ");
-        launcherLabel.setHorizontalAlignment(ILabel.RIGHT);
-        launcherLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Browse panel
-        JPanel launcherPanel = PanelUtils.createFileOpenPanel(detailLauncherPath, launcherFileBtn);
+        // - Buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(detailDetectionBtn);
+        buttonPanel.add(detailLauncherBtn);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -157,40 +147,13 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         gbc.anchor = GridBagConstraints.EAST;
         textFieldPanel.add(detailName, gbc);
 
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(extensionLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
+        gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        textFieldPanel.add(detailExtension, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(detailOpenAsFolder, gbc);
+        textFieldPanel.add(buttonPanel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(detailUseDefaultLauncher, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(launcherLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 0;
-//        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.EAST;
-        textFieldPanel.add(launcherPanel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 4; gbc.weighty = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
         textFieldPanel.add(detailLogo, gbc);
@@ -246,34 +209,17 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailExtension = new ITextField("Extension");
-        detailExtension.addEditedListener(this, "extension");
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
 
         detailProjectModel = new DefaultListModel<>();
         detailProjectList = new JList<>(detailProjectModel);
 
-        detailOpenAsFolder = new ICheckBox("Open as folder");
-        detailOpenAsFolder.addEditedListener(this, "openAsFolder");
+        detailLauncherBtn = new JButton("Launcher");
+        detailLauncherBtn.addActionListener(this);
 
-        detailUseDefaultLauncher = new ICheckBox("Use default launcher", true);
-        detailUseDefaultLauncher.addEditedListener(this, "useDefaultLauncher");
-
-        detailLauncherPath = new ITextField("Launcher");
-        detailLauncherPath.setEnabled(false);
-        detailLauncherPath.addEditedListener(this, "launcherPath");
-
-        launcherFileBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        launcherFileBtn.addActionListener(e -> {
-            JFileChooser fileChooser = ShellFileChooser.getFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-            if (fileChooser.showDialog(ProjectTypesDialogLayout.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                detailLauncherPath.setText(fileChooser.getSelectedFile().getPath());
-                detailLauncherPath.fireValueChanged();
-            }
-        });
+        detailDetectionBtn = new JButton("Detection");
+        detailDetectionBtn.addActionListener(this);
     }
 
     @Override

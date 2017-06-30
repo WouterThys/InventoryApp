@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,7 +12,7 @@ import java.awt.event.WindowEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class IDialog extends JDialog {
+public abstract class IDialog extends JDialog implements GuiInterface {
 
     public static final int OK = 1;
     public static final int NEUTRAL = 0;

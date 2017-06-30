@@ -230,4 +230,26 @@ public class FileUtils {
         }
         return files;
     }
+
+    public static boolean isOrContains(File folder, String extension) {
+        boolean result = false;
+
+        if (folder.exists() && folder.isDirectory()) {
+            if (folder.toString().endsWith(extension)) {
+                result = true;
+            } else {
+                File[] containedFiles = folder.listFiles();
+                if (containedFiles != null) {
+                    for (File f : containedFiles) {
+                        if (f.toString().endsWith(extension)) {
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }

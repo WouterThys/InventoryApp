@@ -12,10 +12,15 @@ public class ProjectType extends DbObject {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectType.class);
     public static final String TABLE_NAME = "projecttypes";
 
-    private String extension;
-    private boolean openAsFolder;
+    // Launcher
     private boolean useDefaultLauncher;
     private String launcherPath;
+
+    // Detection
+    private String extension;
+    private boolean openAsFolder; // Open File as directory or as file
+    private boolean matchExtension; // Match extension or contain extension
+    private boolean useParentFolder; // Use project directory or use matching folder
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -25,6 +30,8 @@ public class ProjectType extends DbObject {
         statement.setBoolean(4, openAsFolder);
         statement.setBoolean(5, useDefaultLauncher);
         statement.setString(6, launcherPath);
+        statement.setBoolean(7, matchExtension);
+        statement.setBoolean(8, useParentFolder);
         statement.execute();
     }
 
@@ -36,7 +43,9 @@ public class ProjectType extends DbObject {
         statement.setBoolean(4, openAsFolder);
         statement.setBoolean(5, useDefaultLauncher);
         statement.setString(6, launcherPath);
-        statement.setLong(7, id); // WHERE id
+        statement.setBoolean(7, matchExtension);
+        statement.setBoolean(8, useParentFolder);
+        statement.setLong(9, id); // WHERE id
         statement.execute();
     }
 
@@ -58,20 +67,28 @@ public class ProjectType extends DbObject {
         if (result) {
             if (!(obj instanceof ProjectType)) {
                 return false;
-            }
-            if (!(((ProjectType)obj).getExtension().equals(getExtension()))) {
-                return false;
-            }
-            if (!(((ProjectType)obj).isOpenAsFolder() == isOpenAsFolder())) {
-                return false;
-            }
-            if (!(((ProjectType)obj).isUseDefaultLauncher() == isUseDefaultLauncher())) {
-                return false;
-            }
-            if (!(((ProjectType)obj).getLauncherPath().equals(getLauncherPath()))) {
-                return false;
-            }
+            } else {
+                ProjectType ref = (ProjectType) obj;
 
+                if (!(ref.getExtension().equals(getExtension()))) {
+                    return false;
+                }
+                if (!(ref.isOpenAsFolder() == isOpenAsFolder())) {
+                    return false;
+                }
+                if (!(ref.isUseDefaultLauncher() == isUseDefaultLauncher())) {
+                    return false;
+                }
+                if (!(ref.getLauncherPath().equals(getLauncherPath()))) {
+                    return false;
+                }
+                if (!(ref.isMatchExtension() == isMatchExtension())) {
+                    return false;
+                }
+                if (!(ref.isUseParentFolder() == isUseParentFolder())) {
+                    return false;
+                }
+            }
         }
         return result;
     }
@@ -91,8 +108,11 @@ public class ProjectType extends DbObject {
         copyBaseFields(projectType);
         projectType.setExtension(getExtension());
         projectType.setOpenAsFolder(isOpenAsFolder());
-        projectType.setUseDefaultLauncher(getUseDefaultLauncher());
+        projectType.setUseDefaultLauncher(isUseDefaultLauncher());
         projectType.setLauncherPath(getLauncherPath());
+        projectType.setMatchExtension(isMatchExtension());
+        projectType.setUseParentFolder(isUseParentFolder());
+
         return projectType;
     }
 
@@ -156,5 +176,21 @@ public class ProjectType extends DbObject {
 
     public void setLauncherPath(String launcherPath) {
         this.launcherPath = launcherPath;
+    }
+
+    public boolean isMatchExtension() {
+        return matchExtension;
+    }
+
+    public void setMatchExtension(boolean matchExtension) {
+        this.matchExtension = matchExtension;
+    }
+
+    public boolean isUseParentFolder() {
+        return useParentFolder;
+    }
+
+    public void setUseParentFolder(boolean useParentFolder) {
+        this.useParentFolder = useParentFolder;
     }
 }
