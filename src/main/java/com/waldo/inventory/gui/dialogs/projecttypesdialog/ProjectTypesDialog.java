@@ -54,6 +54,9 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
         if (selectedProjectType != null) {
             detailName.setText(selectedProjectType.getName());
             detailExtension.setText(selectedProjectType.getExtension());
+            detailOpenAsFolder.setSelected(selectedProjectType.isOpenAsFolder());
+            detailUseDefaultLauncher.setSelected(selectedProjectType.isUseDefaultLauncher());
+            detailLauncherPath.setText(selectedProjectType.getLauncherPath());
 
             if (!selectedProjectType.getIconPath().isEmpty()) {
                 detailLogo.setIcon(selectedProjectType.getIconPath(), 48,48);
@@ -73,6 +76,9 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
         detailExtension.setText("");
         detailLogo.setIcon((Icon) null);
         detailProjectModel.removeAllElements();
+        detailOpenAsFolder.setSelected(false);
+        detailUseDefaultLauncher.setSelected(true);
+        detailLauncherPath.setText("");
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -254,11 +260,15 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     //
-    // Web site changed
+    // Fields edited
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
+
+        if (component.equals(detailUseDefaultLauncher)) {
+            detailLauncherPath.setEnabled(!detailUseDefaultLauncher.isSelected());
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.DbObject;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,17 +32,17 @@ public class BindingListener implements DocumentListener {
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-        dataUpdated(e);
+        dataUpdated(e.getDocument());
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-        dataUpdated(e);
+        dataUpdated(e.getDocument());
     }
 
     @Override
     public void changedUpdate(DocumentEvent e) {
-        dataUpdated(e);
+        dataUpdated(e.getDocument());
     }
 
     public boolean isEnabled() {
@@ -52,14 +53,18 @@ public class BindingListener implements DocumentListener {
         this.enabled = enabled;
     }
 
-    private void dataUpdated(DocumentEvent e) {
+    public void fireValueEdited(Document d) {
+        dataUpdated(d);
+    }
+
+    private void dataUpdated(Document d) {
         try {
             if (editedListener != null && enabled) {
                 DbObject guiObject = editedListener.getGuiObject();
                 if (guiObject != null) {
-                    String newTxt = e.getDocument().getText(
-                            e.getDocument().getStartPosition().getOffset(),
-                            e.getDocument().getEndPosition().getOffset() - 1
+                    String newTxt = d.getText(
+                            d.getStartPosition().getOffset(),
+                            d.getEndPosition().getOffset() - 1
                     );
 
                     Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);

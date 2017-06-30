@@ -128,7 +128,7 @@ public class Order extends DbObject {
                     protected Object doInBackground() throws Exception {
                         // First delete all OrderItems
                         for (OrderItem orderItem : getOrderItems()) {
-                            removeItemFromList(orderItem);
+                            removeItemFromList(orderItem); // TODO: check if this can be done with cascaded delete of Foreign Key..
                         }
 
                         // Delete Order itself

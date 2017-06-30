@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.components.IDbObjectTreeModel;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanelLayout;
 
@@ -90,7 +91,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             rootNode.add(projectNode);
 
             for (ProjectDirectory projectDirectory : project.getProjectDirectories()) {
-                for (ProjectType projectType : projectDirectory.getProjectTypes()) {
+                for (ProjectType projectType : projectDirectory.getProjectTypes().keySet()) {
                     DefaultMutableTreeNode typeNode = new DefaultMutableTreeNode(projectType, false);
                     projectNode.add(typeNode);
                 }
@@ -128,13 +129,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             @Override
             public void onToolBarAdd() {
-                // TODO: add project dialog
-//                OrdersDialog dialog = new OrdersDialog(application, "New Project", true);
-//                if (dialog.showDialog() == IDialog.OK) {
-//                    // Add order
-//                    Order o = dialog.getOrder();
-//                    o.save();
-//                }
+                AddProjectDialog dialog = new AddProjectDialog(application, "New Project");
+                if (dialog.showDialog() == IDialog.OK) {
+                    // Add order
+                    Project p = dialog.getProject();
+                    p.save();
+                }
             }
 
             @Override
@@ -151,13 +151,15 @@ public abstract class ProjectPanelLayout extends JPanel implements
             @Override
             public void onToolBarEdit() {
                 if (selectedProject != null) {
-                    // TODO: add project dialog
-//                    OrdersDialog dialog = new OrdersDialog(application, "Edit order", lastSelectedOrder);
-//                    if (dialog.showDialog() == IDialog.OK) {
-//                        // Add order
-//                        Order o = dialog.getOrder();
-//                        o.save();
-//                    }
+                    AddProjectDialog dialog = new AddProjectDialog(application, "New Project", selectedProject);
+                    if (dialog.showDialog() == IDialog.OK) {
+                        // Add order
+                        Project p = dialog.getProject();
+                        for(ProjectDirectory dir : p.getProjectDirectories()) {
+                            dir.save();
+                        }
+                        p.save();
+                    }
                 }
             }
         });

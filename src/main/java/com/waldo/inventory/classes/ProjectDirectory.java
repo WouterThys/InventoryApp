@@ -2,14 +2,19 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProjectDirectory extends DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDirectory.class);
     public static final String TABLE_NAME = "projectdirectories";
 
     private String directory;
@@ -17,7 +22,7 @@ public class ProjectDirectory extends DbObject {
     private long projectId;
     private Project project;
 
-    private List<ProjectType> projectTypes;
+    private HashMap<ProjectType, List<File>> projectTypes;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -51,6 +56,12 @@ public class ProjectDirectory extends DbObject {
     }
 
     @Override
+    public String toString() {
+        return getDirectory();
+    }
+
+
+    @Override
     public boolean equals(Object obj) {
         boolean result = super.equals(obj);
         if (result) {
@@ -80,9 +91,27 @@ public class ProjectDirectory extends DbObject {
         copyBaseFields(projectDirectory);
         projectDirectory.setDirectory(getDirectory());
         projectDirectory.setProjectId(getProjectId());
-        projectDirectory.setProjectTypes(getProjectTypes());
         return projectDirectory;
     }
+
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void addProjectType(ProjectType projectType, File file) {
+        if (projectType != null) {
+            if (getProjectTypes().containsKey(projectType)) {
+                getProjectTypes().computeIfAbsent(projectType, k -> new ArrayList<>());
+            } else {
+                getProjectTypes().put(projectType, new ArrayList<>());
+            }
+            getProjectTypes().get(projectType).add(file);
+        }
+    }
+
+
+    /*
+     *                  GETTERS - SETTERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public String getDirectory() {
         if (directory == null) {
@@ -117,18 +146,11 @@ public class ProjectDirectory extends DbObject {
         return project;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public List<ProjectType> getProjectTypes() {
+    public HashMap<ProjectType, List<File>> getProjectTypes() {
         if (projectTypes == null) {
             projectTypes = DbManager.db().getProjectTypesForProjectDirectory(id);
         }
         return projectTypes;
     }
 
-    public void setProjectTypes(List<ProjectType> projectTypes) {
-        this.projectTypes = projectTypes;
-    }
 }

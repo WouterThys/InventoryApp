@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -27,6 +29,8 @@ public class FileUtils {
     public final static String csv = "csv";
 
     public final static String db = "db";
+
+    public final static String shell = "sh";
 
 
     public static ImageIcon loadImageIcon(final String name) {
@@ -75,6 +79,10 @@ public class FileUtils {
 
     public static CsvFilter getCsvFilter() {
         return new CsvFilter();
+    }
+
+    public static ShellFilter getShellFilter() {
+        return new ShellFilter();
     }
 
     public static DbFilter getDbFilter() {
@@ -149,6 +157,29 @@ public class FileUtils {
         }
     }
 
+    private static class ShellFilter extends FileFilter {
+
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+
+            String extension = FileUtils.getExtension(f);
+            if (extension != null) {
+                if (extension.equals(FileUtils.shell)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            return ".sh files";
+        }
+    }
+
     public static String getRawStringFromFile(File file) {
         String result = "";
         if (file != null) {
@@ -174,5 +205,29 @@ public class FileUtils {
             }
         }
         return result;
+    }
+
+
+    public static List<File> findFileInFolder(File folder, String extension) {
+        List<File> files = new ArrayList<>();
+        if (folder.exists() && folder.isDirectory()) {
+            File[] containedFiles = folder.listFiles();
+            if (containedFiles != null) {
+                for (File f : containedFiles) {
+                    if (f.isDirectory()) {
+                        if (f.toString().endsWith(extension)) {
+                            files.add(f);
+                        } else {
+                            files.addAll(findFileInFolder(f, extension));
+                        }
+                    } else {
+                        if (f.toString().endsWith(extension)) {
+                            files.add(f);
+                        }
+                    }
+                }
+            }
+        }
+        return files;
     }
 }

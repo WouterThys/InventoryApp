@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.*;
@@ -1441,6 +1443,9 @@ public class DbManager implements TableChangedListener {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
+                    p.setOpenAsFolder(rs.getBoolean("openasfolder"));
+                    p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
+                    p.setLauncherPath(rs.getString("launcherpath"));
 
                     p.setExtension(rs.getString("extension"));
 
@@ -1470,6 +1475,9 @@ public class DbManager implements TableChangedListener {
                     p.setName(rs.getString("name"));
 
                     p.setExtension(rs.getString("extension"));
+                    p.setOpenAsFolder(rs.getBoolean("openasfolder"));
+                    p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
+                    p.setLauncherPath(rs.getString("launcherpath"));
                 }
             }
         } catch (SQLException e) {
@@ -1503,6 +1511,7 @@ public class DbManager implements TableChangedListener {
                     p.setId(rs.getLong("id"));
                     p.setProjectDirectoryId(rs.getLong("projectdirectoryid"));
                     p.setProjectTypeId(rs.getLong("projecttypeid"));
+                    p.setFilePath(rs.getString("filepath"));
 
                     projectTypeLinks.add(p);
                 }
@@ -1613,11 +1622,16 @@ public class DbManager implements TableChangedListener {
         return directories;
     }
 
-    public List<ProjectType> getProjectTypesForProjectDirectory(long directoryId) {
-        List<ProjectType> projectTypes = new ArrayList<>();
+    public HashMap<ProjectType, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
+        HashMap<ProjectType, List<File>> projectTypes = new HashMap<>();
         for (ProjectTypeLink ptl : getProjectTypeLinks()) {
             if(ptl.getProjectDirectoryId() == directoryId) {
-                projectTypes.add(ptl.getProjectType());
+                if (projectTypes.containsKey(ptl.getProjectType())) {
+                    projectTypes.computeIfAbsent(ptl.getProjectType(), k -> new ArrayList<>());
+                } else {
+                    projectTypes.put(ptl.getProjectType(), new ArrayList<>());
+                }
+                projectTypes.get(ptl.getProjectType()).add(ptl.getFile());
             }
         }
         return projectTypes;
@@ -1627,7 +1641,7 @@ public class DbManager implements TableChangedListener {
         List<Project> projects = new ArrayList<>();
         for(Project project : getProjects()) {
             for (ProjectDirectory pd : project.getProjectDirectories()) {
-                for (ProjectType pt : pd.getProjectTypes()) {
+                for (ProjectType pt : pd.getProjectTypes().keySet()) {
                     if (pt.getId() == id) {
                         if (!projects.contains(project)) {
                             projects.add(project);

@@ -1,24 +1,25 @@
 package com.waldo.inventory.gui.dialogs.projecttypesdialog;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.CsvFileChooser;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ShellFileChooser;
+import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialogLayout;
 
 import javax.swing.*;
+import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
-import static javax.swing.SpringLayout.WEST;
 
 public abstract class ProjectTypesDialogLayout extends IDialog implements
         GuiInterface,
@@ -40,6 +41,10 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
     ITextField detailName;
     ITextField detailExtension;
     ILabel detailLogo;
+    ICheckBox detailOpenAsFolder;
+    ICheckBox detailUseDefaultLauncher;
+    ITextField detailLauncherPath;
+    JButton launcherFileBtn;
 
     private JList<Project> detailProjectList;
     DefaultListModel<Project> detailProjectModel;
@@ -128,6 +133,14 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         extensionLabel.setHorizontalAlignment(ILabel.RIGHT);
         extensionLabel.setVerticalAlignment(ILabel.CENTER);
 
+        // - Launcher path
+        ILabel launcherLabel = new ILabel("Launcher: ");
+        launcherLabel.setHorizontalAlignment(ILabel.RIGHT);
+        launcherLabel.setVerticalAlignment(ILabel.CENTER);
+
+        // - Browse panel
+        JPanel launcherPanel = PanelUtils.createFileOpenPanel(detailLauncherPath, launcherFileBtn);
+
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -154,8 +167,31 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         textFieldPanel.add(detailExtension, gbc);
 
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(detailOpenAsFolder, gbc);
+
         gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 1;
+        gbc.gridy = 2; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(detailUseDefaultLauncher, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 3; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        textFieldPanel.add(launcherLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 3; gbc.weighty = 0;
+//        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.EAST;
+        textFieldPanel.add(launcherPanel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 4; gbc.weighty = 1;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
         textFieldPanel.add(detailLogo, gbc);
 
@@ -217,6 +253,27 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
 
         detailProjectModel = new DefaultListModel<>();
         detailProjectList = new JList<>(detailProjectModel);
+
+        detailOpenAsFolder = new ICheckBox("Open as folder");
+        detailOpenAsFolder.addEditedListener(this, "openAsFolder");
+
+        detailUseDefaultLauncher = new ICheckBox("Use default launcher", true);
+        detailUseDefaultLauncher.addEditedListener(this, "useDefaultLauncher");
+
+        detailLauncherPath = new ITextField("Launcher");
+        detailLauncherPath.setEnabled(false);
+        detailLauncherPath.addEditedListener(this, "launcherPath");
+
+        launcherFileBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
+        launcherFileBtn.addActionListener(e -> {
+            JFileChooser fileChooser = ShellFileChooser.getFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            if (fileChooser.showDialog(ProjectTypesDialogLayout.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                detailLauncherPath.setText(fileChooser.getSelectedFile().getPath());
+                detailLauncherPath.fireValueChanged();
+            }
+        });
     }
 
     @Override

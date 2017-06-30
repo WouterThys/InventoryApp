@@ -1,10 +1,11 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Project extends DbObject {
@@ -75,6 +76,61 @@ public class Project extends DbObject {
         // Directories will be fetched from db when the getter is called
         return product;
     }
+
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void addDirectory(ProjectDirectory projectDirectory) {
+        if (projectDirectory != null && !getProjectDirectories().contains(projectDirectory)) {
+            updateProjectTypesToDirectory(projectDirectory);
+            if (id > UNKNOWN_ID) {
+                projectDirectory.setProjectId(id);
+                projectDirectory.save();
+                save();
+            }
+            getProjectDirectories().add(projectDirectory);
+        } else {
+            addDirectory("");
+        }
+    }
+
+    public void addDirectory(String projectDirectory) {
+        ProjectDirectory directory = new ProjectDirectory();
+        directory.setDirectory(projectDirectory);
+        addDirectory(directory);
+    }
+
+    public void updateDirectory(ProjectDirectory projectDirectory) {
+        if (projectDirectory != null && getProjectDirectories().contains(projectDirectory)) {
+            updateProjectTypesToDirectory(projectDirectory);
+            if (id > UNKNOWN_ID) {
+                projectDirectory.setProjectId(id);
+                projectDirectory.save();
+                save();
+            }
+        }
+    }
+
+    public void removeDirectory(ProjectDirectory projectDirectory) {
+        if (getProjectDirectories().contains(projectDirectory)) {
+            projectDirectory.delete(); // Should also delete entry in link table
+            getProjectDirectories().remove(projectDirectory);
+        }
+    }
+
+    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory) {
+        for (ProjectType type : DbManager.db().getProjectTypes()) {
+            List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension());
+            for (File f : foundFiles) {
+                projectDirectory.addProjectType(type, f);
+            }
+        }
+    }
+
+
+    /*
+     *                  GETTERS - SETTERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public List<ProjectDirectory> getProjectDirectories() {
         if (projectDirectories == null) {

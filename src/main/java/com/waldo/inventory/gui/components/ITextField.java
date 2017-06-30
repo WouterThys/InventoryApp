@@ -26,7 +26,9 @@ public class ITextField extends JTextField implements FocusListener {
     private IEditedListener editedListener;
     private String originalText = hint;
     private String originalToolTip = "";
+    private Border originalBorder;
     private BindingListener documentListener;
+    private boolean showingError;
 
     private Error error;
 
@@ -48,6 +50,8 @@ public class ITextField extends JTextField implements FocusListener {
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
         showingHint = !hint.isEmpty();
         addMenu();
+
+        originalBorder = getBorder();
     }
 
     @Override
@@ -93,6 +97,9 @@ public class ITextField extends JTextField implements FocusListener {
 
     @Override
     public void focusGained(FocusEvent e) {
+        if (showingError) {
+            setError(null);
+        }
         if (this.isEnabled()) {
             this.setForeground(Color.BLACK);
 //            this.setBorder(focusBorder);
@@ -114,6 +121,12 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
+    public void fireValueChanged() {
+        if (documentListener != null) {
+            documentListener.fireValueEdited(this.getDocument());
+        }
+    }
+
     public void addEditedListener(IEditedListener listener, String fieldName) {
         if (documentListener != null) {
             this.getDocument().removeDocumentListener(documentListener);
@@ -125,16 +138,18 @@ public class ITextField extends JTextField implements FocusListener {
     public void setError(String errorText) {
         if (errorText != null) {
             originalText = this.getText();
-//            originalBorder = this.getBorder();
+            originalBorder = this.getBorder();
             originalToolTip = this.getToolTipText();
             error = new Error(Error.ERROR, errorText);
-//            this.setBorder(new IconBorder(error.getImage(), originalBorder));
+            this.setBorder(new IconBorder(error.getImage(), originalBorder));
             this.setToolTipText(error.getMessage());
+            showingError = true;
         } else {
             error = null;
             this.setText(originalText);
-//            this.setBorder(originalBorder);
+            this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
+            showingError= false;
         }
     }
 

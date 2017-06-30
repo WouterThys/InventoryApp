@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.SearchManager;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -11,13 +12,17 @@ public class ProjectTypeLink extends DbObject {
 
     private long projectDirectoryId;
     private ProjectDirectory projectDirectory;
+
     private long projectTypeId;
     private ProjectType projectType;
+
+    private String filePath;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setLong(1, projectDirectoryId);
         statement.setLong(2, projectTypeId);
+        statement.setString(3, filePath);
         statement.execute();
     }
 
@@ -25,7 +30,8 @@ public class ProjectTypeLink extends DbObject {
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setLong(1, projectDirectoryId);
         statement.setLong(2, projectTypeId);
-        statement.setLong(3, id); // WHERE id
+        statement.setString(3, filePath);
+        statement.setLong(4, id); // WHERE id
         statement.execute();
     }
 
@@ -75,5 +81,23 @@ public class ProjectTypeLink extends DbObject {
 
     public void setProjectType(ProjectType projectType) {
         this.projectType = projectType;
+    }
+
+    public String getFilePath() {
+        if (filePath == null) {
+            filePath = "";
+        }
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public File getFile() {
+        if (!getFilePath().isEmpty()) {
+            return new File(getFilePath());
+        }
+        return null;
     }
 }
