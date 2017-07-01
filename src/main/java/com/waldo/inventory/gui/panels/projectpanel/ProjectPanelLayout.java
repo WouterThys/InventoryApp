@@ -80,14 +80,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
     public void selectProject(Project selectedProject) {
         if (selectedProject != null) {
-//            List<selectedProject> itemList = tableModel.getItemList();
-//            if (itemList != null) {
-//                int ndx = itemList.indexOf(selectedItem);
-//                if (ndx >= 0 && ndx < itemList.size()) {
-//                    itemTable.setRowSelectionInterval(ndx, ndx);
-//                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
-//                }
-//            }
+            treeModel.setSelectedObject(selectedProject);
         }
     }
 
@@ -102,6 +95,23 @@ public abstract class ProjectPanelLayout extends JPanel implements
                     projectNode.add(typeNode);
                 }
             }
+        }
+    }
+
+    private void saveProject(Project project) {
+        application.beginWait();
+        try {
+            project.saveAll();
+        } catch (SQLException e) {
+            LOG.error("Error saving project: " +e);
+            JOptionPane.showMessageDialog(
+                    ProjectPanelLayout.this,
+                    "Error saving project: " + e,
+                    "Db error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } finally {
+            application.endWait();
         }
     }
 
@@ -139,17 +149,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
                 if (dialog.showDialog() == IDialog.OK) {
                     // Add Project
                     Project p = dialog.getProject();
-                    try {
-                        p.saveAll();
-                    } catch (SQLException e) {
-                        LOG.error("Error saving project: " +e);
-                        JOptionPane.showMessageDialog(
-                                ProjectPanelLayout.this,
-                                "Error saving project: " + e,
-                                "Db error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                    }
+                    saveProject(p);
                 }
             }
 
@@ -158,7 +158,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
                 if (selectedProject != null) {
                     int res = JOptionPane.showConfirmDialog(ProjectPanelLayout.this, "Are you sure you want to delete \"" + selectedProject.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
-                        selectedProject.delete();
+                        application.beginWait();
+                        try {
+                            selectedProject.delete();
+                        } finally {
+                            application.endWait();
+                        }
                         selectedProject = null;
                     }
                 }
@@ -171,10 +176,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
                     if (dialog.showDialog() == IDialog.OK) {
                         // Add order
                         Project p = dialog.getProject();
-                        for(ProjectDirectory dir : p.getProjectDirectories()) {
-                            dir.save();
-                        }
-                        p.save();
+                        saveProject(p);
                     }
                 }
             }
@@ -212,6 +214,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
                 if (selectedProject == null || !selectedProject.equals(object)) {
                     selectedProject = (Project) object;
                 }
+                selectProject(selectedProject);
             }
 
             // Enabled components

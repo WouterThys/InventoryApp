@@ -85,8 +85,18 @@ public class Project extends DbObject {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public boolean hasDirectory(String directory) {
+        for (ProjectDirectory dir : getProjectDirectories()) {
+            if (dir.getDirectory().equals(directory)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public void addDirectory(ProjectDirectory projectDirectory) {
-        if (projectDirectory != null && !getProjectDirectories().contains(projectDirectory)) {
+        if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
             updateProjectTypesToDirectory(projectDirectory);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
@@ -118,8 +128,8 @@ public class Project extends DbObject {
 
     public void removeDirectory(ProjectDirectory projectDirectory) {
         if (getProjectDirectories().contains(projectDirectory)) {
-            projectDirectory.delete(); // Should also delete entry in link table
             getProjectDirectories().remove(projectDirectory);
+            projectDirectory.delete(); // Should also delete entry in link table
         }
     }
 
@@ -173,7 +183,7 @@ public class Project extends DbObject {
             for (ProjectType type : directory.getProjectTypes().keySet())  {
                 for (File file : directory.getProjectTypes().get(type)) {
                     // Save link between type and directory
-                    ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId());
+                    ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId(), file.getAbsolutePath());
                     if (ptl == null) {
                         ptl = new ProjectTypeLink();
                     }

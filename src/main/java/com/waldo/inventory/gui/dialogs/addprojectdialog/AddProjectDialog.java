@@ -38,6 +38,9 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
         updateComponents(project);
 
+        setPreferredSize(new Dimension(600, 400));
+        pack();
+
         if (project.getId() <= DbObject.UNKNOWN_ID) {
             isNew = true;
         } else {
@@ -90,11 +93,6 @@ public class AddProjectDialog extends AddProjectDialogLayout {
     protected void onOK() {
         if (verify()) {
             project.setName(nameField.getText());
-
-            // Get all directories
-            for (int i = 0; i < directoryModel.getSize(); i++) {
-                project.getProjectDirectories().add(directoryModel.getElementAt(i));
-            }
 
             super.onOK();
         }
@@ -149,7 +147,7 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
             if (result == JOptionPane.OK_OPTION) {
                 for(ProjectDirectory dir : selected) {
-                    dir.delete();
+                    project.removeDirectory(dir);
                     directoryModel.removeElement(dir);
                 }
             }

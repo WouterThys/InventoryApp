@@ -624,9 +624,11 @@ public class SearchManager {
         return null;
     }
 
-    public ProjectTypeLink findProjectTypeLink(long directoryId, long typeId) {
+    public ProjectTypeLink findProjectTypeLink(long directoryId, long typeId, String path) {
         for (ProjectTypeLink tpl : db().getProjectTypeLinks()) {
-            if (tpl.getProjectDirectoryId() == directoryId && tpl.getProjectTypeId() == typeId) {
+            if ((tpl.getProjectDirectoryId() == directoryId) &&
+                    (tpl.getProjectTypeId() == typeId) &&
+                    (tpl.getFilePath().equals(path))) {
                 return tpl;
             }
         }

@@ -7,8 +7,8 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
-import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
-import com.waldo.inventory.gui.panels.orderitemdetailpanel.OrderItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
 
 import javax.swing.*;
 import javax.swing.event.*;

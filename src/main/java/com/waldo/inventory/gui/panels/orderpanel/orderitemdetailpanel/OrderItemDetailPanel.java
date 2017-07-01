@@ -1,7 +1,6 @@
-package com.waldo.inventory.gui.panels.orderitemdetailpanel;
+package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
 import com.waldo.inventory.classes.PartNumber;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 

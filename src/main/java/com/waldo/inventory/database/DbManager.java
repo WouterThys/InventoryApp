@@ -416,6 +416,9 @@ public class DbManager implements TableChangedListener {
                 updateProjectTypes();
                 notifyListeners(changedHow, (ProjectType)newObject, (ProjectType)oldObject, onProjectTypeChangedListenerList);
                 break;
+            case ProjectTypeLink.TABLE_NAME:
+                updateProjectTypeLinks();
+                break;
         }
     }
 

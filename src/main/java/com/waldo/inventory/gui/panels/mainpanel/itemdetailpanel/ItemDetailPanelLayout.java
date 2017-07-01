@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.itemdetailpanel;
+package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;

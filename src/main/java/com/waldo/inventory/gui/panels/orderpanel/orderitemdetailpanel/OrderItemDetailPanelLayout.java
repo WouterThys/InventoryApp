@@ -1,6 +1,5 @@
-package com.waldo.inventory.gui.panels.orderitemdetailpanel;
+package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
@@ -9,11 +8,9 @@ import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.IFormattedTextField;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanelLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.text.NumberFormat;
 
 public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface, IEditedListener {

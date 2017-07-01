@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class MainPanel extends MainPanelLayout {
 
@@ -104,6 +105,41 @@ public class MainPanel extends MainPanelLayout {
                 updateComponents(lastSelectedDivision);
             }
         };
+    }
+
+    private void itemChanged(Item addedItem) {
+        application.beginWait();
+        try {
+            selectedItem = addedItem;
+            // Find and select in tree
+            selectDivision(addedItem);
+            // Update table items
+            updateTable(lastSelectedDivision);
+            // Select in items
+            selectItem(addedItem);
+            // Update detail panel
+            detailPanel.updateComponents(addedItem);
+        } finally {
+            application.endWait();
+        }
+    }
+
+    private void selectDivision(Item selectedItem) {
+        if (selectedItem.getTypeId() > DbObject.UNKNOWN_ID) {
+            lastSelectedDivision = sm().findTypeById(selectedItem.getTypeId());
+        } else {
+            if (selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
+                lastSelectedDivision = sm().findProductById(selectedItem.getProductId());
+            } else {
+                if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+                    lastSelectedDivision = sm().findCategoryById(selectedItem.getCategoryId());
+                } else {
+                    lastSelectedDivision = null; //??
+                }
+            }
+        }
+
+        treeModel.setSelectedObject(lastSelectedDivision);
     }
 
     private void setCategoriesChangedListener() {

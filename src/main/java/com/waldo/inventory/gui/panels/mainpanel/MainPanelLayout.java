@@ -5,7 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.panels.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
@@ -32,7 +31,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
     ITree subDivisionTree;
     IDbObjectTreeModel treeModel;
-    private ItemDetailPanel detailPanel;
+    ItemDetailPanel detailPanel;
     TopToolBar topToolBar;
 
 
@@ -104,41 +103,6 @@ public abstract class MainPanelLayout extends JPanel implements
                     itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
                 }
             }
-        }
-    }
-
-    private void selectDivision(Item selectedItem) {
-        if (selectedItem.getTypeId() > DbObject.UNKNOWN_ID) {
-            lastSelectedDivision = sm().findTypeById(selectedItem.getTypeId());
-        } else {
-            if (selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
-                lastSelectedDivision = sm().findProductById(selectedItem.getProductId());
-            } else {
-                if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-                    lastSelectedDivision = sm().findCategoryById(selectedItem.getCategoryId());
-                } else {
-                    lastSelectedDivision = null; //??
-                }
-            }
-        }
-
-        treeModel.setSelectedObject(lastSelectedDivision);
-    }
-
-    void itemChanged(Item addedItem) {
-        try {
-            application.beginWait();
-            selectedItem = addedItem;
-            // Find and select in tree
-            selectDivision(addedItem);
-            // Update table items
-            updateTable(lastSelectedDivision);
-            // Select in items
-            selectItem(addedItem);
-            // Update detail panel
-            detailPanel.updateComponents(addedItem);
-        } finally {
-            application.endWait();
         }
     }
 

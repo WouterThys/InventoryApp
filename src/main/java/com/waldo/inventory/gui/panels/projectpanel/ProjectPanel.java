@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
 import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 
@@ -9,6 +12,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ProjectPanel extends ProjectPanelLayout {
 
+    private DbObjectChangedListener<Project> projectsListener;
+    private DbObjectChangedListener<ProjectDirectory> projectDirectoryListener;
 
     public ProjectPanel(Application application) {
         super(application);
@@ -18,6 +23,9 @@ public class ProjectPanel extends ProjectPanelLayout {
 
         initActions();
         initListeners();
+
+        DbManager.db().addOnProjectChangedListener(projectsListener);
+        DbManager.db().addOnProjectDirectoryChangedListener(projectDirectoryListener);
 
         updateComponents(null);
     }
@@ -35,7 +43,47 @@ public class ProjectPanel extends ProjectPanelLayout {
     }
 
     private void initListeners() {
+        setProjectListener();
+        setProjectDirectoryListener();
+    }
 
+    private void setProjectListener() {
+        projectsListener = new DbObjectChangedListener<Project>() {
+            @Override
+            public void onAdded(Project project) {
+                treeModel.addObject(project);
+                updateComponents(project);
+            }
+
+            @Override
+            public void onUpdated(Project newProject, Project oldProject) {
+                treeModel.updateObject(newProject, oldProject);
+            }
+
+            @Override
+            public void onDeleted(Project project) {
+                treeModel.removeObject(project);
+            }
+        };
+    }
+
+    private void setProjectDirectoryListener() {
+        projectDirectoryListener = new DbObjectChangedListener<ProjectDirectory>() {
+            @Override
+            public void onAdded(ProjectDirectory directory) {
+
+            }
+
+            @Override
+            public void onUpdated(ProjectDirectory newDirectory, ProjectDirectory oldDirectory) {
+
+            }
+
+            @Override
+            public void onDeleted(ProjectDirectory directory) {
+
+            }
+        };
     }
 
     //
