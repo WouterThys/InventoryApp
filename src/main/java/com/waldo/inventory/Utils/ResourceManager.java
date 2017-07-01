@@ -1,8 +1,11 @@
 package com.waldo.inventory.Utils;
 
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -13,6 +16,8 @@ import java.util.logging.Logger;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ResourceManager {
+
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ResourceManager.class);
 
     private Properties properties;
     private InputStream resourceInput;
@@ -118,19 +123,44 @@ public class ResourceManager {
     }
 
     public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {
-        Image img = ImageIO.read(resourceURL);
-        return new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH));
-//        if (img != null) {
-//            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//            Graphics2D graphics2D = bufferedImage.createGraphics();
-//
-//            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-//            graphics2D.drawImage(img, 0,0,width, height, null);
-//            graphics2D.dispose();
-//
-//            return new ImageIcon(bufferedImage);
-//        }
-//        return null;
+        return getScaledImageIcon(ImageIO.read(resourceURL), width, height);
+    }
+
+    private ImageIcon getScaledImageIcon(BufferedImage image, int width, int height) {
+//        double scale = imageScale(image.getWidth(), image.getHeight(), width, height);
+//        Image scaledImage = image.getScaledInstance((int)(width * scale), (int) (height * scale), Image.SCALE_SMOOTH);
+//        return new ImageIcon(scaledImage);
+        int newWidth;
+        int newHeight;
+        double targetRatio = (double) width / height;
+        double originalRatio = (double) image.getWidth() / image.getHeight();
+        if (originalRatio >= targetRatio) {
+            newWidth = width;
+            newHeight = newWidth;
+        } else {
+            newHeight = height;
+            newWidth = newHeight;
+        }
+        Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    }
+
+    private double imageScale(int originalW, int originalH, int targetW, int targetH) {
+        double scaleW = (double) targetW / originalW;
+        double scaleH = (double) targetH / originalH;
+        return Math.min(scaleW, scaleH);
+    }
+
+    public ImageIcon readImage (String path, int width, int height) {
+        File imageFile = new File(path);
+        if (imageFile.exists() && imageFile.isFile()) {
+            try {
+                return readImage(imageFile.toURI().toURL(), width, height);
+            } catch (IOException e) {
+                LOG.error("Error reading image at path: " + path);
+            }
+        }
+        return readImage("Common.UnknownIcon48");
     }
 
     /**

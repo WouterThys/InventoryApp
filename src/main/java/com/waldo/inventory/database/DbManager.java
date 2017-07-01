@@ -1628,8 +1628,8 @@ public class DbManager implements TableChangedListener {
         return directories;
     }
 
-    public HashMap<ProjectType, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
-        HashMap<ProjectType, List<File>> projectTypes = new HashMap<>();
+    public HashMap<ProjectType, ArrayList<File>> getProjectTypesForProjectDirectory(long directoryId) {
+        HashMap<ProjectType, ArrayList<File>> projectTypes = new HashMap<>();
         for (ProjectTypeLink ptl : getProjectTypeLinks()) {
             if(ptl.getProjectDirectoryId() == directoryId) {
                 if (projectTypes.containsKey(ptl.getProjectType())) {

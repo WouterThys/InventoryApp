@@ -22,7 +22,7 @@ public class ProjectDirectory extends DbObject {
     private long projectId;
     private Project project;
 
-    private HashMap<ProjectType, List<File>> projectTypes;
+    private HashMap<ProjectType, ArrayList<File>> projectTypes;
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -55,7 +55,17 @@ public class ProjectDirectory extends DbObject {
 
     @Override
     public String toString() {
-        return getDirectory();
+        String result = getDirectory();
+
+        if (result.length() > 30) {
+            while (result.length() > 30) {
+                int ndx = result.indexOf("/");
+                result = result.substring(ndx+1, result.length() - 1);
+            }
+            result = ".../" + result;
+        }
+
+        return result;
     }
 
 
@@ -144,7 +154,7 @@ public class ProjectDirectory extends DbObject {
         return project;
     }
 
-    public HashMap<ProjectType, List<File>> getProjectTypes() {
+    public HashMap<ProjectType, ArrayList<File>> getProjectTypes() {
         if (projectTypes == null) {
             projectTypes = DbManager.db().getProjectTypesForProjectDirectory(id);
         }

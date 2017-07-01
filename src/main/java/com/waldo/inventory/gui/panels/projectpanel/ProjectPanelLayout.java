@@ -8,10 +8,7 @@ import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
-import com.waldo.inventory.gui.components.IDbObjectTreeModel;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITree;
-import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanelLayout;
@@ -24,7 +21,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.ExpandVetoException;
 
 import java.awt.*;
+import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -43,11 +43,15 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
+
+    IGridPanel<ProjectType, ArrayList<File>> typePanel;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Application application;
     Project selectedProject;
+    ProjectDirectory selectedDirectory;
 
     /*
     *                  CONSTRUCTOR
@@ -90,10 +94,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
             rootNode.add(projectNode);
 
             for (ProjectDirectory projectDirectory : project.getProjectDirectories()) {
-                for (ProjectType projectType : projectDirectory.getProjectTypes().keySet()) {
-                    DefaultMutableTreeNode typeNode = new DefaultMutableTreeNode(projectType, false);
-                    projectNode.add(typeNode);
-                }
+                DefaultMutableTreeNode dirNode = new DefaultMutableTreeNode(projectDirectory, false);
+                projectNode.add(dirNode);
             }
         }
     }
@@ -113,6 +115,20 @@ public abstract class ProjectPanelLayout extends JPanel implements
         } finally {
             application.endWait();
         }
+    }
+
+    private void updateTileView() {
+        HashMap<ProjectType, ArrayList<File>> map = new HashMap<>();
+        if (selectedDirectory == null) {
+            if (selectedProject != null) {
+                for (ProjectDirectory directory : selectedProject.getProjectDirectories()) {
+                    map.putAll(directory.getProjectTypes());
+                }
+            }
+        } else {
+            map = selectedDirectory.getProjectTypes();
+        }
+        typePanel.setMap(map);
     }
 
     /*
@@ -182,6 +198,9 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
         });
         projectToolBar.setFloatable(false);
+
+        // Type panel
+        typePanel = new IGridPanel<>();
     }
 
     @Override
@@ -199,6 +218,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         // Center panel
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
+        centerPanel.add(typePanel, BorderLayout.CENTER);
 
         // Add
         add(westPanel, BorderLayout.WEST);
@@ -213,9 +233,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
             if (object != null && object instanceof Project) {
                 if (selectedProject == null || !selectedProject.equals(object)) {
                     selectedProject = (Project) object;
+                    selectProject(selectedProject);
                 }
-                selectProject(selectedProject);
             }
+
+            // Update tile view
+            updateTileView();
 
             // Enabled components
             updateEnabledComponents();
@@ -223,4 +246,5 @@ public abstract class ProjectPanelLayout extends JPanel implements
             application.endWait();
         }
     }
+
 }

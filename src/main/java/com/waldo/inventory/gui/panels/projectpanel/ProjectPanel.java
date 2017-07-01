@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.database.DbManager;
@@ -119,12 +120,25 @@ public class ProjectPanel extends ProjectPanelLayout {
 
             if (node == null) {
                 selectedProject = null;
+                selectedDirectory = null;
                 return; // Nothing selected
+            } else {
+                DbObject obj = (DbObject)node.getUserObject();
+                switch (DbObject.getType(obj)) {
+                    case DbObject.TYPE_PROJECT:
+                        selectedProject = (Project) obj;
+                        selectedDirectory = null;
+                        break;
+                    case DbObject.TYPE_PROJECT_DIRECTORY:
+                        selectedDirectory = (ProjectDirectory) obj;
+                        selectedProject = selectedDirectory.getProject();
+                        break;
+                }
             }
 
             application.clearSearch();
 
-            updateComponents(node.getUserObject());
+            updateComponents(selectedProject);
         }
     }
 }

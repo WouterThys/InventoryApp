@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.sun.xml.internal.ws.api.message.Packet;
 import com.waldo.inventory.classes.*;
 
 import javax.swing.*;
@@ -146,9 +145,6 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
                     Product p = sm().findProductById(t.getProductId()); // The parent object
                     return findNode(p);
                 }
-
-                default:
-                    return null; // Error
             }
         }
         if (type == TYPE_ORDERS) {
@@ -160,8 +156,10 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
         }
         if (type == TYPE_PROJECTS) {
             if (DbObject.getType(child) == DbObject.TYPE_PROJECT_TYPE) { // Types are children of projects, types have no children
-                Project p = null; // TODO find project of project type
-                findNode(null);
+                DefaultMutableTreeNode node = findNode(child);
+                if (node != null) {
+                    return (DefaultMutableTreeNode) node.getParent();
+                }
             }
         }
         return null;
