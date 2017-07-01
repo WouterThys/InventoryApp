@@ -95,29 +95,27 @@ public class Project extends DbObject {
     }
 
 
-    public void addDirectory(ProjectDirectory projectDirectory) {
+    public void addDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
         if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
-            updateProjectTypesToDirectory(projectDirectory);
+            updateProjectTypesToDirectory(projectDirectory, projectTypes);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
                 save();
             }
             getProjectDirectories().add(projectDirectory);
-        } else {
-            addDirectory("");
         }
     }
 
-    public void addDirectory(String projectDirectory) {
+    public void addDirectory(String projectDirectory, List<ProjectType> projectTypes) {
         ProjectDirectory directory = new ProjectDirectory();
         directory.setDirectory(projectDirectory);
-        addDirectory(directory);
+        addDirectory(directory, projectTypes);
     }
 
-    public void updateDirectory(ProjectDirectory projectDirectory) {
+    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
         if (projectDirectory != null && getProjectDirectories().contains(projectDirectory)) {
-            updateProjectTypesToDirectory(projectDirectory);
+            updateProjectTypesToDirectory(projectDirectory, projectTypes);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
@@ -133,8 +131,8 @@ public class Project extends DbObject {
         }
     }
 
-    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory) {
-        for (ProjectType type : DbManager.db().getProjectTypes()) {
+    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+        for (ProjectType type : projectTypes) {
 
             if (type.isOpenAsFolder()) {
                 if (type.isMatchExtension()) {

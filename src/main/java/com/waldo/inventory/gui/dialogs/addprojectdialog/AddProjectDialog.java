@@ -4,6 +4,8 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.dialogs.editdirectorydialog.EditDirectoryDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
@@ -108,19 +110,29 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
     @Override
     public void onToolBarAdd() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
-            File dir = fileChooser.getSelectedFile();
-            if (dir.isDirectory()) {
-                application.beginWait();
+//        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//        if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
+//            File dir = fileChooser.getSelectedFile();
+//            if (dir.isDirectory()) {
+//                application.beginWait();
+//                try {
+//                    project.addDirectory(dir.getAbsolutePath());
+//                } finally {
+//                    application.endWait();
+//                }
+//                updateComponents(project);
+//            }
+//        }
+        EditDirectoryDialog directoryDialog = new EditDirectoryDialog(AddProjectDialog.this, "Add directory", new ProjectDirectory());
+        if (directoryDialog.showDialog() == IDialog.OK) {
+            application.beginWait();
                 try {
-                    project.addDirectory(dir.getAbsolutePath());
+                    project.addDirectory(directoryDialog.getDirectory(), directoryDialog.getSelectedTypes());
                 } finally {
                     application.endWait();
                 }
                 updateComponents(project);
-            }
         }
     }
 
@@ -151,21 +163,34 @@ public class AddProjectDialog extends AddProjectDialogLayout {
                     directoryModel.removeElement(dir);
                 }
             }
+            selectedDirectory = null;
+            updateComponents(selectedDirectory);
         }
     }
 
     @Override
     public void onToolBarEdit() {
         if (selectedDirectory != null) {
-            JFileChooser fileChooser = new JFileChooser(selectedDirectory.getDirectory());
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
-                File dir = fileChooser.getSelectedFile();
-                if (dir.isDirectory()) {
-                    selectedDirectory.setDirectory(dir.getAbsolutePath());
-                    project.updateDirectory(selectedDirectory);
-                    updateComponents(project);
+//            JFileChooser fileChooser = new JFileChooser(selectedDirectory.getDirectory());
+//            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//            if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
+//                File dir = fileChooser.getSelectedFile();
+//                if (dir.isDirectory()) {
+//                    selectedDirectory.setDirectory(dir.getAbsolutePath());
+//                    project.updateDirectory(selectedDirectory);
+//                    updateComponents(project);
+//                }
+//            }
+            EditDirectoryDialog directoryDialog = new EditDirectoryDialog(AddProjectDialog.this, "Edit directory", selectedDirectory);
+            if (directoryDialog.showDialog() == IDialog.OK) {
+                application.beginWait();
+                try {
+                    selectedDirectory.setDirectory(directoryDialog.getDirectory());
+                    project.updateDirectory(selectedDirectory, directoryDialog.getSelectedTypes());
+                } finally {
+                    application.endWait();
                 }
+                updateComponents(project);
             }
         }
     }

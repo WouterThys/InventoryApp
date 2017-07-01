@@ -10,6 +10,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -125,7 +126,13 @@ public class ITileView extends JPanel implements GuiInterface {
         nameTp.setText(createName(name));
     }
 
+    public static class ITileViewComparator implements Comparator<ITileView> {
 
+        @Override
+        public int compare(ITileView o1, ITileView o2) {
+            return o1.name.compareToIgnoreCase(o2.name);
+        }
+    }
 
 }
 

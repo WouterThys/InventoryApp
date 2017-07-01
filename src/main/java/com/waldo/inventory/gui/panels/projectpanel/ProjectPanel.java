@@ -59,11 +59,15 @@ public class ProjectPanel extends ProjectPanelLayout {
             @Override
             public void onUpdated(Project newProject, Project oldProject) {
                 treeModel.updateObject(newProject, oldProject);
+                updateComponents(newProject);
             }
 
             @Override
             public void onDeleted(Project project) {
                 treeModel.removeObject(project);
+                selectedProject = null;
+                selectedDirectory = null;
+                updateComponents(null);
             }
         };
     }

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
         return filePath;
     }
 
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -79,6 +81,7 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
 
     @Override
     public void updateComponents(Object object) {
+         // TODO : not always delete all?
         tileViews.clear();
         removeAll();
         for (K k : map.keySet()) {
@@ -95,6 +98,7 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
             }
         }
 
+        //tileViews.sort(new ITileView.ITileViewComparator());
         for (ITileView view : tileViews) {
             add(view);
         }
@@ -102,6 +106,7 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
         revalidate();
         repaint();
     }
+
 
 }
 

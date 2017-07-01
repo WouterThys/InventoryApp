@@ -124,6 +124,9 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     @Override
     public void initializeComponents() {
         iconLabel = new ILabel();
+        iconLabel.setHorizontalAlignment(ILabel.CENTER);
+        iconLabel.setVerticalAlignment(ILabel.CENTER);
+        iconLabel.setPreferredSize(new Dimension(150,150));
 
         nameTextField = new ITextField();
         nameTextField.setEnabled(false);

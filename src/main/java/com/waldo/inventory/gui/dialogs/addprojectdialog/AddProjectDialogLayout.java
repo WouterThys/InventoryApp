@@ -17,7 +17,6 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class AddProjectDialogLayout extends IDialog implements
-        GuiInterface,
         IdBToolBar.IdbToolBarListener,
         ListSelectionListener,
         IEditedListener {
