@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 
+import java.awt.*;
+
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITree extends JTree {
@@ -19,5 +21,8 @@ public class ITree extends JTree {
         // TODO set icon of tree project type
 
         setCellRenderer(renderer);
+        Dimension d = getPreferredSize();
+        d.width = 200;
+        setMinimumSize(d);
     }
 }

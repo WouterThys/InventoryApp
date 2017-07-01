@@ -196,6 +196,9 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
+        subDivisionTree.setPreferredSize(new Dimension(300,200));
+        JScrollPane pane = new JScrollPane(subDivisionTree);
+
         // Panel them together
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
@@ -203,7 +206,7 @@ public abstract class MainPanelLayout extends JPanel implements
         panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
-        add(new JScrollPane(subDivisionTree), BorderLayout.WEST);
+        add(pane, BorderLayout.WEST);
         add(panel, BorderLayout.CENTER);
     }
 

@@ -39,6 +39,13 @@ public class ProjectTypeLink extends DbObject {
         super(TABLE_NAME);
     }
 
+    public ProjectTypeLink(long projectId, long typeId, String filePath) {
+        super(TABLE_NAME);
+        setProjectDirectoryId(projectId);
+        setProjectTypeId(typeId);
+        setFilePath(filePath);
+    }
+
 
     @Override
     public ProjectTypeLink createCopy() {

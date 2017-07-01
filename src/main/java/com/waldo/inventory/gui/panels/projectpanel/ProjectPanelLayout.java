@@ -15,12 +15,16 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanelLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.ExpandVetoException;
 
 import java.awt.*;
+import java.sql.SQLException;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -28,6 +32,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectPanelLayout.class);
 
     /*
      *                  COMPONENTS
@@ -131,9 +137,19 @@ public abstract class ProjectPanelLayout extends JPanel implements
             public void onToolBarAdd() {
                 AddProjectDialog dialog = new AddProjectDialog(application, "New Project");
                 if (dialog.showDialog() == IDialog.OK) {
-                    // Add order
+                    // Add Project
                     Project p = dialog.getProject();
-                    p.save();
+                    try {
+                        p.saveAll();
+                    } catch (SQLException e) {
+                        LOG.error("Error saving project: " +e);
+                        JOptionPane.showMessageDialog(
+                                ProjectPanelLayout.this,
+                                "Error saving project: " + e,
+                                "Db error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
                 }
             }
 
@@ -170,9 +186,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
+        projectTree.setPreferredSize(new Dimension(300,200));
+        JScrollPane pane = new JScrollPane(projectTree);
+
         // West panel
         JPanel westPanel = new JPanel(new BorderLayout());
-        westPanel.add(new JScrollPane(projectTree), BorderLayout.CENTER);
+        westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(projectToolBar, BorderLayout.PAGE_END);
 
         // Center panel
@@ -189,7 +208,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         application.beginWait();
         try {
             // Update if needed
-            if (object != null) {
+            if (object != null && object instanceof Project) {
                 if (selectedProject == null || !selectedProject.equals(object)) {
                     selectedProject = (Project) object;
                 }

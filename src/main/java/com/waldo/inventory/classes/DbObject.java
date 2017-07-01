@@ -105,13 +105,13 @@ public abstract class DbObject {
         setOnTableChangedListener(DbManager.db());
 
         long startTime = System.nanoTime();
-        try (Connection connection = DbManager.getConnection()){
+        try (Connection connection = DbManager.getConnection()) {
             if (!connection.isValid(5)) {
                 throw new SQLException("Conenction invalid, timed out after 5s...");
             }
             LOG.debug("Connection is open");
             if (id == -1) { // Save
-                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)){
+                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
                     insert(statement);
 
                     try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -130,12 +130,12 @@ public abstract class DbObject {
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        LOG.debug("Connection was open for: " + duration/1000000 + "ms");
+        LOG.debug("Connection was open for: " + duration / 1000000 + "ms");
     }
 
     public void save() {
         if (!canBeSaved) {
-            JOptionPane.showMessageDialog(null, "\""+name+"\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         final long saveId = id;
@@ -183,6 +183,30 @@ public abstract class DbObject {
         }
     }
 
+    public void saveSynchronously() throws SQLException {
+        if (!canBeSaved) {
+            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        final long saveId = id;
+
+        LOG.debug("Start save.");
+        doSave();
+
+        if (saveId < 0) { // Save
+            LOG.debug("Added object to " + TABLE_NAME);
+            if (onTableChangedListener != null) {
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this, null);
+            }
+        } else { // Update
+            LOG.debug("Updated object in " + TABLE_NAME);
+            if (onTableChangedListener != null) {
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this, oldObject);
+            }
+
+        }
+    }
+
     protected void doDelete() throws SQLException {
         if (id != -1) {
             LOG.debug("Start deleting in " + TABLE_NAME);
@@ -221,7 +245,7 @@ public abstract class DbObject {
             };
             worker.execute();
         } else {
-            JOptionPane.showMessageDialog(null, "\""+name+"\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -267,7 +291,7 @@ public abstract class DbObject {
 
     private void setOldObject() {
         switch (getType(this)) {
-            case TYPE_UNKNOWN :
+            case TYPE_UNKNOWN:
                 oldObject = null;
                 break;
             case TYPE_ITEM:

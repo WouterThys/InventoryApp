@@ -4,11 +4,20 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class AddProjectDialog extends AddProjectDialogLayout {
 
@@ -24,6 +33,9 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
         initializeComponents();
         initializeLayouts();
+
+        initActions();
+
         updateComponents(project);
 
         if (project.getId() <= DbObject.UNKNOWN_ID) {
@@ -35,6 +47,31 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
     public Project getProject() {
         return project;
+    }
+
+    private void initActions() {
+        getTitleIconLabel().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JLabel lbl = (JLabel)e.getSource();
+
+                    JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+                    fileChooser.setCurrentDirectory(new File("./Images/ProjectImages/"));
+                    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                    if (fileChooser.showDialog(AddProjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                        project.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
+                        try {
+                            URL url = fileChooser.getSelectedFile().toURI().toURL();
+                            lbl.setIcon(imageResource.readImage(url, 48,48));
+                        } catch (IOException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private boolean verify() {
@@ -78,7 +115,12 @@ public class AddProjectDialog extends AddProjectDialogLayout {
         if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
             File dir = fileChooser.getSelectedFile();
             if (dir.isDirectory()) {
-                project.addDirectory(dir.getAbsolutePath());
+                application.beginWait();
+                try {
+                    project.addDirectory(dir.getAbsolutePath());
+                } finally {
+                    application.endWait();
+                }
                 updateComponents(project);
             }
         }
@@ -146,5 +188,20 @@ public class AddProjectDialog extends AddProjectDialogLayout {
             selectedDirectory = directory;
             updateEnabledComponents();
         }
+    }
+
+    //
+    // Name changed
+    //
+    @Override
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
+        if (component.equals(nameField)) {
+            setTitleName(nameField.getText());
+        }
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return project;
     }
 }

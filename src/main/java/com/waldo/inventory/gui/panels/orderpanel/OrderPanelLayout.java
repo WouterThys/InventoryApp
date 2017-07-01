@@ -522,7 +522,9 @@ public abstract class OrderPanelLayout extends JPanel implements
         centerPanel.add(detailPanels, BorderLayout.SOUTH);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
 
-        westPanel.add(new JScrollPane(ordersTree), BorderLayout.CENTER);
+        ordersTree.setPreferredSize(new Dimension(300,200));
+        JScrollPane pane = new JScrollPane(ordersTree);
+        westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(orderToolBar, BorderLayout.PAGE_END);
 
         // Add

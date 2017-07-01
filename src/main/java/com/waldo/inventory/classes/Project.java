@@ -2,14 +2,19 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.waldo.inventory.database.SearchManager.sm;
+
 public class Project extends DbObject {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Project.class);
     public static final String TABLE_NAME = "projects";
 
     private List<ProjectDirectory> projectDirectories;
@@ -120,15 +125,62 @@ public class Project extends DbObject {
 
     public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory) {
         for (ProjectType type : DbManager.db().getProjectTypes()) {
-            List<File> foundFiles;
+
             if (type.isOpenAsFolder()) {
-                if(FileUtils.isOrContains(new File(projectDirectory.getDirectory()), type.getExtension())) {
-                    projectDirectory.addProjectType(type, new File(projectDirectory.getDirectory()));
+                if (type.isMatchExtension()) {
+                    if(FileUtils.is(new File(projectDirectory.getDirectory()), type.getExtension())) {
+                        projectDirectory.addProjectType(type, new File(projectDirectory.getDirectory()));
+                    } else {
+                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), false);
+                        for (File f : foundFiles) {
+                            projectDirectory.addProjectType(type, f);
+                        }
+                    }
+                } else {
+                    if (type.isUseParentFolder()) {
+                        List<File> foundFiles = FileUtils.containsGetParents(new File(projectDirectory.getDirectory()), type.getExtension());
+                        for(File f :foundFiles) {
+                            projectDirectory.addProjectType(type, f);
+                        }
+                    } else {
+                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), false);
+                        for (File f : foundFiles) {
+                            projectDirectory.addProjectType(type, f);
+                        }
+                    }
                 }
             } else {
-                foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension());
+                List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), true);
                 for (File f : foundFiles) {
                     projectDirectory.addProjectType(type, f);
+                }
+            }
+        }
+    }
+
+    public void saveAll() throws SQLException {
+        // Save project
+        saveSynchronously();
+        int cnt = 0;
+        for (ProjectDirectory directory : getProjectDirectories()) {
+            if (directory.getId() <= UNKNOWN_ID) {
+                directory.setProjectId(id);
+                directory.setName(getName() + "-dir" + String.valueOf(cnt));
+                cnt++;
+            }
+            // Save directory
+            directory.saveSynchronously();
+            for (ProjectType type : directory.getProjectTypes().keySet())  {
+                for (File file : directory.getProjectTypes().get(type)) {
+                    // Save link between type and directory
+                    ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId());
+                    if (ptl == null) {
+                        ptl = new ProjectTypeLink();
+                    }
+                    ptl.setProjectTypeId(type.getId());
+                    ptl.setProjectDirectoryId(directory.getId());
+                    ptl.setFilePath(file.getAbsolutePath());
+                    ptl.saveSynchronously();
                 }
             }
         }
@@ -148,5 +200,15 @@ public class Project extends DbObject {
 
     public void setProjectDirectories(List<ProjectDirectory> projectDirectories) {
         this.projectDirectories = projectDirectories;
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
     }
 }

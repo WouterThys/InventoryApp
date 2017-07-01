@@ -208,17 +208,17 @@ public class FileUtils {
     }
 
 
-    public static List<File> findFileInFolder(File folder, String extension) {
+    public static List<File> findFileInFolder(File folder, String extension, boolean filesOnly) {
         List<File> files = new ArrayList<>();
         if (folder.exists() && folder.isDirectory()) {
             File[] containedFiles = folder.listFiles();
             if (containedFiles != null) {
                 for (File f : containedFiles) {
                     if (f.isDirectory()) {
-                        if (f.toString().endsWith(extension)) {
+                        if (f.toString().endsWith(extension) && !filesOnly) {
                             files.add(f);
                         } else {
-                            files.addAll(findFileInFolder(f, extension));
+                            files.addAll(findFileInFolder(f, extension, filesOnly));
                         }
                     } else {
                         if (f.toString().endsWith(extension)) {
@@ -232,24 +232,67 @@ public class FileUtils {
     }
 
     public static boolean isOrContains(File folder, String extension) {
+        return is(folder, extension) || contains(folder, extension);
+    }
+
+    public static boolean is(File folder, String extension) {
+        boolean result = false;
+
+        if (folder.exists()) {
+            if (folder.toString().endsWith(extension)) {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    public static boolean contains(File folder, String extension) {
         boolean result = false;
 
         if (folder.exists() && folder.isDirectory()) {
-            if (folder.toString().endsWith(extension)) {
-                result = true;
-            } else {
+
                 File[] containedFiles = folder.listFiles();
                 if (containedFiles != null) {
                     for (File f : containedFiles) {
                         if (f.toString().endsWith(extension)) {
                             result = true;
                             break;
+                        } else {
+                            if (f.isDirectory() && contains(f, extension)) {
+                                result = true;
+                                break;
+                            }
                         }
                     }
                 }
-            }
+
         }
 
         return result;
     }
+
+    public static List<File> containsGetParents(File folder, String extension) {
+        List<File> files = new ArrayList<>();
+
+        if (folder.exists() && folder.isDirectory()) {
+
+            File[] containedFiles = folder.listFiles();
+            if (containedFiles != null) {
+                for (File f : containedFiles) {
+                    if (f.toString().endsWith(extension)) {
+                        files.add(folder);
+                    } else {
+                        if (f.isDirectory()) {
+                            files.addAll(containsGetParents(f, extension));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return files;
+    }
+
 }

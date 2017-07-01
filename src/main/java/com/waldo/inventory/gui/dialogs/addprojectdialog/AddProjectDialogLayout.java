@@ -5,19 +5,22 @@ import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.io.File;
+import java.net.URL;
+
+import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class AddProjectDialogLayout extends IDialog implements
         GuiInterface,
         IdBToolBar.IdbToolBarListener,
-        ListSelectionListener {
+        ListSelectionListener,
+        IEditedListener {
 
     /*
     *                  COMPONENTS
@@ -40,13 +43,11 @@ public abstract class AddProjectDialogLayout extends IDialog implements
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public AddProjectDialogLayout(Application application, String title) {
         super(application, title);
-        showTitlePanel(false);
         setResizable(true);
     }
 
     public AddProjectDialogLayout(Dialog dialog, String title) {
         super(dialog, title);
-        showTitlePanel(false);
         setResizable(true);
     }
 
@@ -68,7 +69,9 @@ public abstract class AddProjectDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        // Content
         nameField = new ITextField("Name");
+        nameField.addEditedListener(this, "name");
         directoryModel = new DefaultListModel<>();
         directoryList = new JList<>(directoryModel);
         directoryList.addListSelectionListener(this);
@@ -130,8 +133,17 @@ public abstract class AddProjectDialogLayout extends IDialog implements
 
         if (object != null) {
             project = (Project) object;
-
             nameField.setText(project.getName());
+            setTitleName(project.getName());
+            if (!project.getIconPath().isEmpty()) {
+                try {
+                    File image = new File(project.getIconPath());
+                    URL url = image.toURI().toURL();
+                    getTitleIconLabel().setIcon(imageResource.readImage(url, 48, 48));
+                } catch (Exception e) {
+                    Status().setError("Error setting title icon");
+                }
+            }
             for (ProjectDirectory dir : project.getProjectDirectories()) {
                 directoryModel.addElement(dir);
             }

@@ -27,19 +27,17 @@ public class ProjectDirectory extends DbObject {
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
-        statement.setString(2, iconPath);
+        statement.setLong(2, projectId);
         statement.setString(3, directory);
-        statement.setLong(4, projectId);
         statement.execute();
     }
 
     @Override
     protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
-        statement.setString(2, iconPath);
+        statement.setLong(2, projectId);
         statement.setString(3, directory);
-        statement.setLong(4, projectId);
-        statement.setLong(5, id); // WHERE id
+        statement.setLong(4, id); // WHERE id
         statement.execute();
     }
 
