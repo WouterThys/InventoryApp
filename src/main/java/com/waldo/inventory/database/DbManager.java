@@ -4,6 +4,9 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
+import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.gui.Application;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import java.util.List;
 
 import static com.waldo.inventory.Utils.Statics.LogTypes.INFO;
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -32,6 +36,7 @@ public class DbManager implements TableChangedListener {
     public static final int OBJECT_UPDATED = 1;
     public static final int OBJECT_DELETED = 2;
 
+    // Db
     private static final DbManager INSTANCE = new DbManager();
     public static DbManager db() {
         return INSTANCE;
@@ -77,43 +82,45 @@ public class DbManager implements TableChangedListener {
 
     private DbManager() {}
 
-    public void init(String dbFile) {
+    public void init() {
         initialized = false;
-        dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + dbFile);
-        dataSource.setUsername("waldo");
-        dataSource.setPassword("");
-        dataSource.setMaxIdle(600);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setLogAbandoned(true);
-        dataSource.setRemoveAbandoned(true);
-        dataSource.setMaxActive(-1);
-        dataSource.setInitialSize(5);
-        dataSource.setRemoveAbandonedTimeout(1);
-        dataSource.setValidationQueryTimeout(5);
+        DbSettings s = settings().getDbSettings();
+        if (s != null) {
+            dataSource = new BasicDataSource();
+            dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
+            dataSource.setUrl("jdbc:log4jdbc:sqlite:" + s.getDbFile());
+            dataSource.setUsername(s.getDbUserName());
+            dataSource.setPassword(s.getDbUserPw());
+            dataSource.setMaxIdle(s.getDbMaxIdleConnections());
+            dataSource.setMaxActive(s.getDbMaxActiveConnections());
+            dataSource.setPoolPreparedStatements(s.isDbPoolPreparedStatements());
+            dataSource.setLogAbandoned(s.isDbLogAbandoned());
+            dataSource.setRemoveAbandoned(s.isDbRemoveAbandoned());
+            dataSource.setInitialSize(s.getDbInitialSize());
+            dataSource.setRemoveAbandonedTimeout(s.getDbRemoveAbandonedTimeout());
 
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(dataSource);
-        flyway.migrate();
-        initialized = true;
+            Flyway flyway = new Flyway();
+            flyway.setDataSource(dataSource);
+            flyway.migrate();
+            initialized = true;
 
-        String sql = "PRAGMA foreign_keys=ON;";
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.execute();
+            String sql = "PRAGMA foreign_keys=ON;";
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    stmt.execute();
+                }
+            } catch (SQLException e) {
+                LOG.error("Error reading from db.", e);
             }
-        } catch (SQLException e) {
-            LOG.error("Error reading from db.", e);
-        }
 
-        try {
-            tableNames = getTableNames();
-        } catch (SQLException e) {
-            LOG.error("Error initializing db.", e);
-        }
+            try {
+                tableNames = getTableNames();
+            } catch (SQLException e) {
+                LOG.error("Error initializing db.", e);
+            }
 
-        LOG.info("Database initialized with db file: " + dbFile);
+            LOG.info("Database initialized with db file: " + s.getDbFile());
+        }
     }
 
     private void close() {
@@ -130,6 +137,10 @@ public class DbManager implements TableChangedListener {
     public void registerShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
     }
+
+    /*
+     *                  GETTERS - SETTERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     private BasicDataSource getDataSource() {
         return dataSource;
@@ -162,8 +173,8 @@ public class DbManager implements TableChangedListener {
     }
 
     /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+         *                  LISTENERS
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
             onItemsChangedListenerList.add(dbObjectChangedListener);

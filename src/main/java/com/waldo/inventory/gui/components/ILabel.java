@@ -89,7 +89,7 @@ public class ILabel extends JLabel {
                 setIcon(imageResource.readImage("Common.UnknownIcon32"));
             }
         } catch (MalformedURLException e) {
-            LOG.error("Error settning icon.", e);
+            LOG.warning("Error reading icon.", e);
         }
     }
 

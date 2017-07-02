@@ -140,17 +140,17 @@
     </dependencies>
 
 
-    <properties>
-        <!-- Properties are prefixed with flyway. -->
-        <flyway.user>waldo</flyway.user>
-        <flyway.password></flyway.password>
+    <!--<properties>-->
+        <!--&lt;!&ndash; Properties are prefixed with flyway. &ndash;&gt;-->
+        <!--<flyway.user>waldo</flyway.user>-->
+        <!--<flyway.password></flyway.password>-->
 
-        <!-- List are defined as comma-separated values -->
-        <flyway.schemas>schema1,schema2,schema3</flyway.schemas>
+        <!--&lt;!&ndash; List are defined as comma-separated values &ndash;&gt;-->
+        <!--<flyway.schemas>schema1,schema2,schema3</flyway.schemas>-->
 
-        <!-- Individual placeholders are prefixed by flyway.placeholders. -->
-        <flyway.placeholders.keyABC>valueXYZ</flyway.placeholders.keyABC>
-        <flyway.placeholders.otherplaceholder>value123</flyway.placeholders.otherplaceholder>
-    </properties>
+        <!--&lt;!&ndash; Individual placeholders are prefixed by flyway.placeholders. &ndash;&gt;-->
+        <!--<flyway.placeholders.keyABC>valueXYZ</flyway.placeholders.keyABC>-->
+        <!--<flyway.placeholders.otherplaceholder>value123</flyway.placeholders.otherplaceholder>-->
+    <!--</properties>-->
 
 </project>

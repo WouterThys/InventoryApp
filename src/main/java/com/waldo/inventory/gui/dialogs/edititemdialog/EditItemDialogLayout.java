@@ -19,9 +19,7 @@ import java.net.URL;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public abstract class EditItemDialogLayout extends IDialog implements
-        GuiInterface,
-        IEditedListener {
+public abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
 
     /*
      *                  COMPONENTS

@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.ProjectTypesDialog;
+import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -83,7 +84,10 @@ public class MenuBar extends JMenuBar {
     }
 
     private ActionListener settingsSelected() {
-        return e -> {};
+        return e -> {
+            SettingsDialog dialog = new SettingsDialog(application, "Settings");
+            dialog.showDialog();
+        };
     }
 
     private ActionListener logSelected() {

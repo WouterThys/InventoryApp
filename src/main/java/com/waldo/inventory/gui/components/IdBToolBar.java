@@ -83,6 +83,7 @@ public class IdBToolBar extends JToolBar {
         add(editAction);
 
         setOpaque(false);
+        setFloatable(false);
         super.setBorder(new EmptyBorder(5,5,5,5));
     }
 

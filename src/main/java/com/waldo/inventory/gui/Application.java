@@ -4,6 +4,8 @@ import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class Application extends JFrame implements ChangeListener {
@@ -56,15 +59,20 @@ public class Application extends JFrame implements ChangeListener {
         }
 
         // Initialize dB
-        dbFileName = startUpPath + "inventory.db";
-        File check = new File(dbFileName);
-        if (check.exists()) {
-            LOG.info("Reading db at " + dbFileName);
-            db().init(dbFileName);
-        } else {
-            LOG.error("No db file found at: " + dbFileName);
-            //System.exit(-1);
+        try {
+            if (settings().init()) {
+                LOG.info("Reading settings successful!!");
+                db().init();
+            } else {
+                // TODO: cry a little
+            }
+
+        } catch (Exception e){
+            LOG.error("Error initialising db", e);
+            SettingsDialog dialog = new SettingsDialog(this, "Settings");
+            dialog.showDialog(); // TODO better dialog
         }
+        settings().registerShutDownHook();
         db().registerShutDownHook();
 
         // Components
