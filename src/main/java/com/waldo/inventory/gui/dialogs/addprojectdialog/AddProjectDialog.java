@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.editdirectorydialog.EditDirectoryDialog;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
@@ -70,7 +69,7 @@ public class AddProjectDialog extends AddProjectDialogLayout {
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
                             lbl.setIcon(imageResource.readImage(url, 48,48));
-                        } catch (IOException e2) {
+                        } catch (Exception e2) {
                             e2.printStackTrace();
                         }
                     }

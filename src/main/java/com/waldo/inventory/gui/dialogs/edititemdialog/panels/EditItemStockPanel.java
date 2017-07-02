@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ISpinner;
@@ -14,12 +14,10 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class EditItemStockPanel extends JPanel implements GuiInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ComponentPanel.class);
+    private static final LogManager LOG = LogManager.LOG(EditItemStockPanel.class);
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
     private Item newItem;

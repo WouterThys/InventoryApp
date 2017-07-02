@@ -1,11 +1,11 @@
 package com.waldo.inventory;
 
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.io.File;
@@ -13,19 +13,20 @@ import java.sql.SQLException;
 
 public class Main {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final LogManager LOG = LogManager.LOG(Main.class);
 
     public static void main(String[] args) throws SQLException {
 
         LOG.info("\n \t Starting application \n *******************************************************************\n");
 
         String startUpPath = new File("").getAbsolutePath() + File.separator;
-        LOG.info("Start application at " + startUpPath);
+
 
         SwingUtilities.invokeLater(() -> {
             setLookAndFeel();
 
             Application app = new Application(startUpPath);
+            LOG.info("Start application at " + startUpPath);
             app.setTitle("Inventory");
             app.setMinimumSize(new Dimension(1500,800));
             app.setLocationByPlatform(true);

@@ -1,7 +1,8 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.interfaces.*;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.TableChangedListener;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -9,18 +10,21 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class DbManager implements TableChangedListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DbManager.class);
+    private static final LogManager LOG = LogManager.LOG(DbManager.class);
 
     public static final int OBJECT_ADDED = 0;
     public static final int OBJECT_UPDATED = 1;
@@ -32,6 +36,7 @@ public class DbManager implements TableChangedListener {
     }
     private BasicDataSource dataSource;
     private List<String> tableNames;
+    private boolean initialized = false;
 
     // Events
     private List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
@@ -47,6 +52,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
+
     // Part numbers...
 
     // Cached lists
@@ -65,10 +71,12 @@ public class DbManager implements TableChangedListener {
     private List<ProjectDirectory> projectDirectories;
     private List<ProjectType> projectTypes;
     private List<ProjectTypeLink> projectTypeLinks;
+    private List<Log> logs;
 
     private DbManager() {}
 
     public void init(String dbFile) {
+        initialized = false;
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
         dataSource.setUrl("jdbc:log4jdbc:sqlite:" + dbFile);
@@ -86,6 +94,7 @@ public class DbManager implements TableChangedListener {
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
         flyway.migrate();
+        initialized = true;
 
         String sql = "PRAGMA foreign_keys=ON;";
         try (Connection connection = getConnection()) {
@@ -142,6 +151,10 @@ public class DbManager implements TableChangedListener {
             }
         }
         return tableNames;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     /*
@@ -224,6 +237,8 @@ public class DbManager implements TableChangedListener {
             onProjectTypeChangedListenerList.add(dbObjectChangedListener);
         }
     }
+
+
 
     public void removeOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (onItemsChangedListenerList != null) {
@@ -356,7 +371,6 @@ public class DbManager implements TableChangedListener {
             case OBJECT_DELETED: how = "deleted from"; break;
         }
 
-        LOG.info(newObject.getName() + " " + how + tableName);
         Status().setMessage(newObject.getName() + " " + how + tableName);
 
         switch (tableName) {
@@ -1527,6 +1541,67 @@ public class DbManager implements TableChangedListener {
         }
     }
 
+
+    /*
+   *                  LOGS
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Log> getLogs()    {
+        if (logs == null) {
+            updateLogs();
+        }
+        return logs;
+    }
+
+    private void updateLogs()    {
+        logs = new ArrayList<>();
+        Status().setMessage("Fetching logs from DB");
+
+        String sql = scriptResource.readString(Log.TABLE_NAME + ".sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Log l = new Log();
+                    l.setId(rs.getLong("id"));
+                    l.setLogType(rs.getInt("logtype"));
+                    l.setLogTime(rs.getDate("logdate"));
+                    l.setLogClass(rs.getString("logclass"));
+                    l.setLogMessage(rs.getString("logmessage"));
+                    l.setLogException(rs.getString("logexception"));
+
+                    logs.add(l);
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch logs from database");
+        }
+    }
+
+    public Log getLogFromDb(long id) {
+        Log l = null;
+        Status().setMessage("Fetching log from DB");
+
+        String sql = "SELECT * FROM " + ProjectType.TABLE_NAME + " WHERE id = " + id;
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    l = new Log();
+                    l.setId(rs.getLong("id"));
+                    l.setLogType(rs.getInt("logtype"));
+                    l.setLogTime(rs.getDate("logdate"));
+                    l.setLogClass(rs.getString("logclass"));
+                    l.setLogMessage(rs.getString("logmessage"));
+                    l.setLogException(rs.getString("logexception"));
+                }
+            }
+        } catch (SQLException e) {
+            Status().setError("Failed to fetch log from database");
+        }
+        return l;
+    }
 
     /*
     *                  OTHER

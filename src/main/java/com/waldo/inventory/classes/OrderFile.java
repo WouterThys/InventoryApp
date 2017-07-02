@@ -1,10 +1,11 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.database.LogManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import static com.waldo.inventory.gui.Application.startUpPath;
 
 public class OrderFile {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OrderFile.class);
+    private static final LogManager LOG = LogManager.LOG(OrderFile.class);
     public static final String SEPARATOR = ",";
 
     private Order order;

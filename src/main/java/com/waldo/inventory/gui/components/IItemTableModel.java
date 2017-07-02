@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 
 import javax.swing.table.AbstractTableModel;

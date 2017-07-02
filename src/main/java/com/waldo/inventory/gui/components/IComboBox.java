@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.classes.DbObject;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;

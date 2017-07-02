@@ -1,10 +1,8 @@
 package com.waldo.inventory.gui.dialogs.addprojectdialog;
 
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;

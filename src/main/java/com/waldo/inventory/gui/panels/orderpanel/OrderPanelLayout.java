@@ -1,6 +1,8 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -11,7 +13,9 @@ import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;

@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.components;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
-
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;

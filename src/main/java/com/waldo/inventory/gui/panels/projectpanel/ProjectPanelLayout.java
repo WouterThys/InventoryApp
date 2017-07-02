@@ -1,14 +1,14 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
-import com.waldo.inventory.gui.panels.orderpanel.OrderPanelLayout;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.ExpandVetoException;
-
 import java.awt.*;
 import java.io.File;
 import java.sql.SQLException;
@@ -31,7 +29,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectPanelLayout.class);
+    private static final LogManager LOG = LogManager.LOG(ProjectPanelLayout.class);
 
     /*
      *                  COMPONENTS

@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.components.ITableEditors;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.util.List;
 

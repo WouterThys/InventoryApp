@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
 import java.io.File;
 
 public class ReadCsvDialog extends ReadCsvDialogLayout {

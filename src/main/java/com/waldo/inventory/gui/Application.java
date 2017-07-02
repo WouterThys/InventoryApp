@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -14,7 +15,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -22,7 +23,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class Application extends JFrame implements ChangeListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static final LogManager LOG = LogManager.LOG(Application.class);
     public static final int TAB_ITEMS = 0;
     public static final int TAB_ORDERS = 1;
     public static final int TAB_PROJECTS = 2;

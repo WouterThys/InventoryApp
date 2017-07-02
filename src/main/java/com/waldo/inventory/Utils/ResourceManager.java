@@ -1,12 +1,15 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.database.LogManager;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
@@ -17,8 +20,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ResourceManager {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ResourceManager.class);
-
+    private static final LogManager LOG = LogManager.LOG(ResourceManager.class);
     private Properties properties;
     private InputStream resourceInput;
     private String resourceFileName;
@@ -122,7 +124,7 @@ public class ResourceManager {
         return null;
     }
 
-    public ImageIcon readImage(URL resourceURL, int width, int height) throws IOException {
+    public ImageIcon readImage(URL resourceURL, int width, int height) throws Exception {
         return getScaledImageIcon(ImageIO.read(resourceURL), width, height);
     }
 
@@ -156,7 +158,7 @@ public class ResourceManager {
         if (imageFile.exists() && imageFile.isFile()) {
             try {
                 return readImage(imageFile.toURI().toURL(), width, height);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.error("Error reading image at path: " + path);
             }
         }

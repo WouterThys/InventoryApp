@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 
+import com.waldo.inventory.database.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ILabel extends JLabel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ILabel.class);
+    private static final LogManager LOG = LogManager.LOG(ILabel.class);
 
     private String statusInfo = "";
 
@@ -97,7 +98,7 @@ public class ILabel extends JLabel {
         try {
             url = new File(path).toURI().toURL();
             setIcon(imageResource.readImage(url, width, height));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Error settning icon.", e);
         }
     }

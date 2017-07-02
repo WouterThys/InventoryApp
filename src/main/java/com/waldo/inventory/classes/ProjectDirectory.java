@@ -2,19 +2,15 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ProjectDirectory extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectDirectory.class);
     public static final String TABLE_NAME = "projectdirectories";
 
     private String directory;

@@ -2,8 +2,6 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -14,7 +12,6 @@ import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Project extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Project.class);
     public static final String TABLE_NAME = "projects";
 
     private List<ProjectDirectory> projectDirectories;

@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.database.LogManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,7 +9,7 @@ import static com.waldo.inventory.database.SearchManager.sm;
 
 public class OrderItem extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OrderItem.class);
+    private static final LogManager LOG = LogManager.LOG(OrderItem.class);
     public static final String TABLE_NAME = "orderitems";
 
     private long orderId;

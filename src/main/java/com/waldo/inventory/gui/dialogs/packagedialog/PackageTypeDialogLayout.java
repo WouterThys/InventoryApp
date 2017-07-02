@@ -8,13 +8,13 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
+import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
-import static javax.swing.SpringLayout.WEST;
 
 public abstract class PackageTypeDialogLayout extends IDialog implements
         GuiInterface,

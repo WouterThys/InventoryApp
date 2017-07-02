@@ -2,8 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.database.LogManager;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -23,7 +22,7 @@ import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Order extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Order.class);
+    private static final LogManager LOG = LogManager.LOG(Order.class);
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;

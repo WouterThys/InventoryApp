@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;

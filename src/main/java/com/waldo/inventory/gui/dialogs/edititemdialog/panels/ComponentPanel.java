@@ -1,9 +1,8 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import org.slf4j.Logger;
@@ -22,12 +21,12 @@ import java.util.Vector;
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.*;
+import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ComponentPanel.class);
+    private static final LogManager LOG = LogManager.LOG(ComponentPanel.class);
 
     private Item newItem;
 

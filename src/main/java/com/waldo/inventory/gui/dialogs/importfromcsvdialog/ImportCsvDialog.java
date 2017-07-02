@@ -4,25 +4,18 @@ package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.OrderFile;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ImportCsvDialog extends ImportCsvDialogLayout {

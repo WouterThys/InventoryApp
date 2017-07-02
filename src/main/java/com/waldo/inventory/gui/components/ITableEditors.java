@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;

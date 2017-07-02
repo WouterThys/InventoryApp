@@ -8,7 +8,6 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;

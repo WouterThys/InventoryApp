@@ -3,13 +3,9 @@ package com.waldo.inventory.Utils;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import static java.awt.GridBagConstraints.BOTH;
-import static java.awt.GridBagConstraints.WEST;
 
 public class PanelUtils {
 

@@ -1,7 +1,10 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.OrderFile;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;

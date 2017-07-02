@@ -7,10 +7,8 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITabbedPane;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -118,7 +116,7 @@ public abstract class EditItemDialogLayout extends IDialog implements
                 try {
                     URL url = new File(newItem.getIconPath()).toURI().toURL();
                     setTitleIcon(imageResource.readImage(url, 48, 48));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Status().setError("Error updating components", e);
                 }
             }

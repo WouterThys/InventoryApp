@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITileView;
 

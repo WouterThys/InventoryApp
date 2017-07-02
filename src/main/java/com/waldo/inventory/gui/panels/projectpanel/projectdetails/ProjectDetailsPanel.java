@@ -18,12 +18,14 @@ public class ProjectDetailsPanel extends ProjectDetailsPanelLayout {
             setVisible(false);
             selectedProject = null;
         } else {
-            setVisible(true);
-            selectedProject = (Project) object;
+            if (object instanceof Project) {
+                setVisible(true);
+                selectedProject = (Project) object;
 
-            updateIcon(selectedProject);
-            updateTextFields(selectedProject);
-            updateDirectoryList(selectedProject);
+                updateIcon(selectedProject);
+                updateTextFields(selectedProject);
+                updateDirectoryList(selectedProject);
+            }
         }
     }
 

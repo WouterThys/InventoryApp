@@ -3,8 +3,6 @@ package com.waldo.inventory.gui.dialogs.historydialog;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -14,7 +12,6 @@ import com.waldo.inventory.gui.components.ITableEditors;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

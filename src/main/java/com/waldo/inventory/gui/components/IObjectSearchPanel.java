@@ -10,7 +10,10 @@ import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;

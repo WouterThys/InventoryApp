@@ -4,14 +4,10 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel implements GuiInterface {
 

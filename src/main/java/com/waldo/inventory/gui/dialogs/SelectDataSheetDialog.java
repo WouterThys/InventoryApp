@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.gui.Application;
-import jdk.nashorn.internal.scripts.JD;
 
 import javax.swing.*;
 import java.awt.*;

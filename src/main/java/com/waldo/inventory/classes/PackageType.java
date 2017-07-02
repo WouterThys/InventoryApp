@@ -1,10 +1,7 @@
 package com.waldo.inventory.classes;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class PackageType extends DbObject {
 

@@ -1,7 +1,10 @@
 package com.waldo.inventory.gui.dialogs.orderinfodialog;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.OrderFile;
 import com.waldo.inventory.gui.Application;

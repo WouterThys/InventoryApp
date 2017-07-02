@@ -1,15 +1,8 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Error;
-import com.waldo.inventory.Utils.IconBorder;
-import com.waldo.inventory.classes.DbObject;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.FocusEvent;

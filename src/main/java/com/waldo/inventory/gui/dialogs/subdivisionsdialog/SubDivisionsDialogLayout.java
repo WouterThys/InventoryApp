@@ -9,13 +9,12 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
+import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
-import static javax.swing.SpringLayout.EAST;
-import static javax.swing.SpringLayout.SOUTH;
 
 public abstract class SubDivisionsDialogLayout extends IDialog implements
         GuiInterface,

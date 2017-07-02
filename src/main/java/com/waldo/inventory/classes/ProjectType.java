@@ -1,15 +1,13 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Main;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.database.LogManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ProjectType extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectType.class);
+    private static final LogManager LOG = LogManager.LOG(ProjectType.class);
     public static final String TABLE_NAME = "projecttypes";
 
     // Launcher

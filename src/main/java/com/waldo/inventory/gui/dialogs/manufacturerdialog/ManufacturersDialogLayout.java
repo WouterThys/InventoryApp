@@ -11,12 +11,12 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
+import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.IOException;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 

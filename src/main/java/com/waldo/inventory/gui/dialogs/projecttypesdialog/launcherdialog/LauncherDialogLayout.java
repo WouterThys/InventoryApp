@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ICheckBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;

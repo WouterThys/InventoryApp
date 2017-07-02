@@ -1,19 +1,17 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waldo.inventory.database.LogManager;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Comparator;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Item extends DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Item.class);
+    private static final LogManager LOG = LogManager.LOG(Item.class);
     public static final String TABLE_NAME = "items";
 
     private String description = "";

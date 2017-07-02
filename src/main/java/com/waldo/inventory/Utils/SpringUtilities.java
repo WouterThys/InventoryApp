@@ -31,9 +31,8 @@ package com.waldo.inventory.Utils;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-        import javax.swing.*;
-        import javax.swing.SpringLayout;
-        import java.awt.*;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A 1.4 file that provides utility methods for

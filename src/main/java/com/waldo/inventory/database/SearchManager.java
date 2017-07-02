@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.*;
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class SearchManager {
-
-    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(SearchManager.class);
 
     private static final SearchManager INSTANCE = new SearchManager();
 
@@ -141,6 +139,10 @@ public class SearchManager {
         Status().setMessage("Searching for: Project types");
         foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
 
+        // Logs
+        Status().setMessage("Searching for: Logs");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
+
         return foundList;
     }
 
@@ -210,6 +212,9 @@ public class SearchManager {
                     Status().setMessage("Searching for: Project types");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
                     break;
+                case DbObject.TYPE_LOG:
+                    Status().setMessage("Searching for: Logs");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
                 default:
                     break;
             }
@@ -271,6 +276,10 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_LOG:
+                    Status().setMessage("Searching for: Logs");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 default:

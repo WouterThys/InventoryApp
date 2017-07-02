@@ -1,9 +1,8 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.sql.*;
@@ -15,7 +14,7 @@ import static com.waldo.inventory.gui.Application.scriptResource;
 
 public abstract class DbObject {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DbObject.class);
+    private static final LogManager LOG = LogManager.LOG(DbObject.class);
     public static final int UNKNOWN_ID = 1;
     public static final String UNKNOWN_NAME = "Unknown";
 
@@ -34,6 +33,7 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT = 12;
     public static final int TYPE_PROJECT_DIRECTORY = 13;
     public static final int TYPE_PROJECT_TYPE = 14;
+    public static final int TYPE_LOG = 100;
 
     private String TABLE_NAME;
 
@@ -45,9 +45,9 @@ public abstract class DbObject {
     private DbObject oldObject;
     protected boolean canBeSaved = true;
 
-    private String sqlInsert;
-    private String sqlUpdate;
-    private String sqlDelete;
+    protected String sqlInsert;
+    protected String sqlUpdate;
+    protected String sqlDelete;
 
     protected void insert(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
@@ -93,6 +93,7 @@ public abstract class DbObject {
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
         if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
+        if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;
     }
@@ -332,6 +333,9 @@ public abstract class DbObject {
                 break;
             case TYPE_PROJECT_TYPE:
                 oldObject = DbManager.db().getProjectTypeFromDb(id);
+                break;
+            case TYPE_LOG:
+                oldObject = DbManager.db().getLogFromDb(id);
                 break;
         }
     }

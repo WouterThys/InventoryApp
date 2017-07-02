@@ -1,10 +1,11 @@
 package com.waldo.inventory.gui.dialogs.projecttypesdialog;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
-import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog.DetectionDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog.LauncherDialog;
 

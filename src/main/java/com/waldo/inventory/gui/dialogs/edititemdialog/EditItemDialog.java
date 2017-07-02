@@ -1,18 +1,22 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Category;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -131,7 +135,7 @@ public class EditItemDialog extends EditItemDialogLayout {
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
                             lbl.setIcon(imageResource.readImage(url, 48,48));
-                        } catch (IOException e2) {
+                        } catch (Exception e2) {
                             e2.printStackTrace();
                         }
                     }
