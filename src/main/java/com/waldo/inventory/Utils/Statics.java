@@ -10,10 +10,17 @@ public class Statics {
         public static final int APPROXIMATE = 4;
     }
 
-    public static class ItemOrderState {
+    public static class ItemOrderStates {
         public static final int NONE = 0;
         public static final int ORDERED = 1;
         public static final int RECEIVED = 2;
         public static final int PLANNED = 3;
+    }
+
+    public static class LogTypes {
+        public static final int INFO = 0;
+        public static final int DEBUG = 1;
+        public static final int WARN = 2;
+        public static final int ERROR = 3;
     }
 }

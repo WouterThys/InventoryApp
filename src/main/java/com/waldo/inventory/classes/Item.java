@@ -26,7 +26,7 @@ public class Item extends DbObject {
     private long locationId = -1;
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
-    private int orderState = Statics.ItemOrderState.NONE;
+    private int orderState = Statics.ItemOrderStates.NONE;
     private long packageTypeId = -1;
     private int pins;
     private double width, height;

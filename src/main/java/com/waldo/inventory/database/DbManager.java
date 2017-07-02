@@ -1,5 +1,6 @@
 package com.waldo.inventory.database;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.LogTypes.INFO;
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -110,6 +112,8 @@ public class DbManager implements TableChangedListener {
         } catch (SQLException e) {
             LOG.error("Error initializing db.", e);
         }
+
+        LOG.info("Database initialized with db file: " + dbFile);
     }
 
     private void close() {
@@ -478,7 +482,7 @@ public class DbManager implements TableChangedListener {
                     i.setWidth(rs.getDouble("width"));
                     i.setHeight(rs.getDouble("height"));
 //                    if (isItemInCurrentOrders(i.getId())) {
-//                        i.setOrderState(Statics.ItemOrderState.ORDERED);
+//                        i.setOrderState(Statics.ItemOrderStates.ORDERED);
 //                    }
 
                     i.setOnTableChangedListener(this);
@@ -1552,7 +1556,7 @@ public class DbManager implements TableChangedListener {
         return logs;
     }
 
-    private void updateLogs()    {
+    public void updateLogs()    {
         logs = new ArrayList<>();
         Status().setMessage("Fetching logs from DB");
 
@@ -1565,7 +1569,7 @@ public class DbManager implements TableChangedListener {
                     Log l = new Log();
                     l.setId(rs.getLong("id"));
                     l.setLogType(rs.getInt("logtype"));
-                    l.setLogTime(rs.getDate("logdate"));
+                    l.setLogTime(rs.getDate("logtime"));
                     l.setLogClass(rs.getString("logclass"));
                     l.setLogMessage(rs.getString("logmessage"));
                     l.setLogException(rs.getString("logexception"));
@@ -1574,7 +1578,7 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch logs from database");
+            Status().setError("Failed to fetch logs from database", e);
         }
     }
 
@@ -1733,5 +1737,26 @@ public class DbManager implements TableChangedListener {
 
         }
         return projects;
+    }
+
+    public List<Log> getLogsByType(boolean info, boolean debug, boolean warn, boolean error) {
+        List<Log> logList = new ArrayList<>();
+        for (Log log : getLogs()) {
+            switch (log.getLogType()) {
+                case Statics.LogTypes.INFO:
+                    if (info) logList.add(log);
+                    break;
+                case Statics.LogTypes.DEBUG:
+                    if (debug) logList.add(log);
+                    break;
+                case Statics.LogTypes.WARN:
+                    if (warn) logList.add(log);
+                    break;
+                case Statics.LogTypes.ERROR:
+                    if (error) logList.add(log);
+                    break;
+            }
+        }
+        return logList;
     }
 }

@@ -33,7 +33,7 @@ public class ResourceManager {
             resourceInput = getClass().getClassLoader().getResourceAsStream(resourceFileName);
             properties.load(resourceInput);
         } catch (Exception ex) {
-            Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error creating ResourceManager", ex);
         }
 
     }
@@ -52,7 +52,6 @@ public class ResourceManager {
         } catch (Exception ex) {
             //ignore
         }
-        System.out.println(val);
         return val;
     }
 
@@ -111,7 +110,7 @@ public class ResourceManager {
             is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key));
             return new ImageIcon(ImageIO.read(is));
         } catch (Exception e) {
-            Status().setError("Error loading image icon " + key, e);
+            Status().setWarning("Error loading image icon " + key, e);
         } finally {
             if (is != null) {
                 try {
@@ -159,7 +158,7 @@ public class ResourceManager {
             try {
                 return readImage(imageFile.toURI().toURL(), width, height);
             } catch (Exception e) {
-                LOG.error("Error reading image at path: " + path);
+                LOG.warning("Error reading image at path: " + path, e);
             }
         }
         return readImage("Common.UnknownIcon48");
@@ -175,7 +174,7 @@ public class ResourceManager {
         try {
             file =  new File(resourceURL.toURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error reading file", ex);
         }
         return file;
     }

@@ -7,18 +7,16 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import javax.swing.*;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.waldo.inventory.Utils.Statics.LogTypes.*;
+
 public class Log extends DbObject {
 
     public static final String TABLE_NAME = "log";
-
-    public static final int INFO = 0;
-    public static final int DEBUG = 1;
-    public static final int WARN = 2;
-    public static final int ERROR = 3;
 
     private int logType;
     private Date logTime;
@@ -171,23 +169,27 @@ public class Log extends DbObject {
     @Override
     public void delete() {
         if (canBeSaved) {
-            SwingWorker worker = new SwingWorker() {
-                @Override
-                protected Object doInBackground() throws Exception {
-                    doDelete();
-                    return null;
-                }
+//            SwingWorker worker = new SwingWorker() {
+//                @Override
+//                protected Object doInBackground() throws Exception {
+            try {
+                doDelete();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+//                    return null;
+//                }
 
-                @Override
-                protected void done() {
-                    try {
-                        get(10, TimeUnit.SECONDS);
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            worker.execute();
+//                @Override
+//                protected void done() {
+//                    try {
+//                        get(10, TimeUnit.SECONDS);
+//                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            };
+//            worker.execute();
         }
     }
 
@@ -241,5 +243,13 @@ public class Log extends DbObject {
 
     public void setLogException(String logException) {
         this.logException = logException;
+    }
+
+    public static class LogComparator implements Comparator<Log> {
+
+        @Override
+        public int compare(Log o1, Log o2) {
+            return o2.getLogTime().compareTo(o1.getLogTime());
+        }
     }
 }

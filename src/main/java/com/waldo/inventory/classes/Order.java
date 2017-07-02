@@ -210,7 +210,7 @@ public class Order extends DbObject {
         if (item != null) {
             if (orderItems.contains(item)) {
                 // Update the item of the order item
-                item.getItem().setOrderState(Statics.ItemOrderState.NONE);
+                item.getItem().setOrderState(Statics.ItemOrderStates.NONE);
                 item.getItem().save();
                 // Remove OrderItem from db
                 DbManager.db().removeItemFromOrder(item);

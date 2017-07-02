@@ -132,7 +132,7 @@ public class OrderPanel extends OrderPanelLayout {
         lastSelectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
         try {
             application.beginWait();
-            lastSelectedOrder.setItemStates(Statics.ItemOrderState.ORDERED);
+            lastSelectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
             lastSelectedOrder.save();
             recreateNodes();
             orderItemDetailPanel.updateComponents(null);
@@ -145,7 +145,7 @@ public class OrderPanel extends OrderPanelLayout {
         lastSelectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
         try {
             application.beginWait();
-            lastSelectedOrder.setItemStates(Statics.ItemOrderState.NONE);
+            lastSelectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
             lastSelectedOrder.updateItemAmounts();
             lastSelectedOrder.save();
             updateComponents(lastSelectedOrder);
@@ -413,7 +413,7 @@ public class OrderPanel extends OrderPanelLayout {
                 Item itemToOrder = dialog.getItemToOrder();
                 if (itemToOrder != null) {
                     // Update item
-                    itemToOrder.setOrderState(Statics.ItemOrderState.PLANNED);
+                    itemToOrder.setOrderState(Statics.ItemOrderStates.PLANNED);
                     itemToOrder.save();
 
                     addItemToOrder(itemToOrder, lastSelectedOrder);

@@ -21,7 +21,6 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialog implements
-        GuiInterface,
         ListSelectionListener,
         DbObjectChangedListener<Manufacturer>,
         IObjectSearchPanel.IObjectSearchListener,
@@ -59,7 +58,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     }
 
     /*
-     *                  PRIVATE METHODS
+     *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
         if (selectedManufacturer == null || selectedManufacturer.isUnknown()) {

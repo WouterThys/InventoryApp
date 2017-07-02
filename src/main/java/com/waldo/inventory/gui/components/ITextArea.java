@@ -92,9 +92,9 @@ public class ITextArea extends JTextArea implements FocusListener {
     @Override
     public void focusGained(FocusEvent e) {
         if (this.isEnabled()) {
-            this.setForeground(Color.BLACK);
+//            this.setForeground(Color.BLACK);
 //            this.setBorder(focusBorder);
-            this.setOpaque(true);
+//            this.setOpaque(true);
             if (this.getText().isEmpty()) {
                 setText("");
             }
@@ -105,7 +105,7 @@ public class ITextArea extends JTextArea implements FocusListener {
         if (this.isEnabled()) {
 //            this.setBorder(normalBorder);
             if (this.getText().isEmpty()) {
-                this.setForeground(Color.gray);
+//                this.setForeground(Color.gray);
                 setText(hint);
             }
         }

@@ -4,7 +4,8 @@ import com.waldo.inventory.classes.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.waldo.inventory.classes.Log.*;
+import static com.waldo.inventory.Utils.Statics.LogTypes.*;
+
 
 public class LogManager {
 
@@ -66,6 +67,10 @@ public class LogManager {
         }
     }
 
+    public void startup(String startupPath)  {
+        LOGGER.info("\n \t Starting application \n *******************************************************************\n");
+        LOGGER.info("Start application at " + startupPath);
+    }
 
     public void info(String info) {
         if (logInfo) {
@@ -75,13 +80,13 @@ public class LogManager {
                     Log log = new Log(INFO, logClass.getSimpleName(), info);
                     log.save();
                 }
+
+                // Logger (info always logged?)
+                LOGGER.info(info);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG INFO");
             }
         }
-
-        // Logger (info always logged?)
-        LOGGER.info(info);
     }
 
     public void debug(String debug) {

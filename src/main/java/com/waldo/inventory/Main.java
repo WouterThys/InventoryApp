@@ -17,16 +17,13 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        LOG.info("\n \t Starting application \n *******************************************************************\n");
-
         String startUpPath = new File("").getAbsolutePath() + File.separator;
-
+        LOG.startup(startUpPath);
 
         SwingUtilities.invokeLater(() -> {
             setLookAndFeel();
 
             Application app = new Application(startUpPath);
-            LOG.info("Start application at " + startUpPath);
             app.setTitle("Inventory");
             app.setMinimumSize(new Dimension(1500,800));
             app.setLocationByPlatform(true);
@@ -114,6 +111,10 @@ public class Main {
                 break;
             }
         }
+    }
+
+    public static void closeApplication(int status) {
+        System.exit(status);
     }
 
 

@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
+import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.ProjectTypesDialog;
@@ -24,12 +26,17 @@ public class MenuBar extends JMenuBar {
 
     private void initializeComponents() {
         // File menu
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu("Inventory");
 
-        JMenuItem openItem = new JMenuItem("Open", imageResource.readImage("MenuBar.OpenIcon"));
+        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readImage("MenuBar.SettingsIcon"));
+        settingsItem.addActionListener(settingsSelected());
+        JMenuItem logItem = new JMenuItem("Logs", imageResource.readImage("MenuBar.LogsIcon"));
+        logItem.addActionListener(logSelected());
         JMenuItem closeItem = new JMenuItem(("Exit"));
+        closeItem.addActionListener(e -> Main.closeApplication(1));
 
-        fileMenu.add(openItem);
+        fileMenu.add(settingsItem);
+        fileMenu.add(logItem);
         fileMenu.addSeparator();
         fileMenu.add(closeItem);
 
@@ -73,6 +80,17 @@ public class MenuBar extends JMenuBar {
         add(fileMenu);
         add(dbMenu);
         add(toolsMenu);
+    }
+
+    private ActionListener settingsSelected() {
+        return e -> {};
+    }
+
+    private ActionListener logSelected() {
+        return e -> {
+            LogsDialog dialog = new LogsDialog(application, "Logs");
+            dialog.showDialog();
+        };
     }
 
     private ActionListener subDivisionsSelected() {

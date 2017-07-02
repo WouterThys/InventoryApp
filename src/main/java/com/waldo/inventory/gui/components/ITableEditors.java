@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;
@@ -102,9 +103,9 @@ public class ITableEditors {
                 Font f = lblText.getFont();
                 lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
                 ILabel lblIcon;
-                if (item.getOrderState() == Statics.ItemOrderState.ORDERED) {
+                if (item.getOrderState() == Statics.ItemOrderStates.ORDERED) {
                     lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
-                } else if (item.getOrderState() == Statics.ItemOrderState.PLANNED) {
+                } else if (item.getOrderState() == Statics.ItemOrderStates.PLANNED) {
                     lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
                 } else {
                     if (item.getAmount() > 0) {
@@ -112,6 +113,45 @@ public class ITableEditors {
                     } else {
                         lblIcon = new ILabel(imageResource.readImage("Ball.red"));
                     }
+                }
+
+                lblIcon.setLayout(new GridBagLayout());
+                lblIcon.add(lblText);
+                return lblIcon;
+            } else {
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        }
+    }
+
+    public static class LogTypeEditor extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == 0) {
+
+                Log log = (Log) value;
+                ILabel lblText = new ILabel();
+                lblText.setForeground(Color.WHITE);
+                Font f = lblText.getFont();
+                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
+                ILabel lblIcon;
+                switch (log.getLogType()) {
+                    case Statics.LogTypes.INFO:
+                        lblIcon = new ILabel(imageResource.readImage("Log.InfoS"));
+                        break;
+                    case Statics.LogTypes.DEBUG:
+                        lblIcon = new ILabel(imageResource.readImage("Log.DebugS"));
+                        break;
+                    case Statics.LogTypes.WARN:
+                        lblIcon = new ILabel(imageResource.readImage("Log.WarnS"));
+                        break;
+                    case Statics.LogTypes.ERROR:
+                        lblIcon = new ILabel(imageResource.readImage("Log.ErrorS"));
+                        break;
+                    default:
+                        lblIcon = new ILabel(imageResource.readImage("Log.LogS"));
+                        break;
                 }
 
                 lblIcon.setLayout(new GridBagLayout());

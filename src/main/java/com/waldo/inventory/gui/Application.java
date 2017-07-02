@@ -7,8 +7,6 @@ import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -195,7 +193,7 @@ public class Application extends JFrame implements ChangeListener {
             tabbedPane.setSelectedIndex(TAB_ORDERS);
 
             // Update item
-            item.setOrderState(Statics.ItemOrderState.PLANNED);
+            item.setOrderState(Statics.ItemOrderStates.PLANNED);
             item.save();
 
             // Add
@@ -213,7 +211,7 @@ public class Application extends JFrame implements ChangeListener {
 
             // Update items
             for (Item item : itemsToOrder) {
-                item.setOrderState(Statics.ItemOrderState.PLANNED);
+                item.setOrderState(Statics.ItemOrderStates.PLANNED);
                 item.save();
             }
 
