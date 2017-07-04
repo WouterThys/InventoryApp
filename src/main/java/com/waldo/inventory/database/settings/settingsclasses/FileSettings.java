@@ -2,6 +2,8 @@ package com.waldo.inventory.database.settings.settingsclasses;
 
 public class FileSettings extends DbSettingsObject {
 
+    private static final String TABLE_NAME = "filesettings";
+
     private String imgDistributorsPath;
     private String imgDivisionsPath;
     private String imgIdesPath;
@@ -11,15 +13,46 @@ public class FileSettings extends DbSettingsObject {
 
     private String fileOrdersPath;
 
-    @Override
-    public DbSettingsObject creatCopy(DbSettingsObject original) {
-        return null;
+
+    public FileSettings() {
+        super(TABLE_NAME);
     }
+
+
 
     @Override
     public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            if (obj instanceof FileSettings) {
+                FileSettings ref = (FileSettings) obj;
+                if ((ref.getImgDistributorsPath().equals(getImgDistributorsPath())) &&
+                        (ref.getImgDivisionsPath().equals(getImgDivisionsPath())) &&
+                        (ref.getImgIdesPath().equals(getImgIdesPath())) &&
+                        (ref.getImgItemsPath().equals(getImgItemsPath())) &&
+                        (ref.getImgManufacturersPath().equals(getImgManufacturersPath())) &&
+                        (ref.getImgProjectsPath().equals(getImgProjectsPath())) &&
+                        (ref.getFileOrdersPath().equals(getFileOrdersPath()))) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
+
+    @Override
+    public FileSettings createCopy() {
+        FileSettings copy = new FileSettings();
+        copyBaseFields(copy);
+        copy.setImgDistributorsPath(imgDistributorsPath);
+        copy.setImgDivisionsPath(imgDivisionsPath);
+        copy.setImgIdesPath(imgIdesPath);
+        copy.setImgItemsPath(imgItemsPath);
+        copy.setImgManufacturersPath(imgManufacturersPath);
+        copy.setImgProjectsPath(imgProjectsPath);
+        copy.setFileOrdersPath(fileOrdersPath);
+        return copy;
+    }
+
 
     public String getImgDistributorsPath() {
         return imgDistributorsPath;

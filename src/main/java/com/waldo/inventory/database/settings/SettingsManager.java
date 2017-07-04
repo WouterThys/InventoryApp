@@ -1,12 +1,17 @@
 package com.waldo.inventory.database.settings;
 
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.interfaces.SettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,10 +19,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject.*;
 import static com.waldo.inventory.gui.Application.scriptResource;
 
 public class SettingsManager {
 
+    private LogManager LOG;
     public static final String DEFAULT = "default";
 
     // Variables
@@ -40,12 +47,18 @@ public class SettingsManager {
     private String selectedFileSettings = DEFAULT;
     private List<FileSettings> fileSettingsList = null;
 
-    // Gui settings
-
     // Log settings
     private String selectedLogSettings = DEFAULT;
     private List<LogSettings> logSettingsList = null;
 
+    // Listeners
+    private List<SettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
+    private List<SettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
+    private List<SettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
+
+    /*
+     *                  MAIN STUFF
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private SettingsManager() {}
 
     public boolean init() {
@@ -64,7 +77,19 @@ public class SettingsManager {
         dataSource.setRemoveAbandonedTimeout(60);
 
         try {
-            updateSettings();
+            String sql = "PRAGMA foreign_keys=ON;";
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    stmt.execute();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            readSelectedSettingsFromDb();
+            notifyAllListeners();
+
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,10 +115,50 @@ public class SettingsManager {
         return dataSource;
     }
 
-    /**
-     * GETTERS
-     */
+    /*
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void addLogSettingsListener(SettingsListener<LogSettings> listener) {
+        if (!onLogSettingsChangedList.contains(listener)) {
+            onLogSettingsChangedList.add(listener);
+        }
+    }
 
+    public void addDbSettingsListener(SettingsListener<DbSettings> listener) {
+        if (!onDbSettingsChangedList.contains(listener)) {
+            onDbSettingsChangedList.add(listener);
+        }
+    }
+
+    public void addFileSettingsListener(SettingsListener<FileSettings> listener) {
+        if (!onFileSettingsChangedList.contains(listener)) {
+            onFileSettingsChangedList.add(listener);
+        }
+    }
+
+    private <T extends DbSettingsObject> void notifyListeners(T newSettings, List<SettingsListener<T>> listeners) {
+        for (SettingsListener<T> l : listeners) {
+            l.onSettingsChanged(newSettings);
+        }
+//        System.out.println(
+//                "Log settings changed to: " + getLogSettings().getName() + "\r\n " +
+//                        "\t log info: " + Boolean.toString(getLogSettings().isLogInfo())  + "\r\n " +
+//                        "\t log debug: " + Boolean.toString(getLogSettings().isLogDebug())  + "\r\n " +
+//                        "\t log warnings: " + Boolean.toString(getLogSettings().isLogWarn())  + "\r\n " +
+//                        "\t log errors: " + Boolean.toString(getLogSettings().isLogError()));
+    }
+
+    private void notifyAllListeners() {
+        SwingUtilities.invokeLater(() -> {
+            notifyListeners(getLogSettings(), onLogSettingsChangedList);
+            notifyListeners(getDbSettings(), onDbSettingsChangedList);
+            notifyListeners(getFileSettings(), onFileSettingsChangedList);
+        });
+    }
+
+    /*
+     *                  GETTERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public DbSettings getDbSettings() {
         for (DbSettings settings : getDbSettingsList()) {
             if (settings.getName().equals(getSelectedDbSettingsName())) {
@@ -121,13 +186,11 @@ public class SettingsManager {
         return null;
     }
 
-    /**
-     * PRIVATE GETTERS
-     */
+
     public String getSelectedDbSettingsName() {
         if (selectedDbSettings == null || selectedDbSettings.isEmpty()) {
             try {
-                updateSettings();
+                readSelectedSettingsFromDb();
             } catch (SQLException e) {
                 e.printStackTrace();
                 selectedDbSettings = DEFAULT;
@@ -139,7 +202,7 @@ public class SettingsManager {
     public String getSelectedFileSettingsName() {
         if (selectedFileSettings == null || selectedFileSettings.isEmpty()) {
             try {
-                updateSettings();
+                readSelectedSettingsFromDb();
             } catch (SQLException e) {
                 e.printStackTrace();
                 selectedFileSettings = DEFAULT;
@@ -151,7 +214,7 @@ public class SettingsManager {
     public String getSelectedLogSettingsName() {
         if (selectedLogSettings == null || selectedLogSettings.isEmpty()) {
             try {
-                updateSettings();
+                readSelectedSettingsFromDb();
             } catch (SQLException e) {
                 e.printStackTrace();
                 selectedLogSettings = DEFAULT;
@@ -161,36 +224,223 @@ public class SettingsManager {
     }
 
 
-
-
     public List<DbSettings> getDbSettingsList() {
         if (dbSettingsList == null) {
-            updateDbSettings();
+            readDbSettingsFromDb();
         }
         return dbSettingsList;
     }
 
     public List<LogSettings> getLogSettingsList() {
         if (logSettingsList == null) {
-            updateLogSettings();
+            readLogSettingsFromDb();
         }
         return logSettingsList;
     }
 
     public List<FileSettings> getFileSettingsList() {
         if (fileSettingsList == null) {
-            updateFileSettings();
+            readFileSettingsFromDb();
         }
         return fileSettingsList;
     }
 
 
-    /**
-     * SETTINGS DATABASE QUERIES
-     */
+    public LogSettings getLogSettingsByName(String name) {
+        for (LogSettings settings : getLogSettingsList()) {
+            if (settings.getName().equals(name)) {
+                return settings;
+            }
+        }
+        return null;
+    }
+
+    public DbSettings getDbSettingsByName(String name) {
+        for (DbSettings settings : getDbSettingsList()) {
+            if (settings.getName().equals(name)) {
+                return settings;
+            }
+        }
+        return null;
+    }
+
+    public FileSettings getFileSettingsByName(String name) {
+        for (FileSettings settings : getFileSettingsList()) {
+            if (settings.getName().equals(name)) {
+                return settings;
+            }
+        }
+        return null;
+    }
 
 
-    private void updateSettings() throws SQLException {
+
+    /*
+     *                  UPDATES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void updateSelectedSettings() {
+        try {
+            readSelectedSettingsFromDb();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateLogSettings() {
+        logSettingsList = null; // This will update the list when fetched next time
+    }
+
+    public void updateDbSettings() {
+        dbSettingsList = null;
+    }
+
+    public void updateFileSettings() {
+        fileSettingsList = null;
+    }
+
+
+    /*
+     *                  DELETES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public boolean deleteSetting(DbSettingsObject toDelete) {
+        boolean result = false;
+        if (!toDelete.isDefault()) {
+            // Set back default value
+            switch (DbSettingsObject.getType(toDelete)) {
+                case SETTINGS_TYPE_LOG:
+                    selectNewSettings(getLogSettingsByName(DEFAULT));
+                    break;
+                case SETTINGS_TYPE_DB:
+                    selectNewSettings(getLogSettingsByName(DEFAULT));
+                    break;
+                case SETTINGS_TYPE_FILE:
+                    selectNewSettings(getLogSettingsByName(DEFAULT));
+                    break;
+            }
+
+            // Delete
+            String sql = "DELETE FROM " + toDelete.getTableName() + " WHERE name = ?";
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setString(1, toDelete.getName());
+                    statement.execute();
+                    result = true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result = false;
+            }
+        }
+        if (result) {
+            updateLogSettings();
+        }
+        return result;
+    }
+
+    /*
+     *                  SAVE
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void saveSettings(DbSettingsObject settings) {
+        switch (getType(settings)) {
+            case SETTINGS_TYPE_LOG:
+                saveLogSettings((LogSettings) settings);
+                break;
+            case SETTINGS_TYPE_DB:
+                saveDbSettings((DbSettings) settings);
+                break;
+            case SETTINGS_TYPE_FILE:
+                saveFileSettings((FileSettings) settings);
+                break;
+        }
+        settings.setSaved(true);
+    }
+
+    private void saveLogSettings(LogSettings logSettings) {
+        if (logSettings.isSaved()) {
+            // Update
+            updateLogSetting(logSettings);
+            readLogSettingsFromDb();
+            notifyListeners(getLogSettings(), onLogSettingsChangedList);
+        } else {
+            // Insert
+            insertLogSetting(logSettings);
+            readLogSettingsFromDb();
+        }
+    }
+
+    private void saveFileSettings(FileSettings fileSettings) {
+        if (fileSettings.isSaved()) {
+            // Update
+            updateFileSetting(fileSettings);
+            readFileSettingsFromDb();
+            notifyListeners(getLogSettings(), onLogSettingsChangedList);
+        } else {
+            // Insert
+            insertFileSetting(fileSettings);
+            readFileSettingsFromDb();
+        }
+    }
+
+    private void saveDbSettings(DbSettings dbSettings) {
+        if (dbSettings.isSaved()) {
+            // Update
+            updateDbSetting(dbSettings);
+            readDbSettingsFromDb();
+            notifyListeners(getLogSettings(), onLogSettingsChangedList);
+        } else {
+            // Insert
+            insertDbSetting(dbSettings);
+            readDbSettingsFromDb();
+        }
+    }
+
+
+    /*
+     *                  SELECT SETTINGS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public boolean selectNewSettings(DbSettingsObject settings) {
+        String sql = "";
+        switch (getType(settings)) {
+            case SETTINGS_TYPE_LOG:
+                sql = scriptResource.readString("settings.sqlUpdateLog");
+                break;
+            case SETTINGS_TYPE_DB:
+                sql = scriptResource.readString("settings.sqlUpdateDb");
+                break;
+            case SETTINGS_TYPE_FILE:
+                sql = scriptResource.readString("settings.sqlUpdateFile");
+                break;
+        }
+
+        try {
+            selectSettings(settings, sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        switch (getType(settings)) {
+            case SETTINGS_TYPE_LOG:
+                selectedLogSettings = settings.getName();
+                notifyListeners((LogSettings) settings, onLogSettingsChangedList);
+                break;
+            case SETTINGS_TYPE_DB:
+                selectedDbSettings = settings.getName();
+                notifyListeners((DbSettings) settings, onDbSettingsChangedList);
+                break;
+            case SETTINGS_TYPE_FILE:
+                selectedFileSettings = settings.getName();
+                notifyListeners((FileSettings) settings, onFileSettingsChangedList);
+                break;
+        }
+        return true;
+    }
+
+
+    /*
+     *                  QUERIES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private void readSelectedSettingsFromDb() throws SQLException {
         String sql = scriptResource.readString("settings.sqlSelectAll");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -198,12 +448,24 @@ public class SettingsManager {
 
                 if (rs.next()) {
                     selectedDbSettings = rs.getString("dbsettings");
+                    selectedFileSettings = rs.getString("filesettings");
+                    selectedLogSettings = rs.getString("logsettings");
                 }
             }
         }
     }
 
-    private void updateDbSettings() {
+    private void selectSettings(DbSettingsObject settings, String sql) throws SQLException {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1,settings.getName());
+                stmt.execute();
+            }
+        }
+    }
+
+
+    private void readDbSettingsFromDb() {
         dbSettingsList = new ArrayList<>();
 
         String sql = scriptResource.readString("dbsettings.sqlSelectAll");
@@ -225,6 +487,8 @@ public class SettingsManager {
                     dbSettings.setDbLogAbandoned(rs.getBoolean("dblogabandoned"));
                     dbSettings.setDbRemoveAbandoned(rs.getBoolean("dbremoveabandoned"));
 
+                    dbSettings.setSaved(true);
+
                     dbSettingsList.add(dbSettings);
                 }
             }
@@ -233,7 +497,7 @@ public class SettingsManager {
         }
     }
 
-    private void updateFileSettings() {
+    private void readFileSettingsFromDb() {
         fileSettingsList = new ArrayList<>();
 
         String sql = scriptResource.readString("filesettings.sqlSelectAll");
@@ -253,6 +517,8 @@ public class SettingsManager {
                     fileSettings.setImgProjectsPath(rs.getString("projects"));
                     fileSettings.setFileOrdersPath(rs.getString("orders"));
 
+                    fileSettings.setSaved(true);
+
                     fileSettingsList.add(fileSettings);
                 }
             }
@@ -261,7 +527,7 @@ public class SettingsManager {
         }
     }
 
-    private void updateLogSettings() {
+    private void readLogSettingsFromDb() {
         logSettingsList = new ArrayList<>();
 
         String sql = scriptResource.readString("logsettings.sqlSelectAll");
@@ -278,6 +544,8 @@ public class SettingsManager {
                     logSettings.setLogWarn(rs.getBoolean("logwarn"));
                     logSettings.setLogError(rs.getBoolean("logerror"));
 
+                    logSettings.setSaved(true);
+
                     logSettingsList.add(logSettings);
                 }
             }
@@ -285,4 +553,127 @@ public class SettingsManager {
             e.printStackTrace();
         }
     }
+
+
+    private void insertLogSetting(LogSettings set) {
+        String sql = scriptResource.readString("logsettings.sqlInsert");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, set.getName());
+                stmt.setBoolean(2, set.isLogInfo());
+                stmt.setBoolean(3, set.isLogDebug());
+                stmt.setBoolean(4, set.isLogWarn());
+                stmt.setBoolean(5, set.isLogError());
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertFileSetting(FileSettings set) {
+        String sql = scriptResource.readString("filesettings.sqlInsert");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1,  set.getName());
+                stmt.setString(2, set.getImgDistributorsPath());
+                stmt.setString(3, set.getImgDivisionsPath());
+                stmt.setString(4, set.getImgIdesPath());
+                stmt.setString(5, set.getImgItemsPath());
+                stmt.setString(6, set.getImgManufacturersPath());
+                stmt.setString(7, set.getImgProjectsPath());
+                stmt.setString(8, set.getFileOrdersPath());
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertDbSetting(DbSettings set) {
+        String sql = scriptResource.readString("dbsettings.sqlInsert");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, set.getName());
+                stmt.setString(2, set.getDbFile());
+                stmt.setString(3, set.getDbUserName());
+                stmt.setString(4, set.getDbUserPw());
+                stmt.setInt(5, set.getDbMaxIdleConnections());
+                stmt.setInt(6, set.getDbMaxActiveConnections());
+                stmt.setInt(7, set.getDbInitialSize());
+                stmt.setInt(8, set.getDbRemoveAbandonedTimeout());
+                stmt.setBoolean(9, set.isDbPoolPreparedStatements());
+                stmt.setBoolean(10, set.isDbLogAbandoned());
+                stmt.setBoolean(11, set.isDbRemoveAbandoned());
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void updateLogSetting(LogSettings set) {
+        String sql = scriptResource.readString("logsettings.sqlUpdate");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setBoolean(1, set.isLogInfo());
+                stmt.setBoolean(2, set.isLogDebug());
+                stmt.setBoolean(3, set.isLogWarn());
+                stmt.setBoolean(4, set.isLogError());
+
+                stmt.setString(5, set.getName()); // Where name
+
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateFileSetting(FileSettings set) {
+        String sql = scriptResource.readString("filesettings.sqlUpdate");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, set.getImgDistributorsPath());
+                stmt.setString(2, set.getImgDivisionsPath());
+                stmt.setString(3, set.getImgIdesPath());
+                stmt.setString(4, set.getImgItemsPath());
+                stmt.setString(5, set.getImgManufacturersPath());
+                stmt.setString(6, set.getImgProjectsPath());
+                stmt.setString(7, set.getFileOrdersPath());
+
+                stmt.setString(8,  set.getName()); // Where name
+
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateDbSetting(DbSettings set) {
+        String sql = scriptResource.readString("dbsettings.sqlUpdate");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, set.getDbFile());
+                stmt.setString(2, set.getDbUserName());
+                stmt.setString(3, set.getDbUserPw());
+                stmt.setInt(4, set.getDbMaxIdleConnections());
+                stmt.setInt(5, set.getDbMaxActiveConnections());
+                stmt.setInt(6, set.getDbInitialSize());
+                stmt.setInt(7, set.getDbRemoveAbandonedTimeout());
+                stmt.setBoolean(8, set.isDbPoolPreparedStatements());
+                stmt.setBoolean(9, set.isDbLogAbandoned());
+                stmt.setBoolean(10, set.isDbRemoveAbandoned());
+
+                stmt.setString(11, set.getName()); // Where name
+
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

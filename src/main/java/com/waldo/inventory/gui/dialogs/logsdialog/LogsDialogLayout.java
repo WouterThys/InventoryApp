@@ -3,6 +3,8 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class LogsDialogLayout extends IDialog implements
@@ -124,6 +127,24 @@ public abstract class LogsDialogLayout extends IDialog implements
         showErrorCb = new ICheckBox("Show errors", true);
         showErrorCb.addItemListener(this);
 
+        LogSettings s = settings().getLogSettings();
+        if (!s.isLogDebug()) {
+            showDebugCb.setForeground(Color.RED);
+            showDebugCb.setToolTipText("Debug log is disabled in settings..");
+        }
+        if (!s.isLogInfo()) {
+            showInfoCb.setForeground(Color.RED);
+            showInfoCb.setToolTipText("Info log is disabled in settings..");
+        }
+        if (!s.isLogWarn()) {
+            showWarnCb.setForeground(Color.RED);
+            showWarnCb.setToolTipText("Warnings are disabled in settings..");
+        }
+        if (!s.isLogError()) {
+            showErrorCb.setForeground(Color.RED);
+            showErrorCb.setToolTipText("Errors are disabled in settings..");
+        }
+
         clearLogsBtn = new JButton("Clear All");
         clearLogsBtn.addActionListener(this);
 
@@ -170,9 +191,6 @@ public abstract class LogsDialogLayout extends IDialog implements
     public void updateComponents(Object object) {
         application.beginWait();
         try {
-            if (logTableModel.getLogList().size() == 0) {
-                updateLogTable(true, true, true, true);
-            }
 
             if (object != null) {
                 selectedLog = (Log) object;

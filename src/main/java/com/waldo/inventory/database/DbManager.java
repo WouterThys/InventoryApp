@@ -173,8 +173,8 @@ public class DbManager implements TableChangedListener {
     }
 
     /*
-         *                  LISTENERS
-         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
             onItemsChangedListenerList.add(dbObjectChangedListener);

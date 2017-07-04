@@ -1,50 +1,65 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.sun.xml.internal.ws.server.sei.SEIInvokerTube;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.interfaces.SettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICheckBox;
 import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.concurrent.ExecutionException;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public class LogsPanel extends JPanel implements
         GuiInterface,
-        ItemListener, IEditedListener {
+        ItemListener,
+        IEditedListener,
+        IdBToolBar.IdbToolBarListener,
+        SettingsListener<LogSettings>,
+        ActionListener {
+
+    private static final LogManager LOG = LogManager.LOG(LogsPanel.class);
     
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JPanel settingsPanel;
-    IdBToolBar toolBar;
+    private JPanel settingsPanel;
+    private IdBToolBar toolBar;
+    private ILabel currentSettingLbl;
 
-    DefaultComboBoxModel<LogSettings> logSettingsCbModel;
-    JComboBox<LogSettings> logSettingsComboBox;
+    private DefaultComboBoxModel<LogSettings> logSettingsCbModel;
+    private JComboBox<LogSettings> logSettingsComboBox;
 
-    ICheckBox logInfoCb;
-    ICheckBox logDebugCb;
-    ICheckBox logWarnCb;
-    ICheckBox logErrorCb;
+    private ICheckBox logInfoCb;
+    private ICheckBox logDebugCb;
+    private ICheckBox logWarnCb;
+    private ICheckBox logErrorCb;
 
-    JButton saveBtn;
+    private JButton saveBtn;
+    private JButton useBtn;
 
-    TitledBorder titledBorder;
+    private TitledBorder titledBorder;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    private Application application;
 
-    LogSettings selectedLogSettings;
-    LogSettings originalLogSettings;
+    private LogSettings selectedLogSettings;
+    private LogSettings originalLogSettings;
 
     /*
      *                  CONSTRUCTOR
@@ -55,12 +70,13 @@ public class LogsPanel extends JPanel implements
         initializeComponents();
         initializeLayouts();
 
+        settings().addLogSettingsListener(this);
     }
 
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    void updateEnabledComponents() {
+    private void updateEnabledComponents() {
         if (selectedLogSettings == null || selectedLogSettings.isDefault()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
@@ -68,6 +84,8 @@ public class LogsPanel extends JPanel implements
             logDebugCb.setEnabled(false);
             logWarnCb.setEnabled(false);
             logErrorCb.setEnabled(false);
+
+            saveBtn.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
             logInfoCb.setEnabled(true);
@@ -75,15 +93,144 @@ public class LogsPanel extends JPanel implements
             logWarnCb.setEnabled(true);
             logErrorCb.setEnabled(true);
 
+            saveBtn.setEnabled(
+                    !selectedLogSettings.isSaved() ||
+                    !selectedLogSettings.equals(originalLogSettings));
+        }
+
+        if (selectedLogSettings != null) {
+            boolean isCurrent = selectedLogSettings.getName().equals(settings().getSelectedLogSettingsName());
+            boolean isSaved = selectedLogSettings.isSaved();
+            useBtn.setEnabled(!isCurrent && isSaved);
         }
     }
 
-    void updateFieldValues() {
+    private void updateFieldValues() {
         if (selectedLogSettings != null) {
             logInfoCb.setSelected(selectedLogSettings.isLogInfo());
-            logDebugCb.setSelected(selectedLogSettings.isLogError());
+            logDebugCb.setSelected(selectedLogSettings.isLogDebug());
             logWarnCb.setSelected(selectedLogSettings.isLogWarn());
             logErrorCb.setSelected(selectedLogSettings.isLogError());
+
+            currentSettingLbl.setText(settings().getSelectedLogSettingsName());
+        }
+    }
+
+    void clearFieldValues() {
+        application.beginWait();
+        try {
+            logInfoCb.setSelected(false);
+            logDebugCb.setSelected(false);
+            logWarnCb.setSelected(false);
+            logErrorCb.setSelected(false);
+        } finally {
+            application.endWait();
+        }
+    }
+
+
+
+    private void addNewLogSettings() {
+        String newName = JOptionPane.showInputDialog(
+                LogsPanel.this,
+                "New settings name?");
+
+        if (newName != null && !newName.isEmpty()) {
+            addNewLogSettings(newName);
+        }
+    }
+
+    private void addNewLogSettings(String newName) {
+        if (settings().getLogSettingsByName(newName) == null) {
+            LogSettings logSettings = new LogSettings(newName);
+            settings().getLogSettingsList().add(logSettings);
+            updateComponents(logSettings);
+        } else {
+            JOptionPane.showMessageDialog(
+                    LogsPanel.this,
+                    "Name " + newName + " already exists..",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void saveSettings(LogSettings toSave) {
+        new SwingWorker<LogSettings, Object>() {
+            @Override
+            protected LogSettings doInBackground() throws Exception {
+                application.beginWait();
+                try {
+                    settings().saveSettings(toSave);
+                } finally {
+                    application.endWait();
+                }
+                return toSave;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    updateComponents(get());
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Error updating components", e);
+                }
+            }
+        }.execute();
+    }
+
+    private void useSettings(LogSettings toUse) {
+        new SwingWorker<LogSettings, Object>() {
+            @Override
+            protected LogSettings doInBackground() throws Exception {
+                application.beginWait();
+                try {
+                    settings().selectNewSettings(toUse);
+                } finally {
+                    application.endWait();
+                }
+                return settings().getLogSettings();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    updateComponents(get());
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Error updating components", e);
+                }
+            }
+        }.execute();
+    }
+
+    private void deleteLogSetting(final LogSettings toDelete) {
+        int res = JOptionPane.showConfirmDialog(LogsPanel.this,
+                "Are you sure you want to delete " + toDelete.getName() + "?",
+                "Delete log setting",
+                JOptionPane.YES_NO_OPTION);
+
+        if (res == JOptionPane.OK_OPTION) {
+            new SwingWorker<LogSettings, Object>() {
+                @Override
+                protected LogSettings doInBackground() throws Exception {
+                    application.beginWait();
+                    try {
+                        settings().deleteSetting(toDelete);
+                    } finally {
+                        application.endWait();
+                    }
+                    return settings().getLogSettings();
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        updateComponents(get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        LOG.error("Error updating components", e);
+                    }
+                }
+            }.execute();
         }
     }
 
@@ -92,6 +239,14 @@ public class LogsPanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        // Label
+        currentSettingLbl = new ILabel();
+        currentSettingLbl.setAlignmentX(CENTER_ALIGNMENT);
+        currentSettingLbl.setForeground(Color.gray);
+        Font f = currentSettingLbl.getFont();
+        Font newFont = new Font(f.getName(), Font.BOLD, f.getSize() + 3);
+        currentSettingLbl.setFont(newFont);
+
         // Combo box
         logSettingsCbModel = new DefaultComboBoxModel<>();
         logSettingsComboBox = new JComboBox<>(logSettingsCbModel);
@@ -109,42 +264,40 @@ public class LogsPanel extends JPanel implements
         logErrorCb = new ICheckBox("Log errors");
         logErrorCb.addEditedListener(this, "logError");
 
-        // Save button
+        // Buttons
         saveBtn = new JButton("Save");
         saveBtn.setEnabled(false);
         saveBtn.setAlignmentX(RIGHT_ALIGNMENT);
+        saveBtn.addActionListener(this);
+
+        useBtn = new JButton("Use this");
+        useBtn.setEnabled(false);
+        useBtn.setAlignmentX(LEFT_ALIGNMENT);
+        useBtn.addActionListener(this);
 
         // Toolbar
-        toolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
-            @Override
-            public void onToolBarRefresh() {
-
-            }
-
-            @Override
-            public void onToolBarAdd() {
-
-            }
-
-            @Override
-            public void onToolBarDelete() {
-
-            }
-
-            @Override
-            public void onToolBarEdit() {
-
-            }
-        });
+        toolBar = new IdBToolBar(this);
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel header = new JPanel(new BorderLayout());
-        header.add(logSettingsComboBox, BorderLayout.CENTER);
-        header.add(toolBar, BorderLayout.EAST);
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(saveBtn);
+        buttonsPanel.add(useBtn);
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+
+        JPanel currentPanel = new JPanel(new BorderLayout());
+        currentPanel.add(new ILabel("Current log setting: "), BorderLayout.NORTH);
+        currentPanel.add(currentSettingLbl, BorderLayout.CENTER);
+        currentPanel.setBorder(BorderFactory.createEmptyBorder(2,15,2,15));
+
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(logSettingsComboBox, BorderLayout.WEST);
+        headerPanel.add(currentPanel, BorderLayout.CENTER);
+        headerPanel.add(toolBar, BorderLayout.EAST);
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 
         settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
@@ -175,7 +328,7 @@ public class LogsPanel extends JPanel implements
         gbc.anchor = GridBagConstraints.WEST;
         settingsPanel.add(logErrorCb, gbc);
 
-        titledBorder = BorderFactory.createTitledBorder("Db settings");
+        titledBorder = BorderFactory.createTitledBorder("Log options");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
@@ -185,9 +338,9 @@ public class LogsPanel extends JPanel implements
         ));
 
         // Add to panel
-        add(header, BorderLayout.NORTH);
+        add(headerPanel, BorderLayout.NORTH);
         add(settingsPanel, BorderLayout.CENTER);
-        add(saveBtn, BorderLayout.SOUTH);
+        add(buttonsPanel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -200,15 +353,15 @@ public class LogsPanel extends JPanel implements
             }
 
             selectedLogSettings = (LogSettings) object;
-            updateEnabledComponents();
 
             if (selectedLogSettings != null) {
-//            originalLogSettings = selectedLogSettings.createCopy(); // TODO
+                logSettingsComboBox.setSelectedItem(selectedLogSettings);
+                originalLogSettings = selectedLogSettings.createCopy();
                 updateFieldValues();
-
             } else {
                 originalLogSettings = null;
             }
+            updateEnabledComponents();
         } finally {
             application.endWait();
         }
@@ -216,7 +369,7 @@ public class LogsPanel extends JPanel implements
     }
 
     //
-    // Settings combo box checked
+    // Settings combo box value changed
     //
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -235,11 +388,93 @@ public class LogsPanel extends JPanel implements
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-
+        if (!application.isUpdating()) {
+            updateEnabledComponents();
+        }
     }
 
     @Override
     public DbObject getGuiObject() {
+        if (!application.isUpdating()) {
+            return selectedLogSettings;
+        }
         return null;
+    }
+
+    //
+    // Tool bar
+    //
+    @Override
+    public void onToolBarRefresh() {
+        settings().updateLogSettings();
+        settings().updateSelectedSettings();
+        updateComponents(settings().getLogSettings());
+    }
+
+    @Override
+    public void onToolBarAdd() {
+        addNewLogSettings();
+    }
+
+    @Override
+    public void onToolBarDelete() {
+        if (selectedLogSettings != null) {
+            if (selectedLogSettings.isDefault()) {
+                JOptionPane.showMessageDialog(LogsPanel.this,
+                        "Can't remove default settings..",
+                        "Can not delete",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                deleteLogSetting(selectedLogSettings);
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit() {
+        if (selectedLogSettings != null) {
+            if (selectedLogSettings.isDefault()) {
+                JOptionPane.showMessageDialog(LogsPanel.this,
+                        "Can't edit default settings..",
+                        "Can not edit",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+
+            }
+        }
+    }
+
+    //
+    // Save or Use button clicked
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(saveBtn)) {
+            // Save
+            saveSettings(selectedLogSettings);
+        } else {
+            // Use
+            if (selectedLogSettings.isSaved()) {
+                useSettings(selectedLogSettings);
+            } else {
+                JOptionPane.showMessageDialog(
+                        LogsPanel.this,
+                        "Save settings first!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+    //
+    // Log settings changed*
+    //
+
+    @Override
+    public void onSettingsChanged(LogSettings newSettings) {
+        if (!application.isUpdating()) {
+            updateComponents(newSettings);
+        }
     }
 }

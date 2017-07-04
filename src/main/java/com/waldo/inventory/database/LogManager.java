@@ -1,13 +1,16 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.database.interfaces.SettingsListener;
+import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.waldo.inventory.Utils.Statics.LogTypes.*;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 
-public class LogManager {
+public class LogManager implements SettingsListener<LogSettings> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogManager.class);
 
@@ -19,49 +22,63 @@ public class LogManager {
         return new LogManager(logClass, level);
     }
 
+    private int level;
     private Class logClass;
 
     private boolean logInfo;
     private boolean logDebug;
-    private boolean logWarnings;
+    private boolean logWarn;
     private boolean logErrors;
 
     private LogManager(Class logCLass, int level) {
         this.logClass = logCLass;
-        // TODO: get setting booleans
-        logInfo = true;
-        logDebug = true;
-        logWarnings = true;
-        logErrors = true;
+
+        settings().addLogSettingsListener(this);
 
         // Overwrite default settings
-        logLevel(level);
+        setLogLevel(level);
     }
 
-    public void logLevel(int level) {
+    @Override
+    public void onSettingsChanged(LogSettings newSettings) {
+        updateSettings(newSettings);
+        setLogLevel(level);
+    }
+
+    private void updateSettings(LogSettings logSettings) {
+        if (logSettings != null) {
+            logInfo = logSettings.isLogInfo();
+            logDebug = logSettings.isLogDebug();
+            logWarn = logSettings.isLogWarn();
+            logErrors = logSettings.isLogError();
+        }
+    }
+
+    public void setLogLevel(int level) {
+        this.level = level;
         switch (level) {
             case INFO:
                 logInfo &= true;
                 logDebug &= false;
-                logWarnings &= false;
+                logWarn &= false;
                 logErrors &= false;
                 break;
             case DEBUG:
                 logInfo &= true;
                 logDebug &= true;
-                logWarnings &= false;
+                logWarn &= false;
                 logErrors &= false;
                 break;
             case WARN:
                 logInfo &= true;
                 logDebug &= true;
-                logWarnings &= true;
+                logWarn &= true;
                 logErrors &= false;
                 break;
             case ERROR:
                 logInfo &= true;
                 logDebug &= true;
-                logWarnings &= true;
+                logWarn &= true;
                 logErrors &= true;
                 break;
         }
@@ -124,7 +141,7 @@ public class LogManager {
     }
 
     public void warning(String warning) {
-        if (logWarnings) {
+        if (logWarn) {
             try {
                 // Database
                 if (DbManager.db().isInitialized()) {
@@ -141,7 +158,7 @@ public class LogManager {
     }
 
     public void warning(String warning, Throwable throwable) {
-        if (logWarnings) {
+        if (logWarn) {
             try {
                 // Database
                 if (DbManager.db().isInitialized()) {

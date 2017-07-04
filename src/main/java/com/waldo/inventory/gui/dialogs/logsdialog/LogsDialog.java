@@ -29,6 +29,7 @@ public class LogsDialog extends LogsDialogLayout {
 
         initializeComponents();
         initializeLayouts();
+        updateLogTable(true, true, true, true);
 
         updateComponents(null);
     }

@@ -3,6 +3,7 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
+import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
 
 import javax.swing.*;
 import java.sql.*;
@@ -35,7 +36,7 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT_TYPE = 14;
     public static final int TYPE_LOG = 100;
 
-    private String TABLE_NAME;
+    protected String TABLE_NAME;
 
     protected long id = -1;
     protected String name = "";

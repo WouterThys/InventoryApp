@@ -1,7 +1,5 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog;
 
-
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.settingsdialog.panels.DbPanel;

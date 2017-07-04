@@ -2,23 +2,52 @@ package com.waldo.inventory.database.settings.settingsclasses;
 
 public class LogSettings extends DbSettingsObject {
 
+    private static final String TABLE_NAME = "logsettings";
+
     private boolean logInfo;
     private boolean logDebug;
     private boolean logWarn;
     private boolean logError;
 
-    public boolean isLogInfo() {
-        return logInfo;
+
+    public LogSettings() {
+        super(TABLE_NAME);
     }
 
-    @Override
-    public DbSettingsObject creatCopy(DbSettingsObject original) {
-        return null;
+    public LogSettings(String name) {
+        this();
+        setName(name);
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            if (obj instanceof LogSettings) {
+                LogSettings ref = (LogSettings) obj;
+                if ((ref.isLogInfo() == isLogInfo()) &&
+                        (ref.isLogDebug() == isLogDebug()) &&
+                        (ref.isLogWarn() == isLogWarn()) &&
+                        (ref.isLogError() == isLogError())) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    @Override
+    public LogSettings createCopy() {
+        LogSettings copy = new LogSettings();
+        copyBaseFields(copy);
+        copy.setLogInfo(logInfo);
+        copy.setLogDebug(logDebug);
+        copy.setLogWarn(logWarn);
+        copy.setLogError(logError);
+        return copy;
+    }
+
+    public boolean isLogInfo() {
+        return logInfo;
     }
 
     public void setLogInfo(boolean logInfo) {
@@ -79,5 +108,21 @@ public class LogSettings extends DbSettingsObject {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getLogInfo() {
+        return Boolean.toString(logInfo);
+    }
+
+    public String getLogDebug() {
+        return Boolean.toString(logDebug);
+    }
+
+    public String getLogWarn() {
+        return Boolean.toString(logWarn);
+    }
+
+    public String getLogError() {
+        return Boolean.toString(logError);
     }
 }

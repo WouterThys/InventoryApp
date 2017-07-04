@@ -4,6 +4,8 @@ import com.waldo.inventory.gui.Application;
 
 public class DbSettings extends DbSettingsObject {
 
+    private static final String TABLE_NAME = "dbsettings";
+
     private String dbFile = Application.startUpPath + "inventory.db";
     private String dbUserName = "waldo";
     private String dbUserPw = "";
@@ -19,15 +21,50 @@ public class DbSettings extends DbSettingsObject {
 
 
 
-    @Override
-    public DbSettingsObject creatCopy(DbSettingsObject original) {
-        return null;
+    public DbSettings() {
+        super(TABLE_NAME);
     }
+
 
     @Override
     public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            if (obj instanceof DbSettings) {
+                DbSettings ref = (DbSettings) obj;
+                if ((ref.getDbFile().equals(getDbFile())) &&
+                        (ref.getDbUserName().equals(getDbUserName())) &&
+                        (ref.getDbUserPw().equals(getDbUserPw())) &&
+                        (ref.getDbMaxIdleConnections() == (getDbMaxIdleConnections())) &&
+                        (ref.getDbMaxActiveConnections() == (getDbMaxActiveConnections())) &&
+                        (ref.getDbInitialSize() == (getDbInitialSize())) &&
+                        (ref.getDbRemoveAbandonedTimeout() == (getDbRemoveAbandonedTimeout())) &&
+                        (ref.isDbPoolPreparedStatements() == isDbPoolPreparedStatements()) &&
+                        (ref.isDbLogAbandoned() == isDbLogAbandoned()) &&
+                        (ref.isDbRemoveAbandoned() == isDbRemoveAbandoned())) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
+
+    @Override
+    public DbSettings createCopy() {
+        DbSettings copy = new DbSettings();
+        copyBaseFields(copy);
+        copy.setDbFile(dbFile);
+        copy.setDbUserName(dbUserName);
+        copy.setDbUserPw(dbUserPw);
+        copy.setDbMaxIdleConnections(dbMaxIdleConnections);
+        copy.setDbMaxActiveConnections(dbMaxActiveConnections);
+        copy.setDbInitialSize(dbInitialSize);
+        copy.setDbRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
+        copy.setDbPoolPreparedStatements(dbPoolPreparedStatements);
+        copy.setDbLogAbandoned(dbLogAbandoned);
+        copy.setDbRemoveAbandoned(dbRemoveAbandoned);
+        return copy;
+    }
+
 
     public String getDbFile() {
         if (dbFile == null) {
