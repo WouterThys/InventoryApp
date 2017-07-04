@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.settings.SettingsManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +34,11 @@ public class OrderFile {
         success = false;
         if (order.getDistributor() != null && fileName != null && !fileName.isEmpty()) {
             orderType = (int) order.getDistributor().getId();
-            orderFile = new File(startUpPath + "orderfiles" + File.separator+ fileName);
+            String path = SettingsManager.settings().getFileSettings().getFileOrdersPath();
+            if (!path.endsWith(File.separator)) {
+                path += File.separator;
+            }
+            orderFile = new File(path + fileName);
             if (orderFile.exists()) {
                 success = true;
             }

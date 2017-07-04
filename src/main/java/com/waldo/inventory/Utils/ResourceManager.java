@@ -123,6 +123,26 @@ public class ResourceManager {
         return null;
     }
 
+    public ImageIcon readImage(String key, int size) {
+        InputStream is = null;
+        try {
+            is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key));
+            BufferedImage image = ImageIO.read(is);
+            return getScaledImageIcon(image, size, size);
+        } catch (Exception e) {
+            Status().setWarning("Error loading image icon " + key, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    Status().setError("Error closing input stream", e);
+                }
+            }
+        }
+        return null;
+    }
+
     public ImageIcon readImage(URL resourceURL, int width, int height) throws Exception {
         return getScaledImageIcon(ImageIO.read(resourceURL), width, height);
     }

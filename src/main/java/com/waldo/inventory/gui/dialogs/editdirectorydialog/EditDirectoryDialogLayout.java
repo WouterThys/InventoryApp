@@ -23,13 +23,9 @@ public class EditDirectoryDialogLayout extends IDialog {
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField directoryTf;
-    JButton directoryBtn;
+    private JButton directoryBtn;
     IComboCheckBox useTypeCb;
 
-    /*
-    *                  VARIABLES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectDirectory projectDirectory;
     java.util.List<ProjectType> projectTypeList;
 
     /*
@@ -99,7 +95,7 @@ public class EditDirectoryDialogLayout extends IDialog {
     @Override
     public void updateComponents(Object object) {
         if (object != null && object instanceof ProjectDirectory) {
-            projectDirectory = (ProjectDirectory) object;
+            ProjectDirectory projectDirectory = (ProjectDirectory) object;
             directoryTf.setText(projectDirectory.getDirectory());
         }
     }

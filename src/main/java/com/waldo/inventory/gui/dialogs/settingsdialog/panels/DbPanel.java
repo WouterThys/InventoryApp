@@ -1,12 +1,16 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 
-public class DbPanel extends JPanel implements GuiInterface {    
-    
+public class DbPanel extends JPanel implements GuiInterface {
+
+
+    private static final LogManager LOG = LogManager.LOG(DbPanel.class);
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -25,7 +29,7 @@ public class DbPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+
     }
 
     /*

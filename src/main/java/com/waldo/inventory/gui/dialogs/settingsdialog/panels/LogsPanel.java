@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
-import com.sun.xml.internal.ws.server.sei.SEIInvokerTube;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.SettingsListener;
@@ -32,11 +31,7 @@ public class LogsPanel extends JPanel implements
         ActionListener {
 
     private static final LogManager LOG = LogManager.LOG(LogsPanel.class);
-    
-    /*
-     *                  COMPONENTS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private JPanel settingsPanel;
+
     private IdBToolBar toolBar;
     private ILabel currentSettingLbl;
 
@@ -50,8 +45,6 @@ public class LogsPanel extends JPanel implements
 
     private JButton saveBtn;
     private JButton useBtn;
-
-    private TitledBorder titledBorder;
 
     /*
      *                  VARIABLES
@@ -115,20 +108,6 @@ public class LogsPanel extends JPanel implements
             currentSettingLbl.setText(settings().getSelectedLogSettingsName());
         }
     }
-
-    void clearFieldValues() {
-        application.beginWait();
-        try {
-            logInfoCb.setSelected(false);
-            logDebugCb.setSelected(false);
-            logWarnCb.setSelected(false);
-            logErrorCb.setSelected(false);
-        } finally {
-            application.endWait();
-        }
-    }
-
-
 
     private void addNewLogSettings() {
         String newName = JOptionPane.showInputDialog(
@@ -299,7 +278,7 @@ public class LogsPanel extends JPanel implements
         headerPanel.add(toolBar, BorderLayout.EAST);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 
-        settingsPanel = new JPanel(new GridBagLayout());
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -328,7 +307,7 @@ public class LogsPanel extends JPanel implements
         gbc.anchor = GridBagConstraints.WEST;
         settingsPanel.add(logErrorCb, gbc);
 
-        titledBorder = BorderFactory.createTitledBorder("Log options");
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Log options");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
@@ -432,16 +411,16 @@ public class LogsPanel extends JPanel implements
 
     @Override
     public void onToolBarEdit() {
-        if (selectedLogSettings != null) {
-            if (selectedLogSettings.isDefault()) {
-                JOptionPane.showMessageDialog(LogsPanel.this,
-                        "Can't edit default settings..",
-                        "Can not edit",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-
-            }
-        }
+//        if (selectedLogSettings != null) {
+//            if (selectedLogSettings.isDefault()) {
+//                JOptionPane.showMessageDialog(LogsPanel.this,
+//                        "Can't edit default settings..",
+//                        "Can not edit",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//            } else {
+//
+//            }
+//        }
     }
 
     //

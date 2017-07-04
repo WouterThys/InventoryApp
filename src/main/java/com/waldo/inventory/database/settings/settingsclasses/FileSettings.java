@@ -18,6 +18,11 @@ public class FileSettings extends DbSettingsObject {
         super(TABLE_NAME);
     }
 
+    public FileSettings(String name) {
+        this();
+        setName(name);
+    }
+
 
 
     @Override
@@ -55,6 +60,9 @@ public class FileSettings extends DbSettingsObject {
 
 
     public String getImgDistributorsPath() {
+        if (imgDistributorsPath == null) {
+            return "";
+        }
         return imgDistributorsPath;
     }
 
@@ -63,6 +71,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getImgDivisionsPath() {
+        if (imgDivisionsPath == null) {
+            imgDivisionsPath = "";
+        }
         return imgDivisionsPath;
     }
 
@@ -71,6 +82,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getImgIdesPath() {
+        if (imgIdesPath == null) {
+            imgIdesPath = "";
+        }
         return imgIdesPath;
     }
 
@@ -79,6 +93,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getImgItemsPath() {
+        if (imgItemsPath == null) {
+            imgItemsPath =  "";
+        }
         return imgItemsPath;
     }
 
@@ -87,6 +104,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getImgManufacturersPath() {
+        if (imgManufacturersPath == null) {
+            imgManufacturersPath = "";
+        }
         return imgManufacturersPath;
     }
 
@@ -95,6 +115,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getImgProjectsPath() {
+        if (imgProjectsPath == null) {
+            imgProjectsPath = "";
+        }
         return imgProjectsPath;
     }
 
@@ -103,6 +126,9 @@ public class FileSettings extends DbSettingsObject {
     }
 
     public String getFileOrdersPath() {
+        if (fileOrdersPath == null) {
+            fileOrdersPath = "";
+        }
         return fileOrdersPath;
     }
 

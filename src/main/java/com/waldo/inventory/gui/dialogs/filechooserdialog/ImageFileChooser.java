@@ -9,6 +9,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public class ImageFileChooser {
 
     public static JFileChooser getFileChooser() {
@@ -24,10 +26,10 @@ public class ImageFileChooser {
     }
 
     private static class ImageFileView extends FileView {
-        ImageIcon jpgIcon = FileUtils.createImageIcon("/data/icons/imagefilechooser/jpgIcon.gif");
-        ImageIcon gifIcon = FileUtils.createImageIcon("/data/icons/imagefilechooser/gifIcon.gif");
-        ImageIcon tiffIcon = FileUtils.createImageIcon("/data/icons/imagefilechooser/tiffIcon.gif");
-        ImageIcon pngIcon = FileUtils.createImageIcon("/data/icons/imagefilechooser/pngIcon.png");
+        ImageIcon jpgIcon = imageResource.readImage("IFC.Jpg", 24);
+        ImageIcon gifIcon = imageResource.readImage("IFC.Gif", 24);
+        ImageIcon tiffIcon =imageResource.readImage("IFC.Tiff", 24);
+        ImageIcon pngIcon = imageResource.readImage("IFC.Png", 24);
 
         public String getName(File f) {
             return null; //let the L&F FileView figure this out

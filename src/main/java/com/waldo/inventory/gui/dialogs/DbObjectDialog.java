@@ -2,6 +2,8 @@ package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;
@@ -11,6 +13,7 @@ import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import javax.swing.*;
 import java.io.File;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class DbObjectDialog<T extends DbObject> extends IDialog {
@@ -18,6 +21,8 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
     private ITextField nameTextField;
     private ITextField iconPathTextField;
     private JButton browseIconButton;
+
+    private String initialPath;
 
     private T dbObject;
 
@@ -32,7 +37,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         return dialogResult;
     }
 
-    public DbObjectDialog(Application application, String title) {
+    private DbObjectDialog(Application application, String title) {
         super(application, title);
 
         setResizable(false);
@@ -45,7 +50,24 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
     public DbObjectDialog(Application application, String title,  T object) {
         this(application, title);
         dbObject = object;
+        determineInitialPath();
         updateComponents();
+    }
+
+    private void determineInitialPath() {
+        if (T.getType(dbObject) == DbObject.TYPE_DISTRIBUTOR) initialPath = settings().getFileSettings().getImgDistributorsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_CATEGORY) initialPath = settings().getFileSettings().getImgDivisionsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_PRODUCT) initialPath = settings().getFileSettings().getImgDivisionsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_TYPE) initialPath = settings().getFileSettings().getImgDivisionsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT_TYPE) initialPath = settings().getFileSettings().getImgIdesPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_ITEM) initialPath = settings().getFileSettings().getImgItemsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_MANUFACTURER) initialPath = settings().getFileSettings().getImgManufacturersPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT) initialPath = settings().getFileSettings().getImgProjectsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_ORDER) initialPath = settings().getFileSettings().getFileOrdersPath();
+        else {
+            initialPath = "home/";
+        }
+
     }
 
     private void updateComponents() {
@@ -78,7 +100,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         browseIconButton = new JButton(imageResource.readImage("Common.BrowseIcon"));
         browseIconButton.addActionListener(e -> {
             JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-            fileChooser.setCurrentDirectory(new File("./Images/"));
+            fileChooser.setCurrentDirectory(new File(initialPath));
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
