@@ -2,9 +2,9 @@ package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -74,6 +74,15 @@ public class Application extends JFrame implements ChangeListener {
         }
         settings().registerShutDownHook();
         db().registerShutDownHook();
+
+
+
+        /******* TEST *******/
+        KiCadParser parser = new KiCadParser();
+        File file = new File("/home/waldo/Dropbox/elentrik/projects/pcbs/Supply/variable/digital/SupplyMainDigital.net");
+        parser.parse(file);
+
+        /******* TEST *******/
 
         // Components
         initComponents();

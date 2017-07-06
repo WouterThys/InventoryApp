@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.database.LogManager;
 
 import java.sql.PreparedStatement;
@@ -19,6 +20,10 @@ public class ProjectType extends DbObject {
     private boolean openAsFolder; // Open File as directory or as file
     private boolean matchExtension; // Match extension or contain extension
     private boolean useParentFolder; // Use project directory or use matching folder
+
+    // Parser
+    private boolean hasParser;
+    private ProjectParser projectParser; // TODO add parser name in db
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
