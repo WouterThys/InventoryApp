@@ -1,6 +1,5 @@
-package com.waldo.inventory.gui.panels;
+package com.waldo.inventory.gui.dialogs.querydialog;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.statics.SqlKeyWords;
@@ -16,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.TimerTask;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class QueryPanel extends JPanel {
@@ -38,7 +38,7 @@ public class QueryPanel extends JPanel {
     }
 
     private void initActions() {
-        executeAction = new AbstractAction("Execute", FileUtils.loadImageIcon("execute")) {
+        executeAction = new AbstractAction("Execute", imageResource.readImage("QueryDialog.Execute", 24)) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -47,7 +47,7 @@ public class QueryPanel extends JPanel {
             }
         };
 
-        executeAllAction = new AbstractAction("Execute all", FileUtils.loadImageIcon("execute_all")) {
+        executeAllAction = new AbstractAction("Execute all", imageResource.readImage("QueryDialog.ExecuteAll", 24)) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -55,7 +55,7 @@ public class QueryPanel extends JPanel {
             }
         };
 
-        clearAction = new AbstractAction("Clear", FileUtils.loadImageIcon("clear")) {
+        clearAction = new AbstractAction("Clear", imageResource.readImage("QueryDialog.Clear", 24)) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryTextArea.setText("");
@@ -141,6 +141,7 @@ public class QueryPanel extends JPanel {
 
         queryTextArea = new JTextPane(doc);
         queryTextArea.setMargin(new Insets(5,5,5,5));
+        queryTextArea.setPreferredSize(new Dimension(600,400));
 
         messageTextField.setEditable(false);
         messageTextField.setText("");
@@ -158,7 +159,7 @@ public class QueryPanel extends JPanel {
         queryToolBar.setOrientation(JToolBar.VERTICAL);
         queryToolBar.setFloatable(false);
 
-        add(new JLabel("SQL query: "), BorderLayout.WEST);
+        //add(new JLabel("SQL query: "), BorderLayout.WEST);
         add(new JScrollPane(queryTextArea), BorderLayout.CENTER);
         add(messageTextField, BorderLayout.SOUTH);
         add(queryToolBar, BorderLayout.EAST);

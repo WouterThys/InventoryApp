@@ -182,7 +182,7 @@ public class LogsPanel extends JPanel implements
         }.execute();
     }
 
-    private void deleteLogSetting(final LogSettings toDelete) {
+    private void deleteLogSetting(LogSettings toDelete) {
         int res = JOptionPane.showConfirmDialog(LogsPanel.this,
                 "Are you sure you want to delete " + toDelete.getName() + "?",
                 "Delete log setting",

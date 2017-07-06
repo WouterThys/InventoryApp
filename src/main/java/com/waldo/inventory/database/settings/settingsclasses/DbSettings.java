@@ -25,6 +25,11 @@ public class DbSettings extends DbSettingsObject {
         super(TABLE_NAME);
     }
 
+    public DbSettings(String name) {
+        this();
+        setName(name);
+    }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -135,6 +140,15 @@ public class DbSettings extends DbSettingsObject {
         return dbPoolPreparedStatements;
     }
 
+    public String getDbPoolPreparedStatements() {
+        try {
+            return String.valueOf(dbPoolPreparedStatements);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public void setDbPoolPreparedStatements(boolean dbPoolPreparedStatements) {
         this.dbPoolPreparedStatements = dbPoolPreparedStatements;
     }
@@ -143,12 +157,30 @@ public class DbSettings extends DbSettingsObject {
         return dbLogAbandoned;
     }
 
+    public String getDbLogAbandoned() {
+        try {
+            return String.valueOf(dbLogAbandoned);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public void setDbLogAbandoned(boolean dbLogAbandoned) {
         this.dbLogAbandoned = dbLogAbandoned;
     }
 
     public boolean isDbRemoveAbandoned() {
         return dbRemoveAbandoned;
+    }
+
+    public String getDbRemoveAbandoned() {
+        try {
+            return String.valueOf(dbRemoveAbandoned);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public void setDbRemoveAbandoned(boolean dbRemoveAbandoned) {

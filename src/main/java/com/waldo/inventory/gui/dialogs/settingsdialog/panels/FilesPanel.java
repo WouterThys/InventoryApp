@@ -228,7 +228,7 @@ public class FilesPanel extends JPanel implements
         }.execute();
     }
 
-    private void deleteFileSetting(final FileSettings toDelete) {
+    private void deleteFileSetting( FileSettings toDelete) {
         int res = JOptionPane.showConfirmDialog(FilesPanel.this,
                 "Are you sure you want to delete " + toDelete.getName() + "?",
                 "Delete file setting",

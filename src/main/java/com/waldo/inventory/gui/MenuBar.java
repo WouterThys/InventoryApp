@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.ProjectTypesDialog;
+import com.waldo.inventory.gui.dialogs.querydialog.QueryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
@@ -74,7 +75,11 @@ public class MenuBar extends JMenuBar {
         JMenuItem importFromCsv = new JMenuItem("Import from csv", imageResource.readImage("MenuBar.Import"));
         importFromCsv.addActionListener(importFromCsvSelected());
 
+        JMenuItem queries = new JMenuItem("Query panel", imageResource.readImage("QueryDialog.TitleIcon", 16));
+        queries.addActionListener(showQuerySelected());
+
         toolsMenu.add(importFromCsv);
+        toolsMenu.add(queries);
 
 
         // Add menus
@@ -123,6 +128,13 @@ public class MenuBar extends JMenuBar {
     private ActionListener importFromCsvSelected() {
         return (e -> {
             ReadCsvDialog dialog = new ReadCsvDialog(application, "Import csv");
+            dialog.showDialog();
+        });
+    }
+
+    private ActionListener showQuerySelected() {
+        return (e -> {
+            QueryDialog dialog = new QueryDialog(application, "Queries");
             dialog.showDialog();
         });
     }
