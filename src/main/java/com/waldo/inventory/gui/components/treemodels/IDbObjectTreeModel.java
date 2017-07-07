@@ -1,6 +1,7 @@
-package com.waldo.inventory.gui.components;
+package com.waldo.inventory.gui.components.treemodels;
 
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.gui.components.ITree;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;

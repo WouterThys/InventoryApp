@@ -1,9 +1,10 @@
-package com.waldo.inventory.gui.components;
+package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;

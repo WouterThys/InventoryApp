@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.components;
+package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;

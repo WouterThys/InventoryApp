@@ -3,10 +3,10 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.tablemodels.ILogTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
@@ -41,7 +42,8 @@ public class Application extends JFrame implements ChangeListener {
     private ProjectPanel projectPanel;
 
     private boolean updating = false;
-    private String dbFileName = "";
+
+    private static List<ProjectParser> parserList;
 
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
@@ -75,16 +77,6 @@ public class Application extends JFrame implements ChangeListener {
         settings().registerShutDownHook();
         db().registerShutDownHook();
 
-
-
-        /******* TEST *******/
-        KiCadParser parser = new KiCadParser();
-        File file = new File("/home/waldo/Dropbox/elentrik/projects/pcbs/Supply/variable/digital/SupplyMainDigital.net");
-        parser.parse(file);
-
-        /******* TEST *******/
-
-        // Components
         initComponents();
     }
 
@@ -264,6 +256,28 @@ public class Application extends JFrame implements ChangeListener {
     public OrderPanel getOrderPanel() {
         return orderPanel;
     }
+
+
+    public static List<ProjectParser> getParserList() {
+        if (parserList == null) {
+            parserList = new ArrayList<>();
+            parserList.add(new KiCadParser("KiCadParser"));
+            // add more..
+        }
+        return parserList;
+    }
+
+    public static ProjectParser getProjectParser(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (ProjectParser parser : getParserList()) {
+                if (parser.getParserName().equals(name)) {
+                    return parser;
+                }
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void stateChanged(ChangeEvent e) {

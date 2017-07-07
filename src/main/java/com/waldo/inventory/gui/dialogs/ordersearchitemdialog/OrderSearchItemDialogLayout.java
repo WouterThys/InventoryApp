@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IItemTableModel;
+import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.ITable;
 

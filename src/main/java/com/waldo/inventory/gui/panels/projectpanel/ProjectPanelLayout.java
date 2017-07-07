@@ -8,10 +8,9 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionListener;

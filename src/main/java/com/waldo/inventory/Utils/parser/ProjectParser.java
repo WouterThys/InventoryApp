@@ -1,7 +1,5 @@
 package com.waldo.inventory.Utils.parser;
 
-
-
 import com.waldo.inventory.Utils.FileUtils;
 
 import java.io.File;
@@ -17,12 +15,17 @@ public abstract class ProjectParser<P extends Component> {
     protected String fileStopSequence;
 
 
-    protected ProjectParser(String parserName, File fileToParse, String fileExtension, String fileStartSequence, String fileStopSequence) {
+    protected ProjectParser(String parserName, String fileExtension, String fileStartSequence, String fileStopSequence) {
         this.parserName = parserName;
-        this.fileToParse = fileToParse;
         this.fileExtension = fileExtension;
         this.fileStartSequence = fileStartSequence;
         this.fileStopSequence = fileStopSequence;
+    }
+
+
+    @Override
+    public String toString() {
+        return parserName;
     }
 
     public boolean isFileValid(File fileToParse) {
@@ -32,6 +35,8 @@ public abstract class ProjectParser<P extends Component> {
     public abstract void parse(File fileToParse);
 
     public abstract List<P> getParsedData();
+
+    public abstract void sortList(List<P> list);
 
     public String getParserName() {
         return parserName;

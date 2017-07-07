@@ -42,6 +42,7 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
 
     JButton detailLauncherBtn;
     JButton detailDetectionBtn;
+    JButton detailParserBtn;
 
     /*
      *                  VARIABLES
@@ -65,11 +66,13 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
             toolBar.setEditActionEnabled(false);
             detailLauncherBtn.setEnabled(false);
             detailDetectionBtn.setEnabled(false);
+            detailParserBtn.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
             toolBar.setEditActionEnabled(true);
             detailLauncherBtn.setEnabled(true);
             detailDetectionBtn.setEnabled(true);
+            detailParserBtn.setEnabled(true);
         }
     }
 
@@ -128,6 +131,7 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
 
         // - Buttons
         JPanel buttonPanel = new JPanel();
+        buttonPanel.add(detailParserBtn);
         buttonPanel.add(detailDetectionBtn);
         buttonPanel.add(detailLauncherBtn);
 
@@ -220,6 +224,9 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
 
         detailDetectionBtn = new JButton("Detection");
         detailDetectionBtn.addActionListener(this);
+
+        detailParserBtn = new JButton("Parser");
+        detailParserBtn.addActionListener(this);
     }
 
     @Override

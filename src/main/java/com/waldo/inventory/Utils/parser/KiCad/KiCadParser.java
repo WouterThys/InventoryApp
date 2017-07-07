@@ -7,6 +7,7 @@ import com.waldo.inventory.Utils.parser.ProjectParser;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class KiCadParser extends ProjectParser<KcComponent> {
@@ -14,8 +15,8 @@ public class KiCadParser extends ProjectParser<KcComponent> {
     private List<KcComponent> componentList;
     private boolean hasParsed;
 
-    public KiCadParser(String parserName, File fileToParse) {
-        super(parserName, fileToParse, "net", "(components", "(libparts");
+    public KiCadParser(String parserName) {
+        super(parserName, "net", "(components", "(libparts");
         componentList = new ArrayList<>();
         hasParsed = false;
     }
@@ -25,11 +26,18 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         if (!hasParsed) {
             parse(fileToParse);
         }
-        return  componentList;
+        componentList.sort(new KiCadComponentComparator());
+        return componentList;
+    }
+
+    @Override
+    public void sortList(List<KcComponent> list) {
+
     }
 
     @Override
     public void parse(File fileToParse) {
+        this.fileToParse = fileToParse;
         if (isFileValid(fileToParse)) {
             String fileData = FileUtils.getRawStringFromFile(fileToParse);
             int startNdx = fileData.indexOf(fileStartSequence);
@@ -172,6 +180,16 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         return block;
     }
 
-
+    private class KiCadComponentComparator implements Comparator<KcComponent> {
+        @Override
+        public int compare(KcComponent o1, KcComponent o2) {
+            try {
+                return o1.getLibSource().getPart().compareTo(o2.getLibSource().getPart());
+            } catch(Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+    }
 
 }

@@ -1481,6 +1481,7 @@ public class DbManager implements TableChangedListener {
                     p.setExtension(rs.getString("extension"));
                     p.setMatchExtension(rs.getBoolean("matchextension"));
                     p.setUseParentFolder(rs.getBoolean("useparentfolder"));
+                    p.setParserName(rs.getString("parsername"));
 
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         p.setOnTableChangedListener(this);
@@ -1513,6 +1514,7 @@ public class DbManager implements TableChangedListener {
                     p.setLauncherPath(rs.getString("launcherpath"));
                     p.setMatchExtension(rs.getBoolean("matchextension"));
                     p.setUseParentFolder(rs.getBoolean("useparentfolder"));
+                    p.setParserName(rs.getString("parsername"));
                 }
             }
         } catch (SQLException e) {

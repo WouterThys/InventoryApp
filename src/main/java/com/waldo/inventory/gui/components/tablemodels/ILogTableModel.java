@@ -1,6 +1,7 @@
-package com.waldo.inventory.gui.components;
+package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;

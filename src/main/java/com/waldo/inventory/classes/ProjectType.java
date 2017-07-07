@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.gui.Application;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,8 +23,7 @@ public class ProjectType extends DbObject {
     private boolean useParentFolder; // Use project directory or use matching folder
 
     // Parser
-    private boolean hasParser;
-    private ProjectParser projectParser; // TODO add parser name in db
+    private String parserName; // For db
 
     @Override
     protected void insert(PreparedStatement statement) throws SQLException {
@@ -35,6 +35,7 @@ public class ProjectType extends DbObject {
         statement.setString(6, launcherPath);
         statement.setBoolean(7, matchExtension);
         statement.setBoolean(8, useParentFolder);
+        statement.setString(9, parserName);
         statement.execute();
     }
 
@@ -48,7 +49,8 @@ public class ProjectType extends DbObject {
         statement.setString(6, launcherPath);
         statement.setBoolean(7, matchExtension);
         statement.setBoolean(8, useParentFolder);
-        statement.setLong(9, id); // WHERE id
+        statement.setString(9, parserName);
+        statement.setLong(10, id); // WHERE id
         statement.execute();
     }
 
@@ -91,6 +93,9 @@ public class ProjectType extends DbObject {
                 if (!(ref.isUseParentFolder() == isUseParentFolder())) {
                     return false;
                 }
+                if (!(ref.getParserName().equals(getParserName()))) {
+                    return false;
+                }
             }
         }
         return result;
@@ -115,6 +120,7 @@ public class ProjectType extends DbObject {
         projectType.setLauncherPath(getLauncherPath());
         projectType.setMatchExtension(isMatchExtension());
         projectType.setUseParentFolder(isUseParentFolder());
+        projectType.setParserName(getParserName());
 
         return projectType;
     }
@@ -195,5 +201,28 @@ public class ProjectType extends DbObject {
 
     public void setUseParentFolder(boolean useParentFolder) {
         this.useParentFolder = useParentFolder;
+    }
+
+    public String getParserName() {
+        if (parserName == null) {
+            parserName = "";
+        }
+        return parserName;
+    }
+
+    public void setParserName(String parserName) {
+        this.parserName = parserName;
+    }
+
+    public ProjectParser getProjectParser() {
+        if (getParserName().isEmpty()) {
+             return null;
+        } else {
+            return Application.getProjectParser(parserName);
+        }
+    }
+
+    public boolean hasParser() {
+        return (parserName != null && !parserName.isEmpty());
     }
 }

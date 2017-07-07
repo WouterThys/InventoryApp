@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog.DetectionDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog.LauncherDialog;
+import com.waldo.inventory.gui.dialogs.projecttypesdialog.parserdialog.ParserDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -301,6 +302,20 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
                     selectedProjectType.setMatchExtension(dialog.isMatchExtension());
                     selectedProjectType.setUseParentFolder(dialog.isUseParentFolder());
                     getButtonNeutral().setEnabled(checkChange());
+                }
+            }
+            if (source == detailParserBtn) {
+                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectType.hasParser(), selectedProjectType.getProjectParser());
+
+                if (dialog.showDialog() == IDialog.OK) {
+                    if (selectedProjectType != null) {
+                        if (dialog.useParser()) {
+                            selectedProjectType.setParserName(dialog.getParser().getParserName());
+                        } else {
+                            selectedProjectType.setParserName("");
+                        }
+                        getButtonNeutral().setEnabled(checkChange());
+                    }
                 }
             }
         }
