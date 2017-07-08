@@ -68,7 +68,7 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     public void updateComponents(Object object) {
         if (object != null) {
             java.util.List<KcComponent> components = (java.util.List<KcComponent>) object;
-            componentTableModel.setComponentList(components);
+            componentTableModel.setItemList(components);
         }
     }
 }

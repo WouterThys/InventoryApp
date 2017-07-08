@@ -66,7 +66,8 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             int row = resultTable.getSelectedRow();
             if (row >= 0) {
-                itemToOrder = resultTableModel.getItem(row);
+                //itemToOrder = resultTableModel.getItem(row);
+                itemToOrder = (Item) resultTable.getModel().getValueAt(resultTable.convertRowIndexToModel(row), 0);
             }
         }
     }

@@ -113,7 +113,7 @@ public class KiCadDialog extends KiCadDialogLayout {
         if(!e.getValueIsAdjusting()) {
             int row = getTable().getSelectedRow();
             if (row >= 0) {
-                updateComponents(getTableModel().getComponentItem(row));
+                updateComponents(getTable().getValueAtRow(row));
             }
         }
     }

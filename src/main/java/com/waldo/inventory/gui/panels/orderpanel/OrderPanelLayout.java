@@ -106,7 +106,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 //    }
     public void selectOrderItem(OrderItem orderItem) {
         if (orderItem != null) {
-            List<OrderItem> itemList = tableModel.getOrderItemList();
+            List<OrderItem> itemList = tableModel.getItemList();
             if (itemList != null) {
                 int ndx = itemList.indexOf(orderItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
@@ -123,7 +123,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     public void updateTable(Order selectedOrder) {
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
-            tableModel.setOrderItemList(db().getOrderedItems(selectedOrder.getId()));
+            tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
         }
     }
 

@@ -3,16 +3,14 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.ParseException;
@@ -409,6 +407,31 @@ public class ITableEditors {
         }
 
         public void mouseExited(MouseEvent e) {
+        }
+    }
+
+
+    public static class TableColorRenderer extends JLabel implements TableCellRenderer {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int rowIndex, int vColIndex) {
+            try {
+                if (value != null) {
+                    Item item = null;
+                    if (value instanceof OrderItem) {
+                        item = ((OrderItem) value).getItem();
+                    } else if (value instanceof Item) {
+                        item = (Item) value;
+                    }
+                    if (item != null) {
+                        if (item.isDiscourageOrder()) {
+                            setBackground(Color.orange);
+                        }
+                    }
+                }
+
+            } catch ( Exception e) {
+                e.printStackTrace();
+            }
+            return this;
         }
     }
 }

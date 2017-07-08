@@ -5,66 +5,29 @@ import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.SearchManager;
 
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IOrderItemTableModel extends AbstractTableModel {
+public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
-    private static final String[] columnNames = {"Name", "Description", "Manufacturer", "Reference", "Amount", "Price", "Total"};
-    private static final Class[] columnClasses = {String.class, String.class, String.class, String.class, Number.class, Double.class, Double.class};
-
-    private List<OrderItem> orderItemList;
+    private static final String[] COLUMN_NAMES = {"Name", "Description", "Manufacturer", "Reference", "Amount", "Price", "Total"};
+    private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class, String.class, Number.class, Double.class, Double.class};
 
     public IOrderItemTableModel() {
-        orderItemList = new ArrayList<>();
+        super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
     public IOrderItemTableModel(List<OrderItem> orderItemList) {
-        this.orderItemList = orderItemList;
-    }
-
-    public void setOrderItemList(List<OrderItem> orderItemList) {
-        this.orderItemList = orderItemList;
-        fireTableDataChanged();
-    }
-
-    public List<OrderItem> getOrderItemList() {
-        return orderItemList;
-    }
-
-    public OrderItem getOrderItem(int index) {
-        if (index >= 0 && index < orderItemList.size()) {
-            return orderItemList.get(index);
-        }
-        return null;
-    }
-
-    @Override
-    public int getRowCount() {
-        return orderItemList.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
+        super(COLUMN_NAMES, COLUMN_CLASSES, orderItemList);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderItem orderItem = getOrderItem(rowIndex);
+        OrderItem orderItem = getItemAt(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
+                case -1:
+                    return orderItem;
                 case 0: // Name
                     return orderItem.getItem().getName();
                 case 1: // Description
@@ -91,10 +54,5 @@ public class IOrderItemTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return ((columnIndex == 3) || (columnIndex == 4)); // Reference and price are editable
-    }
-
-    public void removeRow(int row) {
-        orderItemList.remove(row);
-        fireTableRowsDeleted(row, row);
     }
 }

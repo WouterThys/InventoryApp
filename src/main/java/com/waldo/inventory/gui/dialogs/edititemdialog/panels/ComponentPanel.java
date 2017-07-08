@@ -42,6 +42,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private IFormattedTextField packageWidthTf, packageHeightTf;
     private IComboBox<Manufacturer> manufacturerComboBox;
     private ILabel iconLabel;
+    private IStarRater starRater;
+    private ICheckBox discourageOrderCb;
+    private ITextArea remarksTa;
 
     // Basic info
     private ITextField idTextField;
@@ -253,8 +256,18 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-
         iconLabel = new ILabel();
+
+        // Remarks stuff
+        starRater = new IStarRater(5, 0,0);
+        starRater.addEditedListener(editedListener, "rating");
+        discourageOrderCb = new ICheckBox("Discourage future orders");
+        discourageOrderCb.addEditedListener(editedListener, "discourageOrder");
+        discourageOrderCb.setAlignmentX(RIGHT_ALIGNMENT);
+        remarksTa = new ITextArea();
+        remarksTa.setLineWrap(true); // Go to next line when area is full
+        remarksTa.setWrapStyleWord(true); // Don't cut words in two
+        remarksTa.addEditedListener(editedListener, "remarks");
     }
 
     private JPanel createBasicPanel() {
@@ -299,6 +312,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private JPanel createDetailsPanel() {
         JPanel packagePanel = new JPanel(new GridBagLayout());
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
+        JPanel remarksPanel = new JPanel(new GridBagLayout());
 
         // Borders
         TitledBorder packageBorder = BorderFactory.createTitledBorder("Package");
@@ -307,6 +321,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         TitledBorder manufacturerBorder = BorderFactory.createTitledBorder("Manufacturer");
         manufacturerBorder.setTitleJustification(TitledBorder.RIGHT);
         manufacturerBorder.setTitleColor(Color.gray);
+        TitledBorder remarksBorder = BorderFactory.createTitledBorder("Remarks");
+        remarksBorder.setTitleJustification(TitledBorder.RIGHT);
+        remarksBorder.setTitleColor(Color.gray);
 
         // Labels
         ILabel typeLabel = new ILabel("Type: ");
@@ -396,11 +413,45 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Border
         manufacturerPanel.setBorder(manufacturerBorder);
 
+        // Remarks panel
+        gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2,2,2,2);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        remarksPanel.add(starRater, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        remarksPanel.add(discourageOrderCb, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        remarksPanel.add(new ILabel("Remarks: "), gbc);
+
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
+        remarksPanel.add(new JScrollPane(remarksTa), gbc);
+
+        // Border
+        remarksPanel.setBorder(remarksBorder);
+
+
         // Add to panel
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         panel.add(packagePanel, BorderLayout.NORTH);
-        panel.add(manufacturerPanel, BorderLayout.CENTER);
+        panel.add(manufacturerPanel, BorderLayout.SOUTH);
+        panel.add(remarksPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -502,6 +553,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 e1.printStackTrace();
             }
         }
+
+        // Remarks
+        starRater.setRating(newItem.getRating());
+        //starRater.setSelection((int)newItem.getRating());
+        discourageOrderCb.setSelected(newItem.isDiscourageOrder());
+        remarksTa.setText(newItem.getRemarks());
     }
 
     /*

@@ -8,62 +8,26 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ILogTableModel extends AbstractTableModel {
+public class ILogTableModel extends IAbstractTableModel<Log> {
 
-    private static final String[] columnNames = {"", "Time", "Class", "Message"};
-    private static final Class[] columnClasses = {ILabel.class, String.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "Time", "Class", "Message"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     private List<Log> logList;
 
     public ILogTableModel() {
-        logList = new ArrayList<>();
+        super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
     public ILogTableModel(List<Log> logList) {
-        this.logList = logList;
-    }
-
-    public void setLogList(List<Log> logList) {
-        this.logList = logList;
-        fireTableDataChanged();
-    }
-
-    public List<Log> getLogList() {
-        return logList;
-    }
-
-    public Log getLogItem(int index) {
-        if (index >= 0 && index < logList.size()) {
-            return logList.get(index);
-        }
-        return null;
-    }
-
-    @Override
-    public int getRowCount() {
-        return logList.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
+        super(COLUMN_NAMES, COLUMN_CLASSES, logList);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Log log = getLogItem(rowIndex);
+        Log log = getItemAt(rowIndex);
         if (log != null) {
             switch (columnIndex) {
                 case 0: // Type label, will be set with with the ITableEditor LogTypeRenderer
@@ -84,8 +48,4 @@ public class ILogTableModel extends AbstractTableModel {
         return false;
     }
 
-    public void removeRow(int row) {
-        logList.remove(row);
-        fireTableRowsDeleted(row, row);
-    }
 }

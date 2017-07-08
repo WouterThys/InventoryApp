@@ -66,7 +66,8 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     Item getItemAt(int row)  {
-        return tableModel.getItem(row);
+        return (Item) itemTable.getModel().getValueAt(itemTable.convertRowIndexToModel(row), 0);
+        //return tableModel.getItem(row);
     }
 
     public void updateTable(DbObject selectedObject) {

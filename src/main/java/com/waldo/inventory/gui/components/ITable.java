@@ -1,5 +1,8 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -14,6 +17,9 @@ public class ITable extends JTable {
 
         setModel(model);
         setRowHeight(25);
+
+        setPreferredScrollableViewportSize(getPreferredSize());
+        setAutoCreateRowSorter(true);
     }
 
     public void resizeColumns(Integer[] widths) {
@@ -43,7 +49,30 @@ public class ITable extends JTable {
             tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
         }
 
+        if (getModel() instanceof IOrderItemTableModel) {
+            Object o = getValueAtRow(row);
+
+            if (o instanceof OrderItem) {
+                OrderItem orderItem = (OrderItem) o;
+                if (!isRowSelected(row)) {
+                    component.setBackground(getBackground());
+                    if (orderItem.getItem().isDiscourageOrder()) {
+                        component.setBackground(Color.orange);
+                    } else {
+                        component.setBackground(getBackground());
+                    }
+                }
+            }
+        }
+
         return component;
+    }
+
+    public Object getValueAtRow(int row) {
+        if (row >= 0) {
+            return getModel().getValueAt(convertRowIndexToModel(row), -1);
+        }
+        return null;
     }
 //
 //    public java.util.List<DbObject> getSelectedObjects() {

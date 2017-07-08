@@ -55,7 +55,7 @@ public abstract class LogsDialogLayout extends IDialog implements
         List<Log> logList = DbManager.db().getLogsByType(showInfo, showDebug, showWarn, showError);
         logList.sort(new Log.LogComparator());
 
-        logTableModel.setLogList(logList);
+        logTableModel.setItemList(logList);
     }
 
     private JPanel createCheckboxPanel() {

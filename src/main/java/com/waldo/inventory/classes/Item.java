@@ -30,6 +30,9 @@ public class Item extends DbObject {
     private long packageTypeId = -1;
     private int pins;
     private double width, height;
+    private float rating;
+    private boolean discourageOrder;
+    private String remarks;
 
     public Item() {
         super(TABLE_NAME);
@@ -73,6 +76,9 @@ public class Item extends DbObject {
         statement.setInt(16, pins);
         statement.setDouble(17, getWidth());
         statement.setDouble(18, getHeight());
+        statement.setFloat(19, rating);
+        statement.setBoolean(20, discourageOrder);
+        statement.setString(21, getRemarks());
         statement.execute();
     }
 
@@ -114,8 +120,11 @@ public class Item extends DbObject {
         statement.setInt(16, pins);
         statement.setDouble(17, getWidth());
         statement.setDouble(18, getHeight());
+        statement.setFloat(19, rating);
+        statement.setBoolean(20, discourageOrder);
+        statement.setString(21, getRemarks());
 
-        statement.setLong(19, id); // WHERE id
+        statement.setLong(22, id); // WHERE id
         statement.execute();
     }
 
@@ -194,6 +203,9 @@ public class Item extends DbObject {
         item.setPins(getPins());
         item.setWidth(getWidth());
         item.setHeight(getHeight());
+        item.setRating(getRating());
+        item.setDiscourageOrder(isDiscourageOrder());
+        item.setRemarks(getRemarks());
 
         return item;
     }
@@ -222,6 +234,9 @@ public class Item extends DbObject {
                 if (!(ref.getPins() == getPins())) return false;
                 if (!(ref.getWidth() == getWidth())) return false;
                 if (!(ref.getHeight() == getHeight())) return false;
+                if (!(ref.getRating() == getRating())) return false;
+                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) return false;
+                if (!(ref.getRemarks().equals(getRemarks()))) return false;
              }
         }
         return result;
@@ -505,5 +520,54 @@ public class Item extends DbObject {
         } catch (Exception e) {
             LOG.error("Error setting height.", e);
         }
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public void setRating(String rating) {
+        try {
+            if (!rating.isEmpty()) {
+                this.rating = Float.valueOf(rating);
+            }
+        } catch (Exception e) {
+            LOG.error("Error setting rating.", e);
+        }
+    }
+
+    public boolean isDiscourageOrder() {
+        return discourageOrder;
+    }
+
+    public String getDiscourageOrder() {
+        return String.valueOf(discourageOrder);
+    }
+
+    public void setDiscourageOrder(boolean discourageOrder) {
+        this.discourageOrder = discourageOrder;
+    }
+
+    public void setDiscourageOrder(String discourageOrder) {
+        try {
+            this.discourageOrder = Boolean.parseBoolean(discourageOrder);
+        } catch (Exception e) {
+            LOG.error("Error setting iscourage order", e);
+        }
+    }
+
+    public String getRemarks() {
+        if (remarks == null) {
+            remarks = "";
+        }
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

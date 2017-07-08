@@ -77,7 +77,7 @@ public class LogsDialog extends LogsDialogLayout {
         if(!e.getValueIsAdjusting()) {
             int row = logTable.getSelectedRow();
             if (row >= 0) {
-                updateComponents(logTableModel.getLogItem(row));
+                updateComponents(logTable.getValueAtRow(row));
             }
         }
     }

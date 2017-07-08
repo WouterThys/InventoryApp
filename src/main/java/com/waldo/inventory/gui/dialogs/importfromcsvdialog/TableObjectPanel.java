@@ -348,10 +348,13 @@ public class TableObjectPanel extends JPanel implements
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
+
             int row = itemTable.getSelectedRow();
+
             Item item;
             if (row >= 0) {
-                item = tableModel.getItem(row);
+                //item = tableModel.getItem(row);
+                item = (Item) itemTable.getModel().getValueAt(itemTable.convertRowIndexToModel(row), 0);
             } else {
                 item = null;
             }

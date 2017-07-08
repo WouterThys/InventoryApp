@@ -160,7 +160,7 @@ public class Application extends JFrame implements ChangeListener {
                     for (DbObject object : foundObject) {
                         foundItems.add((OrderItem)object);
                     }
-                    orderPanel.getTableModel().setOrderItemList(foundItems);
+                    orderPanel.getTableModel().setItemList(foundItems);
                 }
                 break;
 

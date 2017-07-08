@@ -492,9 +492,9 @@ public class DbManager implements TableChangedListener {
                     i.setPins(rs.getInt("pins"));
                     i.setWidth(rs.getDouble("width"));
                     i.setHeight(rs.getDouble("height"));
-//                    if (isItemInCurrentOrders(i.getId())) {
-//                        i.setOrderState(Statics.ItemOrderStates.ORDERED);
-//                    }
+                    i.setRating(rs.getFloat("rating"));
+                    i.setDiscourageOrder(rs.getBoolean("discourageorder"));
+                    i.setRemarks(rs.getString("remarks"));
 
                     i.setOnTableChangedListener(this);
                     items.add(i);
@@ -503,32 +503,6 @@ public class DbManager implements TableChangedListener {
         } catch (SQLException e) {
             Status().setError("Failed to fetch items from database: "+ e);
         }
-    }
-
-    public void getItemsAsync(final List<Item> itemList) {
-        if (itemList != null) {
-            itemList.clear();
-        }
-        SwingWorker<Void, Item> worker = new SwingWorker<Void, Item>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<Item> itemList = getItems();
-                for(Item i : itemList) {
-                    publish(i);
-                }
-                return null;
-            }
-
-            @Override
-            protected void process(List<Item> chunks) {
-                for (Item c : chunks) {
-                    if (itemList != null) {
-                        itemList.add(c);
-                    }
-                }
-            }
-        };
-        worker.execute();
     }
 
     public Item getItemFromDb(long itemId) {
@@ -561,6 +535,9 @@ public class DbManager implements TableChangedListener {
                     i.setPins(rs.getInt("pins"));
                     i.setWidth(rs.getDouble("width"));
                     i.setHeight(rs.getDouble("height"));
+                    i.setRating(rs.getFloat("rating"));
+                    i.setDiscourageOrder(rs.getBoolean("discourageorder"));
+                    i.setRemarks(rs.getString("remarks"));
                 }
             }
         } catch (SQLException e) {

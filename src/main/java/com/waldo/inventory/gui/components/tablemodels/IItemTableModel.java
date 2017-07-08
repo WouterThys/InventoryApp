@@ -10,65 +10,36 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IItemTableModel extends AbstractTableModel {
+public class IItemTableModel extends IAbstractTableModel<Item> {
 
     // Names and classes
-    private static final String[] columnNames = {"", "Name", "Description", "Manufacturer"};
-    private static final Class[] columnClasses = {ILabel.class, String.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
     private List<Item> itemList;
 
     public IItemTableModel() {
-        itemList = new ArrayList<>();
+        super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
     public IItemTableModel(List<Item> itemList) {
-        this.itemList = itemList;
-        itemList.sort(new Item.ItemComparator());
+        super(COLUMN_NAMES, COLUMN_CLASSES, itemList);
+        getItemList().sort(new Item.ItemComparator());
     }
 
     public void setItemList(List<Item> itemList) {
-        this.itemList = itemList;
-        this.itemList.sort(new Item.ItemComparator());
-        fireTableDataChanged();
-    }
-
-    public List<Item> getItemList() {
-        return itemList;
-    }
-
-    public Item getItem(int index) {
-        if (index >= 0 && index < itemList.size()) {
-            return itemList.get(index);
-        }
-        return null;
-    }
-
-    @Override
-    public int getRowCount() {
-        return itemList.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
+        itemList.sort(new Item.ItemComparator());
+        super.setItemList(itemList);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Item item = getItem(rowIndex);
+        Item item = getItemAt(rowIndex);
+
         if (item != null) {
             switch (columnIndex) {
+                case -1:
+                    return item;
                 case 0: // Amount label
                     return item;
                 case 1: // Name
@@ -85,4 +56,6 @@ public class IItemTableModel extends AbstractTableModel {
         }
         return null;
     }
+
+
 }

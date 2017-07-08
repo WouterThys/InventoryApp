@@ -159,7 +159,7 @@ public class OrderPanel extends OrderPanelLayout {
         int[] selectedRows = orderItemTable.getSelectedRows();
         if (selectedRows.length > 0) {
             for (int row : selectedRows) {
-                OrderItem oi = tableModel.getOrderItem(row);
+                OrderItem oi = (OrderItem) orderItemTable.getValueAtRow(row);
                 if (oi != null) {
                     selectedOrderItems.add(oi);
                 }
@@ -346,7 +346,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void selectItem(OrderItem selectedItem) {
         if (selectedItem != null) {
-            List<OrderItem> itemList = getTableModel().getOrderItemList();
+            List<OrderItem> itemList = getTableModel().getItemList();
             if (itemList != null) {
                 int ndx = itemList.indexOf(selectedItem);
                 if (ndx >= 0 && ndx < itemList.size()) {
@@ -383,11 +383,8 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            int row = orderItemTable.getSelectedRow();
-            if (row >= 0) {
-                selectedOrderItem = getTableModel().getOrderItem(orderItemTable.getSelectedRow());
-                updateComponents(lastSelectedOrder);
-            }
+            selectedOrderItem = (OrderItem) orderItemTable.getValueAtRow(orderItemTable.getSelectedRow());
+            updateComponents(lastSelectedOrder);
         }
     }
 
