@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
+import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
 import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
@@ -78,9 +79,12 @@ public class MenuBar extends JMenuBar {
         JMenuItem queries = new JMenuItem("Query panel", imageResource.readImage("QueryDialog.TitleIcon", 16));
         queries.addActionListener(showQuerySelected());
 
+        JMenuItem kicadParser = new JMenuItem("KiCad parser", imageResource.readImage("Parser.KiCad", 16));
+        kicadParser.addActionListener(kicadParserSelected());
+
         toolsMenu.add(importFromCsv);
         toolsMenu.add(queries);
-
+        toolsMenu.add(kicadParser);
 
         // Add menus
         add(fileMenu);
@@ -136,6 +140,13 @@ public class MenuBar extends JMenuBar {
         return (e -> {
             QueryDialog dialog = new QueryDialog(application, "Queries");
             dialog.showDialog();
+        });
+    }
+
+    private ActionListener kicadParserSelected() {
+        return (e -> {
+           KiCadDialog dialog = new KiCadDialog(application, "KiCad parser");
+           dialog.showDialog();
         });
     }
 

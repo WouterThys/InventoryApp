@@ -45,7 +45,6 @@ public class KiCadParser extends ProjectParser<KcComponent> {
 
             String usefulData = fileData.substring(startNdx, stopNdx);
 
-            // while...
             try {
                 String block = readBlock(usefulData);
                 Node head = parseBlock(block);

@@ -53,4 +53,12 @@ public abstract class ProjectParser<P extends Component> {
     public void setFileToParse(File fileToParse) {
         this.fileToParse = fileToParse;
     }
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
 }

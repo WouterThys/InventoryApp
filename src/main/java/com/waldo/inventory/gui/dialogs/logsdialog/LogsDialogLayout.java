@@ -31,17 +31,12 @@ public abstract class LogsDialogLayout extends IDialog implements
     ICheckBox showWarnCb;
     ICheckBox showErrorCb;
 
-    JButton clearLogsBtn;
+    private JButton clearLogsBtn;
 
     ILogTableModel logTableModel;
     ITable logTable;
 
-    LogsDetailPanel detailPanel;
-
-    /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Log selectedLog;
+    private LogsDetailPanel detailPanel;
 
     /*
      *                  CONSTRUCTOR
@@ -55,7 +50,7 @@ public abstract class LogsDialogLayout extends IDialog implements
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void updateLogTable(boolean showInfo, boolean showDebug, boolean showWarn, boolean showError) {
+    void updateLogTable(boolean showInfo, boolean showDebug, boolean showWarn, boolean showError) {
         DbManager.db().updateLogs();
         List<Log> logList = DbManager.db().getLogsByType(showInfo, showDebug, showWarn, showError);
         logList.sort(new Log.LogComparator());
@@ -192,6 +187,7 @@ public abstract class LogsDialogLayout extends IDialog implements
         application.beginWait();
         try {
 
+            Log selectedLog;
             if (object != null) {
                 selectedLog = (Log) object;
             } else {

@@ -9,8 +9,6 @@ import java.util.List;
 
 public class KcSheetPath {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
     private List<String> names;
     private List<Date> tStamps;
 
@@ -32,7 +30,6 @@ public class KcSheetPath {
             if (!s.isEmpty()) {
                 long l = new BigInteger(s, 16).longValue();
                 Date date = new Date(l*1000);
-                System.out.println(dateFormat.format(date));
                 this.tStamps.add(date);
             }
         }
