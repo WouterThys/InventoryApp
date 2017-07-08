@@ -46,6 +46,10 @@ public class ProjectTypeLink extends DbObject {
         setFilePath(filePath);
     }
 
+    @Override
+    public DbObject createCopy(DbObject copyInto) {
+        return null;
+    }
 
     @Override
     public ProjectTypeLink createCopy() {

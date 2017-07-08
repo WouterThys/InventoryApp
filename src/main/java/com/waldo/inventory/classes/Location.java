@@ -31,10 +31,15 @@ public class Location extends DbObject {
     }
 
     @Override
-    public Location createCopy() {
-        Location location = new Location();
+    public Location createCopy(DbObject copyInto) {
+        Location location = (Location) copyInto;
         copyBaseFields(location);
         return location;
+    }
+
+    @Override
+    public Location createCopy() {
+        return createCopy(new Location());
     }
 
     public static Location getUnknownLocation() {

@@ -2,9 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextArea;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +18,10 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     ITextField divisionTextField;
     ITextField manufacturerTextField;
     ITextArea descriptionTextArea;
+
+    IStarRater starRater;
+    ICheckBox discourageOrder;
+    ITextArea remarksTa;
 
     JButton dataSheetButton;
     JButton orderButton;

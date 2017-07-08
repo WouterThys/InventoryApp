@@ -51,6 +51,13 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     }
 
+    @Override
+    protected void onCancel() {
+        originalManufacturer.createCopy(selectedManufacturer);
+        selectedManufacturer.setCanBeSaved(true);
+        super.onCancel();
+    }
+
     private void setDetails() {
         if (selectedManufacturer != null) {
             detailName.setText(selectedManufacturer.getName());

@@ -57,11 +57,16 @@ public class Distributor extends DbObject {
     }
 
     @Override
-    public Distributor createCopy() {
-        Distributor distributor = new Distributor();
+    public Distributor createCopy(DbObject copyInto) {
+        Distributor distributor = (Distributor) copyInto;
         copyBaseFields(distributor);
         distributor.setWebsite(getWebsite());
         return distributor;
+    }
+
+    @Override
+    public Distributor createCopy() {
+        return createCopy(new Distributor());
     }
 
     public String getWebsite() {

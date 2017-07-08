@@ -72,11 +72,16 @@ public class Project extends DbObject {
     }
 
     @Override
-    public Product createCopy() {
-        Product product = new Product();
+    public Project createCopy(DbObject copyInto) {
+        Project product = (Project) copyInto;
         copyBaseFields(product);
         // Directories will be fetched from db when the getter is called
         return product;
+    }
+
+    @Override
+    public Project createCopy() {
+        return createCopy(new Project());
     }
 
     /*

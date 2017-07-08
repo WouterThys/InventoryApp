@@ -101,6 +101,13 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         }
     }
 
+    @Override
+    protected void onCancel() {
+        originalPackageType.createCopy(selectedPackageType);
+        selectedPackageType.setCanBeSaved(true);
+        super.onCancel();
+    }
+
     //
     // Gui update
     //

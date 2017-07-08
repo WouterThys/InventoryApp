@@ -56,9 +56,16 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     protected void onNeutral() {
         if (verify()) {
             selectedDistributor.save();
-            selectedDistributor = selectedDistributor.createCopy();
+            originalDistributor = selectedDistributor.createCopy();
             getButtonNeutral().setEnabled(false);
         }
+    }
+
+    @Override
+    protected void onCancel() {
+        originalDistributor.createCopy(selectedDistributor);
+        selectedDistributor.setCanBeSaved(true);
+        super.onCancel();
     }
 
     private void setDetails() {

@@ -1,5 +1,7 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
+import com.waldo.inventory.classes.DbObject;
+
 public class LogSettings extends DbSettingsObject {
 
     private static final String TABLE_NAME = "logsettings";
@@ -36,14 +38,19 @@ public class LogSettings extends DbSettingsObject {
     }
 
     @Override
-    public LogSettings createCopy() {
-        LogSettings copy = new LogSettings();
+    public LogSettings createCopy(DbObject copyInto) {
+        LogSettings copy = (LogSettings) copyInto;
         copyBaseFields(copy);
         copy.setLogInfo(logInfo);
         copy.setLogDebug(logDebug);
         copy.setLogWarn(logWarn);
         copy.setLogError(logError);
         return copy;
+    }
+
+    @Override
+    public LogSettings createCopy() {
+        return createCopy(new LogSettings());
     }
 
     public boolean isLogInfo() {

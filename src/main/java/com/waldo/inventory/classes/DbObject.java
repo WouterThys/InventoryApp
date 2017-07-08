@@ -284,6 +284,8 @@ public abstract class DbObject {
 
     public abstract DbObject createCopy();
 
+    public abstract DbObject createCopy(DbObject copyInto);
+
     public void copyBaseFields(DbObject newObject) {
         newObject.setId(getId());
         newObject.setName(getName());

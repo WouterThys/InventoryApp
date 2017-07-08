@@ -11,8 +11,6 @@ import java.util.List;
 
 public class EditDirectoryDialog extends EditDirectoryDialogLayout {
 
-
-
     public EditDirectoryDialog(Dialog dialog, String title, ProjectDirectory projectDirectory) {
         super(dialog, title);
 

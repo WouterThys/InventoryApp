@@ -94,6 +94,11 @@ public class Log extends DbObject {
     }
 
     @Override
+    public DbObject createCopy(DbObject copyInto) {
+        return null;
+    }
+
+    @Override
     public DbObject createCopy() {
         return null;
     }

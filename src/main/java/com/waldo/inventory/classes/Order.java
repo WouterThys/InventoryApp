@@ -81,8 +81,8 @@ public class Order extends DbObject {
     }
 
     @Override
-    public Order createCopy() {
-        Order order = new Order();
+    public Order createCopy(DbObject copyInto) {
+        Order order = (Order) copyInto;
         copyBaseFields(order);
         order.setDateOrdered(getDateOrdered());
         order.setOrderItems(getOrderItems());
@@ -94,6 +94,11 @@ public class Order extends DbObject {
         order.setTrackingNumber(getTrackingNumber());
 
         return order;
+    }
+
+    @Override
+    public Order createCopy() {
+        return createCopy(new Order());
     }
 
     @Override

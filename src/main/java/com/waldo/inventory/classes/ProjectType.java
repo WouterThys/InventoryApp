@@ -111,8 +111,8 @@ public class ProjectType extends DbObject {
     }
 
     @Override
-    public ProjectType createCopy() {
-        ProjectType projectType = new ProjectType();
+    public ProjectType createCopy(DbObject copyInto) {
+        ProjectType projectType = (ProjectType) copyInto;
         copyBaseFields(projectType);
         projectType.setExtension(getExtension());
         projectType.setOpenAsFolder(isOpenAsFolder());
@@ -123,6 +123,11 @@ public class ProjectType extends DbObject {
         projectType.setParserName(getParserName());
 
         return projectType;
+    }
+
+    @Override
+    public ProjectType createCopy() {
+        return createCopy(new ProjectType());
     }
 
     public String getExtension() {

@@ -4378,3 +4378,975 @@ java.lang.ClassCastException: java.lang.String cannot be cast to com.waldo.inven
 2017-07-08 17:10:39,128 DEBUG Thread-0 jdbc.connection - open connections:  2 (1)
 2017-07-08 17:10:39,128  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
 2017-07-08 17:10:39,129 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-07-08 17:13:02,190  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:13:02,198  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:13:02,924  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,925 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:13:02,940  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:02,940 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:13:02,952  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,953 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:13:02,955  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,955 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:13:02,956  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,956 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:13:02,957  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,958 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:13:02,959  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:02,959 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:13:03,085  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:13:03,087  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,088 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:13:03,089  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:03,090 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:13:03,091  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,094 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:13:03,096  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,097 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:13:03,102  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,103 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:13:03,104  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,104 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:13:03,105  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:13:03,106 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:13:03,143  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:13:03,331  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.117s)
+2017-07-08 17:13:03,332  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:13:03,346  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:13:03,347  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:13:03,348  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:13:14,117  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,118 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:13:14,118  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,119 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 (7)
+2017-07-08 17:13:14,119  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,120 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 (6)
+2017-07-08 17:13:14,120  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,120 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 (5)
+2017-07-08 17:13:14,119  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,120  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,121 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:13:14,121 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:13:14,121  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,122 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:13:14,122  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,122 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:13:14,122  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,123 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:13:14,123  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:13:14,123 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:16:48,989  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:16:48,999  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:16:49,725  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,726 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:16:49,740  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:16:49,740 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:16:49,742  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,743 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:16:49,745  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,746 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:16:49,747  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,747 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:16:49,748  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,748 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:16:49,749  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,749 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:16:49,841  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:16:49,844  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,844 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:16:49,845  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:16:49,845 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:16:49,846  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,846 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:16:49,847  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,847 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:16:49,848  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,849 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:16:49,849  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,850 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:16:49,850  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:16:49,851 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:16:49,881  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:16:50,069  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.129s)
+2017-07-08 17:16:50,070  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:16:50,088  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:16:50,089  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:16:50,090  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:16:58,426 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Start save.
+2017-07-08 17:16:58,543 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Connection is open
+2017-07-08 17:16:58,776 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Connection was open for: 224ms
+2017-07-08 17:16:59,028 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.database.LogManager - Start save.
+2017-07-08 17:16:59,137 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.database.LogManager - Connection is open
+2017-07-08 17:16:59,353 DEBUG SwingWorker-pool-1-thread-5 com.waldo.inventory.database.LogManager - Connection was open for: 207ms
+2017-07-08 17:16:59,470 DEBUG AWT-EventQueue-0 com.waldo.inventory.database.LogManager - Updated object in items
+2017-07-08 17:16:59,612 DEBUG AWT-EventQueue-0 com.waldo.inventory.database.LogManager - Updated object in orders
+2017-07-08 17:17:27,782  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,782 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:17:27,783  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,783 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:17:27,790  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,790 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:17:27,790  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,790 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:17:27,791  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,791 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 12 (5)
+2017-07-08 17:17:27,792  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,792 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:17:27,792  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,792 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:17:27,793  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,793 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:17:27,793  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,793 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:17:27,794  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:17:27,794 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:20:55,042  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:20:55,048  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:20:55,841  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,842 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:20:55,860  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:20:55,861 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:20:55,863  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,863 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:20:55,865  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,867 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:20:55,868  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,869 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:20:55,870  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,870 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:20:55,871  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,871 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:20:55,977  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:20:55,979  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,980 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:20:55,986  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:20:55,986 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:20:55,987  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,991 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:20:55,993  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,997 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:20:55,998  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,998 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:20:55,999  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:55,999 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:20:56,000  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:20:56,001 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:20:56,035  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:20:56,227  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.115s)
+2017-07-08 17:20:56,228  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:20:56,246  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:20:56,249  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:20:56,252  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:21:26,566  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,566 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:21:26,567  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,567 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:21:26,567  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,568 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:21:26,568  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,568 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:21:26,569  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,569  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,569 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:21:26,569 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:21:26,571  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,571 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:21:26,571  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,572 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:21:26,572  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,572 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:21:26,572  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:26,572 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:21:39,952  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:21:39,959  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:21:40,678  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,679 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:21:40,691  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:40,691 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:21:40,693  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,693 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:21:40,695  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,696 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:21:40,696  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,697 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:21:40,697  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,698 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:21:40,699  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,699 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:21:40,814  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:21:40,816  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,817 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:21:40,818  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:40,818 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:21:40,820  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,822 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:21:40,824  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,825 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:21:40,830  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,831 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:21:40,831  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,832 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:21:40,833  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:21:40,833 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:21:40,885  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:21:41,061  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.106s)
+2017-07-08 17:21:41,063  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:21:41,074  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:21:41,075  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:21:41,077  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:21:58,660  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,661 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:21:58,661  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,661 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:21:58,662  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,662 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:21:58,662  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,662 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:21:58,663  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,663 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 12 (5)
+2017-07-08 17:21:58,665  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,665 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:21:58,665  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,666 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:21:58,666  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,666 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:21:58,667  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,667 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:21:58,667  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:21:58,667 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:22:06,866  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:22:06,877  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:22:07,686  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,687 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:22:07,700  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:22:07,701 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:22:07,703  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,703 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:22:07,705  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,705 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:22:07,706  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,707 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:22:07,708  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,709 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:22:07,710  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,710 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:22:07,851  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:22:07,855  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,855 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:22:07,856  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:22:07,857 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:22:07,858  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,861 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:22:07,863  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,864 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:22:07,865  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,866 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:22:07,867  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,868 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:22:07,869  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:22:07,869 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:22:07,910  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:22:08,064  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.086s)
+2017-07-08 17:22:08,065  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:22:08,086  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:22:08,095  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:22:08,096  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:23:23,771  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,771  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,772 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:23:23,772 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:23:23,773  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,773 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 (7)
+2017-07-08 17:23:23,774  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,774  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,774 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 10 (5)
+2017-07-08 17:23:23,774 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 (5)
+2017-07-08 17:23:23,775  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,775  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,775 DEBUG Thread-1 jdbc.connection - open connections:  2 8 9 (3)
+2017-07-08 17:23:23,775 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 (3)
+2017-07-08 17:23:23,775  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,776  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,776 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:23:23,776 DEBUG Thread-0 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:23:23,776  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:23:23,777 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:24:57,372  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:24:57,376  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:24:58,139  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,140 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:24:58,153  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:24:58,154 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:24:58,155  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,156 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:24:58,157  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,158 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:24:58,158  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,159 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:24:58,159  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,170 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:24:58,171  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,172 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:24:58,304  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:24:58,306  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,307 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:24:58,307  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:24:58,308 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:24:58,308  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,309 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:24:58,309  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,310 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:24:58,311  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,311 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:24:58,312  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,313 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:24:58,314  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:24:58,314 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:24:58,340  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:24:58,587  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.174s)
+2017-07-08 17:24:58,588  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:24:58,601  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:24:58,602  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:24:58,603  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:25:14,622  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,623 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:25:14,623  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,624 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 (7)
+2017-07-08 17:25:14,623  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,624  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,624 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 10 11 (6)
+2017-07-08 17:25:14,625 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 (6)
+2017-07-08 17:25:14,625  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,626  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,626 DEBUG Thread-1 jdbc.connection - open connections:  2 8 9 10 (4)
+2017-07-08 17:25:14,626 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 (4)
+2017-07-08 17:25:14,626  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,627  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,627 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:25:14,627 DEBUG Thread-0 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:25:14,627  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,627 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:25:14,628  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:25:14,628 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:27:06,475  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:27:06,483  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:27:07,347  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,352 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:27:07,367  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:07,377 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:27:07,379  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,383 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:27:07,385  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,386 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:27:07,387  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,387 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:27:07,388  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,388 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:27:07,389  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,390 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:27:07,545  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:27:07,547  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,548 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:27:07,548  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:07,548 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:27:07,549  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,549 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:27:07,550  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,550 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:27:07,551  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,551 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:27:07,552  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,553 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:27:07,554  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:27:07,554 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:27:07,577  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:27:07,814  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.163s)
+2017-07-08 17:27:07,817  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:27:07,832  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:27:07,833  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:27:07,835  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:27:54,490  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,491 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:27:54,491  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,491 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:27:54,492  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,492 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:27:54,493  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,493 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:27:54,493  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,494 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 12 (5)
+2017-07-08 17:27:54,500  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,500 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:27:54,501  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,501 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:27:54,501  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,502 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:27:54,502  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,502 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:27:54,502  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:27:54,503 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:28:55,808  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:28:55,812  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:28:56,554  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,555 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:28:56,569  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:28:56,569 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:28:56,571  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,572 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:28:56,573  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,574 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:28:56,575  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,575 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:28:56,576  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,576 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:28:56,577  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,578 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:28:56,662  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:28:56,679  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,680 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:28:56,680  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:28:56,680 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:28:56,682  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,683 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:28:56,684  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,684 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:28:56,685  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,685 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:28:56,686  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,690 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:28:56,691  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:28:56,692 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:28:56,710  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:28:56,982  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.191s)
+2017-07-08 17:28:56,984  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:28:57,005  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:28:57,012  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:28:57,013  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:29:21,854  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,855 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:29:21,855  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,855 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:29:21,856  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,856 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:29:21,856  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,857 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:29:21,857  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,857 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 12 (5)
+2017-07-08 17:29:21,860  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,861 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:29:21,861  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,861 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:29:21,862  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,862 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:29:21,862  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,863 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:29:21,863  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:21,863 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:29:25,625  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:29:25,630  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:29:26,401  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,402 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:29:26,417  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:26,417 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:29:26,419  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,420 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:29:26,422  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,422 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:29:26,423  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,423 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:29:26,424  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,425 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:29:26,425  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,426 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:29:26,536  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:29:26,538  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,538 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:29:26,539  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:26,539 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:29:26,540  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,540 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:29:26,541  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,541 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:29:26,542  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,542 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:29:26,549  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,550 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:29:26,551  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:29:26,552 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:29:26,579  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:29:26,826  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.179s)
+2017-07-08 17:29:26,827  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:29:26,844  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:29:26,845  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:29:26,847  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:29:48,265  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,265  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,265 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:29:48,266 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:29:48,266  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,267  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,267 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 17:29:48,267 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 17:29:48,267  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,268  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,268 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 17:29:48,268 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 17:29:48,268  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,269  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,269 DEBUG Thread-1 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 17:29:48,269 DEBUG Thread-0 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 17:29:48,269  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,270  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:29:48,270 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:29:48,270 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-07-08 17:30:32,569  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:30:32,576  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:30:33,350  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,351 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:30:33,367  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:33,367 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:30:33,369  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,370 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:30:33,371  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,372 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:30:33,373  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,373 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:30:33,374  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,378 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:30:33,379  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,379 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:30:33,513  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:30:33,516  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,516 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:30:33,518  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:33,518 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:30:33,520  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,522 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:30:33,524  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,525 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:30:33,526  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,526 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:30:33,532  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,532 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:30:33,533  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:30:33,533 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:30:33,571  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:30:33,786  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.123s)
+2017-07-08 17:30:33,788  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:30:33,801  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:30:33,802  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:30:33,803  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:30:56,772  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,772 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:30:56,772  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,773 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:30:56,773  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,773 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:30:56,774  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,774  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,774 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 (5)
+2017-07-08 17:30:56,774 DEBUG Thread-1 jdbc.connection - open connections:  2 8 9 10 11 (5)
+2017-07-08 17:30:56,774  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,776 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:30:56,776  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,776 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:30:56,776  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,777 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:30:56,777  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,777 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:30:56,777  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:30:56,778 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:35:28,376  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:35:28,389  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:35:29,244  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,250 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:35:29,265  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:29,266 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:35:29,268  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,268 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:35:29,270  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,271 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:35:29,272  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,272 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:35:29,273  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,274 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:35:29,275  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,275 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:35:29,407  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:35:29,410  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,410 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:35:29,411  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:29,411 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:35:29,412  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,413 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:35:29,414  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,414 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:35:29,415  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,416 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:35:29,417  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,417 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:35:29,418  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:29,418 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:35:29,443  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:35:29,685  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.149s)
+2017-07-08 17:35:29,687  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:35:29,700  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:35:29,701  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:35:29,703  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:35:45,546  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,549  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,551 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:35:45,551 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 17:35:45,551  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,552  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,552 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 17:35:45,552 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 17:35:45,553  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,553  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,553 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 17:35:45,553 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 17:35:45,554  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,554  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,554 DEBUG Thread-0 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 17:35:45,554 DEBUG Thread-1 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 17:35:45,554  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,555  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:45,555 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-07-08 17:35:45,555 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:35:50,814  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:35:50,826  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:35:51,658  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,663 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:35:51,682  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:51,682 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:35:51,684  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,685 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:35:51,686  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,687 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:35:51,688  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,688 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:35:51,689  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,689 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:35:51,690  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,691 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:35:51,809  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:35:51,813  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,813 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:35:51,814  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:35:51,814 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:35:51,815  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,815 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:35:51,816  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,816 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:35:51,817  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,818 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:35:51,819  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,819 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:35:51,820  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:35:51,820 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:35:51,842  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:35:52,068  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.141s)
+2017-07-08 17:35:52,070  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:35:52,095  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:35:52,096  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:35:52,098  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:36:25,294  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,295 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:36:25,295  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,295 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:36:25,296  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,296  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,296 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 10 11 (6)
+2017-07-08 17:36:25,296 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 (6)
+2017-07-08 17:36:25,297  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,297  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,297 DEBUG Thread-1 jdbc.connection - open connections:  2 8 9 10 (4)
+2017-07-08 17:36:25,297 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 (4)
+2017-07-08 17:36:25,298  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,298  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,298 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:36:25,298 DEBUG Thread-0 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:36:25,299  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,299 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:36:25,299  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:36:25,299 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 17:38:02,475  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 17:38:02,482  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 17:38:03,303  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,308 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 17:38:03,323  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:03,324 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 17:38:03,326  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,326 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 17:38:03,328  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,329 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 17:38:03,329  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,330 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 17:38:03,331  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,331 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 17:38:03,332  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,333 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:38:03,447  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 17:38:03,450  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,450 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 17:38:03,451  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:03,451 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 17:38:03,452  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,452 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 17:38:03,453  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,454 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 17:38:03,454  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,455 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 17:38:03,456  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,456 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 17:38:03,457  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 17:38:03,457 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 17:38:03,492  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 17:38:03,744  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.151s)
+2017-07-08 17:38:03,745  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:38:03,759  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 17:38:03,760  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 17:38:03,761  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 17:38:38,667  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,667 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 12 (9)
+2017-07-08 17:38:38,667  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,668 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 11 12 (8)
+2017-07-08 17:38:38,668  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,668 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 11 12 (7)
+2017-07-08 17:38:38,669  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,669 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 11 12 (6)
+2017-07-08 17:38:38,669  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,669 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 11 12 (5)
+2017-07-08 17:38:38,691  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,692 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 11 (4)
+2017-07-08 17:38:38,692  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,693 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 17:38:38,693  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,693 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 17:38:38,694  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,694 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 17:38:38,695  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 17:38:38,695 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 18:01:10,886  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 18:01:10,954  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 18:01:13,242  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,246 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 18:01:13,259  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:01:13,259 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 18:01:13,261  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,262 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 18:01:13,263  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,264 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 18:01:13,265  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,265 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 18:01:13,266  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,266 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 18:01:13,267  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,267 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:01:13,405  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 18:01:13,416  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,417 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 18:01:13,417  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:01:13,418 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:01:13,418  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,419 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 18:01:13,420  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,420 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 18:01:13,421  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,421 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 18:01:13,422  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,422 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 18:01:13,423  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:01:13,423 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 18:01:13,445  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 18:01:13,718  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.211s)
+2017-07-08 18:01:13,719  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:01:13,728  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 18:01:13,729  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 18:01:13,730  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:02:05,771  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,771  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,772 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:02:05,772 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:02:05,773  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,773  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,773 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 18:02:05,774 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 18:02:05,774  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,774  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,774 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 18:02:05,775 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 18:02:05,775  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,775  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,775 DEBUG Thread-0 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 18:02:05,775 DEBUG Thread-1 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 18:02:05,776  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,776  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:02:05,776 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-07-08 18:02:05,776 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 18:05:31,065  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 18:05:31,072  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 18:05:31,832  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,833 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 18:05:31,849  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:05:31,849 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 18:05:31,851  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,852 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 18:05:31,853  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,854 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 18:05:31,855  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,855 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 18:05:31,856  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,856 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 18:05:31,857  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,857 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:05:31,967  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 18:05:31,981  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,982 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 18:05:31,982  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:05:31,983 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:05:31,983  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,984 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 18:05:31,984  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,985 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 18:05:31,986  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,986 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 18:05:31,990  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,990 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 18:05:31,991  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:05:31,991 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 18:05:32,027  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 18:05:32,195  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.100s)
+2017-07-08 18:05:32,200  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:05:32,211  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 18:05:32,212  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 18:05:32,214  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:05:57,841 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Start save.
+2017-07-08 18:05:57,966 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Connection is open
+2017-07-08 18:05:58,284 DEBUG SwingWorker-pool-1-thread-1 com.waldo.inventory.database.LogManager - Connection was open for: 317ms
+2017-07-08 18:05:58,409 DEBUG AWT-EventQueue-0 com.waldo.inventory.database.LogManager - Updated object in manufacturers
+2017-07-08 18:06:05,074  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,074  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,075 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:06:05,074 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:06:05,076  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,076 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 18:06:05,076  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,076 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 10 (5)
+2017-07-08 18:06:05,077  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,077 DEBUG Thread-0 jdbc.connection - open connections:  2 8 9 10 (4)
+2017-07-08 18:06:05,077  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,077 DEBUG Thread-0 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 18:06:05,075  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,078 DEBUG Thread-1 jdbc.connection - open connections:  8 9 10 (3)
+2017-07-08 18:06:05,078  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,079 DEBUG Thread-1 jdbc.connection - open connections:  8 9 (2)
+2017-07-08 18:06:05,079  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,079 DEBUG Thread-1 jdbc.connection - open connections:  8 (1)
+2017-07-08 18:06:05,079  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:05,080 DEBUG Thread-1 jdbc.connection - open connections:  none
+2017-07-08 18:06:12,257  INFO main com.waldo.inventory.database.LogManager - 
+ 	 Starting application 
+ *******************************************************************
+
+2017-07-08 18:06:12,262  INFO main com.waldo.inventory.database.LogManager - Start application at /home/waldo/Documents/Geeken/Projects/InventoryApp/
+2017-07-08 18:06:13,031  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,033 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  1 (1)
+2017-07-08 18:06:13,047  INFO AWT-EventQueue-0 jdbc.connection - 1. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:13,048 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  none
+2017-07-08 18:06:13,050  INFO AWT-EventQueue-0 jdbc.connection - 2. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,051 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 (1)
+2017-07-08 18:06:13,052  INFO AWT-EventQueue-0 jdbc.connection - 3. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,053 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 (2)
+2017-07-08 18:06:13,054  INFO AWT-EventQueue-0 jdbc.connection - 4. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,054 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 (3)
+2017-07-08 18:06:13,055  INFO AWT-EventQueue-0 jdbc.connection - 5. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,056 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 (4)
+2017-07-08 18:06:13,056  INFO AWT-EventQueue-0 jdbc.connection - 6. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,057 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:06:13,176  INFO AWT-EventQueue-0 org.flywaydb.core.internal.util.VersionPrinter - Flyway 4.1.1 by Boxfuse
+2017-07-08 18:06:13,188  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,189 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 7 (6)
+2017-07-08 18:06:13,189  INFO AWT-EventQueue-0 jdbc.connection - 7. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:06:13,190 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 (5)
+2017-07-08 18:06:13,191  INFO AWT-EventQueue-0 jdbc.connection - 8. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,194 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 (6)
+2017-07-08 18:06:13,195  INFO AWT-EventQueue-0 jdbc.connection - 9. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,195 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 (7)
+2017-07-08 18:06:13,196  INFO AWT-EventQueue-0 jdbc.connection - 10. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,197 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 (8)
+2017-07-08 18:06:13,197  INFO AWT-EventQueue-0 jdbc.connection - 11. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,198 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 (9)
+2017-07-08 18:06:13,199  INFO AWT-EventQueue-0 jdbc.connection - 12. Connection opened  org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+2017-07-08 18:06:13,199 DEBUG AWT-EventQueue-0 jdbc.connection - open connections:  2 3 4 5 6 8 9 10 11 12 (10)
+2017-07-08 18:06:13,220  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.DbSupportFactory - Database: jdbc:sqlite:inventory.db (SQLite 3.0)
+2017-07-08 18:06:13,413  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbValidate - Successfully validated 47 migrations (execution time 00:00.119s)
+2017-07-08 18:06:13,415  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:06:13,435  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Current version of schema "main": 21.1
+2017-07-08 18:06:13,436  INFO AWT-EventQueue-0 org.flywaydb.core.internal.command.DbMigrate - Schema "main" is up to date. No migration necessary.
+2017-07-08 18:06:13,440  INFO AWT-EventQueue-0 org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport - SQLite does not support setting the schema. Default schema NOT changed to main
+2017-07-08 18:08:24,558  INFO Thread-1 jdbc.connection - 12. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,558  INFO Thread-0 jdbc.connection - 6. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,559 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:08:24,559 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 5 8 9 10 11 (8)
+2017-07-08 18:08:24,560  INFO Thread-1 jdbc.connection - 11. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,560  INFO Thread-0 jdbc.connection - 5. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,560 DEBUG Thread-1 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 18:08:24,560 DEBUG Thread-0 jdbc.connection - open connections:  2 3 4 8 9 10 (6)
+2017-07-08 18:08:24,561  INFO Thread-1 jdbc.connection - 10. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,561  INFO Thread-0 jdbc.connection - 4. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,561 DEBUG Thread-1 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 18:08:24,561 DEBUG Thread-0 jdbc.connection - open connections:  2 3 8 9 (4)
+2017-07-08 18:08:24,562  INFO Thread-1 jdbc.connection - 9. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,562  INFO Thread-0 jdbc.connection - 3. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,562 DEBUG Thread-1 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 18:08:24,562 DEBUG Thread-0 jdbc.connection - open connections:  2 8 (2)
+2017-07-08 18:08:24,562  INFO Thread-1 jdbc.connection - 8. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,563  INFO Thread-0 jdbc.connection - 2. Connection closed  org.apache.commons.dbcp.PoolingConnection.close(PoolingConnection.java:93)
+2017-07-08 18:08:24,563 DEBUG Thread-0 jdbc.connection - open connections:  none
+2017-07-08 18:08:24,563 DEBUG Thread-1 jdbc.connection - open connections:  none

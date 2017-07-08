@@ -47,12 +47,18 @@ public class PackageType extends DbObject {
         return super.hasMatch(searchTerm);
     }
 
+
     @Override
-    public PackageType createCopy() {
-        PackageType packageType = new PackageType();
+    public PackageType createCopy(DbObject copyInto) {
+        PackageType packageType = (PackageType) copyInto;
         copyBaseFields(packageType);
         packageType.setDescription(getDescription());
         return packageType;
+    }
+
+    @Override
+    public PackageType createCopy() {
+        return createCopy(new PackageType());
     }
 
     public static PackageType createDummyPackageType() {

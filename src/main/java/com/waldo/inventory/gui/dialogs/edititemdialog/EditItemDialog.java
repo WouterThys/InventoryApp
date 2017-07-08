@@ -85,9 +85,9 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     @Override
     protected void onCancel() {
-        newItem = null;
-        dialogResult = CANCEL;
-        dispose();
+        originalItem.createCopy(newItem);
+        newItem.setCanBeSaved(true);
+        super.onCancel();
     }
 
     private boolean checkChange() {

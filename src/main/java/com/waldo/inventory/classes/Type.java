@@ -30,11 +30,16 @@ public class Type extends DbObject {
     }
 
     @Override
-    public Type createCopy() {
-        Type type = new Type();
+    public Type createCopy(DbObject copyInto) {
+        Type type = (Type) copyInto;
         copyBaseFields(type);
         type.setProductId(getProductId());
         return type;
+    }
+
+    @Override
+    public Type createCopy() {
+        return createCopy(new Type());
     }
 
     public static Type getUnknownType() {

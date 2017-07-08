@@ -14,10 +14,15 @@ public class Category extends DbObject {
     }
 
     @Override
-    public Category createCopy() {
-        Category category = new Category();
+    public Category createCopy(DbObject copyInto) {
+        Category category = (Category) copyInto;
         copyBaseFields(category);
         return category;
+    }
+
+    @Override
+    public Category createCopy() {
+        return createCopy(new Category());
     }
 
     public static Category getUnknownCategory() {

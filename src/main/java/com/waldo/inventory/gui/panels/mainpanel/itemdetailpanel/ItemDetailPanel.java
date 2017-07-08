@@ -84,8 +84,20 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void orderItem(Item item) {
-        OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item);
-        dialog.showDialog();
+        int result = JOptionPane.YES_OPTION;
+        if (item.isDiscourageOrder()) {
+            result = JOptionPane.showConfirmDialog(
+                    application,
+                    "This item is marked to discourage new orders, \n do you really want to order it?",
+                    "Discouraged to order",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+        if (result == JOptionPane.YES_OPTION) {
+            OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item);
+            dialog.showDialog();
+        }
     }
 
     private void updateIcon(Item item) {

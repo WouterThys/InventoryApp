@@ -1,5 +1,7 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
+import com.waldo.inventory.classes.DbObject;
+
 public class FileSettings extends DbSettingsObject {
 
     private static final String TABLE_NAME = "filesettings";
@@ -45,8 +47,8 @@ public class FileSettings extends DbSettingsObject {
     }
 
     @Override
-    public FileSettings createCopy() {
-        FileSettings copy = new FileSettings();
+    public FileSettings createCopy(DbObject copyInto) {
+        FileSettings copy = (FileSettings) copyInto;
         copyBaseFields(copy);
         copy.setImgDistributorsPath(imgDistributorsPath);
         copy.setImgDivisionsPath(imgDivisionsPath);
@@ -56,6 +58,11 @@ public class FileSettings extends DbSettingsObject {
         copy.setImgProjectsPath(imgProjectsPath);
         copy.setFileOrdersPath(fileOrdersPath);
         return copy;
+    }
+
+    @Override
+    public FileSettings createCopy() {
+        return createCopy(new FileSettings());
     }
 
 

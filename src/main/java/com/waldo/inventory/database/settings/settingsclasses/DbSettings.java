@@ -1,5 +1,6 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.Application;
 
 public class DbSettings extends DbSettingsObject {
@@ -54,8 +55,8 @@ public class DbSettings extends DbSettingsObject {
     }
 
     @Override
-    public DbSettings createCopy() {
-        DbSettings copy = new DbSettings();
+    public DbSettings createCopy(DbObject copyInto) {
+        DbSettings copy = (DbSettings) copyInto;
         copyBaseFields(copy);
         copy.setDbFile(dbFile);
         copy.setDbUserName(dbUserName);
@@ -68,6 +69,11 @@ public class DbSettings extends DbSettingsObject {
         copy.setDbLogAbandoned(dbLogAbandoned);
         copy.setDbRemoveAbandoned(dbRemoveAbandoned);
         return copy;
+    }
+
+    @Override
+    public DbSettings createCopy() {
+        return createCopy(new DbSettings());
     }
 
 

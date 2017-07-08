@@ -62,11 +62,16 @@ public class Manufacturer extends DbObject {
     }
 
     @Override
-    public Manufacturer createCopy() {
-        Manufacturer manufacturer = new Manufacturer();
+    public Manufacturer createCopy(DbObject copyInto) {
+        Manufacturer manufacturer = (Manufacturer) copyInto;
         copyBaseFields(manufacturer);
         manufacturer.setWebsite(getWebsite());
         return manufacturer;
+    }
+
+    @Override
+    public Manufacturer createCopy() {
+        return createCopy(new Manufacturer());
     }
 
     public String getWebsite() {

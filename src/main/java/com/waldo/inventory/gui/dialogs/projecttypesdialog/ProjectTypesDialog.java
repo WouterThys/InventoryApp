@@ -56,6 +56,13 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     }
 
+    @Override
+    protected void onCancel() {
+        originalProjectType.createCopy(selectedProjectType);
+        selectedProjectType.setCanBeSaved(true);
+        super.onCancel();
+    }
+
     private void setDetails() {
         if (selectedProjectType != null) {
             detailName.setText(selectedProjectType.getName());

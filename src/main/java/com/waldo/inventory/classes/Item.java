@@ -182,9 +182,9 @@ public class Item extends DbObject {
         return false;
     }
 
-    @Override
-    public Item createCopy() {
-        Item item = new Item();
+        @Override
+    public Item createCopy(DbObject copyInto) {
+        Item item = (Item) copyInto;
         copyBaseFields(item);
 
         item.setDescription(getDescription());
@@ -208,6 +208,11 @@ public class Item extends DbObject {
         item.setRemarks(getRemarks());
 
         return item;
+    }
+
+    @Override
+    public Item createCopy() {
+        return createCopy(new Item());
     }
 
     @Override

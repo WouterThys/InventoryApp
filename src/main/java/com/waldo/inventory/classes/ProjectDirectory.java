@@ -90,12 +90,17 @@ public class ProjectDirectory extends DbObject {
     }
 
     @Override
-    public ProjectDirectory createCopy() {
-        ProjectDirectory projectDirectory = new ProjectDirectory();
+    public ProjectDirectory createCopy(DbObject copyInto) {
+        ProjectDirectory projectDirectory = (ProjectDirectory) copyInto;
         copyBaseFields(projectDirectory);
         projectDirectory.setDirectory(getDirectory());
         projectDirectory.setProjectId(getProjectId());
         return projectDirectory;
+    }
+
+    @Override
+    public ProjectDirectory createCopy() {
+        return createCopy(new ProjectDirectory());
     }
 
     /*
