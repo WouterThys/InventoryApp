@@ -196,25 +196,25 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void addItemToOrder(Item item, Order order) {
+        beginWait();
         try {
-            beginWait();
             // Set tab
             tabbedPane.setSelectedIndex(TAB_ORDERS);
 
             // Update item
             item.setOrderState(Statics.ItemOrderStates.PLANNED);
             item.save();
-
-            // Add
-            orderPanel.addItemToOrder(item, order);
         } finally {
             endWait();
         }
+
+        // Add
+        orderPanel.addItemToOrder(item, order);
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+        beginWait();
         try {
-            beginWait();
             // Set tab
             tabbedPane.setSelectedIndex(TAB_ORDERS);
 
@@ -223,12 +223,11 @@ public class Application extends JFrame implements ChangeListener {
                 item.setOrderState(Statics.ItemOrderStates.PLANNED);
                 item.save();
             }
-
-            // Add
-            orderPanel.addItemsToOrder(itemsToOrder, order);
         } finally {
             endWait();
         }
+        // Add
+        orderPanel.addItemsToOrder(itemsToOrder, order);
     }
 
     public boolean isUpdating() {

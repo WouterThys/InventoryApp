@@ -3,15 +3,24 @@ package com.waldo.inventory.gui.panels.projectpanel;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ProjectPanel extends ProjectPanelLayout {
+
+    private static final LogManager LOG = LogManager.LOG(ProjectPanel.class);
 
     private DbObjectChangedListener<Project> projectsListener;
     private DbObjectChangedListener<ProjectDirectory> projectDirectoryListener;
@@ -143,6 +152,31 @@ public class ProjectPanel extends ProjectPanelLayout {
             application.clearSearch();
 
             updateComponents(selectedProject);
+        }
+    }
+
+    //
+    // Project tile clicked
+    //
+    @Override
+    public void onGridComponentClick(ProjectType clickedObject, File file) {
+        selectedProjectType = clickedObject;
+        lastProjectFile = file;
+        updateComponents(selectedProject);
+    }
+
+    //
+    // Launch clicked in details panel
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (lastProjectFile != null && selectedProjectType != null) {
+            try {
+                Status().setMessage("Opening file: " + lastProjectFile.getAbsolutePath());
+                selectedProjectType.launch(lastProjectFile);
+            } catch (IOException e1) {
+                LOG.error("Error opening project.", e1);
+            }
         }
     }
 }

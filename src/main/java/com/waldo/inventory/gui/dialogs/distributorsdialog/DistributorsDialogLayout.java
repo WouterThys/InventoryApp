@@ -243,8 +243,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object object) {
+        application.beginWait();
         try {
-            application.beginWait();
             // Get all
             distributorDefaultListModel.removeAllElements();
             for (Distributor d : DbManager.db().getDistributors()) {

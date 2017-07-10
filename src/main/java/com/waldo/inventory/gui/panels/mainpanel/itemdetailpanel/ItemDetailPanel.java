@@ -40,6 +40,10 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         }
     }
 
+    public void setRemarksPanelVisible(boolean visible) {
+        remarksPanel.setVisible(visible);
+    }
+
     public void setOrderButtonVisible(boolean visible) {
         orderButton.setVisible(visible);
     }
@@ -117,7 +121,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
                 }
             }
         }
-        divisionTextField.setText(builder.toString());
+        divisionTa.setText(builder.toString());
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
             manufacturerTextField.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
@@ -126,6 +130,10 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         }
 
         descriptionTextArea.setText(item.getDescription());
+
+        starRater.setRating(item.getRating());
+        discourageOrder.setSelected(item.isDiscourageOrder());
+        remarksTa.setText(item.getRemarks());
     }
 
     private void updateButtons(Item item) {

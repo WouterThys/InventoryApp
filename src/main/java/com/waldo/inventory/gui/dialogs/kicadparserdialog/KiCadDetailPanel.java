@@ -55,7 +55,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
         if (selectedComponent != null) {
             refTf.setText(selectedComponent.getRef());
             valueTf.setText(selectedComponent.getValue());
-            footprintTf.setText(selectedComponent.getValue());
+            footprintTf.setText(selectedComponent.getFootprint());
             lsLibTf.setText(selectedComponent.getLibSource().getLib());
             lsPartTf.setText(selectedComponent.getLibSource().getPart());
             tStampTf.setText(sdf.format(selectedComponent.gettStamp()));

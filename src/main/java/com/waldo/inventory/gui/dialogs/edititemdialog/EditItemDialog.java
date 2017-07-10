@@ -80,6 +80,8 @@ public class EditItemDialog extends EditItemDialogLayout {
             newItem.save();
             originalItem = newItem.createCopy();
             getButtonNeutral().setEnabled(false);
+            // Don't call update for just one component
+            componentPanel.updateRating(newItem.getRating());
         }
     }
 

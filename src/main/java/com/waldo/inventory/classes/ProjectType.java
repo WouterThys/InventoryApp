@@ -4,6 +4,9 @@ import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -64,6 +67,14 @@ public class ProjectType extends DbObject {
         pt.setId(UNKNOWN_ID);
         pt.setCanBeSaved(false);
         return pt;
+    }
+
+    public void launch(File file) throws IOException {
+        if (useDefaultLauncher) {
+            Desktop.getDesktop().open(file);
+        } else {
+            Process p = Runtime.getRuntime().exec(launcherPath + " " + file.getAbsolutePath());
+        }
     }
 
     @Override

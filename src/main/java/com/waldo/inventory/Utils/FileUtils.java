@@ -295,4 +295,33 @@ public class FileUtils {
         return files;
     }
 
+    public static String formatFileNameString(String text) {
+        String result = text;
+        if (result.length() > 12) {
+            String[] split = result.split("(?=\\p{Lu})|(?=\\.)|(?<=\\_)|(?<=\\-)");
+            if (split.length > 1) {
+                int middle = split.length / 2;
+                String first = "", second = "";
+                for (int i = 0; i < middle; i++) {
+                    first += split[i];
+                }
+                for (int i = middle; i < split.length; i++) {
+                    second += split[i];
+                }
+
+                if (first.length() > 12) {
+                    first = formatFileNameString(first);
+                }
+
+                if (second.length() > 12) {
+                    second = formatFileNameString(second);
+                }
+
+                result = first + "\n" + second;
+            }
+        }
+
+        return result;
+    }
+
 }

@@ -11,11 +11,13 @@ import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
+import com.waldo.inventory.gui.panels.projectpanel.projecttypedetails.ProjectTypeDetails;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,8 +27,10 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public abstract class ProjectPanelLayout extends JPanel implements
         GuiInterface,
+        ActionListener,
         TreeSelectionListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        IGridPanel.GridComponentClicked<ProjectType> {
 
     private static final LogManager LOG = LogManager.LOG(ProjectPanelLayout.class);
 
@@ -38,10 +42,9 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
-
-    IGridPanel<ProjectType, ArrayList<File>> typePanel;
-
+    private IGridPanel<ProjectType, File, ArrayList<File>> typePanel;
     ProjectDetailsPanel detailsPanel;
+    ProjectTypeDetails projectTypeDetails;
 
     /*
      *                  VARIABLES
@@ -49,6 +52,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
     Application application;
     Project selectedProject;
     ProjectDirectory selectedDirectory;
+    ProjectType selectedProjectType;
+    File lastProjectFile;
 
     /*
     *                  CONSTRUCTOR
@@ -205,9 +210,11 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
         // Type panel
         typePanel = new IGridPanel<>();
+        typePanel.addOnGridComponentClickedListener(this);
 
         // Detail panel
         detailsPanel = new ProjectDetailsPanel(application);
+        projectTypeDetails = new ProjectTypeDetails(application, this);
     }
 
     @Override
@@ -230,7 +237,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
         // Details panel
         JPanel infoPanel = new JPanel(new BorderLayout());
         //infoPanel.setPreferredSize(new Dimension(getPreferredSize().width, 200));
-        infoPanel.add(detailsPanel, BorderLayout.WEST);
+        infoPanel.add(detailsPanel, BorderLayout.CENTER);
+        infoPanel.add(projectTypeDetails, BorderLayout.EAST);
         infoPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(2,3,2,3),
                 BorderFactory.createLineBorder(Color.GRAY, 1)
@@ -263,6 +271,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             // Details
             detailsPanel.updateComponents(selectedProject);
+            projectTypeDetails.updateComponents(selectedProjectType);
         } finally {
             application.endWait();
         }

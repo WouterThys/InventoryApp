@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.parser.*;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.classes.OrderItem;
@@ -12,6 +13,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.*;
 import java.awt.*;
+import java.awt.Component;
 import java.awt.event.*;
 import java.text.ParseException;
 import java.util.EventObject;
@@ -113,6 +115,21 @@ public class ITableEditors {
                     }
                 }
 
+                // Colors
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                Color cbg =  c.getBackground();
+
+                if (row %2 == 1 || isSelected) {
+                    lblIcon.setBackground(cbg);
+                    lblText.setBackground(cbg);
+                } else {
+                    lblIcon.setBackground(Color.WHITE);
+                    lblText.setBackground(Color.WHITE);
+                }
+
+                lblIcon.setOpaque(true);
+                lblText.setOpaque(false);
+
                 lblIcon.setLayout(new GridBagLayout());
                 lblIcon.add(lblText);
                 return lblIcon;
@@ -152,6 +169,21 @@ public class ITableEditors {
                         break;
                 }
 
+                // Colors
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                Color cbg =  c.getBackground();
+
+                if (row %2 == 1 || isSelected) {
+                    lblIcon.setBackground(cbg);
+                    lblText.setBackground(cbg);
+                } else {
+                    lblIcon.setBackground(Color.WHITE);
+                    lblText.setBackground(Color.WHITE);
+                }
+
+                lblIcon.setOpaque(true);
+                lblText.setOpaque(false);
+
                 lblIcon.setLayout(new GridBagLayout());
                 lblIcon.add(lblText);
                 return lblIcon;
@@ -185,8 +217,22 @@ public class ITableEditors {
                     }
                 }
 
-                lblIcon.setLayout(new GridBagLayout());
+                // Colors
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                Color cbg =  c.getBackground();
+
+                if (row %2 == 1 || isSelected) {
+                    lblIcon.setBackground(cbg);
+                    lblText.setBackground(cbg);
+                } else {
+                    lblIcon.setBackground(Color.WHITE);
+                    lblText.setBackground(Color.WHITE);
+                }
+
                 lblIcon.setOpaque(true);
+                lblText.setOpaque(false);
+
+                lblIcon.setLayout(new GridBagLayout());;
                 lblIcon.add(lblText);
                 return lblIcon;
             } else {
@@ -411,27 +457,5 @@ public class ITableEditors {
     }
 
 
-    public static class TableColorRenderer extends JLabel implements TableCellRenderer {
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int rowIndex, int vColIndex) {
-            try {
-                if (value != null) {
-                    Item item = null;
-                    if (value instanceof OrderItem) {
-                        item = ((OrderItem) value).getItem();
-                    } else if (value instanceof Item) {
-                        item = (Item) value;
-                    }
-                    if (item != null) {
-                        if (item.isDiscourageOrder()) {
-                            setBackground(Color.orange);
-                        }
-                    }
-                }
 
-            } catch ( Exception e) {
-                e.printStackTrace();
-            }
-            return this;
-        }
-    }
 }

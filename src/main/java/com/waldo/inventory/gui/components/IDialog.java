@@ -32,6 +32,7 @@ public abstract class IDialog extends JDialog implements GuiInterface {
     protected JButton buttonNeutral;
 
     protected Application application;
+    protected boolean updating;
 
     protected int dialogResult = -1;
 
@@ -204,6 +205,16 @@ public abstract class IDialog extends JDialog implements GuiInterface {
     protected void onNeutral() {
         dialogResult = NEUTRAL;
         dispose();
+    }
+
+    public void beginWait() {
+        updating = true;
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+
+    public void endWait() {
+        this.setCursor(Cursor.getDefaultCursor());
+        updating = false;
     }
 
     protected void showTitlePanel(boolean show) {

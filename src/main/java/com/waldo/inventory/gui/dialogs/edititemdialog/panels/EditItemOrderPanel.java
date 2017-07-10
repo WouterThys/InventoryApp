@@ -35,18 +35,24 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
             try {
                 Distributor d = (Distributor) distributorCb.getSelectedItem();
                 if (newItem.getId() < 0) {
-                    newItem.save();
+                    JOptionPane.showMessageDialog(
+                            EditItemOrderPanel.this,
+                            "Save item first..",
+                            "Error saving",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } else {
+                    partNumber = sm().findPartNumber(d.getId(), newItem.getId());
+                    if (partNumber == null) {
+                        partNumber = new PartNumber();
+                    }
+                    partNumber.setItemId(newItem.getId());
+                    partNumber.setDistributorId(d.getId());
+                    partNumber.setItemRef(ref);
+                    partNumber.save();
                 }
-                partNumber = sm().findPartNumber(d.getId(), newItem.getId());
-                if (partNumber == null) {
-                    partNumber = new PartNumber();
-                }
-                partNumber.setItemId(newItem.getId());
-                partNumber.setDistributorId(d.getId());
-                partNumber.setItemRef(ref);
-                partNumber.save();
-            } finally {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             itemRefField.setError("No reference");

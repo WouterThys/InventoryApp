@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
@@ -122,8 +124,15 @@ public abstract class OrderPanelLayout extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public void updateTable(Order selectedOrder) {
+        long orderItemId = 0;
+        if (selectedOrderItem != null) {
+            orderItemId = selectedOrderItem.getId();
+        }
         if (selectedOrder != null && !selectedOrder.getName().equals("All")) {
             tableModel.setItemList(db().getOrderedItems(selectedOrder.getId()));
+        }
+        if (orderItemId > DbObject.UNKNOWN_ID) {
+            selectedOrderItem = sm().findOrderItemById(orderItemId);
         }
     }
 
@@ -189,7 +198,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         createNodes(rootNode);
     }
 
-    private void updateEnabledComponents() {
+    void updateEnabledComponents() {
         // Orders
         if (lastSelectedOrder == null || lastSelectedOrder.isUnknown() || !lastSelectedOrder.canBeSaved()) {
             orderToolBar.setEditActionEnabled(false);
@@ -552,7 +561,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                     lastSelectedOrder = (Order) object;
                     updateTable(lastSelectedOrder);
                     updateToolBar(lastSelectedOrder);
-                    selectedOrderItem = null;
+                    //selectedOrderItem = null;
 
                     // Search list
                     topToolBar.setSearchList(new ArrayList<>(lastSelectedOrder.getOrderItems()));
@@ -569,6 +578,9 @@ public abstract class OrderPanelLayout extends JPanel implements
                 itemDetailPanel.updateComponents(selectedOrderItem.getItem());
                 if (lastSelectedOrder != null && !lastSelectedOrder.isOrdered()) {
                     orderItemDetailPanel.updateComponents(selectedOrderItem);
+                    itemDetailPanel.setRemarksPanelVisible(false);
+                } else {
+                    itemDetailPanel.setRemarksPanelVisible(true);
                 }
             } else {
                 itemDetailPanel.updateComponents(null);

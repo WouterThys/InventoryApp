@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderFile;
-import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
@@ -71,6 +68,12 @@ public class OrderPanel extends OrderPanelLayout {
         orderItem.setOrderId(order.getId());
         orderItem.setName(item.toString() + " - " + order.toString());
 
+        // Part number
+        PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
+        if (partNumber != null) {
+            orderItem.setItemRef(partNumber.getItemRef());
+        }
+
         orderItem.save();
     }
 
@@ -80,6 +83,12 @@ public class OrderPanel extends OrderPanelLayout {
             orderItem.setItemId(item.getId());
             orderItem.setOrderId(order.getId());
             orderItem.setName(item.toString() + " - " + order.toString());
+
+            // Part number
+            PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
+            if (partNumber != null) {
+                orderItem.setItemRef(partNumber.getItemRef());
+            }
 
             orderItem.save();
         }
@@ -229,6 +238,7 @@ public class OrderPanel extends OrderPanelLayout {
             public void onUpdated(Item newItem, Item oldItem) {
                 //selectedOrderItem = newItem;
                 //updateItems();
+                updateComponents(lastSelectedOrder);
             }
 
             @Override
@@ -265,6 +275,8 @@ public class OrderPanel extends OrderPanelLayout {
                     if (!newOrder.isOrdered()) {
                         orderItemDetailPanel.updateComponents(selectedOrderItem);
                     }
+                    setSelectedItem(selectedOrderItem);
+                    updateEnabledComponents();
                 }
             }
 
@@ -421,21 +433,14 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarDelete() {
-//        if (selectedOrderItem != null) {
-//            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + selectedOrderItem.toString() + "\" from order \""+lastSelectedOrder.toString()+"\"?");
-//            if (res == JOptionPane.OK_OPTION) {
-//                try {
-//                    application.beginWait();
-//                    lastSelectedOrder.removeItemFromList(selectedOrderItem);
-//                } finally {
-//                    application.endWait();
-//                }
-//            }
-//        }
         deleteSelectedOrderItems(getSelectedOrderItems());
     }
 
     @Override
     public void onToolBarEdit() {
+        if (selectedOrderItem != null) {
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
+            dialog.showDialog();
+        }
     }
 }

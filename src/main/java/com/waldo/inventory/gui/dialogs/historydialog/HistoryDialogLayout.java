@@ -15,6 +15,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,9 +124,14 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
                         break;
                 }
             }
-
-            setTitleName(historyItem.getName());
-            setTitleIcon(imageResource.readImage(historyItem.getIconPath()));
+            try {
+                setTitleName(historyItem.getName());
+                URL url = new File(historyItem.getIconPath()).toURI().toURL();
+                setTitleIcon(imageResource.readImage(url));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            pack();
         }
 
     }

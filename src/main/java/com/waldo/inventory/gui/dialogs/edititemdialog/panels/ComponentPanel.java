@@ -556,7 +556,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // Remarks
         starRater.setRating(newItem.getRating());
-        //starRater.setSelection((int)newItem.getRating());
+        starRater.setSelection(0);
         discourageOrderCb.setSelected(newItem.isDiscourageOrder());
         remarksTa.setText(newItem.getRemarks());
     }
@@ -640,5 +640,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         } else {
             return -1;
         }
+    }
+
+    public void updateRating(float rating) {
+        starRater.setRating(rating);
+        starRater.setSelection(0);
     }
 }

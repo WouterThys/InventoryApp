@@ -4,14 +4,19 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel implements GuiInterface {
+public class IGridPanel<K extends DbObject, T, V extends ArrayList<T>> extends JPanel implements GuiInterface, ITileView.TileClickListener {
 
 
+    public interface GridComponentClicked<K> {
+        void onGridComponentClick(K clickedObject, File file);
+    }
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -21,6 +26,8 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private List<ITileView> tileViews;
     private HashMap<K, V> map;
+
+    private GridComponentClicked<K> listener;
 
     /*
       *                  CONSTRUCTOR
@@ -53,6 +60,10 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
         updateComponents(null);
     }
 
+    public void addOnGridComponentClickedListener(GridComponentClicked<K> listener) {
+        this.listener = listener;
+    }
+
     private String getFileName(String filePath) {
         if (filePath.contains("/")) {
             int ndx = filePath.lastIndexOf("/");
@@ -83,14 +94,19 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
         for (K k : map.keySet()) {
             for (Object o : map.get(k)) {
                 String name;
+                File file = null;
                 if (o instanceof File) {
                     name = getFileName(((File)o).getAbsolutePath());
+                    file = (File) o;
                 } else {
                     name = o.getClass().getSimpleName();
                 }
-                ITileView view = new ITileView(k.getIconPath(), name);
+                ITileView view = new ITileView(k.getIconPath(), name, k.getId());
+                if (file != null) {
+                    view.setFile(file);
+                }
+                view.addTileClickListener(this);
                 tileViews.add(view);
-
             }
         }
 
@@ -103,6 +119,15 @@ public class IGridPanel<K extends DbObject, V extends ArrayList> extends JPanel 
         repaint();
     }
 
-
+    @Override
+    public void onTileClick(ITileView view) {
+        if (listener != null) {
+            for (K k : map.keySet()) {
+                if (k.getId() == view.getTileId()) {
+                    listener.onGridComponentClick(k, view.getFile());
+                }
+            }
+        }
+    }
 }
 

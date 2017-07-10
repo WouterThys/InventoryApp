@@ -15,17 +15,19 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     ILabel iconLabel;
 
     ITextField nameTextField;
-    ITextField divisionTextField;
+    ITextArea divisionTa;
     ITextField manufacturerTextField;
     ITextArea descriptionTextArea;
 
     IStarRater starRater;
-    ICheckBox discourageOrder;
-    ITextArea remarksTa;
+    ICheckBox  discourageOrder;
+    ITextArea  remarksTa;
 
     JButton dataSheetButton;
     JButton orderButton;
     JButton historyButton;
+
+    JPanel remarksPanel;
 
     /*
      *                  VARIABLES
@@ -64,7 +66,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
         // Helping lists
         JComponent[] labels = new JComponent[] {nameLabel, divisionLabel, manufacturerLabel};
-        JComponent[] fields = new JComponent[] {nameTextField, divisionTextField, manufacturerTextField};
+        JComponent[] fields = new JComponent[] {nameTextField, new JScrollPane(divisionTa), manufacturerTextField};
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -118,6 +120,21 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         return buttonsPanel;
     }
 
+    private JPanel createRemarksPanel() {
+        remarksPanel = new JPanel(new BorderLayout());
+        JPanel northPanel = new JPanel(new BorderLayout());
+
+        northPanel.add(starRater, BorderLayout.WEST);
+        northPanel.add(discourageOrder, BorderLayout.EAST);
+
+        remarksPanel.add(northPanel, BorderLayout.NORTH);
+        remarksPanel.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
+        remarksPanel.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
+
+        return remarksPanel;
+
+    }
+
 
      /*
      *                  LISTENERS
@@ -132,8 +149,10 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
         nameTextField = new ITextField();
         nameTextField.setEnabled(false);
-        divisionTextField= new ITextField();
-        divisionTextField.setEnabled(false);
+        divisionTa = new ITextArea();
+        divisionTa.setLineWrap(true);
+        divisionTa.setWrapStyleWord(true);
+        divisionTa.setEnabled(false);
         manufacturerTextField = new ITextField();
         manufacturerTextField.setEnabled(false);
         descriptionTextArea= new ITextArea();
@@ -141,17 +160,34 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
 
+        starRater = new IStarRater(5);
+        starRater.setEnabled(false);
+        discourageOrder = new ICheckBox("Discourage order ");
+        discourageOrder.setEnabled(false);
+        discourageOrder.setHorizontalAlignment(SwingConstants.RIGHT);
+        remarksTa = new ITextArea();
+        remarksTa.setEnabled(false);
+        remarksTa.setLineWrap(true);
+        remarksTa.setWrapStyleWord(true);
+
         dataSheetButton = new JButton("Data sheet");
         orderButton = new JButton("Order");
         historyButton = new JButton("History");
+        remarksPanel = new JPanel(new BorderLayout());
+
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
+        JPanel helper = new JPanel(new BorderLayout());
+        helper.add(createComponentInfoPanel(), BorderLayout.CENTER);
+        helper.add(createRemarksPanel(), BorderLayout.EAST);
+
+
         add(createIconPanel(), BorderLayout.WEST);
-        add(createComponentInfoPanel(), BorderLayout.CENTER);
+        add(helper, BorderLayout.CENTER);
         add(createButtonsPanel(), BorderLayout.EAST);
     }
 }

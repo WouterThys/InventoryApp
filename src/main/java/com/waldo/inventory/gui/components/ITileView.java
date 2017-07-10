@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
@@ -7,26 +8,43 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView extends JPanel implements GuiInterface {
+public class ITileView extends JPanel implements GuiInterface, ActionListener {
 
+    public interface TileClickListener {
+        void onTileClick(ITileView view);
+    }
+
+    private long tileId;
     private JButton iconBtn;
     private JTextPane nameTp;;
+
+    private File file; // Should get rid of this
 
     private ImageIcon icon;
     private String name;
 
-    public ITileView(String iconPath, String name) {
+    private TileClickListener listener;
+
+    public ITileView(String iconPath, String name, long id) {
         this.icon = imageResource.readImage(iconPath, 64, 64);
         this.name = name;
+        this.tileId = id;
 
         initializeComponents();
         initializeLayouts();
 
         updateComponents(null);
+    }
+
+    public ITileView(String iconPath, String name) {
+        this (iconPath, name, -1);
     }
 
     public ITileView(ImageIcon icon, String name) {
@@ -39,49 +57,28 @@ public class ITileView extends JPanel implements GuiInterface {
         updateComponents(null);
     }
 
-    private String createName(String text) {
-        String result = text;
-
-//        // Remove extension
-//        if (result.contains(".")) {
-//            int ndx = text.lastIndexOf(".");
-//            result = result.substring(0, ndx);
-//        }
-
-        // Not too long
-        result = formatString(result);
-
-
-        return result;
+    public void addTileClickListener(TileClickListener listener) {
+        this.listener = listener;
     }
 
-    private String formatString(String text) {
-        String result = text;
-        if (result.length() > 12) {
-            String[] split = result.split("(?=\\p{Lu})|(?=\\.)|(?<=\\_)|(?<=\\-)");
-            if (split.length > 1) {
-                int middle = split.length / 2;
-                String first = "", second = "";
-                for (int i = 0; i < middle; i++) {
-                    first += split[i];
-                }
-                for (int i = middle; i < split.length; i++) {
-                    second += split[i];
-                }
+    private String createName(String text) {
+        return FileUtils.formatFileNameString(text);
+    }
 
-                if (first.length() > 12) {
-                    first = formatString(first);
-                }
+    public long getTileId() {
+        return tileId;
+    }
 
-                if (second.length() > 12) {
-                    second = formatString(second);
-                }
+    public void setTileId(long tileId) {
+        this.tileId = tileId;
+    }
 
-                result = first + "\n" + second;
-            }
-        }
+    public File getFile() {
+        return file;
+    }
 
-        return result;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     @Override
@@ -89,6 +86,7 @@ public class ITileView extends JPanel implements GuiInterface {
         iconBtn = new JButton();
         iconBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         iconBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
+        iconBtn.addActionListener(this);
 
         nameTp = new JTextPane();
 
@@ -131,5 +129,12 @@ public class ITileView extends JPanel implements GuiInterface {
         }
     }
 
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (listener != null) {
+            listener.onTileClick(this);
+        }
+    }
 }
 
