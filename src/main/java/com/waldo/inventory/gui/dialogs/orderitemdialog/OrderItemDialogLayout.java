@@ -14,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 public abstract class OrderItemDialogLayout extends IDialog implements
-        GuiInterface,
         ActionListener,
         DbObjectChangedListener<Order> {
 
@@ -74,6 +73,8 @@ public abstract class OrderItemDialogLayout extends IDialog implements
         getContentPanel().add(addNewOrderButton, gbc);
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+
+        pack();
     }
 
     @Override

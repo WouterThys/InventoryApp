@@ -286,13 +286,7 @@ public class Order extends DbObject {
     }
 
     private boolean compareIfEqual(Date d1, Date d2) {
-        if (d1 == null && d2 == null) {
-            return true;
-        } else if (d1 != null && d2 == null || d1 == null) {
-            return false;
-        } else {
-            return d1.equals(d2);
-        }
+        return d1 == null && d2 == null || !(d1 != null && d2 == null || d1 == null) && d1.equals(d2);
     }
 
     public Date getDateOrdered() {
@@ -357,6 +351,18 @@ public class Order extends DbObject {
 
     public boolean isReceived() {
         return dateReceived != null;
+    }
+
+    public int getOrderState() {
+        if (!isOrdered() && !isReceived()) {
+            return Statics.ItemOrderStates.PLANNED;
+        } else if (isOrdered() && !isReceived()) {
+            return Statics.ItemOrderStates.ORDERED;
+        } else if (isOrdered() && isReceived()) {
+            return Statics.ItemOrderStates.RECEIVED;
+        } else {
+            return Statics.ItemOrderStates.NONE;
+        }
     }
 
     public OrderFile getOrderFile() {

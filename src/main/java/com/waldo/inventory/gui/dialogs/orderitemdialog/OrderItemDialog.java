@@ -14,13 +14,13 @@ import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout {
 
-    public int showDialog() {
-        setLocationRelativeTo(application);
-        pack();
-        setMinimumSize(getSize());
-        setVisible(true);
-        return dialogResult;
-    }
+//    public int showDialog() {
+//        setLocationRelativeTo(application);
+//        pack();
+//        setMinimumSize(getSize());
+//        setVisible(true);
+//        return dialogResult;
+//    }
 
     private Item itemToOrder;
     private List<Item> itemsToOrderList;

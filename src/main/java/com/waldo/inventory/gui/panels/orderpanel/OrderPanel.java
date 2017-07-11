@@ -139,28 +139,28 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void setOrdered() {
         lastSelectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
+        application.beginWait();
         try {
-            application.beginWait();
             lastSelectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
-            lastSelectedOrder.save();
             recreateNodes();
             orderItemDetailPanel.updateComponents(null);
         } finally {
             application.endWait();
         }
+        lastSelectedOrder.save();
     }
 
     private void setReceived() {
         lastSelectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
+        application.beginWait();
         try {
-            application.beginWait();
             lastSelectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
             lastSelectedOrder.updateItemAmounts();
-            lastSelectedOrder.save();
             updateComponents(lastSelectedOrder);
         } finally {
             application.endWait();
         }
+        lastSelectedOrder.save();
     }
 
     private List<OrderItem> getSelectedOrderItems() {
@@ -278,6 +278,7 @@ public class OrderPanel extends OrderPanelLayout {
                     setSelectedItem(selectedOrderItem);
                     updateEnabledComponents();
                 }
+                updateComponents(lastSelectedOrder);
             }
 
             @Override
@@ -382,6 +383,7 @@ public class OrderPanel extends OrderPanelLayout {
                 lastSelectedOrder = null;
                 return; // Nothing selected
             }
+            selectedOrderItem = null;
 
             application.clearSearch();
             updateComponents(node.getUserObject());

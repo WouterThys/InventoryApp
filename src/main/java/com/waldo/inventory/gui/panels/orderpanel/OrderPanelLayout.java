@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
@@ -173,20 +174,37 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
         Order ordered = new Order("Ordered");
-        Order notOrdered = new Order("Not ordered");
+        Order planned = new Order("Planned");
+        Order received = new Order("Received");
+
         ordered.setCanBeSaved(false);
-        notOrdered.setCanBeSaved(false);
+        planned.setCanBeSaved(false);
+        received.setCanBeSaved(false);
+
         DefaultMutableTreeNode orderedNode = new DefaultMutableTreeNode(ordered);
-        DefaultMutableTreeNode notOrderedNode = new DefaultMutableTreeNode(notOrdered);
+        DefaultMutableTreeNode plannedNode = new DefaultMutableTreeNode(planned);
+        DefaultMutableTreeNode receivedNode = new DefaultMutableTreeNode(received);
+
+        rootNode.add(receivedNode);
         rootNode.add(orderedNode);
-        rootNode.add(notOrderedNode);
+        rootNode.add(plannedNode);
+
         for (Order o : db().getOrders()) {
             if (!o.isUnknown()) {
                 DefaultMutableTreeNode oNode = new DefaultMutableTreeNode(o, false);
-                if (o.isOrdered()) {
-                    orderedNode.add(oNode);
-                } else {
-                    notOrderedNode.add(oNode);
+
+                switch (o.getOrderState()) {
+                    case Statics.ItemOrderStates.PLANNED:
+                        plannedNode.add(oNode);
+                        break;
+                    case Statics.ItemOrderStates.ORDERED:
+                        orderedNode.add(oNode);
+                        break;
+                    case Statics.ItemOrderStates.RECEIVED:
+                        receivedNode.add(oNode);
+                        break;
+                    case Statics.ItemOrderStates.NONE:
+                        break; // Should not happen
                 }
             }
         }

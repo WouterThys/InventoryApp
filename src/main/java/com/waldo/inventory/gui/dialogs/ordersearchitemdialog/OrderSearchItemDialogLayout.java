@@ -13,7 +13,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public abstract class OrderSearchItemDialogLayout extends IDialog implements
-        GuiInterface,
         IObjectSearchPanel.IObjectSearchListener,
         ListSelectionListener {
 
@@ -60,10 +59,15 @@ public abstract class OrderSearchItemDialogLayout extends IDialog implements
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
+        JScrollPane pane = new JScrollPane(resultTable);
+        pane.setPreferredSize(new Dimension(600,400));
+
         getContentPanel().add(searchPanel, BorderLayout.NORTH);
-        getContentPanel().add(new JScrollPane(resultTable), BorderLayout.CENTER);
+        getContentPanel().add(pane, BorderLayout.CENTER);
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+        pack();
     }
 
     @Override

@@ -97,8 +97,11 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
 
     @Override
     public void initializeLayouts() {
+        JScrollPane pane = new JScrollPane(historyTable);
+        pane.setPreferredSize(new Dimension(600,400));
+
         getContentPanel().setLayout(new BorderLayout());
-        getContentPanel().add(new JScrollPane(historyTable), BorderLayout.CENTER);
+        getContentPanel().add(pane, BorderLayout.CENTER);
         pack();
     }
 
@@ -131,7 +134,6 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            pack();
         }
 
     }
