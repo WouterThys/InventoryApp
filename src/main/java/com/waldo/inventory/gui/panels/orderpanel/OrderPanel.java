@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
@@ -20,9 +21,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -33,6 +32,7 @@ public class OrderPanel extends OrderPanelLayout {
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Order> ordersChanged;
     private DbObjectChangedListener<OrderItem> orderItemsChanged;
+    private DbObjectChangedListener<PartNumber> partNumbersChanged;
 
     public OrderPanel(Application application) {
         super(application);
@@ -45,6 +45,7 @@ public class OrderPanel extends OrderPanelLayout {
         db().addOnItemsChangedListener(itemsChanged);
         db().addOnOrdersChangedListener(ordersChanged);
         db().addOnOrderItemsChangedListener(orderItemsChanged);
+        db().addOnPartNumbersChangedListener(partNumbersChanged);
 
         updateComponents(null);
     }
@@ -58,40 +59,33 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     public TopToolBar getToolBar() {
-        return topToolBar;
+        return tableToolBar;
     }
 
-    public void addItemToOrder(Item item, Order order) {
-        // Add to data base
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItemId(item.getId());
-        orderItem.setOrderId(order.getId());
-        orderItem.setName(item.toString() + " - " + order.toString());
-
-        // Part number
-        PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
-        if (partNumber != null) {
-            orderItem.setItemRef(partNumber.getItemRef());
-        }
-
-        orderItem.save();
-    }
-
-    public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+    public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
+        Map<String, Item> failedItems = null;
         for (Item item : itemsToOrder) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setItemId(item.getId());
-            orderItem.setOrderId(order.getId());
-            orderItem.setName(item.toString() + " - " + order.toString());
+            if (!order.containsItemId(item.getId())) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setItemId(item.getId());
+                orderItem.setOrderId(order.getId());
+                orderItem.setName(item.toString() + " - " + order.toString());
 
-            // Part number
-            PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
-            if (partNumber != null) {
-                orderItem.setItemRef(partNumber.getItemRef());
+                // Part number
+                PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
+                if (partNumber != null) {
+                    orderItem.setItemRef(partNumber.getItemRef());
+                }
+
+                orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
+            } else {
+                if (failedItems == null) {
+                    failedItems = new HashMap<>();
+                }
+                failedItems.put("Item " + item.getName() + " was already in the list..", item);
             }
-
-            orderItem.save();
         }
+        return failedItems;
     }
 
 
@@ -100,67 +94,64 @@ public class OrderPanel extends OrderPanelLayout {
 
         // Order
         tbOrderButton.addActionListener(e -> {
-            OrderFile orderFile = new OrderFile(lastSelectedOrder);
+            OrderFile orderFile = new OrderFile(selectedOrder);
             orderFile.createOrderFile();
             if (orderFile.isSuccess()) {
                 OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
                 infoDialog.showDialog();
-                lastSelectedOrder.setOrderFile(orderFile);
-                lastSelectedOrder.save();
+                selectedOrder.setOrderFile(orderFile);
+                selectedOrder.save();
             } else {
-                String msg = "Order failed with next errors: ";
+                StringBuilder msg = new StringBuilder("Order failed with next errors: ");
                 for (String s : orderFile.getErrorMessages()) {
-                    msg += s + "\n\n";
+                    msg.append(s).append("\n\n");
                 }
-                JOptionPane.showMessageDialog(OrderPanel.this, msg, "Order errors", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(OrderPanel.this, msg.toString(), "Order errors", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         // Set ordered
         tbSetOrderedBtn.addActionListener(e -> {
-            if (!lastSelectedOrder.isOrdered()) {
-                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", lastSelectedOrder);
+            if (!selectedOrder.isOrdered()) {
+                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
                 if (dialog.showDialog() == IDialog.OK) {
                     setOrdered();
                 }
-            } else if (lastSelectedOrder.isOrdered() && !lastSelectedOrder.isReceived()) {
+            } else if (selectedOrder.isOrdered() && !selectedOrder.isReceived()) {
                 setReceived();
             }
         });
 
         // Details
         tbViewOrderDetailsBtn.addActionListener(e -> {
-            if (lastSelectedOrder != null) {
-                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", lastSelectedOrder);
+            if (selectedOrder != null) {
+                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", selectedOrder);
                 dialog.showDialog();
             }
         });
     }
 
     private void setOrdered() {
-        lastSelectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
+        selectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
         application.beginWait();
         try {
-            lastSelectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
-            recreateNodes();
-            orderItemDetailPanel.updateComponents(null);
+            selectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
         } finally {
             application.endWait();
         }
-        lastSelectedOrder.save();
+        selectedOrder.save();
     }
 
     private void setReceived() {
-        lastSelectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
+        selectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
         application.beginWait();
         try {
-            lastSelectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
-            lastSelectedOrder.updateItemAmounts();
-            updateComponents(lastSelectedOrder);
+            selectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
+            selectedOrder.updateItemAmounts();
         } finally {
             application.endWait();
         }
-        lastSelectedOrder.save();
+        selectedOrder.save();
     }
 
     private List<OrderItem> getSelectedOrderItems() {
@@ -178,10 +169,10 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void deleteSelectedOrderItems(final List<OrderItem> itemsToDelete) {
-        if (lastSelectedOrder == null) {
+        if (selectedOrder == null) {
             return;
         }
-        SwingUtilities.invokeLater(() -> {
+
             int result = JOptionPane.CANCEL_OPTION;
             if (itemsToDelete.size() == 1) {
                 result = JOptionPane.showConfirmDialog(
@@ -199,10 +190,12 @@ public class OrderPanel extends OrderPanelLayout {
 
             if (result == JOptionPane.OK_OPTION) {
                 for (OrderItem item : itemsToDelete) {
-                    lastSelectedOrder.removeItemFromList(item);
+                    selectedOrder.removeItemFromList(item);
                 }
+                selectedOrderItem = null;
+                selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
             }
-        });
+
     }
 
     private void initMouseClicked() {
@@ -211,9 +204,6 @@ public class OrderPanel extends OrderPanelLayout {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedOrderItem.getItem());
-//                    if (dialog.showDialog() == EditItemDialog.OK) {
-//                        dialog.getOrderItem().save();
-//                    }
                     dialog.showDialog();
                 }
             }
@@ -224,91 +214,81 @@ public class OrderPanel extends OrderPanelLayout {
         setItemsChangedListener();
         setOrdersChangedListener();
         setOrderItemsChangedListener();
+        setPartNumbersChangedListener();
     }
 
     private void setItemsChangedListener() {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
             public void onAdded(Item item) {
-                //selectedOrderItem = DbManager.db().findOrderItem(lastSelectedOrder.getId());
-                //updateItems();
+                // No effect here
             }
 
             @Override
             public void onUpdated(Item newItem, Item oldItem) {
-                //selectedOrderItem = newItem;
-                //updateItems();
-                updateComponents(lastSelectedOrder);
+                if (selectedOrder != null) {
+                    if (selectedOrder.containsItemId(newItem.getId())) { // when new items are added, this should be false
+                        tableUpdate();
+                    }
+                }
             }
 
             @Override
             public void onDeleted(Item item) {
-                //selectedOrderItem = null;
-                //updateItems();
+                // No effect
             }
         };
-    }
-
-    private void updateItems() {
-        if (lastSelectedOrder == null) {
-            lastSelectedOrder = (Order) ((DefaultMutableTreeNode)treeModel.getRoot()).getUserObject();
-        }
-        updateComponents(lastSelectedOrder);
     }
 
     private void setOrdersChangedListener() {
         ordersChanged = new DbObjectChangedListener<Order>() {
             @Override
             public void onAdded(Order order) {
-                treeModel.addObject(order);
-                orderChanged(order);
+                selectedOrder = order;
+                selectedOrderItem = null;
+
+                tableInitialize(order);
+                tableSelectOrderItem(selectedOrderItem);
+                treeRecreateNodes();
+                final long orderId = treeUpdate();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedOrder = SearchManager.sm().findOrderById(orderId);
+                    treeSelectOrder(selectedOrder);
+
+                    updateVisibleComponents();
+                    updateEnabledComponents();
+                });
             }
 
             @Override
             public void onUpdated(Order newOrder, Order oldOrder) {
-                treeModel.updateObject(newOrder, oldOrder);
-                application.beginWait();
-                selectOrder(newOrder);
-                application.endWait();
-                if (selectedOrderItem != null) {
-                    itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-                    if (!newOrder.isOrdered()) {
-                        orderItemDetailPanel.updateComponents(selectedOrderItem);
-                    }
-                    setSelectedItem(selectedOrderItem);
+                selectedOrder = newOrder;
+
+                tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
+                final long orderId = treeUpdate();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedOrder = SearchManager.sm().findOrderById(orderId);
+                    treeSelectOrder(selectedOrder);
+
+                    updateVisibleComponents();
                     updateEnabledComponents();
-                }
-                updateComponents(lastSelectedOrder);
+                });
             }
 
             @Override
             public void onDeleted(Order order) {
-                treeModel.removeObject(order);
-                recreateNodes();
-                updateComponents(null);
+                selectedOrder = null;
+                selectedOrderItem = null;
+
+                tableSelectOrderItem(null);
+                treeDeleteOrder(order);
+
+                updateVisibleComponents();
+                updateEnabledComponents();
             }
         };
-    }
-
-    private void orderChanged(Order changedOrder) {
-        try {
-            application.beginWait();
-            // Find and select in tree
-            selectOrder(changedOrder);
-            // Select in items
-            selectOrderItem(selectedOrderItem);
-            // Update detail panel
-            if (selectedOrderItem != null) {
-                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-                if (!changedOrder.isOrdered()) {
-                    orderItemDetailPanel.updateComponents(selectedOrderItem);
-                }
-            }
-        } catch (Exception e) {
-            Status().setError("Error in order changed", e);
-        } finally {
-            application.endWait();
-        }
     }
 
     private void setOrderItemsChangedListener() {
@@ -317,100 +297,131 @@ public class OrderPanel extends OrderPanelLayout {
             public void onAdded(OrderItem orderItem) {
                 Order order = sm().findOrderById(orderItem.getOrderId());
                 order.addItemToList(orderItem);
-                lastSelectedOrder = order;
-                setSelectedItem(orderItem);
+                // Update table if not current selected order
+                if (selectedOrder == null || selectedOrder.getId() != order.getId()) {
+                    selectedOrder = order;
+                    tableInitialize(selectedOrder);
+                }
+                treeSelectOrder(selectedOrder);
+                // Select and highlight in table
+                selectedOrderItem = orderItem;
+                tableAddOrderItem(selectedOrderItem);
+                tableSelectOrderItem(orderItem);
+
+
+
+                // Update stuff
+                updateEnabledComponents();
+                updateVisibleComponents();
             }
 
             @Override
             public void onUpdated(OrderItem newOrderItem, OrderItem oldOrderItem) {
-                Order order = sm().findOrderById(newOrderItem.getOrderId());
-                updateComponents(order);
+                selectedOrder = sm().findOrderById(newOrderItem.getOrderId());
+                selectedOrderItem = newOrderItem;
+
+                tableSelectOrderItem(selectedOrderItem);
+                treeSelectOrder(selectedOrder);
+
+                updateVisibleComponents();
+                updateEnabledComponents();
             }
 
             @Override
             public void onDeleted(OrderItem orderItem) {
-                Order order = sm().findOrderById(orderItem.getOrderId());
-                selectedOrderItem = null;
-                updateComponents(order);
+                // Handled in order change listener
             }
         };
     }
 
-    public void setSelectedItem(OrderItem selectedItem) {
-        try {
-            application.beginWait();
-            this.selectedOrderItem = selectedItem;
-            // Tree
-            treeModel.setSelectedObject(lastSelectedOrder);
-
-            // Items
-            updateTable(lastSelectedOrder);
-            selectItem(selectedItem);
-            itemDetailPanel.updateComponents(selectedItem.getItem());
-            if (!lastSelectedOrder.isOrdered()) {
-                orderItemDetailPanel.updateComponents(selectedItem);
-            }
-        } catch (Exception e) {
-            Status().setError("Error in setting selected item.", e);
-        } finally {
-            application.endWait();
-        }
-    }
-
-    private void selectItem(OrderItem selectedItem) {
-        if (selectedItem != null) {
-            List<OrderItem> itemList = getTableModel().getItemList();
-            if (itemList != null) {
-                int ndx = itemList.indexOf(selectedItem);
-                if (ndx >= 0 && ndx < itemList.size()) {
-                    orderItemTable.setRowSelectionInterval(ndx, ndx);
+    private void setPartNumbersChangedListener() {
+        partNumbersChanged = new DbObjectChangedListener<PartNumber>() {
+            @Override
+            public void onAdded(PartNumber partNumber) {
+                if (selectedOrder != null) {
+                    if (selectedOrder.containsItemId(partNumber.getItemId())) {
+                        tableUpdate();
+                    }
                 }
             }
-        }
+
+            @Override
+            public void onUpdated(PartNumber newPartNumber, PartNumber oldPartNumber) {
+                if (selectedOrder != null) {
+                    if (selectedOrder.containsItemId(newPartNumber.getItemId())) {
+                        tableUpdate();
+                    }
+                }
+            }
+
+            @Override
+            public void onDeleted(PartNumber partNumber) {
+                // Should not happen
+            }
+        };
     }
 
 
     //
     // Tree selection interface
     //
-
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!application.isUpdating()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
 
             if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved()) {
-                lastSelectedOrder = null;
+                selectedOrder = null;
                 return; // Nothing selected
             }
+            selectedOrder = (Order) node.getUserObject();
             selectedOrderItem = null;
 
             application.clearSearch();
-            updateComponents(node.getUserObject());
+            tableInitialize(selectedOrder);
+            updateToolBar(selectedOrder);
+
+            updateVisibleComponents();
+            updateEnabledComponents();
         }
     }
 
     //
     // Table selection changed
     //
-
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             selectedOrderItem = (OrderItem) orderItemTable.getValueAtRow(orderItemTable.getSelectedRow());
-            updateComponents(lastSelectedOrder);
+            if (selectedOrderItem != null) {
+                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                if (selectedOrder != null) {
+                    if (selectedOrder.isOrdered() || selectedOrder.isReceived()) {
+                        itemDetailPanel.setRemarksPanelVisible(true);
+                        orderItemDetailPanel.updateComponents(null);
+                    } else {
+                        itemDetailPanel.setRemarksPanelVisible(false);
+                        orderItemDetailPanel.updateComponents(selectedOrderItem);
+                    }
+                }
+            } else {
+                itemDetailPanel.updateComponents(null);
+                orderItemDetailPanel.updateComponents(null);
+            }
+            updateVisibleComponents();
+            updateEnabledComponents();
         }
     }
 
     //
-    //  Item tool bar listener
+    //  Table tool bar listener
     //
-
     @Override
     public void onToolBarRefresh() {
         try {
             application.beginWait();
-            updateComponents(lastSelectedOrder);
+            treeUpdate();
+            tableInitialize(selectedOrder);
         } finally {
             application.endWait();
         }
@@ -418,16 +429,18 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarAdd() {
-        if (lastSelectedOrder != null && !lastSelectedOrder.isUnknown() && lastSelectedOrder.canBeSaved()) {
+        if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
             OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
             if (dialog.showDialog() == IDialog.OK) {
-                Item itemToOrder = dialog.getItemToOrder();
-                if (itemToOrder != null) {
+                List<Item> itemsToOrder = dialog.getItemsToOrder();
+                if (itemsToOrder != null) {
                     // Update item
-                    itemToOrder.setOrderState(Statics.ItemOrderStates.PLANNED);
-                    itemToOrder.save();
+                    for (Item item : itemsToOrder) {
+                        item.setOrderState(Statics.ItemOrderStates.PLANNED);
+                        item.save();
+                    }
 
-                    addItemToOrder(itemToOrder, lastSelectedOrder);
+                    addItemsToOrder(itemsToOrder, selectedOrder);
                 }
             }
         }

@@ -84,9 +84,9 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
                 // Go to orders tab
                 application.setSelectedTab(Application.TAB_ORDERS);
                 // Select order
-                application.getOrderPanel().selectOrder(order);
+                application.getOrderPanel().treeSelectOrder(order);
                 // Select order item
-                application.getOrderPanel().selectOrderItem(order.findOrderItemInOrder(historyItem.getId()));
+                application.getOrderPanel().tableSelectOrderItem(order.findOrderItemInOrder(historyItem.getId()));
             }
         };
 

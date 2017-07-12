@@ -20,9 +20,8 @@ public abstract class OrderItemDialogLayout extends IDialog implements
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ILabel textLabel;
-    JButton addNewOrderButton;
-    DefaultComboBoxModel<Order> orderCbModel;
+    private ILabel textLabel;
+    private JButton addNewOrderButton;
     JComboBox<Order> orderCb;
 
     /*
@@ -86,7 +85,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
             }
         }
         orders.sort(new Order.OrderUnordered());
-        orderCbModel = new DefaultComboBoxModel<>(orders);
+        DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>(orders);
         orderCb.setModel(orderCbModel);
 
         if (object != null) {

@@ -70,8 +70,8 @@ DELETE FROM orderitems WHERE orderid = 17 AND itemid = 28;]]></console>
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/src/main/resources/db/migration/V4__category_product_type_tables.sql" connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" current-schema="main" />
     <mapping file-url="file://$PROJECT_DIR$/src/main/resources/db/migration/V3__add_category_product_type.sql" connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" current-schema="main" />
+    <mapping file-url="file://$PROJECT_DIR$/src/main/resources/db/migration/V4__category_product_type_tables.sql" connection-id="f910bd8b-dcf7-4d2b-9863-e0ccc0889422" current-schema="main" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -136,6 +136,7 @@ DELETE FROM orderitems WHERE orderid = 17 AND itemid = 28;]]></console>
           <database-logging value="false" />
           <connect-automatically value="false" />
           <restore-workspace value="true" />
+          <restore-workspace-deep value="true" />
           <environment-type value="default" />
           <idle-time-to-disconnect value="30" />
           <password-expiry-time value="10" />

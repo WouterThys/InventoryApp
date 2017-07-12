@@ -29,8 +29,10 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
         return true;
     }
 
-    public Item getItemToOrder() {
-        return itemToOrder;
+    public List<Item> getItemsToOrder() {
+        List<Item> itemsToOrder = new ArrayList<>(); // TODO: select multiple items, with something like from left to right column
+        itemsToOrder.add(itemToOrder);
+        return itemsToOrder;
     }
 
     @Override

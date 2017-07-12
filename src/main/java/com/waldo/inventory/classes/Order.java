@@ -28,7 +28,7 @@ public class Order extends DbObject {
     private Date dateOrdered;
     private Date dateModified;
     private Date dateReceived;
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems;
     private Distributor distributor;
     private OrderFile orderFile = new OrderFile(this);
     private String orderReference;
@@ -156,6 +156,8 @@ public class Order extends DbObject {
             }
     }
 
+
+
     public static class OrderAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
@@ -184,6 +186,15 @@ public class Order extends DbObject {
         }
     }
 
+    public static Order getUnknownOrder() {
+        Order o = new Order();
+        o.setName(UNKNOWN_NAME);
+        o.setId(UNKNOWN_ID);
+        o.setCanBeSaved(false);
+        return o;
+    }
+
+
     public Order() {
         super(TABLE_NAME);
     }
@@ -193,12 +204,24 @@ public class Order extends DbObject {
         this.name = name;
     }
 
-    public static Order getUnknownOrder() {
-        Order o = new Order();
-        o.setName(UNKNOWN_NAME);
-        o.setId(UNKNOWN_ID);
-        o.setCanBeSaved(false);
-        return o;
+
+
+    public boolean containsOrderItemId(long id) {
+        for (OrderItem oi : getOrderItems()) {
+            if (oi.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsItemId(long id) {
+        for (OrderItem oi : getOrderItems()) {
+            if (oi.getItemId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addItemToList(OrderItem item) {
@@ -206,7 +229,6 @@ public class Order extends DbObject {
             if (!orderItems.contains(item)) {
                 orderItems.add(item);
                 setDateModified(new Date(System.currentTimeMillis()));
-                save();
             }
         }
     }
@@ -223,8 +245,6 @@ public class Order extends DbObject {
                 orderItems.remove(item);
                 // Update modification date
                 setDateModified(new Date(System.currentTimeMillis()));
-
-                save();
             }
         }
     }
@@ -298,6 +318,9 @@ public class Order extends DbObject {
     }
 
     public List<OrderItem> getOrderItems() {
+        if (orderItems == null) {
+            orderItems = DbManager.db().getOrderedItems(id);
+        }
         return orderItems;
     }
 

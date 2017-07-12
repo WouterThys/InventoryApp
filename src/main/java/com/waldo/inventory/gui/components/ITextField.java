@@ -77,7 +77,7 @@ public class ITextField extends JTextField implements FocusListener {
     }
 
     public void clearText() {
-        super.setText("");
+        super.setText(hint);
     }
 
 

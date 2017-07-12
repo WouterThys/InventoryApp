@@ -10,17 +10,11 @@ import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout {
-
-//    public int showDialog() {
-//        setLocationRelativeTo(application);
-//        pack();
-//        setMinimumSize(getSize());
-//        setVisible(true);
-//        return dialogResult;
-//    }
 
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
@@ -67,7 +61,9 @@ public class OrderItemDialog extends OrderItemDialogLayout {
             if (orderList) {
                 application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
             } else {
-                application.addItemToOrder(itemToOrder, (Order) orderCb.getSelectedItem());
+                itemsToOrderList = new ArrayList<>(1);
+                itemsToOrderList.add(itemToOrder);
+                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
             }
 
             // Close
@@ -87,6 +83,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         OrdersDialog dialog = new OrdersDialog(this, "New order", false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
+
             newOrder.save();
         }
     }

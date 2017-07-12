@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class OrdersDialog extends OrdersDialogLayout {
     public OrdersDialog(Application application, String title, Order order) {
         super(application, title, false);
 
+        this.order = order;
         initializeComponents();
         initializeLayouts();
         updateComponents(order);
@@ -49,6 +51,13 @@ public class OrdersDialog extends OrdersDialogLayout {
         if (name == null || name.isEmpty()) {
             nameField.setError("Name can't be empty..");
             ok = false;
+        }
+
+        for (Order o : DbManager.db().getOrders()) {
+            if (o.getName().equals(name)) {
+                nameField.setError("Name already exists in orders, select an other name..");
+                ok = false;
+            }
         }
 
         if (showDates && isOrderedCb.isSelected()) {

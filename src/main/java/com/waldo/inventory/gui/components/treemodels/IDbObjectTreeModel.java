@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -39,6 +40,10 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
         reload();
     }
 
+    public void expandNodes() {
+        expandNodes(0, tree.getRowCount());
+    }
+
     public void expandNodes(int startingIndex, int rowCount){
         for(int i=startingIndex;i<rowCount;++i){
             tree.expandRow(i);
@@ -50,19 +55,17 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     }
 
     public void setSelectedObject(DbObject object) {
-        DefaultMutableTreeNode node = findNode(object);
-        if (node != null) {
-            TreeNode[] nodes = getPathToRoot(node);
-            TreePath path = new TreePath(nodes);
-            tree.setExpandsSelectedPaths(true);
-            tree.setSelectionPath(path);
-            tree.scrollPathToVisible(path);
-
-
-//            TreePath path = new TreePath(node);
-//            tree.setExpandsSelectedPaths(true);
-//            tree.setSelectionPath(path);
-//            tree.scrollPathToVisible(path);
+        if (object != null) {
+            DefaultMutableTreeNode node = findNode(object);
+            if (node != null) {
+                TreeNode[] nodes = getPathToRoot(node);
+                TreePath path = new TreePath(nodes);
+                tree.setExpandsSelectedPaths(true);
+                tree.setSelectionPath(path);
+                tree.scrollPathToVisible(path);
+            }
+        } else {
+            tree.clearSelection();
         }
     }
 
@@ -79,33 +82,47 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
     }
 
     public void removeObject(DbObject child) {
-        SwingUtilities.invokeLater(() -> {
-            DefaultMutableTreeNode childNode = findNode(child);
-            if (childNode != null) {
-                removeNodeFromParent(childNode);
-            }
-            reload();
-            expandNodes(0, tree.getRowCount());
-        });
+        try {
+            SwingUtilities.invokeLater(() -> {
+                tree.clearSelection();
+                DefaultMutableTreeNode childNode = findNode(child);
+                if (childNode != null) {
+                    removeNodeFromParent(childNode);
+                }
+                reload();
+                expandNodes(0, tree.getRowCount());
+            });
+        } catch (Exception e) {
+            Status().setError("Error removing object " + child.getName(), e);
+        }
     }
 
     public void updateObject(DbObject newChild, DbObject oldChild) {
-        SwingUtilities.invokeLater(() -> {
-            DefaultMutableTreeNode node = findNode(oldChild);
-            if (node != null) {
-                node.setUserObject(newChild);
-                nodeChanged(node);
-            }
-            reload();
-            expandNodes(0, tree.getRowCount());
-        });
+        try {
+            SwingUtilities.invokeLater(() -> {
+                DefaultMutableTreeNode node = findNode(oldChild);
+                if (node != null) {
+                    node.setUserObject(newChild);
+                    nodeChanged(node);
+                }
+                reload();
+                expandNodes(0, tree.getRowCount());
+            });
+        } catch (Exception e) {
+            Status().setError("Error updating object " + newChild.getName(), e);
+        }
     }
 
     public void addObject(DbObject child) {
-        SwingUtilities.invokeLater(() -> {
-            addDbObject(findParent(child), child);
-            expandNodes(0, tree.getRowCount());
-        });
+        try {
+            SwingUtilities.invokeLater(() -> {
+                addDbObject(findParent(child), child);
+                expandNodes(0, tree.getRowCount());
+                setSelectedObject(child);
+            });
+        } catch (Exception e) {
+            Status().setError("Error adding object " + child.getName(), e);
+        }
         //addDbObject(findParent(child), child);
     }
 

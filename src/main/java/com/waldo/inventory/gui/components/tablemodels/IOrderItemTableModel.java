@@ -17,9 +17,6 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
-    public IOrderItemTableModel(List<OrderItem> orderItemList) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, orderItemList);
-    }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

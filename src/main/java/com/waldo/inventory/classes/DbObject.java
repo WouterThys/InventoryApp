@@ -266,12 +266,14 @@ public abstract class DbObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof DbObject) {
-            if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
-                return true;
-            }
-            if (id < 0 || ((DbObject) obj).getId() < 0) {
-                return name.equals(((DbObject) obj).getName());
+        if (obj != null) {
+            if (obj instanceof DbObject) {
+                if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
+                    return true;
+                }
+                if (id < 0 || ((DbObject) obj).getId() < 0) {
+                    return name.equals(((DbObject) obj).getName());
+                }
             }
         }
         return false;

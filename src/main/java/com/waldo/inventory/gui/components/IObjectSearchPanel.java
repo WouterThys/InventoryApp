@@ -91,7 +91,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         searchManager.clearSearch();
         setSearched(false);
         clearLabel();
-
+        searchField.setText("");
         btnPanel.setVisible(false);
 
         if (objectSearchListener != null) {

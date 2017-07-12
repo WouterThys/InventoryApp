@@ -30,13 +30,15 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
             setVisible(false);
             selectedItem = null;
         } else {
-            setVisible(true);
+            if (object instanceof Item) {
+                setVisible(true);
 
-            selectedItem = (Item) object;
+                selectedItem = (Item) object;
 
-            updateIcon(selectedItem);
-            updateTextFields(selectedItem);
-            updateButtons(selectedItem);
+                updateIcon(selectedItem);
+                updateTextFields(selectedItem);
+                updateButtons(selectedItem);
+            }
         }
     }
 

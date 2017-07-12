@@ -55,6 +55,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<PartNumber>> onPartNumbersChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
@@ -226,6 +227,12 @@ public class DbManager implements TableChangedListener {
     public void addOnDistributorChangedListener(DbObjectChangedListener<Distributor> dbObjectChangedListener) {
         if (!onDistributorsChangedListenerList.contains(dbObjectChangedListener)) {
             onDistributorsChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnPartNumbersChangedListener(DbObjectChangedListener<PartNumber> dbObjectChangedListener) {
+        if (!onPartNumbersChangedListenerList.contains(dbObjectChangedListener)) {
+            onPartNumbersChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -427,7 +434,7 @@ public class DbManager implements TableChangedListener {
                 break;
             case PartNumber.TABLE_NAME:
                 updatePartNumbers();
-                // Listeners.. ?
+                notifyListeners(changedHow, (PartNumber)newObject, (PartNumber)oldObject, onPartNumbersChangedListenerList);
                 break;
             case PackageType.TABLE_NAME:
                 updatePackageTypes();
@@ -954,7 +961,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateReceived(rs.getDate("datereceived"));
                     o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
-                    o.setOrderItems(getOrderedItems(o.getId()));
+                    //o.setOrderItems(getOrderedItems(o.getId()));
                     o.setOrderReference(rs.getString("orderreference"));
                     o.setTrackingNumber(rs.getString("trackingnumber"));
 
@@ -990,7 +997,7 @@ public class DbManager implements TableChangedListener {
                     o.setDateReceived(rs.getDate("datereceived"));
                     o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
                     o.setOrderFile(rs.getString("orderfile"));
-                    o.setOrderItems(getOrderedItems(o.getId()));
+                    //o.setOrderItems(getOrderedItems(o.getId()));
                     o.setOrderReference(rs.getString("orderreference"));
                     o.setTrackingNumber(rs.getString("trackingnumber"));
                 }

@@ -31,9 +31,28 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void removeRow(int row) {
-        itemList.remove(row);
-        fireTableRowsDeleted(row, row);
+    public void removeItems(List<T> itemsToDelete) {
+        for(T t : itemsToDelete) {
+            int ndx = itemList.indexOf(t);
+            itemList.remove(ndx);
+            fireTableRowsDeleted(ndx, ndx);
+        }
+    }
+
+    public void addItems(List<T> itemsToAdd) {
+        for (T t : itemsToAdd) {
+            if (!itemList.contains(t)) {
+                itemList.add(t);
+                int ndx = itemList.indexOf(t);
+                fireTableRowsInserted(ndx, ndx);
+            }
+        }
+    }
+
+    public void updateTable() {
+        if (itemList != null && itemList.size() > 0) {
+            fireTableRowsUpdated(0, itemList.size() - 1);
+        }
     }
 
     public List<T> getItemList() {

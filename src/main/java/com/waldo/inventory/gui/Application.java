@@ -15,9 +15,9 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
@@ -131,7 +131,7 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void setSelectedOrderItem(OrderItem selectedOrderItem) {
-        orderPanel.selectOrderItem(selectedOrderItem);
+        orderPanel.tableSelectOrderItem(selectedOrderItem);
     }
 
     public void setSelectedProject(Project selectedProject) {
@@ -154,7 +154,7 @@ public class Application extends JFrame implements ChangeListener {
 
             case TAB_ORDERS:
                 if (foundObject == null) {
-                    orderPanel.updateTable(orderPanel.getLastSelectedOrder());
+                    orderPanel.tableInitialize(orderPanel.getSelectedOrder());
                 } else {
                     java.util.List<OrderItem> foundItems = new ArrayList<>(foundObject.size());
                     for (DbObject object : foundObject) {
@@ -195,23 +195,6 @@ public class Application extends JFrame implements ChangeListener {
 
     }
 
-    public void addItemToOrder(Item item, Order order) {
-        beginWait();
-        try {
-            // Set tab
-            tabbedPane.setSelectedIndex(TAB_ORDERS);
-
-            // Update item
-            item.setOrderState(Statics.ItemOrderStates.PLANNED);
-            item.save();
-        } finally {
-            endWait();
-        }
-
-        // Add
-        orderPanel.addItemToOrder(item, order);
-    }
-
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
         beginWait();
         try {
@@ -227,7 +210,10 @@ public class Application extends JFrame implements ChangeListener {
             endWait();
         }
         // Add
-        orderPanel.addItemsToOrder(itemsToOrder, order);
+        Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
+        if (failedItems != null && failedItems.size() > 0) {
+            // TODO Show error message
+        }
     }
 
     public boolean isUpdating() {
