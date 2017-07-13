@@ -30,6 +30,8 @@ public class ILogTableModel extends IAbstractTableModel<Log> {
         Log log = getItemAt(rowIndex);
         if (log != null) {
             switch (columnIndex) {
+                case -1: // Return object itself
+                    return log;
                 case 0: // Type label, will be set with with the ITableEditor LogTypeRenderer
                     return log;
                 case 1: // Time

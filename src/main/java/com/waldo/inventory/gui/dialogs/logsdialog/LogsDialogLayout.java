@@ -33,7 +33,7 @@ public abstract class LogsDialogLayout extends IDialog implements
 
     private JButton clearLogsBtn;
 
-    ILogTableModel logTableModel;
+    private ILogTableModel logTableModel;
     ITable logTable;
 
     private LogsDetailPanel detailPanel;
