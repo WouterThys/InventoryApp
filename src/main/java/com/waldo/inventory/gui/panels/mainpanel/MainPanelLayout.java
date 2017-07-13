@@ -55,7 +55,7 @@ public abstract class MainPanelLayout extends JPanel implements
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void updateEnabledComponents() {
+    void updateEnabledComponents() {
         if (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved()) {
             topToolBar.setDeleteActionEnabled(false);
             topToolBar.setEditActionEnabled(false);
@@ -179,9 +179,8 @@ public abstract class MainPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) {
+        application.beginWait();
         try {
-            application.beginWait();
-
             // Update table if needed
             if (object != null) {
                 if (lastSelectedDivision == null || !lastSelectedDivision.equals(object)) {

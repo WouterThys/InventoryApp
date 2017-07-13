@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 
@@ -124,40 +121,6 @@ public class Order extends DbObject {
         return result;
     }
 
-    @Override
-    public void delete() {
-            if (canBeSaved) {
-                SwingWorker worker = new SwingWorker() {
-                    @Override
-                    protected Object doInBackground() throws Exception {
-                        // First delete all OrderItems
-                        for (OrderItem orderItem : getOrderItems()) {
-                            removeItemFromList(orderItem); // TODO: check if this can be done with cascaded delete of Foreign Key..
-                        }
-
-                        // Delete Order itself
-                        doDelete();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done() {
-                        try {
-                            get(10, TimeUnit.SECONDS);
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                            JOptionPane.showMessageDialog(null, "Error deleting \"" + name + "\". \n Exception: " + e.getMessage(), "Delete error", JOptionPane.ERROR_MESSAGE);
-                            LOG.error("Failed to delete object.", e);
-                        }
-                    }
-                };
-                worker.execute();
-            } else {
-                JOptionPane.showMessageDialog(null, "\""+name+"\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
-            }
-    }
-
-
-
     public static class OrderAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
@@ -236,30 +199,31 @@ public class Order extends DbObject {
     public void removeItemFromList(OrderItem item) {
         if (item != null) {
             if (orderItems.contains(item)) {
-                // Update the item of the order item
-                item.getItem().setOrderState(Statics.ItemOrderStates.NONE);
-                item.getItem().save();
                 // Remove OrderItem from db
                 DbManager.db().removeItemFromOrder(item);
                 // Remove from list
                 orderItems.remove(item);
                 // Update modification date
                 setDateModified(new Date(System.currentTimeMillis()));
+                // Update the item of the order item
+                SwingUtilities.invokeLater(() -> {
+                    item.getItem().updateOrderState();
+                });
             }
         }
     }
 
     public void updateItemReferences() {
-        if (distributor != null && orderItems.size() > 0) {
+        if (distributor != null && getOrderItems().size() > 0) {
             for (OrderItem oi : orderItems) {
                 PartNumber partNumber = sm().findPartNumber(distributor.getId(), oi.getItemId());
                 if (partNumber != null) {
-                    if (!oi.getItemRef().equals(partNumber.getItemRef())) {
-                        oi.setItemRef(partNumber.getItemRef());
+                    if (oi.getDistributorPartId() != partNumber.getId()) {
+                        oi.setDistributorPartId(partNumber.getId());
                         oi.save();
                     }
                 } else {
-                    oi.setItemRef("");
+                    oi.setDistributorPartId(DbObject.UNKNOWN_ID);
                     oi.save();
                 }
             }
@@ -281,16 +245,23 @@ public class Order extends DbObject {
         return orderFile.isSuccess();
     }
 
-    public void setItemStates(int state) {
+//    public void setItemStates(int state) {
+//        for (OrderItem oi : getOrderItems()) {
+//            oi.getItem().setOrderState(state);
+//            oi.getItem().save();
+//        }
+//    }
+
+    public void updateItemStates() {
         for (OrderItem oi : getOrderItems()) {
-            oi.getItem().setOrderState(state);
-            oi.getItem().save();
+            oi.getItem().updateOrderState();
         }
     }
 
     public void updateItemAmounts() {
         for (OrderItem oi : getOrderItems()) {
             int current = oi.getItem().getAmount();
+            oi.getItem().setAmountType(Statics.ItemAmountTypes.EXACT);
             oi.getItem().setAmount(current + oi.getAmount());
             oi.getItem().save();
         }
@@ -403,7 +374,7 @@ public class Order extends DbObject {
     public List<OrderItem> missingOrderReferences() {
         List<OrderItem> items = new ArrayList<>();
         for (OrderItem oi : getOrderItems()) {
-            if (oi.getItemRef() == null || oi.getItemRef().isEmpty()) {
+            if (oi.getDistributorPartId() <= UNKNOWN_ID) {
                 items.add(oi);
             }
         }

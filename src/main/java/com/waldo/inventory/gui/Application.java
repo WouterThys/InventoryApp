@@ -6,6 +6,7 @@ import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -196,23 +197,24 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
-        beginWait();
-        try {
-            // Set tab
-            tabbedPane.setSelectedIndex(TAB_ORDERS);
-
-            // Update items
-            for (Item item : itemsToOrder) {
-                item.setOrderState(Statics.ItemOrderStates.PLANNED);
-                item.save();
-            }
-        } finally {
-            endWait();
-        }
         // Add
         Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
             // TODO Show error message
+        }
+
+        beginWait();
+        try {
+            // Switch tab
+            setSelectedTab(TAB_ORDERS);
+            // Update items
+            SwingUtilities.invokeLater(() -> {
+                for (Item item : itemsToOrder) {
+                    item.updateOrderState();
+                }
+            });
+        } finally {
+            endWait();
         }
     }
 

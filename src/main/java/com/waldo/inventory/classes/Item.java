@@ -2,10 +2,12 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Comparator;
+import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 
@@ -449,6 +451,22 @@ public class Item extends DbObject {
 
     public void setOrderState(int orderState) {
         this.orderState = orderState;
+    }
+
+    public void updateOrderState() {
+        int currentState = getOrderState();
+        Order lastOrderForItem = SearchManager.sm().findLastOrderForItem(id);
+        if (lastOrderForItem == null) {
+            orderState = Statics.ItemOrderStates.NONE;
+        } else {
+            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.NONE;
+            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.ORDERED;
+            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.PLANNED;
+            else orderState = Statics.ItemOrderStates.NONE;
+        }
+        if (currentState != getOrderState()) {
+            save();
+        }
     }
 
     public void setOrderState(String orderState) {

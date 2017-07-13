@@ -4,12 +4,14 @@ import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.PartNumber;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.IAutoTextField;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -67,7 +69,6 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Distributor d = (Distributor) e.getItem();
                 if (d != null) {
-                    // Save item if not saved yet
                     if (newItem.getId() > 0) {
                         // Find ref
                         partNumber = sm().findPartNumber(d.getId(), newItem.getId());
@@ -81,7 +82,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
             }
         });
 
-        itemRefField = new ITextField("Distributor Part No");
+        itemRefField = new ITextField("Distributor reference");
         saveButton = new JButton("Save");
         saveButton.setHorizontalAlignment(SwingConstants.RIGHT);
         saveButton.addActionListener(e -> setPartNumber());

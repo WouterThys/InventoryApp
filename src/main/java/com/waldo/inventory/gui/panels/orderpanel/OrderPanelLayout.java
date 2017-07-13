@@ -184,6 +184,10 @@ public abstract class OrderPanelLayout extends JPanel implements
         return orderItemId;
     }
 
+    public void tableClear() {
+        tableModel.setItemList(new ArrayList<>());
+    }
+
     public void tableAddOrderItems(List<OrderItem> orderItems) {
         tableModel.addItems(orderItems);
     }
@@ -554,7 +558,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (selectedOrder != null) {
                     int res = JOptionPane.showConfirmDialog(OrderPanelLayout.this, "Are you sure you want to delete \"" + selectedOrder.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
-                        selectedOrder.delete();
+                        selectedOrder.delete(); // Cascaded delete will delete order items too
                         selectedOrder = null;
                         selectedOrderItem = null;
                     }

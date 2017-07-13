@@ -108,20 +108,20 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void itemChanged(Item addedItem) {
-        application.beginWait();
-        try {
-            selectedItem = addedItem;
-            // Find and select in tree
-            selectDivision(addedItem);
-            // Update table items
-            updateTable(lastSelectedDivision);
-            // Select in items
-            selectItem(addedItem);
-            // Update detail panel
-            detailPanel.updateComponents(addedItem);
-        } finally {
-            application.endWait();
-        }
+            application.beginWait();
+            try {
+                selectedItem = addedItem;
+                // Find and select in tree
+                selectDivision(addedItem);
+                // Update table items
+                updateTable(lastSelectedDivision);
+                // Select in items
+                selectItem(addedItem);
+                // Update detail panel
+                detailPanel.updateComponents(addedItem);
+            } finally {
+                application.endWait();
+            }
     }
 
     private void selectDivision(Item selectedItem) {
@@ -241,7 +241,19 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarRefresh() {
-        updateComponents(lastSelectedDivision);
+        application.beginWait();
+        try {
+            for (Item item : getTableModel().getItemList()) {
+                item.updateOrderState();
+            }
+        } finally {
+            application.endWait();
+        }
+
+        updateTable(lastSelectedDivision);
+        updateEnabledComponents();
+
+        detailPanel.updateComponents(selectedItem);
     }
 
     @Override

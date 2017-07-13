@@ -17,7 +17,8 @@ public class OrderItem extends DbObject {
     private long itemId;
     private Item item;
     private int amount;
-    private String itemRef;
+    private long distributorPartId;
+    private PartNumber distributorPart;
 
     public OrderItem() {
         super(TABLE_NAME);
@@ -30,7 +31,7 @@ public class OrderItem extends DbObject {
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);
         statement.setInt(4, amount);
-        statement.setString(5, itemRef);
+        statement.setLong(5, distributorPartId);
         statement.execute();
     }
 
@@ -40,7 +41,7 @@ public class OrderItem extends DbObject {
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);
         statement.setInt(4, amount);
-        statement.setString(5, itemRef);
+        statement.setLong(5, distributorPartId);
         statement.setLong(6, id); // WHERE id
         statement.execute();
     }
@@ -57,7 +58,7 @@ public class OrderItem extends DbObject {
         orderItem.setOrderId(getOrderId());
         orderItem.setItemId(getItemId());
         orderItem.setAmount(getAmount());
-        orderItem.setItemRef(getItemRef());
+        orderItem.setDistributorPartId(getDistributorPartId());
         return orderItem;
     }
 
@@ -108,15 +109,20 @@ public class OrderItem extends DbObject {
         }
     }
 
-    public String getItemRef() {
-        if (itemRef == null) {
-            itemRef = "";
-        }
-        return itemRef;
+    public long getDistributorPartId() {
+        return distributorPartId;
     }
 
-    public void setItemRef(String itemRef) {
-        this.itemRef = itemRef;
+    public void setDistributorPartId(long distributorPartId) {
+        distributorPart = null;
+        this.distributorPartId = distributorPartId;
+    }
+
+    public PartNumber getDistributorPart() {
+        if (distributorPart == null) {
+            distributorPart = sm().findPartNumberById(distributorPartId);
+        }
+        return distributorPart;
     }
 
     public Order getOrder() {

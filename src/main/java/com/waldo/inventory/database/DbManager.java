@@ -4,13 +4,9 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.gui.Application;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
@@ -22,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.waldo.inventory.Utils.Statics.LogTypes.INFO;
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
@@ -1034,7 +1029,7 @@ public class DbManager implements TableChangedListener {
                     o.setOrderId(rs.getLong("orderid"));
                     o.setItemId(rs.getLong("itemid"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setItemRef(rs.getString("itemref"));
+                    o.setDistributorPartId(rs.getLong("itemref"));
 
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         o.setOnTableChangedListener(this);
@@ -1063,7 +1058,7 @@ public class DbManager implements TableChangedListener {
                     o.setOrderId(rs.getLong("orderid"));
                     o.setItemId(rs.getLong("itemid"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setItemRef(rs.getString("itemref"));
+                    o.setDistributorPartId(rs.getLong("itemref"));
                 }
             }
         } catch (SQLException e) {

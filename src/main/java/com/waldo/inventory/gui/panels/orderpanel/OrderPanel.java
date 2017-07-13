@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -25,7 +24,6 @@ import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class OrderPanel extends OrderPanelLayout {
 
@@ -74,7 +72,7 @@ public class OrderPanel extends OrderPanelLayout {
                 // Part number
                 PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
                 if (partNumber != null) {
-                    orderItem.setItemRef(partNumber.getItemRef());
+                    orderItem.setDistributorPartId(partNumber.getId());
                 }
 
                 orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
@@ -135,7 +133,8 @@ public class OrderPanel extends OrderPanelLayout {
         selectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
         application.beginWait();
         try {
-            selectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
+            //selectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
+            selectedOrder.updateItemStates();
         } finally {
             application.endWait();
         }
@@ -146,7 +145,8 @@ public class OrderPanel extends OrderPanelLayout {
         selectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
         application.beginWait();
         try {
-            selectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
+            //selectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
+            selectedOrder.updateItemStates();
             selectedOrder.updateItemAmounts();
         } finally {
             application.endWait();
@@ -282,6 +282,7 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = null;
                 selectedOrderItem = null;
 
+                tableClear();
                 tableSelectOrderItem(null);
                 treeDeleteOrder(order);
 
@@ -420,8 +421,17 @@ public class OrderPanel extends OrderPanelLayout {
     public void onToolBarRefresh() {
         try {
             application.beginWait();
-            treeUpdate();
             tableInitialize(selectedOrder);
+            final long orderId = treeUpdate();
+
+            SwingUtilities.invokeLater(() -> {
+                treeUpdate();
+                selectedOrder = SearchManager.sm().findOrderById(orderId);
+                treeSelectOrder(selectedOrder);
+
+                updateVisibleComponents();
+                updateEnabledComponents();
+            });
         } finally {
             application.endWait();
         }
@@ -434,13 +444,12 @@ public class OrderPanel extends OrderPanelLayout {
             if (dialog.showDialog() == IDialog.OK) {
                 List<Item> itemsToOrder = dialog.getItemsToOrder();
                 if (itemsToOrder != null) {
+                    addItemsToOrder(itemsToOrder, selectedOrder);
+
                     // Update item
                     for (Item item : itemsToOrder) {
-                        item.setOrderState(Statics.ItemOrderStates.PLANNED);
-                        item.save();
+                        item.updateOrderState();
                     }
-
-                    addItemsToOrder(itemsToOrder, selectedOrder);
                 }
             }
         }

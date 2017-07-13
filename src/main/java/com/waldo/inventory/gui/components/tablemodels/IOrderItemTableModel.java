@@ -3,10 +3,8 @@ package com.waldo.inventory.gui.components.tablemodels;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.PartNumber;
 import com.waldo.inventory.database.SearchManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
@@ -23,7 +21,7 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
         OrderItem orderItem = getItemAt(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
-                case -1:
+                case -1: // Reference to object itself
                     return orderItem;
                 case 0: // Name
                     return orderItem.getItem().getName();
@@ -36,7 +34,12 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                     }
                     return "";
                 case 3: // Reference
-                    return orderItem.getItemRef();
+                    PartNumber pn = orderItem.getDistributorPart();
+                    if (pn != null) {
+                        return pn.getItemRef();
+                    } else {
+                        return "";
+                    }
                 case 4: // Amount
                     return orderItem.getAmount();
                 case 5: // Price
@@ -50,6 +53,6 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return ((columnIndex == 3) || (columnIndex == 4)); // Reference and price are editable
+        return false;
     }
 }

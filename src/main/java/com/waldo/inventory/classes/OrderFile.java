@@ -120,7 +120,7 @@ public class OrderFile {
         StringBuilder sb = new StringBuilder();
 
         for (OrderItem oi : order.getOrderItems()) {
-            sb.append(oi.getItemRef()).append(SEPARATOR);
+            sb.append(oi.getDistributorPartId()).append(SEPARATOR);
             sb.append(oi.getAmount()).append('\n');
             //String description = oi.getOrderItem().getDescription().replace(',', ' ');
             //sb.append(description).append('\n');

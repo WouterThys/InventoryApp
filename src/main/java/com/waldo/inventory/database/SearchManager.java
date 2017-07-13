@@ -578,6 +578,25 @@ public class SearchManager {
         return null;
     }
 
+    public PartNumber findPartNumberById(long id) {
+        for (PartNumber pn : db().getPartNumbers()) {
+            if (pn.getId() == id) {
+                return  pn;
+            }
+        }
+        return null;
+    }
+
+    public List<PartNumber> getPartNumbersForDistributor(long id) {
+        List<PartNumber> partNumbers = new ArrayList<>();
+        for (PartNumber pn : db().getPartNumbers()) {
+            if (pn.getDistributorId() == id) {
+                partNumbers.add(pn);
+            }
+        }
+        return partNumbers;
+    }
+
     public List<Order> findOrdersForItem(long itemId) {
         List<Order> orders = new ArrayList<>();
         for (OrderItem oi : db().getOrderItems()) {
@@ -586,6 +605,21 @@ public class SearchManager {
             }
         }
         return orders;
+    }
+
+    /**
+     * Last order where the item in appeared
+     * @param itemId: Id of the item
+     * @return last order
+     */
+    public Order findLastOrderForItem(long itemId) {
+        List<Order> orders = findOrdersForItem(itemId);
+        if (orders.size() == 0) return null;
+        else if (orders.size() == 1) return orders.get(0);
+        else {
+            orders.sort(new Order.OrderAllOrders());
+            return orders.get(orders.size()-1); // Return the last one
+        }
     }
 
     public PackageType findPackageTypeById(long id) {

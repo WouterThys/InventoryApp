@@ -179,7 +179,7 @@ public abstract class DbObject {
         };
         worker.execute();
         try {
-            worker.get(10, TimeUnit.SECONDS);
+            worker.get(2, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.error("Failed to save object.", e);
         }

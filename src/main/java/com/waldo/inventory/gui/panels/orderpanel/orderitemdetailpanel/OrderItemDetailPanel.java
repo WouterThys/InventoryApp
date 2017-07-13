@@ -37,12 +37,11 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
     private void saveOrderItem() {
         if (orderItem != null) {
             String itemRef = itemRefTf.getText().trim();
+
             // Order item
             int amount = ((Number)amountTf.getValue()).intValue();
             orderItem.setAmount(amount);
-            orderItem.setItemRef(itemRef);
-            orderItem.save();
-            // Reference tabel
+            // Reference table
             PartNumber number = SearchManager.sm().findPartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
             if (number == null) {
                 if (!itemRef.isEmpty()) {
@@ -54,6 +53,8 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
                 number.setItemRef(itemRef);
                 number.save();
             }
+            orderItem.setDistributorPartId(number.getId());
+            orderItem.save();
         }
     }
 }
