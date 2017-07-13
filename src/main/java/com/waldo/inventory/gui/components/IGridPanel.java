@@ -1,12 +1,15 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +104,8 @@ public class IGridPanel<K extends DbObject, T, V extends ArrayList<T>> extends J
                 } else {
                     name = o.getClass().getSimpleName();
                 }
-                ITileView view = new ITileView(k.getIconPath(), name, k.getId());
+                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), k.getIconPath());
+                ITileView view = new ITileView(path.toString(), name, k.getId());
                 if (file != null) {
                     view.setFile(file);
                 }

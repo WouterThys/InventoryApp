@@ -2,7 +2,11 @@ package com.waldo.inventory.gui.panels.projectpanel.projectdetails;
 
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ProjectDetailsPanel extends ProjectDetailsPanelLayout {
 
@@ -30,7 +34,10 @@ public class ProjectDetailsPanel extends ProjectDetailsPanelLayout {
     }
 
     private void updateIcon(Project project) {
-        iconLabel.setIcon(project.getIconPath(), 128, 128);
+        if (!project.getIconPath().isEmpty()) {
+            Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgProjectsPath(), project.getIconPath());
+            iconLabel.setIcon(path.toString(), 128, 128);
+        }
     }
 
     private void updateTextFields(Project project) {

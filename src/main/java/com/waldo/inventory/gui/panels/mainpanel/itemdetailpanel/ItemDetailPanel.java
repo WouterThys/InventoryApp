@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
@@ -10,8 +11,11 @@ import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
@@ -107,7 +111,8 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void updateIcon(Item item) {
-        iconLabel.setIcon(item.getIconPath());
+        Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+        iconLabel.setIcon(path.toString());
     }
 
     private void updateTextFields(Item item) {

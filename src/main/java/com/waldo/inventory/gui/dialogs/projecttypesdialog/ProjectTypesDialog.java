@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.projecttypesdialog;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -14,6 +15,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -68,7 +71,8 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
             detailName.setText(selectedProjectType.getName());
 
             if (!selectedProjectType.getIconPath().isEmpty()) {
-                detailLogo.setIcon(selectedProjectType.getIconPath(), 48,48);
+                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), selectedProjectType.getIconPath());
+                detailLogo.setIcon(path.toString(), 48,48);
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }

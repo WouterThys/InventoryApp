@@ -2,12 +2,15 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -74,7 +77,8 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             detailWebsite.setText(selectedDistributor.getWebsite());
 
             if (!selectedDistributor.getIconPath().isEmpty()) {
-                detailLogo.setIcon(selectedDistributor.getIconPath());
+                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), selectedDistributor.getIconPath());
+                detailLogo.setIcon(path.toString());
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }

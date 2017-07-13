@@ -3,12 +3,15 @@ package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -64,7 +67,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             detailWebsite.setText(selectedManufacturer.getWebsite());
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
-                detailLogo.setIcon(selectedManufacturer.getIconPath(), 48,48);
+                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), selectedManufacturer.getIconPath());
+                detailLogo.setIcon(path.toString(), 48,48);
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }

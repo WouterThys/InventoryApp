@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectpanel.projecttypedetails;
 
 import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -11,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -139,7 +142,14 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
             if (object instanceof ProjectType) {
                 projectType = (ProjectType) object;
 
-                typeIconLbl.setIcon(projectType.getIconPath(), 48,48);
+                if (!projectType.getIconPath().isEmpty()) {
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectType.getIconPath());
+                    typeIconLbl.setIcon(path.toString(), 48,48);
+                } else {
+                    typeIconLbl.setIcon(imageResource.readImage("Common.Unknown"));
+                }
+
+
                 nameTf.setText("name"); //FileUtils.formatFileNameString(projectType.get)
 
                 if (projectType.isUseDefaultLauncher()) {

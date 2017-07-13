@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.Vector;
 
@@ -252,7 +255,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             Manufacturer m = (Manufacturer) e.getItem();
             if (m != null) {
                 if (!m.getIconPath().isEmpty()) {
-                    iconLabel.setIcon(m.getIconPath(), 100, 100);
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
+                    iconLabel.setIcon(path.toString(), 100, 100);
                 }
             }
         });
@@ -547,7 +551,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             try {
                 Manufacturer m = sm().findManufacturerById(newItem.getManufacturerId());
                 if (m != null && !m.getIconPath().isEmpty()) {
-                    iconLabel.setIcon(m.getIconPath(), 100,100);
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
+                    iconLabel.setIcon(path.toString(), 100, 100);
+                } else {
+                    iconLabel.setIcon(imageResource.readImage("Common.Unknown"));
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
