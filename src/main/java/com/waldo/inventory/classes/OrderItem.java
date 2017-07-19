@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,6 +32,9 @@ public class OrderItem extends DbObject {
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);
         statement.setInt(4, amount);
+        if (distributorPartId < UNKNOWN_ID) {
+            distributorPartId = UNKNOWN_ID;
+        }
         statement.setLong(5, distributorPartId);
         statement.execute();
     }
@@ -41,6 +45,9 @@ public class OrderItem extends DbObject {
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);
         statement.setInt(4, amount);
+        if (distributorPartId < UNKNOWN_ID) {
+            distributorPartId = UNKNOWN_ID;
+        }
         statement.setLong(5, distributorPartId);
         statement.setLong(6, id); // WHERE id
         statement.execute();
@@ -116,6 +123,15 @@ public class OrderItem extends DbObject {
     public void setDistributorPartId(long distributorPartId) {
         distributorPart = null;
         this.distributorPartId = distributorPartId;
+    }
+
+    public void setDistributorPartId(String ref) {
+        PartNumber number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
+        if (number == null) {
+            number = new PartNumber(getOrder().getDistributorId(), getItemId());
+        }
+        number.setItemRef(ref);
+        distributorPartId = number.getId();
     }
 
     public PartNumber getDistributorPart() {

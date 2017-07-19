@@ -43,7 +43,7 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
     @Override
     public void initializeComponents() {
         itemRefTf = new ITextField("Item ref");
-        itemRefTf.addEditedListener(this, "itemRef");
+        itemRefTf.addEditedListener(this, "distributorPartId"); 
         amountTf = new IFormattedTextField(NumberFormat.getNumberInstance());
         amountTf.addEditedListener(this, "amount");
 

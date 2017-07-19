@@ -19,7 +19,6 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
         addBtn.addActionListener(e -> incrementAmount());
         minBtn.addActionListener(e -> decrementAmount());
         saveBtn.addActionListener(e -> saveOrderItem());
-
     }
 
     private void incrementAmount() {
@@ -48,13 +47,16 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
                     number = new PartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
                     number.setItemRef(itemRef);
                     number.save();
+                    orderItem.setDistributorPartId(number.getId());
                 }
             } else {
                 number.setItemRef(itemRef);
                 number.save();
+                orderItem.setDistributorPartId(number.getId());
             }
-            orderItem.setDistributorPartId(number.getId());
+
             orderItem.save();
+            saveBtn.setEnabled(false);
         }
     }
 }

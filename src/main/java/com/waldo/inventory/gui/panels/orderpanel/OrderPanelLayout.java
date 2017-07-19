@@ -23,6 +23,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -223,23 +224,45 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
         tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
 
-        if (order.isOrdered()) {
-            tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
-            tbSetOrderedBtn.setText("Set received");
-        } else {
-            tbDateOrderedLbl.setText("Not ordered");
-            tbSetOrderedBtn.setText("Set ordered");
+        switch(order.getOrderState()) {
+            case Statics.ItemOrderStates.PLANNED:
+                tbDateOrderedLbl.setText("Not ordered");
+                tbSetOrderedBtn.setText("Set ordered");
+                tbDateReceivedLbl.setText("Not received");
+                tbSetOrderedBtn.setVisible(true);
+                tbOrderButton.setText("Order!");
+                break;
+            case Statics.ItemOrderStates.ORDERED:
+                tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
+                tbSetOrderedBtn.setText("Set received");
+                tbDateReceivedLbl.setText("Not received");
+                tbSetOrderedBtn.setVisible(true);
+                break;
+            case Statics.ItemOrderStates.RECEIVED:
+                tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
+                tbSetOrderedBtn.setVisible(false);
+                break;
+            default:break;
+
         }
 
-        if (order.isReceived()) {
-            tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
-            tbSetOrderedBtn.setVisible(false);
-            //tbOrderButton.setText("Order again");
-        } else {
-            tbDateReceivedLbl.setText("Not received");
-            tbSetOrderedBtn.setVisible(true);
-            tbOrderButton.setText("Order!");
-        }
+//        if (order.isOrdered()) {
+//            tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
+//            tbSetOrderedBtn.setText("Set received");
+//        } else {
+//            tbDateOrderedLbl.setText("Not ordered");
+//            tbSetOrderedBtn.setText("Set ordered");
+//        }
+//
+//        if (order.isReceived()) {
+//            tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
+//            tbSetOrderedBtn.setVisible(false);
+//            //tbOrderButton.setText("Order again");
+//        } else {
+//            tbDateReceivedLbl.setText("Not received");
+//            tbSetOrderedBtn.setVisible(true);
+//            tbOrderButton.setText("Order!");
+//        }
 
         tbOrderButton.setVisible(!order.isOrdered());// || order.isReceived());
 
@@ -509,18 +532,21 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
         tbDistributorCb = new JComboBox<>(distributorCbModel);
         tbDistributorCb.addItemListener(event -> {
-//            if (event.getStateChange() == ItemEvent.SELECTED) { TODO
-//                if (selectedOrder != null) {
-//                    Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
-//                    if (selectedOrder.getDistributor().getId() != d.getId()) {
-//                        selectedOrder.setDistributor(d);
-//                        selectedOrder.updateItemReferences();
-//                        selectedOrder.save();
-//                        selectedOrderItem = null;
-//                        updateTable(selectedOrder);
-//                    }
-//                }
-//            }
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                if (selectedOrder != null) {
+                    application.beginWait();
+                    try {
+                        Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
+                        if (selectedOrder.getDistributor().getId() != d.getId()) {
+                            selectedOrder.setDistributor(d);
+                            selectedOrder.updateItemReferences();
+                            SwingUtilities.invokeLater(() -> selectedOrder.save());
+                        }
+                    } finally {
+                        application.endWait();
+                    }
+                }
+            }
         });
 
         tbOrderButton = new JButton("Order!");

@@ -197,24 +197,22 @@ public class Application extends JFrame implements ChangeListener {
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
-        // Add
-        Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
-        if (failedItems != null && failedItems.size() > 0) {
-            // TODO Show error message
-        }
-
         beginWait();
         try {
             // Switch tab
             setSelectedTab(TAB_ORDERS);
             // Update items
-            SwingUtilities.invokeLater(() -> {
-                for (Item item : itemsToOrder) {
-                    item.updateOrderState();
-                }
-            });
+            for (Item item : itemsToOrder) {
+                item.setOrderState(Statics.ItemOrderStates.PLANNED);
+                item.save();
+            }
         } finally {
             endWait();
+        }
+        // Add
+        Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
+        if (failedItems != null && failedItems.size() > 0) {
+            // TODO Show error message
         }
     }
 

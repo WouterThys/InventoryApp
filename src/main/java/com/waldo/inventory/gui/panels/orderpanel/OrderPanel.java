@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -305,15 +306,15 @@ public class OrderPanel extends OrderPanelLayout {
                 }
                 treeSelectOrder(selectedOrder);
                 // Select and highlight in table
-                selectedOrderItem = orderItem;
-                tableAddOrderItem(selectedOrderItem);
-                tableSelectOrderItem(orderItem);
+                SwingUtilities.invokeLater(() -> {
+                    selectedOrderItem = orderItem;
+                    tableAddOrderItem(selectedOrderItem);
+                    tableSelectOrderItem(orderItem);
 
-
-
-                // Update stuff
-                updateEnabledComponents();
-                updateVisibleComponents();
+                    // Update stuff
+                    updateEnabledComponents();
+                    updateVisibleComponents();
+                });
             }
 
             @Override
@@ -321,11 +322,16 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = sm().findOrderById(newOrderItem.getOrderId());
                 selectedOrderItem = newOrderItem;
 
-                tableSelectOrderItem(selectedOrderItem);
-                treeSelectOrder(selectedOrder);
+                final long orderItemId = tableUpdate();
 
-                updateVisibleComponents();
-                updateEnabledComponents();
+                SwingUtilities.invokeLater(() -> {
+                    selectedOrderItem = SearchManager.sm().findOrderItemById(orderItemId);
+                    tableSelectOrderItem(selectedOrderItem);
+                    treeSelectOrder(selectedOrder);
+
+                    updateVisibleComponents();
+                    updateEnabledComponents();
+                });
             }
 
             @Override
@@ -409,6 +415,7 @@ public class OrderPanel extends OrderPanelLayout {
                 itemDetailPanel.updateComponents(null);
                 orderItemDetailPanel.updateComponents(null);
             }
+            updateToolBar(selectedOrder);
             updateVisibleComponents();
             updateEnabledComponents();
         }
@@ -444,12 +451,13 @@ public class OrderPanel extends OrderPanelLayout {
             if (dialog.showDialog() == IDialog.OK) {
                 List<Item> itemsToOrder = dialog.getItemsToOrder();
                 if (itemsToOrder != null) {
-                    addItemsToOrder(itemsToOrder, selectedOrder);
-
                     // Update item
                     for (Item item : itemsToOrder) {
-                        item.updateOrderState();
+                        item.setOrderState(Statics.ItemOrderStates.PLANNED);
+                        item.save();
                     }
+
+                    addItemsToOrder(itemsToOrder, selectedOrder);
                 }
             }
         }
