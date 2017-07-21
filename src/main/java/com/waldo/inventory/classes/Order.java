@@ -27,7 +27,8 @@ public class Order extends DbObject {
     private Date dateReceived;
     private List<OrderItem> orderItems;
     private Distributor distributor;
-    private OrderFile orderFile = new OrderFile(this);
+    private long orderFileId;
+    private OrderFile orderFile = new OrderFile(this); // TODO
     private String orderReference;
     private String trackingNumber;
 
@@ -41,7 +42,7 @@ public class Order extends DbObject {
         statement.setDate(ndx++, dateModified);
         statement.setDate(ndx++, dateReceived);
         statement.setLong(ndx++, distributor.getId());
-        statement.setString(ndx++, orderFile.getOrderFileName());
+        statement.setLong(ndx++, orderFileId);
         statement.setString(ndx++, orderReference);
         statement.setString(ndx++, trackingNumber);
         return ndx;
@@ -340,6 +341,14 @@ public class Order extends DbObject {
         } else {
             return Statics.ItemOrderStates.NONE;
         }
+    }
+
+    public long getOrderFileId() {
+        return orderFileId;
+    }
+
+    public void setOrderFileId(long orderFileId) {
+        this.orderFileId = orderFileId;
     }
 
     public OrderFile getOrderFile() {

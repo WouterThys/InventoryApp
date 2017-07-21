@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
+import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
@@ -29,7 +30,9 @@ public class DbManager implements TableChangedListener {
     public static final int OBJECT_INSERT = 0;
     public static final int OBJECT_UPDATE = 1;
     public static final int OBJECT_DELETE = 2;
+    public static final int OBJECT_SELECT = 3;
 
+    private static final String SQL_ALL = ".sqlSelect.all";
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 
@@ -49,6 +52,8 @@ public class DbManager implements TableChangedListener {
 
 
     // Events
+    private DbErrorListener errorListener;
+
     private List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
@@ -92,7 +97,7 @@ public class DbManager implements TableChangedListener {
         if (s != null) {
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-            dataSource.setUrl(s.createMySqlUrl());
+            dataSource.setUrl(s.createMySqlUrl()+"?zeroDateTimeBehavior=convertToNull");
             dataSource.setUsername(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
             LOG.info("Database initialized with connection: " + s.createMySqlUrl());
@@ -110,6 +115,10 @@ public class DbManager implements TableChangedListener {
 
             initialized = true;
         }
+    }
+
+    public void addErrorListener(DbErrorListener errorListener) {
+        this.errorListener = errorListener;
     }
 
     private void close() {
@@ -433,7 +442,7 @@ public class DbManager implements TableChangedListener {
                 notifyListeners(changedHow, (Distributor)newObject, (Distributor)oldObject, onDistributorsChangedListenerList);
                 break;
             case DistributorPart.TABLE_NAME:
-                updatePartNumbers();
+                updateDistributorParts();
                 notifyListeners(changedHow, (DistributorPart)newObject, (DistributorPart)oldObject, onPartNumbersChangedListenerList);
                 break;
             case PackageType.TABLE_NAME:
@@ -472,14 +481,14 @@ public class DbManager implements TableChangedListener {
     private void updateItems() {
         items = new ArrayList<>();
         Status().setMessage("Fetching items from DB");
-
-        String sql = scriptResource.readString("Items.sqlSelect.all");
+        Item i = null;
+        String sql = scriptResource.readString(Item.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Item i = new Item();
+                    i = new Item();
                     i.setId(rs.getLong("id"));
                     i.setName(rs.getString("name"));
                     i.setIconPath(rs.getString("iconPath"));
@@ -498,14 +507,19 @@ public class DbManager implements TableChangedListener {
                     i.setPackageId(rs.getLong("packageId"));
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
-                    i.setRemarks(rs.getString("remarks"));
+                    i.setRemarks(rs.getString("remark"));
 
                     i.setOnTableChangedListener(this);
                     items.add(i);
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database: "+ e);
+            DbErrorObject object = new DbErrorObject(i, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -522,14 +536,14 @@ public class DbManager implements TableChangedListener {
     private void updateCategories() {
         categories = new ArrayList<>();
         Status().setMessage("Fetching categories from DB");
-
-        String sql = scriptResource.readString("categories.sqlSelect.all");
+        Category c = null;
+        String sql = scriptResource.readString(Category.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Category c = new Category();
+                    c = new Category();
                     c.setId(rs.getLong("id"));
                     c.setName(rs.getString("name"));
                     c.setIconPath(rs.getString("iconpath"));
@@ -541,31 +555,14 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch categories from database");
+            DbErrorObject object = new DbErrorObject(c, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         categories.add(0, Category.getUnknownCategory());
-    }
-
-    public Category getCategoryFromDb(long categoryId) {
-        Category c = null;
-        Status().setMessage("Fetching categories from DB");
-
-        String sql = "SELECT * FROM " + Category.TABLE_NAME + " WHERE id = " + categoryId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    c = new Category();
-                    c.setId(rs.getLong("id"));
-                    c.setName(rs.getString("name"));
-                    c.setIconPath(rs.getString("iconpath"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch categories from database");
-        }
-        return c;
     }
 
     /*
@@ -581,14 +578,14 @@ public class DbManager implements TableChangedListener {
     private void updateProducts() {
         products = new ArrayList<>();
         Status().setMessage("Fetching products from DB");
-
-        String sql = "SELECT * FROM " + Product.TABLE_NAME + " ORDER BY name";
+        Product p = null;
+        String sql = scriptResource.readString(Product.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Product p = new Product();
+                    p = new Product();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
@@ -601,57 +598,15 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch products from database");
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
 
         products.add(0, Product.getUnknownProduct());
-    }
-
-    public Product getProductFromDb(long productId) {
-        Product p = null;
-        String sql = "SELECT * FROM " + Product.TABLE_NAME + " WHERE id = " + productId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new Product();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-                    p.setIconPath(rs.getString("iconpath"));
-                    p.setCategoryId(rs.getLong("categoryid"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch products from database");
-        }
-        return p;
-    }
-
-    public void getProductsAsync(final List<Product> products) {
-        if (products != null) {
-            products.clear();
-        }
-        SwingWorker<Void, Product> worker = new SwingWorker<Void, Product>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<Product> productList = getProducts();
-                for(Product p : productList) {
-                    publish(p);
-                }
-                return null;
-            }
-
-            @Override
-            protected void process(List<Product> chunks) {
-                for (Product c : chunks) {
-                    if (products != null) {
-                        products.add(c);
-                    }
-                }
-            }
-        };
-        worker.execute();
     }
 
     /*
@@ -667,14 +622,14 @@ public class DbManager implements TableChangedListener {
     private void updateTypes() {
         types = new ArrayList<>();
         Status().setMessage("Fetching types from DB");
-
-        String sql = "SELECT * FROM " + Type.TABLE_NAME + " ORDER BY name";
+        Type t = null;
+        String sql = scriptResource.readString(Type.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Type t = new Type();
+                    t = new Type();
                     t.setId(rs.getLong("id"));
                     t.setName(rs.getString("name"));
                     t.setIconPath(rs.getString("iconpath"));
@@ -687,58 +642,14 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
+            DbErrorObject object = new DbErrorObject(t, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         types.add(0, Type.getUnknownType());
-    }
-
-    public Type getTypeFromDb(long typeId) {
-        Type t = null;
-        Status().setMessage("Fetching types from DB");
-
-        String sql = "SELECT * FROM " + Type.TABLE_NAME + " WHERE id = " + typeId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    t = new Type();
-                    t.setId(rs.getLong("id"));
-                    t.setName(rs.getString("name"));
-                    t.setIconPath(rs.getString("iconpath"));
-                    t.setProductId(rs.getLong("productid"));
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Failed to fetch types from database", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return t;
-    }
-
-    public void getTypesAsync(final List<Type> types) {
-        if (types != null) {
-            types.clear();
-        }
-        SwingWorker<Void, Type> worker = new SwingWorker<Void, Type>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<Type> typeList = getTypes();
-                for(Type p : typeList) {
-                    publish(p);
-                }
-                return null;
-            }
-
-            @Override
-            protected void process(List<Type> chunks) {
-                for (Type c : chunks) {
-                    if (types != null) {
-                        types.add(c);
-                    }
-                }
-            }
-        };
-        worker.execute();
     }
 
     /*
@@ -754,14 +665,14 @@ public class DbManager implements TableChangedListener {
     private void updateManufacturers() {
         manufacturers = new ArrayList<>();
         Status().setMessage("Fetching manufacturers from DB");
-
-        String sql = "SELECT * FROM " + Manufacturer.TABLE_NAME + " ORDER BY name";
+        Manufacturer m = null;
+        String sql = scriptResource.readString(Manufacturer.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Manufacturer m = new Manufacturer();
+                    m = new Manufacturer();
                     m.setId(rs.getLong("id"));
                     m.setName(rs.getString("name"));
                     m.setWebsite(rs.getString("website"));
@@ -774,32 +685,14 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch manufacturers from databasee");
+            DbErrorObject object = new DbErrorObject(m, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
-    }
-
-    public Manufacturer getManufacturerFromDb(long manufacturerId) {
-        Manufacturer m = null;
-        Status().setMessage("Fetching manufacturers from DB");
-
-        String sql = "SELECT * FROM " + Manufacturer.TABLE_NAME + " WHERE id = " + manufacturerId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    m = new Manufacturer();
-                    m.setId(rs.getLong("id"));
-                    m.setName(rs.getString("name"));
-                    m.setWebsite(rs.getString("website"));
-                    m.setIconPath(rs.getString("iconpath"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch manufacturers from databasee");
-        }
-       return m;
     }
 
     /*
@@ -815,14 +708,14 @@ public class DbManager implements TableChangedListener {
     private void updateLocations() {
         locations = new ArrayList<>();
         Status().setMessage("Fetching locations from DB");
-
-        String sql = "SELECT * FROM " + Location.TABLE_NAME + " ORDER BY name";
+        Location l = null;
+        String sql = scriptResource.readString(Location.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Location l = new Location();
+                    l = new Location();
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconpath"));
@@ -834,33 +727,15 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch locations from database");
+            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         locations.add(0, Location.getUnknownLocation());
     }
-
-    public Location getLocationFromDb(long locationId) {
-        Location l = null;
-        Status().setMessage("Fetching locations from DB");
-
-        String sql = "SELECT * FROM " + Location.TABLE_NAME + " WHERE id = " + locationId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    l = new Location();
-                    l.setId(rs.getLong("id"));
-                    l.setName(rs.getString("name"));
-                    l.setIconPath(rs.getString("iconpath"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch locations from database");
-        }
-        return l;
-    }
-
     /*
     *                  ORDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -874,44 +749,8 @@ public class DbManager implements TableChangedListener {
     private void updateOrders()    {
         orders = new ArrayList<>();
         Status().setMessage("Fetching orders from DB");
-
-        String sql = "SELECT * FROM " + Order.TABLE_NAME + " ORDER BY name";
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    Order o = new Order();
-                    o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
-                    o.setIconPath(rs.getString("iconpath"));
-                    o.setDateOrdered(rs.getDate("dateordered"));
-                    o.setDateModified(rs.getDate("datemodified"));
-                    o.setDateReceived(rs.getDate("datereceived"));
-                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
-                    o.setOrderFile(rs.getString("orderfile"));
-                    //o.setOrderItems(getOrderedItems(o.getId()));
-                    o.setOrderReference(rs.getString("orderreference"));
-                    o.setTrackingNumber(rs.getString("trackingnumber"));
-
-                    if (o.getId() != 1) {
-                        o.setOnTableChangedListener(this);
-                        orders.add(o);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database");
-        }
-        orders.add(0, Order.getUnknownOrder());
-        orders.sort(new Order.OrderAllOrders());
-    }
-
-    public Order getOrderFromDb(long orderId) {
         Order o = null;
-        Status().setMessage("Fetching orders from DB");
-
-        String sql = "SELECT * FROM " + Order.TABLE_NAME + " WHERE id = " + orderId;
+        String sql = scriptResource.readString(Order.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -920,21 +759,32 @@ public class DbManager implements TableChangedListener {
                     o = new Order();
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
-                    o.setIconPath(rs.getString("iconpath"));
-                    o.setDateOrdered(rs.getDate("dateordered"));
-                    o.setDateModified(rs.getDate("datemodified"));
-                    o.setDateReceived(rs.getDate("datereceived"));
-                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorid")));
-                    o.setOrderFile(rs.getString("orderfile"));
+                    o.setIconPath(rs.getString("iconPath"));
+                    o.setDateOrdered(rs.getDate("dateOrdered"));
+                    o.setDateModified(rs.getDate("dateModified"));
+                    o.setDateReceived(rs.getDate("dateReceived"));
+                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorId")));
+                    o.setOrderFileId(rs.getLong("orderFileId"));
                     //o.setOrderItems(getOrderedItems(o.getId()));
-                    o.setOrderReference(rs.getString("orderreference"));
-                    o.setTrackingNumber(rs.getString("trackingnumber"));
+                    o.setOrderReference(rs.getString("orderReference"));
+                    o.setTrackingNumber(rs.getString("trackingNumber"));
+
+                    if (o.getId() != 1) {
+                        o.setOnTableChangedListener(this);
+                        orders.add(o);
+                    }
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database");
+            DbErrorObject object = new DbErrorObject(o, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
-        return o;
+        orders.add(0, Order.getUnknownOrder());
+        orders.sort(new Order.OrderAllOrders());
     }
 
     /*
@@ -950,37 +800,8 @@ public class DbManager implements TableChangedListener {
     private void updateOrderItems()    {
         orderItems = new ArrayList<>();
         Status().setMessage("Fetching order items from DB");
-
-        String sql = "SELECT * FROM " + OrderItem.TABLE_NAME + " ORDER BY name";
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    OrderItem o = new OrderItem();
-                    o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
-                    o.setOrderId(rs.getLong("orderid"));
-                    o.setItemId(rs.getLong("itemid"));
-                    o.setAmount(rs.getInt("amount"));
-                    o.setDistributorPartId(rs.getLong("itemref"));
-
-                    if (o.getId() != DbObject.UNKNOWN_ID) {
-                        o.setOnTableChangedListener(this);
-                        orderItems.add(o);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database");
-        }
-    }
-
-    public OrderItem getOrderItemFromDb(long orderItemId) {
         OrderItem o = null;
-        Status().setMessage("Fetching order items from DB");
-
-        String sql = "SELECT * FROM " + OrderItem.TABLE_NAME + " WHERE id = " + orderItemId;
+        String sql = scriptResource.readString(OrderItem.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -989,16 +810,25 @@ public class DbManager implements TableChangedListener {
                     o = new OrderItem();
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
-                    o.setOrderId(rs.getLong("orderid"));
-                    o.setItemId(rs.getLong("itemid"));
+                    o.setOrderId(rs.getLong("orderId"));
+                    o.setItemId(rs.getLong("itemId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setDistributorPartId(rs.getLong("itemref"));
+                    o.setDistributorPartId(rs.getLong("distributorPartId"));
+
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        o.setOnTableChangedListener(this);
+                        orderItems.add(o);
+                    }
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch order item from database");
+            DbErrorObject object = new DbErrorObject(o, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
-        return o;
     }
 
     public List<OrderItem> getOrderedItems(long orderId) {
@@ -1043,17 +873,17 @@ public class DbManager implements TableChangedListener {
     private void updateDistributors()    {
         distributors = new ArrayList<>();
         Status().setMessage("Fetching distributors from DB");
-
-        String sql = "SELECT * FROM " + Distributor.TABLE_NAME + " ORDER BY name";
+        Distributor d = null;
+        String sql = scriptResource.readString(Distributor.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Distributor d = new Distributor();
+                    d = new Distributor();
                     d.setId(rs.getLong("id"));
                     d.setName(rs.getString("name"));
-                    d.setIconPath(rs.getString("iconpath"));
+                    d.setIconPath(rs.getString("iconPath"));
                     d.setWebsite(rs.getString("website"));
 
                     if (d.getId() != DbObject.UNKNOWN_ID) {
@@ -1063,31 +893,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch distributors from database");
-        }
-    }
-
-    public Distributor getDistributorFromDb(long distributorId) {
-        Distributor d = null;
-        Status().setMessage("Fetching order items from DB");
-
-        String sql = "SELECT * FROM " + Distributor.TABLE_NAME + " WHERE id = " + distributorId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    d = new Distributor();
-                    d.setId(rs.getLong("id"));
-                    d.setName(rs.getString("name"));
-                    d.setIconPath(rs.getString("iconpath"));
-                    d.setWebsite(rs.getString("website"));
-                }
+            DbErrorObject object = new DbErrorObject(d, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch distributor from database");
         }
-        return d;
     }
 
 
@@ -1096,45 +908,16 @@ public class DbManager implements TableChangedListener {
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<DistributorPart> getDistributorParts()    {
         if (distributorParts == null) {
-            updatePartNumbers();
+            updateDistributorParts();
         }
         return distributorParts;
     }
 
-    private void updatePartNumbers()    {
+    private void updateDistributorParts()    {
         distributorParts = new ArrayList<>();
-        Status().setMessage("Fetching part numbers from DB");
-
-        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + ".sqlSelectAll");
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    DistributorPart pn = new DistributorPart();
-                    pn.setId(rs.getLong("id"));
-                    pn.setName(rs.getString("name"));
-                    pn.setIconPath(rs.getString("iconpath"));
-                    pn.setDistributorId(rs.getLong("distributorid"));
-                    pn.setItemId(rs.getLong("itemid"));
-                    pn.setItemRef(rs.getString("distributoritemref"));
-
-                    if (pn.getId() != DbObject.UNKNOWN_ID) {
-                        pn.setOnTableChangedListener(this);
-                        distributorParts.add(pn);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch part numbers from database");
-        }
-    }
-
-    public DistributorPart getPartNumberFromDb(long partNumberId) {
+        Status().setMessage("Fetching distributor parts from DB");
         DistributorPart pn = null;
-        Status().setMessage("Fetching part number from DB");
-
-        String sql = "SELECT * FROM " + DistributorPart.TABLE_NAME + " WHERE id = " + partNumberId;
+        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1143,44 +926,25 @@ public class DbManager implements TableChangedListener {
                     pn = new DistributorPart();
                     pn.setId(rs.getLong("id"));
                     pn.setName(rs.getString("name"));
-                    pn.setIconPath(rs.getString("iconpath"));
-                    pn.setDistributorId(rs.getLong("distributorid"));
-                    pn.setItemId(rs.getLong("itemid"));
-                    pn.setItemRef(rs.getString("distributoritemref"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch part number from database");
-        }
-        return pn;
-    }
+                    pn.setIconPath(rs.getString("iconPath"));
+                    pn.setDistributorId(rs.getLong("distributorId"));
+                    pn.setItemId(rs.getLong("itemId"));
+                    pn.setItemRef(rs.getString("distributorPartName"));
 
-    public DistributorPart findPartNumberFromDb(long distributorId, long itemId) {
-        DistributorPart pn = null;
-        String sql = scriptResource.readString("partnumbers.sqlFindItemRef");
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-                stmt.setLong(1, distributorId);
-                stmt.setLong(2, itemId);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        pn = new DistributorPart();
-                        pn.setId(rs.getLong("id"));
-                        pn.setName(rs.getString("name"));
-                        pn.setIconPath(rs.getString("iconpath"));
-                        pn.setDistributorId(rs.getLong("distributorid"));
-                        pn.setItemId(rs.getLong("itemid"));
-                        pn.setItemRef(rs.getString("distributoritemref"));
+                    if (pn.getId() != DbObject.UNKNOWN_ID) {
+                        pn.setOnTableChangedListener(this);
+                        distributorParts.add(pn);
                     }
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch part number from database");
-            LOG.error("Error in findPartNumberFromDb.", e);
+            DbErrorObject object = new DbErrorObject(pn, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
-        return pn;
     }
 
     /*
@@ -1196,14 +960,14 @@ public class DbManager implements TableChangedListener {
     private void updatePackageTypes()    {
         packageTypes = new ArrayList<>();
         Status().setMessage("Fetching package types from DB");
-
-        String sql = scriptResource.readString(PackageType.TABLE_NAME + ".sqlSelectAll");
+        PackageType pt = null;
+        String sql = scriptResource.readString(PackageType.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    PackageType pt = new PackageType();
+                    pt = new PackageType();
                     pt.setId(rs.getLong("id"));
                     pt.setName(rs.getString("name"));
                     pt.setDescription(rs.getString("description"));
@@ -1215,30 +979,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch package types from database");
-        }
-    }
-
-    public PackageType getPackageTypeFromDb(long packageTypeId) {
-        PackageType pt = null;
-        Status().setMessage("Fetching package type from DB");
-
-        String sql = "SELECT * FROM " + PackageType.TABLE_NAME + " WHERE id = " + packageTypeId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    pt = new PackageType();
-                    pt.setId(rs.getLong("id"));
-                    pt.setName(rs.getString("name"));
-                    pt.setDescription(rs.getString("description"));
-                }
+            DbErrorObject object = new DbErrorObject(pt, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch package type from database");
         }
-        return pt;
     }
 
     /*
@@ -1254,17 +1001,17 @@ public class DbManager implements TableChangedListener {
     private void updateProjects()    {
         projects = new ArrayList<>();
         Status().setMessage("Fetching projects from DB");
-
-        String sql = scriptResource.readString(Project.TABLE_NAME + ".sqlSelectAll");
+        Project p = null;
+        String sql = scriptResource.readString(Project.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Project p = new Project();
+                    p = new Project();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
-                    p.setIconPath(rs.getString("iconpath"));
+                    p.setIconPath(rs.getString("iconPath"));
 
                     // ProjectDirectories are fetched in object itself
 
@@ -1275,31 +1022,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch projects from database");
-        }
-    }
-
-    public Project getProjectFromDb(long id) {
-        Project p = null;
-        Status().setMessage("Fetching project from DB");
-
-        String sql = "SELECT * FROM " + Project.TABLE_NAME + " WHERE id = " + id;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new Project();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-                    p.setIconPath(rs.getString("iconpath"));
-
-                }
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch project from database");
         }
-        return p;
     }
 
     /*
@@ -1315,14 +1044,14 @@ public class DbManager implements TableChangedListener {
     private void updateProjectDirectories()    {
         projectDirectories = new ArrayList<>();
         Status().setMessage("Fetching projectDirectories from DB");
-
-        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + ".sqlSelectAll");
+        ProjectDirectory p = null;
+        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    ProjectDirectory p = new ProjectDirectory();
+                    p = new ProjectDirectory();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
 
@@ -1336,32 +1065,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch projectDirectories from database");
-        }
-    }
-
-    public ProjectDirectory getProjectDirectoryFromDb(long id) {
-        ProjectDirectory p = null;
-        Status().setMessage("Fetching projectDirecty from DB");
-
-        String sql = "SELECT * FROM " + ProjectDirectory.TABLE_NAME + " WHERE id = " + id;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new ProjectDirectory();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-
-                    p.setDirectory(rs.getString("directory"));
-                    p.setProjectId(rs.getLong("projectid"));
-                }
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch projectDirecty from database");
         }
-        return p;
     }
 
     /*
@@ -1377,14 +1087,14 @@ public class DbManager implements TableChangedListener {
     private void updateProjectTypes()    {
         projectTypes = new ArrayList<>();
         Status().setMessage("Fetching ProjectType from DB");
-
-        String sql = scriptResource.readString(ProjectType.TABLE_NAME + ".sqlSelectAll");
+        ProjectType p = null;
+        String sql = scriptResource.readString(ProjectType.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    ProjectType p = new ProjectType();
+                    p = new ProjectType();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
@@ -1403,37 +1113,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch ProjectType from database");
-        }
-    }
-
-    public ProjectType getProjectTypeFromDb(long id) {
-        ProjectType p = null;
-        Status().setMessage("Fetching ProjectType from DB");
-
-        String sql = "SELECT * FROM " + ProjectType.TABLE_NAME + " WHERE id = " + id;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new ProjectType();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-
-                    p.setExtension(rs.getString("extension"));
-                    p.setOpenAsFolder(rs.getBoolean("openasfolder"));
-                    p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
-                    p.setLauncherPath(rs.getString("launcherpath"));
-                    p.setMatchExtension(rs.getBoolean("matchextension"));
-                    p.setUseParentFolder(rs.getBoolean("useparentfolder"));
-                    p.setParserName(rs.getString("parsername"));
-                }
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch ProjectType from database");
         }
-        return p;
     }
 
 
@@ -1450,14 +1136,14 @@ public class DbManager implements TableChangedListener {
     private void updateProjectTypeLinks()    {
         projectTypeLinks = new ArrayList<>();
         Status().setMessage("Fetching projectTypeLinks from DB");
-
-        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + ".sqlSelectAll");
+        ProjectTypeLink p = null;
+        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    ProjectTypeLink p = new ProjectTypeLink();
+                    p = new ProjectTypeLink();
                     p.setId(rs.getLong("id"));
                     p.setProjectDirectoryId(rs.getLong("projectdirectoryid"));
                     p.setProjectTypeId(rs.getLong("projecttypeid"));
@@ -1467,7 +1153,12 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch ProjectTypeLink from database");
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -1485,14 +1176,14 @@ public class DbManager implements TableChangedListener {
     public void updateLogs()    {
         logs = new ArrayList<>();
         Status().setMessage("Fetching logs from DB");
-
-        String sql = scriptResource.readString(Log.TABLE_NAME + ".sqlSelectAll");
+        Log l = null;
+        String sql = scriptResource.readString(Log.TABLE_NAME + SQL_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Log l = new Log();
+                    l = new Log();
                     l.setId(rs.getLong("id"));
                     l.setLogType(rs.getInt("logtype"));
                     l.setLogTime(rs.getDate("logtime"));
@@ -1504,33 +1195,13 @@ public class DbManager implements TableChangedListener {
                 }
             }
         } catch (SQLException e) {
-            Status().setError("Failed to fetch logs from database", e);
-        }
-    }
-
-    public Log getLogFromDb(long id) {
-        Log l = null;
-        Status().setMessage("Fetching log from DB");
-
-        String sql = "SELECT * FROM " + ProjectType.TABLE_NAME + " WHERE id = " + id;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    l = new Log();
-                    l.setId(rs.getLong("id"));
-                    l.setLogType(rs.getInt("logtype"));
-                    l.setLogTime(rs.getDate("logdate"));
-                    l.setLogClass(rs.getString("logclass"));
-                    l.setLogMessage(rs.getString("logmessage"));
-                    l.setLogException(rs.getString("logexception"));
-                }
+            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch log from database");
         }
-        return l;
     }
 
     /*
@@ -1701,7 +1372,6 @@ public class DbManager implements TableChangedListener {
 
         @Override
         protected Integer doInBackground() throws Exception {
-            publish("Working thread: started\n");
             while (keepRunning) {
                 DbQueueObject queueObject = workList.take();
                 try (Connection connection = DbManager.getConnection()) {
@@ -1712,11 +1382,9 @@ public class DbManager implements TableChangedListener {
                     try {
                         boolean hasMoreWork;
                         do {
-                            publish("Working thread: " + workList.size() + " items to process\n");
                             DbObject dbo = queueObject.getObject();
                             switch (queueObject.getHow()) {
                                 case OBJECT_INSERT: {
-                                    publish("Insert " + dbo.getName());
                                     String sql = dbo.getScript(DbObject.SQL_INSERT);
                                     try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                                         dbo.addParameters(stmt);
@@ -1733,7 +1401,6 @@ public class DbManager implements TableChangedListener {
                                 }
                                 break;
                                 case OBJECT_UPDATE: {
-                                    publish("Update " + dbo.getName());
                                     String sql = dbo.getScript(DbObject.SQL_UPDATE);
                                     try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                         int ndx = dbo.addParameters(stmt);
@@ -1746,7 +1413,6 @@ public class DbManager implements TableChangedListener {
                                     break;
                                 }
                                 case OBJECT_DELETE:
-                                    publish("Delete " + dbo.getName());
                                     String sql = dbo.getScript(DbObject.SQL_DELETE);
                                     try(PreparedStatement statement = connection.prepareStatement(sql)) {
                                         statement.setLong(1, dbo.getId());
@@ -1766,7 +1432,6 @@ public class DbManager implements TableChangedListener {
                                 hasMoreWork = false;
                             }
                         } while (hasMoreWork && keepRunning);
-                        publish("Working thread: work done, committing work\n");
                         try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
                             stmt.execute();
                         }
@@ -1780,7 +1445,6 @@ public class DbManager implements TableChangedListener {
                     }
                 }
             }
-            publish("Working thread: stop running\n");
             return 0;
         }
 
@@ -1806,28 +1470,32 @@ public class DbManager implements TableChangedListener {
 
         @Override
         protected Integer doInBackground() throws Exception {
-            publish("Error worker thread: started\n");
             while (keepRunning) {
-                DbErrorObject sqlErrorObject = nonoList.take();
-                switch (sqlErrorObject.getHow()) {
+                DbErrorObject error = nonoList.take();
+                switch (error.getHow()) {
+                    case OBJECT_SELECT:
+                        if (errorListener != null) {
+                            errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
+                        }
+                        break;
                     case OBJECT_INSERT:
-                        System.err.println("INSERT ERROR: " + sqlErrorObject.getException().toString());
+                        if (errorListener != null) {
+                            errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
+                        }
                         break;
                     case OBJECT_UPDATE:
-                        System.err.println("UPDATE ERROR: " + sqlErrorObject.getException().toString());
+                        if (errorListener != null) {
+                            errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
+                        }
                         break;
                     case OBJECT_DELETE:
-                        System.err.println("DELETE ERROR: " + sqlErrorObject.getException().toString());
+                        if (errorListener != null) {
+                            errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
+                        }
                         break;
                 }
             }
-            publish("Error thread: stop running\n");
             return 0;
-        }
-
-        @Override
-        protected void process(List<String> chunks) {
-            System.out.println(chunks);
         }
 
         @Override

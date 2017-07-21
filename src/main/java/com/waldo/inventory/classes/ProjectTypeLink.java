@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class ProjectTypeLink extends DbObject {
 
-    public static final String TABLE_NAME = "projecttypelink";
+    public static final String TABLE_NAME = "projecttypelinks";
 
     private long projectDirectoryId;
     private ProjectDirectory projectDirectory;

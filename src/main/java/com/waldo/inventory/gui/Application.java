@@ -7,6 +7,8 @@ import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.database.classes.DbErrorObject;
+import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -24,7 +26,7 @@ import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class Application extends JFrame implements ChangeListener {
+public class Application extends JFrame implements ChangeListener, DbErrorListener {
 
     private static final LogManager LOG = LogManager.LOG(Application.class);
     public static final int TAB_ITEMS = 0;
@@ -70,13 +72,14 @@ public class Application extends JFrame implements ChangeListener {
                 // TODO: cry a little
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Error initialising db", e);
             SettingsDialog dialog = new SettingsDialog(this, "Settings");
             dialog.showDialog(); // TODO better dialog
         }
         settings().registerShutDownHook();
         db().registerShutDownHook();
+        db().addErrorListener(this);
 
         initComponents();
     }
@@ -147,7 +150,7 @@ public class Application extends JFrame implements ChangeListener {
                 } else {
                     java.util.List<Item> foundItems = new ArrayList<>(foundObject.size());
                     for (DbObject object : foundObject) {
-                        foundItems.add((Item)object);
+                        foundItems.add((Item) object);
                     }
                     mainPanel.getTableModel().setItemList(foundItems);
                 }
@@ -159,7 +162,7 @@ public class Application extends JFrame implements ChangeListener {
                 } else {
                     java.util.List<OrderItem> foundItems = new ArrayList<>(foundObject.size());
                     for (DbObject object : foundObject) {
-                        foundItems.add((OrderItem)object);
+                        foundItems.add((OrderItem) object);
                     }
                     orderPanel.getTableModel().setItemList(foundItems);
                 }
@@ -171,7 +174,7 @@ public class Application extends JFrame implements ChangeListener {
                 } else {
                     List<Project> foundProjects = new ArrayList<>(foundObject.size());
                     for (DbObject object : foundObject) {
-                        foundProjects.add((Project)object);
+                        foundProjects.add((Project) object);
                     }
                     // TODO: update project panel
                 }
@@ -266,6 +269,45 @@ public class Application extends JFrame implements ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        ((GuiInterface)tabbedPane.getSelectedComponent()).updateComponents(null);
+        ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(null);
+    }
+
+    //
+    // Db errors
+    //
+    @Override
+    public void onSelectError(DbObject object, Throwable throwable, String sql) {
+        // TODO
+        SwingUtilities.invokeLater(() -> {
+            String message = throwable.getMessage();
+            JOptionPane.showMessageDialog(this, message, "Select error", JOptionPane.ERROR_MESSAGE);
+        });
+    }
+
+    @Override
+    public void onInsertError(DbObject object, Throwable throwable, String sql) {
+        // TODO
+        SwingUtilities.invokeLater(() -> {
+            String message = throwable.getMessage();
+            JOptionPane.showMessageDialog(this, message, "Insert error", JOptionPane.ERROR_MESSAGE);
+        });
+    }
+
+    @Override
+    public void onUpdateError(DbObject object, Throwable throwable, String sql) {
+        // TODO
+        SwingUtilities.invokeLater(() -> {
+            String message = throwable.getMessage();
+            JOptionPane.showMessageDialog(this, message, "Update error", JOptionPane.ERROR_MESSAGE);
+        });
+    }
+
+    @Override
+    public void onDeleteError(DbObject object, Throwable throwable, String sql) {
+        // TODO
+        SwingUtilities.invokeLater(() -> {
+            String message = throwable.getMessage();
+            JOptionPane.showMessageDialog(this, message, "Delete error", JOptionPane.ERROR_MESSAGE);
+        });
     }
 }
