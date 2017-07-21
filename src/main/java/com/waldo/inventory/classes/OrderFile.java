@@ -24,7 +24,7 @@ public class OrderFile {
     private File orderFile;
     private boolean success = false;
     private List<String> errorMessages = new ArrayList<>();
-    private int orderType;
+    private int orderType; // == distributor
 
     public OrderFile(Order order) {
         this.order = order;

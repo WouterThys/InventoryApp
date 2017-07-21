@@ -6,7 +6,6 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.flywaydb.core.Flyway;
 
 import javax.swing.*;
 import java.io.File;
@@ -95,20 +94,7 @@ public class DbManager implements TableChangedListener {
             dataSource.setInitialSize(s.getDbInitialSize());
             dataSource.setRemoveAbandonedTimeout(s.getDbRemoveAbandonedTimeout());
 
-            Flyway flyway = new Flyway();
-            flyway.setDataSource(dataSource);
-            flyway.migrate();
-            initialized = true;
-
-            String sql = "PRAGMA foreign_keys=ON;";
-            try (Connection connection = getConnection()) {
-                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                    stmt.execute();
-                }
-            } catch (SQLException e) {
-                LOG.error("Error reading from db.", e);
-            }
-
+            // Test
             try {
                 tableNames = getTableNames();
             } catch (SQLException e) {
