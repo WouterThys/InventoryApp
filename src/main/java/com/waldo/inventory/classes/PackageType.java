@@ -13,19 +13,12 @@ public class PackageType extends DbObject {
         super(TABLE_NAME);
     }
 
-    @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, description);
-        statement.execute();
-    }
 
     @Override
-    protected void update(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setString(2, description);
-        statement.setLong(3, id); // WHERE id
-        statement.execute();
+        return 3;
     }
 
     @Override

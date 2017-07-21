@@ -3,7 +3,6 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
-import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
 
 import javax.swing.*;
 import java.sql.*;
@@ -18,6 +17,12 @@ public abstract class DbObject {
     private static final LogManager LOG = LogManager.LOG(DbObject.class);
     public static final int UNKNOWN_ID = 1;
     public static final String UNKNOWN_NAME = "Unknown";
+
+    public static final String SQL_SELECT_ALL = "sqlSelect.all";
+    public static final String SQL_SELECT_ONE = "sqlSelect.one";
+    public static final String SQL_INSERT = "sqlInsert";
+    public static final String SQL_UPDATE = "sqlUpdate";
+    public static final String SQL_DELETE = "sqlDelete";
 
     public static final int TYPE_UNKNOWN = -1;
     public static final int TYPE_ITEM = 1;
@@ -46,38 +51,23 @@ public abstract class DbObject {
     private DbObject oldObject;
     protected boolean canBeSaved = true;
 
-    protected String sqlInsert;
-    protected String sqlUpdate;
-    protected String sqlDelete;
-
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.execute();
-    }
-
-    protected void update(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name); // Set (name)
-        statement.setString(2, iconPath); // Set (icon path)
-        statement.setLong(3, id); // Where id
-        statement.execute();
-    }
-
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
-
-        this.sqlInsert = scriptResource.readString(tableName + "." + "sqlInsert");
-        this.sqlUpdate = scriptResource.readString(tableName + "." + "sqlUpdate");
-        this.sqlDelete = scriptResource.readString(tableName + "." + "sqlDelete");
-
     }
 
-    protected DbObject(String tableName, String sqlInsert, String sqlUpdate, String sqlDelete) {
-        this(tableName);
-        // Overwrite values
-        this.sqlUpdate = sqlUpdate;
-        this.sqlDelete = sqlDelete;
-        this.sqlInsert = sqlInsert;
+    /**
+     * Add the parameters to write this object to the database.
+     * @param statement: PreparedStatement to add parameters to
+     * @return next index to add parameters to
+     * @throws SQLException exception thrown wen could not add a parameter
+     */
+    public abstract int addParameters(PreparedStatement statement) throws SQLException;
+
+    int addBaseParameters(PreparedStatement statement) throws SQLException {
+        int ndx = 1;
+        statement.setString(ndx++, getName());
+        statement.setString(ndx++, getIconPath());
+        return ndx;
     }
 
     public static int getType(DbObject dbObject) {
@@ -99,90 +89,87 @@ public abstract class DbObject {
         return TYPE_UNKNOWN;
     }
 
-    public DbObject(String tableName, String sqlInsert, String sqlUpdate) {
-        this(tableName, sqlInsert, sqlUpdate, "DELETE FROM " + tableName + " WHERE id = ?");
-    }
 
     protected void doSave() throws SQLException {
-        setOnTableChangedListener(DbManager.db());
-
-        long startTime = System.nanoTime();
-        try (Connection connection = DbManager.getConnection()) {
-            if (!connection.isValid(5)) {
-                throw new SQLException("Conenction invalid, timed out after 5s...");
-            }
-            LOG.debug("Connection is open");
-            if (id == -1) { // Save
-                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-                    insert(statement);
-
-                    try (ResultSet rs = statement.getGeneratedKeys()) {
-                        rs.next();
-                        id = rs.getLong(1);
-                    }
-                }
-            } else { // Update
-                // Save old object
-                setOldObject();
-                // Save new object
-                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
-                    update(statement);
-                }
-            }
-        }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        LOG.debug("Connection was open for: " + duration / 1000000 + "ms");
+//        setOnTableChangedListener(DbManager.db());
+//
+//        long startTime = System.nanoTime();
+//        try (Connection connection = DbManager.getConnection()) {
+//            if (!connection.isValid(5)) {
+//                throw new SQLException("Conenction invalid, timed out after 5s...");
+//            }
+//            LOG.debug("Connection is open");
+//            if (id == -1) { // Save
+//                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+//                    insert(statement);
+//
+//                    try (ResultSet rs = statement.getGeneratedKeys()) {
+//                        rs.next();
+//                        id = rs.getLong(1);
+//                    }
+//                }
+//            } else { // Update
+//                // Save old object
+//                setOldObject();
+//                // Save new object
+//                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
+//                    update(statement);
+//                }
+//            }
+//        }
+//        long endTime = System.nanoTime();
+//        long duration = (endTime - startTime);
+//        LOG.debug("Connection was open for: " + duration / 1000000 + "ms");
     }
 
     public void save() {
-        if (!canBeSaved) {
-            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        final long saveId = id;
-        SwingWorker worker = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    LOG.debug("Start save.");
-                    doSave();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Failed to save object: " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                    LOG.error("Failed to save object.", e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                if (saveId < 0) { // Save
-                    LOG.debug("Added object to " + TABLE_NAME);
-                    if (onTableChangedListener != null) {
-                        try {
-                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this, null);
-                        } catch (SQLException e) {
-                            LOG.error("Error calling onTableChangedListener.", e);
-                        }
-                    }
-                } else { // Update
-                    LOG.debug("Updated object in " + TABLE_NAME);
-                    if (onTableChangedListener != null) {
-                        try {
-                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this, oldObject);
-                        } catch (SQLException e) {
-                            LOG.error("Error calling onTableChangedListener.", e);
-                        }
-                    }
-                }
-            }
-        };
-        worker.execute();
-        try {
-            worker.get(2, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            LOG.error("Failed to save object.", e);
-        }
+//        if (!canBeSaved) {
+//            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
+//            return;
+//        }
+//        final long saveId = id;
+//        SwingWorker worker = new SwingWorker() {
+//            @Override
+//            protected Object doInBackground() throws Exception {
+//                try {
+//                    LOG.debug("Start save.");
+//                    doSave();
+//                } catch (Exception e) {
+//                    JOptionPane.showMessageDialog(null, "Failed to save object: " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//                    LOG.error("Failed to save object.", e);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void done() {
+//                if (saveId < 0) { // Save
+//                    LOG.debug("Added object to " + TABLE_NAME);
+//                    if (onTableChangedListener != null) {
+//                        try {
+//                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_INSERT, DbObject.this, null);
+//                        } catch (SQLException e) {
+//                            LOG.error("Error calling onTableChangedListener.", e);
+//                        }
+//                    }
+//                } else { // Update
+//                    LOG.debug("Updated object in " + TABLE_NAME);
+//                    if (onTableChangedListener != null) {
+//                        try {
+//                            onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATE, DbObject.this, oldObject);
+//                        } catch (SQLException e) {
+//                            LOG.error("Error calling onTableChangedListener.", e);
+//                        }
+//                    }
+//                }
+//            }
+//        };
+//        worker.execute();
+//        try {
+//            worker.get(2, TimeUnit.SECONDS);
+//        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//            LOG.error("Failed to save object.", e);
+//        }
     }
 
     public void saveSynchronously() throws SQLException {
@@ -198,57 +185,57 @@ public abstract class DbObject {
         if (saveId < 0) { // Save
             LOG.debug("Added object to " + TABLE_NAME);
             if (onTableChangedListener != null) {
-                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_ADDED, DbObject.this, null);
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_INSERT, DbObject.this, null);
             }
         } else { // Update
             LOG.debug("Updated object in " + TABLE_NAME);
             if (onTableChangedListener != null) {
-                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATED, DbObject.this, oldObject);
+                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATE, DbObject.this, oldObject);
             }
 
         }
     }
 
     protected void doDelete() throws SQLException {
-        if (id != -1) {
-            LOG.debug("Start deleting in " + TABLE_NAME);
-            setOldObject();
-            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
-                statement.setLong(1, id);
-                statement.execute();
-                id = -1; // Not in database anymore
-            }
-
-            LOG.debug("Deleted object from " + TABLE_NAME);
-            if (onTableChangedListener != null) {
-                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETED, oldObject, null);
-            }
-        }
+//        if (id != -1) {
+//            LOG.debug("Start deleting in " + TABLE_NAME);
+//            setOldObject();
+//            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
+//                statement.setLong(1, id);
+//                statement.execute();
+//                id = -1; // Not in database anymore
+//            }
+//
+//            LOG.debug("Deleted object from " + TABLE_NAME);
+//            if (onTableChangedListener != null) {
+//                onTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_DELETE, oldObject, null);
+//            }
+//        }
     }
 
     public void delete() {
-        if (canBeSaved) {
-            SwingWorker worker = new SwingWorker() {
-                @Override
-                protected Object doInBackground() throws Exception {
-                    doDelete();
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        get(10, TimeUnit.SECONDS);
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        JOptionPane.showMessageDialog(null, "Error deleting \"" + name + "\". \n Exception: " + e.getMessage(), "Delete error", JOptionPane.ERROR_MESSAGE);
-                        LOG.error("Failed to delete object.", e);
-                    }
-                }
-            };
-            worker.execute();
-        } else {
-            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
-        }
+//        if (canBeSaved) {
+//            SwingWorker worker = new SwingWorker() {
+//                @Override
+//                protected Object doInBackground() throws Exception {
+//                    doDelete();
+//                    return null;
+//                }
+//
+//                @Override
+//                protected void done() {
+//                    try {
+//                        get(10, TimeUnit.SECONDS);
+//                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//                        JOptionPane.showMessageDialog(null, "Error deleting \"" + name + "\". \n Exception: " + e.getMessage(), "Delete error", JOptionPane.ERROR_MESSAGE);
+//                        LOG.error("Failed to delete object.", e);
+//                    }
+//                }
+//            };
+//            worker.execute();
+//        } else {
+//            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be deleted.", "Delete warning", JOptionPane.WARNING_MESSAGE);
+//        }
     }
 
     @Override
@@ -295,55 +282,55 @@ public abstract class DbObject {
         newObject.setCanBeSaved(false);
     }
 
-    private void setOldObject() {
-        switch (getType(this)) {
-            case TYPE_UNKNOWN:
-                oldObject = null;
-                break;
-            case TYPE_ITEM:
-                oldObject = DbManager.db().getItemFromDb(id);
-                break;
-            case TYPE_CATEGORY:
-                oldObject = DbManager.db().getCategoryFromDb(id);
-                break;
-            case TYPE_PRODUCT:
-                oldObject = DbManager.db().getProductFromDb(id);
-                break;
-            case TYPE_TYPE:
-                oldObject = DbManager.db().getTypeFromDb(id);
-                break;
-            case TYPE_MANUFACTURER:
-                oldObject = DbManager.db().getManufacturerFromDb(id);
-                break;
-            case TYPE_LOCATION:
-                oldObject = DbManager.db().getLocationFromDb(id);
-                break;
-            case TYPE_ORDER:
-                oldObject = DbManager.db().getOrderFromDb(id);
-                break;
-            case TYPE_ORDER_ITEM:
-                oldObject = DbManager.db().getOrderItemFromDb(id);
-                break;
-            case TYPE_DISTRIBUTOR:
-                oldObject = DbManager.db().getDistributorFromDb(id);
-                break;
-            case TYPE_PACKAGE_TYPE:
-                oldObject = DbManager.db().getPackageTypeFromDb(id);
-                break;
-            case TYPE_PROJECT:
-                oldObject = DbManager.db().getProjectFromDb(id);
-                break;
-            case TYPE_PROJECT_DIRECTORY:
-                oldObject = DbManager.db().getProjectDirectoryFromDb(id);
-                break;
-            case TYPE_PROJECT_TYPE:
-                oldObject = DbManager.db().getProjectTypeFromDb(id);
-                break;
-            case TYPE_LOG:
-                oldObject = DbManager.db().getLogFromDb(id);
-                break;
-        }
-    }
+//    private void setOldObject() {
+//        switch (getType(this)) {
+//            case TYPE_UNKNOWN:
+//                oldObject = null;
+//                break;
+//            case TYPE_ITEM:
+//                oldObject = DbManager.db().getItemFromDb(id);
+//                break;
+//            case TYPE_CATEGORY:
+//                oldObject = DbManager.db().getCategoryFromDb(id);
+//                break;
+//            case TYPE_PRODUCT:
+//                oldObject = DbManager.db().getProductFromDb(id);
+//                break;
+//            case TYPE_TYPE:
+//                oldObject = DbManager.db().getTypeFromDb(id);
+//                break;
+//            case TYPE_MANUFACTURER:
+//                oldObject = DbManager.db().getManufacturerFromDb(id);
+//                break;
+//            case TYPE_LOCATION:
+//                oldObject = DbManager.db().getLocationFromDb(id);
+//                break;
+//            case TYPE_ORDER:
+//                oldObject = DbManager.db().getOrderFromDb(id);
+//                break;
+//            case TYPE_ORDER_ITEM:
+//                oldObject = DbManager.db().getOrderItemFromDb(id);
+//                break;
+//            case TYPE_DISTRIBUTOR:
+//                oldObject = DbManager.db().getDistributorFromDb(id);
+//                break;
+//            case TYPE_PACKAGE_TYPE:
+//                oldObject = DbManager.db().getPackageTypeFromDb(id);
+//                break;
+//            case TYPE_PROJECT:
+//                oldObject = DbManager.db().getProjectFromDb(id);
+//                break;
+//            case TYPE_PROJECT_DIRECTORY:
+//                oldObject = DbManager.db().getProjectDirectoryFromDb(id);
+//                break;
+//            case TYPE_PROJECT_TYPE:
+//                oldObject = DbManager.db().getProjectTypeFromDb(id);
+//                break;
+//            case TYPE_LOG:
+//                oldObject = DbManager.db().getLogFromDb(id);
+//                break;
+//        }
+//    }
 
     public boolean isUnknown() {
         return id == UNKNOWN_ID;
@@ -389,5 +376,9 @@ public abstract class DbObject {
 
     public void setCanBeSaved(boolean canBeSaved) {
         this.canBeSaved = canBeSaved;
+    }
+
+    public String getScript(String scriptName) {
+        return scriptResource.readString(TABLE_NAME + "." + scriptName);
     }
 }

@@ -2,6 +2,9 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.classes.DbErrorObject;
+import com.waldo.inventory.database.classes.DbQueue;
+import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.interfaces.TableChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
@@ -9,10 +12,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +26,12 @@ public class DbManager implements TableChangedListener {
 
     private static final LogManager LOG = LogManager.LOG(DbManager.class);
 
-    public static final int OBJECT_ADDED = 0;
-    public static final int OBJECT_UPDATED = 1;
-    public static final int OBJECT_DELETED = 2;
+    public static final int OBJECT_INSERT = 0;
+    public static final int OBJECT_UPDATE = 1;
+    public static final int OBJECT_DELETE = 2;
+
+    private static final String QUEUE_WORKER = "Queue worker";
+    private static final String ERROR_WORKER = "Error worker";
 
     // Db
     private static final DbManager INSTANCE = new DbManager();
@@ -38,6 +41,12 @@ public class DbManager implements TableChangedListener {
     private BasicDataSource dataSource;
     private List<String> tableNames;
     private boolean initialized = false;
+
+    private DbQueue<DbQueueObject> workList;
+    private DbQueue<DbErrorObject> nonoList;
+    private DbQueueWorker dbQueueWorker;
+    private DbErrorWorker dbErrorWorker;
+
 
     // Events
     private List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
@@ -49,7 +58,7 @@ public class DbManager implements TableChangedListener {
     private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<PartNumber>> onPartNumbersChangedListenerList = new ArrayList<>();
+    private List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     private List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
@@ -67,7 +76,7 @@ public class DbManager implements TableChangedListener {
     private List<Order> orders;
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
-    private List<PartNumber> partNumbers;
+    private List<DistributorPart> distributorParts;
     private List<PackageType> packageTypes;
     private List<Project> projects;
     private List<ProjectDirectory> projectDirectories;
@@ -82,37 +91,47 @@ public class DbManager implements TableChangedListener {
         DbSettings s = settings().getDbSettings();
         if (s != null) {
             dataSource = new BasicDataSource();
-            dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-            dataSource.setUrl("jdbc:log4jdbc:sqlite:" + s.getDbFile());
+            dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+            dataSource.setUrl(s.createMySqlUrl());
             dataSource.setUsername(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
-            dataSource.setMaxIdle(s.getDbMaxIdleConnections());
-            dataSource.setMaxActive(s.getDbMaxActiveConnections());
-            dataSource.setPoolPreparedStatements(s.isDbPoolPreparedStatements());
-            dataSource.setLogAbandoned(s.isDbLogAbandoned());
-            dataSource.setRemoveAbandoned(s.isDbRemoveAbandoned());
-            dataSource.setInitialSize(s.getDbInitialSize());
-            dataSource.setRemoveAbandonedTimeout(s.getDbRemoveAbandonedTimeout());
+            LOG.info("Database initialized with connection: " + s.createMySqlUrl());
 
-            // Test
-            try {
-                tableNames = getTableNames();
-            } catch (SQLException e) {
-                LOG.error("Error initializing db.", e);
-            }
 
-            LOG.info("Database initialized with db file: " + s.getDbFile());
+            workList = new DbQueue<>(100);
+            dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
+            dbQueueWorker.execute();
+            LOG.info("Database started thread: " + QUEUE_WORKER);
+
+            nonoList = new DbQueue<>(100);
+            dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
+            dbErrorWorker.execute();
+            LOG.info("Database started thread: " + ERROR_WORKER);
+
+            initialized = true;
         }
     }
 
     private void close() {
         if(dataSource != null) {
             Status().setMessage("Closing down");
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                LOG.error("Error closing db.", e);
+            if(dbQueueWorker != null) {
+                dbQueueWorker.keepRunning = false;
             }
+            if (dbErrorWorker != null) {
+                dbErrorWorker.keepRunning = false;
+            }
+        }
+    }
+
+    private void workerDone(String workerName) {
+        System.out.println(workerName + " :thread done");
+        try {
+            if (dataSource != null) {
+                dataSource.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -211,7 +230,7 @@ public class DbManager implements TableChangedListener {
         }
     }
 
-    public void addOnPartNumbersChangedListener(DbObjectChangedListener<PartNumber> dbObjectChangedListener) {
+    public void addOnPartNumbersChangedListener(DbObjectChangedListener<DistributorPart> dbObjectChangedListener) {
         if (!onPartNumbersChangedListenerList.contains(dbObjectChangedListener)) {
             onPartNumbersChangedListenerList.add(dbObjectChangedListener);
         }
@@ -352,13 +371,13 @@ public class DbManager implements TableChangedListener {
     private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
         for (DbObjectChangedListener<T> l : listeners) {
             switch (changedHow) {
-                case OBJECT_ADDED:
+                case OBJECT_INSERT:
                     l.onAdded(newObject);
                     break;
-                case OBJECT_UPDATED:
+                case OBJECT_UPDATE:
                     l.onUpdated(newObject, oldObject);
                     break;
-                case OBJECT_DELETED:
+                case OBJECT_DELETE:
                     l.onDeleted(newObject);
                     break;
             }
@@ -369,9 +388,9 @@ public class DbManager implements TableChangedListener {
     public void onTableChanged(String tableName, int changedHow, DbObject newObject, DbObject oldObject) throws SQLException {
         String how = "";
         switch (changedHow) {
-            case OBJECT_ADDED: how = "added in "; break;
-            case OBJECT_UPDATED: how = "updated in "; break;
-            case OBJECT_DELETED: how = "deleted from"; break;
+            case OBJECT_INSERT: how = "added in "; break;
+            case OBJECT_UPDATE: how = "updated in "; break;
+            case OBJECT_DELETE: how = "deleted from"; break;
         }
 
         Status().setMessage(newObject.getName() + " " + how + tableName);
@@ -413,9 +432,9 @@ public class DbManager implements TableChangedListener {
                 updateDistributors();
                 notifyListeners(changedHow, (Distributor)newObject, (Distributor)oldObject, onDistributorsChangedListenerList);
                 break;
-            case PartNumber.TABLE_NAME:
+            case DistributorPart.TABLE_NAME:
                 updatePartNumbers();
-                notifyListeners(changedHow, (PartNumber)newObject, (PartNumber)oldObject, onPartNumbersChangedListenerList);
+                notifyListeners(changedHow, (DistributorPart)newObject, (DistributorPart)oldObject, onPartNumbersChangedListenerList);
                 break;
             case PackageType.TABLE_NAME:
                 updatePackageTypes();
@@ -454,7 +473,7 @@ public class DbManager implements TableChangedListener {
         items = new ArrayList<>();
         Status().setMessage("Fetching items from DB");
 
-        String sql = "SELECT * FROM items ORDER BY name";
+        String sql = scriptResource.readString("Items.sqlSelect.all");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -463,25 +482,22 @@ public class DbManager implements TableChangedListener {
                     Item i = new Item();
                     i.setId(rs.getLong("id"));
                     i.setName(rs.getString("name"));
-                    i.setIconPath(rs.getString("iconpath"));
+                    i.setIconPath(rs.getString("iconPath"));
                     i.setDescription(rs.getString("description"));
                     i.setPrice(rs.getDouble("price"));
-                    i.setCategoryId(rs.getInt("categoryid"));
-                    i.setProductId(rs.getInt("productid"));
-                    i.setTypeId(rs.getInt("typeid"));
-                    i.setLocalDataSheet(rs.getString("localdatasheet"));
-                    i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
-                    i.setManufacturerId(rs.getLong("manufacturerid"));
-                    i.setLocationId(rs.getLong("locationid"));
+                    i.setCategoryId(rs.getInt("categoryId"));
+                    i.setProductId(rs.getInt("productId"));
+                    i.setTypeId(rs.getInt("typeId"));
+                    i.setLocalDataSheet(rs.getString("localDataSheet"));
+                    i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
+                    i.setManufacturerId(rs.getLong("manufacturerId"));
+                    i.setLocationId(rs.getLong("locationId"));
                     i.setAmount(rs.getInt("amount"));
-                    i.setAmountType(rs.getInt("amounttype"));
-                    i.setOrderState(rs.getInt("orderstate"));
-                    i.setPackageTypeId(rs.getLong("packagetypeid"));
-                    i.setPins(rs.getInt("pins"));
-                    i.setWidth(rs.getDouble("width"));
-                    i.setHeight(rs.getDouble("height"));
+                    i.setAmountType(rs.getInt("amountType"));
+                    i.setOrderState(rs.getInt("orderState"));
+                    i.setPackageId(rs.getLong("packageId"));
                     i.setRating(rs.getFloat("rating"));
-                    i.setDiscourageOrder(rs.getBoolean("discourageorder"));
+                    i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remarks"));
 
                     i.setOnTableChangedListener(this);
@@ -492,48 +508,6 @@ public class DbManager implements TableChangedListener {
             Status().setError("Failed to fetch items from database: "+ e);
         }
     }
-
-    public Item getItemFromDb(long itemId) {
-        Item i = null;
-        Status().setMessage("Fetching items from DB");
-
-        String sql = "SELECT * FROM items WHERE id = " + itemId;
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    i = new Item();
-                    i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    i.setIconPath(rs.getString("iconpath"));
-                    i.setDescription(rs.getString("description"));
-                    i.setPrice(rs.getDouble("price"));
-                    i.setCategoryId(rs.getInt("categoryid"));
-                    i.setProductId(rs.getInt("productid"));
-                    i.setTypeId(rs.getInt("typeid"));
-                    i.setLocalDataSheet(rs.getString("localdatasheet"));
-                    i.setOnlineDataSheet(rs.getString("onlinedatasheet"));
-                    i.setManufacturerId(rs.getLong("manufacturerid"));
-                    i.setLocationId(rs.getLong("locationid"));
-                    i.setAmount(rs.getInt("amount"));
-                    i.setAmountType(rs.getInt("amounttype"));
-                    i.setOrderState(rs.getInt("orderstate"));
-                    i.setPackageTypeId(rs.getLong("packagetypeid"));
-                    i.setPins(rs.getInt("pins"));
-                    i.setWidth(rs.getDouble("width"));
-                    i.setHeight(rs.getDouble("height"));
-                    i.setRating(rs.getFloat("rating"));
-                    i.setDiscourageOrder(rs.getBoolean("discourageorder"));
-                    i.setRemarks(rs.getString("remarks"));
-                }
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to fetch items from database: "+ e);
-        }
-        return i;
-    }
-
 
     /*
     *                  CATEGORIES
@@ -549,7 +523,7 @@ public class DbManager implements TableChangedListener {
         categories = new ArrayList<>();
         Status().setMessage("Fetching categories from DB");
 
-        String sql = "SELECT * FROM " + Category.TABLE_NAME + " ORDER BY name";
+        String sql = scriptResource.readString("categories.sqlSelect.all");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -592,32 +566,6 @@ public class DbManager implements TableChangedListener {
             Status().setError("Failed to fetch categories from database");
         }
         return c;
-    }
-
-    public void getCategoriesAsync(final List<Category> categories) {
-        if (categories != null) {
-            categories.clear();
-        }
-        SwingWorker<Void, Category> worker = new SwingWorker<Void, Category>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<Category> categoryList = getCategories();
-                for(Category c : categoryList) {
-                    publish(c);
-                }
-                return null;
-            }
-
-            @Override
-            protected void process(List<Category> chunks) {
-                for (Category c : chunks) {
-                    if (categories != null) {
-                        categories.add(c);
-                    }
-                }
-            }
-        };
-        worker.execute();
     }
 
     /*
@@ -1073,7 +1021,7 @@ public class DbManager implements TableChangedListener {
                 stmt.setLong(2, orderItem.getItemId());
                 stmt.execute();
 
-                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETED, OrderItem.createDummyOrderItem(orderItem.getOrder(), orderItem.getItem()), null);
+                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETE, OrderItem.createDummyOrderItem(orderItem.getOrder(), orderItem.getItem()), null);
             } catch (SQLException e) {
                 Status().setError("Failed to detele item from order");
             }
@@ -1146,24 +1094,24 @@ public class DbManager implements TableChangedListener {
     /*
     *                  PART NUMBERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PartNumber> getPartNumbers()    {
-        if (partNumbers == null) {
+    public List<DistributorPart> getDistributorParts()    {
+        if (distributorParts == null) {
             updatePartNumbers();
         }
-        return partNumbers;
+        return distributorParts;
     }
 
     private void updatePartNumbers()    {
-        partNumbers = new ArrayList<>();
+        distributorParts = new ArrayList<>();
         Status().setMessage("Fetching part numbers from DB");
 
-        String sql = scriptResource.readString(PartNumber.TABLE_NAME + ".sqlSelectAll");
+        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + ".sqlSelectAll");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    PartNumber pn = new PartNumber();
+                    DistributorPart pn = new DistributorPart();
                     pn.setId(rs.getLong("id"));
                     pn.setName(rs.getString("name"));
                     pn.setIconPath(rs.getString("iconpath"));
@@ -1173,7 +1121,7 @@ public class DbManager implements TableChangedListener {
 
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
                         pn.setOnTableChangedListener(this);
-                        partNumbers.add(pn);
+                        distributorParts.add(pn);
                     }
                 }
             }
@@ -1182,17 +1130,17 @@ public class DbManager implements TableChangedListener {
         }
     }
 
-    public PartNumber getPartNumberFromDb(long partNumberId) {
-        PartNumber pn = null;
+    public DistributorPart getPartNumberFromDb(long partNumberId) {
+        DistributorPart pn = null;
         Status().setMessage("Fetching part number from DB");
 
-        String sql = "SELECT * FROM " + PartNumber.TABLE_NAME + " WHERE id = " + partNumberId;
+        String sql = "SELECT * FROM " + DistributorPart.TABLE_NAME + " WHERE id = " + partNumberId;
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    pn = new PartNumber();
+                    pn = new DistributorPart();
                     pn.setId(rs.getLong("id"));
                     pn.setName(rs.getString("name"));
                     pn.setIconPath(rs.getString("iconpath"));
@@ -1207,8 +1155,8 @@ public class DbManager implements TableChangedListener {
         return pn;
     }
 
-    public PartNumber findPartNumberFromDb(long distributorId, long itemId) {
-        PartNumber pn = null;
+    public DistributorPart findPartNumberFromDb(long distributorId, long itemId) {
+        DistributorPart pn = null;
         String sql = scriptResource.readString("partnumbers.sqlFindItemRef");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -1218,7 +1166,7 @@ public class DbManager implements TableChangedListener {
 
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-                        pn = new PartNumber();
+                        pn = new DistributorPart();
                         pn.setId(rs.getLong("id"));
                         pn.setName(rs.getString("name"));
                         pn.setIconPath(rs.getString("iconpath"));
@@ -1736,5 +1684,155 @@ public class DbManager implements TableChangedListener {
             }
         }
         return logList;
+    }
+
+
+    /*
+    *                  CLASSES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private class DbQueueWorker extends SwingWorker<Integer, String> {
+
+        volatile boolean keepRunning = true;
+        private String name;
+
+        DbQueueWorker(String name) {
+            this.name = name;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception {
+            publish("Working thread: started\n");
+            while (keepRunning) {
+                DbQueueObject queueObject = workList.take();
+                try (Connection connection = DbManager.getConnection()) {
+                    try (PreparedStatement stmt = connection.prepareStatement("begin;")) {
+                        stmt.execute();
+                    }
+
+                    try {
+                        boolean hasMoreWork;
+                        do {
+                            publish("Working thread: " + workList.size() + " items to process\n");
+                            DbObject dbo = queueObject.getObject();
+                            switch (queueObject.getHow()) {
+                                case OBJECT_INSERT: {
+                                    publish("Insert " + dbo.getName());
+                                    String sql = dbo.getScript(DbObject.SQL_INSERT);
+                                    try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                                        dbo.addParameters(stmt);
+                                        stmt.execute();
+
+                                        try (ResultSet rs = stmt.getGeneratedKeys()) {
+                                            rs.next();
+                                            dbo.setId(rs.getLong(1));
+                                        }
+                                    } catch (SQLException e) {
+                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                        nonoList.put(object);
+                                    }
+                                }
+                                break;
+                                case OBJECT_UPDATE: {
+                                    publish("Update " + dbo.getName());
+                                    String sql = dbo.getScript(DbObject.SQL_UPDATE);
+                                    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                        int ndx = dbo.addParameters(stmt);
+                                        stmt.setLong(ndx, dbo.getId());
+                                        stmt.execute();
+                                    } catch (SQLException e) {
+                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                        nonoList.put(object);
+                                    }
+                                    break;
+                                }
+                                case OBJECT_DELETE:
+                                    publish("Delete " + dbo.getName());
+                                    String sql = dbo.getScript(DbObject.SQL_DELETE);
+                                    try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                                        statement.setLong(1, dbo.getId());
+                                        statement.execute();
+                                        dbo.setId(-1);// Not in database anymore
+                                    } catch (SQLException e) {
+                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
+                                        nonoList.put(object);
+                                    }
+                                    break;
+                            }
+
+                            if (workList.size() > 0) {
+                                queueObject = workList.take();
+                                hasMoreWork = true;
+                            } else {
+                                hasMoreWork = false;
+                            }
+                        } while (hasMoreWork && keepRunning);
+                        publish("Working thread: work done, committing work\n");
+                        try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
+                            stmt.execute();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
+                            stmt.execute();
+                        }
+                        // TODO: efficient error handling
+                        throw e;
+                    }
+                }
+            }
+            publish("Working thread: stop running\n");
+            return 0;
+        }
+
+        @Override
+        protected void process(List<String> chunks) {
+            System.out.println(chunks);
+        }
+
+        @Override
+        protected void done() {
+            workerDone(name);
+        }
+    }
+
+    private class DbErrorWorker extends  SwingWorker<Integer, String> {
+
+        volatile boolean keepRunning = true;
+        private String name;
+
+        public DbErrorWorker(String name) {
+            this.name = name;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception {
+            publish("Error worker thread: started\n");
+            while (keepRunning) {
+                DbErrorObject sqlErrorObject = nonoList.take();
+                switch (sqlErrorObject.getHow()) {
+                    case OBJECT_INSERT:
+                        System.err.println("INSERT ERROR: " + sqlErrorObject.getException().toString());
+                        break;
+                    case OBJECT_UPDATE:
+                        System.err.println("UPDATE ERROR: " + sqlErrorObject.getException().toString());
+                        break;
+                    case OBJECT_DELETE:
+                        System.err.println("DELETE ERROR: " + sqlErrorObject.getException().toString());
+                        break;
+                }
+            }
+            publish("Error thread: stop running\n");
+            return 0;
+        }
+
+        @Override
+        protected void process(List<String> chunks) {
+            System.out.println(chunks);
+        }
+
+        @Override
+        protected void done() {
+            workerDone(name);
+        }
     }
 }

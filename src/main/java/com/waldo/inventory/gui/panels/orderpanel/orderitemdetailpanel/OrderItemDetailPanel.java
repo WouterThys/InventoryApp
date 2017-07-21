@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
-import com.waldo.inventory.classes.PartNumber;
+import com.waldo.inventory.classes.DistributorPart;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 
@@ -41,10 +41,10 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
             int amount = ((Number)amountTf.getValue()).intValue();
             orderItem.setAmount(amount);
             // Reference table
-            PartNumber number = SearchManager.sm().findPartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
+            DistributorPart number = SearchManager.sm().findPartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
             if (number == null) {
                 if (!itemRef.isEmpty()) {
-                    number = new PartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
+                    number = new DistributorPart(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
                     number.setItemRef(itemRef);
                     number.save();
                     orderItem.setDistributorPartId(number.getId());

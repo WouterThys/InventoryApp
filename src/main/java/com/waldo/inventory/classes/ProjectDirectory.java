@@ -20,22 +20,6 @@ public class ProjectDirectory extends DbObject {
 
     private HashMap<ProjectType, ArrayList<File>> projectTypes;
 
-    @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setLong(2, projectId);
-        statement.setString(3, directory);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setLong(2, projectId);
-        statement.setString(3, directory);
-        statement.setLong(4, id); // WHERE id
-        statement.execute();
-    }
 
     public ProjectDirectory() {
         super(TABLE_NAME);
@@ -47,6 +31,14 @@ public class ProjectDirectory extends DbObject {
         pt.setId(UNKNOWN_ID);
         pt.setCanBeSaved(false);
         return pt;
+    }
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        statement.setString(1, name);
+        statement.setLong(2, projectId);
+        statement.setString(3, directory);
+        return 4;
     }
 
     @Override

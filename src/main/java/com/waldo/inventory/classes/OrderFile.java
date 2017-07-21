@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.startUpPath;
 
+// TODO extend db object
 public class OrderFile {
 
     private static final LogManager LOG = LogManager.LOG(OrderFile.class);

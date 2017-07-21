@@ -19,15 +19,14 @@ public class OrderItem extends DbObject {
     private Item item;
     private int amount;
     private long distributorPartId;
-    private PartNumber distributorPart;
+    private DistributorPart distributorPart;
 
     public OrderItem() {
         super(TABLE_NAME);
     }
 
-
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);
@@ -36,21 +35,7 @@ public class OrderItem extends DbObject {
             distributorPartId = UNKNOWN_ID;
         }
         statement.setLong(5, distributorPartId);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setLong(2, orderId);
-        statement.setLong(3, itemId);
-        statement.setInt(4, amount);
-        if (distributorPartId < UNKNOWN_ID) {
-            distributorPartId = UNKNOWN_ID;
-        }
-        statement.setLong(5, distributorPartId);
-        statement.setLong(6, id); // WHERE id
-        statement.execute();
+        return 6;
     }
 
     @Override
@@ -126,15 +111,15 @@ public class OrderItem extends DbObject {
     }
 
     public void setDistributorPartId(String ref) {
-        PartNumber number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
+        DistributorPart number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
         if (number == null) {
-            number = new PartNumber(getOrder().getDistributorId(), getItemId());
+            number = new DistributorPart(getOrder().getDistributorId(), getItemId());
         }
         number.setItemRef(ref);
         distributorPartId = number.getId();
     }
 
-    public PartNumber getDistributorPart() {
+    public DistributorPart getDistributorPart() {
         if (distributorPart == null) {
             distributorPart = sm().findPartNumberById(distributorPartId);
         }

@@ -476,16 +476,10 @@ public class SettingsManager {
                 while (rs.next()) {
                     DbSettings dbSettings = new DbSettings();
                     dbSettings.setName(rs.getString("name"));
-                    dbSettings.setDbFile(rs.getString("dbfile"));
+                    dbSettings.setDbName(rs.getString("dbname"));
+                    dbSettings.setDbIp(rs.getString("dbip"));
                     dbSettings.setDbUserName(rs.getString("dbusername"));
                     dbSettings.setDbUserPw(rs.getString("dbuserpw"));
-                    dbSettings.setDbMaxIdleConnections(rs.getInt("dbmaxidleconnections"));
-                    dbSettings.setDbMaxActiveConnections(rs.getInt("dbmaxactiveconnections"));
-                    dbSettings.setDbInitialSize(rs.getInt("dbinitialsize"));
-                    dbSettings.setDbRemoveAbandonedTimeout(rs.getInt("dbremoveabandonedtimeout"));
-                    dbSettings.setDbPoolPreparedStatements(rs.getBoolean("dbpoolpreparedstatemens"));
-                    dbSettings.setDbLogAbandoned(rs.getBoolean("dblogabandoned"));
-                    dbSettings.setDbRemoveAbandoned(rs.getBoolean("dbremoveabandoned"));
 
                     dbSettings.setSaved(true);
 
@@ -595,16 +589,10 @@ public class SettingsManager {
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, set.getName());
-                stmt.setString(2, set.getDbFile());
-                stmt.setString(3, set.getDbUserName());
-                stmt.setString(4, set.getDbUserPw());
-                stmt.setInt(5, set.getDbMaxIdleConnections());
-                stmt.setInt(6, set.getDbMaxActiveConnections());
-                stmt.setInt(7, set.getDbInitialSize());
-                stmt.setInt(8, set.getDbRemoveAbandonedTimeout());
-                stmt.setBoolean(9, set.isDbPoolPreparedStatements());
-                stmt.setBoolean(10, set.isDbLogAbandoned());
-                stmt.setBoolean(11, set.isDbRemoveAbandoned());
+                stmt.setString(2, set.getDbName());
+                stmt.setString(3, set.getDbIp());
+                stmt.setString(4, set.getDbUserName());
+                stmt.setString(5, set.getDbUserPw());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -656,18 +644,12 @@ public class SettingsManager {
         String sql = scriptResource.readString("dbsettings.sqlUpdate");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, set.getDbFile());
-                stmt.setString(2, set.getDbUserName());
-                stmt.setString(3, set.getDbUserPw());
-                stmt.setInt(4, set.getDbMaxIdleConnections());
-                stmt.setInt(5, set.getDbMaxActiveConnections());
-                stmt.setInt(6, set.getDbInitialSize());
-                stmt.setInt(7, set.getDbRemoveAbandonedTimeout());
-                stmt.setBoolean(8, set.isDbPoolPreparedStatements());
-                stmt.setBoolean(9, set.isDbLogAbandoned());
-                stmt.setBoolean(10, set.isDbRemoveAbandoned());
+                stmt.setString(1, set.getDbName());
+                stmt.setString(2, set.getDbIp());
+                stmt.setString(3, set.getDbUserName());
+                stmt.setString(4, set.getDbUserPw());
 
-                stmt.setString(11, set.getName()); // Where name
+                stmt.setString(5, set.getName()); // Where name
 
                 stmt.execute();
             }

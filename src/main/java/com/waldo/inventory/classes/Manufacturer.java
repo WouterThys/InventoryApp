@@ -8,20 +8,10 @@ public class Manufacturer extends DbObject {
     public static final String TABLE_NAME = "manufacturers";
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, website);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, website);
-        statement.setLong(4, id); // WHERE id
-        statement.execute();
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = addBaseParameters(statement);
+        statement.setString(ndx++, getWebsite());
+        return ndx;
     }
 
     private String website = "";

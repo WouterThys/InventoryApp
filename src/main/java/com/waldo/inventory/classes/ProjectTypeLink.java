@@ -19,20 +19,11 @@ public class ProjectTypeLink extends DbObject {
     private String filePath;
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setLong(1, projectDirectoryId);
         statement.setLong(2, projectTypeId);
         statement.setString(3, filePath);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setLong(1, projectDirectoryId);
-        statement.setLong(2, projectTypeId);
-        statement.setString(3, filePath);
-        statement.setLong(4, id); // WHERE id
-        statement.execute();
+        return 4;
     }
 
     public ProjectTypeLink() {

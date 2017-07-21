@@ -2,16 +2,14 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.PartNumber;
+import com.waldo.inventory.classes.DistributorPart;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IAutoTextField;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.util.ArrayList;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -19,7 +17,7 @@ import static com.waldo.inventory.database.SearchManager.sm;
 public class EditItemOrderPanel extends JPanel implements GuiInterface {
 
     private Item newItem;
-    private PartNumber partNumber;
+    private DistributorPart distributorPart;
 
     private JComboBox<Distributor> distributorCb;
     private DefaultComboBoxModel<Distributor> distributorCbModel;
@@ -44,14 +42,14 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                             JOptionPane.ERROR_MESSAGE
                     );
                 } else {
-                    partNumber = sm().findPartNumber(d.getId(), newItem.getId());
-                    if (partNumber == null) {
-                        partNumber = new PartNumber();
+                    distributorPart = sm().findPartNumber(d.getId(), newItem.getId());
+                    if (distributorPart == null) {
+                        distributorPart = new DistributorPart();
                     }
-                    partNumber.setItemId(newItem.getId());
-                    partNumber.setDistributorId(d.getId());
-                    partNumber.setItemRef(ref);
-                    partNumber.save();
+                    distributorPart.setItemId(newItem.getId());
+                    distributorPart.setDistributorId(d.getId());
+                    distributorPart.setItemRef(ref);
+                    distributorPart.save();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -71,9 +69,9 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
                 if (d != null) {
                     if (newItem.getId() > 0) {
                         // Find ref
-                        partNumber = sm().findPartNumber(d.getId(), newItem.getId());
-                        if (partNumber != null) {
-                            itemRefField.setText(partNumber.getItemRef());
+                        distributorPart = sm().findPartNumber(d.getId(), newItem.getId());
+                        if (distributorPart != null) {
+                            itemRefField.setText(distributorPart.getItemRef());
                         } else {
                             itemRefField.setText("");
                         }

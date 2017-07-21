@@ -1,26 +1,15 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.gui.Application;
 
 public class DbSettings extends DbSettingsObject {
 
     private static final String TABLE_NAME = "dbsettings";
 
-    private String dbFile = Application.startUpPath + "inventory.db";
+    private String dbIp = "";
+    private String dbName = "";
     private String dbUserName = "waldo";
     private String dbUserPw = "";
-
-    private int dbMaxIdleConnections = 50;
-    private int dbMaxActiveConnections = -1; // No limit
-    private int dbInitialSize = 5;
-    private int dbRemoveAbandonedTimeout = 60;
-
-    private boolean dbPoolPreparedStatements = true;
-    private boolean dbLogAbandoned = false;
-    private boolean dbRemoveAbandoned = true;
-
-
 
     public DbSettings() {
         super(TABLE_NAME);
@@ -37,16 +26,10 @@ public class DbSettings extends DbSettingsObject {
         if (super.equals(obj)) {
             if (obj instanceof DbSettings) {
                 DbSettings ref = (DbSettings) obj;
-                if ((ref.getDbFile().equals(getDbFile())) &&
+                if ((ref.getDbIp().equals(getDbIp())) &&
                         (ref.getDbUserName().equals(getDbUserName())) &&
                         (ref.getDbUserPw().equals(getDbUserPw())) &&
-                        (ref.getDbMaxIdleConnections() == (getDbMaxIdleConnections())) &&
-                        (ref.getDbMaxActiveConnections() == (getDbMaxActiveConnections())) &&
-                        (ref.getDbInitialSize() == (getDbInitialSize())) &&
-                        (ref.getDbRemoveAbandonedTimeout() == (getDbRemoveAbandonedTimeout())) &&
-                        (ref.isDbPoolPreparedStatements() == isDbPoolPreparedStatements()) &&
-                        (ref.isDbLogAbandoned() == isDbLogAbandoned()) &&
-                        (ref.isDbRemoveAbandoned() == isDbRemoveAbandoned())) {
+                        (ref.getDbName().equals(getDbName())) ) {
                     return true;
                 }
             }
@@ -58,16 +41,10 @@ public class DbSettings extends DbSettingsObject {
     public DbSettings createCopy(DbObject copyInto) {
         DbSettings copy = (DbSettings) copyInto;
         copyBaseFields(copy);
-        copy.setDbFile(dbFile);
-        copy.setDbUserName(dbUserName);
-        copy.setDbUserPw(dbUserPw);
-        copy.setDbMaxIdleConnections(dbMaxIdleConnections);
-        copy.setDbMaxActiveConnections(dbMaxActiveConnections);
-        copy.setDbInitialSize(dbInitialSize);
-        copy.setDbRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
-        copy.setDbPoolPreparedStatements(dbPoolPreparedStatements);
-        copy.setDbLogAbandoned(dbLogAbandoned);
-        copy.setDbRemoveAbandoned(dbRemoveAbandoned);
+        copy.setDbIp(getDbIp());
+        copy.setDbName(getDbName());
+        copy.setDbUserName(getDbUserName());
+        copy.setDbUserPw(getDbUserPw());
         return copy;
     }
 
@@ -76,16 +53,33 @@ public class DbSettings extends DbSettingsObject {
         return createCopy(new DbSettings());
     }
 
-
-    public String getDbFile() {
-        if (dbFile == null) {
-            dbFile = "";
-        }
-        return dbFile;
+    public String createMySqlUrl() {
+        return "jdbc:mysql:" +
+                "//" + getDbIp() + "/" +
+                getDbName();
     }
 
-    public void setDbFile(String dbFile) {
-        this.dbFile = dbFile;
+
+    public String getDbIp() {
+        if (dbIp == null) {
+            dbIp = "";
+        }
+        return dbIp;
+    }
+
+    public void setDbIp(String dbIp) {
+        this.dbIp = dbIp;
+    }
+
+    public String getDbName() {
+        if (dbName == null) {
+            dbName = "";
+        }
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
     }
 
     public String getDbUserName() {
@@ -108,88 +102,5 @@ public class DbSettings extends DbSettingsObject {
 
     public void setDbUserPw(String dbUserPw) {
         this.dbUserPw = dbUserPw;
-    }
-
-    public int getDbMaxIdleConnections() {
-        return dbMaxIdleConnections;
-    }
-
-    public void setDbMaxIdleConnections(int dbMaxIdleConnections) {
-        this.dbMaxIdleConnections = dbMaxIdleConnections;
-    }
-
-    public int getDbMaxActiveConnections() {
-        return dbMaxActiveConnections;
-    }
-
-    public void setDbMaxActiveConnections(int dbMaxActiveConnections) {
-        this.dbMaxActiveConnections = dbMaxActiveConnections;
-    }
-
-    public int getDbInitialSize() {
-        return dbInitialSize;
-    }
-
-    public void setDbInitialSize(int dbInitialSize) {
-        this.dbInitialSize = dbInitialSize;
-    }
-
-    public int getDbRemoveAbandonedTimeout() {
-        return dbRemoveAbandonedTimeout;
-    }
-
-    public void setDbRemoveAbandonedTimeout(int dbRemoveAbandonedTimeout) {
-        this.dbRemoveAbandonedTimeout = dbRemoveAbandonedTimeout;
-    }
-
-    public boolean isDbPoolPreparedStatements() {
-        return dbPoolPreparedStatements;
-    }
-
-    public String getDbPoolPreparedStatements() {
-        try {
-            return String.valueOf(dbPoolPreparedStatements);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public void setDbPoolPreparedStatements(boolean dbPoolPreparedStatements) {
-        this.dbPoolPreparedStatements = dbPoolPreparedStatements;
-    }
-
-    public boolean isDbLogAbandoned() {
-        return dbLogAbandoned;
-    }
-
-    public String getDbLogAbandoned() {
-        try {
-            return String.valueOf(dbLogAbandoned);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public void setDbLogAbandoned(boolean dbLogAbandoned) {
-        this.dbLogAbandoned = dbLogAbandoned;
-    }
-
-    public boolean isDbRemoveAbandoned() {
-        return dbRemoveAbandoned;
-    }
-
-    public String getDbRemoveAbandoned() {
-        try {
-            return String.valueOf(dbRemoveAbandoned);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public void setDbRemoveAbandoned(boolean dbRemoveAbandoned) {
-        this.dbRemoveAbandoned = dbRemoveAbandoned;
     }
 }

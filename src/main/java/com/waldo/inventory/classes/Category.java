@@ -1,5 +1,8 @@
 package com.waldo.inventory.classes;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Category extends DbObject {
 
     public static final String TABLE_NAME = "categories";
@@ -11,6 +14,11 @@ public class Category extends DbObject {
     public Category(String name) {
         super(TABLE_NAME);
         setName(name);
+    }
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        return addBaseParameters(statement);
     }
 
     @Override

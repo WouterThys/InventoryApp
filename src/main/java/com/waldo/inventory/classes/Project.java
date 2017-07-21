@@ -16,21 +16,6 @@ public class Project extends DbObject {
 
     private List<ProjectDirectory> projectDirectories;
 
-    @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setLong(3, id); // WHERE id
-        statement.execute();
-    }
-
     public Project() {
         super(TABLE_NAME);
     }
@@ -46,6 +31,13 @@ public class Project extends DbObject {
         p.setId(UNKNOWN_ID);
         p.setCanBeSaved(false);
         return p;
+    }
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        statement.setString(1, name);
+        statement.setString(2, iconPath);
+        return 3;
     }
 
     @Override

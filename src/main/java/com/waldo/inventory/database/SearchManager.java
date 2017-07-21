@@ -1,7 +1,6 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -569,8 +568,8 @@ public class SearchManager {
         return null;
     }
 
-    public PartNumber findPartNumber(long distributorId, long itemId) {
-        for (PartNumber pn : db().getPartNumbers()) {
+    public DistributorPart findPartNumber(long distributorId, long itemId) {
+        for (DistributorPart pn : db().getDistributorParts()) {
             if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
                 return pn;
             }
@@ -578,8 +577,8 @@ public class SearchManager {
         return null;
     }
 
-    public PartNumber findPartNumberById(long id) {
-        for (PartNumber pn : db().getPartNumbers()) {
+    public DistributorPart findPartNumberById(long id) {
+        for (DistributorPart pn : db().getDistributorParts()) {
             if (pn.getId() == id) {
                 return  pn;
             }
@@ -587,14 +586,14 @@ public class SearchManager {
         return null;
     }
 
-    public List<PartNumber> getPartNumbersForDistributor(long id) {
-        List<PartNumber> partNumbers = new ArrayList<>();
-        for (PartNumber pn : db().getPartNumbers()) {
+    public List<DistributorPart> getPartNumbersForDistributor(long id) {
+        List<DistributorPart> distributorParts = new ArrayList<>();
+        for (DistributorPart pn : db().getDistributorParts()) {
             if (pn.getDistributorId() == id) {
-                partNumbers.add(pn);
+                distributorParts.add(pn);
             }
         }
-        return partNumbers;
+        return distributorParts;
     }
 
     public List<Order> findOrdersForItem(long itemId) {

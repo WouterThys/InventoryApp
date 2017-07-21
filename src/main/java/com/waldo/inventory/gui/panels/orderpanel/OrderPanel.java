@@ -31,7 +31,7 @@ public class OrderPanel extends OrderPanelLayout {
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Order> ordersChanged;
     private DbObjectChangedListener<OrderItem> orderItemsChanged;
-    private DbObjectChangedListener<PartNumber> partNumbersChanged;
+    private DbObjectChangedListener<DistributorPart> partNumbersChanged;
 
     public OrderPanel(Application application) {
         super(application);
@@ -71,9 +71,9 @@ public class OrderPanel extends OrderPanelLayout {
                 orderItem.setName(item.toString() + " - " + order.toString());
 
                 // Part number
-                PartNumber partNumber = sm().findPartNumber(order.getDistributorId(), item.getId());
-                if (partNumber != null) {
-                    orderItem.setDistributorPartId(partNumber.getId());
+                DistributorPart distributorPart = sm().findPartNumber(order.getDistributorId(), item.getId());
+                if (distributorPart != null) {
+                    orderItem.setDistributorPartId(distributorPart.getId());
                 }
 
                 orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
@@ -342,27 +342,27 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setPartNumbersChangedListener() {
-        partNumbersChanged = new DbObjectChangedListener<PartNumber>() {
+        partNumbersChanged = new DbObjectChangedListener<DistributorPart>() {
             @Override
-            public void onAdded(PartNumber partNumber) {
+            public void onAdded(DistributorPart distributorPart) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(partNumber.getItemId())) {
+                    if (selectedOrder.containsItemId(distributorPart.getItemId())) {
                         tableUpdate();
                     }
                 }
             }
 
             @Override
-            public void onUpdated(PartNumber newPartNumber, PartNumber oldPartNumber) {
+            public void onUpdated(DistributorPart newDistributorPart, DistributorPart oldDistributorPart) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(newPartNumber.getItemId())) {
+                    if (selectedOrder.containsItemId(newDistributorPart.getItemId())) {
                         tableUpdate();
                     }
                 }
             }
 
             @Override
-            public void onDeleted(PartNumber partNumber) {
+            public void onDeleted(DistributorPart distributorPart) {
                 // Should not happen
             }
         };

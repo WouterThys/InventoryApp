@@ -3,6 +3,9 @@ package com.waldo.inventory.database.settings.settingsclasses;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.settings.SettingsManager;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public abstract class DbSettingsObject extends DbObject {
 
     public static final int SETTINGS_TYPE_LOG = 200;
@@ -19,6 +22,10 @@ public abstract class DbSettingsObject extends DbObject {
         return name.equals(SettingsManager.DEFAULT);
     }
 
+    @Override
+    public int addParameters(PreparedStatement stmt) throws SQLException {
+        return -2;
+    }
 
     @Override
     public String toString() {

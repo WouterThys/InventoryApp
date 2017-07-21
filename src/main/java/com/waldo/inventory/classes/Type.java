@@ -13,20 +13,10 @@ public class Type extends DbObject {
     }
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setLong(3, productId);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setLong(3, productId);
-        statement.setLong(4, id); // WHERE id
-        statement.execute();
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = addBaseParameters(statement);
+        statement.setLong(ndx++, productId);
+        return ndx;
     }
 
     @Override

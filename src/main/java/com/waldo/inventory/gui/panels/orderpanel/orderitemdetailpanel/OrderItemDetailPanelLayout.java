@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.PartNumber;
+import com.waldo.inventory.classes.DistributorPart;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IEditedListener;
@@ -133,9 +133,9 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
         } else {
             orderItem = (OrderItem) object;
             setVisible(true);
-            PartNumber partNumber = orderItem.getDistributorPart();
-            if (partNumber != null) {
-                itemRefTf.setText(partNumber.getItemRef());
+            DistributorPart distributorPart = orderItem.getDistributorPart();
+            if (distributorPart != null) {
+                itemRefTf.setText(distributorPart.getItemRef());
             } else {
                 itemRefTf.setText("");
             }

@@ -42,16 +42,10 @@ public class DbPanel extends JPanel implements
     private DefaultComboBoxModel<DbSettings> dbSettingsCbModel;
     private JComboBox<DbSettings> dbSettingsComboBox;
     
-    private ITextField dbFileTf;
+    private ITextField dbNameTf;
+    private ITextField dbIpTf;
     private ITextField userNameTf;
     private ITextField userPwTf;
-    private ISpinner   maxIdleConnectionsSp;
-    private ISpinner   maxActiveConnectionsSp;
-    private ISpinner   initialSizeSp;
-    private ISpinner   removeAbandonedTimeoutSp;
-    private ICheckBox  poolPreparedStatementsCb;
-    private ICheckBox  logAbandonedCb;
-    private ICheckBox  removeAbandonedCb;
 
     private JButton saveBtn;
     private JButton useBtn;
@@ -83,30 +77,18 @@ public class DbPanel extends JPanel implements
         if (selectedDbSettings == null || selectedDbSettings.isDefault()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
-            dbFileTf.setEnabled(false);
+            dbNameTf.setEnabled(false);
+            dbIpTf.setEnabled(false);
             userNameTf.setEnabled(false);
             userPwTf.setEnabled(false);
-            maxIdleConnectionsSp.setEnabled(false);
-            maxActiveConnectionsSp.setEnabled(false);
-            initialSizeSp.setEnabled(false);
-            removeAbandonedTimeoutSp.setEnabled(false);
-            poolPreparedStatementsCb.setEnabled(false);
-            logAbandonedCb.setEnabled(false);
-            removeAbandonedCb.setEnabled(false);
 
             saveBtn.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
-            dbFileTf.setEnabled(true);
+            dbNameTf.setEnabled(true);
+            dbIpTf.setEnabled(true);
             userNameTf.setEnabled(true);
             userPwTf.setEnabled(true);
-            maxIdleConnectionsSp.setEnabled(true);
-            maxActiveConnectionsSp.setEnabled(true);
-            initialSizeSp.setEnabled(true);
-            removeAbandonedTimeoutSp.setEnabled(true);
-            poolPreparedStatementsCb.setEnabled(true);
-            logAbandonedCb.setEnabled(true);
-            removeAbandonedCb.setEnabled(true);
 
             saveBtn.setEnabled(
                     !selectedDbSettings.isSaved() ||
@@ -122,16 +104,10 @@ public class DbPanel extends JPanel implements
 
     private void updateFieldValues() {
         if (selectedDbSettings != null) {
-            dbFileTf.setText(selectedDbSettings.getDbFile());
+            dbNameTf.setText(selectedDbSettings.getDbName());
+            dbIpTf.setText(selectedDbSettings.getDbIp());
             userNameTf.setText(selectedDbSettings.getDbUserName());
             userPwTf.setText(selectedDbSettings.getDbUserPw());
-            maxIdleConnectionsSp.setValue(selectedDbSettings.getDbMaxIdleConnections());
-            maxActiveConnectionsSp.setValue(selectedDbSettings.getDbMaxActiveConnections());
-            initialSizeSp.setValue(selectedDbSettings.getDbInitialSize());
-            removeAbandonedTimeoutSp.setValue(selectedDbSettings.getDbRemoveAbandonedTimeout());
-            poolPreparedStatementsCb.setSelected(selectedDbSettings.isDbPoolPreparedStatements());
-            logAbandonedCb.setSelected(selectedDbSettings.isDbLogAbandoned());
-            removeAbandonedCb.setSelected(selectedDbSettings.isDbRemoveAbandoned());
 
             currentSettingLbl.setText(settings().getSelectedDbSettingsName());
         }
@@ -263,32 +239,14 @@ public class DbPanel extends JPanel implements
         dbSettingsComboBox.setPreferredSize(new Dimension(120, 30));
 
         //  fields
-        dbFileTf = new ITextField();
+        dbNameTf = new ITextField();
+        dbIpTf = new ITextField();
         userNameTf = new ITextField();
         userPwTf = new ITextField();
-        dbFileTf.addEditedListener(this, "dbFile");
+        dbNameTf.addEditedListener(this, "dbName");
+        dbIpTf.addEditedListener(this, "dbIp");
         userNameTf.addEditedListener(this, "dbUserName");
         userPwTf.addEditedListener(this, "dbUserPw");
-
-        SpinnerNumberModel model = new SpinnerNumberModel(0, -1, Integer.MAX_VALUE, 1);
-        maxIdleConnectionsSp = new ISpinner(model);
-        model = new SpinnerNumberModel(0, -1, Integer.MAX_VALUE, 1);
-        maxActiveConnectionsSp = new ISpinner(model);
-        model = new SpinnerNumberModel(0, -1, Integer.MAX_VALUE, 1);
-        initialSizeSp = new ISpinner(model);
-        model = new SpinnerNumberModel(0, -1, Integer.MAX_VALUE, 1);
-        removeAbandonedTimeoutSp = new ISpinner(model);
-        maxIdleConnectionsSp.addEditedListener(this, "dbMaxIdleConnections");
-        maxActiveConnectionsSp.addEditedListener(this, "dbMaxActiveConnections");
-        initialSizeSp.addEditedListener(this, "dbInitialSize");
-        removeAbandonedTimeoutSp.addEditedListener(this, "dbRemoveAbandonedTimeout");
-
-        poolPreparedStatementsCb = new ICheckBox();
-        logAbandonedCb = new ICheckBox();
-        removeAbandonedCb = new ICheckBox();
-        poolPreparedStatementsCb.addEditedListener(this, "dbPoolPreparedStatements");
-        logAbandonedCb.addEditedListener(this, "dbLogAbandoned");
-        removeAbandonedCb.addEditedListener(this, "dbRemoveAbandoned");
 
         // Buttons
         saveBtn = new JButton("Save");
@@ -330,12 +288,12 @@ public class DbPanel extends JPanel implements
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2, 2, 2, 2);
 
-        JComponent[] jComponents = new JComponent[]{ dbFileTf, userNameTf, userPwTf, maxIdleConnectionsSp, maxActiveConnectionsSp, initialSizeSp, removeAbandonedTimeoutSp, poolPreparedStatementsCb, logAbandonedCb, removeAbandonedCb};
+        JComponent[] jComponents = new JComponent[]{ dbNameTf, dbIpTf, userNameTf, userPwTf};
         ILabel[] iLabels = new ILabel[]{
-                new ILabel("Db file: ", ILabel.RIGHT), new ILabel("User name: ", ILabel.RIGHT), new ILabel("User password: ", ILabel.RIGHT),
-                new ILabel("Max idle connections: ", ILabel.RIGHT), new ILabel("Max active connections: ", ILabel.RIGHT), new ILabel("Inital pool size: ", ILabel.RIGHT),
-                new ILabel("Remove abandoned timeout (s): ", ILabel.RIGHT), new ILabel("Pool prepared statements: ", ILabel.RIGHT), new ILabel("Log abandoned: ", ILabel.RIGHT),
-                new ILabel("Remove abandoned connections: ", ILabel.RIGHT)
+                new ILabel("Db file name: ", ILabel.RIGHT),
+                new ILabel("Db ip address: ", ILabel.RIGHT),
+                new ILabel("Db user name: ", ILabel.RIGHT),
+                new ILabel("Db user password: ", ILabel.RIGHT)
         };
 
         for (int i = 0; i < jComponents.length; i++) {

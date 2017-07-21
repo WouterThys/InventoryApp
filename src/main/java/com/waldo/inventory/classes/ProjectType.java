@@ -28,35 +28,6 @@ public class ProjectType extends DbObject {
     // Parser
     private String parserName; // For db
 
-    @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, extension);
-        statement.setBoolean(4, openAsFolder);
-        statement.setBoolean(5, useDefaultLauncher);
-        statement.setString(6, launcherPath);
-        statement.setBoolean(7, matchExtension);
-        statement.setBoolean(8, useParentFolder);
-        statement.setString(9, parserName);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setString(3, extension);
-        statement.setBoolean(4, openAsFolder);
-        statement.setBoolean(5, useDefaultLauncher);
-        statement.setString(6, launcherPath);
-        statement.setBoolean(7, matchExtension);
-        statement.setBoolean(8, useParentFolder);
-        statement.setString(9, parserName);
-        statement.setLong(10, id); // WHERE id
-        statement.execute();
-    }
-
     public ProjectType() {
         super(TABLE_NAME);
     }
@@ -75,6 +46,19 @@ public class ProjectType extends DbObject {
         } else {
             Process p = Runtime.getRuntime().exec(launcherPath + " " + file.getAbsolutePath());
         }
+    }
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = addBaseParameters(statement);
+        statement.setString(ndx++, extension);
+        statement.setBoolean(ndx++, openAsFolder);
+        statement.setBoolean(ndx++, useDefaultLauncher);
+        statement.setString(ndx++, launcherPath);
+        statement.setBoolean(ndx++, matchExtension);
+        statement.setBoolean(ndx++, useParentFolder);
+        statement.setString(ndx++, parserName);
+        return ndx;
     }
 
     @Override

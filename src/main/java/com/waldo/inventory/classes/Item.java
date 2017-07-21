@@ -29,9 +29,14 @@ public class Item extends DbObject {
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
+
+    // TODO remove
     private long packageTypeId = -1;
     private int pins;
     private double width, height;
+
+    private long packageId = -1;
+    // TODO create ItemPackage object
     private float rating;
     private boolean discourageOrder;
     private String remarks;
@@ -41,51 +46,8 @@ public class Item extends DbObject {
     }
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setString(9, iconPath);
-        statement.setString(2, description);
-        statement.setDouble(3, price);
-        if (categoryId < UNKNOWN_ID) {
-            categoryId = UNKNOWN_ID;
-        }
-        statement.setLong(4, categoryId);
-        if (productId < UNKNOWN_ID) {
-            productId = UNKNOWN_ID;
-        }
-        statement.setLong(5, productId);
-        if (typeId < UNKNOWN_ID) {
-            typeId = UNKNOWN_ID;
-        }
-        statement.setLong(6, typeId);
-        statement.setString(7, localDataSheet);
-        statement.setString(8, onlineDataSheet);
-        if (manufacturerId < UNKNOWN_ID) {
-            manufacturerId = UNKNOWN_ID;
-        }
-        statement.setLong(10, manufacturerId);
-        if (locationId < UNKNOWN_ID) {
-            locationId = UNKNOWN_ID;
-        }
-        statement.setLong(11, locationId);
-        statement.setInt(12, amount);
-        statement.setInt(13, amountType);
-        statement.setInt(14, orderState);
-        if (packageTypeId < UNKNOWN_ID) {
-            packageTypeId = UNKNOWN_ID;
-        }
-        statement.setLong(15, packageTypeId);
-        statement.setInt(16, pins);
-        statement.setDouble(17, getWidth());
-        statement.setDouble(18, getHeight());
-        statement.setFloat(19, rating);
-        statement.setBoolean(20, discourageOrder);
-        statement.setString(21, getRemarks());
-        statement.execute();
-    }
+    public int addParameters(PreparedStatement statement) throws SQLException {
 
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
         statement.setString(1, name);
         statement.setString(9, iconPath);
         statement.setString(2, description);
@@ -126,8 +88,7 @@ public class Item extends DbObject {
         statement.setBoolean(20, discourageOrder);
         statement.setString(21, getRemarks());
 
-        statement.setLong(22, id); // WHERE id
-        statement.execute();
+        return 22;
     }
 
     @Override
@@ -588,6 +549,15 @@ public class Item extends DbObject {
             remarks = "";
         }
         return remarks;
+    }
+
+
+    public long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(long packageId) {
+        this.packageId = packageId;
     }
 
     public void setRemarks(String remarks) {

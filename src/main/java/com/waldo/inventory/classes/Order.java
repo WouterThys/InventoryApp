@@ -32,36 +32,19 @@ public class Order extends DbObject {
     private String trackingNumber;
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         dateModified = new Date(Calendar.getInstance().getTime().getTime());
 
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setDate(3, dateOrdered);
-        statement.setDate(4, dateModified);
-        statement.setDate(5, dateReceived);
-        statement.setLong(6, distributor.getId());
-        statement.setString(7, orderFile.getOrderFileName());
-        statement.setString(8, orderReference);
-        statement.setString(9, trackingNumber);
-        statement.execute();
-    }
+        int ndx = addBaseParameters(statement);
 
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        dateModified = new Date(Calendar.getInstance().getTime().getTime());
-
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setDate(3, dateOrdered);
-        statement.setDate(4, dateModified);
-        statement.setDate(5, dateReceived);
-        statement.setLong(6, distributor.getId());
-        statement.setString(7, orderFile.getOrderFileName());
-        statement.setString(8, orderReference);
-        statement.setString(9, trackingNumber);
-        statement.setLong(10, id); // WHERE id
-        statement.execute();
+        statement.setDate(ndx++, dateOrdered);
+        statement.setDate(ndx++, dateModified);
+        statement.setDate(ndx++, dateReceived);
+        statement.setLong(ndx++, distributor.getId());
+        statement.setString(ndx++, orderFile.getOrderFileName());
+        statement.setString(ndx++, orderReference);
+        statement.setString(ndx++, trackingNumber);
+        return ndx;
     }
 
     @Override
@@ -216,10 +199,10 @@ public class Order extends DbObject {
     public void updateItemReferences() {
         if (distributor != null && getOrderItems().size() > 0) {
             for (OrderItem oi : orderItems) {
-                PartNumber partNumber = sm().findPartNumber(distributor.getId(), oi.getItemId());
-                if (partNumber != null) {
-                    if (oi.getDistributorPartId() != partNumber.getId()) {
-                        oi.setDistributorPartId(partNumber.getId());
+                DistributorPart distributorPart = sm().findPartNumber(distributor.getId(), oi.getItemId());
+                if (distributorPart != null) {
+                    if (oi.getDistributorPartId() != distributorPart.getId()) {
+                        oi.setDistributorPartId(distributorPart.getId());
                         oi.save();
                     }
                 } else {

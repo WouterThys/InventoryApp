@@ -3,44 +3,32 @@ package com.waldo.inventory.classes;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PartNumber extends DbObject {
+public class DistributorPart extends DbObject {
 
-    public static final String TABLE_NAME = "partnumbers";
+    public static final String TABLE_NAME = "distributorParts";
 
     private long distributorId;
     private long itemId;
     private String itemRef;
 
-    public PartNumber() {
+    public DistributorPart() {
         super(TABLE_NAME);
     }
 
-    public PartNumber(long distributorId, long itemId) {
+    public DistributorPart(long distributorId, long itemId) {
         super(TABLE_NAME);
         this.distributorId = distributorId;
         this.itemId = itemId;
     }
 
-
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);
         statement.setString(2, iconPath);
         statement.setLong(3, distributorId);
         statement.setLong(4, itemId);
         statement.setString(5, itemRef);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setLong(3, distributorId);
-        statement.setLong(4, itemId);
-        statement.setString(5, itemRef);
-        statement.setLong(6, id); // WHERE id
-        statement.execute();
+        return 6;
     }
 
     @Override
@@ -55,18 +43,18 @@ public class PartNumber extends DbObject {
     }
 
     @Override
-    public PartNumber createCopy(DbObject copyInto) {
-        PartNumber partNumber = (PartNumber) copyInto;
-        copyBaseFields(partNumber);
-        partNumber.setDistributorId(getDistributorId());
-        partNumber.setItemId(getItemId());
-        partNumber.setItemRef(getItemRef());
-        return partNumber;
+    public DistributorPart createCopy(DbObject copyInto) {
+        DistributorPart distributorPart = (DistributorPart) copyInto;
+        copyBaseFields(distributorPart);
+        distributorPart.setDistributorId(getDistributorId());
+        distributorPart.setItemId(getItemId());
+        distributorPart.setItemRef(getItemRef());
+        return distributorPart;
     }
 
     @Override
-    public PartNumber createCopy() {
-        return createCopy(new PartNumber());
+    public DistributorPart createCopy() {
+        return createCopy(new DistributorPart());
     }
 
 

@@ -73,24 +73,13 @@ public class Log extends DbObject {
     }
 
     @Override
-    protected void insert(PreparedStatement statement) throws SQLException {
+    public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setInt(1, logType);
         statement.setDate(2, logTime);
         statement.setString(3,logClass);
         statement.setString(4, logMessage);
         statement.setString(5, logException);
-        statement.execute();
-    }
-
-    @Override
-    protected void update(PreparedStatement statement) throws SQLException{
-        statement.setInt(1, logType);
-        statement.setDate(2, logTime);
-        statement.setString(3,logClass);
-        statement.setString(4, logMessage);
-        statement.setString(5, logException);
-        statement.setLong(4, id); // WHERE id
-        statement.execute();
+        return 6;
     }
 
     @Override
@@ -105,28 +94,29 @@ public class Log extends DbObject {
 
     @Override
     protected void doSave() throws SQLException {
-        setOnTableChangedListener(DbManager.db());
-
-        try (Connection connection = DbManager.getConnection()) {
-            if (!connection.isValid(5)) {
-                throw new SQLException("Conenction invalid, timed out after 5s...");
-            }
-            if (id == -1) { // Save
-                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-                    insert(statement);
-
-                    try (ResultSet rs = statement.getGeneratedKeys()) {
-                        rs.next();
-                        id = rs.getLong(1);
-                    }
-                }
-            } else { // Update
-                // Save new object
-                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
-                    update(statement);
-                }
-            }
-        }
+        // TODO
+//        setOnTableChangedListener(DbManager.db());
+//
+//        try (Connection connection = DbManager.getConnection()) {
+//            if (!connection.isValid(5)) {
+//                throw new SQLException("Conenction invalid, timed out after 5s...");
+//            }
+//            if (id == -1) { // Save
+//                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+//                    insert(statement);
+//
+//                    try (ResultSet rs = statement.getGeneratedKeys()) {
+//                        rs.next();
+//                        id = rs.getLong(1);
+//                    }
+//                }
+//            } else { // Update
+//                // Save new object
+//                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
+//                    update(statement);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -162,13 +152,13 @@ public class Log extends DbObject {
 
     @Override
     protected void doDelete() throws SQLException {
-        if (id != -1) {
-            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
-                statement.setLong(1, id);
-                statement.execute();
-                id = -1; // Not in database anymore
-            }
-        }
+//        if (id != -1) {
+//            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
+//                statement.setLong(1, id);
+//                statement.execute();
+//                id = -1; // Not in database anymore
+//            }
+//        }
     }
 
     @Override
