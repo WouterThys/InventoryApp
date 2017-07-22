@@ -53,17 +53,12 @@ public abstract class OrderPanelLayout extends JPanel implements
     TopToolBar tableToolBar;
     private JToolBar bottomToolBar;
     private JPanel orderTbPanel;
+    IOrderFlowPanel tbOrderFlowPanel;
 
     private ILabel tbTotalItemsLbl;
     private ILabel tbTotalPriceLbl;
-    private ILabel tbDateOrderedLbl;
-    private ILabel tbDateReceivedLbl;
-    private ILabel tbDateModifiedLbl;
-    JButton tbOrderButton;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
-    JButton tbViewOrderDetailsBtn;
-    JButton tbSetOrderedBtn;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -225,37 +220,6 @@ public abstract class OrderPanelLayout extends JPanel implements
             tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
             tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
 
-            switch (order.getOrderState()) {
-                case Statics.ItemOrderStates.PLANNED:
-                    tbDateOrderedLbl.setText("Not ordered");
-                    tbSetOrderedBtn.setText("Set ordered");
-                    tbDateReceivedLbl.setText("Not received");
-                    tbSetOrderedBtn.setVisible(true);
-                    tbOrderButton.setText("Order!");
-                    break;
-                case Statics.ItemOrderStates.ORDERED:
-                    tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
-                    tbSetOrderedBtn.setText("Set received");
-                    tbDateReceivedLbl.setText("Not received");
-                    tbSetOrderedBtn.setVisible(true);
-                    break;
-                case Statics.ItemOrderStates.RECEIVED:
-                    tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
-                    tbSetOrderedBtn.setVisible(false);
-                    break;
-                default:
-                    break;
-
-            }
-
-            tbOrderButton.setVisible(!order.isOrdered());// || order.isReceived());
-
-            if (order.getDateModified() != null) {
-                tbDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
-            } else {
-                tbDateModifiedLbl.setText(" / ");
-            }
-
             if (order.getDistributor() != null) {
                 tbDistributorCb.setSelectedItem(order.getDistributor());
             }
@@ -269,7 +233,6 @@ public abstract class OrderPanelLayout extends JPanel implements
             treeToolBar.setDeleteActionEnabled(false);
             tableToolBar.setAddActionEnabled(false);
             tableToolBar.setRefreshActionEnabled(false);
-            tbOrderButton.setEnabled(false);
             tbDistributorCb.setEnabled(false);
         } else {
             treeToolBar.setEditActionEnabled(true);
@@ -278,8 +241,6 @@ public abstract class OrderPanelLayout extends JPanel implements
             tableToolBar.setRefreshActionEnabled(true);
             tbDistributorCb.setEnabled(!selectedOrder.isOrdered());
         }
-
-        tbOrderButton.setEnabled(tableModel.getRowCount() > 0);
 
         // Items
         if (selectedOrderItem == null) {
@@ -290,6 +251,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             tableToolBar.setDeleteActionEnabled(true);
         }
 
+        tbOrderFlowPanel.updateComponents(selectedOrder);
     }
 
     void updateVisibleComponents() {
@@ -347,54 +309,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.weighty = 0;
         amountPanel.add(tbTotalPriceLbl, gbc);
 
-        // Order date
-        ILabel dateLabel = new ILabel("Ordered: ");
-        dateLabel.setHorizontalAlignment(ILabel.RIGHT);
-        dateLabel.setVerticalAlignment(ILabel.CENTER);
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
-        //datesPanel.add(dateLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
-        datesPanel.add(tbDateOrderedLbl, gbc);
-
-        // Received date
-        ILabel receivedLabel = new ILabel("Received: ");
-        receivedLabel.setHorizontalAlignment(ILabel.RIGHT);
-        receivedLabel.setVerticalAlignment(ILabel.CENTER);
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
-        //datesPanel.add(receivedLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
-        datesPanel.add(tbDateReceivedLbl, gbc);
-
-        // Modified date
-        ILabel modifiedLabel = new ILabel("Modified: ");
-        modifiedLabel.setHorizontalAlignment(ILabel.RIGHT);
-        modifiedLabel.setVerticalAlignment(ILabel.CENTER);
-        gbc.gridx = 2;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
-        //datesPanel.add(modifiedLabel, gbc);
-
-        gbc.gridx = 2;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
-        datesPanel.add(tbDateModifiedLbl, gbc);
-
         // Add to toolbar
         bottomToolBar.add(datesPanel);
         bottomToolBar.add(Box.createHorizontalGlue());
@@ -423,36 +337,11 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         makeOrderPanel.add(tbDistributorCb, gbc);
 
-        // Order button
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        makeOrderPanel.add(tbOrderButton, gbc);
-
-        // Order file
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 1;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        tbOrderFilePanel.add(tbViewOrderDetailsBtn, gbc);
-
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 1;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        tbOrderFilePanel.add(tbSetOrderedBtn, gbc);
-
         // Create panel
         orderTbPanel = new JPanel(new BorderLayout());
         orderTbPanel.add(makeOrderPanel, BorderLayout.WEST);
-        orderTbPanel.add(tbOrderFilePanel, BorderLayout.EAST);
+        orderTbPanel.add(tbOrderFlowPanel, BorderLayout.EAST);
+        //orderTbPanel.add(tbOrderFilePanel, BorderLayout.EAST);
         orderTbPanel.setVisible(false);
 
         return orderTbPanel;
@@ -498,21 +387,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbTotalItemsLbl.setHorizontalAlignment(ILabel.LEFT);
         tbTotalItemsLbl.setVerticalAlignment(ILabel.CENTER);
 
-        tbDateOrderedLbl = new ILabel();
-        tbDateOrderedLbl.setEnabled(false);
-        tbDateOrderedLbl.setHorizontalAlignment(ILabel.LEFT);
-        tbDateOrderedLbl.setVerticalAlignment(ILabel.CENTER);
-
-        tbDateReceivedLbl = new ILabel();
-        tbDateReceivedLbl.setEnabled(false);
-        tbDateReceivedLbl.setHorizontalAlignment(ILabel.LEFT);
-        tbDateReceivedLbl.setVerticalAlignment(ILabel.CENTER);
-
-        tbDateModifiedLbl = new ILabel();
-        tbDateModifiedLbl.setEnabled(false);
-        tbDateModifiedLbl.setHorizontalAlignment(ILabel.LEFT);
-        tbDateModifiedLbl.setVerticalAlignment(ILabel.CENTER);
-
         DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
         for (Distributor d : DbManager.db().getDistributors()) {
             distributorCbModel.addElement(d);
@@ -536,10 +410,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
         });
 
-        tbOrderButton = new JButton("Order!");
-
-        tbSetOrderedBtn = new JButton("Set ordered");
-        tbViewOrderDetailsBtn = new JButton("Order details");
+        tbOrderFlowPanel = new IOrderFlowPanel(application);
 
         // Tool bars
         treeToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {

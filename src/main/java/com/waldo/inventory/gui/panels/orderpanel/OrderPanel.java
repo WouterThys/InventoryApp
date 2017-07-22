@@ -92,42 +92,40 @@ public class OrderPanel extends OrderPanelLayout {
         initMouseClicked();
 
         // Order
-        tbOrderButton.addActionListener(e -> {
-            OrderFile orderFile = new OrderFile(selectedOrder);
-            orderFile.createOrderFile();
-            if (orderFile.isSuccess()) {
-                OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
-                infoDialog.showDialog();
-                selectedOrder.setOrderFile(orderFile);
-                selectedOrder.save();
-            } else {
-                StringBuilder msg = new StringBuilder("Order failed with next errors: ");
-                for (String s : orderFile.getErrorMessages()) {
-                    msg.append(s).append("\n\n");
-                }
-                JOptionPane.showMessageDialog(OrderPanel.this, msg.toString(), "Order errors", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+//        tbOrderButton.addActionListener(e -> { // TODO this should go to orderClickListener, if orderfile is empty or changed
+//            OrderFile orderFile = new OrderFile(selectedOrder);
+//            orderFile.createOrderFile();
+//            if (orderFile.isSuccess()) {
+//                OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
+//                infoDialog.showDialog();
+//                selectedOrder.setOrderFile(orderFile);
+//                selectedOrder.save();
+//            } else {
+//                StringBuilder msg = new StringBuilder("Order failed with next errors: ");
+//                for (String s : orderFile.getErrorMessages()) {
+//                    msg.append(s).append("\n\n");
+//                }
+//                JOptionPane.showMessageDialog(OrderPanel.this, msg.toString(), "Order errors", JOptionPane.ERROR_MESSAGE);
+//            }
+//        });
 
-        // Set ordered
-        tbSetOrderedBtn.addActionListener(e -> {
-            if (!selectedOrder.isOrdered()) {
-                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
-                if (dialog.showDialog() == IDialog.OK) {
-                    setOrdered();
-                }
-            } else if (selectedOrder.isOrdered() && !selectedOrder.isReceived()) {
-                setReceived();
+
+        tbOrderFlowPanel.addOrderClickListener(e -> {
+            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
+            if (dialog.showDialog() == IDialog.OK) {
+                setOrdered();
             }
         });
+        tbOrderFlowPanel.addReceivedClickListener(e -> setReceived());
+
 
         // Details
-        tbViewOrderDetailsBtn.addActionListener(e -> {
-            if (selectedOrder != null) {
-                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", selectedOrder);
-                dialog.showDialog();
-            }
-        });
+//        tbViewOrderDetailsBtn.addActionListener(e -> { // TODO this logic should go to treeToolBar on edit order
+//            if (selectedOrder != null) {
+//                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", selectedOrder);
+//                dialog.showDialog();
+//            }
+//        });
     }
 
     private void setOrdered() {
