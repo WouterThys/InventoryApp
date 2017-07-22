@@ -221,12 +221,12 @@ public class OrderPanel extends OrderPanelLayout {
     private void setItemsChangedListener() {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
-            public void onAdded(Item item) {
+            public void onInserted(Item item) {
                 // No effect here
             }
 
             @Override
-            public void onUpdated(Item newItem, Item oldItem) {
+            public void onUpdated(Item newItem) {
                 if (selectedOrder != null) {
                     if (selectedOrder.containsItemId(newItem.getId())) { // when new items are added, this should be false
                         tableUpdate();
@@ -244,7 +244,7 @@ public class OrderPanel extends OrderPanelLayout {
     private void setOrdersChangedListener() {
         ordersChanged = new DbObjectChangedListener<Order>() {
             @Override
-            public void onAdded(Order order) {
+            public void onInserted(Order order) {
                 selectedOrder = order;
                 selectedOrderItem = null;
 
@@ -263,7 +263,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
 
             @Override
-            public void onUpdated(Order newOrder, Order oldOrder) {
+            public void onUpdated(Order newOrder) {
                 selectedOrder = newOrder;
 
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
@@ -296,7 +296,7 @@ public class OrderPanel extends OrderPanelLayout {
     private void setOrderItemsChangedListener() {
         orderItemsChanged = new DbObjectChangedListener<OrderItem>() {
             @Override
-            public void onAdded(OrderItem orderItem) {
+            public void onInserted(OrderItem orderItem) {
                 Order order = sm().findOrderById(orderItem.getOrderId());
                 order.addItemToList(orderItem);
                 // Update table if not current selected order
@@ -318,7 +318,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
 
             @Override
-            public void onUpdated(OrderItem newOrderItem, OrderItem oldOrderItem) {
+            public void onUpdated(OrderItem newOrderItem) {
                 selectedOrder = sm().findOrderById(newOrderItem.getOrderId());
                 selectedOrderItem = newOrderItem;
 
@@ -344,7 +344,7 @@ public class OrderPanel extends OrderPanelLayout {
     private void setPartNumbersChangedListener() {
         partNumbersChanged = new DbObjectChangedListener<DistributorPart>() {
             @Override
-            public void onAdded(DistributorPart distributorPart) {
+            public void onInserted(DistributorPart distributorPart) {
                 if (selectedOrder != null) {
                     if (selectedOrder.containsItemId(distributorPart.getItemId())) {
                         tableUpdate();
@@ -353,7 +353,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
 
             @Override
-            public void onUpdated(DistributorPart newDistributorPart, DistributorPart oldDistributorPart) {
+            public void onUpdated(DistributorPart newDistributorPart) {
                 if (selectedOrder != null) {
                     if (selectedOrder.containsItemId(newDistributorPart.getItemId())) {
                         tableUpdate();

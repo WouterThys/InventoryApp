@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import static com.waldo.inventory.database.DbManager.db;
 
 public class ProjectDirectory extends DbObject {
 
@@ -93,6 +96,35 @@ public class ProjectDirectory extends DbObject {
     @Override
     public ProjectDirectory createCopy() {
         return createCopy(new ProjectDirectory());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<ProjectDirectory> list = db().getProjectDirectories();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectDirectoryChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectDirectoryChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<ProjectDirectory> list = db().getProjectDirectories();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectDirectoryChangedListenerList);
+                break;
+            }
+        }
     }
 
     /*

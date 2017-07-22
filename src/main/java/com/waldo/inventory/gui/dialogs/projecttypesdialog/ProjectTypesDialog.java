@@ -56,13 +56,14 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
             originalProjectType = selectedProjectType.createCopy();
             getButtonNeutral().setEnabled(false);
         }
-
     }
 
     @Override
     protected void onCancel() {
-        originalProjectType.createCopy(selectedProjectType);
-        selectedProjectType.setCanBeSaved(true);
+        if (selectedProjectType != null && originalProjectType != null) {
+            originalProjectType.createCopy(selectedProjectType);
+            selectedProjectType.setCanBeSaved(true);
+        }
         super.onCancel();
     }
 
@@ -190,12 +191,12 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     // ProjectType listener
     //
     @Override
-    public void onAdded(ProjectType projectType) {
+    public void onInserted(ProjectType projectType) {
         updateComponents(projectType);
     }
 
     @Override
-    public void onUpdated(ProjectType newProjectType, ProjectType oldProjectType) {
+    public void onUpdated(ProjectType newProjectType) {
         updateComponents(newProjectType);
     }
 

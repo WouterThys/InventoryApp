@@ -1,11 +1,14 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 
 public class OrderItem extends DbObject {
@@ -57,6 +60,35 @@ public class OrderItem extends DbObject {
     @Override
     public OrderItem createCopy() {
         return createCopy(new OrderItem());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<OrderItem> list = db().getOrderItems();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onOrderItemsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onOrderItemsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<OrderItem> list = db().getOrderItems();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onOrderItemsChangedListenerList);
+                break;
+            }
+        }
     }
 
     public static OrderItem createDummyOrderItem(Order order, Item item) {

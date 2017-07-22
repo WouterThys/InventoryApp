@@ -97,10 +97,11 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
         }
     }
 
-    public void updateObject(DbObject newChild, DbObject oldChild) {
+    public void updateObject(DbObject newChild) {
         try {
             SwingUtilities.invokeLater(() -> {
-                DefaultMutableTreeNode node = findNode(oldChild);
+                // TODO this was done with oldChild
+                DefaultMutableTreeNode node = findNode(newChild);
                 if (node != null) {
                     node.setUserObject(newChild);
                     nodeChanged(node);
@@ -189,8 +190,11 @@ public class IDbObjectTreeModel extends DefaultTreeModel {
 
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = e.nextElement();
-            if (object.equals(node.getUserObject())) {
-                return node;
+            DbObject nodeObject = (DbObject) node.getUserObject();
+            if (nodeObject != null) {
+                if (object.getId() == nodeObject.getId() && object.getName().equals(nodeObject.getName())){
+                    return node;
+                }
             }
         }
         return null;

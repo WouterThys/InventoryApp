@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.SearchManager;
 
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Item extends DbObject {
@@ -249,6 +251,35 @@ public class Item extends DbObject {
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Item> list = db().getItems();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onItemsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onItemsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Item> list = db().getItems();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onItemsChangedListenerList);
+                break;
+            }
+        }
     }
 
     public String getDescription() {

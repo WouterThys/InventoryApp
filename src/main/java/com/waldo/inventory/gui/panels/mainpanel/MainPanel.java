@@ -87,13 +87,13 @@ public class MainPanel extends MainPanelLayout {
     private void setItemsChangedListener() {
         itemsChanged = new DbObjectChangedListener<Item>() {
             @Override
-            public void onAdded(Item item) {
+            public void onInserted(Item item) {
                 itemChanged(item);
                 //updateComponents(lastSelectedDivision); // Give it non-null value
             }
 
             @Override
-            public void onUpdated(Item newItem, Item oldItem) {
+            public void onUpdated(Item newItem) {
                 itemChanged(newItem);
                 //selectedItem = newItem;
                 //updateComponents(lastSelectedDivision);
@@ -145,13 +145,13 @@ public class MainPanel extends MainPanelLayout {
     private void setCategoriesChangedListener() {
         categoriesChanged = new DbObjectChangedListener<Category>() {
             @Override
-            public void onAdded(Category category) {
+            public void onInserted(Category category) {
                 treeModel.addObject(category);
             }
 
             @Override
-            public void onUpdated(Category newCategory, Category oldCategory) {
-                treeModel.updateObject(newCategory, oldCategory);
+            public void onUpdated(Category newCategory) {
+                treeModel.updateObject(newCategory);
             }
 
             @Override
@@ -164,13 +164,13 @@ public class MainPanel extends MainPanelLayout {
     private void setProductsChangedListener() {
         productsChanged = new DbObjectChangedListener<Product>() {
             @Override
-            public void onAdded(Product product) {
+            public void onInserted(Product product) {
                 treeModel.addObject(product);
             }
 
             @Override
-            public void onUpdated(Product newProduct, Product oldProduct) {
-                treeModel.updateObject(newProduct, oldProduct);
+            public void onUpdated(Product newProduct) {
+                treeModel.updateObject(newProduct);
             }
 
             @Override
@@ -183,13 +183,13 @@ public class MainPanel extends MainPanelLayout {
     private void setTypesChangedListener() {
         typesChanged = new DbObjectChangedListener<Type>() {
             @Override
-            public void onAdded(Type type) {
+            public void onInserted(Type type) {
                 treeModel.addObject(type);
             }
 
             @Override
-            public void onUpdated(Type newType, Type oldType) {
-                treeModel.updateObject(newType, oldType);
+            public void onUpdated(Type newType) {
+                treeModel.updateObject(newType);
             }
 
             @Override

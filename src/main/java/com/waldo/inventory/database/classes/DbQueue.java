@@ -7,6 +7,7 @@ public class DbQueue<T extends DbQueueObject> {
 
     private Queue<T> queue = new LinkedList<>();
     private int capacity;
+    private volatile boolean stopped = false;
 
     public DbQueue(int capacity) {
         this.capacity = capacity;
@@ -16,19 +17,27 @@ public class DbQueue<T extends DbQueueObject> {
         while (queue.size() >= capacity) {
             wait();
         }
-
-        queue.add(element);
-        notify(); // notifyAll??
+        if (!stopped) {
+            queue.add(element);
+            notify(); // notifyAll??
+        }
     }
 
     public synchronized T take() throws InterruptedException {
         while (queue.isEmpty()) {
-            wait();
+            wait(2000);
         }
+        if (!stopped) {
+            T item = queue.remove();
+            notify();
+            return item;
+        }
+        return null;
+    }
 
-        T item = queue.remove();
+    public synchronized void stop() {
+        stopped = true;
         notify();
-        return item;
     }
 
     public synchronized int size() {

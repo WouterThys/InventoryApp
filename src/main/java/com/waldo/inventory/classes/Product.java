@@ -1,7 +1,12 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+
+import static com.waldo.inventory.database.DbManager.db;
 
 public class Product extends DbObject {
 
@@ -31,6 +36,35 @@ public class Product extends DbObject {
     @Override
     public Product createCopy() {
         return createCopy(new Product());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Product> list = db().getProducts();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProductsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProductsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Product> list = db().getProducts();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProductsChangedListenerList);
+                break;
+            }
+        }
     }
 
     public static Product getUnknownProduct() {

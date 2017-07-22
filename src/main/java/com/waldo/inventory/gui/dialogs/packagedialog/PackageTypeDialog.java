@@ -103,8 +103,10 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     @Override
     protected void onCancel() {
-        originalPackageType.createCopy(selectedPackageType);
-        selectedPackageType.setCanBeSaved(true);
+        if (selectedPackageType != null && originalPackageType != null) {
+            originalPackageType.createCopy(selectedPackageType);
+            selectedPackageType.setCanBeSaved(true);
+        }
         super.onCancel();
     }
 
@@ -231,12 +233,12 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     // Db Changed
     //
     @Override
-    public void onAdded(PackageType object) {
+    public void onInserted(PackageType object) {
         updateComponents(object);
     }
 
     @Override
-    public void onUpdated(PackageType newObject, PackageType oldObject) {
+    public void onUpdated(PackageType newObject) {
         updateComponents(newObject);
     }
 

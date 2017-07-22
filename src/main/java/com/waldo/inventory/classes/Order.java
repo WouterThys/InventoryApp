@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Order extends DbObject {
@@ -103,6 +104,35 @@ public class Order extends DbObject {
             }
         }
         return result;
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Order> list = db().getOrders();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onOrdersChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onOrdersChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Order> list = db().getOrders();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onOrdersChangedListenerList);
+                break;
+            }
+        }
     }
 
     public static class OrderAllOrders implements Comparator<Order> {

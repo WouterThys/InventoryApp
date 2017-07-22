@@ -7,23 +7,20 @@ import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
-import com.waldo.inventory.database.interfaces.TableChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
-import java.io.File;
+import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class DbManager implements TableChangedListener {
+public class DbManager {
 
     private static final LogManager LOG = LogManager.LOG(DbManager.class);
 
@@ -54,20 +51,20 @@ public class DbManager implements TableChangedListener {
     // Events
     private DbErrorListener errorListener;
 
-    private List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Type>> onTypesChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
-    private List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Type>> onTypesChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -91,44 +88,60 @@ public class DbManager implements TableChangedListener {
 
     private DbManager() {}
 
-    public void init() {
+    public void init() throws SQLException {
         initialized = false;
         DbSettings s = settings().getDbSettings();
         if (s != null) {
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-            dataSource.setUrl(s.createMySqlUrl()+"?zeroDateTimeBehavior=convertToNull");
+            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull");
             dataSource.setUsername(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
             LOG.info("Database initialized with connection: " + s.createMySqlUrl());
 
+            // Test
+            String sql = "SELECT table_name FROM information_schema.tables where table_schema='inventory';";
+            tableNames = new ArrayList<>();
 
-            workList = new DbQueue<>(100);
-            dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
-            dbQueueWorker.execute();
-            LOG.info("Database started thread: " + QUEUE_WORKER);
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql);
+                     ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        tableNames.add(rs.getString("table_name"));
+                    }
+                    initialized = true;
+                }
+            }
 
-            nonoList = new DbQueue<>(100);
-            dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
-            dbErrorWorker.execute();
-            LOG.info("Database started thread: " + ERROR_WORKER);
-
-            initialized = true;
         }
+    }
+
+    public void startBackgroundWorkers() {
+        workList = new DbQueue<>(100);
+        dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
+        dbQueueWorker.execute();
+        LOG.info("Database started thread: " + QUEUE_WORKER);
+
+        nonoList = new DbQueue<>(100);
+        dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
+        dbErrorWorker.execute();
+        LOG.info("Database started thread: " + ERROR_WORKER);
     }
 
     public void addErrorListener(DbErrorListener errorListener) {
         this.errorListener = errorListener;
     }
 
-    private void close() {
+    public void close() {
         if(dataSource != null) {
             Status().setMessage("Closing down");
             if(dbQueueWorker != null) {
                 dbQueueWorker.keepRunning = false;
+                workList.stop();
             }
             if (dbErrorWorker != null) {
                 dbErrorWorker.keepRunning = false;
+                nonoList.stop();
             }
         }
     }
@@ -377,93 +390,47 @@ public class DbManager implements TableChangedListener {
 
 
 
-    private <T extends DbObject> void notifyListeners(int changedHow, T newObject, T oldObject, List<DbObjectChangedListener<T>> listeners) {
+    public <T extends DbObject> void notifyListeners(int changedHow, T object, List<DbObjectChangedListener<T>> listeners) {
         for (DbObjectChangedListener<T> l : listeners) {
             switch (changedHow) {
                 case OBJECT_INSERT:
-                    l.onAdded(newObject);
+                    SwingUtilities.invokeLater(() -> l.onInserted(object));
                     break;
                 case OBJECT_UPDATE:
-                    l.onUpdated(newObject, oldObject);
+                    SwingUtilities.invokeLater(() -> l.onUpdated(object));
+                    l.onUpdated(object);
                     break;
                 case OBJECT_DELETE:
-                    l.onDeleted(newObject);
+                    SwingUtilities.invokeLater(() -> l.onDeleted(object));
                     break;
             }
         }
     }
 
-    @Override
-    public void onTableChanged(String tableName, int changedHow, DbObject newObject, DbObject oldObject) throws SQLException {
-        String how = "";
-        switch (changedHow) {
-            case OBJECT_INSERT: how = "added in "; break;
-            case OBJECT_UPDATE: how = "updated in "; break;
-            case OBJECT_DELETE: how = "deleted from"; break;
+    public void insert(DbObject object) {
+        DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
+        try {
+            workList.put(toInsert);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 
-        Status().setMessage(newObject.getName() + " " + how + tableName);
+    public void update(DbObject object) {
+        DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
+        try {
+            workList.put(toUpdate);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-        switch (tableName) {
-            case Item.TABLE_NAME:
-                updateItems();
-                notifyListeners(changedHow, (Item)newObject, (Item)oldObject, onItemsChangedListenerList);
-                break;
-            case Category.TABLE_NAME:
-                updateCategories();
-                notifyListeners(changedHow, (Category)newObject, (Category)oldObject, onCategoriesChangedListenerList);
-                break;
-            case Product.TABLE_NAME:
-                updateProducts();
-                notifyListeners(changedHow, (Product)newObject, (Product)oldObject, onProductsChangedListenerList);
-                break;
-            case Type.TABLE_NAME:
-                updateTypes();
-                notifyListeners(changedHow, (Type)newObject, (Type)oldObject, onTypesChangedListenerList);
-                break;
-            case Manufacturer.TABLE_NAME:
-                updateManufacturers();
-                notifyListeners(changedHow, (Manufacturer)newObject, (Manufacturer)oldObject, onManufacturerChangedListenerList);
-                break;
-            case Location.TABLE_NAME:
-                updateLocations();
-                notifyListeners(changedHow, (Location)newObject, (Location)oldObject, onLocationsChangedListenerList);
-                break;
-            case Order.TABLE_NAME:
-                updateOrders();
-                notifyListeners(changedHow, (Order)newObject, (Order)oldObject, onOrdersChangedListenerList);
-                break;
-            case OrderItem.TABLE_NAME:
-                updateOrderItems();
-                notifyListeners(changedHow, (OrderItem)newObject, (OrderItem)oldObject, onOrderItemsChangedListenerList);
-                break;
-            case Distributor.TABLE_NAME:
-                updateDistributors();
-                notifyListeners(changedHow, (Distributor)newObject, (Distributor)oldObject, onDistributorsChangedListenerList);
-                break;
-            case DistributorPart.TABLE_NAME:
-                updateDistributorParts();
-                notifyListeners(changedHow, (DistributorPart)newObject, (DistributorPart)oldObject, onPartNumbersChangedListenerList);
-                break;
-            case PackageType.TABLE_NAME:
-                updatePackageTypes();
-                notifyListeners(changedHow, (PackageType)newObject, (PackageType)oldObject, onPackageTypesChangedListenerList);
-                break;
-            case Project.TABLE_NAME:
-                updateProjects();
-                notifyListeners(changedHow, (Project)newObject, (Project)oldObject, onProjectChangedListenerList);
-                break;
-            case ProjectDirectory.TABLE_NAME:
-                updateProjectDirectories();
-                notifyListeners(changedHow, (ProjectDirectory)newObject, (ProjectDirectory)oldObject, onProjectDirectoryChangedListenerList);
-                break;
-            case ProjectType.TABLE_NAME:
-                updateProjectTypes();
-                notifyListeners(changedHow, (ProjectType)newObject, (ProjectType)oldObject, onProjectTypeChangedListenerList);
-                break;
-            case ProjectTypeLink.TABLE_NAME:
-                updateProjectTypeLinks();
-                break;
+    public void delete(DbObject object) {
+        DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
+        try {
+            workList.put(toDelete);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -509,7 +476,6 @@ public class DbManager implements TableChangedListener {
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
 
-                    i.setOnTableChangedListener(this);
                     items.add(i);
                 }
             }
@@ -549,7 +515,6 @@ public class DbManager implements TableChangedListener {
                     c.setIconPath(rs.getString("iconpath"));
 
                     if (c.getId() != DbObject.UNKNOWN_ID) {
-                        c.setOnTableChangedListener(this);
                         categories.add(c);
                     }
                 }
@@ -592,7 +557,6 @@ public class DbManager implements TableChangedListener {
                     p.setCategoryId(rs.getLong("categoryid"));
 
                     if (p.getId() != DbObject.UNKNOWN_ID) {
-                        p.setOnTableChangedListener(this);
                         products.add(p);
                     }
                 }
@@ -636,7 +600,6 @@ public class DbManager implements TableChangedListener {
                     t.setProductId(rs.getLong("productid"));
 
                     if (t.getId() != 1) {
-                        t.setOnTableChangedListener(this);
                         types.add(t);
                     }
                 }
@@ -678,8 +641,7 @@ public class DbManager implements TableChangedListener {
                     m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
 
-                    if (m.getId() != 1) {
-                        m.setOnTableChangedListener(this);
+                    if (m.getId() != DbObject.UNKNOWN_ID) {
                         manufacturers.add(m);
                     }
                 }
@@ -720,8 +682,7 @@ public class DbManager implements TableChangedListener {
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconpath"));
 
-                    if (l.getId() != 1) {
-                        l.setOnTableChangedListener(this);
+                    if (l.getId() != DbObject.UNKNOWN_ID) {
                         locations.add(l);
                     }
                 }
@@ -769,8 +730,7 @@ public class DbManager implements TableChangedListener {
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
 
-                    if (o.getId() != 1) {
-                        o.setOnTableChangedListener(this);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
                         orders.add(o);
                     }
                 }
@@ -816,7 +776,6 @@ public class DbManager implements TableChangedListener {
                     o.setDistributorPartId(rs.getLong("distributorPartId"));
 
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        o.setOnTableChangedListener(this);
                         orderItems.add(o);
                     }
                 }
@@ -851,7 +810,6 @@ public class DbManager implements TableChangedListener {
                 stmt.setLong(2, orderItem.getItemId());
                 stmt.execute();
 
-                onTableChanged(OrderItem.TABLE_NAME, DbManager.OBJECT_DELETE, OrderItem.createDummyOrderItem(orderItem.getOrder(), orderItem.getItem()), null);
             } catch (SQLException e) {
                 Status().setError("Failed to detele item from order");
             }
@@ -887,7 +845,6 @@ public class DbManager implements TableChangedListener {
                     d.setWebsite(rs.getString("website"));
 
                     if (d.getId() != DbObject.UNKNOWN_ID) {
-                        d.setOnTableChangedListener(this);
                         distributors.add(d);
                     }
                 }
@@ -932,7 +889,6 @@ public class DbManager implements TableChangedListener {
                     pn.setItemRef(rs.getString("distributorPartName"));
 
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
-                        pn.setOnTableChangedListener(this);
                         distributorParts.add(pn);
                     }
                 }
@@ -973,7 +929,6 @@ public class DbManager implements TableChangedListener {
                     pt.setDescription(rs.getString("description"));
 
                     if (pt.getId() != DbObject.UNKNOWN_ID) {
-                        pt.setOnTableChangedListener(this);
                         packageTypes.add(pt);
                     }
                 }
@@ -1016,7 +971,6 @@ public class DbManager implements TableChangedListener {
                     // ProjectDirectories are fetched in object itself
 
                     if (p.getId() != DbObject.UNKNOWN_ID) {
-                        p.setOnTableChangedListener(this);
                         projects.add(p);
                     }
                 }
@@ -1059,7 +1013,6 @@ public class DbManager implements TableChangedListener {
                     p.setProjectId(rs.getLong("projectid"));
 
                     if (p.getId() != DbObject.UNKNOWN_ID) {
-                        p.setOnTableChangedListener(this);
                         projectDirectories.add(p);
                     }
                 }
@@ -1107,7 +1060,6 @@ public class DbManager implements TableChangedListener {
                     p.setParserName(rs.getString("parsername"));
 
                     if (p.getId() != DbObject.UNKNOWN_ID) {
-                        p.setOnTableChangedListener(this);
                         projectTypes.add(p);
                     }
                 }
@@ -1370,78 +1322,102 @@ public class DbManager implements TableChangedListener {
             this.name = name;
         }
 
+        private void insert(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            dbo.addParameters(stmt);
+            stmt.execute();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                rs.next();
+                dbo.setId(rs.getLong(1));
+            }
+
+            // Listeners
+            dbo.tableChanged(OBJECT_INSERT);
+        }
+
+        private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            int ndx = dbo.addParameters(stmt);
+            stmt.setLong(ndx, dbo.getId());
+            stmt.execute();
+
+            // Listeners
+            dbo.tableChanged(OBJECT_UPDATE);
+        }
+
+        private void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            stmt.setLong(1, dbo.getId());
+            stmt.execute();
+            dbo.setId(-1);// Not in database anymore
+
+            // Listeners
+            dbo.tableChanged(OBJECT_DELETE);
+        }
+
         @Override
         protected Integer doInBackground() throws Exception {
             while (keepRunning) {
+
                 DbQueueObject queueObject = workList.take();
-                try (Connection connection = DbManager.getConnection()) {
-                    try (PreparedStatement stmt = connection.prepareStatement("begin;")) {
-                        stmt.execute();
-                    }
+                if (queueObject != null) {
+                    try (Connection connection = DbManager.getConnection()) {
+                        try (PreparedStatement stmt = connection.prepareStatement("BEGIN;")) {
+                            stmt.execute();
+                        }
 
-                    try {
-                        boolean hasMoreWork;
-                        do {
-                            DbObject dbo = queueObject.getObject();
-                            switch (queueObject.getHow()) {
-                                case OBJECT_INSERT: {
-                                    String sql = dbo.getScript(DbObject.SQL_INSERT);
-                                    try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                                        dbo.addParameters(stmt);
-                                        stmt.execute();
-
-                                        try (ResultSet rs = stmt.getGeneratedKeys()) {
-                                            rs.next();
-                                            dbo.setId(rs.getLong(1));
+                        try {
+                            boolean hasMoreWork;
+                            do {
+                                DbObject dbo = queueObject.getObject();
+                                switch (queueObject.getHow()) {
+                                    case OBJECT_INSERT: {
+                                        String sql = dbo.getScript(DbObject.SQL_INSERT);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                                            insert(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                            nonoList.put(object);
                                         }
-                                    } catch (SQLException e) {
-                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
-                                        nonoList.put(object);
-                                    }
-                                }
-                                break;
-                                case OBJECT_UPDATE: {
-                                    String sql = dbo.getScript(DbObject.SQL_UPDATE);
-                                    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                                        int ndx = dbo.addParameters(stmt);
-                                        stmt.setLong(ndx, dbo.getId());
-                                        stmt.execute();
-                                    } catch (SQLException e) {
-                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
-                                        nonoList.put(object);
                                     }
                                     break;
-                                }
-                                case OBJECT_DELETE:
-                                    String sql = dbo.getScript(DbObject.SQL_DELETE);
-                                    try(PreparedStatement statement = connection.prepareStatement(sql)) {
-                                        statement.setLong(1, dbo.getId());
-                                        statement.execute();
-                                        dbo.setId(-1);// Not in database anymore
-                                    } catch (SQLException e) {
-                                        DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
-                                        nonoList.put(object);
+                                    case OBJECT_UPDATE: {
+                                        String sql = dbo.getScript(DbObject.SQL_UPDATE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            update(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                            nonoList.put(object);
+                                        }
+                                        break;
                                     }
-                                    break;
-                            }
+                                    case OBJECT_DELETE:
+                                        String sql = dbo.getScript(DbObject.SQL_DELETE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            delete(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
+                                            nonoList.put(object);
+                                        }
+                                        break;
+                                }
 
-                            if (workList.size() > 0) {
-                                queueObject = workList.take();
-                                hasMoreWork = true;
-                            } else {
-                                hasMoreWork = false;
+                                if (workList.size() > 0) {
+                                    queueObject = workList.take();
+                                    hasMoreWork = true;
+                                } else {
+                                    hasMoreWork = false;
+                                }
+                            } while (hasMoreWork && keepRunning);
+                            try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
+                                stmt.execute();
                             }
-                        } while (hasMoreWork && keepRunning);
-                        try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
-                            stmt.execute();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
+                                stmt.execute();
+                            }
+                            // TODO: efficient error handling
+                            throw e;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
-                            stmt.execute();
-                        }
-                        // TODO: efficient error handling
-                        throw e;
                     }
                 }
             }
@@ -1472,27 +1448,29 @@ public class DbManager implements TableChangedListener {
         protected Integer doInBackground() throws Exception {
             while (keepRunning) {
                 DbErrorObject error = nonoList.take();
-                switch (error.getHow()) {
-                    case OBJECT_SELECT:
-                        if (errorListener != null) {
-                            errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
-                        }
-                        break;
-                    case OBJECT_INSERT:
-                        if (errorListener != null) {
-                            errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
-                        }
-                        break;
-                    case OBJECT_UPDATE:
-                        if (errorListener != null) {
-                            errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
-                        }
-                        break;
-                    case OBJECT_DELETE:
-                        if (errorListener != null) {
-                            errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
-                        }
-                        break;
+                if (error != null) {
+                    switch (error.getHow()) {
+                        case OBJECT_SELECT:
+                            if (errorListener != null) {
+                                errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_INSERT:
+                            if (errorListener != null) {
+                                errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_UPDATE:
+                            if (errorListener != null) {
+                                errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_DELETE:
+                            if (errorListener != null) {
+                                errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                    }
                 }
             }
             return 0;

@@ -89,12 +89,12 @@ public class OrderItemDialog extends OrderItemDialogLayout {
     }
 
     @Override
-    public void onAdded(Order order) {
+    public void onInserted(Order order) {
         updateComponents(order);
     }
 
     @Override
-    public void onUpdated(Order newOrder, Order oldOrder) {} // Should not happen
+    public void onUpdated(Order newOrder) {} // Should not happen
 
     @Override
     public void onDeleted(Order order) {} // Should not happen

@@ -65,6 +65,10 @@ public class FileSettings extends DbSettingsObject {
         return createCopy(new FileSettings());
     }
 
+    @Override
+    public void tableChanged(int changedHow) {
+
+    }
 
     public String getImgDistributorsPath() {
         if (imgDistributorsPath == null) {

@@ -1,7 +1,12 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+
+import static com.waldo.inventory.database.DbManager.db;
 
 public class PackageType extends DbObject {
 
@@ -52,6 +57,35 @@ public class PackageType extends DbObject {
     @Override
     public PackageType createCopy() {
         return createCopy(new PackageType());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<PackageType> list = db().getPackageTypes();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onPackageTypesChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onPackageTypesChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<PackageType> list = db().getPackageTypes();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onPackageTypesChangedListenerList);
+                break;
+            }
+        }
     }
 
     public static PackageType createDummyPackageType() {

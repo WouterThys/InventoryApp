@@ -56,8 +56,10 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     protected void onCancel() {
-        originalManufacturer.createCopy(selectedManufacturer);
-        selectedManufacturer.setCanBeSaved(true);
+        if (selectedManufacturer != null && originalManufacturer != null) {
+            originalManufacturer.createCopy(selectedManufacturer);
+            selectedManufacturer.setCanBeSaved(true);
+        }
         super.onCancel();
     }
 
@@ -188,12 +190,12 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     // Manufacturer listener
     //
     @Override
-    public void onAdded(Manufacturer manufacturer) {
+    public void onInserted(Manufacturer manufacturer) {
         updateComponents(manufacturer);
     }
 
     @Override
-    public void onUpdated(Manufacturer newManufacturer, Manufacturer oldManufacturer) {
+    public void onUpdated(Manufacturer newManufacturer) {
         updateComponents(newManufacturer);
     }
 

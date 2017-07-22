@@ -221,59 +221,44 @@ public abstract class OrderPanelLayout extends JPanel implements
     // Table tool bar stuff
     //
     void updateToolBar(Order order) {
-        tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
-        tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
+        if (order != null) {
+            tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
+            tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
 
-        switch(order.getOrderState()) {
-            case Statics.ItemOrderStates.PLANNED:
-                tbDateOrderedLbl.setText("Not ordered");
-                tbSetOrderedBtn.setText("Set ordered");
-                tbDateReceivedLbl.setText("Not received");
-                tbSetOrderedBtn.setVisible(true);
-                tbOrderButton.setText("Order!");
-                break;
-            case Statics.ItemOrderStates.ORDERED:
-                tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
-                tbSetOrderedBtn.setText("Set received");
-                tbDateReceivedLbl.setText("Not received");
-                tbSetOrderedBtn.setVisible(true);
-                break;
-            case Statics.ItemOrderStates.RECEIVED:
-                tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
-                tbSetOrderedBtn.setVisible(false);
-                break;
-            default:break;
+            switch (order.getOrderState()) {
+                case Statics.ItemOrderStates.PLANNED:
+                    tbDateOrderedLbl.setText("Not ordered");
+                    tbSetOrderedBtn.setText("Set ordered");
+                    tbDateReceivedLbl.setText("Not received");
+                    tbSetOrderedBtn.setVisible(true);
+                    tbOrderButton.setText("Order!");
+                    break;
+                case Statics.ItemOrderStates.ORDERED:
+                    tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
+                    tbSetOrderedBtn.setText("Set received");
+                    tbDateReceivedLbl.setText("Not received");
+                    tbSetOrderedBtn.setVisible(true);
+                    break;
+                case Statics.ItemOrderStates.RECEIVED:
+                    tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
+                    tbSetOrderedBtn.setVisible(false);
+                    break;
+                default:
+                    break;
 
-        }
+            }
 
-//        if (order.isOrdered()) {
-//            tbDateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
-//            tbSetOrderedBtn.setText("Set received");
-//        } else {
-//            tbDateOrderedLbl.setText("Not ordered");
-//            tbSetOrderedBtn.setText("Set ordered");
-//        }
-//
-//        if (order.isReceived()) {
-//            tbDateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
-//            tbSetOrderedBtn.setVisible(false);
-//            //tbOrderButton.setText("Order again");
-//        } else {
-//            tbDateReceivedLbl.setText("Not received");
-//            tbSetOrderedBtn.setVisible(true);
-//            tbOrderButton.setText("Order!");
-//        }
+            tbOrderButton.setVisible(!order.isOrdered());// || order.isReceived());
 
-        tbOrderButton.setVisible(!order.isOrdered());// || order.isReceived());
+            if (order.getDateModified() != null) {
+                tbDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
+            } else {
+                tbDateModifiedLbl.setText(" / ");
+            }
 
-        if (order.getDateModified() != null) {
-            tbDateModifiedLbl.setText(dateFormatLong.format(order.getDateModified()));
-        } else {
-            tbDateModifiedLbl.setText(" / ");
-        }
-
-        if (order.getDistributor() != null) {
-            tbDistributorCb.setSelectedItem(order.getDistributor());
+            if (order.getDistributor() != null) {
+                tbDistributorCb.setSelectedItem(order.getDistributor());
+            }
         }
     }
 
@@ -308,13 +293,15 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     void updateVisibleComponents() {
-        if (selectedOrder != null) {
-            boolean visible = !(selectedOrder.isUnknown() || !selectedOrder.canBeSaved());
-            orderTbPanel.setVisible(visible);
-            tbOrderFilePanel.setVisible(selectedOrder.hasOrderFile());
-        } else {
-            orderTbPanel.setVisible(false);
-        }
+//        if (selectedOrder != null) {
+//            boolean visible = !(selectedOrder.isUnknown() || !selectedOrder.canBeSaved());
+//            orderTbPanel.setVisible(visible);
+//            tbOrderFilePanel.setVisible(selectedOrder.hasOrderFile());
+//        } else {
+//            orderTbPanel.setVisible(false);
+//        }
+        orderTbPanel.setVisible(true);
+        tbOrderFilePanel.setVisible(true);
     }
 
     private void createInfoToolBar() {

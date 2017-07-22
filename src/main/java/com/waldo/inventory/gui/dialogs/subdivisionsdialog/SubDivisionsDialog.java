@@ -154,12 +154,12 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void setCategoriesChanged() {
         categoriesChanged = new DbObjectChangedListener<Category>() {
             @Override
-            public void onAdded(Category object) {
+            public void onInserted(Category object) {
                 updateCategoryList();
             }
 
             @Override
-            public void onUpdated(Category newCategory, Category oldCategory) {
+            public void onUpdated(Category newCategory) {
                 updateCategoryList();
             }
 
@@ -197,12 +197,12 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void setProductsChanged() {
         productsChanged = new DbObjectChangedListener<Product>() {
             @Override
-            public void onAdded(Product object) {
+            public void onInserted(Product object) {
                 updateProductList();
             }
 
             @Override
-            public void onUpdated(Product newProduct, Product oldProduct) {
+            public void onUpdated(Product newProduct) {
                 updateProductList();
             }
 
@@ -235,12 +235,12 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void setTypesChanged() {
         typesChanged = new DbObjectChangedListener<com.waldo.inventory.classes.Type>() {
             @Override
-            public void onAdded(com.waldo.inventory.classes.Type object) {
+            public void onInserted(com.waldo.inventory.classes.Type object) {
                 updateTypeList();
             }
 
             @Override
-            public void onUpdated(com.waldo.inventory.classes.Type newType, com.waldo.inventory.classes.Type oldType) {
+            public void onUpdated(com.waldo.inventory.classes.Type newType) {
                 updateTypeList();
             }
 

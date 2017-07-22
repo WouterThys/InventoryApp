@@ -60,14 +60,14 @@ public class ProjectPanel extends ProjectPanelLayout {
     private void setProjectListener() {
         projectsListener = new DbObjectChangedListener<Project>() {
             @Override
-            public void onAdded(Project project) {
+            public void onInserted(Project project) {
                 treeModel.addObject(project);
                 updateComponents(project);
             }
 
             @Override
-            public void onUpdated(Project newProject, Project oldProject) {
-                treeModel.updateObject(newProject, oldProject);
+            public void onUpdated(Project newProject) {
+                treeModel.updateObject(newProject);
                 updateComponents(newProject);
             }
 
@@ -84,12 +84,12 @@ public class ProjectPanel extends ProjectPanelLayout {
     private void setProjectDirectoryListener() {
         projectDirectoryListener = new DbObjectChangedListener<ProjectDirectory>() {
             @Override
-            public void onAdded(ProjectDirectory directory) {
+            public void onInserted(ProjectDirectory directory) {
 
             }
 
             @Override
-            public void onUpdated(ProjectDirectory newDirectory, ProjectDirectory oldDirectory) {
+            public void onUpdated(ProjectDirectory newDirectory) {
 
             }
 

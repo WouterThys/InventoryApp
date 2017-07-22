@@ -22,6 +22,11 @@ public class LogSettings extends DbSettingsObject {
     }
 
     @Override
+    public void tableChanged(int changedHow) {
+        //
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
             if (obj instanceof LogSettings) {

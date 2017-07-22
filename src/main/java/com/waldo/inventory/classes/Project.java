@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Project extends DbObject {
@@ -74,6 +75,35 @@ public class Project extends DbObject {
     @Override
     public Project createCopy() {
         return createCopy(new Project());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Project> list = db().getProjects();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Project> list = db().getProjects();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectChangedListenerList);
+                break;
+            }
+        }
     }
 
     /*

@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -66,8 +67,13 @@ public class DistributorsDialog extends DistributorsDialogLayout {
 
     @Override
     protected void onCancel() {
-        originalDistributor.createCopy(selectedDistributor);
-        selectedDistributor.setCanBeSaved(true);
+        if (selectedDistributor != null && originalDistributor != null) {
+            originalDistributor.createCopy(selectedDistributor);
+            selectedDistributor.setCanBeSaved(true);
+        }
+
+        DbManager.db().close();
+
         super.onCancel();
     }
 
@@ -184,12 +190,12 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     //  Distributor changed listeners
     //
     @Override
-    public void onAdded(Distributor object) {
+    public void onInserted(Distributor object) {
         updateComponents(object);
     }
 
     @Override
-    public void onUpdated(Distributor newObject, Distributor oldObject) {
+    public void onUpdated(Distributor newObject) {
         updateComponents(newObject);
     }
 

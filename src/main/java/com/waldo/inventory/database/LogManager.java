@@ -1,7 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.Log;
-import com.waldo.inventory.database.interfaces.SettingsListener;
+import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import static com.waldo.inventory.Utils.Statics.LogTypes.*;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 
-public class LogManager implements SettingsListener<LogSettings> {
+public class LogManager implements DbSettingsListener<LogSettings> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogManager.class);
 

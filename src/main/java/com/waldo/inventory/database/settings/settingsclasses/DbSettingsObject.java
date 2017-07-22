@@ -56,13 +56,9 @@ public abstract class DbSettingsObject extends DbObject {
      * Mask methods of DbObject
      */
     @Override
-    protected void doSave() {}
-    @Override
     public void save() {}
     @Override
     public void saveSynchronously() {}
-    @Override
-    protected void doDelete() {}
     @Override
     public void delete() {}
 

@@ -1,9 +1,8 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.interfaces.SettingsListener;
+import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
@@ -19,14 +18,13 @@ import java.awt.event.ItemListener;
 import java.util.concurrent.ExecutionException;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class DbPanel extends JPanel implements
         GuiInterface,
         ItemListener,
         IEditedListener,
         IdBToolBar.IdbToolBarListener,
-        SettingsListener<DbSettings>,
+        DbSettingsListener<DbSettings>,
         ActionListener {
 
 

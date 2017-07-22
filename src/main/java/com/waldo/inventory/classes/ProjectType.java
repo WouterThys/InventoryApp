@@ -1,14 +1,19 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 
 import java.awt.*;
+import java.awt.List;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.*;
+
+import static com.waldo.inventory.database.DbManager.db;
 
 public class ProjectType extends DbObject {
 
@@ -123,6 +128,35 @@ public class ProjectType extends DbObject {
     @Override
     public ProjectType createCopy() {
         return createCopy(new ProjectType());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                java.util.List<ProjectType> list = db().getProjectTypes();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectTypeChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectTypeChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                java.util.List<ProjectType> list = db().getProjectTypes();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectTypeChangedListenerList);
+                break;
+            }
+        }
     }
 
     public String getExtension() {

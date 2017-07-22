@@ -1,7 +1,12 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.database.DbManager;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+
+import static com.waldo.inventory.database.DbManager.db;
 
 public class Distributor extends DbObject {
 
@@ -58,6 +63,35 @@ public class Distributor extends DbObject {
     @Override
     public Distributor createCopy() {
         return createCopy(new Distributor());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Distributor> distributors = db().getDistributors();
+                if (!distributors.contains(this)) {
+                    distributors.add(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onDistributorsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onDistributorsChangedListenerList);
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Distributor> distributors = db().getDistributors();
+                if (distributors.contains(this)) {
+                    distributors.remove(this);
+                }
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onDistributorsChangedListenerList);
+                break;
+            }
+        }
     }
 
     public String getWebsite() {

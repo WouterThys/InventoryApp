@@ -53,6 +53,11 @@ public class DbSettings extends DbSettingsObject {
         return createCopy(new DbSettings());
     }
 
+    @Override
+    public void tableChanged(int changedHow) {
+
+    }
+
     public String createMySqlUrl() {
         return "jdbc:mysql:" +
                 "//" + getDbIp() + "/" +

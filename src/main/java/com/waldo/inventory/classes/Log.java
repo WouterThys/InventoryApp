@@ -8,15 +8,17 @@ import javax.swing.*;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.waldo.inventory.Utils.Statics.LogTypes.*;
+import static com.waldo.inventory.database.DbManager.db;
 
 public class Log extends DbObject {
 
-    public static final String TABLE_NAME = "log";
+    public static final String TABLE_NAME = "logs";
 
     private int logType;
     private Date logTime;
@@ -92,101 +94,128 @@ public class Log extends DbObject {
         return null;
     }
 
-    @Override
-    protected void doSave() throws SQLException {
-        // TODO
-//        setOnTableChangedListener(DbManager.db());
-//
-//        try (Connection connection = DbManager.getConnection()) {
-//            if (!connection.isValid(5)) {
-//                throw new SQLException("Conenction invalid, timed out after 5s...");
-//            }
-//            if (id == -1) { // Save
-//                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-//                    insert(statement);
-//
-//                    try (ResultSet rs = statement.getGeneratedKeys()) {
-//                        rs.next();
-//                        id = rs.getLong(1);
-//                    }
+//    @Override
+//    protected void doSave() throws SQLException {
+//        // TODO
+////        setOnDbTableChangedListener(DbManager.db());
+////
+////        try (Connection connection = DbManager.getConnection()) {
+////            if (!connection.isValid(5)) {
+////                throw new SQLException("Conenction invalid, timed out after 5s...");
+////            }
+////            if (id == -1) { // Save
+////                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+////                    insert(statement);
+////
+////                    try (ResultSet rs = statement.getGeneratedKeys()) {
+////                        rs.next();
+////                        id = rs.getLong(1);
+////                    }
+////                }
+////            } else { // Update
+////                // Save new object
+////                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
+////                    update(statement);
+////                }
+////            }
+////        }
+//    }
+
+//    @Override
+//    public void save() {
+//        SwingWorker worker = new SwingWorker() {
+//            @Override
+//            protected Object doInBackground() throws Exception {
+//                try {
+//                    doSave();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
 //                }
-//            } else { // Update
-//                // Save new object
-//                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
-//                    update(statement);
-//                }
+//                return null;
 //            }
+//
+//            @Override
+//            protected void done() {
+//                // Ok
+//            }
+//        };
+//        worker.execute();
+//        try {
+//            worker.get(10, TimeUnit.SECONDS);
+//        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//            e.printStackTrace();
 //        }
-    }
-
-    @Override
-    public void save() {
-        SwingWorker worker = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    doSave();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                // Ok
-            }
-        };
-        worker.execute();
-        try {
-            worker.get(10, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-    }
+//    }
 
     @Override
     public void saveSynchronously() throws SQLException {
         // Don't do this
     }
 
-    @Override
-    protected void doDelete() throws SQLException {
-//        if (id != -1) {
-//            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
-//                statement.setLong(1, id);
-//                statement.execute();
-//                id = -1; // Not in database anymore
+//    @Override
+//    protected void doDelete() throws SQLException {
+////        if (id != -1) {
+////            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
+////                statement.setLong(1, id);
+////                statement.execute();
+////                id = -1; // Not in database anymore
+////            }
+////        }
+//    }
+
+//    @Override
+//    public void delete() {
+//        if (canBeSaved) {
+////            SwingWorker worker = new SwingWorker() {
+////                @Override
+////                protected Object doInBackground() throws Exception {
+//            try {
+//                doDelete();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
 //            }
+////                    return null;
+////                }
+//
+////                @Override
+////                protected void done() {
+////                    try {
+////                        get(10, TimeUnit.SECONDS);
+////                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+////                        e.printStackTrace();
+////                    }
+////                }
+////            };
+////            worker.execute();
 //        }
-    }
+//    }
 
+    //
+    // DbManager tells the object is updated
+    //
     @Override
-    public void delete() {
-        if (canBeSaved) {
-//            SwingWorker worker = new SwingWorker() {
-//                @Override
-//                protected Object doInBackground() throws Exception {
-            try {
-                doDelete();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<Log> list = db().getLogs();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                break;
             }
-//                    return null;
-//                }
-
-//                @Override
-//                protected void done() {
-//                    try {
-//                        get(10, TimeUnit.SECONDS);
-//                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            };
-//            worker.execute();
+            case DbManager.OBJECT_UPDATE: {
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<Log> list = db().getLogs();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                break;
+            }
         }
     }
+
 
     public int getLogType() {
         return logType;

@@ -1,8 +1,7 @@
 package com.waldo.inventory.database.settings;
 
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.interfaces.SettingsListener;
+import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
@@ -52,9 +51,9 @@ public class SettingsManager {
     private List<LogSettings> logSettingsList = null;
 
     // Listeners
-    private List<SettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
-    private List<SettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
-    private List<SettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
+    private List<DbSettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
+    private List<DbSettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
+    private List<DbSettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
 
     /*
      *                  MAIN STUFF
@@ -118,26 +117,26 @@ public class SettingsManager {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addLogSettingsListener(SettingsListener<LogSettings> listener) {
+    public void addLogSettingsListener(DbSettingsListener<LogSettings> listener) {
         if (!onLogSettingsChangedList.contains(listener)) {
             onLogSettingsChangedList.add(listener);
         }
     }
 
-    public void addDbSettingsListener(SettingsListener<DbSettings> listener) {
+    public void addDbSettingsListener(DbSettingsListener<DbSettings> listener) {
         if (!onDbSettingsChangedList.contains(listener)) {
             onDbSettingsChangedList.add(listener);
         }
     }
 
-    public void addFileSettingsListener(SettingsListener<FileSettings> listener) {
+    public void addFileSettingsListener(DbSettingsListener<FileSettings> listener) {
         if (!onFileSettingsChangedList.contains(listener)) {
             onFileSettingsChangedList.add(listener);
         }
     }
 
-    private <T extends DbSettingsObject> void notifyListeners(T newSettings, List<SettingsListener<T>> listeners) {
-        for (SettingsListener<T> l : listeners) {
+    private <T extends DbSettingsObject> void notifyListeners(T newSettings, List<DbSettingsListener<T>> listeners) {
+        for (DbSettingsListener<T> l : listeners) {
             l.onSettingsChanged(newSettings);
         }
 //        System.out.println(

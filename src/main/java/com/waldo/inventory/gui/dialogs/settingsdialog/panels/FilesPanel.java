@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.interfaces.SettingsListener;
+import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -31,7 +30,7 @@ public class FilesPanel extends JPanel implements
         IEditedListener,
         ItemListener,
         IdBToolBar.IdbToolBarListener,
-        SettingsListener<FileSettings>,
+        DbSettingsListener<FileSettings>,
         ActionListener {
 
     private static final LogManager LOG = LogManager.LOG(FilesPanel.class);

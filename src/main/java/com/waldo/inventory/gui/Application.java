@@ -78,6 +78,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             dialog.showDialog(); // TODO better dialog
         }
         settings().registerShutDownHook();
+        db().startBackgroundWorkers();
         db().registerShutDownHook();
         db().addErrorListener(this);
 

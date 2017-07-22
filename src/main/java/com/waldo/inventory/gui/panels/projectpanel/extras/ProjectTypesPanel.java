@@ -79,12 +79,12 @@ public class ProjectTypesPanel extends JPanel implements GuiInterface, DbObjectC
     }
 
     @Override
-    public void onAdded(ProjectType object) {
+    public void onInserted(ProjectType object) {
 
     }
 
     @Override
-    public void onUpdated(ProjectType newObject, ProjectType oldObject) {
+    public void onUpdated(ProjectType newObject) {
 
     }
 
