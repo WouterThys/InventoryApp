@@ -65,6 +65,7 @@ public class DbManager {
     public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -84,6 +85,7 @@ public class DbManager {
     private List<ProjectDirectory> projectDirectories;
     private List<ProjectType> projectTypes;
     private List<ProjectTypeLink> projectTypeLinks;
+    private List<OrderFileFormat> orderFileFormats;
     private List<Log> logs;
 
     private DbManager() {}
@@ -279,6 +281,12 @@ public class DbManager {
     public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectType> dbObjectChangedListener) {
         if (!onProjectTypeChangedListenerList.contains(dbObjectChangedListener)) {
             onProjectTypeChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnOrderFileFormatChangedListener(DbObjectChangedListener<OrderFileFormat> dbObjectChangedListener) {
+        if (!onOrderFileFormatChangedListenerList.contains(dbObjectChangedListener)) {
+            onOrderFileFormatChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -724,9 +732,7 @@ public class DbManager {
                     o.setDateOrdered(rs.getDate("dateOrdered"));
                     o.setDateModified(rs.getDate("dateModified"));
                     o.setDateReceived(rs.getDate("dateReceived"));
-                    o.setDistributor(sm().findDistributorById(rs.getLong("distributorId")));
-                    o.setOrderFileId(rs.getLong("orderFileId"));
-                    //o.setOrderItems(getOrderedItems(o.getId()));
+                    o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
 
@@ -744,7 +750,7 @@ public class DbManager {
             }
         }
         orders.add(0, Order.getUnknownOrder());
-        orders.sort(new Order.OrderAllOrders());
+        orders.sort(new Order.SortAllOrders());
     }
 
     /*
@@ -843,6 +849,8 @@ public class DbManager {
                     d.setName(rs.getString("name"));
                     d.setIconPath(rs.getString("iconPath"));
                     d.setWebsite(rs.getString("website"));
+                    d.setOrderLink(rs.getString("orderLink"));
+                    d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
 
                     if (d.getId() != DbObject.UNKNOWN_ID) {
                         distributors.add(d);
@@ -1106,6 +1114,45 @@ public class DbManager {
             }
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
+    *                  ORDER FILES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<OrderFileFormat> getOrderFileFormats()    {
+        if (orderFileFormats == null) {
+            updateOrderFileFormats();
+        }
+        return orderFileFormats;
+    }
+
+    private void updateOrderFileFormats()    {
+        orderFileFormats = new ArrayList<>();
+        Status().setMessage("Fetching order file formats from DB");
+        OrderFileFormat off = null;
+        String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + SQL_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    off = new OrderFileFormat();
+                    off.setId(rs.getLong("id"));
+                    off.setName(rs.getString("name"));
+                    off.setSeparator(rs.getString("separator"));
+
+                    orderFileFormats.add(off);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(off, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {

@@ -279,6 +279,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     @Override
     public void onSelectError(DbObject object, Throwable throwable, String sql) {
         // TODO
+        LOG.error("Select error on " + object.getName(), throwable);
         SwingUtilities.invokeLater(() -> {
             String message = throwable.getMessage();
             JOptionPane.showMessageDialog(this, message, "Select error", JOptionPane.ERROR_MESSAGE);
@@ -288,6 +289,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     @Override
     public void onInsertError(DbObject object, Throwable throwable, String sql) {
         // TODO
+        LOG.error("Insert error on " + object.getName(), throwable);
         SwingUtilities.invokeLater(() -> {
             String message = throwable.getMessage();
             JOptionPane.showMessageDialog(this, message, "Insert error", JOptionPane.ERROR_MESSAGE);
@@ -297,6 +299,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     @Override
     public void onUpdateError(DbObject object, Throwable throwable, String sql) {
         // TODO
+        LOG.error("Update error on " + object.getName(), throwable);
         SwingUtilities.invokeLater(() -> {
             String message = throwable.getMessage();
             JOptionPane.showMessageDialog(this, message, "Update error", JOptionPane.ERROR_MESSAGE);
@@ -306,6 +309,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
         // TODO
+        LOG.error("Delete error on " + object.getName(), throwable);
         SwingUtilities.invokeLater(() -> {
             String message = throwable.getMessage();
             JOptionPane.showMessageDialog(this, message, "Delete error", JOptionPane.ERROR_MESSAGE);

@@ -94,7 +94,7 @@ public class OrdersDialog extends OrdersDialogLayout {
                 order = new Order();
             }
             order.setName(nameField.getText());
-            order.setDistributor((Distributor) distributorCb.getSelectedItem());
+            order.setDistributorId(((Distributor) distributorCb.getSelectedItem()).getId());
 
             if (showDates && isOrderedCb.isSelected()) {
                 order.setDateOrdered((Date) orderedDatePicker.getModel().getValue());

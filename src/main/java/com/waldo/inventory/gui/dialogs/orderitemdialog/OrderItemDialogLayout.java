@@ -4,7 +4,6 @@ import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 
@@ -84,7 +83,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
                 orders.addElement(o);
             }
         }
-        orders.sort(new Order.OrderUnordered());
+        orders.sort(new Order.SortUnordered());
         DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>(orders);
         orderCb.setModel(orderCbModel);
 

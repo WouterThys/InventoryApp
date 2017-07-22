@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.orderdetailsdialog;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderFile;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -58,7 +57,7 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
             String[] references = new String[parts.length];
             String[] amounts = new String[parts.length];
             for (int i = 0; i < parts.length; i++) {
-                String[] subParts = parts[i].split(OrderFile.SEPARATOR);
+                String[] subParts = parts[i].split(""); // TODO get from OrderFileFormat
                 references[i] = subParts[0];
                 amounts[i] = subParts[1];
             }

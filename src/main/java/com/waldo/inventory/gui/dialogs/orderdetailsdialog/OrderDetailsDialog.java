@@ -57,11 +57,11 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout {
             setOrderfileFormatted(btn.getModel().isSelected());
         });
         copyToClipboardBtn.addActionListener(e -> {
-            if (order != null && order.getOrderFile() != null) {
-                StringSelection selection = new StringSelection(order.getOrderFile().getRawOrderString());
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(selection, selection);
-            }
+//            if (order != null && order.getOrderFile() != null) {
+//                StringSelection selection = new StringSelection(order.getOrderFile().getFormattedOrderFile());
+//                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//                clipboard.setContents(selection, selection);
+//            }
         });
     }
 
@@ -174,23 +174,23 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout {
 
                 dateModifiedTf.setText(dateFormatShort.format(order.getDateModified()));
 
-                // Order file stuff
-                if (order.getOrderFile() != null) {
-                    orderFileTa.setText(order.getOrderFile().getRawOrderString());
-                }
-                // Table for formatted order file
-                if (order.getDistributor() != null) {
-                    if (order.getDistributor().getId() == 2) { // Mouser
-                        orderUrlTf.setText(stringResource.readString("OrderInfo.MouserUrl"));
-                    }
-                    if (order.getDistributor().getId() == 3) { // Farnell
-                        orderUrlTf.setText(stringResource.readString("OrderInfo.FarnellUrl"));
-                    }
-                }
-
-                if (order.getOrderFile() != null) {
-                    fillTableData(tableModel, order.getOrderFile().getRawOrderString());
-                }
+//                // Order file stuff
+//                if (order.getOrderFile() != null) {
+//                    orderFileTa.setText(order.getOrderFile().getFormattedOrderFile());
+//                }
+//                // Table for formatted order file
+//                if (order.getDistributor() != null) {
+//                    if (order.getDistributor().getId() == 2) { // Mouser
+//                        orderUrlTf.setText(stringResource.readString("OrderInfo.MouserUrl"));
+//                    }
+//                    if (order.getDistributor().getId() == 3) { // Farnell
+//                        orderUrlTf.setText(stringResource.readString("OrderInfo.FarnellUrl"));
+//                    }
+//                }
+//
+//                if (order.getOrderFile() != null) {
+//                    fillTableData(tableModel, order.getOrderFile().getFormattedOrderFile());
+//                }
 
 
             } else {

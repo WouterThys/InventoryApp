@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,6 +14,9 @@ public class Distributor extends DbObject {
     public static final String TABLE_NAME = "distributors";
 
     private String website;
+    private String orderLink;
+    private long orderFileFormatId = -1;
+    private OrderFileFormat orderFileFormat;
 
     public Distributor() {
         super(TABLE_NAME);
@@ -23,6 +27,11 @@ public class Distributor extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
         statement.setString(ndx++, getWebsite());
+        statement.setString(ndx++, getOrderLink());
+        if (orderFileFormatId < UNKNOWN_ID) {
+            orderFileFormatId = UNKNOWN_ID;
+        }
+        statement.setLong(ndx++, getOrderFileFormatId());
         return ndx;
     }
 
@@ -45,9 +54,9 @@ public class Distributor extends DbObject {
             if (!(obj instanceof Distributor)) {
                 return false;
             }
-            if (!(((Distributor)obj).getWebsite().equals(getWebsite()))) {
-                return false;
-            }
+            if (!(((Distributor)obj).getWebsite().equals(getWebsite()))) return false;
+            if (!(((Distributor)obj).getOrderLink().equals(getOrderLink()))) return false;
+            if (!(((Distributor)obj).getOrderFileFormatId() == getOrderFileFormatId())) return false;
         }
         return result;
     }
@@ -57,6 +66,8 @@ public class Distributor extends DbObject {
         Distributor distributor = (Distributor) copyInto;
         copyBaseFields(distributor);
         distributor.setWebsite(getWebsite());
+        distributor.setOrderLink(getOrderLink());
+        distributor.setOrderFileFormatId(getOrderFileFormatId());
         return distributor;
     }
 
@@ -103,5 +114,41 @@ public class Distributor extends DbObject {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public String getOrderLink() {
+        if (orderLink == null) {
+            orderLink = "";
+        }
+        return orderLink;
+    }
+
+    public void setOrderLink(String orderLink) {
+        this.orderLink = orderLink;
+    }
+
+    public long getOrderFileFormatId() {
+        return orderFileFormatId;
+    }
+
+    public void setOrderFileFormatId(long orderFileFormatId) {
+        this.orderFileFormatId = orderFileFormatId;
+        orderFileFormat = null;
+    }
+
+    public void setOrderFileFormatId(String id) {
+        try {
+            this.orderFileFormatId = Long.valueOf(id);
+            orderFileFormat = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public OrderFileFormat getOrderFileFormat() {
+        if (orderFileFormat == null) {
+            orderFileFormat = SearchManager.sm().findOrderFileFormatById(orderFileFormatId);
+        }
+        return orderFileFormat;
     }
 }

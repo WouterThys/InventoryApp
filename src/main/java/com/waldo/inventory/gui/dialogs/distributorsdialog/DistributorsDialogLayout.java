@@ -1,13 +1,16 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.classes.OrderFileFormat;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 
 import javax.swing.*;
 import javax.swing.SpringLayout;
@@ -20,7 +23,6 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
 public abstract class DistributorsDialogLayout extends IDialog implements
-        GuiInterface,
         ListSelectionListener,
         DbObjectChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener,
@@ -41,6 +43,13 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     private JButton detailsBrowseButton;
     ILabel detailLogo;
 
+    ITextField detailOrderLink;
+    private JButton detailOrderLinkBtn;
+    IComboBox<OrderFileFormat> detailOrderFileFormatCb;
+    private DefaultComboBoxModel<OrderFileFormat> detailOrderFileFormatModel;
+    private IdBToolBar detailOrderFileFormatTb;
+
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -60,6 +69,32 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     protected void updateEnabledComponents() {
         toolBar.setEditActionEnabled((selectedDistributor != null));
         toolBar.setDeleteActionEnabled((selectedDistributor != null));
+
+        if (selectedDistributor != null) {
+            detailOrderFileFormatTb.setRefreshActionEnabled(true);
+            detailOrderFileFormatTb.setAddActionEnabled(true);
+
+            OrderFileFormat off = selectedDistributor.getOrderFileFormat();
+            if (off != null && !off.isUnknown()) {
+                detailOrderFileFormatTb.setDeleteActionEnabled(true);
+                detailOrderFileFormatTb.setEditActionEnabled(true);
+            } else {
+                detailOrderFileFormatTb.setDeleteActionEnabled(false);
+                detailOrderFileFormatTb.setEditActionEnabled(false);
+            }
+        } else {
+            detailOrderFileFormatTb.setRefreshActionEnabled(false);
+            detailOrderFileFormatTb.setAddActionEnabled(false);
+            detailOrderFileFormatTb.setDeleteActionEnabled(false);
+            detailOrderFileFormatTb.setEditActionEnabled(false);
+        }
+    }
+
+    void updateOrderFileFormatComboBox() {
+        detailOrderFileFormatModel.removeAllElements();
+        for (OrderFileFormat off : DbManager.db().getOrderFileFormats()) {
+            detailOrderFileFormatModel.addElement(off);
+        }
     }
 
     private JPanel createWestPanel() {
@@ -161,24 +196,53 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.NONE;
         textFieldPanel.add(detailLogo, gbc);
 
-//        // Item list
-//        JPanel listPanel = new JPanel(new GridBagLayout());
-//
-//        JLabel itemLabel = new JLabel("Items: ");
-//
-//        gbc.gridx = 0; gbc.weightx = 0;
-//        gbc.gridy = 0; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        listPanel.add(itemLabel, gbc);
-//
-//        gbc.gridx = 0; gbc.weightx = 1;
-//        gbc.gridy = 1; gbc.weighty = 1;
-//        gbc.fill = GridBagConstraints.BOTH;
-//        listPanel.add(new JScrollPane(detailItemList), gbc);
+        // Order stuff
+        JPanel orderPanel = new JPanel(new GridBagLayout());
+
+        // - Link
+        ILabel linkLabel = new ILabel("Order link: ");
+        linkLabel.setHorizontalAlignment(ILabel.RIGHT);
+        linkLabel.setVerticalAlignment(ILabel.CENTER);
+
+        // - Format
+        ILabel formatLabel = new ILabel("File format: ");
+        formatLabel.setHorizontalAlignment(ILabel.RIGHT);
+        formatLabel.setVerticalAlignment(ILabel.CENTER);
+
+        // - Browse panel
+        JPanel bPanel = PanelUtils.createBrowsePanel(detailOrderLink, detailOrderLinkBtn);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        orderPanel.add(linkLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        orderPanel.add(bPanel, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 2; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        orderPanel.add(formatLabel, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 3; gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        orderPanel.add(detailOrderFileFormatCb, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 4; gbc.weighty = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.EAST;
+        orderPanel.add(detailOrderFileFormatTb, gbc);
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.CENTER);
-//        panel.add(listPanel, BorderLayout.CENTER);
+        panel.add(orderPanel, BorderLayout.SOUTH);
         panel.setBorder(titledBorder);
 
         return panel;
@@ -207,7 +271,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         distributorList.addListSelectionListener(this);
 
         toolBar = new IdBToolBar(this);
-        toolBar.setFloatable(false);
 
         // Details
         detailName = new ITextField("Name");
@@ -228,6 +291,67 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
         });
 
+        detailOrderLink = new ITextField("Order link");
+        detailOrderLink.addEditedListener(this, "orderLink");
+        detailOrderLinkBtn = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
+        detailOrderLinkBtn.addActionListener(e -> {
+            if (!detailOrderLink.getText().isEmpty()) {
+                try {
+                    OpenUtils.browseLink(detailOrderLink.getText());
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(DistributorsDialogLayout.this, "Unable to browse: " + detailOrderLink.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        detailOrderFileFormatModel = new DefaultComboBoxModel<>();
+        detailOrderFileFormatCb = new IComboBox<>(detailOrderFileFormatModel);
+        detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
+        detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
+            @Override
+            public void onToolBarRefresh() {
+                updateOrderFileFormatComboBox();
+            }
+
+            @Override
+            public void onToolBarAdd() {
+                EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Add format", new OrderFileFormat());
+                if (dialog.showDialog() == IDialog.OK) {
+                    OrderFileFormat off = dialog.getOrderFileFormat();
+                    off.save();
+                }
+            }
+
+            @Override
+            public void onToolBarDelete() {
+                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+                if (off != null) {
+                    int result = JOptionPane.showConfirmDialog(DistributorsDialogLayout.this,
+                            "Are you sure you want to delete " + off.getName(),
+                            "Delete format",
+                            JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        off.delete();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onToolBarEdit() {
+                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+                if (off != null) {
+                    EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Edit format", off);
+                    if (dialog.showDialog() == IDialog.OK) {
+                        off.save();
+                    }
+                }
+            }
+        });
+        detailOrderFileFormatTb.setAlignmentX(RIGHT_ALIGNMENT);
+        updateOrderFileFormatComboBox();
+
     }
 
     @Override
@@ -243,6 +367,9 @@ public abstract class DistributorsDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object object) {
+        if (application.isUpdating()) {
+            return;
+        }
         application.beginWait();
         try {
             // Get all

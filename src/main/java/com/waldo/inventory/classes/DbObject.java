@@ -34,6 +34,7 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT = 12;
     public static final int TYPE_PROJECT_DIRECTORY = 13;
     public static final int TYPE_PROJECT_TYPE = 14;
+    public static final int TYPE_ORDER_FILE_FORMAT = 15;
     public static final int TYPE_LOG = 100;
 
     protected String TABLE_NAME;
@@ -77,6 +78,7 @@ public abstract class DbObject {
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
         if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
+        if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
         if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;
@@ -170,56 +172,6 @@ public abstract class DbObject {
         newObject.setIconPath(getIconPath());
         newObject.setCanBeSaved(false);
     }
-
-//    private void setOldObject() {
-//        switch (getType(this)) {
-//            case TYPE_UNKNOWN:
-//                oldObject = null;
-//                break;
-//            case TYPE_ITEM:
-//                oldObject = DbManager.db().getItemFromDb(id);
-//                break;
-//            case TYPE_CATEGORY:
-//                oldObject = DbManager.db().getCategoryFromDb(id);
-//                break;
-//            case TYPE_PRODUCT:
-//                oldObject = DbManager.db().getProductFromDb(id);
-//                break;
-//            case TYPE_TYPE:
-//                oldObject = DbManager.db().getTypeFromDb(id);
-//                break;
-//            case TYPE_MANUFACTURER:
-//                oldObject = DbManager.db().getManufacturerFromDb(id);
-//                break;
-//            case TYPE_LOCATION:
-//                oldObject = DbManager.db().getLocationFromDb(id);
-//                break;
-//            case TYPE_ORDER:
-//                oldObject = DbManager.db().getOrderFromDb(id);
-//                break;
-//            case TYPE_ORDER_ITEM:
-//                oldObject = DbManager.db().getOrderItemFromDb(id);
-//                break;
-//            case TYPE_DISTRIBUTOR:
-//                oldObject = DbManager.db().getDistributorFromDb(id);
-//                break;
-//            case TYPE_PACKAGE_TYPE:
-//                oldObject = DbManager.db().getPackageTypeFromDb(id);
-//                break;
-//            case TYPE_PROJECT:
-//                oldObject = DbManager.db().getProjectFromDb(id);
-//                break;
-//            case TYPE_PROJECT_DIRECTORY:
-//                oldObject = DbManager.db().getProjectDirectoryFromDb(id);
-//                break;
-//            case TYPE_PROJECT_TYPE:
-//                oldObject = DbManager.db().getProjectTypeFromDb(id);
-//                break;
-//            case TYPE_LOG:
-//                oldObject = DbManager.db().getLogFromDb(id);
-//                break;
-//        }
-//    }
 
     public boolean isUnknown() {
         return id == UNKNOWN_ID;

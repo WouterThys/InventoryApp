@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.orderinfodialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.OrderFile;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
@@ -11,18 +11,13 @@ import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 
 public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterface {
 
-    private OrderFile orderFile;
+    private Order order;
 
     private ITextField orderNameTf;
     private ITextArea orderInfoTf;
@@ -102,22 +97,24 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            orderFile = (OrderFile) object;
+            order = (Order) object;
 
-            orderNameTf.setText(orderFile.getOrder().getName());
-            orderFileNameTf.setText(orderFile.getOrderFile().getName());
-            orderFilePathTf.setText(orderFile.getOrderFile().getAbsolutePath());
-            orderInfoTf.setEnabled(orderFile.getOrderType() == 2);
+            orderNameTf.setText(order.getName());
+//            if (order.hasOrderFile()) {
+//                OrderFile orderFile = order.getOrderFile();
+//                orderFileNameTf.setText(orderFile.getName());
+//                orderInfoTf.setEnabled(orderFile.getDistributorId() == 2);
+//            }
 
-            switch (orderFile.getOrderType()) {
+            switch ((int)order.getDistributorId()) {
                 case 2: // Mouser
-                    orderDistributorUrlTf.setText(application.stringResource.readString("OrderInfo.MouserUrl"));
+                    orderDistributorUrlTf.setText(Application.stringResource.readString("OrderInfo.MouserUrl"));
                     String txt = createMouserOrderText();
                     orderInfoTf.setText(txt);
                     break;
                 case 3: // Farnell
-                    orderDistributorUrlTf.setText(application.stringResource.readString("OrderInfo.FarnellUrl"));
-                    orderInfoTf.setText(application.stringResource.readString("OrderInfo.Farnell"));
+                    orderDistributorUrlTf.setText(Application.stringResource.readString("OrderInfo.FarnellUrl"));
+                    orderInfoTf.setText(Application.stringResource.readString("OrderInfo.Farnell"));
                     break;
             }
         }
@@ -125,29 +122,30 @@ public abstract class OrderInfoDialogLayout extends IDialog implements GuiInterf
 
     private String createMouserOrderText() {
         String result = "";
-        if (orderFile != null) {
-            File order = orderFile.getOrderFile();
-            if (order.exists()) {
-                BufferedReader bufferedReader = null;
-                try {
-                    bufferedReader = new BufferedReader(new FileReader(order));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        String[] parts = line.split(OrderFile.SEPARATOR);
-                        result += parts[0] + " " + parts[1] + "\n";
-                    }
-                } catch (IOException e) {
-                    Status().setError("Error creating Mouser order text.", e);
-                } finally {
-                    if (bufferedReader != null) {
-                        try {
-                            bufferedReader.close();
-                        } catch (IOException e) {
-                            Status().setError("Error closing buffered reader.", e);
-                        }
-                    }
-                }
-            }
+        if (order != null) {
+            // TODO
+//            File order = orderFile.getOrderFile();
+//            if (order.exists()) {
+//                BufferedReader bufferedReader = null;
+//                try {
+//                    bufferedReader = new BufferedReader(new FileReader(order));
+//                    String line;
+//                    while ((line = bufferedReader.readLine()) != null) {
+//                        String[] parts = line.split(OrderFile.SEPARATOR);
+//                        result += parts[0] + " " + parts[1] + "\n";
+//                    }
+//                } catch (IOException e) {
+//                    Status().setError("Error creating Mouser order text.", e);
+//                } finally {
+//                    if (bufferedReader != null) {
+//                        try {
+//                            bufferedReader.close();
+//                        } catch (IOException e) {
+//                            Status().setError("Error closing buffered reader.", e);
+//                        }
+//                    }
+//                }
+//            }
         }
         return result;
     }

@@ -89,7 +89,9 @@ public class DistributorsDialog extends DistributorsDialogLayout {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }
 
-            // List?
+            // Orders
+            detailOrderLink.setText(selectedDistributor.getOrderLink());
+            detailOrderFileFormatCb.setSelectedItem(selectedDistributor.getOrderFileFormat());
         }
     }
 
@@ -98,6 +100,8 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         detailWebsite.setText("");
         detailLogo.setIcon((Icon)null);
         // List
+        detailOrderLink.setText("");
+        detailOrderFileFormatCb.setSelectedItem(null);
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -209,6 +213,9 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     //
     @Override
     public void onToolBarRefresh() {
+        selectedDistributor = null;
+        originalDistributor = null;
+        clearDetails();
         updateComponents(null);
     }
 
@@ -245,7 +252,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     }
 
     //
-    // Website changed
+    // Stuff changed
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {

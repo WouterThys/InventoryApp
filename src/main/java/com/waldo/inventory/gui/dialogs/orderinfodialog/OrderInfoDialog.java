@@ -6,7 +6,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.classes.OrderFile;
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -14,13 +14,13 @@ import java.io.IOException;
 
 public class OrderInfoDialog extends OrderInfoDialogLayout {
 
-    public OrderInfoDialog(Application application, String title, OrderFile orderFile) {
+    public OrderInfoDialog(Application application, String title, Order order) {
         super(application, title);
 
         initializeComponents();
         initializeLayouts();
         initActions();
-        updateComponents(orderFile);
+        updateComponents(order);
     }
 
     private void initActions() {

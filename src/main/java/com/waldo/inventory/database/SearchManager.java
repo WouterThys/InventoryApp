@@ -616,7 +616,7 @@ public class SearchManager {
         if (orders.size() == 0) return null;
         else if (orders.size() == 1) return orders.get(0);
         else {
-            orders.sort(new Order.OrderAllOrders());
+            orders.sort(new Order.SortAllOrders());
             return orders.get(orders.size()-1); // Return the last one
         }
     }
@@ -672,6 +672,24 @@ public class SearchManager {
                     (tpl.getProjectTypeId() == typeId) &&
                     (tpl.getFilePath().equals(path))) {
                 return tpl;
+            }
+        }
+        return null;
+    }
+
+    public OrderFileFormat findOrderFileFormatById(long id) {
+        for (OrderFileFormat of : db().getOrderFileFormats()) {
+            if (of.getId() == id) {
+                return of;
+            }
+        }
+        return null;
+    }
+
+    public OrderFileFormat findOrderFileFormatByName(String name) {
+        for (OrderFileFormat of : db().getOrderFileFormats()) {
+            if (of.getName().equals(name)) {
+                return of;
             }
         }
         return null;

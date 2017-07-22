@@ -398,8 +398,8 @@ public abstract class OrderPanelLayout extends JPanel implements
                     application.beginWait();
                     try {
                         Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
-                        if (selectedOrder.getDistributor().getId() != d.getId()) {
-                            selectedOrder.setDistributor(d);
+                        if (selectedOrder.getDistributorId() != d.getId()) {
+                            selectedOrder.setDistributorId(d.getId());
                             selectedOrder.updateItemReferences();
                             SwingUtilities.invokeLater(() -> selectedOrder.save());
                         }

@@ -3,6 +3,7 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.SearchManager;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -27,9 +28,8 @@ public class Order extends DbObject {
     private Date dateModified;
     private Date dateReceived;
     private List<OrderItem> orderItems;
+    private long distributorId;
     private Distributor distributor;
-    private long orderFileId;
-    private OrderFile orderFile = new OrderFile(this); // TODO
     private String orderReference;
     private String trackingNumber;
 
@@ -42,8 +42,7 @@ public class Order extends DbObject {
         statement.setDate(ndx++, dateOrdered);
         statement.setDate(ndx++, dateModified);
         statement.setDate(ndx++, dateReceived);
-        statement.setLong(ndx++, distributor.getId());
-        statement.setLong(ndx++, orderFileId);
+        statement.setLong(ndx++, distributorId);
         statement.setString(ndx++, orderReference);
         statement.setString(ndx++, trackingNumber);
         return ndx;
@@ -70,8 +69,7 @@ public class Order extends DbObject {
         order.setOrderItems(getOrderItems());
         order.setDateModified(getDateModified());
         order.setDateReceived(getDateReceived());
-        order.setDistributor(getDistributor());
-        order.setOrderFile(getOrderFile());
+        order.setDistributorId(getDistributorId());
         order.setOrderReference(getOrderReference());
         order.setTrackingNumber(getTrackingNumber());
 
@@ -96,8 +94,7 @@ public class Order extends DbObject {
                 if (!compareIfEqual(ref.getDateReceived(), getDateReceived())) return false;
                 //if (!compareIfEqual(ref.getDateModified(), getDateModified())) return false;
                 if (!(ref.getOrderItems().equals(getOrderItems()))) return false;
-                if (!(ref.getDistributor().equals(getDistributor()))) return false;
-                //if (!(ref.getOrderFile().equals(getOrderFile()))) return false;
+                if (!(ref.getDistributorId() == (getDistributorId()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
 
@@ -135,7 +132,7 @@ public class Order extends DbObject {
         }
     }
 
-    public static class OrderAllOrders implements Comparator<Order> {
+    public static class SortAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
             if (o1.isUnknown()) {
@@ -156,7 +153,7 @@ public class Order extends DbObject {
         }
     }
 
-    public static class OrderUnordered implements Comparator<Order> {
+    public static class SortUnordered implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
             return o1.getDateModified().compareTo(o2.getDateModified());
@@ -228,9 +225,9 @@ public class Order extends DbObject {
     }
 
     public void updateItemReferences() {
-        if (distributor != null && getOrderItems().size() > 0) {
+        if (getDistributor() != null && getOrderItems().size() > 0) {
             for (OrderItem oi : orderItems) {
-                DistributorPart distributorPart = sm().findPartNumber(distributor.getId(), oi.getItemId());
+                DistributorPart distributorPart = sm().findPartNumber(getDistributor().getId(), oi.getItemId());
                 if (distributorPart != null) {
                     if (oi.getDistributorPartId() != distributorPart.getId()) {
                         oi.setDistributorPartId(distributorPart.getId());
@@ -253,10 +250,6 @@ public class Order extends DbObject {
         BigDecimal bd = new BigDecimal(total);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         return bd.doubleValue();
-    }
-
-    public boolean hasOrderFile() {
-        return orderFile.isSuccess();
     }
 
 //    public void setItemStates(int state) {
@@ -330,24 +323,25 @@ public class Order extends DbObject {
     }
 
     public Distributor getDistributor() {
+        if (distributor == null) {
+            distributor = SearchManager.sm().findDistributorById(distributorId);
+        }
         return distributor;
     }
 
     public long getDistributorId() {
-        if (distributor == null) {
-            return UNKNOWN_ID;
-        } else {
-            return distributor.getId();
-        }
+        return distributorId;
     }
 
-    public void setDistributor(Distributor distributor) {
-        this.distributor = distributor;
+    public void setDistributorId(long id) {
+        this.distributorId = id;
+        distributor = null;
     }
 
     public void setDistributor(String id) {
         try {
-            this.distributor = sm().findDistributorById(Long.valueOf(id));
+            this.distributorId = Long.valueOf(id);
+            distributor = null;
         } catch (Exception e) {
             LOG.error("Error setting distributor.", e);
         }
@@ -371,26 +365,6 @@ public class Order extends DbObject {
         } else {
             return Statics.ItemOrderStates.NONE;
         }
-    }
-
-    public long getOrderFileId() {
-        return orderFileId;
-    }
-
-    public void setOrderFileId(long orderFileId) {
-        this.orderFileId = orderFileId;
-    }
-
-    public OrderFile getOrderFile() {
-        return orderFile;
-    }
-
-    public void setOrderFile(OrderFile orderFile) {
-        this.orderFile = orderFile;
-    }
-
-    public void setOrderFile(String fileName) {
-        orderFile.loadOrderFile(fileName);
     }
 
     public List<OrderItem> missingOrderReferences() {
