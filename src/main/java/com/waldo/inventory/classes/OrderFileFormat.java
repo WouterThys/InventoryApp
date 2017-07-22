@@ -12,7 +12,7 @@ public class OrderFileFormat extends DbObject {
 
     public static final String TABLE_NAME = "orderfileformat";
 
-    private char separator;
+    private String separator;
 
     public OrderFileFormat() {
         super(TABLE_NAME);
@@ -75,17 +75,11 @@ public class OrderFileFormat extends DbObject {
         super.setName(name);
     }
 
-    public char getSeparator() {
+    public String getSeparator() {
         return separator;
     }
 
-    public void setSeparator(char separator) {
-        this.separator = separator;
-    }
-
     public void setSeparator(String separator) {
-        if (separator != null && !separator.isEmpty()) {
-            this.separator = separator.charAt(0);
-        }
+        this.separator = separator;
     }
 }

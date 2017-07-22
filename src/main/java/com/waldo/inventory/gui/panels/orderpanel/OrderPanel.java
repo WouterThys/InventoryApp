@@ -111,9 +111,16 @@ public class OrderPanel extends OrderPanelLayout {
 
 
         tbOrderFlowPanel.addOrderClickListener(e -> {
+            /*
+            TODO: first check if can be ordered..
+                * Has order items
+                * All order items have order references
+                * ...
+
+             */
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
             if (dialog.showDialog() == IDialog.OK) {
-                setOrdered();
+                //setOrdered();
             }
         });
         tbOrderFlowPanel.addReceivedClickListener(e -> setReceived());

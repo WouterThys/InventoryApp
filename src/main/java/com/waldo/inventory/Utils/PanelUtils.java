@@ -3,6 +3,7 @@ package com.waldo.inventory.Utils;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 import static java.awt.GridBagConstraints.BOTH;
@@ -46,6 +47,13 @@ public class PanelUtils {
         constraints.weightx = 0.1;
         iconPathPanel.add(openBtn, constraints);
         return iconPathPanel;
+    }
+
+    public static TitledBorder createTitleBorder(String name) {
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(name);
+        titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        titledBorder.setTitleColor(Color.gray);
+        return titledBorder;
     }
 
 }

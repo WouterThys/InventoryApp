@@ -64,7 +64,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     /*
-     *                  PRIVATE METHODS
+     *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected void updateEnabledComponents() {
         toolBar.setEditActionEnabled((selectedDistributor != null));
@@ -98,9 +98,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private JPanel createWestPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Distributors");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
+        TitledBorder titledBorder = PanelUtils.createTitleBorder("Distributors");
 
         JPanel westPanel = new JPanel();
         JScrollPane list = new JScrollPane(distributorList);

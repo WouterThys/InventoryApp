@@ -82,15 +82,12 @@ public class Item extends DbObject {
         if (packageTypeId < UNKNOWN_ID) {
             packageTypeId = UNKNOWN_ID;
         }
-        statement.setLong(15, packageTypeId);
-        statement.setInt(16, pins);
-        statement.setDouble(17, getWidth());
-        statement.setDouble(18, getHeight());
-        statement.setFloat(19, rating);
-        statement.setBoolean(20, discourageOrder);
-        statement.setString(21, getRemarks());
+        statement.setLong(15, 1); // PackageId
+        statement.setFloat(16, rating);
+        statement.setBoolean(17, discourageOrder);
+        statement.setString(18, getRemarks());
 
-        return 22;
+        return 19;
     }
 
     @Override

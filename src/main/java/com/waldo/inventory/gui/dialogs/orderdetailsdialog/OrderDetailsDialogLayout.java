@@ -40,7 +40,7 @@ public abstract class OrderDetailsDialogLayout extends IDialog implements
 
     JPanel orderFileView;
     ITextArea orderFileTa;
-    DefaultTableModel tableModel;
+    private DefaultTableModel tableModel;
 
     ITextField orderUrlTf;
     JButton orderUrlBrowseBtn;
