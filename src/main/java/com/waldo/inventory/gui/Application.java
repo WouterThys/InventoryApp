@@ -72,17 +72,22 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 // TODO: cry a little
             }
 
+            settings().registerShutDownHook();
+            db().startBackgroundWorkers();
+            db().registerShutDownHook();
+            db().addErrorListener(this);
+
+            initComponents();
+
         } catch (Exception e) {
             LOG.error("Error initialising db", e);
-            SettingsDialog dialog = new SettingsDialog(this, "Settings");
-            dialog.showDialog(); // TODO better dialog
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    "Initialize error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
         }
-        settings().registerShutDownHook();
-        db().startBackgroundWorkers();
-        db().registerShutDownHook();
-        db().addErrorListener(this);
 
-        initComponents();
     }
 
 

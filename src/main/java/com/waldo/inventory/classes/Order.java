@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -38,10 +39,17 @@ public class Order extends DbObject {
         dateModified = new Date(Calendar.getInstance().getTime().getTime());
 
         int ndx = addBaseParameters(statement);
-
-        statement.setDate(ndx++, dateOrdered);
-        statement.setDate(ndx++, dateModified);
-        statement.setDate(ndx++, dateReceived);
+        if (dateOrdered != null) {
+            statement.setTimestamp(ndx++, new Timestamp(dateOrdered.getTime()));
+        } else {
+            statement.setDate(ndx++, null);
+        }
+        statement.setTimestamp(ndx++, new Timestamp(dateModified.getTime()), Calendar.getInstance());
+        if (dateReceived != null) {
+            statement.setTimestamp(ndx++, new Timestamp(dateReceived.getTime()));
+        } else {
+            statement.setDate(ndx++, null);
+        }
         statement.setLong(ndx++, distributorId);
         statement.setString(ndx++, orderReference);
         statement.setString(ndx++, trackingNumber);
@@ -135,6 +143,9 @@ public class Order extends DbObject {
     public static class SortAllOrders implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
+            if (o1 == null || o2 == null) {
+                return 1;
+            }
             if (o1.isUnknown()) {
                 return 1;
             }

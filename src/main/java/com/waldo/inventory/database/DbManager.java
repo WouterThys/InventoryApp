@@ -96,7 +96,7 @@ public class DbManager {
         if (s != null) {
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull");
+            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
             dataSource.setUsername(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
             LOG.info("Database initialized with connection: " + s.createMySqlUrl());

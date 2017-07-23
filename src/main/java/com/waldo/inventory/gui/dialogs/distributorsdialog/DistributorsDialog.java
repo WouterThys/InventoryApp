@@ -72,8 +72,6 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             selectedDistributor.setCanBeSaved(true);
         }
 
-        DbManager.db().close();
-
         super.onCancel();
     }
 

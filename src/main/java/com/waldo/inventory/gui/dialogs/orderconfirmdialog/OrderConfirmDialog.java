@@ -1,14 +1,21 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
+import com.waldo.inventory.Utils.OpenUtils;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -27,7 +34,19 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
 
     @Override
     protected void onOK() {
-        selectNext();
+        if (currentPanel.equals(STEP_ORDER_DETAILS)) {
+            switch(order.getOrderState()) {
+                case Statics.ItemOrderStates.PLANNED: doOrder(); break;
+                case Statics.ItemOrderStates.ORDERED: setReceived(); break;
+                case Statics.ItemOrderStates.RECEIVED: super.onOK(); break;
+                default: break;
+            }
+            updateComponents(order);
+            updateEnabledComponents();
+            updateVisibleComponents();
+        } else {
+            selectNext();
+        }
     }
 
     @Override
@@ -35,19 +54,57 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         selectNext();
     }
 
+    @Override
+    protected void onCancel() {
+        if (order != null && originalOrder != null) {
+            originalOrder.createCopy(order);
+            order.setCanBeSaved(true);
+        }
+
+        super.onCancel();
+    }
+
+    private void doOrder() {
+        // Do order
+        order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
+        application.beginWait();
+        try {
+            order.updateItemStates();
+        } finally {
+            application.endWait();
+        }
+        order.save();
+        originalOrder = order.createCopy();
+
+        // Go to website
+        copyToClipboard();
+        browseOrderPage();
+    }
+
+    private void setReceived() {
+        // Do receive
+        order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
+        application.beginWait();
+        try {
+            order.updateItemStates();
+            order.updateItemAmounts();
+        } finally {
+            application.endWait();
+        }
+        order.save();
+        originalOrder = order.createCopy();
+    }
+
     private void selectNext() {
         cardLayout.next(cardPanel);
         if (currentPanel.equals(STEP_ORDER_FILE)) {
             currentPanel = STEP_ORDER_DETAILS;
-            getButtonOK().setText("finish");
-            getButtonNeutral().setVisible(true);
-            getButtonNeutral().setText("back");
         } else {
             currentPanel = STEP_ORDER_FILE;
-            getButtonOK().setText("next");
-            getButtonNeutral().setVisible(false);
         }
         stepList.setSelectedValue(currentPanel, true);
+        updateEnabledComponents();
+        updateVisibleComponents();
     }
 
     private void checkAndUpdate() {
@@ -56,11 +113,14 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
             fillTableData();
 
             fileOkLbl.setIcon(imageResource.readImage("OrderConfirm.Check", 16));
-            getButtonOK().setEnabled(true);
-
+            parseSucces = true;
         } else {
             showErrors(errorList);
+            parseSucces = false;
         }
+
+        updateEnabledComponents();
+        updateVisibleComponents();
     }
 
     private void showErrors(List<String> errorList) {
@@ -101,6 +161,30 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void browseDistributor() {
+        try {
+            OpenUtils.browseLink(order.getDistributor().getWebsite());
+        } catch (IOException e1) {
+            JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                    "Unable to browse: " + order.getDistributor().getWebsite(),
+                    "Browse error",
+                    JOptionPane.ERROR_MESSAGE);
+            e1.printStackTrace();
+        }
+    }
+
+    private void browseOrderPage() {
+        try {
+            OpenUtils.browseLink(order.getDistributor().getOrderLink());
+        } catch (IOException e1) {
+            JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                    "Unable to browse: " + order.getDistributor().getOrderLink(),
+                    "Browse error",
+                    JOptionPane.ERROR_MESSAGE);
+            e1.printStackTrace();
+        }
+    }
+
     //
     // Buttons
     //
@@ -120,12 +204,40 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         } else if (e.getSource().equals(viewParsedBtn)) {
             if (order != null && order.getDistributor() != null && order.getDistributor().getOrderFileFormat() != null) {
                 viewParsed();
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(OrderConfirmDialog.this,
                         "Could not copy to clipboard..",
                         "Error copying",
                         JOptionPane.ERROR_MESSAGE);
             }
+        } else if (e.getSource().equals(distributorsBrowseBtn)) {
+            if ((order.getDistributor() != null) && !(order.getDistributor().getWebsite().isEmpty())) {
+                browseDistributor();
+            } else {
+                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                        "Could browse website..",
+                        "Error browsing",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (e.getSource().equals(orderUrlBrowseBtn)) {
+            if ((order.getDistributor() != null) && !(order.getDistributor().getOrderLink().isEmpty())) {
+                browseOrderPage();
+            } else {
+                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                        "Could browse order page..",
+                        "Error browsing",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    @Override
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
+
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return order;
     }
 }

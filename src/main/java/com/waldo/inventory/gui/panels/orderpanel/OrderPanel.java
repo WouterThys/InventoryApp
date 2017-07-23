@@ -91,73 +91,15 @@ public class OrderPanel extends OrderPanelLayout {
     private void initActions() {
         initMouseClicked();
 
-        // Order
-//        tbOrderButton.addActionListener(e -> { // TODO this should go to orderClickListener, if orderfile is empty or changed
-//            OrderFile orderFile = new OrderFile(selectedOrder);
-//            orderFile.createOrderFile();
-//            if (orderFile.isSuccess()) {
-//                OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
-//                infoDialog.showDialog();
-//                selectedOrder.setOrderFile(orderFile);
-//                selectedOrder.save();
-//            } else {
-//                StringBuilder msg = new StringBuilder("Order failed with next errors: ");
-//                for (String s : orderFile.getErrorMessages()) {
-//                    msg.append(s).append("\n\n");
-//                }
-//                JOptionPane.showMessageDialog(OrderPanel.this, msg.toString(), "Order errors", JOptionPane.ERROR_MESSAGE);
-//            }
-//        });
-
-
         tbOrderFlowPanel.addOrderClickListener(e -> {
-            /*
-            TODO: first check if can be ordered..
-                * Has order items
-                * All order items have order references
-                * ...
-
-             */
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
-            if (dialog.showDialog() == IDialog.OK) {
-                //setOrdered();
-            }
+            dialog.showDialog();
         });
-        tbOrderFlowPanel.addReceivedClickListener(e -> setReceived());
-
-
-        // Details
-//        tbViewOrderDetailsBtn.addActionListener(e -> { // TODO this logic should go to treeToolBar on edit order
-//            if (selectedOrder != null) {
-//                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", selectedOrder);
-//                dialog.showDialog();
-//            }
-//        });
-    }
-
-    private void setOrdered() {
-        selectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
-        try {
-            //selectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
-            selectedOrder.updateItemStates();
-        } finally {
-            application.endWait();
-        }
-        selectedOrder.save();
-    }
-
-    private void setReceived() {
-        selectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
-        try {
-            //selectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
-            selectedOrder.updateItemStates();
-            selectedOrder.updateItemAmounts();
-        } finally {
-            application.endWait();
-        }
-        selectedOrder.save();
+        tbOrderFlowPanel.addReceivedClickListener(e -> {
+            // TODO open on second tab
+            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
+            dialog.showDialog();
+        });
     }
 
     private List<OrderItem> getSelectedOrderItems() {
@@ -255,6 +197,7 @@ public class OrderPanel extends OrderPanelLayout {
 
                 tableInitialize(order);
                 tableSelectOrderItem(selectedOrderItem);
+
                 treeRecreateNodes();
                 final long orderId = treeUpdate();
 
@@ -265,6 +208,7 @@ public class OrderPanel extends OrderPanelLayout {
                     updateVisibleComponents();
                     updateEnabledComponents();
                 });
+
             }
 
             @Override
@@ -272,6 +216,7 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = newOrder;
 
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
+                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
@@ -434,10 +379,10 @@ public class OrderPanel extends OrderPanelLayout {
         try {
             application.beginWait();
             tableInitialize(selectedOrder);
+            treeRecreateNodes();
             final long orderId = treeUpdate();
 
             SwingUtilities.invokeLater(() -> {
-                treeUpdate();
                 selectedOrder = SearchManager.sm().findOrderById(orderId);
                 treeSelectOrder(selectedOrder);
 
