@@ -22,11 +22,6 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
-    private static final int COMPONENT_TAB = 0;
-    private static final int STOCK_TAB = 1;
-    private static final int MANUFACTURER_TAB = 2;
-    private static final int ORDER_TAB = 3;
-
     private int currentTabIndex = 0;
     private boolean canClose = true;
 

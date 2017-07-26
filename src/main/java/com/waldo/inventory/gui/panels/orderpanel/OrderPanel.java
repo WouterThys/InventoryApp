@@ -10,8 +10,6 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
-import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
-import com.waldo.inventory.gui.dialogs.orderinfodialog.OrderInfoDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
 import javax.swing.*;
@@ -98,7 +96,7 @@ public class OrderPanel extends OrderPanelLayout {
         tbOrderFlowPanel.addReceivedClickListener(e -> {
             // TODO open on second tab
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
-            dialog.showDialog();
+            dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
         });
     }
 

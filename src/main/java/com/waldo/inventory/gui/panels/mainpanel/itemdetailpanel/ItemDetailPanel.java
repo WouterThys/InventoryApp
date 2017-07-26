@@ -10,6 +10,9 @@ import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,13 +22,12 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
-    private Item selectedItem;
-
     public ItemDetailPanel(Application application) {
         super(application);
         initializeComponents();
         initializeLayouts();
         initActions();
+
     }
 
     @Override
@@ -146,4 +148,5 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     private void updateButtons(Item item) {
         dataSheetButton.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
     }
+
 }

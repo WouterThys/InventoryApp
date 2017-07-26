@@ -24,6 +24,24 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
 
+    protected static final int COMPONENT_TAB = 0;
+    protected static final int STOCK_TAB = 1;
+    protected static final int MANUFACTURER_TAB = 2;
+    protected static final int ORDER_TAB = 3;
+
+    public static final String COMP_NAME = "C_Name";
+    public static final String COMP_DIVISION = "C_Division";
+    public static final String COMP_MANUFACTURER = "C_Manufacturer";
+    public static final String COMP_DESCRIPTION = "C_Description";
+    public static final String COMP_RATING = "C_Rating";
+    public static final String COMP_DISCOURAGE = "C_Discourage";
+    public static final String COMP_REMARK = "C_Remark";
+
+    public static final String TAB_COMPONENTS = "T_Comp";
+    public static final String TAB_COMP_DETAILS = "T_Detail";
+    public static final String TAB_ORDERS = "T_Order";
+    public static final String TAB_STOCK = "T_Stock";
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -47,9 +65,13 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     }
 
     /*
-     *                  PRIVATE METHODS
+     *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+
+    /*
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Save button
@@ -133,6 +155,23 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     }
 
     /*
-     *                  GETTERS - SETTERS
+     *                  OVERWRITE
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    @Override
+    protected void setFocusTab(String focusTab) {
+        switch (focusTab) {
+            case TAB_COMPONENTS:
+                tabbedPane.setSelectedIndex(COMPONENT_TAB);
+                componentPanel.setSelectedTab(0);
+                break;
+            case TAB_COMP_DETAILS:
+                tabbedPane.setSelectedIndex(COMPONENT_TAB);
+                componentPanel.setSelectedTab(1);
+                break;
+            case TAB_ORDERS: tabbedPane.setSelectedIndex(ORDER_TAB); break;
+            case TAB_STOCK: tabbedPane.setSelectedIndex(STOCK_TAB); break;
+            default: break;
+        }
+    }
 }

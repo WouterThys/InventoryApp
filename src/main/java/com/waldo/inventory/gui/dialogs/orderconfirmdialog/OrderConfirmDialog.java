@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +33,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
 
     @Override
     protected void onOK() {
-        if (currentPanel.equals(STEP_ORDER_DETAILS)) {
+        if (currentPanel.equals(TAB_ORDER_DETAILS)) {
             switch(order.getOrderState()) {
                 case Statics.ItemOrderStates.PLANNED: doOrder(); break;
                 case Statics.ItemOrderStates.ORDERED: setReceived(); break;
@@ -62,6 +61,13 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         }
 
         super.onCancel();
+    }
+
+    @Override
+    protected void setFocusTab(String focusTab) {
+        if (focusTab.equals(TAB_ORDER_DETAILS) && parseSucces) {
+            selectNext();
+        }
     }
 
     private void doOrder() {
@@ -97,10 +103,10 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
 
     private void selectNext() {
         cardLayout.next(cardPanel);
-        if (currentPanel.equals(STEP_ORDER_FILE)) {
-            currentPanel = STEP_ORDER_DETAILS;
+        if (currentPanel.equals(TAB_ORDER_FILE)) {
+            currentPanel = TAB_ORDER_DETAILS;
         } else {
-            currentPanel = STEP_ORDER_FILE;
+            currentPanel = TAB_ORDER_FILE;
         }
         stepList.setSelectedValue(currentPanel, true);
         updateEnabledComponents();

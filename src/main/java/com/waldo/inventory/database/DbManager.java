@@ -402,14 +402,26 @@ public class DbManager {
         for (DbObjectChangedListener<T> l : listeners) {
             switch (changedHow) {
                 case OBJECT_INSERT:
-                    SwingUtilities.invokeLater(() -> l.onInserted(object));
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onInserted(object));
+                    } catch (Exception e) {
+                        LOG.error("Error after insert of " + object.getName(), e);
+                    }
                     break;
                 case OBJECT_UPDATE:
-                    SwingUtilities.invokeLater(() -> l.onUpdated(object));
-                    l.onUpdated(object);
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onUpdated(object));
+                        l.onUpdated(object);
+                    } catch (Exception e) {
+                        LOG.error("Error after update of " + object.getName(), e);
+                    }
                     break;
                 case OBJECT_DELETE:
-                    SwingUtilities.invokeLater(() -> l.onDeleted(object));
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onDeleted(object));
+                    } catch (Exception e) {
+                        LOG.error("Error after delete of " + object.getName(), e);
+                    }
                     break;
             }
         }

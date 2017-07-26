@@ -21,8 +21,8 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
 
-    static final String STEP_ORDER_FILE = "Order file ";
-    static final String STEP_ORDER_DETAILS = "Order details";
+    public static final String TAB_ORDER_FILE = "Order file ";
+    public static final String TAB_ORDER_DETAILS = "Order details";
 
     private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("MMM d, yyyy");
     private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("MMM d, yyyy HH:mm");
@@ -66,7 +66,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Order order, originalOrder;
-    String currentPanel = STEP_ORDER_FILE;
+    String currentPanel = TAB_ORDER_FILE;
     boolean parseSucces = false;
 
     /*
@@ -139,7 +139,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
     void updateVisibleComponents() {
         switch (currentPanel) {
-            case STEP_ORDER_FILE:
+            case TAB_ORDER_FILE:
                 getButtonOK().setText("next");
                 getButtonNeutral().setVisible(false);
 
@@ -147,7 +147,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
                 distributorsBrowseBtn.setVisible(false);
                 orderUrlBrowseBtn.setVisible(false);
                 break;
-            case STEP_ORDER_DETAILS:
+            case TAB_ORDER_DETAILS:
                 switch(order.getOrderState()) {
                     case Statics.ItemOrderStates.PLANNED: getButtonOK().setText("order"); break;
                     case Statics.ItemOrderStates.ORDERED: getButtonOK().setText("received"); break;
@@ -286,7 +286,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
 
-        mainBorder = PanelUtils.createTitleBorder(STEP_ORDER_FILE);
+        mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
         mainPanel.setBorder(mainBorder);
     }
 
@@ -305,8 +305,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         cardPanel = new JPanel(cardLayout);
 
         stepListModel = new DefaultListModel<>();
-        stepListModel.addElement(STEP_ORDER_FILE);
-        stepListModel.addElement(STEP_ORDER_DETAILS);
+        stepListModel.addElement(TAB_ORDER_FILE);
+        stepListModel.addElement(TAB_ORDER_DETAILS);
         stepList = new JList<>(stepListModel);
         stepList.setEnabled(false);
         stepList.setSelectedIndex(0);
@@ -363,8 +363,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         createDetailPanel();
         createMainContainer();
 
-        cardPanel.add(STEP_ORDER_FILE, filePanel);
-        cardPanel.add(STEP_ORDER_DETAILS, detailPanel);
+        cardPanel.add(TAB_ORDER_FILE, filePanel);
+        cardPanel.add(TAB_ORDER_DETAILS, detailPanel);
 
         JPanel listPanel = new JPanel(new BorderLayout());
         listPanel.add(new JScrollPane(stepList), BorderLayout.CENTER);

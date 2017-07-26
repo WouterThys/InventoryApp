@@ -6,6 +6,7 @@ import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,33 +74,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     /*
      *                  PUBLIC METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public long getCbCategoryId()  {
-        Category c = (Category) categoryComboBox.getSelectedItem();
-        if (c != null) {
-            return c.getId();
+    public void setSelectedTab(int index) {
+        if (tabbedPane != null) {
+            tabbedPane.setSelectedIndex(index);
         }
-        return UNKNOWN_ID;
-    }
-
-    public long getCbProductId() {
-        if (productComboBox.isEnabled()) {
-            Product p = (Product) productComboBox.getSelectedItem();
-            if (p != null) {
-                return p.getId();
-            }
-        }
-        return UNKNOWN_ID;
-    }
-
-    public long getCbTypeId() {
-        if (typeComboBox.isEnabled()) {
-            Type t = (Type) typeComboBox.getSelectedItem();
-            if (t != null) {
-                return t.getId();
-            }
-        }
-        return UNKNOWN_ID;
-
     }
 
     public void updateProductCbValues(long categoryId) {
@@ -184,10 +162,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         nameTextField = new ITextField();
         nameTextField.addEditedListener(editedListener, "name");
+        nameTextField.setName(EditItemDialogLayout.COMP_NAME);
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
         descriptionTextArea.setWrapStyleWord(true); // Don't cut words in two
         descriptionTextArea.addEditedListener(editedListener, "description");
+        descriptionTextArea.setName(EditItemDialogLayout.COMP_DESCRIPTION);
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -251,6 +231,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
         manufacturerComboBox = new IComboBox<>(model);
         manufacturerComboBox.addEditedListener(editedListener, "manufacturerId");
+        manufacturerComboBox.setName(EditItemDialogLayout.COMP_MANUFACTURER);
         manufacturerComboBox.addItemListener(e -> {
             Manufacturer m = (Manufacturer) e.getItem();
             if (m != null) {
@@ -265,10 +246,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Remarks stuff
         starRater = new IStarRater(5, 0,0);
         starRater.addEditedListener(editedListener, "rating");
+        starRater.setName(EditItemDialogLayout.COMP_RATING);
         discourageOrderCb = new ICheckBox("Discourage future orders");
         discourageOrderCb.addEditedListener(editedListener, "discourageOrder");
         discourageOrderCb.setAlignmentX(RIGHT_ALIGNMENT);
+        discourageOrderCb.setName(EditItemDialogLayout.COMP_DISCOURAGE);
         remarksTa = new ITextArea();
+        remarksTa.setName(EditItemDialogLayout.COMP_REMARK);
         remarksTa.setLineWrap(true); // Go to next line when area is full
         remarksTa.setWrapStyleWord(true); // Don't cut words in two
         remarksTa.addEditedListener(editedListener, "remarks");
