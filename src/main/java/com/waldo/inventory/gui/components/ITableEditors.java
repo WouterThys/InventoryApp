@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.parser.*;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;
@@ -97,42 +98,63 @@ public class ITableEditors {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
 
-                Item item = (Item) value;
-                ILabel lblText = new ILabel(String.valueOf(item.getAmount()));
-                lblText.setForeground(Color.WHITE);
-                Font f = lblText.getFont();
-                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
-                ILabel lblIcon;
-                if (item.getOrderState() == Statics.ItemOrderStates.ORDERED) {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
-                } else if (item.getOrderState() == Statics.ItemOrderStates.PLANNED) {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
-                } else {
+                ILabel lblIcon = null;
+                ILabel lblText = null;
+
+                if (value instanceof Item) {
+                    Item item = (Item) value;
+                    lblText = new ILabel(String.valueOf(item.getAmount()));
+                    lblText.setForeground(Color.WHITE);
+                    Font f = lblText.getFont();
+                    lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
+
+                    if (item.getOrderState() == Statics.ItemOrderStates.ORDERED) {
+                        lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
+                    } else if (item.getOrderState() == Statics.ItemOrderStates.PLANNED) {
+                        lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
+                    } else {
+                        if (item.getAmount() > 0) {
+                            lblIcon = new ILabel(imageResource.readImage("Ball.green"));
+                        } else {
+                            lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+                        }
+                    }
+                } else if (value instanceof SetItem) {
+                    SetItem item = (SetItem) value;
+                    lblText = new ILabel(String.valueOf(item.getAmount()));
+                    lblText.setForeground(Color.WHITE);
+                    Font f = lblText.getFont();
+                    lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
+
                     if (item.getAmount() > 0) {
                         lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                     } else {
                         lblIcon = new ILabel(imageResource.readImage("Ball.red"));
                     }
+
                 }
 
-                // Colors
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                Color cbg =  c.getBackground();
+                if (lblIcon != null && lblText != null) {
+                    // Colors
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    Color cbg = c.getBackground();
 
-                if (row %2 == 1 || isSelected) {
-                    lblIcon.setBackground(cbg);
-                    lblText.setBackground(cbg);
-                } else {
-                    lblIcon.setBackground(Color.WHITE);
-                    lblText.setBackground(Color.WHITE);
+                    if (row % 2 == 1 || isSelected) {
+                        lblIcon.setBackground(cbg);
+                        lblText.setBackground(cbg);
+                    } else {
+                        lblIcon.setBackground(Color.WHITE);
+                        lblText.setBackground(Color.WHITE);
+                    }
+
+                    lblIcon.setOpaque(true);
+                    lblText.setOpaque(false);
+
+                    lblIcon.setLayout(new GridBagLayout());
+                    lblIcon.add(lblText);
+                    return lblIcon;
                 }
-
-                lblIcon.setOpaque(true);
-                lblText.setOpaque(false);
-
-                lblIcon.setLayout(new GridBagLayout());
-                lblIcon.add(lblText);
-                return lblIcon;
+                return null;
             } else {
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }

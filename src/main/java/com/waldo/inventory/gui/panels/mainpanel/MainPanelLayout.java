@@ -109,6 +109,18 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
+    public void scrollToVisible() {
+        if (selectedItem != null) {
+            List<Item> itemList = tableModel.getItemList();
+            if (itemList != null) {
+                int ndx = itemList.indexOf(selectedItem);
+                if (ndx >= 0 && ndx < itemList.size()) {
+                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
+                }
+            }
+        }
+    }
+
     private void createNodes(DefaultMutableTreeNode rootNode) {
         for (Category category : db().getCategories()) {
             DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);

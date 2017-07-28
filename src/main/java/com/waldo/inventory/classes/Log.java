@@ -76,12 +76,13 @@ public class Log extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setInt(1, logType);
-        statement.setDate(2, logTime);
-        statement.setString(3,logClass);
-        statement.setString(4, logMessage);
-        statement.setString(5, logException);
-        return 6;
+        int ndx = 1;
+        statement.setInt(ndx++, logType);
+        statement.setTimestamp(ndx++, new Timestamp(logTime.getTime()));
+        statement.setString(ndx++,logClass);
+        statement.setString(ndx++, logMessage);
+        statement.setString(ndx++, logException);
+        return ndx;
     }
 
     @Override

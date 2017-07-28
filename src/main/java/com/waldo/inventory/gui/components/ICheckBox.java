@@ -54,7 +54,7 @@ public class ICheckBox extends JCheckBox implements ItemListener {
                     Method getMethod = guiObject.getClass().getDeclaredMethod("is" + fieldName);
 
                     String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                    setMethod.invoke(guiObject, newVal);
+                    setMethod.invoke(guiObject, Boolean.valueOf(newVal));
 
                     editedListener.onValueChanged(ICheckBox.this, fieldName, oldVal, newVal);
                 }

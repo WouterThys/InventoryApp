@@ -16,8 +16,6 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
     private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
-    private List<Item> itemList;
-
     public IItemTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }

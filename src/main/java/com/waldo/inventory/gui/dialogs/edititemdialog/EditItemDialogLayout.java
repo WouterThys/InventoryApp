@@ -91,7 +91,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         renderer.setHorizontalTextAlignment(SwingConstants.TRAILING);
 
         // Panels
-        componentPanel = new ComponentPanel(newItem, this);
+        componentPanel = new ComponentPanel(application, newItem, this);
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
 

@@ -101,6 +101,7 @@ public class ITextField extends JTextField implements FocusListener {
 //            this.setBorder(focusBorder);
             this.setOpaque(true);
             if (this.getText().isEmpty()) {
+                showingHint = false;
                 super.setText("");
             }
         }

@@ -119,28 +119,27 @@ public class OrderPanel extends OrderPanelLayout {
             return;
         }
 
-            int result = JOptionPane.CANCEL_OPTION;
-            if (itemsToDelete.size() == 1) {
-                result = JOptionPane.showConfirmDialog(
-                        OrderPanel.this,
-                        "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
-                        "Confirm delete",
-                        JOptionPane.YES_NO_OPTION);
-            } else if (itemsToDelete.size() > 1) {
-                result = JOptionPane.showConfirmDialog(
-                        OrderPanel.this,
-                        "Are you sure you want to delete " + itemsToDelete.size() + " items?",
-                        "Confirm delete",
-                        JOptionPane.YES_NO_OPTION);
+        int result = JOptionPane.CANCEL_OPTION;
+        if (itemsToDelete.size() == 1) {
+            result = JOptionPane.showConfirmDialog(
+                    OrderPanel.this,
+                    "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        } else if (itemsToDelete.size() > 1) {
+            result = JOptionPane.showConfirmDialog(
+                    OrderPanel.this,
+                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        }
+        if (result == JOptionPane.OK_OPTION) {
+            for (OrderItem item : itemsToDelete) {
+                selectedOrder.removeItemFromList(item);
             }
-
-            if (result == JOptionPane.OK_OPTION) {
-                for (OrderItem item : itemsToDelete) {
-                    selectedOrder.removeItemFromList(item);
-                }
-                selectedOrderItem = null;
-                selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
-            }
+            selectedOrderItem = null;
+            selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
+        }
 
     }
 

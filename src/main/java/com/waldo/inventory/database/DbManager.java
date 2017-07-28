@@ -67,6 +67,7 @@ public class DbManager {
     public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -88,6 +89,7 @@ public class DbManager {
     private List<ProjectTypeLink> projectTypeLinks;
     private List<OrderFileFormat> orderFileFormats;
     private List<Package> packages;
+    private List<SetItem> setItems;
     private List<Log> logs;
 
     private DbManager() {}
@@ -503,6 +505,7 @@ public class DbManager {
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
+                    i.setSet(rs.getBoolean("isSet"));
 
                     items.add(i);
                 }
@@ -1217,6 +1220,48 @@ public class DbManager {
             }
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(off, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
+    *                  SET ITEMS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<SetItem> getSetItems()    {
+        if (setItems == null) {
+            updateSetItems();
+        }
+        return setItems;
+    }
+
+    private void updateSetItems()    {
+        setItems = new ArrayList<>();
+        Status().setMessage("Fetching set items from DB");
+        SetItem si = null;
+        String sql = scriptResource.readString(SetItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    si = new SetItem();
+                    si.setId(rs.getLong("id"));
+                    si.setName(rs.getString("name"));
+                    si.setIconPath(rs.getString("iconPath"));
+                    si.setAmount(rs.getInt("amount"));
+                    si.setValue(rs.getString("value"));
+                    si.setItemId(rs.getLong("itemId"));
+
+                    setItems.add(si);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(si, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {

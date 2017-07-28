@@ -714,4 +714,32 @@ public class SearchManager {
         return null;
     }
 
+    public SetItem findSetItemById(long id) {
+        for (SetItem si : db().getSetItems()) {
+            if (si.getId() == id) {
+                return si;
+            }
+        }
+        return null;
+    }
+
+    public SetItem findSetItemByValue(String value) {
+        for (SetItem si : db().getSetItems()) {
+            if (si.getValue().equals(value)) {
+                return si;
+            }
+        }
+        return null;
+    }
+
+    public List<SetItem> findSetItemsByItemId(long id) {
+        List<SetItem> setItems = new ArrayList<>();
+        for (SetItem si : db().getSetItems()) {
+            if (si.getItemId() == id) {
+                setItems.add(si);
+            }
+        }
+        return setItems;
+    }
+
 }

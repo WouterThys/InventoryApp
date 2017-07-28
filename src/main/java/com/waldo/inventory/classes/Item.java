@@ -24,18 +24,24 @@ public class Item extends DbObject {
     private long categoryId = -1;
     private long productId = -1;
     private long typeId = -1;
+
     private String localDataSheet = "";
     private String onlineDataSheet = "";
+
     private long manufacturerId = -1;
     private long locationId = -1;
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
+
     private long packageId = -1;
     private Package itemPackage;
+
     private float rating;
     private boolean discourageOrder;
     private String remarks;
+
+    private boolean isSet;
 
     public Item() {
         super(TABLE_NAME);
@@ -43,45 +49,46 @@ public class Item extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-
-        statement.setString(1, name);
-        statement.setString(9, iconPath);
-        statement.setString(2, description);
-        statement.setDouble(3, price);
+        int ndx = 1;
+        statement.setString(ndx++, name);
+        statement.setString(ndx++, description);
+        statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
             categoryId = UNKNOWN_ID;
         }
-        statement.setLong(4, categoryId);
+        statement.setLong(ndx++, categoryId);
         if (productId < UNKNOWN_ID) {
             productId = UNKNOWN_ID;
         }
-        statement.setLong(5, productId);
+        statement.setLong(ndx++, productId);
         if (typeId < UNKNOWN_ID) {
             typeId = UNKNOWN_ID;
         }
-        statement.setLong(6, typeId);
-        statement.setString(7, localDataSheet);
-        statement.setString(8, onlineDataSheet);
+        statement.setLong(ndx++, typeId);
+        statement.setString(ndx++, localDataSheet);
+        statement.setString(ndx++, onlineDataSheet);
+        statement.setString(ndx++, iconPath);
         if (manufacturerId < UNKNOWN_ID) {
             manufacturerId = UNKNOWN_ID;
         }
-        statement.setLong(10, manufacturerId);
+        statement.setLong(ndx++, manufacturerId);
         if (locationId < UNKNOWN_ID) {
             locationId = UNKNOWN_ID;
         }
-        statement.setLong(11, locationId);
-        statement.setInt(12, amount);
-        statement.setInt(13, amountType);
-        statement.setInt(14, orderState);
+        statement.setLong(ndx++, locationId);
+        statement.setInt( ndx++, amount);
+        statement.setInt( ndx++, amountType);
+        statement.setInt( ndx++, orderState);
         if (packageId < UNKNOWN_ID) {
             packageId = UNKNOWN_ID;
         }
-        statement.setLong(15, packageId); // PackageId
-        statement.setFloat(16, rating);
-        statement.setBoolean(17, discourageOrder);
-        statement.setString(18, getRemarks());
+        statement.setLong(ndx++, packageId); // PackageId
+        statement.setFloat(ndx++, rating);
+        statement.setBoolean(ndx++, discourageOrder);
+        statement.setString(ndx++, getRemarks());
+        statement.setBoolean(ndx++, isSet());
 
-        return 19;
+        return ndx;
     }
 
     @Override
@@ -154,6 +161,7 @@ public class Item extends DbObject {
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarks(getRemarks());
+        item.setSet(isSet());
 
         return item;
     }
@@ -187,6 +195,7 @@ public class Item extends DbObject {
                 if (!(ref.getRating() == getRating())) return false;
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) return false;
                 if (!(ref.getRemarks().equals(getRemarks()))) return false;
+                if (!(ref.isSet() == isSet())) return false;
              }
         }
         return result;
@@ -259,6 +268,22 @@ public class Item extends DbObject {
                 db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onItemsChangedListenerList);
                 break;
             }
+        }
+    }
+
+    public void updateOrderState() {
+        int currentState = getOrderState();
+        Order lastOrderForItem = SearchManager.sm().findLastOrderForItem(id);
+        if (lastOrderForItem == null) {
+            orderState = Statics.ItemOrderStates.NONE;
+        } else {
+            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.NONE;
+            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.ORDERED;
+            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.PLANNED;
+            else orderState = Statics.ItemOrderStates.NONE;
+        }
+        if (currentState != getOrderState()) {
+            save();
         }
     }
 
@@ -367,22 +392,6 @@ public class Item extends DbObject {
         this.orderState = orderState;
     }
 
-    public void updateOrderState() {
-        int currentState = getOrderState();
-        Order lastOrderForItem = SearchManager.sm().findLastOrderForItem(id);
-        if (lastOrderForItem == null) {
-            orderState = Statics.ItemOrderStates.NONE;
-        } else {
-            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.NONE;
-            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.ORDERED;
-            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.PLANNED;
-            else orderState = Statics.ItemOrderStates.NONE;
-        }
-        if (currentState != getOrderState()) {
-            save();
-        }
-    }
-
     public float getRating() {
         return rating;
     }
@@ -487,8 +496,15 @@ public class Item extends DbObject {
         }
     }
 
-
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public boolean isSet() {
+        return isSet;
+    }
+
+    public void setSet(boolean set) {
+        isSet = set;
     }
 }

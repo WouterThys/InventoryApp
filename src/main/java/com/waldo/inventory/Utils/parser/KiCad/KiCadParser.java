@@ -105,8 +105,8 @@ public class KiCadParser extends ProjectParser<KcComponent> {
 
         // Node
         Node headNode = new Node();
-        String name = "";
-        String value = "";
+        StringBuilder name = new StringBuilder();
+        StringBuilder value = new StringBuilder();
         char[] blockChars = block.toCharArray();
 
         boolean valueStart = false;
@@ -136,24 +136,24 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                 }
 
                 if (!nameEnd) {
-                    name += blockChars[charCnt];
+                    name.append(blockChars[charCnt]);
                 }
                 if (valueStart) {
-                    value += blockChars[charCnt];
+                    value.append(blockChars[charCnt]);
                 }
             }
 
             endFound = (charCnt == blockChars.length-1);
             charCnt++;
         }
-        headNode.name = name;
-        headNode.value = value;
+        headNode.name = name.toString();
+        headNode.value = value.toString();
         headNode.parseLength = charCnt;
         return headNode;
     }
 
     private String readBlock(String data) {
-        String block = "";
+        StringBuilder block = new StringBuilder();
         char[] chars = data.toCharArray();
         boolean endFound = false;
         boolean startFound = false;
@@ -170,13 +170,13 @@ public class KiCadParser extends ProjectParser<KcComponent> {
             }
 
             if (startFound) {
-                block += chars[charCnt];
+                block.append(chars[charCnt]);
             }
 
             endFound = (bracketCnt == 0) || (charCnt == data.length());
             charCnt++;
         }
-        return block;
+        return block.toString();
     }
 
     private class KiCadComponentComparator implements Comparator<KcComponent> {

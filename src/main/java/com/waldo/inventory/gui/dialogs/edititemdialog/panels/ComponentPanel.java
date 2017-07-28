@@ -1,12 +1,15 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
+import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -29,6 +32,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private static final LogManager LOG = LogManager.LOG(ComponentPanel.class);
 
+    private Application application;
     private Item newItem;
 
     // Listener
@@ -46,6 +50,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
     private ITextArea remarksTa;
+    private ICheckBox isSetCb;
+    private JButton setValuesBtn;
 
     // Basic info
     private ITextField idTextField;
@@ -63,7 +69,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private JButton localDataSheetButton;
     private ITextField onlineDataSheetTextField;
 
-    public ComponentPanel(Item newItem, @NotNull IEditedListener listener) {
+    public ComponentPanel(Application application, Item newItem, @NotNull IEditedListener listener) {
+        this.application = application;
         this.newItem = newItem;
         this.editedListener = listener;
     }
@@ -174,7 +181,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
         priceTextField = new ITextField();
-        priceTextField.addEditedListener(editedListener, "price");
+        priceTextField.addEditedListener(editedListener, "price", double.class);
 
         // Combo boxes
         createCategoryCb();
@@ -237,7 +244,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-        iconLabel = new ILabel();
+        iconLabel = new ILabel("", ILabel.RIGHT);
 
         // Remarks stuff
         starRater = new IStarRater(5, 0,0);
@@ -252,6 +259,25 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         remarksTa.setLineWrap(true); // Go to next line when area is full
         remarksTa.setWrapStyleWord(true); // Don't cut words in two
         remarksTa.addEditedListener(editedListener, "remarks");
+
+        // Set stuff
+        isSetCb = new ICheckBox("Is set", false);
+        isSetCb.addEditedListener(editedListener, "set");
+        isSetCb.addActionListener(e -> {
+            setValuesBtn.setEnabled(isSetCb.isSelected());
+        });
+        setValuesBtn = new JButton("Set values");
+        setValuesBtn.addActionListener(e -> {
+            if (newItem != null && newItem.getId() > DbObject.UNKNOWN_ID) {
+                SetItemDialog dialog = new SetItemDialog(application, "Set items", newItem);
+                dialog.showDialog();
+            } else {
+                JOptionPane.showMessageDialog(ComponentPanel.this,
+                        "Save item first!",
+                        "Error creating set items",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     private JPanel createBasicPanel() {
@@ -297,17 +323,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         JPanel packagePanel = new JPanel(new GridBagLayout());
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
         JPanel remarksPanel = new JPanel(new GridBagLayout());
+        JPanel setPanel = new JPanel(new BorderLayout());
 
         // Borders
-        TitledBorder packageBorder = BorderFactory.createTitledBorder("Package");
-        packageBorder.setTitleJustification(TitledBorder.RIGHT);
-        packageBorder.setTitleColor(Color.gray);
-        TitledBorder manufacturerBorder = BorderFactory.createTitledBorder("Manufacturer");
-        manufacturerBorder.setTitleJustification(TitledBorder.RIGHT);
-        manufacturerBorder.setTitleColor(Color.gray);
-        TitledBorder remarksBorder = BorderFactory.createTitledBorder("Remarks");
-        remarksBorder.setTitleJustification(TitledBorder.RIGHT);
-        remarksBorder.setTitleColor(Color.gray);
+        TitledBorder packageBorder = PanelUtils.createTitleBorder("Package");
+        TitledBorder manufacturerBorder = PanelUtils.createTitleBorder("Manufacturer");
+        TitledBorder remarksBorder = PanelUtils.createTitleBorder("Remarks");
+        TitledBorder setBorder = PanelUtils.createTitleBorder("Set");
 
         // Labels
         ILabel typeLabel = new ILabel("Type: ");
@@ -371,7 +393,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // - border
         packagePanel.setBorder(packageBorder);
 
-        // Manufacturer
+
+        // MANUFACTURER
         ILabel manufacturerLabel = new ILabel("Name: ", ILabel.RIGHT);
 
         gbc = new GridBagConstraints();
@@ -389,15 +412,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         manufacturerPanel.add(manufacturerComboBox, gbc);
 
         // Icon
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 1;
+        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.EAST;
         manufacturerPanel.add(iconLabel, gbc);
 
         // Border
         manufacturerPanel.setBorder(manufacturerBorder);
 
-        // Remarks panel
+
+        // REMARKS
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
 
@@ -429,13 +454,19 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Border
         remarksPanel.setBorder(remarksBorder);
 
+        // SET
+        setPanel.add(isSetCb, BorderLayout.CENTER);
+        setPanel.add(setValuesBtn, BorderLayout.EAST);
+        setPanel.setBorder(setBorder);
 
         // Add to panel
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        panel.add(packagePanel, BorderLayout.NORTH);
-        panel.add(manufacturerPanel, BorderLayout.SOUTH);
-        panel.add(remarksPanel, BorderLayout.CENTER);
+        panel.add(packagePanel);
+        panel.add(manufacturerPanel);
+        panel.add(remarksPanel);
+        panel.add(setPanel);
 
         return panel;
     }
@@ -455,18 +486,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeLayouts() {
         // Add tabs
-        //tabbedPane.addTab("Basic  ", imageResource.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Basic", createBasicPanel());
         tabbedPane.addTab("Details", createDetailsPanel());
-
-//        // Create vertical labels to render tab titles
-//        JLabel labTab1 = new JLabel("Basic ");
-//        labTab1.setUI(ILabel.createVerticalLabel(false)); // true/false to make it upwards/downwards
-//        tabbedPane.setTabComponentAt(0, labTab1); // For component1
-//
-//        JLabel labTab2 = new JLabel("Package ");
-//        labTab2.setUI(ILabel.createVerticalLabel(false));
-//        tabbedPane.setTabComponentAt(1, labTab2); // For component2
 
         add(tabbedPane);
     }
@@ -506,11 +527,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             typeComboBox.setSelectedIndex(0);
         }
 
-        // Data sheets
+        // DATA SHEETS
         localDataSheetTextField.setText(newItem.getLocalDataSheet());
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
 
-        // Package
+        // PACKAGE
         if (newItem.getPackage() != null) {
             PackageType p = sm().findPackageTypeById(newItem.getPackage().getPackageTypeId());
             if (p != null && !p.isUnknown()) {
@@ -525,7 +546,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             packageTypeComboBox.setSelectedIndex(0);
         }
 
-        // Manufacturer
+        // MANUFACTURER
         if (newItem.getManufacturerId() >= 0) {
             // Set index
             int ndx = sm().findManufacturerIndex(newItem.getManufacturerId());
@@ -545,11 +566,15 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
         }
 
-        // Remarks
+        // REMARKS
         starRater.setRating(newItem.getRating());
         starRater.setSelection(0);
         discourageOrderCb.setSelected(newItem.isDiscourageOrder());
         remarksTa.setText(newItem.getRemarks());
+
+        // SETS
+        isSetCb.setSelected(newItem.isSet());
+        setValuesBtn.setEnabled(newItem.isSet());
     }
 
     /*
