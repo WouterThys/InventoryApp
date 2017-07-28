@@ -50,7 +50,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
 
     ComponentPanel componentPanel;
     private EditItemStockPanel editItemStockPanel;
-    private EditItemOrderPanel editItemOrderPanel;
+    EditItemOrderPanel editItemOrderPanel;
 
 
     /*
@@ -99,7 +99,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel(newItem);
+        editItemOrderPanel = new EditItemOrderPanel(newItem, this);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 

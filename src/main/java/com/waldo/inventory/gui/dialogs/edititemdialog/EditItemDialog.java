@@ -23,6 +23,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     private int currentTabIndex = 0;
     private boolean canClose = true;
+    private boolean partNumberChanged = false;
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
@@ -104,6 +105,11 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
+
+            if (partNumberChanged) {
+                editItemOrderPanel.setPartNumber();
+                partNumberChanged = false;
+            }
 
             if (newPackage != null) {
                 newPackage.save();
@@ -258,7 +264,13 @@ public class EditItemDialog extends EditItemDialogLayout {
                 (fieldName.equals("PackageTypeId") || fieldName.equals("Pins") || fieldName.equals("Height") || fieldName.equals("Width"))) {
             newPackage = newItem.getPackage();
         }
-        getButtonNeutral().setEnabled(checkChange());
+        // Distributor part
+        if (component.equals(editItemOrderPanel.getItemRefField())) {
+            partNumberChanged = editItemOrderPanel.checkChange();
+            getButtonNeutral().setEnabled(partNumberChanged);
+        } else {
+            getButtonNeutral().setEnabled(checkChange());
+        }
     }
 
     @Override

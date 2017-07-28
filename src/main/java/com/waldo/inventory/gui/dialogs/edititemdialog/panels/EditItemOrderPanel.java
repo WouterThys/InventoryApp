@@ -1,15 +1,19 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.DistributorPart;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.IComboBox;
+import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -19,16 +23,19 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     private Item newItem;
     private DistributorPart distributorPart;
 
-    private JComboBox<Distributor> distributorCb;
+    private IComboBox<Distributor> distributorCb;
     private DefaultComboBoxModel<Distributor> distributorCbModel;
     private ITextField itemRefField;
-    private JButton saveButton;
 
-    public EditItemOrderPanel(Item newItem) {
+    // Listener
+    private IEditedListener editedListener;
+
+    public EditItemOrderPanel(Item newItem, IEditedListener listener) {
         this.newItem = newItem;
+        this.editedListener = listener;
     }
 
-    private void setPartNumber() {
+    public void setPartNumber() {
         String ref = itemRefField.getText();
         if (ref != null && !ref.isEmpty()) {
             ref = ref.trim();
@@ -59,31 +66,35 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         }
     }
 
+    public boolean checkChange() {
+        boolean result = false;
+        String ref = itemRefField.getText();
+        Distributor d = (Distributor) distributorCb.getSelectedItem();
+        if (d != null && !d.isUnknown() && newItem.getId() > DbObject.UNKNOWN_ID) {
+            DistributorPart dp = sm().findPartNumber(d.getId(), newItem.getId());
+            result = !ref.isEmpty() && ((dp == null) || (!dp.getItemRef().equals(ref)));
+        }
+
+        return result;
+    }
+
     @Override
     public void initializeComponents() {
         distributorCbModel = new DefaultComboBoxModel<>();
-        distributorCb = new JComboBox<>(distributorCbModel);
+        distributorCb = new IComboBox<>(distributorCbModel);
         distributorCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                Distributor d = (Distributor) e.getItem();
-                if (d != null) {
-                    if (newItem.getId() > 0) {
-                        // Find ref
-                        distributorPart = sm().findPartNumber(d.getId(), newItem.getId());
-                        if (distributorPart != null) {
-                            itemRefField.setText(distributorPart.getItemRef());
-                        } else {
-                            itemRefField.setText("");
-                        }
-                    }
+                distributorPart = sm().findPartNumber(((Distributor)e.getItem()).getId(), newItem.getId());
+                if (distributorPart != null) {
+                    itemRefField.setText(distributorPart.getItemRef());
+                } else {
+                    itemRefField.setText("");
                 }
             }
         });
 
         itemRefField = new ITextField("Distributor reference");
-        saveButton = new JButton("Save");
-        saveButton.setHorizontalAlignment(SwingConstants.RIGHT);
-        saveButton.addActionListener(e -> setPartNumber());
+        itemRefField.addEditedListener(editedListener, "");
     }
 
     @Override
@@ -123,13 +134,6 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(itemRefField, gbc);
 
-        // Button
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 4; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel.add(saveButton, gbc);
-
         // Add to panel
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         add(panel, BorderLayout.NORTH);
@@ -141,5 +145,10 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         for (Distributor d : db().getDistributors()) {
             distributorCbModel.addElement(d);
         }
+        distributorCb.setSelectedIndex(0);
+    }
+
+    public ITextField getItemRefField() {
+        return itemRefField;
     }
 }

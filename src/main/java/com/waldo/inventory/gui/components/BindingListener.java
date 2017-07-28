@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 
 public class BindingListener implements DocumentListener {
 
-    private String fieldName;
+    private String fieldName = "";
     public Class fieldClass;
 
     private Component component;
@@ -24,10 +24,11 @@ public class BindingListener implements DocumentListener {
         this.editedListener = editedListener;
         this.fieldClass = fieldClass;
 
-        String firstChar = String.valueOf(fieldName.charAt(0));
-        if (firstChar.equals(firstChar.toLowerCase())) {
-            fieldName = firstChar.toUpperCase()
-                    + fieldName.substring(1, fieldName.length());
+        if (!fieldName.isEmpty()) {
+            String firstChar = String.valueOf(fieldName.charAt(0));
+             if (firstChar.equals(firstChar.toLowerCase())) {
+                fieldName = firstChar.toUpperCase() + fieldName.substring(1, fieldName.length());
+            }
         }
 
         this.fieldName = fieldName;
@@ -74,33 +75,35 @@ public class BindingListener implements DocumentListener {
                             d.getEndPosition().getOffset() - 1
                     );
 
-                    Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
-                    Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
+                    String oldVal = "";
+                    if (!fieldName.isEmpty()) {
+                        Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
+                        Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                    String oldTxt = String.valueOf(getMethod.invoke(guiObject)).trim();
-                    switch (fieldClass.getTypeName()) {
-                        case "int":
-                            if (newVal.isEmpty()) newVal = "0";
-                            setMethod.invoke(guiObject, Integer.valueOf(newVal));
-                            break;
-                        case "double":
-                            if (newVal.isEmpty()) newVal = "0";
-                            setMethod.invoke(guiObject, Double.valueOf(newVal));
-                            break;
-                        case "float":
-                            if (newVal.isEmpty()) newVal = "0";
-                            setMethod.invoke(guiObject, Float.valueOf(newVal));
-                            break;
-                        case "long":
-                            if (newVal.isEmpty()) newVal = "0";
-                            setMethod.invoke(guiObject, Long.valueOf(newVal));
-                            break;
-                        default:
-                            setMethod.invoke(guiObject, newVal);
-                            break;
+                        oldVal = String.valueOf(getMethod.invoke(guiObject)).trim();
+                        switch (fieldClass.getTypeName()) {
+                            case "int":
+                                if (newVal.isEmpty()) newVal = "0";
+                                setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                                break;
+                            case "double":
+                                if (newVal.isEmpty()) newVal = "0";
+                                setMethod.invoke(guiObject, Double.valueOf(newVal));
+                                break;
+                            case "float":
+                                if (newVal.isEmpty()) newVal = "0";
+                                setMethod.invoke(guiObject, Float.valueOf(newVal));
+                                break;
+                            case "long":
+                                if (newVal.isEmpty()) newVal = "0";
+                                setMethod.invoke(guiObject, Long.valueOf(newVal));
+                                break;
+                            default:
+                                setMethod.invoke(guiObject, newVal);
+                                break;
+                        }
                     }
-
-                    editedListener.onValueChanged(component, fieldName, oldTxt, newVal);
+                    editedListener.onValueChanged(component, fieldName, oldVal, newVal);
                 }
             }
         } catch (BadLocationException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {

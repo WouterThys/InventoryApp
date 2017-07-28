@@ -7,8 +7,6 @@ import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
