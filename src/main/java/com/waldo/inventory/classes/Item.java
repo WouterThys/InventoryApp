@@ -31,14 +31,8 @@ public class Item extends DbObject {
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
-
-    // TODO remove
-    private long packageTypeId = -1;
-    private int pins;
-    private double width, height;
-
     private long packageId = -1;
-    // TODO create ItemPackage object
+    private Package itemPackage;
     private float rating;
     private boolean discourageOrder;
     private String remarks;
@@ -79,10 +73,10 @@ public class Item extends DbObject {
         statement.setInt(12, amount);
         statement.setInt(13, amountType);
         statement.setInt(14, orderState);
-        if (packageTypeId < UNKNOWN_ID) {
-            packageTypeId = UNKNOWN_ID;
+        if (packageId < UNKNOWN_ID) {
+            packageId = UNKNOWN_ID;
         }
-        statement.setLong(15, 1); // PackageId
+        statement.setLong(15, packageId); // PackageId
         statement.setFloat(16, rating);
         statement.setBoolean(17, discourageOrder);
         statement.setString(18, getRemarks());
@@ -130,15 +124,10 @@ public class Item extends DbObject {
                 return true;
             }
 
-            PackageType pt = sm().findPackageTypeById(packageTypeId);
-            if (pt != null && pt.hasMatch(searchTerm)) {
+            Package pa = sm().findPackageById(packageId);
+            if (pa != null && pa.hasMatch(searchTerm)) {
                 return true;
             }
-
-//            Order o = DbManager.db().findOrderById(orderId);
-//            if (o != null && o.hasMatch(searchTerm)) {
-//                return true
-//            }
 
         }
         return false;
@@ -161,10 +150,7 @@ public class Item extends DbObject {
         item.setAmount(getAmount());
         item.setAmountType(getAmountType());
         item.setOrderState(getOrderState());
-        item.setPackageTypeId(getPackageTypeId());
-        item.setPins(getPins());
-        item.setWidth(getWidth());
-        item.setHeight(getHeight());
+        item.setPackageId(getPackageId());
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarks(getRemarks());
@@ -197,10 +183,7 @@ public class Item extends DbObject {
                 if (!(ref.getAmount() == getAmount())) return false;
                 if (!(ref.getAmountType() == getAmountType())) return false;
                 if (!(ref.getOrderState() == getOrderState())) return false;
-                if (!(ref.getPackageTypeId() == getPackageTypeId())) return false;
-                if (!(ref.getPins() == getPins())) return false;
-                if (!(ref.getWidth() == getWidth())) return false;
-                if (!(ref.getHeight() == getHeight())) return false;
+                if (!(ref.getPackageId() == getPackageId())) return false;
                 if (!(ref.getRating() == getRating())) return false;
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) return false;
                 if (!(ref.getRemarks().equals(getRemarks()))) return false;
@@ -298,30 +281,12 @@ public class Item extends DbObject {
         this.price = price;
     }
 
-    public void setPrice(String price) {
-        try {
-            if (!price.isEmpty()) {
-                this.price = Double.valueOf(price);
-            }
-        } catch (Exception e) {
-            LOG.error("Error setting price.", e);
-        }
-    }
-
     public long getCategoryId() {
         return categoryId;
     }
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        try {
-            this.categoryId = Long.valueOf(categoryId);
-        } catch (Exception e) {
-            LOG.error("Error setting category id.", e);
-        }
     }
 
     public long getProductId() {
@@ -332,28 +297,12 @@ public class Item extends DbObject {
         this.productId = productId;
     }
 
-    public void setProductId(String productId) {
-        try {
-            this.productId = Long.valueOf(productId);
-        } catch (Exception e) {
-            LOG.error("Error setting product id.", e);
-        }
-    }
-
     public long getTypeId() {
         return typeId;
     }
 
     public void setTypeId(long typeId) {
         this.typeId = typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        try {
-            this.typeId = Long.valueOf(typeId);
-        } catch (Exception e) {
-            LOG.error("Error setting type id.", e);
-        }
     }
 
     public String getLocalDataSheet() {
@@ -386,14 +335,6 @@ public class Item extends DbObject {
         this.manufacturerId = manufacturerId;
     }
 
-    public void setManufacturerId(String manufacturerId) {
-        try {
-            this.manufacturerId = Long.valueOf(manufacturerId);
-        } catch (Exception e) {
-            LOG.error("Error setting manufacturer id.", e);
-        }
-    }
-
     public long getLocationId() {
         return locationId;
     }
@@ -410,28 +351,12 @@ public class Item extends DbObject {
         this.amount = amount;
     }
 
-    public void setAmount(String amount) {
-        try {
-            this.amount = Integer.valueOf(amount);
-        } catch (Exception e) {
-            LOG.error("Error setting amount.", e);
-        }
-    }
-
     public int getAmountType() {
         return amountType;
     }
 
     public void setAmountType(int amountType) {
         this.amountType = amountType;
-    }
-
-    public void setAmountType(String amountType) {
-        try {
-            this.amountType = Integer.valueOf(amountType);
-        } catch (Exception e) {
-            LOG.error("Error setting amount type.", e);
-        }
     }
 
     public int getOrderState() {
@@ -458,82 +383,6 @@ public class Item extends DbObject {
         }
     }
 
-    public void setOrderState(String orderState) {
-        try {
-            this.orderState = Integer.valueOf(orderState);
-        } catch (Exception e) {
-            LOG.error("Error setting order state.", e);
-        }
-    }
-
-    public long getPackageTypeId() {
-        return packageTypeId;
-    }
-
-    public void setPackageTypeId(long packageTypeId) {
-        this.packageTypeId = packageTypeId;
-    }
-
-    public void setPackageTypeId(String packageTypeId) {
-        try {
-            this.packageTypeId = Long.valueOf(packageTypeId);
-        } catch (Exception e) {
-            LOG.error("Error setting package type.", e);
-        }
-    }
-
-    public int getPins() {
-        return pins;
-    }
-
-    public void setPins(int pins) {
-        this.pins = pins;
-    }
-
-    public void setPins(String pins) {
-        try {
-            this.pins = Integer.valueOf(pins);
-        } catch (Exception e) {
-            LOG.error("Error setting pins.", e);
-        }
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public void setWidth(double width) {
-        this.width = width;
-    }
-
-    public void setWidth(String width) {
-        try {
-            if (!width.isEmpty()) {
-                this.width = Integer.valueOf(width);
-            }
-        } catch (Exception e) {
-            LOG.error("Error setting width.", e);
-        }
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public void setHeight(String height) {
-        try {
-            if (!height.isEmpty()) {
-                this.height = Integer.valueOf(height);
-            }
-        } catch (Exception e) {
-            LOG.error("Error setting height.", e);
-        }
-    }
-
     public float getRating() {
         return rating;
     }
@@ -542,34 +391,12 @@ public class Item extends DbObject {
         this.rating = rating;
     }
 
-    public void setRating(String rating) {
-        try {
-            if (!rating.isEmpty()) {
-                this.rating = Float.valueOf(rating);
-            }
-        } catch (Exception e) {
-            LOG.error("Error setting rating.", e);
-        }
-    }
-
     public boolean isDiscourageOrder() {
         return discourageOrder;
     }
 
-    public String getDiscourageOrder() {
-        return String.valueOf(discourageOrder);
-    }
-
     public void setDiscourageOrder(boolean discourageOrder) {
         this.discourageOrder = discourageOrder;
-    }
-
-    public void setDiscourageOrder(String discourageOrder) {
-        try {
-            this.discourageOrder = Boolean.parseBoolean(discourageOrder);
-        } catch (Exception e) {
-            LOG.error("Error setting iscourage order", e);
-        }
     }
 
     public String getRemarks() {
@@ -585,8 +412,81 @@ public class Item extends DbObject {
     }
 
     public void setPackageId(long packageId) {
+        itemPackage = null;
         this.packageId = packageId;
     }
+
+    public Package getPackage() {
+        if (itemPackage == null) {
+            itemPackage = sm().findPackageById(packageId);
+        }
+        return itemPackage;
+    }
+
+    public double getWidth() {
+        if (getPackage() != null) {
+            return getPackage().getWidth();
+        }
+        return 0;
+    }
+
+    public void setWidth(double width) {
+        if (getPackage() != null) {
+            getPackage().setWidth(width);
+        } else {
+            itemPackage = new Package();
+            itemPackage.setWidth(width);
+        }
+    }
+
+    public double getHeight() {
+        if (getPackage() != null) {
+            return getPackage().getHeight();
+        }
+        return 0;
+    }
+
+    public void setHeight(double height) {
+        if (getPackage() != null) {
+            getPackage().setHeight(height);
+        } else {
+            itemPackage = new Package();
+            itemPackage.setHeight(height);
+        }
+    }
+
+    public int getPins() {
+        if (getPackage() != null) {
+            return getPackage().getPins();
+        }
+        return 0;
+    }
+
+    public void setPins(int pins) {
+        if (getPackage() != null) {
+            getPackage().setPins(pins);
+        } else {
+            itemPackage = new Package();
+            itemPackage.setPins(pins);
+        }
+    }
+
+    public long getPackageTypeId() {
+        if (getPackage() != null) {
+            return getPackage().getPackageTypeId();
+        }
+        return UNKNOWN_ID;
+    }
+
+    public void setPackageTypeId(long packageTypeId) {
+        if (getPackage() != null) {
+            getPackage().setPackageTypeId(packageTypeId);
+        } else {
+            itemPackage = new Package();
+            itemPackage.setPackageTypeId(packageTypeId);
+        }
+    }
+
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;

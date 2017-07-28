@@ -48,6 +48,14 @@ public class ITextArea extends JTextArea implements FocusListener {
         this.getDocument().addDocumentListener(documentListener);
     }
 
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName, fieldClass);
+        this.getDocument().addDocumentListener(documentListener);
+    }
+
     @Override
     public void setText(String t) {
         if (documentListener != null) {

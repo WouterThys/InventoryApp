@@ -192,7 +192,7 @@ public class Project extends DbObject {
 
     public void saveAll() throws SQLException {
         // Save project
-        saveSynchronously();
+        save();
         int cnt = 0;
         for (ProjectDirectory directory : getProjectDirectories()) {
             if (directory.getId() <= UNKNOWN_ID) {
@@ -201,7 +201,7 @@ public class Project extends DbObject {
                 cnt++;
             }
             // Save directory
-            directory.saveSynchronously();
+            directory.save();
             for (ProjectType type : directory.getProjectTypes().keySet())  {
                 for (File file : directory.getProjectTypes().get(type)) {
                     // Save link between type and directory
@@ -212,7 +212,7 @@ public class Project extends DbObject {
                     ptl.setProjectTypeId(type.getId());
                     ptl.setProjectDirectoryId(directory.getId());
                     ptl.setFilePath(file.getAbsolutePath());
-                    ptl.saveSynchronously();
+                    ptl.save();
                 }
             }
         }

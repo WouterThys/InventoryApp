@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -57,6 +58,10 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item newItem;
     Item originalItem;
+
+    Package newPackage;
+    Package originalPackage;
+
     boolean isNew = false;
     boolean initialized = false;
 

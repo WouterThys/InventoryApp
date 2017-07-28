@@ -23,7 +23,6 @@ import java.text.NumberFormat;
 import java.util.Vector;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -218,11 +217,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         packagePinsSp = new ISpinner(spinnerModel);
         packagePinsSp.addEditedListener(editedListener, "pins");
-
         packageWidthTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        packageWidthTf.addEditedListener(editedListener, "width");
+        packageWidthTf.addEditedListener(editedListener, "width", double.class);
         packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        packageHeightTf.addEditedListener(editedListener, "height");
+        packageHeightTf.addEditedListener(editedListener, "height", double.class);
 
         // Manufacturer
         DefaultComboBoxModel<Manufacturer> model = new DefaultComboBoxModel<>();
@@ -450,7 +448,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        tabbedPane = new JTabbedPane(JTabbedPane.NORTH);
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
         initializeBasicComponents();
         initializeDetailsComponents();
@@ -515,15 +513,19 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
 
         // Package
-        PackageType p = sm().findPackageTypeById(newItem.getPackageTypeId());
-        if (p != null && !p.isUnknown()) {
-            packageTypeComboBox.setSelectedItem(p);
+        if (newItem.getPackage() != null) {
+            PackageType p = sm().findPackageTypeById(newItem.getPackage().getPackageTypeId());
+            if (p != null && !p.isUnknown()) {
+                packageTypeComboBox.setSelectedItem(p);
+            } else {
+                packageTypeComboBox.setSelectedIndex(0);
+            }
+            packagePinsSp.setValue(newItem.getPackage().getPins());
+            packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
+            packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
         } else {
             packageTypeComboBox.setSelectedIndex(0);
         }
-        packagePinsSp.setValue(newItem.getPins());
-        packageHeightTf.setText(String.valueOf(newItem.getHeight()));
-        packageWidthTf.setText(String.valueOf(newItem.getWidth()));
 
         // Manufacturer
         if (newItem.getManufacturerId() >= 0) {

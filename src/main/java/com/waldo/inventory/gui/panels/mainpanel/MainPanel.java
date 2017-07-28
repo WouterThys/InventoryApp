@@ -138,8 +138,7 @@ public class MainPanel extends MainPanelLayout {
                 }
             }
         }
-
-        treeModel.setSelectedObject(lastSelectedDivision);
+        SwingUtilities.invokeLater(() -> treeModel.setSelectedObject(lastSelectedDivision));
     }
 
     private void setCategoriesChangedListener() {

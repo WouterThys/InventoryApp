@@ -14,6 +14,7 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
     private ItemListener itemListener;
 
     private String fieldName;
+    private Class fieldClass;
 
     public IComboBox() {
         super();
@@ -26,6 +27,14 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
     public void addEditedListener(IEditedListener listener, String fieldName) {
         this.editedListener = listener;
         setFieldName(fieldName);
+        setFieldClass(long.class);
+        setItemListener();
+    }
+
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        this.editedListener = listener;
+        setFieldName(fieldName);
+        setFieldClass(fieldClass);
         setItemListener();
     }
 
@@ -39,6 +48,10 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
         this.fieldName = fieldName;
     }
 
+    private void setFieldClass(Class fieldClass) {
+        this.fieldClass = fieldClass;
+    }
+
     private void setItemListener() {
         itemListener = e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -47,11 +60,27 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
                         if (guiObject != null) {
                             String newVal = String.valueOf(((DbObject) e.getItem()).getId());
 
-                            Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);
+                            Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
                             Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
                             String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                            setMethod.invoke(guiObject, newVal);
+                            switch (fieldClass.getTypeName()) {
+                                case "int":
+                                    setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                                    break;
+                                case "double":
+                                    setMethod.invoke(guiObject, Double.valueOf(newVal));
+                                    break;
+                                case "float":
+                                    setMethod.invoke(guiObject, Float.valueOf(newVal));
+                                    break;
+                                case "long":
+                                    setMethod.invoke(guiObject, Long.valueOf(newVal));
+                                    break;
+                                default:
+                                    setMethod.invoke(guiObject, newVal);
+                                    break;
+                            }
 
                             editedListener.onValueChanged(IComboBox.this, fieldName, oldVal, newVal);
                         }

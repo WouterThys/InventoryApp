@@ -131,6 +131,14 @@ public class ITextField extends JTextField implements FocusListener {
         this.getDocument().addDocumentListener(documentListener);
     }
 
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName, fieldClass);
+        this.getDocument().addDocumentListener(documentListener);
+    }
+
     public void setError(String errorText) {
         if (errorText != null) {
             originalText = this.getText();

@@ -13,7 +13,7 @@ public abstract class DbObject {
     public static final int UNKNOWN_ID = 1;
     public static final String UNKNOWN_NAME = "Unknown";
 
-    public static final String SQL_SELECT_ALL = "sqlSelect.all";
+    public static final String SQL_SELECT_ALL = ".sqlSelect.all";
     public static final String SQL_SELECT_ONE = "sqlSelect.one";
     public static final String SQL_INSERT = "sqlInsert";
     public static final String SQL_UPDATE = "sqlUpdate";
@@ -79,6 +79,7 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
         if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
         if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
+        if (dbObject instanceof Package) return TYPE_PACKAGE;
         if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;
@@ -97,29 +98,6 @@ public abstract class DbObject {
 
     public abstract void tableChanged(int changedHow);
 
-    public void saveSynchronously() throws SQLException {
-//        if (!canBeSaved) {
-//            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
-//        final long saveId = id;
-//
-//        LOG.debug("Start save.");
-//        doSave();
-//
-//        if (saveId < 0) { // Save
-//            LOG.debug("Added object to " + TABLE_NAME);
-//            if (onDbTableChangedListener != null) {
-//                onDbTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_INSERT, DbObject.this, null);
-//            }
-//        } else { // Update
-//            LOG.debug("Updated object in " + TABLE_NAME);
-//            if (onDbTableChangedListener != null) {
-//                onDbTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATE, DbObject.this, oldObject);
-//            }
-//
-//        }
-    }
 
     public void delete() {
         if (canBeSaved) {

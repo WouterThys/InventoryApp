@@ -283,41 +283,41 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     //
     @Override
     public void onSelectError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Select error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Select error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Select");
     }
 
     @Override
     public void onInsertError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Insert error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Insert error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Insert");
     }
 
     @Override
     public void onUpdateError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Update error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Update error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Update");
     }
 
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Delete error on " + object.getName(), throwable);
+        showErrorMessage(object, throwable, "Delete");
+    }
+
+    private void showErrorMessage(DbObject object, Throwable throwable, String error) {
+        final String message;
+        final String title;
+        if (throwable != null) {
+            message = throwable.getMessage();
+        } else {
+            message = error + " error";
+        }
+        if (object != null) {
+            title = error + " error on " + object.getName();
+        } else {
+            title = error + " error";
+        }
+
+        LOG.error(title, throwable);
         SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Delete error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
         });
     }
 }

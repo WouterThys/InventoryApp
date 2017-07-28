@@ -2,6 +2,7 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
@@ -29,7 +30,6 @@ public class DbManager {
     public static final int OBJECT_DELETE = 2;
     public static final int OBJECT_SELECT = 3;
 
-    private static final String SQL_ALL = ".sqlSelect.all";
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 
@@ -66,6 +66,7 @@ public class DbManager {
     public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -86,6 +87,7 @@ public class DbManager {
     private List<ProjectType> projectTypes;
     private List<ProjectTypeLink> projectTypeLinks;
     private List<OrderFileFormat> orderFileFormats;
+    private List<Package> packages;
     private List<Log> logs;
 
     private DbManager() {}
@@ -263,6 +265,12 @@ public class DbManager {
     public void addOnProjectChangedListener(DbObjectChangedListener<Project> dbObjectChangedListener) {
         if (!onProjectChangedListenerList.contains(dbObjectChangedListener)) {
             onProjectChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnPackageChangedListener(DbObjectChangedListener<Package> dbObjectChangedListener) {
+        if (!onPackageChangedListenerList.contains(dbObjectChangedListener)) {
+            onPackageChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -469,7 +477,7 @@ public class DbManager {
         items = new ArrayList<>();
         Status().setMessage("Fetching items from DB");
         Item i = null;
-        String sql = scriptResource.readString(Item.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Item.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -523,7 +531,7 @@ public class DbManager {
         categories = new ArrayList<>();
         Status().setMessage("Fetching categories from DB");
         Category c = null;
-        String sql = scriptResource.readString(Category.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Category.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -564,7 +572,7 @@ public class DbManager {
         products = new ArrayList<>();
         Status().setMessage("Fetching products from DB");
         Product p = null;
-        String sql = scriptResource.readString(Product.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Product.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -607,7 +615,7 @@ public class DbManager {
         types = new ArrayList<>();
         Status().setMessage("Fetching types from DB");
         Type t = null;
-        String sql = scriptResource.readString(Type.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Type.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -649,7 +657,7 @@ public class DbManager {
         manufacturers = new ArrayList<>();
         Status().setMessage("Fetching manufacturers from DB");
         Manufacturer m = null;
-        String sql = scriptResource.readString(Manufacturer.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Manufacturer.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -691,7 +699,7 @@ public class DbManager {
         locations = new ArrayList<>();
         Status().setMessage("Fetching locations from DB");
         Location l = null;
-        String sql = scriptResource.readString(Location.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Location.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -731,7 +739,7 @@ public class DbManager {
         orders = new ArrayList<>();
         Status().setMessage("Fetching orders from DB");
         Order o = null;
-        String sql = scriptResource.readString(Order.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Order.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -779,7 +787,7 @@ public class DbManager {
         orderItems = new ArrayList<>();
         Status().setMessage("Fetching order items from DB");
         OrderItem o = null;
-        String sql = scriptResource.readString(OrderItem.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(OrderItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -850,7 +858,7 @@ public class DbManager {
         distributors = new ArrayList<>();
         Status().setMessage("Fetching distributors from DB");
         Distributor d = null;
-        String sql = scriptResource.readString(Distributor.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Distributor.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -894,7 +902,7 @@ public class DbManager {
         distributorParts = new ArrayList<>();
         Status().setMessage("Fetching distributor parts from DB");
         DistributorPart pn = null;
-        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -924,6 +932,50 @@ public class DbManager {
     }
 
     /*
+    *                  PACKAGES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Package> getPackages()    {
+        if (packages == null) {
+            updatePackages();
+        }
+        return packages;
+    }
+
+    private void updatePackages()    {
+        packages = new ArrayList<>();
+        Status().setMessage("Fetching packages from DB");
+        Package pa = null;
+        String sql = scriptResource.readString(Package.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    pa = new Package();
+                    pa.setId(rs.getLong("id"));
+                    pa.setName(rs.getString("name"));
+                    pa.setIconPath(rs.getString("iconPath"));
+                    pa.setPackageTypeId(rs.getLong("packageTypeId"));
+                    pa.setPins(rs.getInt("pins"));
+                    pa.setWidth(rs.getDouble("width"));
+                    pa.setHeight(rs.getDouble("height"));
+
+                    if (pa.getId() != DbObject.UNKNOWN_ID) {
+                        packages.add(pa);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(pa, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
     *                  PACKAGE TYPES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<PackageType> getPackageTypes()    {
@@ -937,7 +989,7 @@ public class DbManager {
         packageTypes = new ArrayList<>();
         Status().setMessage("Fetching package types from DB");
         PackageType pt = null;
-        String sql = scriptResource.readString(PackageType.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(PackageType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -977,7 +1029,7 @@ public class DbManager {
         projects = new ArrayList<>();
         Status().setMessage("Fetching projects from DB");
         Project p = null;
-        String sql = scriptResource.readString(Project.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Project.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1019,7 +1071,7 @@ public class DbManager {
         projectDirectories = new ArrayList<>();
         Status().setMessage("Fetching projectDirectories from DB");
         ProjectDirectory p = null;
-        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1061,7 +1113,7 @@ public class DbManager {
         projectTypes = new ArrayList<>();
         Status().setMessage("Fetching ProjectType from DB");
         ProjectType p = null;
-        String sql = scriptResource.readString(ProjectType.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1109,7 +1161,7 @@ public class DbManager {
         projectTypeLinks = new ArrayList<>();
         Status().setMessage("Fetching projectTypeLinks from DB");
         ProjectTypeLink p = null;
-        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1149,7 +1201,7 @@ public class DbManager {
         orderFileFormats = new ArrayList<>();
         Status().setMessage("Fetching order file formats from DB");
         OrderFileFormat off = null;
-        String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1188,7 +1240,7 @@ public class DbManager {
         logs = new ArrayList<>();
         Status().setMessage("Fetching logs from DB");
         Log l = null;
-        String sql = scriptResource.readString(Log.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Log.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {

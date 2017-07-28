@@ -55,6 +55,15 @@ public class IFormattedTextField extends JFormattedTextField {
         documentListener.setEnabled(true);
     }
 
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName, fieldClass);
+        this.getDocument().addDocumentListener(documentListener);
+        documentListener.setEnabled(true);
+    }
+
     @Override
     public void setValue(Object value) {
         if (documentListener != null) {

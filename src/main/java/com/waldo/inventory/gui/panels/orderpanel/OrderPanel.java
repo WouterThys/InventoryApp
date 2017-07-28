@@ -176,12 +176,15 @@ public class OrderPanel extends OrderPanelLayout {
                     if (selectedOrder.containsItemId(newItem.getId())) { // when new items are added, this should be false
                         tableUpdate();
                     }
+                    if (selectedOrderItem != null) {
+                        itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                    }
                 }
             }
 
             @Override
             public void onDeleted(Item item) {
-                // No effect
+                itemDetailPanel.updateComponents(null);
             }
         };
     }

@@ -20,6 +20,7 @@ public class IGridPanel<K extends DbObject, T, V extends ArrayList<T>> extends J
     public interface GridComponentClicked<K> {
         void onGridComponentClick(K clickedObject, File file);
     }
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

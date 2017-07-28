@@ -1,6 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Package;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -690,6 +691,24 @@ public class SearchManager {
         for (OrderFileFormat of : db().getOrderFileFormats()) {
             if (of.getName().equals(name)) {
                 return of;
+            }
+        }
+        return null;
+    }
+
+    public Package findPackageById(long id) {
+        for (Package pa : db().getPackages()) {
+            if (pa.getId() == id) {
+                return  pa;
+            }
+        }
+        return null;
+    }
+
+    public Package findPackage(long packageTypeId, int pins, double width, double height) {
+        for (Package pa : db().getPackages()) {
+            if (pa.getPackageTypeId() == packageTypeId && pa.getPins() == pins && pa.getWidth() == width && pa.getHeight() == height) {
+                return pa;
             }
         }
         return null;

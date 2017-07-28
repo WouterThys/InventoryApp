@@ -147,10 +147,6 @@ public class Log extends DbObject {
 //        }
 //    }
 
-    @Override
-    public void saveSynchronously() throws SQLException {
-        // Don't do this
-    }
 
 //    @Override
 //    protected void doDelete() throws SQLException {
