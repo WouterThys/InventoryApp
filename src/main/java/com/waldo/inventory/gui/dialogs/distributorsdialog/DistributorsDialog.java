@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
@@ -210,7 +211,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     //  Toolbar listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         selectedDistributor = null;
         originalDistributor = null;
         clearDetails();
@@ -218,7 +219,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "New Distributor", new Distributor());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             Distributor d = dialog.getDbObject();
@@ -227,7 +228,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedDistributor != null) {
             int res = JOptionPane.showConfirmDialog(DistributorsDialog.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -239,7 +240,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedDistributor != null) {
             DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
             if (dialog.showDialog() == DbObjectDialog.OK) {

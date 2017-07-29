@@ -7,6 +7,7 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
@@ -375,7 +376,7 @@ public class OrderPanel extends OrderPanelLayout {
     //  Table tool bar listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         try {
             application.beginWait();
             tableInitialize(selectedOrder);
@@ -395,7 +396,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
             OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
             if (dialog.showDialog() == IDialog.OK) {
@@ -414,12 +415,12 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         deleteSelectedOrderItems(getSelectedOrderItems());
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedOrderItem != null) {
             EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
             dialog.showDialog();

@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
@@ -239,7 +240,7 @@ public class MainPanel extends MainPanelLayout {
     //
 
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         application.beginWait();
         try {
             for (Item item : getTableModel().getItemList()) {
@@ -256,7 +257,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         EditItemDialog dialog = new EditItemDialog(application, "Add item");
         dialog.showDialog();
 //        if (dialog.showDialog() == EditItemDialog.OK) {
@@ -268,7 +269,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         Item selectedItem = application.getSelectedItem();
         if (selectedItem != null) {
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
@@ -278,7 +279,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         Item selected = application.getSelectedItem();
         if (selected != null) {
             EditItemDialog dialog = new EditItemDialog(application, "Edit item", selected);

@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editdirectorydialog.EditDirectoryDialog;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
@@ -102,12 +103,12 @@ public class AddProjectDialog extends AddProjectDialogLayout {
     // Toolbar for directories listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         //
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
 //        JFileChooser fileChooser = new JFileChooser();
 //        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 //        if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
@@ -135,7 +136,7 @@ public class AddProjectDialog extends AddProjectDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         List<ProjectDirectory> selected = directoryList.getSelectedValuesList();
         if (selected != null && selected.size() > 0) {
             int result;
@@ -162,12 +163,12 @@ public class AddProjectDialog extends AddProjectDialogLayout {
                 }
             }
             selectedDirectory = null;
-            updateComponents(selectedDirectory);
+            updateComponents(null);
         }
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedDirectory != null) {
 //            JFileChooser fileChooser = new JFileChooser(selectedDirectory.getDirectory());
 //            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

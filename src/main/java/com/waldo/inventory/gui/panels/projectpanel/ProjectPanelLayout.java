@@ -154,12 +154,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
         // Project Tool bar
         projectToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
                 updateComponents(selectedProject);
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 AddProjectDialog dialog = new AddProjectDialog(application, "New Project");
                 if (dialog.showDialog() == IDialog.OK) {
                     // Add Project
@@ -169,7 +169,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 if (selectedProject != null) {
                     int res = JOptionPane.showConfirmDialog(ProjectPanelLayout.this, "Are you sure you want to delete \"" + selectedProject.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
@@ -186,7 +186,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 if (selectedProject != null) {
                     AddProjectDialog dialog = new AddProjectDialog(application, "New Project", selectedProject);
                     if (dialog.showDialog() == IDialog.OK) {

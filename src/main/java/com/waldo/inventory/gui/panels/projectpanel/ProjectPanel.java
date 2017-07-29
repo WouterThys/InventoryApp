@@ -9,6 +9,7 @@ import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.IdBToolBar;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -104,22 +105,22 @@ public class ProjectPanel extends ProjectPanelLayout {
     // Top toolbar listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         updateComponents(selectedProject);
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
 
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
 
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
 
     }
 

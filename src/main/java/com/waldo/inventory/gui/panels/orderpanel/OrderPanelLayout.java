@@ -428,7 +428,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         // Tool bars
         treeToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
 
                 treeRecreateNodes();
                 final long orderId = treeUpdate();
@@ -443,7 +443,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 OrdersDialog dialog = new OrdersDialog(application, "New order", true);
                 if (dialog.showDialog() == IDialog.OK) {
                     Order o = dialog.getOrder();
@@ -452,7 +452,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 if (selectedOrder != null) {
                     int res = JOptionPane.showConfirmDialog(OrderPanelLayout.this, "Are you sure you want to delete \"" + selectedOrder.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
@@ -464,7 +464,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 if (selectedOrder != null) {
                     OrdersDialog dialog = new OrdersDialog(application, "Edit order", selectedOrder);
                     if (dialog.showDialog() == IDialog.OK) {

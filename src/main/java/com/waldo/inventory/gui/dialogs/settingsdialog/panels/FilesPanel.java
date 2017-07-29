@@ -451,19 +451,19 @@ public class FilesPanel extends JPanel implements
     // Toolbar listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         settings().updateFileSettings();
         settings().updateSelectedSettings();
         updateComponents(settings().getFileSettings());
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         addNewFileSettings();
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedFileSettings != null) {
             if (selectedFileSettings.isDefault()) {
                 JOptionPane.showMessageDialog(FilesPanel.this,
@@ -477,7 +477,7 @@ public class FilesPanel extends JPanel implements
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
 
     }
 

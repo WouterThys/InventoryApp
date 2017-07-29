@@ -214,12 +214,12 @@ public class TableObjectPanel extends JPanel implements
         return new IdBToolBar.IdbToolBarListener() {
 
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
                 //
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 EditItemDialog dialog = new EditItemDialog(application, "Add item");
                 if (dialog.showDialog() == IDialog.OK) {
                     foundItem = dialog.getItem();
@@ -228,7 +228,7 @@ public class TableObjectPanel extends JPanel implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 if (tableObject != null && tableObject.isValid()) {
                     foundItem = null;
                     selectedListener.onItemSelected(tableObject, null);
@@ -236,7 +236,7 @@ public class TableObjectPanel extends JPanel implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 if (tableObject != null && tableObject.isValid()) {
                     EditItemDialog dialog = new EditItemDialog(application, "Edit item", tableObject.getItem());
                     if (dialog.showDialog() == IDialog.OK) {

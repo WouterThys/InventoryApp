@@ -12,9 +12,11 @@ import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
@@ -68,6 +70,7 @@ public class DbManager {
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -90,6 +93,7 @@ public class DbManager {
     private List<OrderFileFormat> orderFileFormats;
     private List<Package> packages;
     private List<SetItem> setItems;
+    private List<DimensionType> dimensionTypes;
     private List<Log> logs;
 
     private DbManager() {}
@@ -297,6 +301,12 @@ public class DbManager {
     public void addOnOrderFileFormatChangedListener(DbObjectChangedListener<OrderFileFormat> dbObjectChangedListener) {
         if (!onOrderFileFormatChangedListenerList.contains(dbObjectChangedListener)) {
             onOrderFileFormatChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnDimensionTypeChangedListener(DbObjectChangedListener<DimensionType> dbObjectChangedListener) {
+        if (!onDimensionTypeChangedListenerList.contains(dbObjectChangedListener)) {
+            onDimensionTypeChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -1262,6 +1272,48 @@ public class DbManager {
             }
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(si, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
+*                  DIMENSION TYPES
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<DimensionType> getDimensionTypes()    {
+        if (dimensionTypes == null) {
+            updateDimensionTypes();
+        }
+        return dimensionTypes;
+    }
+
+    private void updateDimensionTypes()    {
+        dimensionTypes = new ArrayList<>();
+        Status().setMessage("Fetching dimension types from DB");
+        DimensionType dt = null;
+        String sql = scriptResource.readString(DimensionType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    dt = new DimensionType();
+                    dt.setId(rs.getLong("id"));
+                    dt.setName(rs.getString("name"));
+                    dt.setIconPath(rs.getString("iconPath"));
+                    dt.setWidth(rs.getDouble("width"));
+                    dt.setHeight(rs.getDouble("height"));
+                    dt.setPackageTypeId(rs.getLong("packageTypeId"));
+
+                    dimensionTypes.add(dt);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(dt, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {

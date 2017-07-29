@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
@@ -341,12 +342,12 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     // Tool bar listeners
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         updateComponents(null);
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         DbObjectDialog dialog;
         switch (selectedSubType) {
             case CATEGORIES:
@@ -375,7 +376,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedObject != null) {
             int res = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete \"" + selectedObject.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -386,7 +387,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedObject != null) {
             DbObjectDialog dialog = new DbObjectDialog<>(application, "Update " + selectedObject.getName(), selectedObject);
             if (dialog.showDialog() == DbObjectDialog.OK) {

@@ -308,12 +308,12 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
         detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
                 updateOrderFileFormatComboBox();
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Add format", new OrderFileFormat());
                 if (dialog.showDialog() == IDialog.OK) {
                     OrderFileFormat off = dialog.getOrderFileFormat();
@@ -322,7 +322,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
                 if (off != null) {
                     int result = JOptionPane.showConfirmDialog(DistributorsDialogLayout.this,
@@ -337,7 +337,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
                 if (off != null) {
                     EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Edit format", off);

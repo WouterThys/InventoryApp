@@ -31,6 +31,11 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public void clearItemList() {
+        this.itemList.clear();
+        fireTableDataChanged();
+    }
+
     public void removeItems(List<T> itemsToDelete) {
         for(T t : itemsToDelete) {
             int ndx = itemList.indexOf(t);

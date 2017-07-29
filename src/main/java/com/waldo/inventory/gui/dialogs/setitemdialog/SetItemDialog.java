@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog.ValueParserDialog;
 
@@ -116,7 +117,7 @@ public class SetItemDialog extends SetItemDialogLayout {
     // Tool bar
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         if (!canClose) {
             int result = JOptionPane.showConfirmDialog(SetItemDialog.this,
                     "There are unsaved set items in the list, refreshing will delete this changes. Refresh anyway? ",
@@ -132,7 +133,7 @@ public class SetItemDialog extends SetItemDialogLayout {
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Add set item", new SetItem());
         if (itemDialog.showDialog() == IDialog.OK) {
             SetItem si = itemDialog.getSetItem();
@@ -147,13 +148,13 @@ public class SetItemDialog extends SetItemDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         deleteSelectedSetItems(getSelectedSetItems());
         updateEnabledComponents();
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedSetItem != null) {
             EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Edit " + selectedSetItem.toString(), selectedSetItem);
             itemDialog.showDialog();

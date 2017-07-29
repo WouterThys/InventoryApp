@@ -139,6 +139,14 @@ public class SearchManager {
         Status().setMessage("Searching for: Project types");
         foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
 
+        // Dimension types
+        Status().setMessage("Searching for: Dimension types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getDimensionTypes()), searchWord));
+
+        // Package types
+        Status().setMessage("Searching for: Package types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+
         // Logs
         Status().setMessage("Searching for: Logs");
         foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
@@ -212,6 +220,14 @@ public class SearchManager {
                     Status().setMessage("Searching for: Project types");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
                     break;
+                case DbObject.TYPE_DIMENSION_TYPE:
+                    Status().setMessage("Searching for: Dimension types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getDimensionTypes()), searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE:
+                    Status().setMessage("Searching for: Package types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+                    break;
                 case DbObject.TYPE_LOG:
                     Status().setMessage("Searching for: Logs");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
@@ -276,6 +292,10 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_DIMENSION_TYPE:
+                    Status().setMessage("Searching for: Dimension types");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 case DbObject.TYPE_LOG:
@@ -740,6 +760,25 @@ public class SearchManager {
             }
         }
         return setItems;
+    }
+
+    public DimensionType findDimensionTypeById(long id) {
+        for (DimensionType dt : db().getDimensionTypes()) {
+            if (dt.getId() == id) {
+                return dt;
+            }
+        }
+        return null;
+    }
+
+    public List<DimensionType> findDimensionTypesForPackageType(long id) {
+        List<DimensionType> dimensionTypes = new ArrayList<>();
+        for (DimensionType dt : db().getDimensionTypes()) {
+            if (dt.getPackageTypeId() == id) {
+                dimensionTypes.add(dt);
+            }
+        }
+        return dimensionTypes;
     }
 
 }
