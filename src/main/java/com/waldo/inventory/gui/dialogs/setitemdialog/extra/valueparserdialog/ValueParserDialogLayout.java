@@ -70,7 +70,9 @@ public abstract class ValueParserDialogLayout extends IDialog implements
                 }
                 break;
             case SetItemParser.C:
-                seriesCbModel.addElement("TODO C");
+                for (String e : SetItemParser.R_SERIES) {
+                    seriesCbModel.addElement(e);
+                }
                 break;
             case SetItemParser.L:
                 seriesCbModel.addElement("TODO L");

@@ -104,7 +104,7 @@ public class ValueParserDialog extends ValueParserDialogLayout {
                         resultTa.clearText();
 
                         for (SetItem si : setItemList) {
-                            resultTa.append(si.getValue() + SetItemParser.R_UNIT + ",  ");
+                            resultTa.append(si.getValue() + parser.getUnit() + ",  ");
                         }
                     }
 

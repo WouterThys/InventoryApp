@@ -103,7 +103,7 @@ public abstract class DbObject {
 
     public void delete() {
         if (canBeSaved) {
-            if (id > UNKNOWN_ID) {
+            if (id >= UNKNOWN_ID) {
                 db().delete(this);
             }
         }

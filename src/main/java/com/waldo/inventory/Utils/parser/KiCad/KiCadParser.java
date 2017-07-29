@@ -31,8 +31,18 @@ public class KiCadParser extends ProjectParser<KcComponent> {
     }
 
     @Override
-    public void sortList(List<KcComponent> list) {
-
+    public List<KcComponent> sortList(List<KcComponent> list) {
+        List<KcComponent> sorted = new ArrayList<>();
+        if (list != null) {
+            for (KcComponent component : list) {
+                if (sorted.contains(component)) {
+                    sorted.get(sorted.indexOf(component)).getReferences().add(component.getRef());
+                } else {
+                    sorted.add(component);
+                }
+            }
+        }
+        return sorted;
     }
 
     @Override

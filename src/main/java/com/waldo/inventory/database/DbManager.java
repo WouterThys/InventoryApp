@@ -1412,8 +1412,8 @@ public class DbManager {
         return directories;
     }
 
-    public HashMap<ProjectType, ArrayList<File>> getProjectTypesForProjectDirectory(long directoryId) {
-        HashMap<ProjectType, ArrayList<File>> projectTypes = new HashMap<>();
+    public HashMap<ProjectType, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
+        HashMap<ProjectType, List<File>> projectTypes = new HashMap<>();
         for (ProjectTypeLink ptl : getProjectTypeLinks()) {
             if(ptl.getProjectDirectoryId() == directoryId) {
                 if (projectTypes.containsKey(ptl.getProjectType())) {
@@ -1431,7 +1431,7 @@ public class DbManager {
         List<Project> projects = new ArrayList<>();
         for(Project project : getProjects()) {
             for (ProjectDirectory pd : project.getProjectDirectories()) {
-                for (ProjectType pt : pd.getProjectTypes().keySet()) {
+                for (ProjectType pt : pd.getProjectTypeMap().keySet()) {
                     if (pt.getId() == id) {
                         if (!projects.contains(project)) {
                             projects.add(project);

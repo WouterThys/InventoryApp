@@ -21,7 +21,7 @@ public class ProjectDirectory extends DbObject {
     private long projectId;
     private Project project;
 
-    private HashMap<ProjectType, ArrayList<File>> projectTypes;
+    private HashMap<ProjectType, List<File>> projectTypes;
 
 
     public ProjectDirectory() {
@@ -70,7 +70,7 @@ public class ProjectDirectory extends DbObject {
             ProjectDirectory ref = (ProjectDirectory) obj;
             if (!(ref.getDirectory().equals(getDirectory()))) { return false; }
             if (!(ref.getProjectId() == getProjectId())) return false;
-            if (!(ref.getProjectTypes() == getProjectTypes())) return false;
+            if (!(ref.getProjectTypeMap() == getProjectTypeMap())) return false;
         }
         return result;
     }
@@ -132,12 +132,12 @@ public class ProjectDirectory extends DbObject {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void addProjectType(ProjectType projectType, File file) {
         if (projectType != null) {
-            if (getProjectTypes().containsKey(projectType)) {
-                getProjectTypes().computeIfAbsent(projectType, k -> new ArrayList<>());
+            if (getProjectTypeMap().containsKey(projectType)) {
+                getProjectTypeMap().computeIfAbsent(projectType, k -> new ArrayList<>());
             } else {
-                getProjectTypes().put(projectType, new ArrayList<>());
+                getProjectTypeMap().put(projectType, new ArrayList<>());
             }
-            getProjectTypes().get(projectType).add(file);
+            getProjectTypeMap().get(projectType).add(file);
         }
     }
 
@@ -179,11 +179,18 @@ public class ProjectDirectory extends DbObject {
         return project;
     }
 
-    public HashMap<ProjectType, ArrayList<File>> getProjectTypes() {
+    public HashMap<ProjectType, List<File>> getProjectTypeMap() {
         if (projectTypes == null) {
             projectTypes = DbManager.db().getProjectTypesForProjectDirectory(id);
         }
         return projectTypes;
     }
 
+    public List<ProjectType> getProjectTypes() {
+        return new ArrayList<>(getProjectTypeMap().keySet());
+    }
+
+    public List<File> getProjectFilesForType(ProjectType type) {
+        return getProjectTypeMap().get(type);
+    }
 }

@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.*;
+import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.classes.OrderItem;
@@ -131,10 +132,9 @@ public class ITableEditors {
                     } else {
                         lblIcon = new ILabel(imageResource.readImage("Ball.red"));
                     }
-
                 }
 
-                if (lblIcon != null && lblText != null) {
+                if (lblIcon != null) {
                     // Colors
                     Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                     Color cbg = c.getBackground();

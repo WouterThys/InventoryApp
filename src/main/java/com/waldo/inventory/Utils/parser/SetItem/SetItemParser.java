@@ -56,6 +56,8 @@ public abstract  class SetItemParser {
 
     public abstract List<SetItem> crop(int value);
 
+    public abstract String getUnit();
+
     public double convertUnit(double value, String unit) {
 
         switch (unit) {

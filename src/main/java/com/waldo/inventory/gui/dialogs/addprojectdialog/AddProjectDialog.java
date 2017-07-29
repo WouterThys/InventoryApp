@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -203,7 +202,7 @@ public class AddProjectDialog extends AddProjectDialogLayout {
             ProjectDirectory directory = directoryList.getSelectedValue();
             // TODO: dialog displaying all project types and linked files (with icons and stuff..)
             if (directory != null) {
-                directoryInfoLbl.setText("Found " + directory.getProjectTypes().size() + " projects in folder");
+                directoryInfoLbl.setText("Found " + directory.getProjectTypeMap().size() + " projects in folder");
             } else {
                 directoryInfoLbl.setText("");
             }

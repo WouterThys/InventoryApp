@@ -36,7 +36,7 @@ public abstract class ProjectParser<P extends Component> {
 
     public abstract List<P> getParsedData();
 
-    public abstract void sortList(List<P> list);
+    public abstract List<P> sortList(List<P> list);
 
     public String getParserName() {
         return parserName;

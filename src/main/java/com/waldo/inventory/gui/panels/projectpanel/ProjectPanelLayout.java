@@ -10,6 +10,8 @@ import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
+import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projecttypedetails.ProjectTypeDetails;
 
@@ -30,7 +32,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         ActionListener,
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        IGridPanel.GridComponentClicked<ProjectType> {
+        ProjectGirdPanel.GridComponentClicked {
 
     private static final LogManager LOG = LogManager.LOG(ProjectPanelLayout.class);
 
@@ -42,9 +44,11 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
-    private IGridPanel<ProjectType, File, ArrayList<File>> typePanel;
+    private ProjectGirdPanel projectGirdPanel;
     ProjectDetailsPanel detailsPanel;
     ProjectTypeDetails projectTypeDetails;
+
+    KiCadItemPanel kiCadItemPanel;
 
     /*
      *                  VARIABLES
@@ -54,6 +58,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     ProjectDirectory selectedDirectory;
     ProjectType selectedProjectType;
     File lastProjectFile;
+
 
     /*
     *                  CONSTRUCTOR
@@ -123,20 +128,6 @@ public abstract class ProjectPanelLayout extends JPanel implements
         } finally {
             application.endWait();
         }
-    }
-
-    private void updateTileView() {
-        HashMap<ProjectType, ArrayList<File>> map = new HashMap<>();
-        if (selectedDirectory == null) {
-            if (selectedProject != null) {
-                for (ProjectDirectory directory : selectedProject.getProjectDirectories()) {
-                    map.putAll(directory.getProjectTypes());
-                }
-            }
-        } else {
-            map = selectedDirectory.getProjectTypes();
-        }
-        typePanel.setMap(map);
     }
 
     /*
@@ -209,12 +200,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectToolBar.setFloatable(false);
 
         // Type panel
-        typePanel = new IGridPanel<>();
-        typePanel.addOnGridComponentClickedListener(this);
+        projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
 
         // Detail panel
         detailsPanel = new ProjectDetailsPanel(application);
         projectTypeDetails = new ProjectTypeDetails(application, this);
+
+        // KiCad items panel
+        kiCadItemPanel = new KiCadItemPanel(application);
     }
 
     @Override
@@ -232,7 +225,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
         // Center panel
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
-        centerPanel.add(typePanel, BorderLayout.CENTER);
+        centerPanel.add(projectGirdPanel, BorderLayout.CENTER);
+        centerPanel.add(kiCadItemPanel, BorderLayout.EAST);
 
         // Details panel
         JPanel infoPanel = new JPanel(new BorderLayout());
@@ -264,7 +258,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             // Update tile view
-            updateTileView();
+            projectGirdPanel.updateComponents(selectedProject);
 
             // Enabled components
             updateEnabledComponents();

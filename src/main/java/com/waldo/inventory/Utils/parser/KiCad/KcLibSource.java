@@ -14,6 +14,9 @@ public class KcLibSource {
     }
 
     public String getPart() {
+        if (part == null) {
+            part = "";
+        }
         return part;
     }
 

@@ -105,7 +105,7 @@ public class ProjectPanel extends ProjectPanelLayout {
     //
     @Override
     public void onToolBarRefresh() {
-
+        updateComponents(selectedProject);
     }
 
     @Override
@@ -155,15 +155,6 @@ public class ProjectPanel extends ProjectPanelLayout {
         }
     }
 
-    //
-    // Project tile clicked
-    //
-    @Override
-    public void onGridComponentClick(ProjectType clickedObject, File file) {
-        selectedProjectType = clickedObject;
-        lastProjectFile = file;
-        updateComponents(selectedProject);
-    }
 
     //
     // Launch clicked in details panel
@@ -177,6 +168,24 @@ public class ProjectPanel extends ProjectPanelLayout {
             } catch (IOException e1) {
                 LOG.error("Error opening project.", e1);
             }
+        }
+    }
+
+    //
+    // Project tile clicked
+    //
+    @Override
+    public void onGridComponentClick(String name, ProjectType type, File file) {
+        selectedProjectType = type;
+        lastProjectFile = file;
+        detailsPanel.updateComponents(selectedProject);
+        projectTypeDetails.setProjectName(name);
+        projectTypeDetails.updateComponents(selectedProjectType);
+
+        if (type.hasParser()) {
+            kiCadItemPanel.updateComponents(file);
+        } else {
+            kiCadItemPanel.updateComponents(null);
         }
     }
 }

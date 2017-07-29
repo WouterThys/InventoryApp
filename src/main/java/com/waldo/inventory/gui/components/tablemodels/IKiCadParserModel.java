@@ -7,19 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IKiCadParserModel extends IAbstractTableModel<KcComponent> {
-    private static final String[] COLUMN_NAMES = {"Part", "Value", "Reference"};
-    private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class};
-
-    private List<KcComponent> componentList;
+    private static final String[] COLUMN_NAMES = {"Amount", "Part", "Value", "Reference"};
+    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, String.class, String.class};
 
     public IKiCadParserModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
-
-    public IKiCadParserModel(List<KcComponent> componentList) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, componentList);
-    }
-
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -28,12 +21,14 @@ public class IKiCadParserModel extends IAbstractTableModel<KcComponent> {
             switch (columnIndex) {
                 case -1:
                     return  component;
-                case 0: // LibSource value
+                case 0: // Amount
+                    return component.getReferences().size();
+                case 1: // LibSource value
                     return component.getLibSource().getPart();
-                case 1: // Value
+                case 2: // Value
                     return component.getValue();
-                case 2: // Reference
-                    return component.getRef();
+                case 3: // Reference
+                    return component.getReferenceString();
             }
         }
         return null;

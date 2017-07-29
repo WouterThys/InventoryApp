@@ -128,6 +128,7 @@ public class SetItemDialog extends SetItemDialogLayout {
         } else {
             updateTable();
         }
+        updateEnabledComponents();
     }
 
     @Override
@@ -141,12 +142,14 @@ public class SetItemDialog extends SetItemDialogLayout {
             addSetItems(setItems);
             getButtonNeutral().setEnabled(true);
             canClose = false;
+            updateEnabledComponents();
         }
     }
 
     @Override
     public void onToolBarDelete() {
         deleteSelectedSetItems(getSelectedSetItems());
+        updateEnabledComponents();
     }
 
     @Override
@@ -154,8 +157,10 @@ public class SetItemDialog extends SetItemDialogLayout {
         if (selectedSetItem != null) {
             EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Edit " + selectedSetItem.toString(), selectedSetItem);
             itemDialog.showDialog();
+            tableModel.updateTable();
             getButtonNeutral().setEnabled(true);
             canClose = false;
+            updateEnabledComponents();
         }
     }
 

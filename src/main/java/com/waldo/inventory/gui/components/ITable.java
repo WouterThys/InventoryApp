@@ -20,6 +20,8 @@ public class ITable extends JTable {
 
         setPreferredScrollableViewportSize(getPreferredSize());
         setAutoCreateRowSorter(true);
+
+        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public void resizeColumns(Integer[] widths) {

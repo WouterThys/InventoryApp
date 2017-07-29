@@ -202,8 +202,8 @@ public class Project extends DbObject {
             }
             // Save directory
             directory.save();
-            for (ProjectType type : directory.getProjectTypes().keySet())  {
-                for (File file : directory.getProjectTypes().get(type)) {
+            for (ProjectType type : directory.getProjectTypeMap().keySet())  {
+                for (File file : directory.getProjectTypeMap().get(type)) {
                     // Save link between type and directory
                     ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId(), file.getAbsolutePath());
                     if (ptl == null) {

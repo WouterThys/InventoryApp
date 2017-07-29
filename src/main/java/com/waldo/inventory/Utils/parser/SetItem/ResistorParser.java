@@ -56,6 +56,11 @@ public class ResistorParser extends SetItemParser {
         return cropped;
     }
 
+    @Override
+    public String getUnit() {
+        return R_UNIT;
+    }
+
     private List<SetItem> createSetItemsFromValues(List<String> stringValues) {
         List<SetItem> setitems = new ArrayList<>();
         List<Double> decades = decadeValues(getMinValue(), getMaxValue());
