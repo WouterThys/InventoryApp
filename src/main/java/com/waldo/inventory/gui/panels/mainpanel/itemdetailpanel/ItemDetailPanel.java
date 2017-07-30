@@ -146,7 +146,9 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void updateButtons(Item item) {
-        dataSheetButton.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
+        if (item != null) {
+            dataSheetButton.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
+        }
     }
 
 }

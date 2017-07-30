@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryTableModel extends AbstractTableModel {
+public class HistoryTableModel extends IAbstractTableModel {
 
     private static final String[] columnNames = {"", "Name", "Date", "Go"};
     private static final Class[] columnClasses = {ImageIcon.class, String.class, String.class, JCheckBox.class};
@@ -19,7 +19,7 @@ public class HistoryTableModel extends AbstractTableModel {
     private List<DbObject> historyObjectList;
 
     public HistoryTableModel() {
-        super();
+        super(columnNames, columnClasses);
         historyObjectList = new ArrayList<>();
     }
 

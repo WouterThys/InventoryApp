@@ -2,6 +2,7 @@ package com.waldo.inventory.Utils.parser.KiCad;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.KcItemMatch;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
@@ -12,14 +13,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.waldo.inventory.classes.KcItemMatch.MATCH_FOOTPRINT;
+import static com.waldo.inventory.classes.KcItemMatch.MATCH_NAME;
+import static com.waldo.inventory.classes.KcItemMatch.MATCH_VALUE;
+
 public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-    // Bitwise matches
-    public static final int MATCH_NAME = 1;
-    public static final int MATCH_VALUE = 2;
-    public static final int MATCH_FOOTPRINT = 4;
 
     private String ref;
     private String value;
@@ -31,7 +31,10 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
     private List<String> references;
 
     // For matching with item
-    private TreeMap<Integer, List<DbObject>> itemMatchMap;
+    private List<KcItemMatch> itemMatchMap;
+
+    // Matched item
+    private KcItemMatch matchedItem;
 
     public void parseTimeStamp(String tStamp) {
         if (!tStamp.isEmpty()) {
@@ -122,6 +125,12 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         return references;
     }
 
+    public void addReference(String reference) {
+        if (!getReferences().contains(reference)) {
+            getReferences().add(reference);
+        }
+    }
+
     public String getReferenceString() {
         StringBuilder refs = new StringBuilder();
         getReferences().sort(new ReferenceComparer());
@@ -141,10 +150,11 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         }
     }
 
-    private void findInSet(Item item) {
-        String kcName = getLibSource().getPart().toUpperCase();
-        String kcValue = getValue().toUpperCase();
-        String kcFp = getFootprint().toUpperCase();
+    public static List<KcItemMatch> findInSet(KcComponent component, Item item) {
+        List<KcItemMatch> itemMatches = new ArrayList<>();
+        String kcName = component.getLibSource().getPart().toUpperCase();
+        String kcValue = component.getValue().toUpperCase();
+        String kcFp = component.getFootprint().toUpperCase();
         for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
             int match = 0;
             String setItemName = setItem.getName().toUpperCase();
@@ -163,26 +173,28 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
             if (kcValue.contains(setItemValue)) {
                 match |= MATCH_VALUE;
             }
-            if (!setItemFp.isEmpty() && kcFp.contains(setItemFp)) {
-                match |= MATCH_FOOTPRINT;
+            // Only check footprint match if there is already a match
+            if (((match & MATCH_NAME) == MATCH_NAME) || ((match & MATCH_VALUE) == MATCH_VALUE)) {
+                if (!setItemFp.isEmpty() && kcFp.contains(setItemFp)) {
+                    match |= MATCH_FOOTPRINT;
+                }
             }
 
             // Add
             if (match > 0) {
-                if (!itemMatchMap.containsKey(match)) {
-                    itemMatchMap.put(match, new ArrayList<>());
-                }
-                itemMatchMap.get(match).add(setItem);
+                itemMatches.add(new KcItemMatch(match, setItem));
             }
         }
+        return itemMatches;
     }
 
-    private void findInItem(Item item) {
+    public static List<KcItemMatch> findInItem(KcComponent component, Item item) {
+        List<KcItemMatch> itemMatches = new ArrayList<>();
         int match = 0;
         String itemName = item.getName().toUpperCase();
-        String kcName = getLibSource().getPart().toUpperCase();
-        String kcValue = getValue().toUpperCase();
-        String kcFp = getFootprint().toUpperCase();
+        String kcName = component.getLibSource().getPart().toUpperCase();
+        String kcValue = component.getValue().toUpperCase();
+        String kcFp = component.getFootprint().toUpperCase();
         if (itemName.contains(kcName) || kcName.contains(itemName)) {
             match |= MATCH_NAME;
         }
@@ -191,35 +203,38 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         }
         String setItemFp = "";
         if (item.getDimensionType() != null) {
-            setItemFp = item.getDimensionType().getIconPath();
+            setItemFp = item.getDimensionType().getName();
         } else if (item.getPackage() != null && item.getPackage().getPackageType() != null){
             setItemFp = item.getPackage().getPackageType().getName();
         }
-        if (!setItemFp.isEmpty() && kcFp.contains(setItemFp)) {
-            match |= MATCH_FOOTPRINT;
+        // Only check footprint match if there is already a match
+        if (((match & MATCH_NAME) == MATCH_NAME) || ((match & MATCH_VALUE) == MATCH_VALUE)) {
+            if (!setItemFp.isEmpty() && (kcFp.contains(setItemFp) || setItemFp.contains(kcFp))) {
+                match |= MATCH_FOOTPRINT;
+            }
         }
 
         // Add
         if (match > 0) {
-            if (!itemMatchMap.containsKey(match)) {
-                itemMatchMap.put(match, new ArrayList<>());
-            }
-            itemMatchMap.get(match).add(item);
+            itemMatches.add(new KcItemMatch(match, item));
         }
+        return itemMatches;
     }
 
     public void findMatchingItems() {
-        itemMatchMap = new TreeMap<>(new MatchComparator());
+        itemMatchMap = new ArrayList<>();
 
         for (Item item : DbManager.db().getItems()) {
             if (getLibSource().getLib().toUpperCase().equals("DEVICE")) {
                 if (item.isSet()) {
-                    findInSet(item);
+                    itemMatchMap.addAll(findInSet(this, item));
                 }
             } else {
-                findInItem(item);
+                itemMatchMap.addAll(findInItem(this, item));
             }
         }
+
+        itemMatchMap.sort(new MatchComparator());
     }
 
     public static int getMatchCount(int i) {
@@ -228,7 +243,7 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
     }
 
-    public TreeMap<Integer, List<DbObject>> getItemMatchMap() {
+    public List<KcItemMatch> getItemMatchMap() {
         if (itemMatchMap == null) {
             findMatchingItems();
         }
@@ -236,25 +251,36 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
     }
 
     public int matchCount() {
-        int total = 0;
-        for (Integer key : getItemMatchMap().keySet()) {
-            total += getItemMatchMap().get(key).size();
-        }
-        return total;
+        return getItemMatchMap().size();
     }
 
     public int highestMatch() {
         if (getItemMatchMap().size() > 0) {
-            return getItemMatchMap().firstKey();
+            return getItemMatchMap().get(0).getMatch();
         }
         return 0;
     }
 
-    private class MatchComparator implements Comparator<Integer> {
+    public boolean hasMatch() {
+        return matchedItem != null;
+    }
+
+    public KcItemMatch getMatchedItem() {
+        return matchedItem;
+    }
+
+    public void setMatchedItem(KcItemMatch matchedItem) {
+        if (matchedItem != null) {
+            matchedItem.setMatched(true);
+        }
+        this.matchedItem = matchedItem;
+    }
+
+    private class MatchComparator implements Comparator<KcItemMatch> {
         @Override
-        public int compare(Integer o1, Integer o2) {
-            int mc1 = getMatchCount(o1);
-            int mc2 = getMatchCount(o2);
+        public int compare(KcItemMatch o1, KcItemMatch o2) {
+            int mc1 = getMatchCount(o1.getMatch());
+            int mc2 = getMatchCount(o2.getMatch());
             if (mc1 < mc2) {
                 return 1;
             } else if (mc1 > mc2) {

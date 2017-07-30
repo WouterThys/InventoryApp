@@ -36,7 +36,7 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         if (list != null) {
             for (KcComponent component : list) {
                 if (sorted.contains(component)) {
-                    sorted.get(sorted.indexOf(component)).getReferences().add(component.getRef());
+                    sorted.get(sorted.indexOf(component)).addReference(component.getRef());
                 } else {
                     sorted.add(component);
                 }
@@ -58,7 +58,7 @@ public class KiCadParser extends ProjectParser<KcComponent> {
             try {
                 String block = readBlock(usefulData);
                 Node head = parseBlock(block);
-
+                componentList.clear();
                 componentList = parseNode(head);
                 hasParsed = true;
             } catch (Exception e) {

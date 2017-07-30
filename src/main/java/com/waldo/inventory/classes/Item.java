@@ -531,7 +531,9 @@ public class Item extends DbObject {
 
     public DimensionType getDimensionType() {
         if (dimensionType == null) {
-            dimensionType = sm().findDimensionTypeById(dimensionTypeId);
+            if (dimensionTypeId > DbObject.UNKNOWN_ID) {
+                dimensionType = sm().findDimensionTypeById(dimensionTypeId);
+            }
         }
         return dimensionType;
     }

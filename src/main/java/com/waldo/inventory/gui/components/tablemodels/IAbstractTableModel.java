@@ -1,7 +1,5 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.gui.components.ITable;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,7 +16,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     IAbstractTableModel(String[] columnNames, Class[] columnClasses) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
-        itemList = new ArrayList<T>();
+        itemList = new ArrayList<>();
     }
 
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList) {
@@ -74,6 +72,13 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         }
     }
 
+    public int getModelIndex(T item) {
+        if (itemList.contains(item)) {
+            return itemList.indexOf(item);
+        }
+        return -1;
+    }
+
     public List<T> getItemList() {
         return itemList;
     }
@@ -105,5 +110,8 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         return columnClasses[columnIndex];
     }
 
-
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
 }

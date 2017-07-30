@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
+import com.waldo.inventory.gui.components.tablemodels.HistoryTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -31,7 +32,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private DefaultTableModel tableModel;
+    private HistoryTableModel tableModel;
     private ITable historyTable;
 
     /*
@@ -66,14 +67,8 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(columnNames);
-        historyTable = new ITable(tableModel) {
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return getValueAt(0, column).getClass();
-            }
-        };
+        tableModel = new HistoryTableModel();
+        historyTable = new ITable(tableModel);
         historyTable.setRowHeight(50);
 
         Action go = new AbstractAction() {
@@ -116,12 +111,12 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
                 switch (DbObject.getType(o)) {
                     case DbObject.TYPE_ORDER:
                         Order order = (Order) o;
-                        tableModel.addRow(new Object[] {
-                                imageResource.readImage("HistoryDialog.OrderIcon"),
-                                order,
-                                dateFormatLong.format(order.getDateModified()),
-                                "Go"
-                        });
+//                        tableModel.addRow(new Object[] {
+//                                imageResource.readImage("HistoryDialog.OrderIcon"),
+//                                order,
+//                                dateFormatLong.format(order.getDateModified()),
+//                                "Go"
+//                        });
                         break;
                     default:
                         break;

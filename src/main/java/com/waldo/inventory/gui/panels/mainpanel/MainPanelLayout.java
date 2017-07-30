@@ -163,7 +163,6 @@ public abstract class MainPanelLayout extends JPanel implements
         tableModel = new IItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
-        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.setOpaque(true);
 

@@ -78,6 +78,11 @@ public class ILabel extends JLabel {
         this.setFont(new Font(labelFont.getName(), labelFont.getStyle(), size));
     }
 
+    public void setFont(int size, int style) {
+        Font labelFont = this.getFont();
+        this.setFont(new Font(labelFont.getName(), style, size));
+    }
+
     public void setIcon(String path) {
         URL url;
         try {

@@ -74,14 +74,16 @@ public class TableModel extends AbstractTableModel {
         return columnClasses[columnIndex];
     }
 
-    @Override
-    public void fireTableDataChanged() {
-        fireTableChanged(new TableModelEvent(this, //tableModel
-                0, //firstRow
-                getRowCount() - 1, //lastRow
-                TableModelEvent.ALL_COLUMNS, //column
-                TableModelEvent.UPDATE)); //changeType
-    }
+//    @Override
+//    public void fireTableDataChanged() {
+//        if (getRowCount() > 1) {
+//            fireTableChanged(new TableModelEvent(this, //tableModel
+//                    0, //firstRow
+//                    getRowCount() - 1, //lastRow
+//                    TableModelEvent.ALL_COLUMNS, //column
+//                    TableModelEvent.UPDATE)); //changeType
+//        }
+//    }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

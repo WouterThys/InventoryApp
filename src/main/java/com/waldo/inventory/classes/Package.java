@@ -104,6 +104,9 @@ public class Package extends DbObject {
     }
 
     public PackageType getPackageType() {
+        if (packageType == null) {
+            packageType = sm().findPackageTypeById(packageTypeId);
+        }
         return packageType;
     }
 
