@@ -52,6 +52,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextArea remarksTa;
     private ICheckBox isSetCb;
     private JButton setValuesBtn;
+    private DefaultComboBoxModel<DimensionType> dimensionCbModel;
+    private IComboBox<DimensionType> dimensionCb;
 
     // Basic info
     private ITextField idTextField;
@@ -157,6 +159,25 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedIndex(selectedIndex);
     }
+    
+    public void updateDimensionPanel() {
+        PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
+        dimensionCbModel.removeAllElements();
+        if (packageType != null) {
+            java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
+            for (DimensionType dt : dimensionTypeList) {
+                dimensionCbModel.addElement(dt);
+            }
+            dimensionCb.setEnabled(dimensionTypeList.size() > 0);
+        } else {
+            dimensionCb.setEnabled(false);
+        }
+
+        DimensionType d = sm().findDimensionTypeById(newItem.getDimensionTypeId());
+        if (d != null && !d.isUnknown()) {
+            dimensionCb.setSelectedItem(d);
+        }
+    }
 
     private void initializeBasicComponents() {
         // Identification
@@ -226,6 +247,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         packageWidthTf.addEditedListener(editedListener, "width", double.class);
         packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
         packageHeightTf.addEditedListener(editedListener, "height", double.class);
+        dimensionCbModel = new DefaultComboBoxModel<>();
+        dimensionCb = new IComboBox<>(dimensionCbModel);
+        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
+        dimensionCb.setEnabled(false);
 
         // Manufacturer
         DefaultComboBoxModel<Manufacturer> model = new DefaultComboBoxModel<>();
@@ -278,6 +303,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
+
     }
 
     private JPanel createBasicPanel() {
@@ -341,6 +367,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         ILabel dimLabel = new ILabel("Dimensions: ");
         dimLabel.setHorizontalAlignment(ILabel.RIGHT);
         dimLabel.setVerticalAlignment(ILabel.CENTER);
+        ILabel dimTypeLabel = new ILabel("Type: ");
+        dimTypeLabel.setHorizontalAlignment(ILabel.RIGHT);
+        dimTypeLabel.setVerticalAlignment(ILabel.CENTER);
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();
@@ -377,7 +406,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.anchor = GridBagConstraints.EAST;
         packagePanel.add(packagePinsSp, gbc);
 
-        // - dimension
+        // - dimensions
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 2; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -389,6 +418,18 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
         packagePanel.add(dimPanel, gbc);
+
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 3; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        packagePanel.add(dimTypeLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 3;
+        gbc.gridy = 3; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        packagePanel.add(dimensionCb, gbc);
 
         // - border
         packagePanel.setBorder(packageBorder);
@@ -661,5 +702,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void updateRating(float rating) {
         starRater.setRating(rating);
         starRater.setSelection(0);
+    }
+
+    public IComboBox<PackageType> getPackageTypeCb() {
+        return packageTypeComboBox;
     }
 }

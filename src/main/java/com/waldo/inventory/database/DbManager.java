@@ -516,6 +516,7 @@ public class DbManager {
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
+                    i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
 
                     items.add(i);
                 }

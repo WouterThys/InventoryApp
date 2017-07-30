@@ -271,6 +271,11 @@ public class EditItemDialog extends EditItemDialogLayout {
         } else {
             getButtonNeutral().setEnabled(checkChange());
         }
+
+        // Dimensions
+        if (component.equals(componentPanel.getPackageTypeCb())) {
+            componentPanel.updateDimensionPanel();
+        }
     }
 
     @Override

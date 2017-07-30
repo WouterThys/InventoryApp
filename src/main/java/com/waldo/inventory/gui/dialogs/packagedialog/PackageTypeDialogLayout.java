@@ -16,6 +16,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -74,6 +76,10 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         detailToolBar.setEditActionEnabled(selectedDimensionType != null);
 
         detailTypeTable.setEnabled(selectedPackageType != null);
+    }
+
+    void dimensionTableAddMouseAdapter(MouseAdapter mouseAdapter) {
+        detailTypeTable.addMouseListener(mouseAdapter);
     }
 
     void dimensionTableUpdate() {

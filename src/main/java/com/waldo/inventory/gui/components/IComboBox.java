@@ -56,7 +56,9 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
 
     private void setItemListener() {
         itemListener = e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+
+                SwingUtilities.invokeLater(() -> {
                     try {
                         DbObject guiObject = editedListener.getGuiObject();
                         if (guiObject != null) {
@@ -92,8 +94,9 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
                     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
                         e1.printStackTrace();
                     }
-                }
-            };
+                });
+            }
+        };
         addItemListener(itemListener);
     }
 

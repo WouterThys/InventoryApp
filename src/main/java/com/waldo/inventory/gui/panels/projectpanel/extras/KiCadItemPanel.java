@@ -15,6 +15,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +35,9 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     Application application;
     private File parseFile;
     private KiCadParser kiCadParser = (com.waldo.inventory.Utils.parser.KiCad.KiCadParser) Application.getProjectParser("KiCadParser");
+
+    private boolean hasParsed = false;
+    private boolean hasMatched = false;
 
     /*
      *                  CONSTRUCTOR
@@ -70,39 +75,65 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         sheetTabs.removeAll();
     }
 
-    public void parseFile(File fileToParse) {
-        if (fileToParse.isFile()) {
-            if (kiCadParser.isFileValid(fileToParse)) {
-                clearComponentTable();
-                kiCadParser.parse(fileToParse);
-                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-            } else {
+    void reParse(File fileToParse) {
+        hasParsed = false;
+        parseFile(fileToParse);
+    }
 
-                if (FileUtils.getExtension(fileToParse).equals("pro")) {
-                    parseFile(fileToParse.getParentFile());
+    void reMatch() {
+        hasMatched = false;
+        matchItems();
+    }
+
+    public void matchItems() {
+        if (!hasMatched) {
+            for (KcComponent component : getTableModel().getItemList()) {
+                SwingUtilities.invokeLater(() -> {
+                    component.findMatchingItems();
+                    getTableModel().updateItem(component);
+                });
+            }
+        }
+    }
+
+    public void parseFile(File fileToParse) {
+        if (!hasParsed) {
+            if (fileToParse.isFile()) {
+                if (kiCadParser.isFileValid(fileToParse)) {
+                    clearComponentTable();
+                    kiCadParser.parse(fileToParse);
+                    updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
+                    hasParsed = true;
+                    matchItems();
+                } else {
+                    if (FileUtils.getExtension(fileToParse).equals("pro")) {
+                        parseFile(fileToParse.getParentFile());
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                KiCadItemPanel.this,
+                                "The file cannot be parsed with the KiCad parser..",
+                                "Invalid file",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
+            } else {
+                // Search for file
+                List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
+                if (actualFiles != null && actualFiles.size() == 1) {
+                    clearComponentTable();
+                    kiCadParser.parse(actualFiles.get(0));
+                    updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
+                    hasParsed = true;
+                    matchItems();
                 } else {
                     JOptionPane.showMessageDialog(
                             KiCadItemPanel.this,
-                            "The file cannot be parsed with the KiCad parser..",
-                            "Invalid file",
+                            "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
+                            "File not found",
                             JOptionPane.ERROR_MESSAGE
                     );
                 }
-            }
-        } else {
-            // Search for file
-            List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
-            if (actualFiles != null && actualFiles.size() == 1) {
-                clearComponentTable();
-                kiCadParser.parse(actualFiles.get(0));
-                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-            } else {
-                JOptionPane.showMessageDialog(
-                        KiCadItemPanel.this,
-                        "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
-                        "File not found",
-                        JOptionPane.ERROR_MESSAGE
-                );
             }
         }
     }

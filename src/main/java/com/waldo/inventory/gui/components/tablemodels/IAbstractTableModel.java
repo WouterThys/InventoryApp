@@ -4,6 +4,7 @@ import com.waldo.inventory.gui.components.ITable;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -29,6 +30,10 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void setItemList(List<T> itemList) {
         this.itemList = itemList;
         fireTableDataChanged();
+    }
+
+    public void sortItemList(Comparator<? super T> c) {
+        this.itemList.sort(c);
     }
 
     public void clearItemList() {
@@ -57,6 +62,15 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void updateTable() {
         if (itemList != null && itemList.size() > 0) {
             fireTableRowsUpdated(0, itemList.size() - 1);
+        }
+    }
+
+    public void updateItem(T item) {
+        if (itemList.contains(item)) {
+            int row = itemList.indexOf(item);
+            if (row >= 0) {
+                fireTableRowsUpdated(row, row);
+            }
         }
     }
 

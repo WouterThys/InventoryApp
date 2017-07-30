@@ -15,6 +15,8 @@ import com.waldo.inventory.gui.dialogs.packagedialog.extras.EditDimensionDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class PackageTypeDialog extends PackageTypeDialogLayout {
@@ -28,7 +30,21 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
         DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
         DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
+        createNewMouseAdapter();
         updateComponents(null);
+    }
+
+    private void createNewMouseAdapter() {
+        dimensionTableAddMouseAdapter(
+            new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        detailTbEdit();
+                    }
+                }
+            }
+        );
     }
 
     private void setDetails() {

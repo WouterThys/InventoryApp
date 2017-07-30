@@ -11,6 +11,8 @@ import com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog.Val
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +25,23 @@ public class SetItemDialog extends SetItemDialogLayout {
 
         initializeComponents();
         initializeLayouts();
+
+        createMouseAdapter();
+
         updateComponents(item);
     }
 
+
+    private void createMouseAdapter() {
+        setItemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    onEdit();
+                }
+            }
+        });
+    }
 
     private List<SetItem> getSelectedSetItems() {
         List<SetItem> setItems = new ArrayList<>();
@@ -78,6 +94,17 @@ public class SetItemDialog extends SetItemDialogLayout {
             }
         }
         tableModel.addItems(itemsToAdd);
+    }
+
+    private void onEdit() {
+        if (selectedSetItem != null) {
+            EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Edit " + selectedSetItem.toString(), selectedSetItem);
+            itemDialog.showDialog();
+            tableModel.updateTable();
+            getButtonNeutral().setEnabled(true);
+            canClose = false;
+            updateEnabledComponents();
+        }
     }
 
     @Override
@@ -155,14 +182,7 @@ public class SetItemDialog extends SetItemDialogLayout {
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (selectedSetItem != null) {
-            EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Edit " + selectedSetItem.toString(), selectedSetItem);
-            itemDialog.showDialog();
-            tableModel.updateTable();
-            getButtonNeutral().setEnabled(true);
-            canClose = false;
-            updateEnabledComponents();
-        }
+        onEdit();
     }
 
     //

@@ -11,6 +11,8 @@ import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class KiCadSheetTab extends JPanel implements GuiInterface {
     
@@ -56,7 +58,8 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
         componentTableModel = new IKiCadParserModel();
         componentTable = new ITable(componentTableModel);
         componentTable.getSelectionModel().addListSelectionListener(listSelectionListener);
-        componentTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
+        componentTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
+        componentTable.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
     @Override

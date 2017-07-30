@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -106,6 +107,14 @@ public class SetItem extends DbObject {
         return setItem;
     }
 
+    public static class SetItemComparator implements Comparator<SetItem> {
+        @Override
+        public int compare(SetItem o1, SetItem o2) {
+            String s1 = StringUtils.leftPad(o1.getValue(), 6, "0");
+            String s2 = StringUtils.leftPad(o2.getValue(), 6, "0");
+            return s1.compareTo(s2);
+        }
+    }
 
     public int getAmount() {
         return amount;

@@ -34,8 +34,10 @@ public class Item extends DbObject {
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
 
-    private long packageId = -1;
+    private long packageId = UNKNOWN_ID;
     private Package itemPackage;
+    private long dimensionTypeId = UNKNOWN_ID;
+    private DimensionType dimensionType;
 
     private float rating;
     private boolean discourageOrder;
@@ -87,6 +89,10 @@ public class Item extends DbObject {
         statement.setBoolean(ndx++, discourageOrder);
         statement.setString(ndx++, getRemarks());
         statement.setBoolean(ndx++, isSet());
+        if (dimensionTypeId < UNKNOWN_ID) {
+            dimensionTypeId = UNKNOWN_ID;
+        }
+        statement.setLong(ndx++, getDimensionTypeId());
 
         return ndx;
     }
@@ -136,6 +142,10 @@ public class Item extends DbObject {
                 return true;
             }
 
+            if (getDimensionType() != null && getDimensionType().hasMatch(searchTerm)) {
+                return true;
+            }
+
         }
         return false;
     }
@@ -162,6 +172,7 @@ public class Item extends DbObject {
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarks(getRemarks());
         item.setSet(isSet());
+        item.setDimensionTypeId(getDimensionTypeId());
 
         return item;
     }
@@ -196,6 +207,7 @@ public class Item extends DbObject {
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) return false;
                 if (!(ref.getRemarks().equals(getRemarks()))) return false;
                 if (!(ref.isSet() == isSet())) return false;
+                if (!(ref.getDimensionTypeId() == getDimensionTypeId())) return false;
              }
         }
         return result;
@@ -506,5 +518,21 @@ public class Item extends DbObject {
 
     public void setSet(boolean set) {
         isSet = set;
+    }
+
+    public long getDimensionTypeId() {
+        return dimensionTypeId;
+    }
+
+    public void setDimensionTypeId(long dimensionTypeId) {
+        dimensionType = null;
+        this.dimensionTypeId = dimensionTypeId;
+    }
+
+    public DimensionType getDimensionType() {
+        if (dimensionType == null) {
+            dimensionType = sm().findDimensionTypeById(dimensionTypeId);
+        }
+        return dimensionType;
     }
 }

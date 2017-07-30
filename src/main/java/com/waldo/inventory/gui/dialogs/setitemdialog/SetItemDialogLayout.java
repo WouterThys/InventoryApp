@@ -26,7 +26,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
     ITable setItemTable;
 
     private IdBToolBar toolBar;
-    JButton useKnownBtn;
+    private JButton useKnownBtn;
 
      /*
      *                  VARIABLES
@@ -58,7 +58,9 @@ public abstract class SetItemDialogLayout extends IDialog implements
     }
 
     void updateTable() {
-        tableModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
+        java.util.List<SetItem> list = SearchManager.sm().findSetItemsByItemId(item.getId());
+        list.sort(new SetItem.SetItemComparator());
+        tableModel.setItemList(list);
     }
 
     /*
