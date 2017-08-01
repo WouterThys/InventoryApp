@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes;
 
-public class KcItemMatch {
+public class KcItemLink {
 
     // Bitwise matches
     public static final int MATCH_NAME = 1;
@@ -14,13 +14,13 @@ public class KcItemMatch {
     private boolean isSetItem;
     private boolean isMatched;
 
-    public KcItemMatch(int match, Item item) {
+    public KcItemLink(int match, Item item) {
         this.match = match;
         this.item = item;
         isSetItem = false;
     }
 
-    public KcItemMatch(int match, SetItem setItem) {
+    public KcItemLink(int match, SetItem setItem) {
         this.match = match;
         this.setItem = setItem;
         isSetItem = true;

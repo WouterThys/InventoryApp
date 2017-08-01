@@ -1,4 +1,4 @@
-package com.waldo.inventory.Utils.parser.KiCad;
+package com.waldo.inventory.classes.kicad;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -9,8 +9,8 @@ import java.util.List;
 
 public class KcSheetPath {
 
-    private List<String> names;
-    private List<Date> tStamps;
+    private List<String> names = new ArrayList<>();
+    private List<Date> tStamps = new ArrayList<>();
 
     public void parseNames(String names) {
         String[] split = names.split("/");

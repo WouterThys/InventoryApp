@@ -1,4 +1,4 @@
-package com.waldo.inventory.Utils.parser.KiCad;
+package com.waldo.inventory.classes.kicad;
 
 public class KcLibSource {
 

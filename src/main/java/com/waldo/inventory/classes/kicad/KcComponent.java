@@ -1,46 +1,105 @@
-package com.waldo.inventory.Utils.parser.KiCad;
+package com.waldo.inventory.classes.kicad;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.KcItemMatch;
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.waldo.inventory.classes.KcItemMatch.MATCH_FOOTPRINT;
-import static com.waldo.inventory.classes.KcItemMatch.MATCH_NAME;
-import static com.waldo.inventory.classes.KcItemMatch.MATCH_VALUE;
+import static com.waldo.inventory.classes.KcItemLink.MATCH_FOOTPRINT;
+import static com.waldo.inventory.classes.KcItemLink.MATCH_NAME;
+import static com.waldo.inventory.classes.KcItemLink.MATCH_VALUE;
+import static com.waldo.inventory.database.DbManager.db;
 
-public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
+public class KcComponent extends DbObject {
 
+    public static final String TABLE_NAME = "kccomponents";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     private String ref;
-    private String value;
-    private String footprint;
-    private KcLibSource libSource;
+    private String value; // db
+    private String footprint; // db
+    private KcLibSource libSource; // db
     private KcSheetPath sheetPath;
     private Date tStamp;
     // After sorting multiple references can group together in one KcComponent
     private List<String> references;
 
     // For matching with item
-    private List<KcItemMatch> itemMatchMap;
+    private List<KcItemLink> itemMatchMap;
 
     // Matched item
-    private KcItemMatch matchedItem;
+    private KcItemLink matchedItem;
+
+    public KcComponent() {
+        super(TABLE_NAME);
+
+        libSource = new KcLibSource();
+        sheetPath = new KcSheetPath();
+    }
 
     public void parseTimeStamp(String tStamp) {
         if (!tStamp.isEmpty()) {
             long l = new BigInteger(tStamp, 16).longValue();
             this.tStamp = new Date(l*1000);
         }
+    }
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = 1;
+
+        statement.setString(ndx++, getValue());
+        statement.setString(ndx++, getFootprint());
+        statement.setString(ndx++, getLibSource().getLib());
+        statement.setString(ndx++, getLibSource().getPart());
+
+        return ndx;
+    }
+
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+                List<KcComponent> list = db().getKcComponents();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+                List<KcComponent> list = db().getKcComponents();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
+                break;
+            }
+        }
+        db().notifyListeners(changedHow, this, db().onKcComponentChangedListenerList);
+    }
+
+    @Override
+    public KcComponent createCopy() {
+        return createCopy(new KcComponent());
+    }
+
+    @Override
+    public KcComponent createCopy(DbObject copyInto) {
+        KcComponent cpy = new KcComponent();
+        copyBaseFields(cpy);
+        cpy.setValue(getValue());
+        cpy.setFootprint(getFootprint());
+        cpy.setLibSource(getLibSource());
+        return cpy;
     }
 
     @Override
@@ -150,8 +209,8 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         }
     }
 
-    public static List<KcItemMatch> findInSet(KcComponent component, Item item) {
-        List<KcItemMatch> itemMatches = new ArrayList<>();
+    public static List<KcItemLink> findInSet(KcComponent component, Item item) {
+        List<KcItemLink> itemMatches = new ArrayList<>();
         String kcName = component.getLibSource().getPart().toUpperCase();
         String kcValue = component.getValue().toUpperCase();
         String kcFp = component.getFootprint().toUpperCase();
@@ -182,14 +241,14 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
 
             // Add
             if (match > 0) {
-                itemMatches.add(new KcItemMatch(match, setItem));
+                itemMatches.add(new KcItemLink(match, setItem));
             }
         }
         return itemMatches;
     }
 
-    public static List<KcItemMatch> findInItem(KcComponent component, Item item) {
-        List<KcItemMatch> itemMatches = new ArrayList<>();
+    public static List<KcItemLink> findInItem(KcComponent component, Item item) {
+        List<KcItemLink> itemMatches = new ArrayList<>();
         int match = 0;
         String itemName = item.getName().toUpperCase();
         String kcName = component.getLibSource().getPart().toUpperCase();
@@ -216,7 +275,7 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
 
         // Add
         if (match > 0) {
-            itemMatches.add(new KcItemMatch(match, item));
+            itemMatches.add(new KcItemLink(match, item));
         }
         return itemMatches;
     }
@@ -243,7 +302,7 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
     }
 
-    public List<KcItemMatch> getItemMatchMap() {
+    public List<KcItemLink> getItemMatchMap() {
         if (itemMatchMap == null) {
             findMatchingItems();
         }
@@ -265,20 +324,20 @@ public class KcComponent extends com.waldo.inventory.Utils.parser.Component {
         return matchedItem != null;
     }
 
-    public KcItemMatch getMatchedItem() {
+    public KcItemLink getMatchedItem() {
         return matchedItem;
     }
 
-    public void setMatchedItem(KcItemMatch matchedItem) {
+    public void setMatchedItem(KcItemLink matchedItem) {
         if (matchedItem != null) {
             matchedItem.setMatched(true);
         }
         this.matchedItem = matchedItem;
     }
 
-    private class MatchComparator implements Comparator<KcItemMatch> {
+    private class MatchComparator implements Comparator<KcItemLink> {
         @Override
-        public int compare(KcItemMatch o1, KcItemMatch o2) {
+        public int compare(KcItemLink o1, KcItemLink o2) {
             int mc1 = getMatchCount(o1.getMatch());
             int mc2 = getMatchCount(o2.getMatch());
             if (mc1 < mc2) {

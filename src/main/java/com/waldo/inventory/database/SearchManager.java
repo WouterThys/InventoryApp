@@ -2,6 +2,7 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.kicad.KcComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -779,6 +780,28 @@ public class SearchManager {
             }
         }
         return dimensionTypes;
+    }
+
+    public KcComponent findKcComponentById(long id) {
+        for (KcComponent component : db().getKcComponents()) {
+            if (component.getId() == id) {
+                return component;
+            }
+        }
+        return null;
+    }
+
+    public KcComponent findKcComponent(String value, String footprint, String lib, String part) {
+        for (KcComponent component : db().getKcComponents()) {
+            if (component.getValue().equals(value) &&
+                    component.getFootprint().equals(footprint) &&
+                    component.getLibSource().getLib().equals(lib) &&
+                    component.getLibSource().getPart().equals(part)) {
+
+                return component;
+            }
+        }
+        return null;
     }
 
 }

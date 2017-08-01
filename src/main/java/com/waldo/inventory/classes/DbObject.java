@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.LogManager;
 
 import java.sql.*;
@@ -14,7 +15,7 @@ public abstract class DbObject {
     public static final String UNKNOWN_NAME = "Unknown";
 
     public static final String SQL_SELECT_ALL = ".sqlSelect.all";
-    public static final String SQL_SELECT_ONE = "sqlSelect.one";
+    public static final String SQL_SELECT_ONE = ".sqlSelect.one";
     public static final String SQL_INSERT = "sqlInsert";
     public static final String SQL_UPDATE = "sqlUpdate";
     public static final String SQL_DELETE = "sqlDelete";
@@ -37,6 +38,7 @@ public abstract class DbObject {
     public static final int TYPE_ORDER_FILE_FORMAT = 15;
     public static final int TYPE_SET_ITEM = 16;
     public static final int TYPE_DIMENSION_TYPE = 17;
+    public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_LOG = 100;
 
     protected String TABLE_NAME;
@@ -84,6 +86,7 @@ public abstract class DbObject {
         if (dbObject instanceof Package) return TYPE_PACKAGE;
         if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
         if (dbObject instanceof DimensionType) return TYPE_DIMENSION_TYPE;
+        if (dbObject instanceof KcComponent) return TYPE_KC_COMPONENT;
         if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;
@@ -152,6 +155,8 @@ public abstract class DbObject {
         newObject.setId(getId());
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
+
+        newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
     }
 
@@ -203,5 +208,9 @@ public abstract class DbObject {
 
     public String getScript(String scriptName) {
         return scriptResource.readString(TABLE_NAME + "." + scriptName);
+    }
+
+    public void setInserted(boolean inserted) {
+        this.isInserted = inserted;
     }
 }

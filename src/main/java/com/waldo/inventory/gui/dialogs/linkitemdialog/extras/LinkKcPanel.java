@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
@@ -10,10 +10,6 @@ import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
 
 public class LinkKcPanel extends JPanel implements GuiInterface {    
     

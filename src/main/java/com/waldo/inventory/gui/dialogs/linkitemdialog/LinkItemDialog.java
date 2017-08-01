@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.KcItemLink;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.KcItemMatch;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.Application;
 
@@ -30,12 +30,14 @@ public class LinkItemDialog extends LinkItemDialogLayout {
         return e -> {
             if (!e.getValueIsAdjusting()) {
                 selectedComponent = kcPanel.getSelectedComponent();
-                kcPanel.updateSelectedValueData(selectedComponent);
-                itemPanel.setItemList(selectedComponent.getItemMatchMap());
-                if (selectedComponent.hasMatch()) {
-                    itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
-                } else {
-                    selectedMatchItem = null;
+                if (selectedComponent != null) {
+                    kcPanel.updateSelectedValueData(selectedComponent);
+                    itemPanel.setItemList(selectedComponent.getItemMatchMap());
+                    if (selectedComponent.hasMatch()) {
+                        itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
+                    } else {
+                        selectedMatchItem = null;
+                    }
                 }
                 updateEnabledComponents();
             }
@@ -57,33 +59,33 @@ public class LinkItemDialog extends LinkItemDialogLayout {
     //
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
-        List<KcItemMatch> itemMatches = new ArrayList<>();
+        List<KcItemLink> itemMatches = new ArrayList<>();
         for (DbObject object : foundObjects) {
             int type = DbObject.getType(object);
             if (type == DbObject.TYPE_ITEM) {
                 if (selectedComponent != null) {
-                    List<KcItemMatch> matches = KcComponent.findInItem(selectedComponent, (Item) object);
+                    List<KcItemLink> matches = KcComponent.findInItem(selectedComponent, (Item) object);
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemMatch m = new KcItemMatch(0, (Item)object);
+                        KcItemLink m = new KcItemLink(0, (Item)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemMatch m = new KcItemMatch(0, (Item)object);
+                    KcItemLink m = new KcItemLink(0, (Item)object);
                     itemMatches.add(m);
                 }
             } else if (type == DbObject.TYPE_SET_ITEM) {
                 if (selectedComponent != null) {
-                    List<KcItemMatch> matches = KcComponent.findInSet(selectedComponent, ((SetItem) object).getItem());
+                    List<KcItemLink> matches = KcComponent.findInSet(selectedComponent, ((SetItem) object).getItem());
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemMatch m = new KcItemMatch(0, (SetItem)object);
+                        KcItemLink m = new KcItemLink(0, (SetItem)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemMatch m = new KcItemMatch(0, (SetItem) object);
+                    KcItemLink m = new KcItemLink(0, (SetItem) object);
                     itemMatches.add(m);
                 }
             }

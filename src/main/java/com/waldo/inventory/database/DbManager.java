@@ -3,6 +3,7 @@ package com.waldo.inventory.database;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
@@ -49,7 +50,6 @@ public class DbManager {
     private DbQueueWorker dbQueueWorker;
     private DbErrorWorker dbErrorWorker;
 
-
     // Events
     private DbErrorListener errorListener;
 
@@ -71,6 +71,7 @@ public class DbManager {
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<KcComponent>> onKcComponentChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -94,6 +95,7 @@ public class DbManager {
     private List<Package> packages;
     private List<SetItem> setItems;
     private List<DimensionType> dimensionTypes;
+    private List<KcComponent> kcComponents;
     private List<Log> logs;
 
     private DbManager() {}
@@ -208,6 +210,7 @@ public class DbManager {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
             onItemsChangedListenerList.add(dbObjectChangedListener);
@@ -307,6 +310,12 @@ public class DbManager {
     public void addOnDimensionTypeChangedListener(DbObjectChangedListener<DimensionType> dbObjectChangedListener) {
         if (!onDimensionTypeChangedListenerList.contains(dbObjectChangedListener)) {
             onDimensionTypeChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnKcComponentChangedListener(DbObjectChangedListener<KcComponent> dbObjectChangedListener) {
+        if (!onKcComponentChangedListenerList.contains(dbObjectChangedListener)) {
+            onKcComponentChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -518,6 +527,7 @@ public class DbManager {
                     i.setSet(rs.getBoolean("isSet"));
                     i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
 
+                    i.setInserted(true);
                     items.add(i);
                 }
             }
@@ -556,6 +566,7 @@ public class DbManager {
                     c.setName(rs.getString("name"));
                     c.setIconPath(rs.getString("iconpath"));
 
+                    c.setInserted(true);
                     if (c.getId() != DbObject.UNKNOWN_ID) {
                         categories.add(c);
                     }
@@ -598,6 +609,7 @@ public class DbManager {
                     p.setIconPath(rs.getString("iconpath"));
                     p.setCategoryId(rs.getLong("categoryid"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         products.add(p);
                     }
@@ -641,6 +653,7 @@ public class DbManager {
                     t.setIconPath(rs.getString("iconpath"));
                     t.setProductId(rs.getLong("productid"));
 
+                    t.setInserted(true);
                     if (t.getId() != 1) {
                         types.add(t);
                     }
@@ -683,6 +696,7 @@ public class DbManager {
                     m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
 
+                    m.setInserted(true);
                     if (m.getId() != DbObject.UNKNOWN_ID) {
                         manufacturers.add(m);
                     }
@@ -724,6 +738,7 @@ public class DbManager {
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconpath"));
 
+                    l.setInserted(true);
                     if (l.getId() != DbObject.UNKNOWN_ID) {
                         locations.add(l);
                     }
@@ -770,6 +785,7 @@ public class DbManager {
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
 
+                    o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         orders.add(o);
                     }
@@ -815,6 +831,7 @@ public class DbManager {
                     o.setAmount(rs.getInt("amount"));
                     o.setDistributorPartId(rs.getLong("distributorPartId"));
 
+                    o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         orderItems.add(o);
                     }
@@ -886,6 +903,7 @@ public class DbManager {
                     d.setOrderLink(rs.getString("orderLink"));
                     d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
 
+                    d.setInserted(true);
                     if (d.getId() != DbObject.UNKNOWN_ID) {
                         distributors.add(d);
                     }
@@ -930,6 +948,7 @@ public class DbManager {
                     pn.setItemId(rs.getLong("itemId"));
                     pn.setItemRef(rs.getString("distributorPartName"));
 
+                    pn.setInserted(true);
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
                         distributorParts.add(pn);
                     }
@@ -974,6 +993,7 @@ public class DbManager {
                     pa.setWidth(rs.getDouble("width"));
                     pa.setHeight(rs.getDouble("height"));
 
+                    pa.setInserted(true);
                     if (pa.getId() != DbObject.UNKNOWN_ID) {
                         packages.add(pa);
                     }
@@ -1014,6 +1034,7 @@ public class DbManager {
                     pt.setName(rs.getString("name"));
                     pt.setDescription(rs.getString("description"));
 
+                    pt.setInserted(true);
                     if (pt.getId() != DbObject.UNKNOWN_ID) {
                         packageTypes.add(pt);
                     }
@@ -1055,7 +1076,7 @@ public class DbManager {
                     p.setIconPath(rs.getString("iconPath"));
 
                     // ProjectDirectories are fetched in object itself
-
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projects.add(p);
                     }
@@ -1098,6 +1119,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectid"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projectDirectories.add(p);
                     }
@@ -1145,6 +1167,7 @@ public class DbManager {
                     p.setUseParentFolder(rs.getBoolean("useparentfolder"));
                     p.setParserName(rs.getString("parsername"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projectTypes.add(p);
                     }
@@ -1187,6 +1210,7 @@ public class DbManager {
                     p.setProjectTypeId(rs.getLong("projecttypeid"));
                     p.setFilePath(rs.getString("filepath"));
 
+                    p.setInserted(true);
                     projectTypeLinks.add(p);
                 }
             }
@@ -1226,6 +1250,7 @@ public class DbManager {
                     off.setName(rs.getString("name"));
                     off.setSeparator(rs.getString("separator"));
 
+                    off.setInserted(true);
                     orderFileFormats.add(off);
                 }
             }
@@ -1268,6 +1293,7 @@ public class DbManager {
                     si.setValue(rs.getString("value"));
                     si.setItemId(rs.getLong("itemId"));
 
+                    si.setInserted(true);
                     setItems.add(si);
                 }
             }
@@ -1283,8 +1309,8 @@ public class DbManager {
 
 
     /*
-*                  DIMENSION TYPES
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    *                  DIMENSION TYPES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<DimensionType> getDimensionTypes()    {
         if (dimensionTypes == null) {
             updateDimensionTypes();
@@ -1310,6 +1336,7 @@ public class DbManager {
                     dt.setHeight(rs.getDouble("height"));
                     dt.setPackageTypeId(rs.getLong("packageTypeId"));
 
+                    dt.setInserted(true);
                     dimensionTypes.add(dt);
                 }
             }
@@ -1323,6 +1350,69 @@ public class DbManager {
         }
     }
 
+    /*
+    *                  KC COMPONENTS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<KcComponent> getKcComponents()    {
+        if (kcComponents == null) {
+            updateKcComponents();
+        }
+        return kcComponents;
+    }
+
+    private void updateKcComponents()    {
+        kcComponents = new ArrayList<>();
+        Status().setMessage("Fetching kc components from DB");
+        KcComponent kc = null;
+        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    kc = new KcComponent();
+                    kc.setId(rs.getLong("id"));
+                    kc.setValue(rs.getString("value"));
+                    kc.setFootprint(rs.getString("footprint"));
+                    kc.getLibSource().setLib(rs.getString("lib"));
+                    kc.getLibSource().setPart(rs.getString("part"));
+
+                    kc.setInserted(true);
+                    kcComponents.add(kc);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(kc, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public long findKcComponentId(String value, String footprint, String lib, String part) {
+        long id = -1;
+        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ONE);
+
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, value);
+                stmt.setString(2, footprint);
+                stmt.setString(3, lib);
+                stmt.setString(4, part);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        id = rs.getLong("id");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
+    }
 
     /*
    *                  LOGS
@@ -1352,6 +1442,7 @@ public class DbManager {
                     l.setLogMessage(rs.getString("logmessage"));
                     l.setLogException(rs.getString("logexception"));
 
+                    l.setInserted(true);
                     logs.add(l);
                 }
             }
@@ -1517,6 +1608,8 @@ public class DbManager {
         }
         return logList;
     }
+
+
 
 
     /*

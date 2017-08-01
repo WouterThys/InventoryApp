@@ -1,11 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.gui.components.ILabel;
-
-import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.List;
 
 public class IKiCadParserModel extends IAbstractTableModel<KcComponent> {
     private static final String[] COLUMN_NAMES = {"", "Part", "Value", "Reference"};

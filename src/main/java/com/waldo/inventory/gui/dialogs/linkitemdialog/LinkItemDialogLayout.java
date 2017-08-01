@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
-import com.waldo.inventory.classes.KcItemMatch;
+import com.waldo.inventory.classes.KcItemLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
@@ -34,7 +34,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     KiCadParser kiCadParser;
 
     KcComponent selectedComponent;
-    KcItemMatch selectedMatchItem;
+    KcItemLink selectedMatchItem;
 
     /*
    *                  CONSTRUCTOR

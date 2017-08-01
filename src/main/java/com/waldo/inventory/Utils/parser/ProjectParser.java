@@ -5,7 +5,7 @@ import com.waldo.inventory.Utils.FileUtils;
 import java.io.File;
 import java.util.List;
 
-public abstract class ProjectParser<P extends Component> {
+public abstract class ProjectParser<P> {
 
     protected String parserName;
     protected File fileToParse;

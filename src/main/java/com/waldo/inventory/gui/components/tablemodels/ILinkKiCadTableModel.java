@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.gui.components.ILabel;
 
 public class ILinkKiCadTableModel extends IAbstractTableModel<KcComponent> {

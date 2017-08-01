@@ -1,8 +1,11 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -38,6 +41,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     private JButton linkBtn;
     private JButton orderBtn;
     private JButton parseBtn;
+    private JButton saveToDbBtn;
 
     /*
      *                  VARIABLES
@@ -195,12 +199,17 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         linkBtn = new JButton(imageResource.readImage("Common.NewLink", 24));
         orderBtn = new JButton(imageResource.readImage("Common.Order", 24));
         parseBtn = new JButton(imageResource.readImage("Common.Parse", 24));
+        saveToDbBtn = new JButton(imageResource.readImage("Common.DbSave", 24));
+
         linkBtn.addActionListener(this);
         orderBtn.addActionListener(this);
         parseBtn.addActionListener(this);
+        saveToDbBtn.addActionListener(this);
+
         linkBtn.setToolTipText("Link to known items");
         orderBtn.setToolTipText("Order linked");
         parseBtn.setToolTipText("Parse again");
+        saveToDbBtn.setToolTipText("Save to database");
     }
 
     @Override
@@ -214,6 +223,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         buttonPanel.add(linkBtn);
         buttonPanel.add(orderBtn);
         buttonPanel.add(parseBtn);
+        buttonPanel.add(saveToDbBtn);
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
@@ -272,6 +282,32 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
             // Order known items
         } else if (source.equals(parseBtn)) {
             reParse(parseFile);
+        } else if (source.equals(saveToDbBtn)) {
+            if (kiCadParser != null) {
+                saveKcComponents(kiCadParser);
+            }
         }
     }
+
+    private void saveKcComponents(KiCadParser parser) {
+        List<KcComponent> toSaveList = parser.createUniqueList(parser.getParsedData());
+        int cnt = 0;
+        for (KcComponent component : toSaveList) {
+            KcComponent dbComponent = SearchManager.sm().findKcComponent(component.getValue(), component.getFootprint(), component.getLibSource().getLib(), component.getLibSource().getPart());
+            if (dbComponent == null) {
+                component.save();
+                cnt++;
+            }
+        }
+
+        String msg = "Saved " + cnt + " new components, " + (toSaveList.size() - cnt) + " where already saved in the database!";
+
+        JOptionPane.showMessageDialog(
+                application,
+                msg,
+                "Saved components",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
 }

@@ -4,6 +4,10 @@ package com.waldo.inventory.Utils.parser.KiCad;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.Node;
 import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcLibSource;
+import com.waldo.inventory.classes.kicad.KcSheetPath;
+import com.waldo.inventory.database.SearchManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +75,9 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         List<KcComponent> components = new ArrayList<>();
         for (Node n1 : head.getChildren()) { // n1 has the list with all the components
             if (n1.name.equals("comp")) {
+
                 KcComponent component = new KcComponent();
+
                 for (Node n2 : n1.getChildren()) {
                     switch (n2.name) {
                         case "ref": component.setRef(n2.value); break;
@@ -102,6 +108,17 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                         case "tstamp": component.parseTimeStamp(n2.value); break;
                         default:break;
                     }
+                }
+
+                KcComponent dbComponent = SearchManager.sm().findKcComponent(
+                        component.getValue(),
+                        component.getFootprint(),
+                        component.getLibSource().getLib(),
+                        component.getLibSource().getPart());
+
+                if (dbComponent != null) {
+                    component = dbComponent.createCopy();
+                    component.setCanBeSaved(true);
                 }
                 components.add(component);
             }
@@ -199,6 +216,28 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                 return 0;
             }
         }
+    }
+
+    public List<KcComponent> createUniqueList(List<KcComponent> componentList) {
+        List<KcComponent> uniqueList = new ArrayList<>();
+        for (KcComponent comp : componentList) {
+            if (!uniqueContains(uniqueList, comp)) {
+                uniqueList.add(comp);
+            }
+        }
+        return uniqueList;
+    }
+
+    private boolean uniqueContains(List<KcComponent> componentList, KcComponent component) {
+        for (KcComponent comp : componentList) {
+            if (comp.getValue().equals(component.getValue()) &&
+                    comp.getFootprint().equals(component.getFootprint()) &&
+                    comp.getLibSource().getLib().equals(component.getLibSource().getLib()) &&
+                    comp.getLibSource().getPart().equals(component.getLibSource().getPart())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

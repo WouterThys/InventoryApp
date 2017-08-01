@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.KcItemMatch;
+import com.waldo.inventory.classes.KcItemLink;
 import com.waldo.inventory.gui.components.ILabel;
 
-public class ILinkItemTableModel extends IAbstractTableModel<KcItemMatch> {
+public class ILinkItemTableModel extends IAbstractTableModel<KcItemLink> {
     private static final String[] COLUMN_NAMES = {"", "Name", "N", "V", "FP"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, Boolean.class, Boolean.class, Boolean.class};
 
@@ -13,7 +13,7 @@ public class ILinkItemTableModel extends IAbstractTableModel<KcItemMatch> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        KcItemMatch match = getItemAt(rowIndex);
+        KcItemLink match = getItemAt(rowIndex);
 
         if (match != null) {
             switch (columnIndex) {
