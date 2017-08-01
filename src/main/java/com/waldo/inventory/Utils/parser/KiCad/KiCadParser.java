@@ -4,6 +4,7 @@ package com.waldo.inventory.Utils.parser.KiCad;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.Node;
 import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.classes.kicad.KcLibSource;
 import com.waldo.inventory.classes.kicad.KcSheetPath;
@@ -234,6 +235,28 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                     comp.getLibSource().getLib().equals(component.getLibSource().getLib()) &&
                     comp.getLibSource().getPart().equals(component.getLibSource().getPart())) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean allComponentsInDb() {
+        if (componentList != null && componentList.size() > 0) {
+            for(KcComponent component : componentList) {
+                if (component.getId() < DbObject.UNKNOWN_ID) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasLinkedItems() {
+        if (componentList != null && componentList.size() > 0) {
+            for (KcComponent component : componentList) {
+                if (component.hasMatch()) {
+                    return true;
+                }
             }
         }
         return false;

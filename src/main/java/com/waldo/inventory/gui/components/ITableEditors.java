@@ -275,15 +275,19 @@ public class ITableEditors {
                 lblText.setText(String.valueOf(component.getReferences().size()));
 
                 ILabel lblIcon;
-                if (component.matchCount() > 0) {
-                    int highest = component.highestMatch();
-                    if (KcComponent.getMatchCount(highest) == 3) {
-                        lblIcon = new ILabel(imageResource.readImage("Ball.green"));
-                    } else {
-                        lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
-                    }
+                if (component.hasMatch()) {
+                    lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
                 } else {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+                    if (component.matchCount() > 0) {
+                        int highest = component.highestMatch();
+                        if (KcComponent.getMatchCount(highest) == 3) {
+                            lblIcon = new ILabel(imageResource.readImage("Ball.green"));
+                        } else {
+                            lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
+                        }
+                    } else {
+                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+                    }
                 }
 
                 // Colors

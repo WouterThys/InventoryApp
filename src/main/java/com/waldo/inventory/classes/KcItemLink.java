@@ -74,6 +74,13 @@ public class KcItemLink extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
+        if (getItemId() < UNKNOWN_ID) {
+            setItemId(UNKNOWN_ID);
+        }
+        if (getSetItemId() < UNKNOWN_ID) {
+            setSetItemId(UNKNOWN_ID);
+        }
+
         statement.setLong(ndx++, getItemId());
         statement.setLong(ndx++, getSetItemId());
         statement.setBoolean(ndx++, isSetItem());
@@ -140,17 +147,17 @@ public class KcItemLink extends DbObject {
 
     public String getName() {
         if (isSetItem) {
-            return getItem().getName() + "/" + setItem.toString();
+            return getItem().getName() + "/" + getSetItem().toString();
         } else {
-            return item.getName();
+            return getItem().getName();
         }
     }
 
     public int getAmount() {
         if (isSetItem()) {
-            return setItem.getAmount();
+            return getSetItem().getAmount();
         } else {
-            return item.getAmount();
+            return getItem().getAmount();
         }
     }
 

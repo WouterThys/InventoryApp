@@ -135,11 +135,11 @@ public abstract class DbObject {
     public boolean equals(Object obj) {
         if (obj != null) {
             if (obj instanceof DbObject) {
-                if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
+                if (((DbObject) obj).getId() == getId() && ((DbObject) obj).getName().equals(getName())) {
                     return true;
                 }
-                if (id < 0 || ((DbObject) obj).getId() < 0) {
-                    return name.equals(((DbObject) obj).getName());
+                if (getId() < 0 || ((DbObject) obj).getId() < 0) {
+                    return getName().equals(((DbObject) obj).getName());
                 }
             }
         }

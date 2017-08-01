@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.classes.KcItemLink;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.database.DbManager;
@@ -34,7 +35,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JTabbedPane sheetTabs;
+    private JTabbedPane sheetTabs;
 
     private ILabel titleLbl;
 
@@ -46,7 +47,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    private Application application;
     private File parseFile;
     private KiCadParser kiCadParser = (com.waldo.inventory.Utils.parser.KiCad.KiCadParser) Application.getProjectParser("KiCadParser");
 
@@ -77,20 +78,26 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         return panel.getTable();
     }
 
-    void updateComponentTable(HashMap<String, List<KcComponent>> componentMap) {
+    private void updateEnabledComponents() {
+        saveToDbBtn.setEnabled(!kiCadParser.allComponentsInDb());
+        orderBtn.setEnabled(kiCadParser.hasLinkedItems());
+    }
+
+    private void updateComponentTable(HashMap<String, List<KcComponent>> componentMap) {
         for (String sheet : componentMap.keySet()) {
             KiCadSheetTab tab = new KiCadSheetTab(application, this);
             tab.updateComponents(componentMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
         repaint();
+        updateEnabledComponents();
     }
 
-    void clearComponentTable() {
+    private void clearComponentTable() {
         sheetTabs.removeAll();
     }
 
-    void reParse(File fileToParse) {
+    private void reParse(File fileToParse) {
         hasParsed = false;
         parseFile(fileToParse);
     }
@@ -100,7 +107,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         matchItems();
     }
 
-    public void matchItems() {
+    private void matchItems() {
         if (!hasMatched) {
             application.beginWait();
             try {
@@ -116,7 +123,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         }
     }
 
-    public void parseFile(File fileToParse) {
+    private void parseFile(File fileToParse) {
         if (!hasParsed) {
             application.beginWait();
             try {
@@ -245,6 +252,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
                     application.endWait();
                 }
             }
+            updateEnabledComponents();
         } else {
             setVisible(false);
         }
@@ -287,6 +295,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
                 saveKcComponents(kiCadParser);
             }
         }
+        updateEnabledComponents();
     }
 
     private void saveKcComponents(KiCadParser parser) {

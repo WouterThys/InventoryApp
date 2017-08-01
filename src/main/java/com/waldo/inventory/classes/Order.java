@@ -306,6 +306,12 @@ public class Order extends DbObject {
         this.dateOrdered = dateOrdered;
     }
 
+    public void setDateOrdered(Timestamp dateOrdered) {
+        if (dateOrdered != null) {
+            this.dateOrdered = new Date(dateOrdered.getTime());
+        }
+    }
+
     public List<OrderItem> getOrderItems() {
         if (orderItems == null) {
             orderItems = DbManager.db().getOrderedItems(id);
@@ -325,12 +331,24 @@ public class Order extends DbObject {
         this.dateModified = dateModified;
     }
 
+    public void setDateModified(Timestamp dateModified) {
+        if (dateModified != null) {
+            this.dateModified = new Date(dateModified.getTime());
+        }
+    }
+
     public Date getDateReceived() {
         return dateReceived;
     }
 
     public void setDateReceived(Date dateReceived) {
         this.dateReceived = dateReceived;
+    }
+
+    public void setDateReceived(Timestamp dateReceived) {
+        if (dateReceived != null) {
+            this.dateReceived = new Date(dateReceived.getTime());
+        }
     }
 
     public Distributor getDistributor() {

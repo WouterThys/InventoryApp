@@ -107,7 +107,10 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
+        if (columnIndex < columnClasses.length) {
+            return columnClasses[columnIndex];
+        }
+        return super.getColumnClass(columnIndex);
     }
 
     @Override

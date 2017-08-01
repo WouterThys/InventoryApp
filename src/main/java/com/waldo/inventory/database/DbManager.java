@@ -786,9 +786,9 @@ public class DbManager {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconPath"));
-                    o.setDateOrdered(rs.getDate("dateOrdered"));
-                    o.setDateModified(rs.getDate("dateModified"));
-                    o.setDateReceived(rs.getDate("dateReceived"));
+                    o.setDateOrdered(rs.getTimestamp("dateOrdered"));
+                    o.setDateModified(rs.getTimestamp("dateModified"));
+                    o.setDateReceived(rs.getTimestamp("dateReceived"));
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
@@ -1448,7 +1448,7 @@ public class DbManager {
                     kil.setItemId(rs.getLong("itemId"));
                     kil.setSetItemId(rs.getLong("setItemId"));
                     kil.setIsSetItem(rs.getBoolean("isSetItem"));
-                    kil.setMatch(rs.getByte("match"));
+                    kil.setMatch(rs.getByte("componentMatch"));
                     kil.setKcComponentId(rs.getLong("kcComponentId"));
 
                     kil.setInserted(true);
@@ -1489,7 +1489,7 @@ public class DbManager {
                     l = new Log();
                     l.setId(rs.getLong("id"));
                     l.setLogType(rs.getInt("logtype"));
-                    l.setLogTime(rs.getDate("logtime"));
+                    l.setLogTime(rs.getTimestamp("logtime"));
                     l.setLogClass(rs.getString("logclass"));
                     l.setLogMessage(rs.getString("logmessage"));
                     l.setLogException(rs.getString("logexception"));
@@ -1728,7 +1728,7 @@ public class DbManager {
                                         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                                             insert(stmt, dbo);
                                         } catch (SQLException e) {
-                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
                                             nonoList.put(object);
                                         }
                                     }

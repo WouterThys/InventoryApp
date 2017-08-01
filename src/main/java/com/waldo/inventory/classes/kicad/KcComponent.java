@@ -232,7 +232,7 @@ public class KcComponent extends DbObject {
             if (setItemName.equals(kcName)) {
                 match |= MATCH_NAME;
             }
-            if (kcValue.contains(setItemValue)) {
+            if (kcValue.contains(setItemValue) || setItemValue.contains(kcValue)) {
                 match |= MATCH_VALUE;
             }
             // Only check footprint match if there is already a match
@@ -247,6 +247,7 @@ public class KcComponent extends DbObject {
                 KcItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
                 if (link != null) {
                     itemMatches.add(link);
+                    component.setMatchedItem(link);
                 } else {
                     itemMatches.add(new KcItemLink(match, component, setItem));
                 }
@@ -286,6 +287,7 @@ public class KcComponent extends DbObject {
             KcItemLink link = SearchManager.sm().findKcItemLinkWithItemId(item.getId(), component.getId());
             if (link != null) {
                 itemMatches.add(link);
+                component.setMatchedItem(link);
             } else {
                 itemMatches.add(new KcItemLink(match, component, item));
             }

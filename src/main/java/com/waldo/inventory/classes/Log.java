@@ -233,6 +233,14 @@ public class Log extends DbObject {
         this.logTime = logTime;
     }
 
+    public void setLogTime(Timestamp logTime) {
+        if (logTime != null) {
+            this.logTime = new Date(logTime.getTime());
+        } else {
+            this.logTime = new Date(0,0,0);
+        }
+    }
+
     public String getLogClass() {
         if (logClass == null) {
             logClass = "";

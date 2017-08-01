@@ -6,14 +6,17 @@ import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 
+import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkItemDialog extends LinkItemDialogLayout {
+public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChangedListener<KcItemLink> {
 
 
     public LinkItemDialog(Application application, String title, KiCadParser parser) {
@@ -24,6 +27,7 @@ public class LinkItemDialog extends LinkItemDialogLayout {
         updateComponents(parser);
 
         addListeners(createKcListListener(), createItemListListener());
+        DbManager.db().addOnKcItemLinkChangedListener(this);
     }
 
     private ListSelectionListener createKcListListener() {
@@ -36,7 +40,11 @@ public class LinkItemDialog extends LinkItemDialogLayout {
                     if (selectedComponent.hasMatch()) {
                         itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
                     } else {
-                        selectedMatchItem = null;
+                        if (selectedComponent.getItemMatchMap().size() > 0) {
+                            itemPanel.selectMatchItem(selectedComponent.getItemMatchMap().get(0));
+                        } else {
+                            selectedMatchItem = null;
+                        }
                     }
                 }
                 updateEnabledComponents();
@@ -52,6 +60,56 @@ public class LinkItemDialog extends LinkItemDialogLayout {
                 updateEnabledComponents();
             }
         };
+    }
+
+    //
+    // Dialog
+    //
+    @Override
+    protected void onOK() {
+        if (itemLinksToSave.size() > 0) {
+            int result = JOptionPane.showConfirmDialog(
+                    LinkItemDialog.this,
+                    "There are unsaved links, do you realy want to close this dialog?",
+                    "Unsaved links",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (result == JOptionPane.YES_OPTION) {
+                super.onOK();
+            }
+        } else {
+            super.onOK();
+        }
+    }
+
+    @Override
+    protected void onNeutral() {
+        for (KcItemLink link : itemLinksToSave) {
+            link.save();
+        }
+        itemLinksToSave.clear();
+        getButtonNeutral().setEnabled(false);
+    }
+
+    //
+    // Db listener
+    //
+
+
+    @Override
+    public void onInserted(KcItemLink link) {
+
+    }
+
+    @Override
+    public void onUpdated(KcItemLink link) {
+
+    }
+
+    @Override
+    public void onDeleted(KcItemLink link) {
+
     }
 
     //
@@ -117,12 +175,27 @@ public class LinkItemDialog extends LinkItemDialogLayout {
             if (selectedComponent != null && selectedMatchItem != null) {
                 if (selectedComponent.hasMatch()) {
                     selectedComponent.setMatchedItem(null);
+                    selectedMatchItem.setMatched(false);
+                    if (itemLinksToSave.contains(selectedMatchItem)) {
+                        itemLinksToSave.remove(selectedMatchItem);
+                    } else {
+                        if (!itemLinksToDelete.contains(selectedMatchItem)) {
+                            itemLinksToDelete.add(selectedMatchItem);
+                        }
+                    }
                 } else {
+                    selectedComponent.getItemMatchMap().add(selectedMatchItem);
                     selectedComponent.setMatchedItem(selectedMatchItem);
+                    if (itemLinksToDelete.contains(selectedMatchItem)) {
+                        itemLinksToDelete.remove(selectedMatchItem);
+                    } else {
+                        if (!itemLinksToSave.contains(selectedMatchItem)) {
+                            itemLinksToSave.add(selectedMatchItem);
+                        }
+                    }
                 }
-                updateLinkBtn();
                 kcPanel.updateTable();
-                updateLinkBtn();
+                updateEnabledComponents();
             }
         }
     }

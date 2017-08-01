@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.gui.components.ILabel;
 

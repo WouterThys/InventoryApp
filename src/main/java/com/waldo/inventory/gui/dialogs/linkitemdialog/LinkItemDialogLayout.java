@@ -12,6 +12,8 @@ import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkKcPanel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -31,10 +33,13 @@ public abstract class LinkItemDialogLayout extends IDialog implements
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    KiCadParser kiCadParser;
+     private KiCadParser kiCadParser;
 
     KcComponent selectedComponent;
     KcItemLink selectedMatchItem;
+
+    List<KcItemLink> itemLinksToSave = new ArrayList<>();
+    List<KcItemLink> itemLinksToDelete = new ArrayList<>();
 
     /*
    *                  CONSTRUCTOR
@@ -49,16 +54,19 @@ public abstract class LinkItemDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
         linkBtn.setEnabled(selectedComponent != null && selectedMatchItem != null);
-        updateLinkBtn();
-    }
 
-    void updateLinkBtn() {
         if (selectedComponent != null) {
             if (selectedComponent.hasMatch()) {
                 linkBtn.setIcon(imageResource.readImage("Common.RemoveLink", 32));
             } else {
                 linkBtn.setIcon(imageResource.readImage("Common.NewLink", 32));
             }
+        }
+
+        if (itemLinksToSave.size() > 0 || itemLinksToDelete.size() > 0) {
+            getButtonNeutral().setEnabled(true);
+        } else {
+            getButtonNeutral().setEnabled(false);
         }
     }
 
@@ -75,6 +83,9 @@ public abstract class LinkItemDialogLayout extends IDialog implements
         // Dialog
         setTitleIcon(imageResource.readImage("Common.NewLink", 48));
         setTitleName(getTitle());
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setText("Save");
+        getButtonNeutral().setEnabled(false);
 
         // Panels
         kcPanel = new LinkKcPanel(application);
