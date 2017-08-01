@@ -99,6 +99,9 @@ public class KcComponent extends DbObject {
         cpy.setValue(getValue());
         cpy.setFootprint(getFootprint());
         cpy.setLibSource(getLibSource());
+        cpy.setRef(getRef());
+        cpy.setSheetPath(getSheetPath());
+        cpy.settStamp(gettStamp());
         return cpy;
     }
 
@@ -241,7 +244,12 @@ public class KcComponent extends DbObject {
 
             // Add
             if (match > 0) {
-                itemMatches.add(new KcItemLink(match, setItem));
+                KcItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
+                if (link != null) {
+                    itemMatches.add(link);
+                } else {
+                    itemMatches.add(new KcItemLink(match, component, setItem));
+                }
             }
         }
         return itemMatches;
@@ -275,7 +283,12 @@ public class KcComponent extends DbObject {
 
         // Add
         if (match > 0) {
-            itemMatches.add(new KcItemLink(match, item));
+            KcItemLink link = SearchManager.sm().findKcItemLinkWithItemId(item.getId(), component.getId());
+            if (link != null) {
+                itemMatches.add(link);
+            } else {
+                itemMatches.add(new KcItemLink(match, component, item));
+            }
         }
         return itemMatches;
     }

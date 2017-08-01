@@ -72,6 +72,7 @@ public class DbManager {
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<KcComponent>> onKcComponentChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<KcItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -96,6 +97,7 @@ public class DbManager {
     private List<SetItem> setItems;
     private List<DimensionType> dimensionTypes;
     private List<KcComponent> kcComponents;
+    private List<KcItemLink> kcItemLinks;
     private List<Log> logs;
 
     private DbManager() {}
@@ -316,6 +318,12 @@ public class DbManager {
     public void addOnKcComponentChangedListener(DbObjectChangedListener<KcComponent> dbObjectChangedListener) {
         if (!onKcComponentChangedListenerList.contains(dbObjectChangedListener)) {
             onKcComponentChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnKcItemLinkChangedListener(DbObjectChangedListener<KcItemLink> dbObjectChangedListener) {
+        if (!onKcItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onKcItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -1413,6 +1421,50 @@ public class DbManager {
 
         return id;
     }
+
+
+    /*
+    *                  KC ITEM LINKS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<KcItemLink> getKcItemLinks()    {
+        if (kcItemLinks == null) {
+            updateKcItemLinks();
+        }
+        return kcItemLinks;
+    }
+
+    private void updateKcItemLinks()    {
+        kcItemLinks = new ArrayList<>();
+        Status().setMessage("Fetching KcItemLinks from DB");
+        KcItemLink kil = null;
+        String sql = scriptResource.readString(KcItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    kil = new KcItemLink();
+                    kil.setId(rs.getLong("id"));
+                    kil.setItemId(rs.getLong("itemId"));
+                    kil.setSetItemId(rs.getLong("setItemId"));
+                    kil.setIsSetItem(rs.getBoolean("isSetItem"));
+                    kil.setMatch(rs.getByte("match"));
+                    kil.setKcComponentId(rs.getLong("kcComponentId"));
+
+                    kil.setInserted(true);
+                    kcItemLinks.add(kil);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(kil, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
 
     /*
    *                  LOGS

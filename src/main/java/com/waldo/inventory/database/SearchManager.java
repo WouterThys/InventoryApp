@@ -3,6 +3,7 @@ package com.waldo.inventory.database;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.kicad.KcComponent;
+import org.apache.regexp.RE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -799,6 +800,37 @@ public class SearchManager {
                     component.getLibSource().getPart().equals(part)) {
 
                 return component;
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkById(long id) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (kcItemLink.getId() == id) {
+                return kcItemLink;
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkWithItemId(long itemId, long kcComponentId) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (!kcItemLink.isSetItem()) {
+                if(kcItemLink.getItemId() == itemId && kcItemLink.getKcComponentId() == kcComponentId) {
+                    return kcItemLink;
+                }
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkWithSetItemId(long setItemId, long kcComponentId) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (kcItemLink.isSetItem()) {
+                if(kcItemLink.getSetItemId() == setItemId && kcItemLink.getKcComponentId() == kcComponentId) {
+                    return kcItemLink;
+                }
             }
         }
         return null;

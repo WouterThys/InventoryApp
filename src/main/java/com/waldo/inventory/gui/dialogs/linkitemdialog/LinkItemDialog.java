@@ -68,11 +68,11 @@ public class LinkItemDialog extends LinkItemDialogLayout {
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemLink m = new KcItemLink(0, (Item)object);
+                        KcItemLink m = new KcItemLink(0, selectedComponent, (Item)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemLink m = new KcItemLink(0, (Item)object);
+                    KcItemLink m = new KcItemLink(0, null, (Item)object);
                     itemMatches.add(m);
                 }
             } else if (type == DbObject.TYPE_SET_ITEM) {
@@ -81,11 +81,11 @@ public class LinkItemDialog extends LinkItemDialogLayout {
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemLink m = new KcItemLink(0, (SetItem)object);
+                        KcItemLink m = new KcItemLink(0,selectedComponent,  (SetItem)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemLink m = new KcItemLink(0, (SetItem) object);
+                    KcItemLink m = new KcItemLink(0, null, (SetItem) object);
                     itemMatches.add(m);
                 }
             }

@@ -117,8 +117,7 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                         component.getLibSource().getPart());
 
                 if (dbComponent != null) {
-                    component = dbComponent.createCopy();
-                    component.setCanBeSaved(true);
+                    component.setId(dbComponent.getId());
                 }
                 components.add(component);
             }
