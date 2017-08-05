@@ -47,6 +47,10 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
         itemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
+    public void setItemList(java.util.List<KcComponent> componentList) {
+        tableModel.setItemList(componentList);
+    }
+
     public void updateSelectedValueData(KcComponent component) {
         if (component != null) {
             referencesTf.setText(component.getReferenceString());
@@ -67,6 +71,10 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
 
     public void updateTable() {
         tableModel.updateTable();
+    }
+
+    public void setSortByRefButtonVisible(boolean visible) {
+        sortByRefBtn.setVisible(visible);
     }
 
     private JPanel createSouthPanel() {

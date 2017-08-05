@@ -38,10 +38,15 @@ public class ProjectDirectory extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setLong(2, projectId);
-        statement.setString(3, directory);
-        return 4;
+//        if (projectId < UNKNOWN_ID) {
+//            projectId = UNKNOWN_ID;
+//        }
+
+        int ndx = 1;
+        statement.setString(ndx++, getName());
+        statement.setLong(ndx++, getProjectId());
+        statement.setString(ndx++, getDirectory());
+        return ndx;
     }
 
     @Override
@@ -158,11 +163,18 @@ public class ProjectDirectory extends DbObject {
     }
 
     public long getProjectId() {
+        if (projectId < UNKNOWN_ID && project != null) {
+            projectId = project.getId();
+        }
         return projectId;
     }
 
     public void setProjectId(long projectId) {
         this.projectId = projectId;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public Project getProject() {

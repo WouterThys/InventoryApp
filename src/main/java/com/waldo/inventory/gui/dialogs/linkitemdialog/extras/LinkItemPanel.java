@@ -33,7 +33,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    private Application application;
 
     /*
      *                  CONSTRUCTOR
@@ -175,7 +175,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
 
         // Table
         tableModel = new ILinkItemTableModel();
-        itemTable = new ITable(tableModel);
+        itemTable = new ITable<>(tableModel);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.getColumnModel().getColumn(0).setMaxWidth(30);
         itemTable.getColumnModel().getColumn(2).setMaxWidth(30);

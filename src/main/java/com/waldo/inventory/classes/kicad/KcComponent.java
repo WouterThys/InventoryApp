@@ -243,15 +243,16 @@ public class KcComponent extends DbObject {
             }
 
             // Add
-            if (match > 0) {
-                KcItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
-                if (link != null) {
-                    itemMatches.add(link);
-                    component.setMatchedItem(link);
-                } else {
+            KcItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
+            if (link != null) {
+                itemMatches.add(link);
+                component.setMatchedItem(link);
+            } else {
+                if (match > 0) {
                     itemMatches.add(new KcItemLink(match, component, setItem));
                 }
             }
+
         }
         return itemMatches;
     }
@@ -283,15 +284,17 @@ public class KcComponent extends DbObject {
         }
 
         // Add
-        if (match > 0) {
-            KcItemLink link = SearchManager.sm().findKcItemLinkWithItemId(item.getId(), component.getId());
-            if (link != null) {
-                itemMatches.add(link);
-                component.setMatchedItem(link);
-            } else {
+
+        KcItemLink link = SearchManager.sm().findKcItemLinkWithItemId(item.getId(), component.getId());
+        if (link != null) {
+            itemMatches.add(link);
+            component.setMatchedItem(link);
+        } else {
+            if (match > 0) {
                 itemMatches.add(new KcItemLink(match, component, item));
             }
         }
+
         return itemMatches;
     }
 

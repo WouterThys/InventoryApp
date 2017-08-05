@@ -217,6 +217,11 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectTree);
 
+        kiCadItemPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(2,3,2,3),
+                BorderFactory.createLineBorder(Color.gray, 1)
+        ));
+
         // West panel
         JPanel westPanel = new JPanel(new BorderLayout());
         westPanel.add(pane, BorderLayout.CENTER);
@@ -224,7 +229,9 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
         // Center panel
         JPanel centerPanel = new JPanel(new BorderLayout());
+        //JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectGirdPanel, kiCadItemPanel);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
+        //centerPanel.add(split, BorderLayout.CENTER);
         centerPanel.add(projectGirdPanel, BorderLayout.CENTER);
         centerPanel.add(kiCadItemPanel, BorderLayout.EAST);
 
@@ -241,8 +248,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
         centerPanel.add(infoPanel, BorderLayout.SOUTH);
 
         // Add
-        add(westPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
+        //add(westPanel, BorderLayout.WEST);
+        //add(centerPanel, BorderLayout.CENTER);
+
+        // Add
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override

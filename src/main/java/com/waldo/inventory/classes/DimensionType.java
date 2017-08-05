@@ -89,6 +89,13 @@ public class DimensionType extends DbObject {
         return u;
     }
 
+    public static DimensionType createDummyDimensionType() {
+        DimensionType d = new DimensionType();
+        d.setName("");
+        d.setCanBeSaved(false);
+        return d;
+    }
+
     // Getters and setters
 
     public double getWidth() {

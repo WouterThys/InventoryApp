@@ -184,8 +184,10 @@ public abstract class MainPanelLayout extends JPanel implements
         panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
-        add(pane, BorderLayout.WEST);
-        add(panel, BorderLayout.CENTER);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override

@@ -90,7 +90,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         }
     }
 
-    void updateOrderFileFormatComboBox() {
+    private void updateOrderFileFormatComboBox() {
         detailOrderFileFormatModel.removeAllElements();
         for (OrderFileFormat off : DbManager.db().getOrderFileFormats()) {
             detailOrderFileFormatModel.addElement(off);
@@ -225,14 +225,14 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         orderPanel.add(formatLabel, gbc);
 
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         orderPanel.add(detailOrderFileFormatCb, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 4; gbc.weighty = 0;
+        gbc.gridy = 3; gbc.weighty = 0;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.EAST;

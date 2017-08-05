@@ -518,8 +518,14 @@ public abstract class OrderPanelLayout extends JPanel implements
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
 
         // Add
-        add(westPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
+        //add(westPanel, BorderLayout.WEST);
+        //add(centerPanel, BorderLayout.CENTER);
+
+        // Add
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override

@@ -159,10 +159,21 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedIndex(selectedIndex);
     }
+
+    private void createProductTypeId() {
+        DefaultComboBoxModel<PackageType> packageTypeCbModel = new DefaultComboBoxModel<>();
+        packageTypeCbModel.addElement((PackageType.createDummyPackageType()));
+        for (PackageType pt : db().getPackageTypes()) {
+            packageTypeCbModel.addElement(pt);
+        }
+        packageTypeComboBox = new IComboBox<>(packageTypeCbModel);
+        packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
+    }
     
     public void updateDimensionPanel() {
         PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
         dimensionCbModel.removeAllElements();
+        dimensionCbModel.addElement(DimensionType.createDummyDimensionType());
         if (packageType != null) {
             java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
             for (DimensionType dt : dimensionTypeList) {
@@ -233,13 +244,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private void initializeDetailsComponents() {
         // Package
-        DefaultComboBoxModel<PackageType> packageTypeCbModel = new DefaultComboBoxModel<>();
-        for (PackageType pt : db().getPackageTypes()) {
-            packageTypeCbModel.addElement(pt);
-        }
-        packageTypeComboBox = new IComboBox<>(packageTypeCbModel);
-        packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
-        packageTypeComboBox.insertItemAt(PackageType.createDummyPackageType(), 0);
+        createProductTypeId();
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         packagePinsSp = new ISpinner(spinnerModel);
         packagePinsSp.addEditedListener(editedListener, "pins");
@@ -583,8 +588,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             packagePinsSp.setValue(newItem.getPackage().getPins());
             packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
             packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
-        } else {
-            packageTypeComboBox.setSelectedIndex(0);
         }
 
         // MANUFACTURER

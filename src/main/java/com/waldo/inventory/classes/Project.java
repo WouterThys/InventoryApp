@@ -196,7 +196,7 @@ public class Project extends DbObject {
         int cnt = 0;
         for (ProjectDirectory directory : getProjectDirectories()) {
             if (directory.getId() <= UNKNOWN_ID) {
-                directory.setProjectId(id);
+                directory.setProject(this);
                 directory.setName(getName() + "-dir" + String.valueOf(cnt));
                 cnt++;
             }
@@ -209,8 +209,8 @@ public class Project extends DbObject {
                     if (ptl == null) {
                         ptl = new ProjectTypeLink();
                     }
-                    ptl.setProjectTypeId(type.getId());
-                    ptl.setProjectDirectoryId(directory.getId());
+                    ptl.setProjectType(type);
+                    ptl.setProjectDirectory(directory);
                     ptl.setFilePath(file.getAbsolutePath());
                     ptl.save();
                 }

@@ -30,11 +30,6 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     JButton linkBtn;
     private JButton matchBtn;
 
-     /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     private KiCadParser kiCadParser;
-
     KcComponent selectedComponent;
     KcItemLink selectedMatchItem;
 
@@ -127,7 +122,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            kiCadParser = (KiCadParser) object;
+            KiCadParser kiCadParser = (KiCadParser) object;
             kcPanel.updateComponents(kiCadParser);
         } else {
             //componentList.clear();

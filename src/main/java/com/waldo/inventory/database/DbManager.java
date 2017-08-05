@@ -1662,6 +1662,28 @@ public class DbManager {
     }
 
 
+//    public void asyncSave(DbObject objectToSave) {
+//        String sql = objectToSave.getScript(DbObject.SQL_INSERT);
+//        try (PreparedStatement stmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            objectToSave.addParameters(stmt);
+//            stmt.execute();
+//
+//            try (ResultSet rs = stmt.getGeneratedKeys()) {
+//                rs.next();
+//                objectToSave.setId(rs.getLong(1));
+//            }
+//
+//            // Listeners
+//            objectToSave.tableChanged(OBJECT_INSERT);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            //DbErrorObject object = new DbErrorObject(objectToSave, e, OBJECT_INSERT, sql);
+//            //nonoList.put(object);
+//        }
+//    }
+
+
+
 
 
     /*

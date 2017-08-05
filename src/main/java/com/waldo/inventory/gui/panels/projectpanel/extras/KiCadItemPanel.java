@@ -1,17 +1,15 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.KcItemLink;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
+import com.waldo.inventory.gui.dialogs.kccomponentorderdialog.KcComponentOrderDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkItemDialog;
 
@@ -36,8 +34,6 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private JTabbedPane sheetTabs;
-
-    private ILabel titleLbl;
 
     private JButton linkBtn;
     private JButton orderBtn;
@@ -90,7 +86,6 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
             sheetTabs.addTab(sheet, tab);
         }
         repaint();
-        updateEnabledComponents();
     }
 
     private void clearComponentTable() {
@@ -111,12 +106,13 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         if (!hasMatched) {
             application.beginWait();
             try {
-                for (KcComponent component : getTableModel().getItemList()) {
-                    SwingUtilities.invokeLater(() -> {
+                SwingUtilities.invokeLater(() -> {
+                    for (KcComponent component : getTableModel().getItemList()) {
                         component.findMatchingItems();
                         getTableModel().updateItem(component);
-                    });
-                }
+                    }
+                    updateEnabledComponents();
+                });
             } finally {
                 application.endWait();
             }
@@ -200,7 +196,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         sheetTabs.addChangeListener(this);
 
         // Title
-        titleLbl = new ILabel("Items");
+        ILabel titleLbl = new ILabel("Items");
         titleLbl.setFont(20, Font.BOLD);
 
         linkBtn = new JButton(imageResource.readImage("Common.NewLink", 24));
@@ -223,9 +219,6 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel titlePanel = new JPanel(new BorderLayout());
-        titlePanel.add(titleLbl, BorderLayout.CENTER);
-
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(linkBtn);
         buttonPanel.add(orderBtn);
@@ -234,7 +227,6 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
-        //add(titlePanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
 
     }
@@ -288,6 +280,8 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
             dialog.showDialog();
         } else if (source.equals(orderBtn)) {
             // Order known items
+            KcComponentOrderDialog orderDialog = new KcComponentOrderDialog(application, "Order items", kiCadParser.getLinkedItems());
+            orderDialog.showDialog();
         } else if (source.equals(parseBtn)) {
             reParse(parseFile);
         } else if (source.equals(saveToDbBtn)) {

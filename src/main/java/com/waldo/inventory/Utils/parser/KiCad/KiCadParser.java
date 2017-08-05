@@ -262,4 +262,17 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         return false;
     }
 
+    public List<KcComponent> getLinkedItems() {
+        List<KcComponent> linked = new ArrayList<>();
+
+        if (componentList != null && componentList.size() > 0) {
+            for (KcComponent component : componentList) {
+                if (component.hasMatch()) {
+                    linked.add(component);
+                }
+            }
+        }
+        return linked;
+    }
+
 }
