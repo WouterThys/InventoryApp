@@ -6,10 +6,7 @@ import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -220,6 +217,26 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
         // Add
         Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
+        if (failedItems != null && failedItems.size() > 0) {
+            // TODO Show error message
+        }
+    }
+
+    public void addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+        beginWait();
+        try {
+            // Switch tab
+            setSelectedTab(TAB_ORDERS);
+            // Update items
+            for (OrderItem orderItem : itemsToOrder) {
+                orderItem.getItem().setOrderState(Statics.ItemOrderStates.PLANNED);
+                orderItem.save();
+            }
+        } finally {
+            endWait();
+        }
+        // Add
+        Map<String, Item> failedItems = orderPanel.addOrderItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
             // TODO Show error message
         }

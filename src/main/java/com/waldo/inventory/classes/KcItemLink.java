@@ -201,6 +201,9 @@ public class KcItemLink extends DbObject {
     }
 
     public long getItemId() {
+        if (isSetItem) {
+            itemId = getItem().getId();
+        }
         return itemId;
     }
 

@@ -86,6 +86,28 @@ public class OrderPanel extends OrderPanelLayout {
         return failedItems;
     }
 
+    public Map<String, Item> addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+        Map<String, Item> failedItems = null;
+        for (OrderItem oi : itemsToOrder) {
+            if (!order.containsItemId(oi.getItemId())) {
+
+                // Part number
+                DistributorPart distributorPart = sm().findPartNumber(order.getDistributorId(), oi.getId());
+                if (distributorPart != null) {
+                    oi.setDistributorPartId(distributorPart.getId());
+                }
+
+                oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
+            } else {
+                if (failedItems == null) {
+                    failedItems = new HashMap<>();
+                }
+                failedItems.put("Item " + oi.getName() + " was already in the list..", oi.getItem());
+            }
+        }
+        return failedItems;
+    }
+
 
     private void initActions() {
         initMouseClicked();

@@ -107,7 +107,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
             );
         }
         if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item);
+            OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item, true);
             dialog.showDialog();
         }
     }

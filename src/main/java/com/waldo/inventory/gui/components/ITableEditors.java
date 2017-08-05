@@ -91,6 +91,9 @@ public class ITableEditors {
         }
     }
 
+
+
+
     public static class AmountRenderer extends DefaultTableCellRenderer {
 
         @Override

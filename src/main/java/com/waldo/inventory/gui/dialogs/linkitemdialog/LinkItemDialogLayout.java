@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.KcItemLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
+import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkKcPanel;
 
@@ -83,7 +84,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Panels
-        kcPanel = new LinkKcPanel(application);
+        kcPanel = new LinkKcPanel(application, ILinkKiCadTableModel.LINK_COMPONENTS);
 
         itemPanel = new LinkItemPanel(application);
         itemPanel.addSearchListener(this);

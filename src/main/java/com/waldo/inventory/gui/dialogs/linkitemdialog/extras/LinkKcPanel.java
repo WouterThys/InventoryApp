@@ -28,12 +28,14 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Application application;
     private KiCadParser kiCadParser;
+    private int type;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LinkKcPanel(Application application) {
+    public LinkKcPanel(Application application, int type) {
         this.application = application;
+        this.type = type;
 
         initializeComponents();
         initializeLayouts();
@@ -75,6 +77,10 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
 
     public void setSortByRefButtonVisible(boolean visible) {
         sortByRefBtn.setVisible(visible);
+    }
+
+    public java.util.List<KcComponent> getKcComponentList() {
+        return tableModel.getItemList();
     }
 
     private JPanel createSouthPanel() {
@@ -120,7 +126,7 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        tableModel = new ILinkKiCadTableModel();
+        tableModel = new ILinkKiCadTableModel(type);
         itemTable = new ITable(tableModel);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
         itemTable.getColumnModel().getColumn(0).setMaxWidth(30);

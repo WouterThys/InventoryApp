@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.dialogs.kccomponentorderdialog;
 
+import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.kccomponentorderdialog.extras.KcOrderItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkKcPanel;
 
@@ -15,7 +17,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class KcComponentOrderDialogLayout extends IDialog implements ActionListener {
+public abstract class KcComponentOrderDialogLayout extends IDialog implements ActionListener, KcOrderItemPanel.AmountChangeListener {
 
     /*
      *                  COMPONENTS
@@ -23,10 +25,12 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
      LinkKcPanel kcPanel;
      KcOrderItemPanel oiPanel;
 
-     JButton addToOrderBtn;
+    JButton addToOrderBtn;
+    JButton removeFromOrderBtn;
 
      KcComponent selectedComponent;
      OrderItem selectedOrderItem;
+     Order selectedOrder;
 
     /*
      *                  VARIABLES
@@ -45,9 +49,10 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        addToOrderBtn.setEnabled(selectedComponent != null && selectedOrderItem != null);
+        addToOrderBtn.setEnabled(selectedComponent != null);
+        removeFromOrderBtn.setEnabled(selectedOrderItem != null);
 
-
+        getButtonOK().setEnabled(oiPanel.hasOrderItems());
     }
 
     void addTableListeners(ListSelectionListener kcListListener, ListSelectionListener orderListListener) {
@@ -64,21 +69,26 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
         // Dialog
         setTitleIcon(imageResource.readImage("Common.Order", 48));
         setTitleName(getTitle());
-        getButtonNeutral().setVisible(true);
-        getButtonNeutral().setText("Save");
-        getButtonNeutral().setEnabled(false);
+        getButtonOK().setText("Order");
+        getButtonOK().setEnabled(false);
 
         // Panels
-        kcPanel = new LinkKcPanel(application);
+        kcPanel = new LinkKcPanel(application, ILinkKiCadTableModel.ORDER_COMPONENTS);
         oiPanel = new KcOrderItemPanel(application);
 
         kcPanel.setSortByRefButtonVisible(false);
+        oiPanel.addOnAmountChangedListener(this);
 
         // Button
         addToOrderBtn = new JButton(imageResource.readImage("Common.Order", 32));
         addToOrderBtn.setToolTipText("Add to order");
         addToOrderBtn.setEnabled(false);
         addToOrderBtn.addActionListener(this);
+
+        removeFromOrderBtn = new JButton(imageResource.readImage("Common.RemoveOrder", 32));
+        removeFromOrderBtn.setToolTipText("Remove from order");
+        removeFromOrderBtn.setEnabled(false);
+        removeFromOrderBtn.addActionListener(this);
     }
 
     @Override
@@ -88,6 +98,7 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.add(addToOrderBtn);
+        buttonPanel.add(removeFromOrderBtn);
 
         getContentPanel().add(kcPanel);
         getContentPanel().add(buttonPanel);

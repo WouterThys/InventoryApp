@@ -58,8 +58,12 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     }
 
     public void updateTable() {
-        if (itemList != null && itemList.size() > 0) {
-            fireTableRowsUpdated(0, itemList.size() - 1);
+        if (itemList != null) {
+            if (itemList.size() == 1) {
+                fireTableRowsUpdated(0, 0);
+            } else if (itemList.size() > 1){
+                fireTableRowsUpdated(0, itemList.size() - 1);
+            }
         }
     }
 
@@ -88,6 +92,11 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
             return itemList.get(index);
         }
         return null;
+    }
+
+    public void setColumnName(int i, String name) {
+        columnNames[i] = name;
+        fireTableStructureChanged();
     }
 
     @Override

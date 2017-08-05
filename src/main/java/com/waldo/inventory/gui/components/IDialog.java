@@ -9,11 +9,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class IDialog extends JDialog implements GuiInterface {
+public abstract class IDialog extends JDialog implements GuiInterface, WindowListener {
 
     public static final int OK = 1;
     public static final int NEUTRAL = 0;
@@ -126,12 +127,7 @@ public abstract class IDialog extends JDialog implements GuiInterface {
         getRootPane().setDefaultButton(buttonOK);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
+        addWindowListener(this);
 
         // call onCancel() on Escape
         contentPanel.registerKeyboardAction(
@@ -273,6 +269,41 @@ public abstract class IDialog extends JDialog implements GuiInterface {
     public void endWait() {
         this.setCursor(Cursor.getDefaultCursor());
         updating = false;
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        onCancel();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 
     protected void showTitlePanel(boolean show) {

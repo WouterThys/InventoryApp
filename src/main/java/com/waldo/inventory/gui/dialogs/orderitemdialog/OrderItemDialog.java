@@ -19,12 +19,14 @@ public class OrderItemDialog extends OrderItemDialogLayout {
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
     private boolean orderList = false;
+    private boolean createOnConfirm = true;
 
-    public OrderItemDialog(Application application, String title, Item itemToOrder) {
+    public OrderItemDialog(Application application, String title, Item itemToOrder, boolean createOnConfirm) {
         super(application, title);
 
         this.itemToOrder = itemToOrder;
         this.orderList = false;
+        this.createOnConfirm = createOnConfirm;
 
         DbManager.db().addOnOrdersChangedListener(this);
 
@@ -33,17 +35,22 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         updateComponents(null);
     }
 
-    public OrderItemDialog(Application application, String title, List<Item> itemsToOrder) {
+    public OrderItemDialog(Application application, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
         super(application, title);
 
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;
+        this.createOnConfirm = createOnConfirm;
 
         DbManager.db().addOnOrdersChangedListener(this);
 
         initializeComponents();
         initializeLayouts();
         updateComponents(null);
+    }
+
+    public Order getSelectedOrder() {
+        return (Order) orderCb.getSelectedItem();
     }
 
     private boolean verify() {
@@ -57,17 +64,19 @@ public class OrderItemDialog extends OrderItemDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
-            // Add item(s) to list
-            if (orderList) {
-                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
-            } else {
-                itemsToOrderList = new ArrayList<>(1);
-                itemsToOrderList.add(itemToOrder);
-                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
-            }
+            if (createOnConfirm) {
+                // Add item(s) to list
+                if (orderList) {
+                    application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+                } else {
+                    itemsToOrderList = new ArrayList<>(1);
+                    itemsToOrderList.add(itemToOrder);
+                    application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+                }
 
-            // Close
-            DbManager.db().removeOnOrdersChangedListener(this);
+                // Close
+                DbManager.db().removeOnOrdersChangedListener(this);
+            }
             super.onOK();
         }
     }

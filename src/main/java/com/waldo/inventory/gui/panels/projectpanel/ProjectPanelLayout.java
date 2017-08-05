@@ -272,6 +272,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             // Update tile view
             projectGirdPanel.updateComponents(selectedProject);
+            kiCadItemPanel.updateComponents(null);
 
             // Enabled components
             updateEnabledComponents();

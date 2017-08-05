@@ -7,8 +7,18 @@ public class ILinkKiCadTableModel extends IAbstractTableModel<KcComponent> {
     private static final String[] COLUMN_NAMES = {"", "Part", "Value", "M"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, Boolean.class};
 
-    public ILinkKiCadTableModel() {
+    public static final int LINK_COMPONENTS = 0;
+    public static final int ORDER_COMPONENTS = 1;
+
+    private int type;
+
+    public ILinkKiCadTableModel(int type) {
         super(COLUMN_NAMES, COLUMN_CLASSES);
+
+        this.type = type;
+        if (type == ORDER_COMPONENTS) {
+            setColumnName(3, "O");
+        }
     }
 
     @Override
@@ -25,7 +35,11 @@ public class ILinkKiCadTableModel extends IAbstractTableModel<KcComponent> {
                 case 2: // Value
                     return component.getValue();
                 case 3:
-                    return component.hasMatch();
+                    if (type == LINK_COMPONENTS) {
+                        return component.hasMatch();
+                    } else {
+                        return component.isOrdered();
+                    }
             }
         }
         return null;

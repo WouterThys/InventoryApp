@@ -98,6 +98,8 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
 
                 initializeTiles();
                 redrawTiles();
+
+
             }
         } else {
             tileViews.clear();

@@ -4,8 +4,8 @@ import com.waldo.inventory.classes.OrderItem;
 
 public class IKcOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
-    private static final String[] COLUMN_NAME = {"Name", "Description", "#"};
-    private static final Class[] COLUMN_CLASSES = {String.class, String.class, Integer.class};
+    private static final String[] COLUMN_NAME = {"Name", "#"};
+    private static final Class[] COLUMN_CLASSES = {String.class, Integer.class};
 
     public IKcOrderItemTableModel() {
         super(COLUMN_NAME, COLUMN_CLASSES);
@@ -20,9 +20,7 @@ public class IKcOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                     return orderItem;
                 case 0: // Name
                     return orderItem.getItem().getName();
-                case 1: // Description
-                    return orderItem.getItem().getDescription();
-                case 2: // Amount
+                case 1: // Amount
                     return orderItem.getAmount();
             }
         }
@@ -31,6 +29,6 @@ public class IKcOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return (columnIndex == 2); // Amount is editable
+        return (columnIndex == 1); // Amount is editable
     }
 }

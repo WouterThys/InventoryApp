@@ -37,6 +37,9 @@ public class KcComponent extends DbObject {
     // Matched item
     private KcItemLink matchedItem;
 
+    // Order
+    private OrderItem orderItem = null;
+
     public KcComponent() {
         super(TABLE_NAME);
 
@@ -351,6 +354,18 @@ public class KcComponent extends DbObject {
             matchedItem.setMatched(true);
         }
         this.matchedItem = matchedItem;
+    }
+
+    public boolean isOrdered() {
+        return orderItem != null;
+    }
+
+    public OrderItem getOrderItem() {
+        return orderItem;
+    }
+
+    public void setOrderItem(OrderItem orderItem) {
+        this.orderItem = orderItem;
     }
 
     private class MatchComparator implements Comparator<KcItemLink> {
