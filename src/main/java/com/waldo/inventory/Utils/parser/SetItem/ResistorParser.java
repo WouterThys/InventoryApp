@@ -44,37 +44,6 @@ public class ResistorParser extends SetItemParser {
     }
 
 
-//    @Override
-//    public List<SetItem> parse(String series) throws ParseException, IOException {
-//        setItems = new ArrayList<>();
-//        String fileName = "setvalues/" + R + series + ".txt";
-//        parserFile = new File(getClass().getClassLoader().getResource(fileName).getFile());
-//        //parserFile = new File(fileName);
-//        if (parserFile.exists()) {
-//
-//            String line;
-//            List<String> stringValues = new ArrayList<>();
-//
-//            try (BufferedReader br = new BufferedReader(new FileReader(parserFile))) {
-//                while ((line = br.readLine()) != null) {
-//                    String[] split = line.split("\\s+");
-//                    stringValues.addAll(Arrays.asList(split));
-//                }
-//            }
-//
-//            System.out.println("Min value: " + getMinValue());
-//            System.out.println("Max value: " + getMaxValue());
-//
-//            setItems = createSetItemsFromValues(stringValues);
-//
-//        } else {
-//            setItems = null;
-//            throw new ParseException("File " + parserFile.toString() + " does not exist..", 0);
-//        }
-//        return setItems;
-//    }
-
-
     @Override
     public List<SetItem> crop(int value) {
         List<SetItem> cropped = new ArrayList<>();

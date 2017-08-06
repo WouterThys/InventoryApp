@@ -36,7 +36,7 @@ public class Item extends DbObject {
 
     private long packageId = UNKNOWN_ID;
     private Package itemPackage;
-    private long dimensionTypeId = UNKNOWN_ID;
+    private long dimensionTypeId = -1;
     private DimensionType dimensionType;
 
     private float rating;
@@ -190,25 +190,28 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
-                if (!(ref.getDescription().equals(getDescription()))) { return false; }
-                if (!(ref.getPrice() == getPrice())) return false;
-                if (!(ref.getCategoryId() == getCategoryId())) return false;
-                if (!(ref.getProductId() == getProductId())) return false;
-                if (!(ref.getTypeId() == getTypeId())) return false;
-                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) return false;
-                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) return false;
-                if (!(ref.getManufacturerId() == getManufacturerId())) return false;
-                if (!(ref.getLocationId() == getLocationId())) return false;
-                if (!(ref.getAmount() == getAmount())) return false;
-                if (!(ref.getAmountType() == getAmountType())) return false;
-                if (!(ref.getOrderState() == getOrderState())) return false;
-                if (!(ref.getPackageId() == getPackageId())) return false;
-                if (!(ref.getRating() == getRating())) return false;
-                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) return false;
-                if (!(ref.getRemarks().equals(getRemarks()))) return false;
-                if (!(ref.isSet() == isSet())) return false;
-                if (!(ref.getDimensionTypeId() == getDimensionTypeId())) return false;
-             }
+                if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
+                if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
+                if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
+                if (!(ref.getProductId() == getProductId())) { System.out.println("Product differs"); return false; }
+                if (!(ref.getTypeId() == getTypeId())) { System.out.println("Type differs"); return false; }
+                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { System.out.println("Local datasheet differs"); return false; }
+                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { System.out.println("Online datasheet differs"); return false; }
+                if (!(ref.getManufacturerId() == getManufacturerId())) { System.out.println("Manufacturer differs"); return false; }
+                if (!(ref.getLocationId() == getLocationId())) { System.out.println("Location differs"); return false; }
+                if (!(ref.getAmount() == getAmount())) { System.out.println("Amount differs"); return false; }
+                if (!(ref.getAmountType() == getAmountType())) { System.out.println("Amount type differs"); return false; }
+                if (!(ref.getOrderState() == getOrderState())) { System.out.println("Order state differs"); return false; }
+                if (!(ref.getPackageId() == getPackageId())) { System.out.println("Package differs"); return false; }
+                if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
+                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
+                if (!(ref.getRemarks().equals(getRemarks()))) { System.out.println("Remarks differs"); return false; }
+                if (!(ref.isSet() == isSet())) { System.out.println("Is set differs"); return false; }
+                if (!(ref.getDimensionTypeId() == getDimensionTypeId())) {
+                    System.out.println("Dimension differs: ref id:" + ref.getDimensionTypeId() + " this id: " + getDimensionTypeId());
+                    return false;
+                }
+            }
         }
         return result;
     }
@@ -521,6 +524,9 @@ public class Item extends DbObject {
     }
 
     public long getDimensionTypeId() {
+        if (dimensionTypeId < UNKNOWN_ID) {
+            dimensionTypeId = UNKNOWN_ID;
+        }
         return dimensionTypeId;
     }
 

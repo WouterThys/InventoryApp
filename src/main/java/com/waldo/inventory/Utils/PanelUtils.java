@@ -5,7 +5,9 @@ import com.waldo.inventory.gui.components.ITextField;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static java.awt.GridBagConstraints.BOTH;
 
 public class PanelUtils {
@@ -47,6 +49,15 @@ public class PanelUtils {
         constraints.weightx = 0.1;
         iconPathPanel.add(openBtn, constraints);
         return iconPathPanel;
+    }
+
+    public static JPanel createComboBoxWithButton(JComboBox comboBox, ActionListener listener) {
+        JPanel boxPanel = new JPanel(new BorderLayout());
+        JButton button = new JButton(imageResource.readImage("Toolbar.AddIcon", 16));
+        button.addActionListener(listener);
+        boxPanel.add(comboBox, BorderLayout.CENTER);
+        boxPanel.add(button, BorderLayout.EAST);
+        return boxPanel;
     }
 
     public static TitledBorder createTitleBorder(String name) {

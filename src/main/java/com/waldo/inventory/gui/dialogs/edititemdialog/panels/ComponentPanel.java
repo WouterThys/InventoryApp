@@ -10,12 +10,14 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
+import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.nio.file.Path;
@@ -168,6 +170,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
         packageTypeComboBox = new IComboBox<>(packageTypeCbModel);
         packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
+    }
+
+    private ActionListener createDivisionListener() {
+        return e -> {
+            SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Sub divisions");
+            subDivisionsDialog.showDialog();
+        };
     }
     
     public void updateDimensionPanel() {
@@ -333,7 +342,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         basicPanel.add(new ITitledEditPanel(
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
-                new JComponent[] {categoryComboBox, productComboBox, typeComboBox}
+                new JComponent[] {
+                        PanelUtils.createComboBoxWithButton(categoryComboBox, createDivisionListener()),
+                        PanelUtils.createComboBoxWithButton(productComboBox, createDivisionListener()),
+                        PanelUtils.createComboBoxWithButton(typeComboBox, createDivisionListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
