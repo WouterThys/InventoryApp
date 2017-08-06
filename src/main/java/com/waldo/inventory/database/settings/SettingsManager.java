@@ -61,7 +61,7 @@ public class SettingsManager {
     private SettingsManager() {}
 
     public boolean init() {
-        String dbFile = Application.startUpPath + "src/main/java/com/waldo/inventory/database/settings/settings.db";
+        String dbFile = Application.startUpPath + "settings.db";
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
         dataSource.setUrl("jdbc:log4jdbc:sqlite:" + dbFile);

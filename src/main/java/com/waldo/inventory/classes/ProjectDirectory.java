@@ -20,6 +20,7 @@ public class ProjectDirectory extends DbObject {
 
     private long projectId;
     private Project project;
+    private boolean validated = false;
 
     private HashMap<ProjectType, List<File>> projectTypes;
 
@@ -53,10 +54,10 @@ public class ProjectDirectory extends DbObject {
     public String toString() {
         String result = getDirectory();
 
-        if (result.length() > 30) {
-            while (result.length() > 30) {
+        if (result.length() > 25) {
+            while (result.length() > 25) {
                 int ndx = result.indexOf("/");
-                result = result.substring(ndx+1, result.length() - 1);
+                result = result.substring(ndx+1, result.length());
             }
             result = ".../" + result;
         }
@@ -146,6 +147,57 @@ public class ProjectDirectory extends DbObject {
         }
     }
 
+    public void removeProjectType(ProjectType projectType, File file) {
+        if (projectType != null) {
+            List<File> filesForType = getProjectFilesForType(projectType);
+            if (file != null) {
+                if (filesForType.contains(file)) {
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file.getPath());
+                    if (linkToDelete != null) {
+                        linkToDelete.delete();
+                    }
+                    filesForType.remove(file);
+                    if (filesForType.size() == 0) {
+                        getProjectTypes().remove(projectType);
+                    }
+                }
+            } else {
+                for (File file1 : filesForType) {
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file1.getPath());
+                    if (linkToDelete != null) {
+                        linkToDelete.delete();
+                    }
+                    filesForType.remove(file1);
+                    if (filesForType.size() == 0) {
+                        getProjectTypes().remove(projectType);
+                    }
+                }
+            }
+        }
+    }
+
+    public List<ProjectValidationError> validate() {
+        List<ProjectValidationError> errors = new ArrayList<>();
+
+        File directoryFile = new File(getDirectory());
+        if (directoryFile.exists()) {
+            for (ProjectType type : getProjectTypes()) {
+                for (File file : getProjectFilesForType(type)) {
+                    if (!file.exists()) {
+                        ProjectValidationError error = new ProjectValidationError(this, type, file, "Project type " + file.toString() + " does not exist..");
+                        errors.add(error);
+                    }
+                }
+            }
+        } else {
+            ProjectValidationError error = new ProjectValidationError(this, "Directory " + directoryFile.toString() + " does not exist..");
+            errors.add(error);
+        }
+
+        validated = true;
+        return errors;
+    }
+
 
     /*
      *                  GETTERS - SETTERS
@@ -204,5 +256,13 @@ public class ProjectDirectory extends DbObject {
 
     public List<File> getProjectFilesForType(ProjectType type) {
         return getProjectTypeMap().get(type);
+    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
     }
 }

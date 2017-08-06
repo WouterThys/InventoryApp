@@ -13,7 +13,6 @@ import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.*;

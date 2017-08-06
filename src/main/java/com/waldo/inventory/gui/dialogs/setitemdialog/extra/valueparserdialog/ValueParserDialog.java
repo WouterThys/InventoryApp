@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IStatusStrip;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -109,7 +110,7 @@ public class ValueParserDialog extends ValueParserDialogLayout {
                     }
 
                 } catch (ParseException | IOException e1) {
-                    e1.printStackTrace();
+                    IStatusStrip.Status().setError("Error parsing file", e1);
                 }
             }
         }

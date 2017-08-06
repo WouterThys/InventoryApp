@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
@@ -116,7 +117,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
             dbObject.setName(nameTextField.getText());
             String iconPath = iconPathTextField.getText();
             if (iconPath != null && !iconPath.isEmpty()) {
-                dbObject.setIconPath(createIconPath(iconPath));
+                dbObject.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
             } else {
                 dbObject.setIconPath("");
             }
@@ -124,15 +125,6 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
             // Close dialog
             dispose();
         }
-    }
-
-    private String createIconPath(String iconPath) {
-        String result = iconPath;
-        if(iconPath.startsWith(initialPath) || iconPath.contains(initialPath)) {
-            int ndx = iconPath.lastIndexOf(File.separator);
-            result = iconPath.substring(ndx + 1, iconPath.length());
-        }
-        return result;
     }
 
     private void initLayouts() {

@@ -230,7 +230,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             // Update items
             for (OrderItem orderItem : itemsToOrder) {
                 orderItem.getItem().setOrderState(Statics.ItemOrderStates.PLANNED);
-                orderItem.save();
+                orderItem.getItem().save();
             }
         } finally {
             endWait();

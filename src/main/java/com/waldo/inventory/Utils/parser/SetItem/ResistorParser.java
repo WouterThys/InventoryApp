@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils.parser.SetItem;
 
 import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.gui.Application;
 
 import java.io.*;
 import java.text.ParseException;
@@ -16,13 +17,14 @@ public class ResistorParser extends SetItemParser {
     public List<SetItem> parse(String series) throws ParseException, IOException {
         setItems = new ArrayList<>();
         String fileName = "setvalues/" + R + series + ".txt";
-        parserFile = new File(getClass().getClassLoader().getResource(fileName).getFile());
-        if (parserFile.exists()) {
+
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
 
             String line;
             List<String> stringValues = new ArrayList<>();
 
-            try (BufferedReader br = new BufferedReader(new FileReader(parserFile))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
                 while ((line = br.readLine()) != null) {
                     String[] split = line.split("\\s+");
                     stringValues.addAll(Arrays.asList(split));
@@ -33,13 +35,45 @@ public class ResistorParser extends SetItemParser {
             System.out.println("Max value: " + getMaxValue());
 
             setItems = createSetItemsFromValues(stringValues);
-
-        } else {
+        } catch (Exception e) {
             setItems = null;
-            throw new ParseException("File " + fileName + " does not exist..", 0);
+            throw e;
         }
+
         return setItems;
     }
+
+
+//    @Override
+//    public List<SetItem> parse(String series) throws ParseException, IOException {
+//        setItems = new ArrayList<>();
+//        String fileName = "setvalues/" + R + series + ".txt";
+//        parserFile = new File(getClass().getClassLoader().getResource(fileName).getFile());
+//        //parserFile = new File(fileName);
+//        if (parserFile.exists()) {
+//
+//            String line;
+//            List<String> stringValues = new ArrayList<>();
+//
+//            try (BufferedReader br = new BufferedReader(new FileReader(parserFile))) {
+//                while ((line = br.readLine()) != null) {
+//                    String[] split = line.split("\\s+");
+//                    stringValues.addAll(Arrays.asList(split));
+//                }
+//            }
+//
+//            System.out.println("Min value: " + getMinValue());
+//            System.out.println("Max value: " + getMaxValue());
+//
+//            setItems = createSetItemsFromValues(stringValues);
+//
+//        } else {
+//            setItems = null;
+//            throw new ParseException("File " + parserFile.toString() + " does not exist..", 0);
+//        }
+//        return setItems;
+//    }
+
 
     @Override
     public List<SetItem> crop(int value) {

@@ -301,26 +301,36 @@ public class FileUtils {
             String[] split = result.split("(?=\\p{Lu})|(?=\\.)|(?<=\\_)|(?<=\\-)");
             if (split.length > 1) {
                 int middle = split.length / 2;
-                String first = "", second = "";
+                StringBuilder first = new StringBuilder();
+                StringBuilder second = new StringBuilder();
                 for (int i = 0; i < middle; i++) {
-                    first += split[i];
+                    first.append(split[i]);
                 }
                 for (int i = middle; i < split.length; i++) {
-                    second += split[i];
+                    second.append(split[i]);
                 }
 
                 if (first.length() > 12) {
-                    first = formatFileNameString(first);
+                    first = new StringBuilder(formatFileNameString(first.toString()));
                 }
 
                 if (second.length() > 12) {
-                    second = formatFileNameString(second);
+                    second = new StringBuilder(formatFileNameString(second.toString()));
                 }
 
                 result = first + "\n" + second;
             }
         }
 
+        return result;
+    }
+
+    public static String createIconPath(String initialPath, String iconPath) {
+        String result = iconPath;
+        if(iconPath.startsWith(initialPath) || iconPath.contains(initialPath)) {
+            int ndx = iconPath.lastIndexOf(File.separator);
+            result = iconPath.substring(ndx + 1, iconPath.length());
+        }
         return result;
     }
 

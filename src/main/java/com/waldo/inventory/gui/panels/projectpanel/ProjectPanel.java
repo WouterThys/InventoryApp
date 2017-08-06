@@ -1,9 +1,6 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -11,12 +8,18 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
 
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ProjectPanel extends ProjectPanelLayout {
@@ -49,8 +52,72 @@ public class ProjectPanel extends ProjectPanelLayout {
         return topToolBar;
     }
 
-    private void initActions() {
+    private void showTreeRightClickPopup(TreePath path, int x, int y) {
+        projectTree.setSelectionPath(path);
 
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) projectTree.getLastSelectedPathComponent();
+
+        if (node != null) {
+            DbObject obj = (DbObject)node.getUserObject();
+            if (DbObject.getType(obj) == DbObject.TYPE_PROJECT_DIRECTORY) {
+
+                ProjectDirectory directory = (ProjectDirectory) obj;
+
+                JPopupMenu menu = new JPopupMenu ();
+                AbstractAction openAction = new AbstractAction("Open in files", imageResource.readImage("MenuBar.OpenIcon")) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        File file = new File(directory.getDirectory());
+                        if (file.exists()) {
+                            Desktop desktop;
+                            if (file.isDirectory()) {
+                                try {
+                                    if (Desktop.isDesktopSupported()) {
+                                        desktop = Desktop.getDesktop();
+                                        desktop.open(file);
+                                    }
+                                } catch (IOException ex){
+                                    LOG.error("Could not open file : " + file, ex);
+                                }
+                            } else {
+                                try {
+                                    if (Desktop.isDesktopSupported()) {
+                                        desktop = Desktop.getDesktop();
+                                        desktop.open(file.getParentFile());
+                                    }
+                                } catch (IOException ex){
+                                    LOG.error("Could not open file : " + file, ex);
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(ProjectPanel.this,
+                                    "Path " + directory.getDirectory() + " does not exist..",
+                                    "Unknown directory",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                };
+
+                menu.add(openAction);
+                menu.show(projectTree, x, y);
+
+            }
+        }
+    }
+
+    private void initActions() {
+        projectTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    TreePath path = projectTree.getPathForLocation ( e.getX (), e.getY () );
+                    Rectangle pathBounds = projectTree.getUI ().getPathBounds ( projectTree, path );
+                    if ( pathBounds != null && pathBounds.contains ( e.getX (), e.getY () ) ) {
+                        showTreeRightClickPopup(path, pathBounds.x, pathBounds.y + pathBounds.height );
+                    }
+                }
+            }
+        });
     }
 
     private void initListeners() {
@@ -101,11 +168,36 @@ public class ProjectPanel extends ProjectPanelLayout {
         };
     }
 
+    private void validateProject(Project project) {
+        if (project != null) {
+            java.util.List<ProjectValidationError> errorList = project.validate();
+            if (errorList.size() > 0) {
+                StringBuilder errors = new StringBuilder();
+                for (ProjectValidationError error : errorList) {
+                    errors.append(error.toString()).append("\n");
+                }
+
+                int result = JOptionPane.showConfirmDialog(ProjectPanel.this,
+                        "Project " + selectedProject.getName() + " encountered errors, do you want to reload? \n" + errors,
+                        "Validation error",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+
+                if (result == JOptionPane.YES_OPTION) {
+                    project.recreateProjectStructure();
+                }
+            }
+        }
+    }
+
     //
     // Top toolbar listener
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
+        if (selectedProject != null) {
+            selectedProject.recreateProjectStructure();
+        }
         updateComponents(selectedProject);
     }
 
@@ -142,6 +234,11 @@ public class ProjectPanel extends ProjectPanelLayout {
                     case DbObject.TYPE_PROJECT:
                         selectedProject = (Project) obj;
                         selectedDirectory = null;
+
+                        if (!selectedProject.isValidated()) {
+                            validateProject(selectedProject);
+                        }
+
                         break;
                     case DbObject.TYPE_PROJECT_DIRECTORY:
                         selectedDirectory = (ProjectDirectory) obj;

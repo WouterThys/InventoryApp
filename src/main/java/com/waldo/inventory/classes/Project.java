@@ -6,6 +6,7 @@ import com.waldo.inventory.database.DbManager;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -16,6 +17,7 @@ public class Project extends DbObject {
     public static final String TABLE_NAME = "projects";
 
     private List<ProjectDirectory> projectDirectories;
+    private boolean validated = false;
 
     public Project() {
         super(TABLE_NAME);
@@ -109,7 +111,7 @@ public class Project extends DbObject {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public boolean hasDirectory(String directory) {
+    private boolean hasDirectory(String directory) {
         for (ProjectDirectory dir : getProjectDirectories()) {
             if (dir.getDirectory().equals(directory)) {
                 return true;
@@ -119,7 +121,7 @@ public class Project extends DbObject {
     }
 
 
-    public void addDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
         if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
             updateProjectTypesToDirectory(projectDirectory, projectTypes);
             if (id > UNKNOWN_ID) {
@@ -218,6 +220,48 @@ public class Project extends DbObject {
         }
     }
 
+    public List<ProjectValidationError> validate() {
+        List<ProjectValidationError> errors = new ArrayList<>();
+        for (ProjectDirectory directory : getProjectDirectories()) {
+            errors.addAll(directory.validate());
+        }
+        validated = true;
+        return errors;
+    }
+
+    public void recreateProjectStructure() {
+//        // Resolve types
+//        for (int i = errorList.size()-1; i >= 0; i--) {
+//            ProjectValidationError error = errorList.get(i);
+//            if (error.getInvalidType() != null) {
+//                error.getInvalidDirectory().removeProjectType(error.getInvalidType(), error.getInvalidFile());
+//            }
+//        }
+//
+//        // Resolve Directories
+//        for (int i = errorList.size()-1; i >= 0; i--) {
+//            ProjectValidationError error = errorList.get(i);
+//            if (error.getInvalidDirectory() != null) {
+//                removeDirectory(error.getInvalidDirectory());
+//            }
+//        }
+
+        List<ProjectDirectory> newDirs = new ArrayList<>();
+
+        for (int i = getProjectDirectories().size() - 1; i >= 0; i--) {
+            ProjectDirectory directory = getProjectDirectories().get(i);
+            File dirFile = new File(directory.getDirectory());
+            if (dirFile.exists()) {
+                newDirs.add(directory);
+            }
+            removeDirectory(directory);
+        }
+
+        for (ProjectDirectory directory : newDirs) {
+            addDirectory(directory, DbManager.db().getProjectTypes());
+        }
+    }
+
 
     /*
      *                  GETTERS - SETTERS
@@ -242,5 +286,13 @@ public class Project extends DbObject {
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
     }
 }

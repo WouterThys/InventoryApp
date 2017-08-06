@@ -238,6 +238,8 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
             if (parseFile == null || !parseFile.equals(object)) {
                 application.beginWait();
                 try {
+                    hasParsed = false;
+                    hasMatched = false;
                     parseFile = (File) object;
                     parseFile(parseFile);
                 } finally {
@@ -288,6 +290,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
             if (kiCadParser != null) {
                 saveKcComponents(kiCadParser);
             }
+            saveToDbBtn.setEnabled(false);
         }
         updateEnabledComponents();
     }

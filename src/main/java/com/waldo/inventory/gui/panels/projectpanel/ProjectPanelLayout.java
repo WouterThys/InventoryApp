@@ -20,6 +20,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -146,6 +148,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.addTreeSelectionListener(this);
         projectTree.setExpandsSelectedPaths(true);
         projectTree.setScrollsOnExpand(true);
+
         treeModel.setTree(projectTree);
 
         // Top tool bar

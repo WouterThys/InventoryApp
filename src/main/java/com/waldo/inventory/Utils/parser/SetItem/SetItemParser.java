@@ -59,7 +59,6 @@ public abstract  class SetItemParser {
     public abstract String getUnit();
 
     public double convertUnit(double value, String unit) {
-
         switch (unit) {
             case "n": value /= 1000000000; break;
             case "µ": value /= 1000000; break;

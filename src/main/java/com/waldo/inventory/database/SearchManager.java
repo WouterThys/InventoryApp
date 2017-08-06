@@ -3,7 +3,6 @@ package com.waldo.inventory.database;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.kicad.KcComponent;
-import org.apache.regexp.RE;
 
 import java.util.ArrayList;
 import java.util.List;

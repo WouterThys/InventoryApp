@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui.dialogs.addprojectdialog;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -60,12 +62,14 @@ public class AddProjectDialog extends AddProjectDialogLayout {
                 if (e.getClickCount() == 2) {
                     JLabel lbl = (JLabel)e.getSource();
 
+                    String initialPath = SettingsManager.settings().getFileSettings().getImgProjectsPath();
+
                     JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-                    fileChooser.setCurrentDirectory(new File("./Images/ProjectImages/"));
+                    fileChooser.setCurrentDirectory(new File(initialPath));
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
                     if (fileChooser.showDialog(AddProjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                        project.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
+                        project.setIconPath(FileUtils.createIconPath(initialPath, fileChooser.getSelectedFile().getAbsolutePath()));
                         try {
                             URL url = fileChooser.getSelectedFile().toURI().toURL();
                             lbl.setIcon(imageResource.readImage(url, 48,48));
@@ -109,29 +113,15 @@ public class AddProjectDialog extends AddProjectDialogLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-//        JFileChooser fileChooser = new JFileChooser();
-//        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//        if (fileChooser.showDialog(AddProjectDialog.this, "Select project folder") == JFileChooser.APPROVE_OPTION) {
-//            File dir = fileChooser.getSelectedFile();
-//            if (dir.isDirectory()) {
-//                application.beginWait();
-//                try {
-//                    project.addDirectory(dir.getAbsolutePath());
-//                } finally {
-//                    application.endWait();
-//                }
-//                updateComponents(project);
-//            }
-//        }
         EditDirectoryDialog directoryDialog = new EditDirectoryDialog(AddProjectDialog.this, "Add directory", new ProjectDirectory());
         if (directoryDialog.showDialog() == IDialog.OK) {
             application.beginWait();
-                try {
-                    project.addDirectory(directoryDialog.getDirectory(), directoryDialog.getSelectedTypes());
-                } finally {
-                    application.endWait();
-                }
-                updateComponents(project);
+            try {
+                project.addDirectory(directoryDialog.getDirectory(), directoryDialog.getSelectedTypes());
+            } finally {
+                application.endWait();
+            }
+            updateComponents(project);
         }
     }
 
