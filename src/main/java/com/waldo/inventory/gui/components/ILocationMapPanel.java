@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.locationtypedialog;
+package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.LocationType;
@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationMapPanel extends JPanel implements GuiInterface {
+public class ILocationMapPanel extends JPanel implements GuiInterface {
 
     public interface LocationClickListener {
         void onClick(int row, int column);
@@ -34,7 +34,7 @@ public class LocationMapPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LocationMapPanel(Application application, LocationClickListener locationClickListener) {
+    public ILocationMapPanel(Application application, LocationClickListener locationClickListener) {
         this.application = application;
         this.locationClickListener = locationClickListener;
 

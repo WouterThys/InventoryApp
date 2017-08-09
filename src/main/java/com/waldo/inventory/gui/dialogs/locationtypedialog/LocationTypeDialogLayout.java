@@ -24,7 +24,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener,
-        LocationMapPanel.LocationClickListener {
+        ILocationMapPanel.LocationClickListener {
 
     /*
     *                  COMPONENTS
@@ -38,7 +38,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     ISpinner detailRowsSpinner;
     ISpinner detailColumnsSpinner;
 
-    LocationMapPanel locationMapPanel;
+    ILocationMapPanel ILocationMapPanel;
 
      /*
      *                  VARIABLES
@@ -189,7 +189,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         detailColumnsSpinner.setPreferredSize(new Dimension(60, 30));
         detailColumnsSpinner.addEditedListener(this, "columns");
 
-        locationMapPanel = new LocationMapPanel(application, this);
+        ILocationMapPanel = new ILocationMapPanel(application, this);
     }
 
     @Override
@@ -200,7 +200,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
 
         JPanel eastPanel = new JPanel(new BorderLayout());
         eastPanel.add(createLocationTypeDetailPanel(), BorderLayout.NORTH);
-        eastPanel.add(locationMapPanel, BorderLayout.CENTER);
+        eastPanel.add(ILocationMapPanel, BorderLayout.CENTER);
         getContentPanel().add(eastPanel, BorderLayout.CENTER);
 
         pack();

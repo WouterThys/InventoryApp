@@ -1,7 +1,10 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -34,7 +37,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
             detailColumnsSpinner.setValue(selectedLocationType.getColumns());
             detailRowsSpinner.setValue(selectedLocationType.getRows());
 
-            locationMapPanel.updateComponents(selectedLocationType);
+            ILocationMapPanel.updateComponents(selectedLocationType);
         }
     }
 
@@ -79,6 +82,25 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
         return (selectedLocationType != null) && !(selectedLocationType.equals(originalLocationType));
     }
 
+    private void createLocations(LocationType locationType) {
+        if (locationType != null) {
+            for (int c = 0; c < locationType.getColumns(); c++) {
+                for (int r = 0; r < locationType.getRows(); r++) {
+                    Location location = SearchManager.sm().findLocation(locationType.getId(), r, c);
+                    if (location == null) {
+                        location = new Location();
+                        location.setName(Statics.Alphabet[r] + String.valueOf(c));
+                        location.setLocationTypeId(locationType.getId());
+                        location.setColumn(c);
+                        location.setRow(r);
+                        location.save();
+                    }
+                }
+            }
+
+        }
+    }
+
     //
     // Dialog
     //
@@ -119,7 +141,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
-        locationMapPanel.updateComponents(selectedLocationType);
+        ILocationMapPanel.updateComponents(selectedLocationType);
     }
 
     @Override
@@ -131,13 +153,15 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     // Location type changed
     //
     @Override
-    public void onInserted(LocationType object) {
-        updateComponents(object);
+    public void onInserted(LocationType location) {
+        updateComponents(location);
+        createLocations(location);
     }
 
     @Override
-    public void onUpdated(LocationType object) {
-        updateComponents(object);
+    public void onUpdated(LocationType location) {
+        updateComponents(location);
+        createLocations(location);
     }
 
     @Override

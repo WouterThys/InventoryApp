@@ -518,13 +518,13 @@ public class SearchManager {
         return null;
     }
 
-    public int findLocationIndex(long typeNdx) {
-        for (int i = 0; i < db().getLocations().size(); i++) {
-            if (db().getLocations().get(i).getId() == typeNdx) {
-                return i;
+    public Location findLocation(long locationTypeId, int row, int column) {
+        for (Location l : db().getLocations()) {
+            if (l.getLocationTypeId() == locationTypeId && l.getRow() == row && l.getColumn() == column) {
+                return l;
             }
         }
-        return -1;
+        return null;
     }
 
     public Order findOrderById(long id) {
