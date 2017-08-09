@@ -174,8 +174,10 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        subDivisionTree.setPreferredSize(new Dimension(300,200));
+        //subDivisionTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(subDivisionTree);
+        JPanel treePanel = new JPanel(new BorderLayout());
+        treePanel.add(pane);
 
         // Panel them together
         JPanel panel = new JPanel(new BorderLayout());
@@ -185,6 +187,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
+        splitPane.setOneTouchExpandable(true);
         //add(pane, BorderLayout.WEST);
         //add(panel, BorderLayout.CENTER);
         add(splitPane, BorderLayout.CENTER);

@@ -835,4 +835,12 @@ public class SearchManager {
         return null;
     }
 
+    public LocationType findLocationTypeById(long locationTypeId) {
+        for (LocationType lt : db().getLocationTypes()) {
+            if (lt.getId() == locationTypeId) {
+                return lt;
+            }
+        }
+        return null;
+    }
 }

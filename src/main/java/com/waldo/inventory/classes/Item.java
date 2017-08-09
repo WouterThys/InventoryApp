@@ -22,14 +22,19 @@ public class Item extends DbObject {
     private double price = 0;
 
     private long categoryId = -1;
+    private Category category;
     private long productId = -1;
+    private Product product;
     private long typeId = -1;
+    private Type type;
 
     private String localDataSheet = "";
     private String onlineDataSheet = "";
 
     private long manufacturerId = -1;
+    private Manufacturer manufacturer;
     private long locationId = -1;
+    private Location location;
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
@@ -325,7 +330,15 @@ public class Item extends DbObject {
         return categoryId;
     }
 
+    public Category getCategory() {
+        if (category == null) {
+            category = sm().findCategoryById(categoryId);
+        }
+        return category;
+    }
+
     public void setCategoryId(long categoryId) {
+        category = null;
         this.categoryId = categoryId;
     }
 
@@ -333,7 +346,15 @@ public class Item extends DbObject {
         return productId;
     }
 
+    public Product getProduct() {
+        if (product == null) {
+            product = sm().findProductById(productId);
+        }
+        return product;
+    }
+
     public void setProductId(long productId) {
+        product = null;
         this.productId = productId;
     }
 
@@ -341,7 +362,15 @@ public class Item extends DbObject {
         return typeId;
     }
 
+    public Type getType() {
+        if (type == null) {
+            type = sm().findTypeById(typeId);
+        }
+        return type;
+    }
+
     public void setTypeId(long typeId) {
+        type = null;
         this.typeId = typeId;
     }
 
@@ -371,7 +400,15 @@ public class Item extends DbObject {
         return manufacturerId;
     }
 
+    public Manufacturer getManufacturer() {
+        if (manufacturer == null) {
+            manufacturer = sm().findManufacturerById(manufacturerId);
+        }
+        return manufacturer;
+    }
+
     public void setManufacturerId(long manufacturerId) {
+        manufacturer = null;
         this.manufacturerId = manufacturerId;
     }
 
@@ -380,7 +417,15 @@ public class Item extends DbObject {
     }
 
     public void setLocationId(long locationId) {
+        location = null;
         this.locationId = locationId;
+    }
+
+    public Location getLocation() {
+        if (location == null) {
+            location = SearchManager.sm().findLocationById(locationId);
+        }
+        return location;
     }
 
     public int getAmount() {

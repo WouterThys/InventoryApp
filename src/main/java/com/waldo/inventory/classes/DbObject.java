@@ -38,6 +38,7 @@ public abstract class DbObject {
     public static final int TYPE_ORDER_FILE_FORMAT = 15;
     public static final int TYPE_SET_ITEM = 16;
     public static final int TYPE_DIMENSION_TYPE = 17;
+    public static final int TYPE_LOCATION_TYPE = 18;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -91,6 +92,7 @@ public abstract class DbObject {
         if (dbObject instanceof DimensionType) return TYPE_DIMENSION_TYPE;
         if (dbObject instanceof KcComponent) return TYPE_KC_COMPONENT;
         if (dbObject instanceof KcItemLink) return TYPE_KC_ITEM_LINK;
+        if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;

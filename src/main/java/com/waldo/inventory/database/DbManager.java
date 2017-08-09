@@ -59,6 +59,7 @@ public class DbManager {
     public List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<LocationType>> onLocationTYpeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
@@ -82,6 +83,7 @@ public class DbManager {
     private List<Type> types;
     private List<Manufacturer> manufacturers;
     private List<Location> locations;
+    private List<LocationType> locationTypes;
     private List<Order> orders;
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
@@ -245,6 +247,12 @@ public class DbManager {
     public void addOnLocationsChangedListener(DbObjectChangedListener<Location> dbObjectChangedListener) {
         if (!onLocationsChangedListenerList.contains(dbObjectChangedListener)) {
             onLocationsChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnLocationTypeChangedListener(DbObjectChangedListener<LocationType> dbObjectChangedListener) {
+        if (!onLocationTYpeChangedListenerList.contains(dbObjectChangedListener)) {
+            onLocationTYpeChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -743,7 +751,9 @@ public class DbManager {
                     l = new Location();
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
-                    l.setIconPath(rs.getString("iconpath"));
+                    l.setLocationTypeId(rs.getLong("locationTypeId"));
+                    l.setRow(rs.getInt("row"));
+                    l.setColumn(rs.getInt("column"));
 
                     l.setInserted(true);
                     if (l.getId() != DbObject.UNKNOWN_ID) {
@@ -761,6 +771,49 @@ public class DbManager {
         }
         locations.add(0, Location.getUnknownLocation());
     }
+
+
+    /*
+    *                  LOCATION TYPES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<LocationType> getLocationTypes()   {
+        if (locationTypes == null) {
+            updateLocationTypes();
+        }
+        return locationTypes;
+    }
+
+    private void updateLocationTypes() {
+        locationTypes = new ArrayList<>();
+        Status().setMessage("Fetching location types from DB");
+        LocationType l = null;
+        String sql = scriptResource.readString(LocationType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    l = new LocationType();
+                    l.setId(rs.getLong("id"));
+                    l.setName(rs.getString("name"));
+                    l.setIconPath(rs.getString("iconPath"));
+                    l.setRows(rs.getInt("rows"));
+                    l.setColumns(rs.getInt("columns"));
+
+                    l.setInserted(true);
+                    locationTypes.add(l);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
     /*
     *                  ORDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

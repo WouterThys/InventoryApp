@@ -233,8 +233,6 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             int res = JOptionPane.showConfirmDialog(DistributorsDialog.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
                 selectedDistributor.delete();
-                selectedDistributor = null;
-                originalDistributor = null;
             }
         }
     }

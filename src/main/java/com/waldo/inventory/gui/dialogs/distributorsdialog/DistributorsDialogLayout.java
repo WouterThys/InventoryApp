@@ -132,10 +132,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private JPanel createDistributorsDetailPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Info");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
+        TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
 
         // Text fields
@@ -151,17 +148,9 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
 
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0; constraints.weightx = 1;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        browsePanel.add(detailWebsite, constraints);
-        constraints.gridx = 1; constraints.weightx = 0;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        detailsBrowseButton.setSize(new Dimension(detailsBrowseButton.getWidth(), detailWebsite.getHeight()));
-        browsePanel.add(detailsBrowseButton, constraints);
+        PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
+
+        JPanel browsePanel = PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -251,7 +240,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Title
+        // Dialog
         setTitleIcon(imageResource.readImage("DistributorsDialog.TitleIcon"));
         setTitleName("Distributors");
         getButtonNeutral().setVisible(true);
@@ -357,7 +346,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         getContentPanel().setLayout(new BorderLayout());
 
         getContentPanel().add(createWestPanel(), BorderLayout.WEST);
-
         getContentPanel().add(createDistributorsDetailPanel(), BorderLayout.CENTER);
 
         pack();
@@ -385,7 +373,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
                 originalDistributor = selectedDistributor.createCopy();
                 distributorList.setSelectedValue(selectedDistributor, true);
             } else {
-                selectedDistributor = null;
+                originalDistributor = null;
             }
         } finally {
             application.endWait();

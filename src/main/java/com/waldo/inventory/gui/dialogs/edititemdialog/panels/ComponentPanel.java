@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
@@ -9,6 +10,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
@@ -62,10 +64,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextField nameTextField;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
-    private IComboBox<Category> categoryComboBox;
-    private IComboBox<Product> productComboBox;
+    private DefaultComboBoxModel<Category> categoryCbModel;
     private DefaultComboBoxModel<Product> productCbModel;
     private DefaultComboBoxModel<Type> typeCbModel;
+    private IComboBox<Category> categoryComboBox;
+    private IComboBox<Product> productComboBox;
     private IComboBox<Type> typeComboBox;
 
     // Data sheet
@@ -88,20 +91,34 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         }
     }
 
+    public void updateCategoryCbValues() {
+        categoryCbModel.removeAllElements();
+        categoryCbModel.addElement(Category.getUnknownCategory());
+        for (Category c : db().getCategories()) {
+            categoryCbModel.addElement(c);
+        }
+
+        categoryComboBox.setSelectedItem(newItem.getCategory());
+    }
+
     public void updateProductCbValues(long categoryId) {
         productCbModel.removeAllElements();
-        productCbModel.addElement(db().getProducts().get(0)); // Add unknown
+        productCbModel.addElement(Product.getUnknownProduct()); // Add unknown
         for (Product p : db().getProductListForCategory(categoryId)) {
             productCbModel.addElement(p);
         }
+
+        productComboBox.setSelectedItem(newItem.getProduct());
     }
 
     public void updateTypeCbValues(long productId) {
         typeCbModel.removeAllElements();
-        typeCbModel.addElement(db().getTypes().get(0)); // Add unknown
+        typeCbModel.addElement(Type.getUnknownType()); // Add unknown
         for (Type t : db().getTypeListForProduct(productId)) {
             typeCbModel.addElement(t);
         }
+
+        typeComboBox.setSelectedItem(newItem.getType());
     }
 
     /*
@@ -119,7 +136,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
         }
 
-        DefaultComboBoxModel<Category> categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
+        categoryCbModel = new DefaultComboBoxModel<>(categoryItems);
         categoryComboBox = new IComboBox<>(categoryCbModel);
         categoryComboBox.addEditedListener(editedListener, "categoryId");
         categoryComboBox.setSelectedIndex(selectedIndex);
@@ -175,7 +192,20 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ActionListener createDivisionListener() {
         return e -> {
             SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Sub divisions");
-            subDivisionsDialog.showDialog();
+            if (subDivisionsDialog.showDialog() == IDialog.OK) {
+                updateCategoryCbValues();
+                updateProductCbValues(((Category)categoryComboBox.getSelectedItem()).getId());
+                updateTypeCbValues(((Product)productComboBox.getSelectedItem()).getId());
+            }
+        };
+    }
+
+    private ActionListener createPackageTypeListener() {
+        return e -> {
+            PackageTypeDialog packageTypeDialog = new PackageTypeDialog(application, "Packages");
+            if (packageTypeDialog.showDialog() == IDialog.OK) {
+                updateDimensionPanel();
+            }
         };
     }
     
@@ -408,7 +438,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(packageTypeComboBox, gbc);
+        packagePanel.add(PanelUtils.createComboBoxWithButton(packageTypeComboBox, createPackageTypeListener()), gbc);
 
         // - pins
         gbc.gridx = 0; gbc.weightx = 0;
@@ -446,7 +476,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.gridy = 3; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(dimensionCb, gbc);
+        packagePanel.add(PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()), gbc);
 
         // - border
         packagePanel.setBorder(packageBorder);

@@ -1,17 +1,18 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.DistributorPart;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -28,9 +29,11 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     private ITextField itemRefField;
 
     // Listener
+    private Application application;
     private IEditedListener editedListener;
 
-    public EditItemOrderPanel(Item newItem, IEditedListener listener) {
+    public EditItemOrderPanel(Application application, Item newItem, IEditedListener listener) {
+        this.application = application;
         this.newItem = newItem;
         this.editedListener = listener;
     }
@@ -78,6 +81,24 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         return result;
     }
 
+    private ActionListener createDistributorListener() {
+        return e -> {
+            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(application, "Manufacturers");
+            if (manufacturersDialog.showDialog() == IDialog.OK) {
+                updateManufacturerCombobox();
+            }
+        };
+    }
+
+    private void updateManufacturerCombobox() {
+        distributorCbModel.removeAllElements();
+        for (Distributor d : db().getDistributors()) {
+            distributorCbModel.addElement(d);
+        }
+
+        distributorCb.setSelectedItem(newItem.getManufacturer());
+    }
+
     @Override
     public void initializeComponents() {
         distributorCbModel = new DefaultComboBoxModel<>();
@@ -119,7 +140,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(distributorCb, gbc);
+        panel.add(PanelUtils.createComboBoxWithButton(distributorCb, createDistributorListener()), gbc);
 
         // Reference
         gbc.gridx = 0; gbc.weightx = 0;

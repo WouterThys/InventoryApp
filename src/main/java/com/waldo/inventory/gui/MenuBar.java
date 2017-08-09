@@ -4,6 +4,7 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
+import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
 import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
@@ -62,8 +63,12 @@ public class MenuBar extends JMenuBar {
         JMenuItem projectTypes = new JMenuItem("Project types", imageResource.readImage("MenuBar.Project"));
         projectTypes.addActionListener(projectTypesSelected());
 
+        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("MenuBar.Location"));
+        locationTypes.addActionListener(locationTypesSelected());
+
         dbMenu.add(subDivisions);
         dbMenu.addSeparator();
+        dbMenu.add(locationTypes);
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);
         dbMenu.add(packages);
@@ -156,6 +161,15 @@ public class MenuBar extends JMenuBar {
            dialog.showDialog();
         });
     }
+
+
+    private ActionListener locationTypesSelected() {
+        return (e -> {
+            LocationTypeDialog dialog = new LocationTypeDialog(application, "Locations");
+            dialog.showDialog();
+        });
+    }
+
 
 //    private ActionListener ordersSelected() {
 //        OrdersDialog dialog = new OrdersDialog(application, "Orders");
