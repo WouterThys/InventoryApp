@@ -33,7 +33,7 @@ public class Item extends DbObject {
 
     private long manufacturerId = -1;
     private Manufacturer manufacturer;
-    private long locationId = -1;
+    private long locationId = UNKNOWN_ID;
     private Location location;
     private int amount = 0;
     private int amountType = Statics.ItemAmountTypes.NONE;

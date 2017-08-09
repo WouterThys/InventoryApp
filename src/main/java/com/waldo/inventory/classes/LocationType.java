@@ -24,6 +24,12 @@ public class LocationType extends DbObject {
     }
 
 
+    public static LocationType createDummyLocationType() {
+        LocationType locationType = new LocationType();
+        locationType.canBeSaved = false;
+        return locationType;
+    }
+
     public List<String> createRowStrings() {
         List<String> rowStrings = new ArrayList<>();
         rowStrings.addAll(Arrays.asList(Statics.Alphabet).subList(0, rows));
