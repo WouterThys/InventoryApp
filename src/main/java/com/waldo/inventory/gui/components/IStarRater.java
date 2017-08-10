@@ -253,7 +253,7 @@ public class IStarRater extends JPanel {
               if (guiObject != null) {
                   String newVal = String.valueOf(selection);
 
-                  Method setMethod = guiObject.getClass().getDeclaredMethod("set" + this.fieldName, String.class);
+                  Method setMethod = guiObject.getClass().getDeclaredMethod("set" + this.fieldName, float.class);
                   Method getMethod = guiObject.getClass().getDeclaredMethod("get" + this.fieldName);
 
                   String oldVal = String.valueOf(getMethod.invoke(guiObject));

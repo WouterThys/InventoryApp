@@ -4,6 +4,11 @@ package com.waldo.inventory.Utils.parser.KiCad;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.Node;
 import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcLibSource;
+import com.waldo.inventory.classes.kicad.KcSheetPath;
+import com.waldo.inventory.database.SearchManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +36,18 @@ public class KiCadParser extends ProjectParser<KcComponent> {
     }
 
     @Override
-    public void sortList(List<KcComponent> list) {
-
+    public List<KcComponent> sortList(List<KcComponent> list) {
+        List<KcComponent> sorted = new ArrayList<>();
+        if (list != null) {
+            for (KcComponent component : list) {
+                if (sorted.contains(component)) {
+                    sorted.get(sorted.indexOf(component)).addReference(component.getRef());
+                } else {
+                    sorted.add(component);
+                }
+            }
+        }
+        return sorted;
     }
 
     @Override
@@ -48,7 +63,7 @@ public class KiCadParser extends ProjectParser<KcComponent> {
             try {
                 String block = readBlock(usefulData);
                 Node head = parseBlock(block);
-
+                componentList.clear();
                 componentList = parseNode(head);
                 hasParsed = true;
             } catch (Exception e) {
@@ -61,7 +76,9 @@ public class KiCadParser extends ProjectParser<KcComponent> {
         List<KcComponent> components = new ArrayList<>();
         for (Node n1 : head.getChildren()) { // n1 has the list with all the components
             if (n1.name.equals("comp")) {
+
                 KcComponent component = new KcComponent();
+
                 for (Node n2 : n1.getChildren()) {
                     switch (n2.name) {
                         case "ref": component.setRef(n2.value); break;
@@ -93,6 +110,16 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                         default:break;
                     }
                 }
+
+                KcComponent dbComponent = SearchManager.sm().findKcComponent(
+                        component.getValue(),
+                        component.getFootprint(),
+                        component.getLibSource().getLib(),
+                        component.getLibSource().getPart());
+
+                if (dbComponent != null) {
+                    component.setId(dbComponent.getId());
+                }
                 components.add(component);
             }
         }
@@ -105,8 +132,8 @@ public class KiCadParser extends ProjectParser<KcComponent> {
 
         // Node
         Node headNode = new Node();
-        String name = "";
-        String value = "";
+        StringBuilder name = new StringBuilder();
+        StringBuilder value = new StringBuilder();
         char[] blockChars = block.toCharArray();
 
         boolean valueStart = false;
@@ -136,24 +163,24 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                 }
 
                 if (!nameEnd) {
-                    name += blockChars[charCnt];
+                    name.append(blockChars[charCnt]);
                 }
                 if (valueStart) {
-                    value += blockChars[charCnt];
+                    value.append(blockChars[charCnt]);
                 }
             }
 
             endFound = (charCnt == blockChars.length-1);
             charCnt++;
         }
-        headNode.name = name;
-        headNode.value = value;
+        headNode.name = name.toString();
+        headNode.value = value.toString();
         headNode.parseLength = charCnt;
         return headNode;
     }
 
     private String readBlock(String data) {
-        String block = "";
+        StringBuilder block = new StringBuilder();
         char[] chars = data.toCharArray();
         boolean endFound = false;
         boolean startFound = false;
@@ -170,13 +197,13 @@ public class KiCadParser extends ProjectParser<KcComponent> {
             }
 
             if (startFound) {
-                block += chars[charCnt];
+                block.append(chars[charCnt]);
             }
 
             endFound = (bracketCnt == 0) || (charCnt == data.length());
             charCnt++;
         }
-        return block;
+        return block.toString();
     }
 
     private class KiCadComponentComparator implements Comparator<KcComponent> {
@@ -189,6 +216,63 @@ public class KiCadParser extends ProjectParser<KcComponent> {
                 return 0;
             }
         }
+    }
+
+    public List<KcComponent> createUniqueList(List<KcComponent> componentList) {
+        List<KcComponent> uniqueList = new ArrayList<>();
+        for (KcComponent comp : componentList) {
+            if (!uniqueContains(uniqueList, comp)) {
+                uniqueList.add(comp);
+            }
+        }
+        return uniqueList;
+    }
+
+    private boolean uniqueContains(List<KcComponent> componentList, KcComponent component) {
+        for (KcComponent comp : componentList) {
+            if (comp.getValue().equals(component.getValue()) &&
+                    comp.getFootprint().equals(component.getFootprint()) &&
+                    comp.getLibSource().getLib().equals(component.getLibSource().getLib()) &&
+                    comp.getLibSource().getPart().equals(component.getLibSource().getPart())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean allComponentsInDb() {
+        if (componentList != null && componentList.size() > 0) {
+            for(KcComponent component : componentList) {
+                if (component.getId() < DbObject.UNKNOWN_ID) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasLinkedItems() {
+        if (componentList != null && componentList.size() > 0) {
+            for (KcComponent component : componentList) {
+                if (component.hasMatch()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<KcComponent> getLinkedItems() {
+        List<KcComponent> linked = new ArrayList<>();
+
+        if (componentList != null && componentList.size() > 0) {
+            for (KcComponent component : componentList) {
+                if (component.hasMatch()) {
+                    linked.add(component);
+                }
+            }
+        }
+        return linked;
     }
 
 }

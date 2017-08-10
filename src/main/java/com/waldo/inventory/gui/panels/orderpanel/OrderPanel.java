@@ -7,11 +7,10 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
-import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
-import com.waldo.inventory.gui.dialogs.orderinfodialog.OrderInfoDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 
 import javax.swing.*;
@@ -87,77 +86,41 @@ public class OrderPanel extends OrderPanelLayout {
         return failedItems;
     }
 
+    public Map<String, Item> addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+        Map<String, Item> failedItems = null;
+        for (OrderItem oi : itemsToOrder) {
+            if (!order.containsItemId(oi.getItemId())) {
+
+                // Part number
+                DistributorPart distributorPart = sm().findPartNumber(order.getDistributorId(), oi.getId());
+                if (distributorPart != null) {
+                    oi.setDistributorPartId(distributorPart.getId());
+                }
+
+                oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
+            } else {
+                if (failedItems == null) {
+                    failedItems = new HashMap<>();
+                }
+                failedItems.put("Item " + oi.getName() + " was already in the list..", oi.getItem());
+            }
+        }
+        return failedItems;
+    }
+
 
     private void initActions() {
         initMouseClicked();
 
-        // Order
-//        tbOrderButton.addActionListener(e -> { // TODO this should go to orderClickListener, if orderfile is empty or changed
-//            OrderFile orderFile = new OrderFile(selectedOrder);
-//            orderFile.createOrderFile();
-//            if (orderFile.isSuccess()) {
-//                OrderInfoDialog infoDialog = new OrderInfoDialog(application, "Order Info", orderFile);
-//                infoDialog.showDialog();
-//                selectedOrder.setOrderFile(orderFile);
-//                selectedOrder.save();
-//            } else {
-//                StringBuilder msg = new StringBuilder("Order failed with next errors: ");
-//                for (String s : orderFile.getErrorMessages()) {
-//                    msg.append(s).append("\n\n");
-//                }
-//                JOptionPane.showMessageDialog(OrderPanel.this, msg.toString(), "Order errors", JOptionPane.ERROR_MESSAGE);
-//            }
-//        });
-
-
         tbOrderFlowPanel.addOrderClickListener(e -> {
-            /*
-            TODO: first check if can be ordered..
-                * Has order items
-                * All order items have order references
-                * ...
-
-             */
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
-            if (dialog.showDialog() == IDialog.OK) {
-                //setOrdered();
-            }
+            dialog.showDialog();
         });
-        tbOrderFlowPanel.addReceivedClickListener(e -> setReceived());
-
-
-        // Details
-//        tbViewOrderDetailsBtn.addActionListener(e -> { // TODO this logic should go to treeToolBar on edit order
-//            if (selectedOrder != null) {
-//                OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Order details", selectedOrder);
-//                dialog.showDialog();
-//            }
-//        });
-    }
-
-    private void setOrdered() {
-        selectedOrder.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
-        try {
-            //selectedOrder.setItemStates(Statics.ItemOrderStates.ORDERED);
-            selectedOrder.updateItemStates();
-        } finally {
-            application.endWait();
-        }
-        selectedOrder.save();
-    }
-
-    private void setReceived() {
-        selectedOrder.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
-        try {
-            //selectedOrder.setItemStates(Statics.ItemOrderStates.NONE);
-            selectedOrder.updateItemStates();
-            selectedOrder.updateItemAmounts();
-        } finally {
-            application.endWait();
-        }
-        selectedOrder.save();
+        tbOrderFlowPanel.addReceivedClickListener(e -> {
+            // TODO open on second tab
+            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
+            dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
+        });
     }
 
     private List<OrderItem> getSelectedOrderItems() {
@@ -179,28 +142,27 @@ public class OrderPanel extends OrderPanelLayout {
             return;
         }
 
-            int result = JOptionPane.CANCEL_OPTION;
-            if (itemsToDelete.size() == 1) {
-                result = JOptionPane.showConfirmDialog(
-                        OrderPanel.this,
-                        "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
-                        "Confirm delete",
-                        JOptionPane.YES_NO_OPTION);
-            } else if (itemsToDelete.size() > 1) {
-                result = JOptionPane.showConfirmDialog(
-                        OrderPanel.this,
-                        "Are you sure you want to delete " + itemsToDelete.size() + " items?",
-                        "Confirm delete",
-                        JOptionPane.YES_NO_OPTION);
+        int result = JOptionPane.CANCEL_OPTION;
+        if (itemsToDelete.size() == 1) {
+            result = JOptionPane.showConfirmDialog(
+                    OrderPanel.this,
+                    "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        } else if (itemsToDelete.size() > 1) {
+            result = JOptionPane.showConfirmDialog(
+                    OrderPanel.this,
+                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        }
+        if (result == JOptionPane.OK_OPTION) {
+            for (OrderItem item : itemsToDelete) {
+                selectedOrder.removeItemFromList(item);
             }
-
-            if (result == JOptionPane.OK_OPTION) {
-                for (OrderItem item : itemsToDelete) {
-                    selectedOrder.removeItemFromList(item);
-                }
-                selectedOrderItem = null;
-                selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
-            }
+            selectedOrderItem = null;
+            selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
+        }
 
     }
 
@@ -236,12 +198,15 @@ public class OrderPanel extends OrderPanelLayout {
                     if (selectedOrder.containsItemId(newItem.getId())) { // when new items are added, this should be false
                         tableUpdate();
                     }
+                    if (selectedOrderItem != null) {
+                        itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                    }
                 }
             }
 
             @Override
             public void onDeleted(Item item) {
-                // No effect
+                itemDetailPanel.updateComponents(null);
             }
         };
     }
@@ -255,6 +220,7 @@ public class OrderPanel extends OrderPanelLayout {
 
                 tableInitialize(order);
                 tableSelectOrderItem(selectedOrderItem);
+
                 treeRecreateNodes();
                 final long orderId = treeUpdate();
 
@@ -265,6 +231,7 @@ public class OrderPanel extends OrderPanelLayout {
                     updateVisibleComponents();
                     updateEnabledComponents();
                 });
+
             }
 
             @Override
@@ -272,6 +239,7 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = newOrder;
 
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
+                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
@@ -430,14 +398,14 @@ public class OrderPanel extends OrderPanelLayout {
     //  Table tool bar listener
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         try {
             application.beginWait();
             tableInitialize(selectedOrder);
+            treeRecreateNodes();
             final long orderId = treeUpdate();
 
             SwingUtilities.invokeLater(() -> {
-                treeUpdate();
                 selectedOrder = SearchManager.sm().findOrderById(orderId);
                 treeSelectOrder(selectedOrder);
 
@@ -450,7 +418,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
             OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
             if (dialog.showDialog() == IDialog.OK) {
@@ -469,12 +437,12 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         deleteSelectedOrderItems(getSelectedOrderItems());
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedOrderItem != null) {
             EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
             dialog.showDialog();

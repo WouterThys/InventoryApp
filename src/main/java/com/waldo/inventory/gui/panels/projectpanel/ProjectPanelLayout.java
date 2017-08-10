@@ -10,6 +10,8 @@ import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
+import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projecttypedetails.ProjectTypeDetails;
 
@@ -18,6 +20,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +34,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         ActionListener,
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        IGridPanel.GridComponentClicked<ProjectType> {
+        ProjectGirdPanel.GridComponentClicked {
 
     private static final LogManager LOG = LogManager.LOG(ProjectPanelLayout.class);
 
@@ -42,9 +46,11 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
-    private IGridPanel<ProjectType, File, ArrayList<File>> typePanel;
+    private ProjectGirdPanel projectGirdPanel;
     ProjectDetailsPanel detailsPanel;
     ProjectTypeDetails projectTypeDetails;
+
+    KiCadItemPanel kiCadItemPanel;
 
     /*
      *                  VARIABLES
@@ -54,6 +60,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     ProjectDirectory selectedDirectory;
     ProjectType selectedProjectType;
     File lastProjectFile;
+
 
     /*
     *                  CONSTRUCTOR
@@ -125,20 +132,6 @@ public abstract class ProjectPanelLayout extends JPanel implements
         }
     }
 
-    private void updateTileView() {
-        HashMap<ProjectType, ArrayList<File>> map = new HashMap<>();
-        if (selectedDirectory == null) {
-            if (selectedProject != null) {
-                for (ProjectDirectory directory : selectedProject.getProjectDirectories()) {
-                    map.putAll(directory.getProjectTypes());
-                }
-            }
-        } else {
-            map = selectedDirectory.getProjectTypes();
-        }
-        typePanel.setMap(map);
-    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -155,6 +148,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.addTreeSelectionListener(this);
         projectTree.setExpandsSelectedPaths(true);
         projectTree.setScrollsOnExpand(true);
+
         treeModel.setTree(projectTree);
 
         // Top tool bar
@@ -163,12 +157,12 @@ public abstract class ProjectPanelLayout extends JPanel implements
         // Project Tool bar
         projectToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
                 updateComponents(selectedProject);
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 AddProjectDialog dialog = new AddProjectDialog(application, "New Project");
                 if (dialog.showDialog() == IDialog.OK) {
                     // Add Project
@@ -178,7 +172,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 if (selectedProject != null) {
                     int res = JOptionPane.showConfirmDialog(ProjectPanelLayout.this, "Are you sure you want to delete \"" + selectedProject.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
@@ -195,7 +189,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 if (selectedProject != null) {
                     AddProjectDialog dialog = new AddProjectDialog(application, "New Project", selectedProject);
                     if (dialog.showDialog() == IDialog.OK) {
@@ -209,12 +203,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectToolBar.setFloatable(false);
 
         // Type panel
-        typePanel = new IGridPanel<>();
-        typePanel.addOnGridComponentClickedListener(this);
+        projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
 
         // Detail panel
         detailsPanel = new ProjectDetailsPanel(application);
         projectTypeDetails = new ProjectTypeDetails(application, this);
+
+        // KiCad items panel
+        kiCadItemPanel = new KiCadItemPanel(application);
     }
 
     @Override
@@ -224,6 +220,9 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectTree);
 
+        JScrollPane kcPane = new JScrollPane(kiCadItemPanel);
+        kcPane.setPreferredSize(new Dimension(600,400));
+
         // West panel
         JPanel westPanel = new JPanel(new BorderLayout());
         westPanel.add(pane, BorderLayout.CENTER);
@@ -231,8 +230,11 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
         // Center panel
         JPanel centerPanel = new JPanel(new BorderLayout());
+        //JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectGirdPanel, kcPane);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
-        centerPanel.add(typePanel, BorderLayout.CENTER);
+        //centerPanel.add(split, BorderLayout.CENTER);
+        centerPanel.add(projectGirdPanel, BorderLayout.CENTER);
+        centerPanel.add(kiCadItemPanel, BorderLayout.EAST);
 
         // Details panel
         JPanel infoPanel = new JPanel(new BorderLayout());
@@ -247,8 +249,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
         centerPanel.add(infoPanel, BorderLayout.SOUTH);
 
         // Add
-        add(westPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
+        //add(westPanel, BorderLayout.WEST);
+        //add(centerPanel, BorderLayout.CENTER);
+
+        // Add
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override
@@ -264,7 +272,8 @@ public abstract class ProjectPanelLayout extends JPanel implements
             }
 
             // Update tile view
-            updateTileView();
+            projectGirdPanel.updateComponents(selectedProject);
+            kiCadItemPanel.updateComponents(null);
 
             // Enabled components
             updateEnabledComponents();

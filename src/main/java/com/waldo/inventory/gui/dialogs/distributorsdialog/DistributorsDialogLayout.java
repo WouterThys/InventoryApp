@@ -90,7 +90,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         }
     }
 
-    void updateOrderFileFormatComboBox() {
+    private void updateOrderFileFormatComboBox() {
         detailOrderFileFormatModel.removeAllElements();
         for (OrderFileFormat off : DbManager.db().getOrderFileFormats()) {
             detailOrderFileFormatModel.addElement(off);
@@ -132,10 +132,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private JPanel createDistributorsDetailPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Info");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
+        TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
 
         // Text fields
@@ -151,17 +148,9 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
 
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0; constraints.weightx = 1;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        browsePanel.add(detailWebsite, constraints);
-        constraints.gridx = 1; constraints.weightx = 0;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        detailsBrowseButton.setSize(new Dimension(detailsBrowseButton.getWidth(), detailWebsite.getHeight()));
-        browsePanel.add(detailsBrowseButton, constraints);
+        PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
+
+        JPanel browsePanel = PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
 
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -225,14 +214,14 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
         orderPanel.add(formatLabel, gbc);
 
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         orderPanel.add(detailOrderFileFormatCb, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 4; gbc.weighty = 0;
+        gbc.gridy = 3; gbc.weighty = 0;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.EAST;
@@ -251,7 +240,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Title
+        // Dialog
         setTitleIcon(imageResource.readImage("DistributorsDialog.TitleIcon"));
         setTitleName("Distributors");
         getButtonNeutral().setVisible(true);
@@ -308,12 +297,12 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
         detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
                 updateOrderFileFormatComboBox();
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Add format", new OrderFileFormat());
                 if (dialog.showDialog() == IDialog.OK) {
                     OrderFileFormat off = dialog.getOrderFileFormat();
@@ -322,7 +311,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
                 if (off != null) {
                     int result = JOptionPane.showConfirmDialog(DistributorsDialogLayout.this,
@@ -337,7 +326,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
                 if (off != null) {
                     EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Edit format", off);
@@ -357,7 +346,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         getContentPanel().setLayout(new BorderLayout());
 
         getContentPanel().add(createWestPanel(), BorderLayout.WEST);
-
         getContentPanel().add(createDistributorsDetailPanel(), BorderLayout.CENTER);
 
         pack();
@@ -385,7 +373,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
                 originalDistributor = selectedDistributor.createCopy();
                 distributorList.setSelectedValue(selectedDistributor, true);
             } else {
-                selectedDistributor = null;
+                originalDistributor = null;
             }
         } finally {
             application.endWait();

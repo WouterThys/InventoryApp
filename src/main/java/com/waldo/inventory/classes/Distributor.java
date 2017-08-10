@@ -87,11 +87,9 @@ public class Distributor extends DbObject {
                 if (!distributors.contains(this)) {
                     distributors.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onDistributorsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onDistributorsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -99,10 +97,10 @@ public class Distributor extends DbObject {
                 if (distributors.contains(this)) {
                     distributors.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onDistributorsChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onDistributorsChangedListenerList);
     }
 
     public String getWebsite() {

@@ -117,7 +117,7 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
     private void order(List<Item> itemsToOrder) {
         // Check if not already ordered???
         // Do orders
-        OrderItemDialog dialog = new OrderItemDialog(application, "Order", itemsToOrder);
+        OrderItemDialog dialog = new OrderItemDialog(application, "Order", itemsToOrder, true);
         dialog.showDialog();
         // Set items ordered?
     }

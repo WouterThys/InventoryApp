@@ -23,10 +23,18 @@ public class ProjectTypeLink extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setLong(1, projectDirectoryId);
-        statement.setLong(2, projectTypeId);
-        statement.setString(3, filePath);
-        return 4;
+//        if (projectDirectoryId < UNKNOWN_ID) {
+//            projectDirectoryId = UNKNOWN_ID;
+//        }
+//        if (projectTypeId < UNKNOWN_ID) {
+//            projectTypeId = UNKNOWN_ID;
+//        }
+
+        int ndx = 1;
+        statement.setLong(ndx++, getProjectDirectoryId());
+        statement.setLong(ndx++, getProjectTypeId());
+        statement.setString(ndx++, filePath);
+        return ndx;
     }
 
     public ProjectTypeLink() {
@@ -80,6 +88,9 @@ public class ProjectTypeLink extends DbObject {
     }
 
     public long getProjectDirectoryId() {
+        if (projectDirectoryId < UNKNOWN_ID && projectDirectory != null) {
+            projectDirectoryId = projectDirectory.getId();
+        }
         return projectDirectoryId;
     }
 
@@ -99,10 +110,14 @@ public class ProjectTypeLink extends DbObject {
     }
 
     public long getProjectTypeId() {
+        if (projectTypeId < UNKNOWN_ID && projectType != null) {
+            projectTypeId = projectType.getId();
+        }
         return projectTypeId;
     }
 
     public void setProjectTypeId(long projectTypeId) {
+        projectType = null;
         this.projectTypeId = projectTypeId;
     }
 

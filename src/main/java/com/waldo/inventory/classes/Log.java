@@ -76,12 +76,13 @@ public class Log extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setInt(1, logType);
-        statement.setDate(2, logTime);
-        statement.setString(3,logClass);
-        statement.setString(4, logMessage);
-        statement.setString(5, logException);
-        return 6;
+        int ndx = 1;
+        statement.setInt(ndx++, logType);
+        statement.setTimestamp(ndx++, new Timestamp(logTime.getTime()));
+        statement.setString(ndx++,logClass);
+        statement.setString(ndx++, logMessage);
+        statement.setString(ndx++, logException);
+        return ndx;
     }
 
     @Override
@@ -147,10 +148,6 @@ public class Log extends DbObject {
 //        }
 //    }
 
-    @Override
-    public void saveSynchronously() throws SQLException {
-        // Don't do this
-    }
 
 //    @Override
 //    protected void doDelete() throws SQLException {
@@ -234,6 +231,14 @@ public class Log extends DbObject {
 
     public void setLogTime(Date logTime) {
         this.logTime = logTime;
+    }
+
+    public void setLogTime(Timestamp logTime) {
+        if (logTime != null) {
+            this.logTime = new Date(logTime.getTime());
+        } else {
+            this.logTime = new Date(0,0,0);
+        }
     }
 
     public String getLogClass() {

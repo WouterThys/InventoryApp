@@ -39,8 +39,8 @@ public class LogsDialog extends LogsDialogLayout {
         try {
             List<Log> allLogs = DbManager.db().getLogs();
 
-            for (Log log : allLogs) {
-                log.delete();
+            for (int i = allLogs.size()-1; i >=0; i--) {
+                allLogs.get(i).delete();
             }
         } finally {
             application.endWait();

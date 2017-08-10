@@ -109,6 +109,18 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
+    public void scrollToVisible() {
+        if (selectedItem != null) {
+            List<Item> itemList = tableModel.getItemList();
+            if (itemList != null) {
+                int ndx = itemList.indexOf(selectedItem);
+                if (ndx >= 0 && ndx < itemList.size()) {
+                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
+                }
+            }
+        }
+    }
+
     private void createNodes(DefaultMutableTreeNode rootNode) {
         for (Category category : db().getCategories()) {
             DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
@@ -151,7 +163,6 @@ public abstract class MainPanelLayout extends JPanel implements
         tableModel = new IItemTableModel(db().getItems());
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
-        itemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.setOpaque(true);
 
@@ -163,8 +174,10 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        subDivisionTree.setPreferredSize(new Dimension(300,200));
+        //subDivisionTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(subDivisionTree);
+        JPanel treePanel = new JPanel(new BorderLayout());
+        treePanel.add(pane);
 
         // Panel them together
         JPanel panel = new JPanel(new BorderLayout());
@@ -173,8 +186,11 @@ public abstract class MainPanelLayout extends JPanel implements
         panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
-        add(pane, BorderLayout.WEST);
-        add(panel, BorderLayout.CENTER);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
+        splitPane.setOneTouchExpandable(true);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override

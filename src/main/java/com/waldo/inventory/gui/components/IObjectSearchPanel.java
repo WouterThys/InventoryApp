@@ -43,7 +43,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private JCheckBox advancedCheckbox2;
     private JCheckBox advancedCheckbox3;
 
-    private IObjectSearchPanel(boolean hasAdvancedSearchOption) {
+    public IObjectSearchPanel(boolean hasAdvancedSearchOption) {
         searchManager = new SearchManager();
         searchManager.setHasAdvancedSearchOption(hasAdvancedSearchOption);
 

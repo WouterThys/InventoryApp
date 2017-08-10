@@ -11,10 +11,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IdBToolBar extends JToolBar {
 
     public interface IdbToolBarListener {
-        void onToolBarRefresh();
-        void onToolBarAdd();
-        void onToolBarDelete();
-        void onToolBarEdit();
+        void onToolBarRefresh(IdBToolBar source);
+        void onToolBarAdd(IdBToolBar source);
+        void onToolBarDelete(IdBToolBar source);
+        void onToolBarEdit(IdBToolBar source);
     }
 
     private Action refreshAction;
@@ -50,28 +50,28 @@ public class IdBToolBar extends JToolBar {
         refreshAction = new AbstractAction("Refresh", imageResource.readImage("Toolbar.RefreshIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarRefresh();
+                toolBarListener.onToolBarRefresh(IdBToolBar.this);
             }
         };
 
         addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.AddIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarAdd();
+                toolBarListener.onToolBarAdd(IdBToolBar.this);
             }
         };
 
         deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.DeleteIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarDelete();
+                toolBarListener.onToolBarDelete(IdBToolBar.this);
             }
         };
 
         editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.EditIcon")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarEdit();
+                toolBarListener.onToolBarEdit(IdBToolBar.this);
             }
         };
 

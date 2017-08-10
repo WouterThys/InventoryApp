@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
 import javax.swing.*;
@@ -232,12 +233,12 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     //
 
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         updateComponents(null);
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             Manufacturer m = dialog.getDbObject();
@@ -246,7 +247,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedManufacturer != null) {
             int res = JOptionPane.showConfirmDialog(ManufacturersDialog.this, "Are you sure you want to delete \"" + selectedManufacturer.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -258,7 +259,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedManufacturer != null) {
             DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
             if (dialog.showDialog() == DbObjectDialog.OK) {

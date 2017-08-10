@@ -1,11 +1,16 @@
 package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
@@ -33,6 +38,8 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Application application;
+    MouseAdapter mouseAdapter;
+    Item selectedItem;
 
     /*
      *                  CONSTRUCTORS
@@ -147,28 +154,62 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         iconLabel.setVerticalAlignment(ILabel.CENTER);
         iconLabel.setPreferredSize(new Dimension(150,150));
 
+        mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() >= 2) {
+                    EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
+                    Object source = e.getSource();
+                    if (source.equals(remarksTa)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_REMARK);
+                    } else if (source.equals(descriptionTextArea)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DESCRIPTION);
+                    } else if (source.equals(nameTextField)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_NAME);
+                    } else if (source.equals(divisionTa)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DIVISION);
+                    } else if (source.equals(manufacturerTextField)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_MANUFACTURER);
+                    } else if (source.equals(starRater)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_RATING);
+                    } else if (source.equals(discourageOrder)) {
+                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_DISCOURAGE);
+                    } else {
+                        dialog.showDialog();
+                    }
+                }
+            }
+        };
+
         nameTextField = new ITextField();
         nameTextField.setEnabled(false);
+        nameTextField.addMouseListener(mouseAdapter);
         divisionTa = new ITextArea();
         divisionTa.setLineWrap(true);
         divisionTa.setWrapStyleWord(true);
         divisionTa.setEnabled(false);
+        divisionTa.addMouseListener(mouseAdapter);
         manufacturerTextField = new ITextField();
         manufacturerTextField.setEnabled(false);
+        manufacturerTextField.addMouseListener(mouseAdapter);
         descriptionTextArea= new ITextArea();
         descriptionTextArea.setEnabled(false);
         descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
+        descriptionTextArea.addMouseListener(mouseAdapter);
 
         starRater = new IStarRater(5);
         starRater.setEnabled(false);
+        starRater.addMouseListener(mouseAdapter);
         discourageOrder = new ICheckBox("Discourage order ");
         discourageOrder.setEnabled(false);
         discourageOrder.setHorizontalAlignment(SwingConstants.RIGHT);
+        discourageOrder.addMouseListener(mouseAdapter);
         remarksTa = new ITextArea();
         remarksTa.setEnabled(false);
         remarksTa.setLineWrap(true);
         remarksTa.setWrapStyleWord(true);
+        remarksTa.addMouseListener(mouseAdapter);
 
         dataSheetButton = new JButton("Data sheet");
         orderButton = new JButton("Order");

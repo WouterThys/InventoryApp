@@ -13,6 +13,7 @@ public class ISpinner extends JSpinner {
     private ChangeListener changeListener;
 
     private String fieldName;
+    private Class fieldClass;
 
     public ISpinner() {
         super();
@@ -25,6 +26,14 @@ public class ISpinner extends JSpinner {
     public void addEditedListener(IEditedListener listener, String fieldName) {
         this.editedListener = listener;
         setFieldName(fieldName);
+        setFieldClass(int.class);
+        setChangeListener();
+    }
+
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        this.editedListener = listener;
+        setFieldName(fieldName);
+        setFieldClass(fieldClass);
         setChangeListener();
     }
 
@@ -38,6 +47,10 @@ public class ISpinner extends JSpinner {
         this.fieldName = fieldName;
     }
 
+    private void setFieldClass(Class fieldClass) {
+        this.fieldClass = fieldClass;
+    }
+
     private void setChangeListener() {
         changeListener = e -> {
             try {
@@ -46,11 +59,27 @@ public class ISpinner extends JSpinner {
                     ISpinner spinner = (ISpinner) e.getSource();
                     String newVal = String.valueOf(spinner.getValue());
 
-                    Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);
+                    Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
                     Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
                     String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                    setMethod.invoke(guiObject, newVal);
+                    switch (fieldClass.getTypeName()) {
+                        case "int":
+                            setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                            break;
+                        case "double":
+                            setMethod.invoke(guiObject, Double.valueOf(newVal));
+                            break;
+                        case "float":
+                            setMethod.invoke(guiObject, Float.valueOf(newVal));
+                            break;
+                        case "long":
+                            setMethod.invoke(guiObject, Long.valueOf(newVal));
+                            break;
+                        default:
+                            setMethod.invoke(guiObject, newVal);
+                            break;
+                    }
 
                     editedListener.onValueChanged(ISpinner.this, fieldName, oldVal, newVal);
                 }

@@ -64,12 +64,12 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
         } else {
             tableModel = new TableModel();
         }
-        objectTable = new ITable(tableModel);
-        objectTable.getSelectionModel().addListSelectionListener(this);
-        objectTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
-        objectTable.setDefaultRenderer(ILabel.class, new ITableEditors.CheckRenderer());
-        objectTable.setOpaque(true);
-        objectTable.addMouseListener(this);
+//        objectTable = new ITable();
+//        objectTable.getSelectionModel().addListSelectionListener(this);
+//        objectTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+//        objectTable.setDefaultRenderer(ILabel.class, new ITableEditors.CheckRenderer());
+//        objectTable.setOpaque(true);
+//        objectTable.addMouseListener(this);
 
         // Object panel
         tableObjectPanel = new TableObjectPanel(this, application);

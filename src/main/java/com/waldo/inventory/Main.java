@@ -1,5 +1,8 @@
 package com.waldo.inventory;
 
+import com.waldo.inventory.Utils.parser.SetItem.ResistorParser;
+import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
+import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import org.slf4j.Logger;
@@ -9,7 +12,9 @@ import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 public class Main {
 

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.LogManager;
 
 import java.sql.*;
@@ -13,8 +14,8 @@ public abstract class DbObject {
     public static final int UNKNOWN_ID = 1;
     public static final String UNKNOWN_NAME = "Unknown";
 
-    public static final String SQL_SELECT_ALL = "sqlSelect.all";
-    public static final String SQL_SELECT_ONE = "sqlSelect.one";
+    public static final String SQL_SELECT_ALL = ".sqlSelect.all";
+    public static final String SQL_SELECT_ONE = ".sqlSelect.one";
     public static final String SQL_INSERT = "sqlInsert";
     public static final String SQL_UPDATE = "sqlUpdate";
     public static final String SQL_DELETE = "sqlDelete";
@@ -35,6 +36,13 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT_DIRECTORY = 13;
     public static final int TYPE_PROJECT_TYPE = 14;
     public static final int TYPE_ORDER_FILE_FORMAT = 15;
+    public static final int TYPE_SET_ITEM = 16;
+    public static final int TYPE_DIMENSION_TYPE = 17;
+    public static final int TYPE_LOCATION_TYPE = 18;
+
+    public static final int TYPE_KC_COMPONENT = 30;
+    public static final int TYPE_KC_ITEM_LINK = 31;
+
     public static final int TYPE_LOG = 100;
 
     protected String TABLE_NAME;
@@ -79,6 +87,12 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
         if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
         if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
+        if (dbObject instanceof Package) return TYPE_PACKAGE;
+        if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
+        if (dbObject instanceof DimensionType) return TYPE_DIMENSION_TYPE;
+        if (dbObject instanceof KcComponent) return TYPE_KC_COMPONENT;
+        if (dbObject instanceof KcItemLink) return TYPE_KC_ITEM_LINK;
+        if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
 
         return TYPE_UNKNOWN;
@@ -97,33 +111,10 @@ public abstract class DbObject {
 
     public abstract void tableChanged(int changedHow);
 
-    public void saveSynchronously() throws SQLException {
-//        if (!canBeSaved) {
-//            JOptionPane.showMessageDialog(null, "\"" + name + "\" can't be saved.", "Save warning", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
-//        final long saveId = id;
-//
-//        LOG.debug("Start save.");
-//        doSave();
-//
-//        if (saveId < 0) { // Save
-//            LOG.debug("Added object to " + TABLE_NAME);
-//            if (onDbTableChangedListener != null) {
-//                onDbTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_INSERT, DbObject.this, null);
-//            }
-//        } else { // Update
-//            LOG.debug("Updated object in " + TABLE_NAME);
-//            if (onDbTableChangedListener != null) {
-//                onDbTableChangedListener.onTableChanged(TABLE_NAME, DbManager.OBJECT_UPDATE, DbObject.this, oldObject);
-//            }
-//
-//        }
-    }
 
     public void delete() {
         if (canBeSaved) {
-            if (id > UNKNOWN_ID) {
+            if (id >= UNKNOWN_ID) {
                 db().delete(this);
             }
         }
@@ -146,11 +137,11 @@ public abstract class DbObject {
     public boolean equals(Object obj) {
         if (obj != null) {
             if (obj instanceof DbObject) {
-                if (((DbObject) obj).getId() == id && ((DbObject) obj).getName().equals(name)) {
+                if (((DbObject) obj).getId() == getId() && ((DbObject) obj).getName().equals(getName())) {
                     return true;
                 }
-                if (id < 0 || ((DbObject) obj).getId() < 0) {
-                    return name.equals(((DbObject) obj).getName());
+                if (getId() < 0 || ((DbObject) obj).getId() < 0) {
+                    return getName().equals(((DbObject) obj).getName());
                 }
             }
         }
@@ -170,6 +161,8 @@ public abstract class DbObject {
         newObject.setId(getId());
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
+
+        newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
     }
 
@@ -221,5 +214,9 @@ public abstract class DbObject {
 
     public String getScript(String scriptName) {
         return scriptResource.readString(TABLE_NAME + "." + scriptName);
+    }
+
+    public void setInserted(boolean inserted) {
+        this.isInserted = inserted;
     }
 }

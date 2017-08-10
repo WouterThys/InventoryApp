@@ -59,6 +59,10 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
         parseBtn.setEnabled((projectType != null) && (!projectType.getParserName().isEmpty()));
     }
 
+    public void setProjectName(String name) {
+        nameTf.setText(name);
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -148,9 +152,6 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
                 } else {
                     typeIconLbl.setIcon(imageResource.readImage("Common.Unknown"));
                 }
-
-
-                nameTf.setText("name"); //FileUtils.formatFileNameString(projectType.get)
 
                 if (projectType.isUseDefaultLauncher()) {
                     launchPathTf.setText("Default");

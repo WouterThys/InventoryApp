@@ -20,8 +20,9 @@ public class ProjectDirectory extends DbObject {
 
     private long projectId;
     private Project project;
+    private boolean validated = false;
 
-    private HashMap<ProjectType, ArrayList<File>> projectTypes;
+    private HashMap<ProjectType, List<File>> projectTypes;
 
 
     public ProjectDirectory() {
@@ -38,20 +39,25 @@ public class ProjectDirectory extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setLong(2, projectId);
-        statement.setString(3, directory);
-        return 4;
+//        if (projectId < UNKNOWN_ID) {
+//            projectId = UNKNOWN_ID;
+//        }
+
+        int ndx = 1;
+        statement.setString(ndx++, getName());
+        statement.setLong(ndx++, getProjectId());
+        statement.setString(ndx++, getDirectory());
+        return ndx;
     }
 
     @Override
     public String toString() {
         String result = getDirectory();
 
-        if (result.length() > 30) {
-            while (result.length() > 30) {
+        if (result.length() > 25) {
+            while (result.length() > 25) {
                 int ndx = result.indexOf("/");
-                result = result.substring(ndx+1, result.length() - 1);
+                result = result.substring(ndx+1, result.length());
             }
             result = ".../" + result;
         }
@@ -70,7 +76,7 @@ public class ProjectDirectory extends DbObject {
             ProjectDirectory ref = (ProjectDirectory) obj;
             if (!(ref.getDirectory().equals(getDirectory()))) { return false; }
             if (!(ref.getProjectId() == getProjectId())) return false;
-            if (!(ref.getProjectTypes() == getProjectTypes())) return false;
+            if (!(ref.getProjectTypeMap() == getProjectTypeMap())) return false;
         }
         return result;
     }
@@ -132,13 +138,64 @@ public class ProjectDirectory extends DbObject {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void addProjectType(ProjectType projectType, File file) {
         if (projectType != null) {
-            if (getProjectTypes().containsKey(projectType)) {
-                getProjectTypes().computeIfAbsent(projectType, k -> new ArrayList<>());
+            if (getProjectTypeMap().containsKey(projectType)) {
+                getProjectTypeMap().computeIfAbsent(projectType, k -> new ArrayList<>());
             } else {
-                getProjectTypes().put(projectType, new ArrayList<>());
+                getProjectTypeMap().put(projectType, new ArrayList<>());
             }
-            getProjectTypes().get(projectType).add(file);
+            getProjectTypeMap().get(projectType).add(file);
         }
+    }
+
+    public void removeProjectType(ProjectType projectType, File file) {
+        if (projectType != null) {
+            List<File> filesForType = getProjectFilesForType(projectType);
+            if (file != null) {
+                if (filesForType.contains(file)) {
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file.getPath());
+                    if (linkToDelete != null) {
+                        linkToDelete.delete();
+                    }
+                    filesForType.remove(file);
+                    if (filesForType.size() == 0) {
+                        getProjectTypes().remove(projectType);
+                    }
+                }
+            } else {
+                for (File file1 : filesForType) {
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file1.getPath());
+                    if (linkToDelete != null) {
+                        linkToDelete.delete();
+                    }
+                    filesForType.remove(file1);
+                    if (filesForType.size() == 0) {
+                        getProjectTypes().remove(projectType);
+                    }
+                }
+            }
+        }
+    }
+
+    public List<ProjectValidationError> validate() {
+        List<ProjectValidationError> errors = new ArrayList<>();
+
+        File directoryFile = new File(getDirectory());
+        if (directoryFile.exists()) {
+            for (ProjectType type : getProjectTypes()) {
+                for (File file : getProjectFilesForType(type)) {
+                    if (!file.exists()) {
+                        ProjectValidationError error = new ProjectValidationError(this, type, file, "Project type " + file.toString() + " does not exist..");
+                        errors.add(error);
+                    }
+                }
+            }
+        } else {
+            ProjectValidationError error = new ProjectValidationError(this, "Directory " + directoryFile.toString() + " does not exist..");
+            errors.add(error);
+        }
+
+        validated = true;
+        return errors;
     }
 
 
@@ -158,11 +215,18 @@ public class ProjectDirectory extends DbObject {
     }
 
     public long getProjectId() {
+        if (projectId < UNKNOWN_ID && project != null) {
+            projectId = project.getId();
+        }
         return projectId;
     }
 
     public void setProjectId(long projectId) {
         this.projectId = projectId;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public Project getProject() {
@@ -179,11 +243,26 @@ public class ProjectDirectory extends DbObject {
         return project;
     }
 
-    public HashMap<ProjectType, ArrayList<File>> getProjectTypes() {
+    public HashMap<ProjectType, List<File>> getProjectTypeMap() {
         if (projectTypes == null) {
             projectTypes = DbManager.db().getProjectTypesForProjectDirectory(id);
         }
         return projectTypes;
     }
 
+    public List<ProjectType> getProjectTypes() {
+        return new ArrayList<>(getProjectTypeMap().keySet());
+    }
+
+    public List<File> getProjectFilesForType(ProjectType type) {
+        return getProjectTypeMap().get(type);
+    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
 }

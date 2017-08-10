@@ -390,19 +390,19 @@ public class DbPanel extends JPanel implements
     // Tool bar
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         settings().updateDbSettings();
         settings().updateSelectedSettings();
         updateComponents(settings().getDbSettings());
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         addNewDbSettings();
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedDbSettings != null) {
             if (selectedDbSettings.isDefault()) {
                 JOptionPane.showMessageDialog(DbPanel.this,
@@ -416,7 +416,7 @@ public class DbPanel extends JPanel implements
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
 //        if (selectedDbSettings != null) {
 //            if (selectedDbSettings.isDefault()) {
 //                JOptionPane.showMessageDialog(DbPanel.this,

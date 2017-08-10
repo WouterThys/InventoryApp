@@ -109,6 +109,9 @@ public class DistributorPart extends DbObject {
     }
 
     public String getItemRef() {
+        if (itemRef == null) {
+            itemRef = "";
+        }
         return itemRef;
     }
 

@@ -13,7 +13,8 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
     private IEditedListener editedListener;
     private ItemListener itemListener;
 
-    private String fieldName;
+    private String fieldName = "";
+    private Class fieldClass;
 
     public IComboBox() {
         super();
@@ -26,40 +27,76 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
     public void addEditedListener(IEditedListener listener, String fieldName) {
         this.editedListener = listener;
         setFieldName(fieldName);
+        setFieldClass(long.class);
+        setItemListener();
+    }
+
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        this.editedListener = listener;
+        setFieldName(fieldName);
+        setFieldClass(fieldClass);
         setItemListener();
     }
 
     private void setFieldName(String fieldName) {
-        String firstChar = String.valueOf(fieldName.charAt(0));
-        if (firstChar.equals(firstChar.toLowerCase())) {
-            fieldName = firstChar.toUpperCase()
-                    + fieldName.substring(1, fieldName.length());
+        if (!fieldName.isEmpty()) {
+            String firstChar = String.valueOf(fieldName.charAt(0));
+            if (firstChar.equals(firstChar.toLowerCase())) {
+                fieldName = firstChar.toUpperCase()
+                        + fieldName.substring(1, fieldName.length());
+            }
         }
 
         this.fieldName = fieldName;
     }
 
+    private void setFieldClass(Class fieldClass) {
+        this.fieldClass = fieldClass;
+    }
+
     private void setItemListener() {
         itemListener = e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+
+                SwingUtilities.invokeLater(() -> {
                     try {
                         DbObject guiObject = editedListener.getGuiObject();
                         if (guiObject != null) {
+
                             String newVal = String.valueOf(((DbObject) e.getItem()).getId());
+                            String oldVal = "";
+                            if (!fieldName.isEmpty()) {
+                                Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
+                                Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                            Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, String.class);
-                            Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
-
-                            String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                            setMethod.invoke(guiObject, newVal);
+                                oldVal = String.valueOf(getMethod.invoke(guiObject));
+                                switch (fieldClass.getTypeName()) {
+                                    case "int":
+                                        setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                                        break;
+                                    case "double":
+                                        setMethod.invoke(guiObject, Double.valueOf(newVal));
+                                        break;
+                                    case "float":
+                                        setMethod.invoke(guiObject, Float.valueOf(newVal));
+                                        break;
+                                    case "long":
+                                        setMethod.invoke(guiObject, Long.valueOf(newVal));
+                                        break;
+                                    default:
+                                        setMethod.invoke(guiObject, newVal);
+                                        break;
+                                }
+                            }
 
                             editedListener.onValueChanged(IComboBox.this, fieldName, oldVal, newVal);
                         }
                     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
                         e1.printStackTrace();
                     }
-                }
-            };
+                });
+            }
+        };
         addItemListener(itemListener);
     }
 

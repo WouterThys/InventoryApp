@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
@@ -11,6 +14,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -25,10 +30,12 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
     private JButton iconBtn;
     private JTextPane nameTp;;
 
-    private File file; // Should get rid of this
-
     private ImageIcon icon;
     private String name;
+
+    private ProjectType projectType;
+    private ProjectDirectory projectDirectory;
+    private File file;
 
     private TileClickListener listener;
 
@@ -36,6 +43,22 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
         this.icon = imageResource.readImage(iconPath, 64, 64);
         this.name = name;
         this.tileId = id;
+
+        initializeComponents();
+        initializeLayouts();
+
+        updateComponents(null);
+    }
+
+    public ITileView(File file, ProjectType projectType, ProjectDirectory projectDirectory) {
+        this.projectDirectory = projectDirectory;
+        this.projectType = projectType;
+        this.file = file;
+
+        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectType.getIconPath());
+
+        this.name = getFileName(file.getAbsolutePath());
+        this.icon = imageResource.readImage(path.toString(), 64, 64);
 
         initializeComponents();
         initializeLayouts();
@@ -55,6 +78,14 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
         initializeLayouts();
 
         updateComponents(null);
+    }
+
+    private String getFileName(String filePath) {
+        if (filePath.contains("/")) {
+            int ndx = filePath.lastIndexOf("/");
+            return filePath.substring(ndx + 1, filePath.length());
+        }
+        return filePath;
     }
 
     public void addTileClickListener(TileClickListener listener) {
@@ -135,6 +166,27 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
         if (listener != null) {
             listener.onTileClick(this);
         }
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public ProjectType getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(ProjectType projectType) {
+        this.projectType = projectType;
+    }
+
+    public ProjectDirectory getProjectDirectory() {
+        return projectDirectory;
+    }
+
+    public void setProjectDirectory(ProjectDirectory projectDirectory) {
+        this.projectDirectory = projectDirectory;
     }
 }
 

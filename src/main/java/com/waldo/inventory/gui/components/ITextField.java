@@ -55,6 +55,7 @@ public class ITextField extends JTextField implements FocusListener {
             documentListener.setEnabled(false);
         }
         try {
+
             super.setText(t);
         } catch (Exception e) {
             Status().setError("Error setting text." , e);
@@ -100,7 +101,8 @@ public class ITextField extends JTextField implements FocusListener {
 //            this.setBorder(focusBorder);
             this.setOpaque(true);
             if (this.getText().isEmpty()) {
-                setText("");
+                showingHint = false;
+                super.setText("");
             }
         }
     }
@@ -127,6 +129,14 @@ public class ITextField extends JTextField implements FocusListener {
             this.getDocument().removeDocumentListener(documentListener);
         }
         documentListener = new BindingListener(this, listener, fieldName);
+        this.getDocument().addDocumentListener(documentListener);
+    }
+
+    public void addEditedListener(IEditedListener listener, String fieldName, Class fieldClass) {
+        if (documentListener != null) {
+            this.getDocument().removeDocumentListener(documentListener);
+        }
+        documentListener = new BindingListener(this, listener, fieldName, fieldClass);
         this.getDocument().addDocumentListener(documentListener);
     }
 

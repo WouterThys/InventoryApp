@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.ProjectType;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog.DetectionDialog;
 import com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog.LauncherDialog;
@@ -233,12 +234,12 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     //
 
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         updateComponents(null);
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         DbObjectDialog<ProjectType> dialog = new DbObjectDialog<>(application, "New Project Type", new ProjectType());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             ProjectType pt = dialog.getDbObject();
@@ -247,7 +248,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedProjectType != null) {
             int res = JOptionPane.showConfirmDialog(ProjectTypesDialog.this, "Are you sure you want to delete \"" + selectedProjectType.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -259,7 +260,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
         if (selectedProjectType != null) {
             DbObjectDialog<ProjectType> dialog = new DbObjectDialog<>(application, "Update " + selectedProjectType.getName(), selectedProjectType);
             if (dialog.showDialog() == DbObjectDialog.OK) {

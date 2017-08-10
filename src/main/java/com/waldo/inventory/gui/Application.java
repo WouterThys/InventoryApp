@@ -6,10 +6,7 @@ import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -72,17 +69,22 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 // TODO: cry a little
             }
 
+            settings().registerShutDownHook();
+            db().startBackgroundWorkers();
+            db().registerShutDownHook();
+            db().addErrorListener(this);
+
+            initComponents();
+
         } catch (Exception e) {
             LOG.error("Error initialising db", e);
-            SettingsDialog dialog = new SettingsDialog(this, "Settings");
-            dialog.showDialog(); // TODO better dialog
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    "Initialize error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
         }
-        settings().registerShutDownHook();
-        db().startBackgroundWorkers();
-        db().registerShutDownHook();
-        db().addErrorListener(this);
 
-        initComponents();
     }
 
 
@@ -220,6 +222,26 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
     }
 
+    public void addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+        beginWait();
+        try {
+            // Switch tab
+            setSelectedTab(TAB_ORDERS);
+            // Update items
+            for (OrderItem orderItem : itemsToOrder) {
+                orderItem.getItem().setOrderState(Statics.ItemOrderStates.PLANNED);
+                orderItem.getItem().save();
+            }
+        } finally {
+            endWait();
+        }
+        // Add
+        Map<String, Item> failedItems = orderPanel.addOrderItemsToOrder(itemsToOrder, order);
+        if (failedItems != null && failedItems.size() > 0) {
+            // TODO Show error message
+        }
+    }
+
     public boolean isUpdating() {
         return updating;
     }
@@ -278,41 +300,41 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     //
     @Override
     public void onSelectError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Select error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Select error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Select");
     }
 
     @Override
     public void onInsertError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Insert error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Insert error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Insert");
     }
 
     @Override
     public void onUpdateError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Update error on " + object.getName(), throwable);
-        SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Update error", JOptionPane.ERROR_MESSAGE);
-        });
+        showErrorMessage(object, throwable, "Update");
     }
 
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
-        // TODO
-        LOG.error("Delete error on " + object.getName(), throwable);
+        showErrorMessage(object, throwable, "Delete");
+    }
+
+    private void showErrorMessage(DbObject object, Throwable throwable, String error) {
+        final String message;
+        final String title;
+        if (throwable != null) {
+            message = throwable.getMessage();
+        } else {
+            message = error + " error";
+        }
+        if (object != null) {
+            title = error + " error on " + object.getName();
+        } else {
+            title = error + " error";
+        }
+
+        LOG.error(title, throwable);
         SwingUtilities.invokeLater(() -> {
-            String message = throwable.getMessage();
-            JOptionPane.showMessageDialog(this, message, "Delete error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
         });
     }
 }

@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.addprojectdialog;
 
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -10,6 +11,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -134,8 +137,8 @@ public abstract class AddProjectDialogLayout extends IDialog implements
             setTitleName(project.getName());
             if (!project.getIconPath().isEmpty()) {
                 try {
-                    File image = new File(project.getIconPath());
-                    URL url = image.toURI().toURL();
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgProjectsPath(), project.getIconPath());
+                    URL url = path.toUri().toURL();
                     getTitleIconLabel().setIcon(imageResource.readImage(url, 48, 48));
                 } catch (Exception e) {
                     Status().setError("Error setting title icon");

@@ -50,9 +50,4 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
         }
         return null;
     }
-
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
-    }
 }

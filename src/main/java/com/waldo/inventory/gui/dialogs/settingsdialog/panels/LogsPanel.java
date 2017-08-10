@@ -384,19 +384,19 @@ public class LogsPanel extends JPanel implements
     // Tool bar
     //
     @Override
-    public void onToolBarRefresh() {
+    public void onToolBarRefresh(IdBToolBar source) {
         settings().updateLogSettings();
         settings().updateSelectedSettings();
         updateComponents(settings().getLogSettings());
     }
 
     @Override
-    public void onToolBarAdd() {
+    public void onToolBarAdd(IdBToolBar source) {
         addNewLogSettings();
     }
 
     @Override
-    public void onToolBarDelete() {
+    public void onToolBarDelete(IdBToolBar source) {
         if (selectedLogSettings != null) {
             if (selectedLogSettings.isDefault()) {
                 JOptionPane.showMessageDialog(LogsPanel.this,
@@ -410,7 +410,7 @@ public class LogsPanel extends JPanel implements
     }
 
     @Override
-    public void onToolBarEdit() {
+    public void onToolBarEdit(IdBToolBar source) {
 //        if (selectedLogSettings != null) {
 //            if (selectedLogSettings.isDefault()) {
 //                JOptionPane.showMessageDialog(LogsPanel.this,

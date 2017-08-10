@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
@@ -13,7 +13,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
@@ -22,13 +21,9 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
-    private static final int COMPONENT_TAB = 0;
-    private static final int STOCK_TAB = 1;
-    private static final int MANUFACTURER_TAB = 2;
-    private static final int ORDER_TAB = 3;
-
     private int currentTabIndex = 0;
     private boolean canClose = true;
+    private boolean partNumberChanged = false;
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
@@ -37,11 +32,11 @@ public class EditItemDialog extends EditItemDialogLayout {
         } else {
             setLocationByPlatform(true);
         }
-        newItem = item;
-        originalItem = newItem.createCopy();
+        setValues(item);
         isNew = false;
         initializeComponents();
         initializeLayouts();
+        initListeners();
         initActions();
         updateComponents(null);
     }
@@ -49,6 +44,18 @@ public class EditItemDialog extends EditItemDialogLayout {
     public EditItemDialog(Application application, String title) {
         this(application, title, new Item());
         isNew = true;
+    }
+
+    private void setValues(Item item) {
+        newItem = item;
+        originalItem = newItem.createCopy();
+
+        newPackage = item.getPackage();
+        if (newPackage != null)  {
+            originalPackage = newPackage.createCopy();
+        } else {
+            originalPackage = null;
+        }
     }
 
     private void initActions() {
@@ -59,6 +66,27 @@ public class EditItemDialog extends EditItemDialogLayout {
         // Component panel actions
         initCategoryChangedAction();
         initProductChangedAction();
+    }
+
+    private void initListeners() {
+        DbManager.db().addOnPackageChangedListener(new DbObjectChangedListener<Package>() {
+            @Override
+            public void onInserted(Package p) {
+                newItem.setPackageId(p.getId());
+                newItem.save();
+                originalItem = newItem.createCopy();
+            }
+
+            @Override
+            public void onUpdated(Package p) {
+                componentPanel.updateComponents(null);
+            }
+
+            @Override
+            public void onDeleted(Package p) {
+                componentPanel.updateComponents(null);
+            }
+        });
     }
 
     @Override
@@ -77,8 +105,20 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
+
+            if (partNumberChanged) {
+                editItemOrderPanel.setPartNumber();
+                partNumberChanged = false;
+            }
+
+            if (newPackage != null) {
+                newPackage.save();
+                originalPackage = newPackage.createCopy();
+            }
+
             newItem.save();
             originalItem = newItem.createCopy();
+
             getButtonNeutral().setEnabled(false);
             // Don't call update for just one component
             componentPanel.updateRating(newItem.getRating());
@@ -93,7 +133,9 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
     private boolean checkChange() {
-        return (newItem != null) && !(newItem.equals(originalItem));
+        boolean itemChange = (newItem != null) && !(newItem.equals(originalItem));
+        boolean packageChange = (newPackage != null) && !(newPackage.equals(originalPackage));
+        return itemChange || packageChange;
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -217,7 +259,23 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (fieldName.equals("Name")) {
             getTitleNameLabel().setText(String.valueOf(newValue));
         }
-        getButtonNeutral().setEnabled(checkChange());
+        // Package
+        if (newPackage == null &&
+                (fieldName.equals("PackageTypeId") || fieldName.equals("Pins") || fieldName.equals("Height") || fieldName.equals("Width"))) {
+            newPackage = newItem.getPackage();
+        }
+        // Distributor part
+        if (component.equals(editItemOrderPanel.getItemRefField())) {
+            partNumberChanged = editItemOrderPanel.checkChange();
+            getButtonNeutral().setEnabled(partNumberChanged);
+        } else {
+            getButtonNeutral().setEnabled(checkChange());
+        }
+
+        // Dimensions
+        if (component.equals(componentPanel.getPackageTypeCb())) {
+            componentPanel.updateDimensionPanel();
+        }
     }
 
     @Override

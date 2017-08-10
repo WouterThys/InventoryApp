@@ -2,6 +2,8 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
@@ -14,6 +16,7 @@ import javax.swing.*;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.List;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
@@ -29,7 +32,6 @@ public class DbManager {
     public static final int OBJECT_DELETE = 2;
     public static final int OBJECT_SELECT = 3;
 
-    private static final String SQL_ALL = ".sqlSelect.all";
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 
@@ -47,7 +49,6 @@ public class DbManager {
     private DbQueueWorker dbQueueWorker;
     private DbErrorWorker dbErrorWorker;
 
-
     // Events
     private DbErrorListener errorListener;
 
@@ -58,6 +59,7 @@ public class DbManager {
     public List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<LocationType>> onLocationTYpeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
@@ -66,6 +68,11 @@ public class DbManager {
     public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<KcComponent>> onKcComponentChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<KcItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -76,6 +83,7 @@ public class DbManager {
     private List<Type> types;
     private List<Manufacturer> manufacturers;
     private List<Location> locations;
+    private List<LocationType> locationTypes;
     private List<Order> orders;
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
@@ -86,6 +94,11 @@ public class DbManager {
     private List<ProjectType> projectTypes;
     private List<ProjectTypeLink> projectTypeLinks;
     private List<OrderFileFormat> orderFileFormats;
+    private List<Package> packages;
+    private List<SetItem> setItems;
+    private List<DimensionType> dimensionTypes;
+    private List<KcComponent> kcComponents;
+    private List<KcItemLink> kcItemLinks;
     private List<Log> logs;
 
     private DbManager() {}
@@ -96,7 +109,7 @@ public class DbManager {
         if (s != null) {
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull");
+            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
             dataSource.setUsername(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
             LOG.info("Database initialized with connection: " + s.createMySqlUrl());
@@ -200,6 +213,7 @@ public class DbManager {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
         if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
             onItemsChangedListenerList.add(dbObjectChangedListener);
@@ -236,6 +250,12 @@ public class DbManager {
         }
     }
 
+    public void addOnLocationTypeChangedListener(DbObjectChangedListener<LocationType> dbObjectChangedListener) {
+        if (!onLocationTYpeChangedListenerList.contains(dbObjectChangedListener)) {
+            onLocationTYpeChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
     public void addOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
         if (!onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
             onOrdersChangedListenerList.add(dbObjectChangedListener);
@@ -266,6 +286,12 @@ public class DbManager {
         }
     }
 
+    public void addOnPackageChangedListener(DbObjectChangedListener<Package> dbObjectChangedListener) {
+        if (!onPackageChangedListenerList.contains(dbObjectChangedListener)) {
+            onPackageChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
     public void addOnPackageTypeChangedListener(DbObjectChangedListener<PackageType> dbObjectChangedListener) {
         if (!onPackageTypesChangedListenerList.contains(dbObjectChangedListener)) {
             onPackageTypesChangedListenerList.add(dbObjectChangedListener);
@@ -287,6 +313,24 @@ public class DbManager {
     public void addOnOrderFileFormatChangedListener(DbObjectChangedListener<OrderFileFormat> dbObjectChangedListener) {
         if (!onOrderFileFormatChangedListenerList.contains(dbObjectChangedListener)) {
             onOrderFileFormatChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnDimensionTypeChangedListener(DbObjectChangedListener<DimensionType> dbObjectChangedListener) {
+        if (!onDimensionTypeChangedListenerList.contains(dbObjectChangedListener)) {
+            onDimensionTypeChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnKcComponentChangedListener(DbObjectChangedListener<KcComponent> dbObjectChangedListener) {
+        if (!onKcComponentChangedListenerList.contains(dbObjectChangedListener)) {
+            onKcComponentChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnKcItemLinkChangedListener(DbObjectChangedListener<KcItemLink> dbObjectChangedListener) {
+        if (!onKcItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onKcItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -402,14 +446,26 @@ public class DbManager {
         for (DbObjectChangedListener<T> l : listeners) {
             switch (changedHow) {
                 case OBJECT_INSERT:
-                    SwingUtilities.invokeLater(() -> l.onInserted(object));
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onInserted(object));
+                    } catch (Exception e) {
+                        LOG.error("Error after insert of " + object.getName(), e);
+                    }
                     break;
                 case OBJECT_UPDATE:
-                    SwingUtilities.invokeLater(() -> l.onUpdated(object));
-                    l.onUpdated(object);
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onUpdated(object));
+                        l.onUpdated(object);
+                    } catch (Exception e) {
+                        LOG.error("Error after update of " + object.getName(), e);
+                    }
                     break;
                 case OBJECT_DELETE:
-                    SwingUtilities.invokeLater(() -> l.onDeleted(object));
+                    try {
+                        SwingUtilities.invokeLater(() -> l.onDeleted(object));
+                    } catch (Exception e) {
+                        LOG.error("Error after delete of " + object.getName(), e);
+                    }
                     break;
             }
         }
@@ -457,7 +513,7 @@ public class DbManager {
         items = new ArrayList<>();
         Status().setMessage("Fetching items from DB");
         Item i = null;
-        String sql = scriptResource.readString(Item.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Item.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -483,7 +539,10 @@ public class DbManager {
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
+                    i.setSet(rs.getBoolean("isSet"));
+                    i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
 
+                    i.setInserted(true);
                     items.add(i);
                 }
             }
@@ -511,7 +570,7 @@ public class DbManager {
         categories = new ArrayList<>();
         Status().setMessage("Fetching categories from DB");
         Category c = null;
-        String sql = scriptResource.readString(Category.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Category.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -522,6 +581,7 @@ public class DbManager {
                     c.setName(rs.getString("name"));
                     c.setIconPath(rs.getString("iconpath"));
 
+                    c.setInserted(true);
                     if (c.getId() != DbObject.UNKNOWN_ID) {
                         categories.add(c);
                     }
@@ -552,7 +612,7 @@ public class DbManager {
         products = new ArrayList<>();
         Status().setMessage("Fetching products from DB");
         Product p = null;
-        String sql = scriptResource.readString(Product.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Product.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -564,6 +624,7 @@ public class DbManager {
                     p.setIconPath(rs.getString("iconpath"));
                     p.setCategoryId(rs.getLong("categoryid"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         products.add(p);
                     }
@@ -595,7 +656,7 @@ public class DbManager {
         types = new ArrayList<>();
         Status().setMessage("Fetching types from DB");
         Type t = null;
-        String sql = scriptResource.readString(Type.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Type.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -607,6 +668,7 @@ public class DbManager {
                     t.setIconPath(rs.getString("iconpath"));
                     t.setProductId(rs.getLong("productid"));
 
+                    t.setInserted(true);
                     if (t.getId() != 1) {
                         types.add(t);
                     }
@@ -637,7 +699,7 @@ public class DbManager {
         manufacturers = new ArrayList<>();
         Status().setMessage("Fetching manufacturers from DB");
         Manufacturer m = null;
-        String sql = scriptResource.readString(Manufacturer.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Manufacturer.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -649,6 +711,7 @@ public class DbManager {
                     m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
 
+                    m.setInserted(true);
                     if (m.getId() != DbObject.UNKNOWN_ID) {
                         manufacturers.add(m);
                     }
@@ -679,7 +742,7 @@ public class DbManager {
         locations = new ArrayList<>();
         Status().setMessage("Fetching locations from DB");
         Location l = null;
-        String sql = scriptResource.readString(Location.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Location.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -688,8 +751,11 @@ public class DbManager {
                     l = new Location();
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
-                    l.setIconPath(rs.getString("iconpath"));
+                    l.setLocationTypeId(rs.getLong("locationTypeId"));
+                    l.setRow(rs.getInt("row"));
+                    l.setColumn(rs.getInt("col"));
 
+                    l.setInserted(true);
                     if (l.getId() != DbObject.UNKNOWN_ID) {
                         locations.add(l);
                     }
@@ -705,6 +771,49 @@ public class DbManager {
         }
         locations.add(0, Location.getUnknownLocation());
     }
+
+
+    /*
+    *                  LOCATION TYPES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<LocationType> getLocationTypes()   {
+        if (locationTypes == null) {
+            updateLocationTypes();
+        }
+        return locationTypes;
+    }
+
+    private void updateLocationTypes() {
+        locationTypes = new ArrayList<>();
+        Status().setMessage("Fetching location types from DB");
+        LocationType l = null;
+        String sql = scriptResource.readString(LocationType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    l = new LocationType();
+                    l.setId(rs.getLong("id"));
+                    l.setName(rs.getString("name"));
+                    l.setIconPath(rs.getString("iconPath"));
+                    l.setRows(rs.getInt("rows"));
+                    l.setColumns(rs.getInt("columns"));
+
+                    l.setInserted(true);
+                    locationTypes.add(l);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
     /*
     *                  ORDERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -719,7 +828,7 @@ public class DbManager {
         orders = new ArrayList<>();
         Status().setMessage("Fetching orders from DB");
         Order o = null;
-        String sql = scriptResource.readString(Order.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Order.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -729,13 +838,14 @@ public class DbManager {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconPath"));
-                    o.setDateOrdered(rs.getDate("dateOrdered"));
-                    o.setDateModified(rs.getDate("dateModified"));
-                    o.setDateReceived(rs.getDate("dateReceived"));
+                    o.setDateOrdered(rs.getTimestamp("dateOrdered"));
+                    o.setDateModified(rs.getTimestamp("dateModified"));
+                    o.setDateReceived(rs.getTimestamp("dateReceived"));
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
 
+                    o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         orders.add(o);
                     }
@@ -767,7 +877,7 @@ public class DbManager {
         orderItems = new ArrayList<>();
         Status().setMessage("Fetching order items from DB");
         OrderItem o = null;
-        String sql = scriptResource.readString(OrderItem.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(OrderItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -781,6 +891,7 @@ public class DbManager {
                     o.setAmount(rs.getInt("amount"));
                     o.setDistributorPartId(rs.getLong("distributorPartId"));
 
+                    o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
                         orderItems.add(o);
                     }
@@ -838,7 +949,7 @@ public class DbManager {
         distributors = new ArrayList<>();
         Status().setMessage("Fetching distributors from DB");
         Distributor d = null;
-        String sql = scriptResource.readString(Distributor.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Distributor.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -852,6 +963,7 @@ public class DbManager {
                     d.setOrderLink(rs.getString("orderLink"));
                     d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
 
+                    d.setInserted(true);
                     if (d.getId() != DbObject.UNKNOWN_ID) {
                         distributors.add(d);
                     }
@@ -882,7 +994,7 @@ public class DbManager {
         distributorParts = new ArrayList<>();
         Status().setMessage("Fetching distributor parts from DB");
         DistributorPart pn = null;
-        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -896,6 +1008,7 @@ public class DbManager {
                     pn.setItemId(rs.getLong("itemId"));
                     pn.setItemRef(rs.getString("distributorPartName"));
 
+                    pn.setInserted(true);
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
                         distributorParts.add(pn);
                     }
@@ -903,6 +1016,51 @@ public class DbManager {
             }
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(pn, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
+    *                  PACKAGES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Package> getPackages()    {
+        if (packages == null) {
+            updatePackages();
+        }
+        return packages;
+    }
+
+    private void updatePackages()    {
+        packages = new ArrayList<>();
+        Status().setMessage("Fetching packages from DB");
+        Package pa = null;
+        String sql = scriptResource.readString(Package.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    pa = new Package();
+                    pa.setId(rs.getLong("id"));
+                    pa.setName(rs.getString("name"));
+                    pa.setIconPath(rs.getString("iconPath"));
+                    pa.setPackageTypeId(rs.getLong("packageTypeId"));
+                    pa.setPins(rs.getInt("pins"));
+                    pa.setWidth(rs.getDouble("width"));
+                    pa.setHeight(rs.getDouble("height"));
+
+                    pa.setInserted(true);
+                    if (pa.getId() != DbObject.UNKNOWN_ID) {
+                        packages.add(pa);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(pa, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -925,7 +1083,7 @@ public class DbManager {
         packageTypes = new ArrayList<>();
         Status().setMessage("Fetching package types from DB");
         PackageType pt = null;
-        String sql = scriptResource.readString(PackageType.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(PackageType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -936,6 +1094,7 @@ public class DbManager {
                     pt.setName(rs.getString("name"));
                     pt.setDescription(rs.getString("description"));
 
+                    pt.setInserted(true);
                     if (pt.getId() != DbObject.UNKNOWN_ID) {
                         packageTypes.add(pt);
                     }
@@ -965,7 +1124,7 @@ public class DbManager {
         projects = new ArrayList<>();
         Status().setMessage("Fetching projects from DB");
         Project p = null;
-        String sql = scriptResource.readString(Project.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Project.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -977,7 +1136,7 @@ public class DbManager {
                     p.setIconPath(rs.getString("iconPath"));
 
                     // ProjectDirectories are fetched in object itself
-
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projects.add(p);
                     }
@@ -1007,7 +1166,7 @@ public class DbManager {
         projectDirectories = new ArrayList<>();
         Status().setMessage("Fetching projectDirectories from DB");
         ProjectDirectory p = null;
-        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1020,6 +1179,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectid"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projectDirectories.add(p);
                     }
@@ -1049,7 +1209,7 @@ public class DbManager {
         projectTypes = new ArrayList<>();
         Status().setMessage("Fetching ProjectType from DB");
         ProjectType p = null;
-        String sql = scriptResource.readString(ProjectType.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1067,6 +1227,7 @@ public class DbManager {
                     p.setUseParentFolder(rs.getBoolean("useparentfolder"));
                     p.setParserName(rs.getString("parsername"));
 
+                    p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projectTypes.add(p);
                     }
@@ -1097,7 +1258,7 @@ public class DbManager {
         projectTypeLinks = new ArrayList<>();
         Status().setMessage("Fetching projectTypeLinks from DB");
         ProjectTypeLink p = null;
-        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1109,6 +1270,7 @@ public class DbManager {
                     p.setProjectTypeId(rs.getLong("projecttypeid"));
                     p.setFilePath(rs.getString("filepath"));
 
+                    p.setInserted(true);
                     projectTypeLinks.add(p);
                 }
             }
@@ -1137,7 +1299,7 @@ public class DbManager {
         orderFileFormats = new ArrayList<>();
         Status().setMessage("Fetching order file formats from DB");
         OrderFileFormat off = null;
-        String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1148,11 +1310,205 @@ public class DbManager {
                     off.setName(rs.getString("name"));
                     off.setSeparator(rs.getString("separator"));
 
+                    off.setInserted(true);
                     orderFileFormats.add(off);
                 }
             }
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(off, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
+    *                  SET ITEMS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<SetItem> getSetItems()    {
+        if (setItems == null) {
+            updateSetItems();
+        }
+        return setItems;
+    }
+
+    private void updateSetItems()    {
+        setItems = new ArrayList<>();
+        Status().setMessage("Fetching set items from DB");
+        SetItem si = null;
+        String sql = scriptResource.readString(SetItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    si = new SetItem();
+                    si.setId(rs.getLong("id"));
+                    si.setName(rs.getString("name"));
+                    si.setIconPath(rs.getString("iconPath"));
+                    si.setAmount(rs.getInt("amount"));
+                    si.setValue(rs.getString("value"));
+                    si.setItemId(rs.getLong("itemId"));
+
+                    si.setInserted(true);
+                    setItems.add(si);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(si, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
+    *                  DIMENSION TYPES
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<DimensionType> getDimensionTypes()    {
+        if (dimensionTypes == null) {
+            updateDimensionTypes();
+        }
+        return dimensionTypes;
+    }
+
+    private void updateDimensionTypes()    {
+        dimensionTypes = new ArrayList<>();
+        Status().setMessage("Fetching dimension types from DB");
+        DimensionType dt = null;
+        String sql = scriptResource.readString(DimensionType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    dt = new DimensionType();
+                    dt.setId(rs.getLong("id"));
+                    dt.setName(rs.getString("name"));
+                    dt.setIconPath(rs.getString("iconPath"));
+                    dt.setWidth(rs.getDouble("width"));
+                    dt.setHeight(rs.getDouble("height"));
+                    dt.setPackageTypeId(rs.getLong("packageTypeId"));
+
+                    dt.setInserted(true);
+                    dimensionTypes.add(dt);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(dt, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
+    *                  KC COMPONENTS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<KcComponent> getKcComponents()    {
+        if (kcComponents == null) {
+            updateKcComponents();
+        }
+        return kcComponents;
+    }
+
+    private void updateKcComponents()    {
+        kcComponents = new ArrayList<>();
+        Status().setMessage("Fetching kc components from DB");
+        KcComponent kc = null;
+        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    kc = new KcComponent();
+                    kc.setId(rs.getLong("id"));
+                    kc.setValue(rs.getString("value"));
+                    kc.setFootprint(rs.getString("footprint"));
+                    kc.getLibSource().setLib(rs.getString("lib"));
+                    kc.getLibSource().setPart(rs.getString("part"));
+
+                    kc.setInserted(true);
+                    kcComponents.add(kc);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(kc, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public long findKcComponentId(String value, String footprint, String lib, String part) {
+        long id = -1;
+        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ONE);
+
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, value);
+                stmt.setString(2, footprint);
+                stmt.setString(3, lib);
+                stmt.setString(4, part);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        id = rs.getLong("id");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
+    }
+
+
+    /*
+    *                  KC ITEM LINKS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<KcItemLink> getKcItemLinks()    {
+        if (kcItemLinks == null) {
+            updateKcItemLinks();
+        }
+        return kcItemLinks;
+    }
+
+    private void updateKcItemLinks()    {
+        kcItemLinks = new ArrayList<>();
+        Status().setMessage("Fetching KcItemLinks from DB");
+        KcItemLink kil = null;
+        String sql = scriptResource.readString(KcItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    kil = new KcItemLink();
+                    kil.setId(rs.getLong("id"));
+                    kil.setItemId(rs.getLong("itemId"));
+                    kil.setSetItemId(rs.getLong("setItemId"));
+                    kil.setIsSetItem(rs.getBoolean("isSetItem"));
+                    kil.setMatch(rs.getByte("componentMatch"));
+                    kil.setKcComponentId(rs.getLong("kcComponentId"));
+
+                    kil.setInserted(true);
+                    kcItemLinks.add(kil);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(kil, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1176,7 +1532,7 @@ public class DbManager {
         logs = new ArrayList<>();
         Status().setMessage("Fetching logs from DB");
         Log l = null;
-        String sql = scriptResource.readString(Log.TABLE_NAME + SQL_ALL);
+        String sql = scriptResource.readString(Log.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1185,11 +1541,12 @@ public class DbManager {
                     l = new Log();
                     l.setId(rs.getLong("id"));
                     l.setLogType(rs.getInt("logtype"));
-                    l.setLogTime(rs.getDate("logtime"));
+                    l.setLogTime(rs.getTimestamp("logtime"));
                     l.setLogClass(rs.getString("logclass"));
                     l.setLogMessage(rs.getString("logmessage"));
                     l.setLogException(rs.getString("logexception"));
 
+                    l.setInserted(true);
                     logs.add(l);
                 }
             }
@@ -1303,8 +1660,8 @@ public class DbManager {
         return directories;
     }
 
-    public HashMap<ProjectType, ArrayList<File>> getProjectTypesForProjectDirectory(long directoryId) {
-        HashMap<ProjectType, ArrayList<File>> projectTypes = new HashMap<>();
+    public HashMap<ProjectType, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
+        HashMap<ProjectType, List<File>> projectTypes = new HashMap<>();
         for (ProjectTypeLink ptl : getProjectTypeLinks()) {
             if(ptl.getProjectDirectoryId() == directoryId) {
                 if (projectTypes.containsKey(ptl.getProjectType())) {
@@ -1322,7 +1679,7 @@ public class DbManager {
         List<Project> projects = new ArrayList<>();
         for(Project project : getProjects()) {
             for (ProjectDirectory pd : project.getProjectDirectories()) {
-                for (ProjectType pt : pd.getProjectTypes().keySet()) {
+                for (ProjectType pt : pd.getProjectTypeMap().keySet()) {
                     if (pt.getId() == id) {
                         if (!projects.contains(project)) {
                             projects.add(project);
@@ -1355,6 +1712,30 @@ public class DbManager {
         }
         return logList;
     }
+
+
+//    public void asyncSave(DbObject objectToSave) {
+//        String sql = objectToSave.getScript(DbObject.SQL_INSERT);
+//        try (PreparedStatement stmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            objectToSave.addParameters(stmt);
+//            stmt.execute();
+//
+//            try (ResultSet rs = stmt.getGeneratedKeys()) {
+//                rs.next();
+//                objectToSave.setId(rs.getLong(1));
+//            }
+//
+//            // Listeners
+//            objectToSave.tableChanged(OBJECT_INSERT);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            //DbErrorObject object = new DbErrorObject(objectToSave, e, OBJECT_INSERT, sql);
+//            //nonoList.put(object);
+//        }
+//    }
+
+
+
 
 
     /*
@@ -1421,7 +1802,7 @@ public class DbManager {
                                         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                                             insert(stmt, dbo);
                                         } catch (SQLException e) {
-                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
                                             nonoList.put(object);
                                         }
                                     }

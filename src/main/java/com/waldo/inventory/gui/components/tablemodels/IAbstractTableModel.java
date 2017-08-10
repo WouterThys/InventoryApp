@@ -1,9 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.gui.components.ITable;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -17,7 +16,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     IAbstractTableModel(String[] columnNames, Class[] columnClasses) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
-        itemList = new ArrayList<T>();
+        itemList = new ArrayList<>();
     }
 
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList) {
@@ -28,6 +27,15 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     public void setItemList(List<T> itemList) {
         this.itemList = itemList;
+        fireTableDataChanged();
+    }
+
+    public void sortItemList(Comparator<? super T> c) {
+        this.itemList.sort(c);
+    }
+
+    public void clearItemList() {
+        this.itemList.clear();
         fireTableDataChanged();
     }
 
@@ -50,9 +58,29 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     }
 
     public void updateTable() {
-        if (itemList != null && itemList.size() > 0) {
-            fireTableRowsUpdated(0, itemList.size() - 1);
+        if (itemList != null) {
+            if (itemList.size() == 1) {
+                fireTableRowsUpdated(0, 0);
+            } else if (itemList.size() > 1){
+                fireTableRowsUpdated(0, itemList.size() - 1);
+            }
         }
+    }
+
+    public void updateItem(T item) {
+        if (itemList.contains(item)) {
+            int row = itemList.indexOf(item);
+            if (row >= 0) {
+                fireTableRowsUpdated(row, row);
+            }
+        }
+    }
+
+    public int getModelIndex(T item) {
+        if (itemList.contains(item)) {
+            return itemList.indexOf(item);
+        }
+        return -1;
     }
 
     public List<T> getItemList() {
@@ -64,6 +92,11 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
             return itemList.get(index);
         }
         return null;
+    }
+
+    public void setColumnName(int i, String name) {
+        columnNames[i] = name;
+        fireTableStructureChanged();
     }
 
     @Override
@@ -83,8 +116,14 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
+        if (columnIndex < columnClasses.length) {
+            return columnClasses[columnIndex];
+        }
+        return super.getColumnClass(columnIndex);
     }
 
-
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
 }

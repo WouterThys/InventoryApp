@@ -1,6 +1,8 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.kicad.KcComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +140,14 @@ public class SearchManager {
         Status().setMessage("Searching for: Project types");
         foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
 
+        // Dimension types
+        Status().setMessage("Searching for: Dimension types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getDimensionTypes()), searchWord));
+
+        // Package types
+        Status().setMessage("Searching for: Package types");
+        foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+
         // Logs
         Status().setMessage("Searching for: Logs");
         foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
@@ -211,6 +221,14 @@ public class SearchManager {
                     Status().setMessage("Searching for: Project types");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
                     break;
+                case DbObject.TYPE_DIMENSION_TYPE:
+                    Status().setMessage("Searching for: Dimension types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getDimensionTypes()), searchWord));
+                    break;
+                case DbObject.TYPE_PACKAGE:
+                    Status().setMessage("Searching for: Package types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+                    break;
                 case DbObject.TYPE_LOG:
                     Status().setMessage("Searching for: Logs");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
@@ -275,6 +293,10 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_DIMENSION_TYPE:
+                    Status().setMessage("Searching for: Dimension types");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 case DbObject.TYPE_LOG:
@@ -496,13 +518,13 @@ public class SearchManager {
         return null;
     }
 
-    public int findLocationIndex(long typeNdx) {
-        for (int i = 0; i < db().getLocations().size(); i++) {
-            if (db().getLocations().get(i).getId() == typeNdx) {
-                return i;
+    public Location findLocation(long locationTypeId, int row, int column) {
+        for (Location l : db().getLocations()) {
+            if (l.getLocationTypeId() == locationTypeId && l.getRow() == row && l.getColumn() == column) {
+                return l;
             }
         }
-        return -1;
+        return null;
     }
 
     public Order findOrderById(long id) {
@@ -695,4 +717,130 @@ public class SearchManager {
         return null;
     }
 
+    public Package findPackageById(long id) {
+        for (Package pa : db().getPackages()) {
+            if (pa.getId() == id) {
+                return  pa;
+            }
+        }
+        return null;
+    }
+
+    public Package findPackage(long packageTypeId, int pins, double width, double height) {
+        for (Package pa : db().getPackages()) {
+            if (pa.getPackageTypeId() == packageTypeId && pa.getPins() == pins && pa.getWidth() == width && pa.getHeight() == height) {
+                return pa;
+            }
+        }
+        return null;
+    }
+
+    public SetItem findSetItemById(long id) {
+        for (SetItem si : db().getSetItems()) {
+            if (si.getId() == id) {
+                return si;
+            }
+        }
+        return null;
+    }
+
+    public SetItem findSetItemByValue(String value) {
+        for (SetItem si : db().getSetItems()) {
+            if (si.getValue().equals(value)) {
+                return si;
+            }
+        }
+        return null;
+    }
+
+    public List<SetItem> findSetItemsByItemId(long id) {
+        List<SetItem> setItems = new ArrayList<>();
+        for (SetItem si : db().getSetItems()) {
+            if (si.getItemId() == id) {
+                setItems.add(si);
+            }
+        }
+        return setItems;
+    }
+
+    public DimensionType findDimensionTypeById(long id) {
+        for (DimensionType dt : db().getDimensionTypes()) {
+            if (dt.getId() == id) {
+                return dt;
+            }
+        }
+        return null;
+    }
+
+    public List<DimensionType> findDimensionTypesForPackageType(long id) {
+        List<DimensionType> dimensionTypes = new ArrayList<>();
+        for (DimensionType dt : db().getDimensionTypes()) {
+            if (dt.getPackageTypeId() == id) {
+                dimensionTypes.add(dt);
+            }
+        }
+        return dimensionTypes;
+    }
+
+    public KcComponent findKcComponentById(long id) {
+        for (KcComponent component : db().getKcComponents()) {
+            if (component.getId() == id) {
+                return component;
+            }
+        }
+        return null;
+    }
+
+    public KcComponent findKcComponent(String value, String footprint, String lib, String part) {
+        for (KcComponent component : db().getKcComponents()) {
+            if (component.getValue().equals(value) &&
+                    component.getFootprint().equals(footprint) &&
+                    component.getLibSource().getLib().equals(lib) &&
+                    component.getLibSource().getPart().equals(part)) {
+
+                return component;
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkById(long id) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (kcItemLink.getId() == id) {
+                return kcItemLink;
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkWithItemId(long itemId, long kcComponentId) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (!kcItemLink.isSetItem()) {
+                if(kcItemLink.getItemId() == itemId && kcItemLink.getKcComponentId() == kcComponentId) {
+                    return kcItemLink;
+                }
+            }
+        }
+        return null;
+    }
+
+    public KcItemLink findKcItemLinkWithSetItemId(long setItemId, long kcComponentId) {
+        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
+            if (kcItemLink.isSetItem()) {
+                if(kcItemLink.getSetItemId() == setItemId && kcItemLink.getKcComponentId() == kcComponentId) {
+                    return kcItemLink;
+                }
+            }
+        }
+        return null;
+    }
+
+    public LocationType findLocationTypeById(long locationTypeId) {
+        for (LocationType lt : db().getLocationTypes()) {
+            if (lt.getId() == locationTypeId) {
+                return lt;
+            }
+        }
+        return null;
+    }
 }

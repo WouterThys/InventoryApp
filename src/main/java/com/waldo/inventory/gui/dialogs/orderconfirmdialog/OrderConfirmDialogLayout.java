@@ -1,28 +1,31 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener {
+public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
 
-    static final String STEP_ORDER_FILE = "Order file ";
-    static final String STEP_ORDER_DETAILS = "Order details";
+    public static final String TAB_ORDER_FILE = "Order file ";
+    public static final String TAB_ORDER_DETAILS = "Order details";
+
+    private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("MMM d, yyyy");
+    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("MMM d, yyyy HH:mm");
 
     /*
      *                  COMPONENTS
@@ -32,29 +35,39 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
     JPanel cardPanel;
     CardLayout cardLayout;
+    JPanel mainPanel;
     JPanel filePanel;
     JPanel detailPanel;
+    TitledBorder mainBorder;
 
-    // Order file panel
-    ILabel orderByLbl;
-    ILabel fileOkLbl;
-
-    JTable orderFileTable;
-    DefaultTableModel orderFileTableModel;
     JButton parseBtn;
     JButton copyToClipboardBtn;
     JButton viewParsedBtn;
+    JButton distributorsBrowseBtn;
+    JButton orderUrlBrowseBtn;
 
+    ILabel orderByLbl;
+    ILabel fileOkLbl;
+
+    // Order file panel
+    JTable orderFileTable;
+    DefaultTableModel orderFileTableModel;
 
     // Order panel
     ITextField referenceTf;
     ITextField trackingNrTf;
+    ITextField dateOrderedTf;
+    ITextField dateReceivedTf;
+    ITextField dateModifiedTf;
+    ITextField itemsTf;
+    ITextField totalPriceTf;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Order order;
-    String currentPanel = STEP_ORDER_FILE;
+    Order order, originalOrder;
+    String currentPanel = TAB_ORDER_FILE;
+    boolean parseSucces = false;
 
     /*
      *                  CONSTRUCTOR
@@ -86,7 +99,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
                         if (errorItems.size() > 0) {
                             errorList.add(" - Next order items have no reference: ");
                             for (OrderItem oi : errorItems) {
-                                errorList.add(" \t * " + oi.getName());
+                                errorList.add(" \t * " + oi.getItem().getName());
                             }
                         }
                     }
@@ -118,8 +131,140 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         }
     }
 
+    void updateEnabledComponents() {
+        getButtonOK().setEnabled(parseSucces);
+        viewParsedBtn.setEnabled(parseSucces);
+        copyToClipboardBtn.setEnabled(parseSucces);
+    }
+
+    void updateVisibleComponents() {
+        switch (currentPanel) {
+            case TAB_ORDER_FILE:
+                getButtonOK().setText("next");
+                getButtonNeutral().setVisible(false);
+
+                parseBtn.setVisible(true);
+                distributorsBrowseBtn.setVisible(false);
+                orderUrlBrowseBtn.setVisible(false);
+                break;
+            case TAB_ORDER_DETAILS:
+                switch(order.getOrderState()) {
+                    case Statics.ItemOrderStates.PLANNED: getButtonOK().setText("order"); break;
+                    case Statics.ItemOrderStates.ORDERED: getButtonOK().setText("received"); break;
+                    case Statics.ItemOrderStates.RECEIVED: getButtonOK().setText("ok"); break;
+                    default: break;
+                }
+                getButtonNeutral().setVisible(true);
+                getButtonNeutral().setText("back");
+
+                parseBtn.setVisible(false);
+                distributorsBrowseBtn.setVisible(true);
+                orderUrlBrowseBtn.setVisible(true);
+                break;
+            default:
+                break;
+        }
+    }
 
     private void createFilePanel() {
+        filePanel.add(new JScrollPane(orderFileTable), BorderLayout.CENTER);
+    }
+
+    private void createDetailPanel() {
+        JPanel datePanel = new JPanel(new GridBagLayout());
+        JPanel numberPanel = new JPanel(new GridBagLayout());
+        JPanel refPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2,2,2,2);
+
+        // Date panel
+        // - Labels
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        datePanel.add(new ILabel("Date modified: "), gbc);
+        gbc.gridy++;
+        datePanel.add(new ILabel("Date ordered: "), gbc);
+        gbc.gridy++;
+        datePanel.add(new ILabel("Date received: "), gbc);
+        gbc.gridy++;
+
+        // - Fields
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+
+        datePanel.add(dateModifiedTf, gbc);
+        gbc.gridy++;
+        datePanel.add(dateOrderedTf, gbc);
+        gbc.gridy++;
+        datePanel.add(dateReceivedTf, gbc);
+        gbc.gridy++;
+
+        TitledBorder dateBorder = PanelUtils.createTitleBorder("Dates");
+        datePanel.setBorder(dateBorder);
+
+        // Number panel
+        // - Labels
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        numberPanel.add(new ILabel("Ordered items: "), gbc);
+        gbc.gridy++;
+        numberPanel.add(new ILabel("Total price: "), gbc);
+
+        // - Fields
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+
+        numberPanel.add(itemsTf, gbc);
+        gbc.gridy++;
+        numberPanel.add(totalPriceTf, gbc);
+
+        TitledBorder numberBorder = PanelUtils.createTitleBorder("Dates");
+        numberPanel.setBorder(numberBorder);
+
+
+        // Ref panel
+        // - Labels
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        refPanel.add(new ILabel("Distributor ref: "), gbc);
+        gbc.gridy++;
+        refPanel.add(new ILabel("Tracking number: "), gbc);
+
+        // - Fields
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+
+        refPanel.add(referenceTf, gbc);
+        gbc.gridy++;
+        refPanel.add(trackingNrTf, gbc);
+
+        TitledBorder refBorder = PanelUtils.createTitleBorder("References");
+        refPanel.setBorder(refBorder);
+
+        // Add together
+        detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
+        detailPanel.add(datePanel);
+        detailPanel.add(numberPanel);
+        detailPanel.add(refPanel);
+    }
+
+    private void createMainContainer() {
         JPanel northPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel southPanel = new JPanel(new BorderLayout());
@@ -127,25 +272,22 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         northPanel.add(orderByLbl, BorderLayout.WEST);
         northPanel.add(fileOkLbl, BorderLayout.EAST);
 
-        centerPanel.add(new JScrollPane(orderFileTable), BorderLayout.CENTER);
+        centerPanel.add(cardPanel);
 
         JPanel southExtra = new JPanel();
+        southExtra.add(distributorsBrowseBtn);
+        southExtra.add(orderUrlBrowseBtn);
         southExtra.add(viewParsedBtn);
         southExtra.add(copyToClipboardBtn);
         southExtra.add(parseBtn);
         southPanel.add(southExtra, BorderLayout.EAST);
 
-        filePanel.setLayout(new BorderLayout());
-        filePanel.add(northPanel, BorderLayout.NORTH);
-        filePanel.add(centerPanel, BorderLayout.CENTER);
-        filePanel.add(southPanel, BorderLayout.SOUTH);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(southPanel, BorderLayout.SOUTH);
 
-        TitledBorder border = PanelUtils.createTitleBorder(STEP_ORDER_FILE);
-        filePanel.setBorder(border);
-    }
-
-    private void createDetailPanel() {
-        detailPanel.add(new ILabel("Detail"));
+        mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
+        mainPanel.setBorder(mainBorder);
     }
 
 
@@ -163,14 +305,15 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         cardPanel = new JPanel(cardLayout);
 
         stepListModel = new DefaultListModel<>();
-        stepListModel.addElement(STEP_ORDER_FILE);
-        stepListModel.addElement(STEP_ORDER_DETAILS);
+        stepListModel.addElement(TAB_ORDER_FILE);
+        stepListModel.addElement(TAB_ORDER_DETAILS);
         stepList = new JList<>(stepListModel);
         stepList.setEnabled(false);
         stepList.setSelectedIndex(0);
 
-        filePanel = new JPanel();
-        detailPanel = new JPanel();
+        mainPanel = new JPanel(new BorderLayout());
+        filePanel = new JPanel(new BorderLayout());
+        detailPanel = new JPanel(new BorderLayout());
 
         // File panel
         orderByLbl = new ILabel();
@@ -188,10 +331,28 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         viewParsedBtn = new JButton(imageResource.readImage("Common.View", 24));
         viewParsedBtn.setToolTipText("View parsed file");
         viewParsedBtn.addActionListener(this);
+        distributorsBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseDistributor", 24));
+        distributorsBrowseBtn.setToolTipText("Browse distributor website");
+        distributorsBrowseBtn.addActionListener(this);
+        orderUrlBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseOrder", 24));
+        orderUrlBrowseBtn.setToolTipText("Go to order page");
+        orderUrlBrowseBtn.addActionListener(this);
 
         // Detail panel
         referenceTf = new ITextField("Distributor order reference");
+        referenceTf.addEditedListener(this, "orderReference");
         trackingNrTf = new ITextField("Tracking number");
+        trackingNrTf.addEditedListener(this, "trackingNumber");
+        dateOrderedTf  = new ITextField("Date ordered");
+        dateOrderedTf.setEnabled(false);
+        dateReceivedTf = new ITextField("Date received");
+        dateReceivedTf.setEnabled(false);
+        dateModifiedTf = new ITextField("Date modified");
+        dateModifiedTf.setEnabled(false);
+        itemsTf = new ITextField("# items");
+        itemsTf.setEnabled(false);
+        totalPriceTf = new ITextField("Total price");
+        totalPriceTf.setEnabled(false);
     }
 
     @Override
@@ -200,12 +361,17 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         createFilePanel();
         createDetailPanel();
+        createMainContainer();
 
-        cardPanel.add(STEP_ORDER_FILE, filePanel);
-        cardPanel.add(STEP_ORDER_DETAILS, detailPanel);
+        cardPanel.add(TAB_ORDER_FILE, filePanel);
+        cardPanel.add(TAB_ORDER_DETAILS, detailPanel);
 
-        getContentPanel().add(new JScrollPane(stepList), BorderLayout.WEST);
-        getContentPanel().add(cardPanel, BorderLayout.CENTER);
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(new JScrollPane(stepList), BorderLayout.CENTER);
+        listPanel.setBorder(BorderFactory.createEmptyBorder(16,2,2,2));
+
+        getContentPanel().add(listPanel, BorderLayout.WEST);
+        getContentPanel().add(mainPanel, BorderLayout.CENTER);
         pack();
     }
 
@@ -213,6 +379,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
     public void updateComponents(Object object) {
         if (object != null) {
             order = (Order) object;
+            originalOrder = order.createCopy();
 
             // File
             if (order.getDistributor() != null) {
@@ -222,6 +389,24 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
             // Details
             referenceTf.setText(order.getOrderReference());
             trackingNrTf.setText(order.getTrackingNumber());
+            if (order.getDateModified() != null) {
+                dateModifiedTf.setText(dateFormatLong.format(order.getDateModified()));
+            } else {
+                dateModifiedTf.setText("Not modified");
+            }
+            if (order.getDateOrdered() != null) {
+                dateOrderedTf.setText(dateFormatShort.format(order.getDateOrdered()));
+            } else {
+                dateOrderedTf.setText("Not ordered");
+            }
+            if (order.getDateReceived() != null) {
+                dateReceivedTf.setText(dateFormatShort.format(order.getDateReceived()));
+            } else {
+                dateReceivedTf.setText("Not received");
+            }
+            itemsTf.setText(String.valueOf(order.getOrderItems().size()));
+            totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
+
         }
     }
 }

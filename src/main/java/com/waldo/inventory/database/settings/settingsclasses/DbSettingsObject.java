@@ -58,8 +58,6 @@ public abstract class DbSettingsObject extends DbObject {
     @Override
     public void save() {}
     @Override
-    public void saveSynchronously() {}
-    @Override
     public void delete() {}
 
 }

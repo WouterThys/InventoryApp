@@ -1,14 +1,22 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.DimensionType;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.extras.EditDimensionDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class PackageTypeDialog extends PackageTypeDialogLayout {
@@ -20,8 +28,23 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        DbManager.db().addOnPackageTypeChangedListener(this);
+        DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
+        DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
+        createNewMouseAdapter();
         updateComponents(null);
+    }
+
+    private void createNewMouseAdapter() {
+        dimensionTableAddMouseAdapter(
+            new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        detailTbEdit();
+                    }
+                }
+            }
+        );
     }
 
     private void setDetails() {
@@ -77,6 +100,48 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
 
+    private DbObjectChangedListener<PackageType> createPackageTypeListener() {
+        return new DbObjectChangedListener<PackageType>() {
+            @Override
+            public void onInserted(PackageType object) {
+                updateComponents(object);
+            }
+
+            @Override
+            public void onUpdated(PackageType newObject) {
+                updateComponents(newObject);
+            }
+
+            @Override
+            public void onDeleted(PackageType object) {
+                updateComponents(null);
+            }
+        };
+    }
+
+
+    private DbObjectChangedListener<DimensionType> createDimensionListener() {
+        return new DbObjectChangedListener<DimensionType>() {
+            @Override
+            public void onInserted(DimensionType object) {
+                dimensionTableAdd(object);
+                updateEnabledComponents();
+            }
+
+            @Override
+            public void onUpdated(DimensionType object) {
+                dimensionTableUpdate();
+            }
+
+            @Override
+            public void onDeleted(DimensionType object) {
+                // Delete from table
+                dimensionTableDelete(object);
+                updateEnabledComponents();
+            }
+        };
+    }
+
     //
     // Dialog
     //
@@ -115,8 +180,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     //
     @Override
     public void updateComponents(Object object) {
+        application.beginWait();
         try {
-            application.beginWait();
 
             // Get all packages
             packageDefaultListModel.removeAllElements();
@@ -127,6 +192,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
             }
 
             selectedPackageType = (PackageType) object;
+            dimensionTableUpdate();
             updateEnabledComponents();
 
             if (selectedPackageType != null) {
@@ -135,6 +201,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
                 setDetails();
             } else {
                 originalPackageType = null;
+                clearDetails();
             }
 
         } finally {
@@ -142,16 +209,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         }
     }
 
-    //
-    // Tool bar
-    //
-    @Override
-    public void onToolBarRefresh() {
-        updateComponents(null);
-    }
 
-    @Override
-    public void onToolBarAdd() {
+    private void listTbAdd() {
         DbObjectDialog<PackageType> dialog = new DbObjectDialog<>(application, "New Package", new PackageType());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             PackageType p = dialog.getDbObject();
@@ -159,8 +218,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         }
     }
 
-    @Override
-    public void onToolBarDelete() {
+    private void listTbDelete() {
         if (selectedPackageType != null) {
             int res = JOptionPane.showConfirmDialog(PackageTypeDialog.this, "Are you sure you want to delete \"" + selectedPackageType.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -171,14 +229,100 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         }
     }
 
-    @Override
-    public void onToolBarEdit() {
+    private void listTbEdit() {
         if (selectedPackageType != null) {
             DbObjectDialog<PackageType> dialog = new DbObjectDialog<>(application, "Update " + selectedPackageType.getName(), selectedPackageType);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedPackageType.save();
                 originalPackageType = selectedPackageType.createCopy();
             }
+        }
+    }
+
+
+    private void detailTbAdd() {
+        if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
+            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Add dimension", new DimensionType());
+            if (dimensionDialog.showDialog() == IDialog.OK) {
+                DimensionType dt = dimensionDialog.getDimensionType();
+                dt.setPackageTypeId(selectedPackageType.getId());
+                dt.save();
+            }
+        }
+    }
+
+    private void detailTbDelete() {
+        deleteSelectedDimensionTypes(getSelectedDimensionTypes());
+    }
+
+    private void detailTbEdit() {
+        if (selectedDimensionType != null) {
+            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Edit " + selectedPackageType.getName(), selectedDimensionType);
+            if (dimensionDialog.showDialog() == IDialog.OK) {
+                DimensionType dt = dimensionDialog.getDimensionType();
+                dt.setPackageTypeId(selectedPackageType.getId());
+                dt.save();
+            }
+        }
+    }
+
+    private void deleteSelectedDimensionTypes(final List<DimensionType> itemsToDelete) {
+        int result = JOptionPane.CANCEL_OPTION;
+        if (itemsToDelete.size() == 1) {
+            result = JOptionPane.showConfirmDialog(
+                    PackageTypeDialog.this,
+                    "Are you sure you want to delete " + itemsToDelete.get(0) + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        } else if (itemsToDelete.size() > 1) {
+            result = JOptionPane.showConfirmDialog(
+                    PackageTypeDialog.this,
+                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        }
+        if (result == JOptionPane.OK_OPTION) {
+            // Delete from db
+            for (DimensionType item : itemsToDelete) {
+                item.delete();
+            }
+            selectedDimensionType = null;
+        }
+
+    }
+
+    //
+    // Tool bar
+    //
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+        updateComponents(null);
+    }
+
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+        if (source.equals(listToolBar)) {
+            listTbAdd();
+        } else {
+            detailTbAdd();
+        }
+    }
+
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+        if (source.equals(listToolBar)) {
+            listTbDelete();
+        } else {
+            detailTbDelete();
+        }
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+        if (source.equals(listToolBar)) {
+            listTbEdit();
+        } else {
+            detailTbEdit();
         }
     }
 
@@ -212,41 +356,25 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
-            JList list = (JList) e.getSource();
-            Object selected = list.getSelectedValue();
+            if (e.getSource().equals(packageList)) {
+                Object selected = packageList.getSelectedValue();
 
-            if (checkChange()) {
-                showSaveDialog(false);
-            }
-            getButtonNeutral().setEnabled(false);
-            updateComponents(selected);
-            if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
-                setDetails();
+                if (checkChange()) {
+                    showSaveDialog(false);
+                }
+                getButtonNeutral().setEnabled(false);
+                updateComponents(selected);
+//                if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
+//                    setDetails();
+//                } else {
+//                    clearDetails();
+//                }
             } else {
-                clearDetails();
+                selectedDimensionType = dimensionTableGetSelected();
             }
+            updateEnabledComponents();
         }
     }
-
-
-    //
-    // Db Changed
-    //
-    @Override
-    public void onInserted(PackageType object) {
-        updateComponents(object);
-    }
-
-    @Override
-    public void onUpdated(PackageType newObject) {
-        updateComponents(newObject);
-    }
-
-    @Override
-    public void onDeleted(PackageType object) {
-        updateComponents(null);
-    }
-
 
     //
     // Field value changed

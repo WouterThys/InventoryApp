@@ -45,7 +45,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     IOrderItemTableModel tableModel;
 
     ITree ordersTree;
-    IDbObjectTreeModel treeModel;
+    private IDbObjectTreeModel treeModel;
     ItemDetailPanel itemDetailPanel;
     OrderItemDetailPanel orderItemDetailPanel;
 
@@ -54,9 +54,9 @@ public abstract class OrderPanelLayout extends JPanel implements
     private JToolBar bottomToolBar;
     private JPanel orderTbPanel;
     IOrderFlowPanel tbOrderFlowPanel;
-
     private ILabel tbTotalItemsLbl;
     private ILabel tbTotalPriceLbl;
+    private ILabel tbOrderNameLbl;
     private JComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
     /*
@@ -72,7 +72,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public OrderPanelLayout(Application application) {
+    OrderPanelLayout(Application application) {
         this.application = application;
     }
 
@@ -125,7 +125,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public void treeRecreateNodes() {
+    void treeRecreateNodes() {
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
         rootNode.removeAllChildren();
         treeInitializeTree(rootNode);
@@ -139,7 +139,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public void treeDeleteOrder(Order order) {
+    void treeDeleteOrder(Order order) {
         try {
             treeModel.removeObject(order);
         } catch (Exception e) {
@@ -147,7 +147,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public long treeUpdate() {
+    long treeUpdate() {
         long orderId = -1;
         if (selectedOrder != null) {
             orderId = selectedOrder.getId();
@@ -219,10 +219,16 @@ public abstract class OrderPanelLayout extends JPanel implements
         if (order != null) {
             tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
             tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
+            tbOrderNameLbl.setText(order.getName());
 
             if (order.getDistributor() != null) {
                 tbDistributorCb.setSelectedItem(order.getDistributor());
             }
+        } else  {
+            tbTotalItemsLbl.setText("");
+            tbTotalPriceLbl.setText("");
+            tbOrderNameLbl.setText("");
+            tbDistributorCb.setSelectedItem(null);
         }
     }
 
@@ -319,21 +325,25 @@ public abstract class OrderPanelLayout extends JPanel implements
         JPanel makeOrderPanel = new JPanel(new GridBagLayout());
         tbOrderFilePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 20);
+        gbc.insets = new Insets(-10, 2, 0, 20);
+
+        // Order name
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        makeOrderPanel.add(tbOrderNameLbl, gbc);
 
         // Distributor
         ILabel distributorLabel = new ILabel("Order by: ");
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         makeOrderPanel.add(distributorLabel, gbc);
 
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         makeOrderPanel.add(tbDistributorCb, gbc);
 
@@ -387,6 +397,9 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbTotalItemsLbl.setHorizontalAlignment(ILabel.LEFT);
         tbTotalItemsLbl.setVerticalAlignment(ILabel.CENTER);
 
+        tbOrderNameLbl = new ILabel();
+        Font f = tbOrderNameLbl.getFont();
+        tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
         DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
         for (Distributor d : DbManager.db().getDistributors()) {
             distributorCbModel.addElement(d);
@@ -415,8 +428,9 @@ public abstract class OrderPanelLayout extends JPanel implements
         // Tool bars
         treeToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
-            public void onToolBarRefresh() {
+            public void onToolBarRefresh(IdBToolBar source) {
 
+                treeRecreateNodes();
                 final long orderId = treeUpdate();
                 final long orderItemId = tableUpdate();
 
@@ -429,7 +443,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarAdd() {
+            public void onToolBarAdd(IdBToolBar source) {
                 OrdersDialog dialog = new OrdersDialog(application, "New order", true);
                 if (dialog.showDialog() == IDialog.OK) {
                     Order o = dialog.getOrder();
@@ -438,7 +452,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarDelete() {
+            public void onToolBarDelete(IdBToolBar source) {
                 if (selectedOrder != null) {
                     int res = JOptionPane.showConfirmDialog(OrderPanelLayout.this, "Are you sure you want to delete \"" + selectedOrder.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
@@ -450,7 +464,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
 
             @Override
-            public void onToolBarEdit() {
+            public void onToolBarEdit(IdBToolBar source) {
                 if (selectedOrder != null) {
                     OrdersDialog dialog = new OrdersDialog(application, "Edit order", selectedOrder);
                     if (dialog.showDialog() == IDialog.OK) {
@@ -504,8 +518,14 @@ public abstract class OrderPanelLayout extends JPanel implements
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
 
         // Add
-        add(westPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
+        //add(westPanel, BorderLayout.WEST);
+        //add(centerPanel, BorderLayout.CENTER);
+
+        // Add
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        //add(pane, BorderLayout.WEST);
+        //add(panel, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     @Override
@@ -521,16 +541,17 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (selectedOrder == null || !selectedOrder.equals(object)) {
                     selectedOrder = (Order) object;
                     tableInitialize(selectedOrder);
-                    updateToolBar(selectedOrder);
-                    //selectedOrderItem = null;
 
                     // Search list
                     tableToolBar.setSearchList(new ArrayList<>(selectedOrder.getOrderItems()));
                 }
+            } else {
+                selectedOrder = null;
             }
 
             treeModel.expandNodes(0, ordersTree.getRowCount());
 
+            updateToolBar(selectedOrder);
             updateVisibleComponents();
             updateEnabledComponents();
 

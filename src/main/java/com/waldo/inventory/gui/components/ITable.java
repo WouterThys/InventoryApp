@@ -1,25 +1,31 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 
-public class ITable extends JTable {
+public class ITable<T> extends JTable {
 
-    public ITable(TableModel model) {
+    private IAbstractTableModel model;
+
+    public ITable(IAbstractTableModel model) {
         super();
+
+        this.model = model;
 
         setModel(model);
         setRowHeight(25);
 
         setPreferredScrollableViewportSize(getPreferredSize());
         setAutoCreateRowSorter(true);
+
+        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public void resizeColumns(Integer[] widths) {
@@ -49,7 +55,7 @@ public class ITable extends JTable {
             tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
         }
 
-        if (getModel() instanceof IOrderItemTableModel) {
+        if (model instanceof IOrderItemTableModel) {
             Object o = getValueAtRow(row);
 
             if (o instanceof OrderItem) {
@@ -65,16 +71,43 @@ public class ITable extends JTable {
             }
         }
 
+//        if (getModel() instanceof ILinkItemTableModel) {
+//            Object o = getValueAtRow(row);
+//            if (o instanceof KcItemLink) {
+//                KcItemLink match = (KcItemLink) o;
+//                if (!isRowSelected(row)) {
+//                    component.setBackground(getBackground());
+//                    if (match.isMatched()) {
+//                        component.setBackground(Color.green);
+//                    } else {
+//                        component.setBackground(getBackground());
+//                    }
+//                }
+//            }
+//
+//        }
+
         return component;
     }
 
     public Object getValueAtRow(int row) {
         if (row >= 0) {
-            return getModel().getValueAt(convertRowIndexToModel(row), -1);
+            return model.getValueAt(convertRowIndexToModel(row), -1);
         }
         return null;
     }
-//
+
+    public void selectItem(T item) {
+        if (item != null) {
+            int row = model.getModelIndex(item);
+            int real = convertRowIndexToView(row);
+            setRowSelectionInterval(real, real);
+        } else {
+            clearSelection();
+        }
+    }
+
+    //
 //    public java.util.List<DbObject> getSelectedObjects() {
 //        java.util.List<DbObject> selectedObjects = new ArrayList<>();
 //        int[] selectedRows = getSelectedRows();

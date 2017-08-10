@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
+import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
 
 import javax.swing.*;
@@ -54,13 +56,16 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
         componentTableModel = new IKiCadParserModel();
         componentTable = new ITable(componentTableModel);
         componentTable.getSelectionModel().addListSelectionListener(listSelectionListener);
-        componentTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        componentTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
+        componentTable.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        add(new JScrollPane(componentTable));
+        JScrollPane pane = new JScrollPane(componentTable);
+        pane.setPreferredSize(new Dimension(600, 400));
+        add(pane);
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     }
 

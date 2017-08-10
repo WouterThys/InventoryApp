@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.parser.KiCad.KcComponent;
+import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.gui.Application;
 
@@ -32,7 +32,7 @@ public class KiCadDialog extends KiCadDialogLayout {
             if (kiCadParser.isFileValid(fileToParse)) {
                 clearComponentTable();
                 kiCadParser.parse(fileToParse);
-                updateComponentTable(createComponentMap(kiCadParser.getParsedData()));
+                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
             } else {
                 JOptionPane.showMessageDialog(
                         KiCadDialog.this,
@@ -47,7 +47,7 @@ public class KiCadDialog extends KiCadDialogLayout {
             if (actualFiles != null && actualFiles.size() == 1) {
                 clearComponentTable();
                 kiCadParser.parse(actualFiles.get(0));
-                updateComponentTable(createComponentMap(kiCadParser.getParsedData()));
+                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
             } else {
                 JOptionPane.showMessageDialog(
                         KiCadDialog.this,
