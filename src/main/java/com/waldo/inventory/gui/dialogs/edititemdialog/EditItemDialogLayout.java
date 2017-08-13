@@ -49,7 +49,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     ITabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    private EditItemStockPanel editItemStockPanel;
+    EditItemStockPanel editItemStockPanel;
     EditItemOrderPanel editItemOrderPanel;
 
 

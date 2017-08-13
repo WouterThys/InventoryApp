@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 
@@ -15,8 +16,8 @@ public class Location extends DbObject {
 
     private long locationTypeId;
     private LocationType locationType;
-    private int row;
-    private int column;
+    private int row = 0;
+    private int col = 0;
 
     public Location() {
         super(TABLE_NAME);
@@ -29,7 +30,7 @@ public class Location extends DbObject {
         statement.setString(ndx++, getName());
         statement.setLong(ndx++, getLocationTypeId());
         statement.setInt(ndx++, getRow());
-        statement.setInt(ndx++, getColumn());
+        statement.setInt(ndx++, getCol());
 
         return ndx;
     }
@@ -41,9 +42,18 @@ public class Location extends DbObject {
             if (!(obj instanceof Location)) {
                 return false;
             }
-            if (!(((Location)obj).getLocationTypeId() == getLocationTypeId())) return false;
-            if (!(((Location)obj).getRow() == getRow())) return false;
-            if (!(((Location)obj).getColumn() == getColumn())) return false;
+            if (!(((Location)obj).getLocationTypeId() == getLocationTypeId())) {
+                System.out.println("location type differs");
+                return false;
+            }
+            if (!(((Location)obj).getRow() == getRow())) {
+                System.out.println("row differs");
+                return false;
+            }
+            if (!(((Location)obj).getCol() == getCol())) {
+                System.out.println("col differs");
+                return false;
+            }
         }
         return result;
     }
@@ -55,7 +65,7 @@ public class Location extends DbObject {
 
         cpy.setLocationTypeId(getLocationTypeId());
         cpy.setRow(getRow());
-        cpy.setColumn(getColumn());
+        cpy.setCol(getCol());
 
         return cpy;
     }
@@ -125,11 +135,15 @@ public class Location extends DbObject {
         this.row = row;
     }
 
-    public int getColumn() {
-        return column;
+    public void setRowAsString(String row) {
+        this.row = Statics.indexOfAlphabet(row);
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int column) {
+        this.col = column;
     }
 }

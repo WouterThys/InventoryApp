@@ -753,7 +753,7 @@ public class DbManager {
                     l.setName(rs.getString("name"));
                     l.setLocationTypeId(rs.getLong("locationTypeId"));
                     l.setRow(rs.getInt("row"));
-                    l.setColumn(rs.getInt("col"));
+                    l.setCol(rs.getInt("col"));
 
                     l.setInserted(true);
                     if (l.getId() != DbObject.UNKNOWN_ID) {

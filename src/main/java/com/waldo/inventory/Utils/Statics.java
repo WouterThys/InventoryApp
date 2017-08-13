@@ -1,5 +1,7 @@
 package com.waldo.inventory.Utils;
 
+import java.util.Arrays;
+
 public class Statics {
 
     public static class ItemAmountTypes {
@@ -27,4 +29,8 @@ public class Statics {
     public static String[] Alphabet = {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
+    public static int indexOfAlphabet(String letter) {
+        return Arrays.asList(Alphabet).indexOf(letter);
+    }
 }

@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -38,6 +39,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
             detailRowsSpinner.setValue(selectedLocationType.getRows());
 
             ILocationMapPanel.updateComponents(selectedLocationType);
+            ILocationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(selectedLocationType.getId()));
         }
     }
 
@@ -91,7 +93,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
                         location = new Location();
                         location.setName(Statics.Alphabet[r] + String.valueOf(c));
                         location.setLocationTypeId(locationType.getId());
-                        location.setColumn(c);
+                        location.setCol(c);
                         location.setRow(r);
                         location.save();
                     }
@@ -237,26 +239,23 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     // List selection
     //
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
-            JList list = (JList) e.getSource();
-            Object selected = list.getSelectedValue();
+    public void valueChanged(ListSelectionEvent ev) {
+        if (!ev.getValueIsAdjusting() && !application.isUpdating()) {
+            SwingUtilities.invokeLater(() -> {
+                JList list = (JList) ev.getSource();
+                Object selected = list.getSelectedValue();
 
-            if (checkChange()) {
-                showSaveDialog(false);
-            }
-            getButtonNeutral().setEnabled(false);
-            updateComponents(selected);
-            if (selectedLocationType != null && !selectedLocationType.isUnknown()) {
-                setDetails();
-            } else {
-                clearDetails();
-            }
+                if (checkChange()) {
+                    showSaveDialog(false);
+                }
+                getButtonNeutral().setEnabled(false);
+                updateComponents(selected);
+                if (selectedLocationType != null && !selectedLocationType.isUnknown()) {
+                    setDetails();
+                } else {
+                    clearDetails();
+                }
+            });
         }
-    }
-
-    @Override
-    public void onClick(int row, int column) {
-        System.out.println("Row: " + row + ", Column: " + column);
     }
 }

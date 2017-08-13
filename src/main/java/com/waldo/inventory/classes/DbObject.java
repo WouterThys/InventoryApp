@@ -130,6 +130,9 @@ public abstract class DbObject {
                 return name + "*";
             }
         }
+        if (id == UNKNOWN_ID) {
+            return "";
+        }
         return name;
     }
 

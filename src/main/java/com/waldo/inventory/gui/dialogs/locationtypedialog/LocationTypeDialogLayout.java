@@ -23,8 +23,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
-        IEditedListener,
-        ILocationMapPanel.LocationClickListener {
+        IEditedListener{
 
     /*
     *                  COMPONENTS
@@ -189,7 +188,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         detailColumnsSpinner.setPreferredSize(new Dimension(60, 30));
         detailColumnsSpinner.addEditedListener(this, "columns");
 
-        ILocationMapPanel = new ILocationMapPanel(application, this);
+        ILocationMapPanel = new ILocationMapPanel(application, null);
     }
 
     @Override
