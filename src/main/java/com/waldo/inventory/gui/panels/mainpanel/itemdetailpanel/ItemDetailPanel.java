@@ -118,31 +118,33 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void updateTextFields(Item item) {
-        nameTextField.setText(item.getName());
-        StringBuilder builder = new StringBuilder();
+        if (item != null) {
+            nameTextField.setText(item.getName());
+            StringBuilder builder = new StringBuilder();
 
-        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            builder.append(" / ").append(sm().findCategoryById(item.getCategoryId()).getName());
-            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                builder.append(" / ").append(sm().findProductById(item.getProductId()).getName());
-                if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                    builder.append(" / ").append(sm().findTypeById(item.getTypeId()).getName());
+            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+                builder.append(" / ").append(sm().findCategoryById(item.getCategoryId()).getName());
+                if (item.getProductId() > DbObject.UNKNOWN_ID) {
+                    builder.append(" / ").append(sm().findProductById(item.getProductId()).getName());
+                    if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+                        builder.append(" / ").append(sm().findTypeById(item.getTypeId()).getName());
+                    }
                 }
             }
+            divisionTa.setText(builder.toString());
+
+            if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
+                manufacturerTextField.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
+            } else {
+                manufacturerTextField.setText("");
+            }
+
+            descriptionTextArea.setText(item.getDescription());
+
+            starRater.setRating(item.getRating());
+            discourageOrder.setSelected(item.isDiscourageOrder());
+            remarksTa.setText(item.getRemarks());
         }
-        divisionTa.setText(builder.toString());
-
-        if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-            manufacturerTextField.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
-        } else {
-            manufacturerTextField.setText("");
-        }
-
-        descriptionTextArea.setText(item.getDescription());
-
-        starRater.setRating(item.getRating());
-        discourageOrder.setSelected(item.isDiscourageOrder());
-        remarksTa.setText(item.getRemarks());
     }
 
     private void updateButtons(Item item) {

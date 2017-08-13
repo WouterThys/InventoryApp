@@ -79,13 +79,16 @@ public class EditItemDialog extends EditItemDialogLayout {
 
             @Override
             public void onUpdated(Package p) {
-                componentPanel.updateComponents(null);
+                //componentPanel.updateComponents(null);
             }
 
             @Override
             public void onDeleted(Package p) {
                 componentPanel.updateComponents(null);
             }
+
+            @Override
+            public void onCacheCleared() {}
         });
     }
 

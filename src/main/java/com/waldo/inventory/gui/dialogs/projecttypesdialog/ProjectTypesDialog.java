@@ -206,6 +206,8 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
         updateComponents(null);
     }
 
+    @Override
+    public void onCacheCleared() {}
 
     //
     // List selection listener

@@ -208,6 +208,9 @@ public class OrderPanel extends OrderPanelLayout {
             public void onDeleted(Item item) {
                 itemDetailPanel.updateComponents(null);
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -263,6 +266,21 @@ public class OrderPanel extends OrderPanelLayout {
                 updateVisibleComponents();
                 updateEnabledComponents();
             }
+
+            @Override
+            public void onCacheCleared() {
+                tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
+                treeRecreateNodes();
+                final long orderId = treeUpdate();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedOrder = SearchManager.sm().findOrderById(orderId);
+                    treeSelectOrder(selectedOrder);
+
+                    updateVisibleComponents();
+                    updateEnabledComponents();
+                });
+            }
         };
     }
 
@@ -311,6 +329,9 @@ public class OrderPanel extends OrderPanelLayout {
             public void onDeleted(OrderItem orderItem) {
                 // Handled in order change listener
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -338,6 +359,9 @@ public class OrderPanel extends OrderPanelLayout {
             public void onDeleted(DistributorPart distributorPart) {
                 // Should not happen
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 

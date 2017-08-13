@@ -1,5 +1,6 @@
 package com.waldo.inventory.database;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
@@ -10,7 +11,6 @@ import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
 import java.io.*;
@@ -31,6 +31,7 @@ public class DbManager {
     public static final int OBJECT_UPDATE = 1;
     public static final int OBJECT_DELETE = 2;
     public static final int OBJECT_SELECT = 3;
+    public static final int OBJECT_CACHE_CLEAR = 4;
 
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
@@ -40,7 +41,7 @@ public class DbManager {
     public static DbManager db() {
         return INSTANCE;
     }
-    private BasicDataSource dataSource;
+    private MysqlDataSource dataSource;//BasicDataSource dataSource;
     private List<String> tableNames;
     private boolean initialized = false;
 
@@ -103,32 +104,74 @@ public class DbManager {
 
     private DbManager() {}
 
-    public void init() throws SQLException {
+    public void init() throws SQLException{
         initialized = false;
         DbSettings s = settings().getDbSettings();
         if (s != null) {
-            dataSource = new BasicDataSource();
-            dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+            dataSource = new MysqlDataSource();
             dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-            dataSource.setUsername(s.getDbUserName());
+            dataSource.setDatabaseName(s.getDbName());
+            dataSource.setUser(s.getDbUserName());
             dataSource.setPassword(s.getDbUserPw());
             LOG.info("Database initialized with connection: " + s.createMySqlUrl());
 
             // Test
-            String sql = "SELECT table_name FROM information_schema.tables where table_schema='inventory';";
-            tableNames = new ArrayList<>();
+            initialized = testConnection(dataSource);
+            Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+        }
+    }
 
-            try (Connection connection = getConnection()) {
-                try (PreparedStatement stmt = connection.prepareStatement(sql);
-                     ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        tableNames.add(rs.getString("table_name"));
+    public void reInit(DbSettings s) throws SQLException {
+        initialized = false;
+        if (s != null) {
+            dataSource = new MysqlDataSource();
+            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+            dataSource.setDatabaseName(s.getDbName());
+            dataSource.setUser(s.getDbUserName());
+            dataSource.setPassword(s.getDbUserPw());
+            LOG.info("Database initialized with connection: " + s.createMySqlUrl());
+
+            // Test
+            initialized = testConnection(dataSource);
+            Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+            if (initialized) {
+                clearCache();
+            }
+        }
+    }
+
+    public static boolean testConnection(MysqlDataSource dataSource) throws SQLException {
+        String sql = "SELECT 1;";
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    public static List<String> testDatabase(MysqlDataSource dataSource) throws SQLException {
+        List<String> missingTables = new ArrayList<>();
+        int numberOfTables = scriptResource.readInteger("test.numberOfTables");
+        String sql = scriptResource.readString("test.script");
+        try (Connection connection = dataSource.getConnection()) {
+            for (int i = 0; i < numberOfTables; i++) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    String schemaName = dataSource.getDatabaseName();
+                    stmt.setString(1, schemaName);
+                    String tableName = scriptResource.readString("test.tableNames." + i);
+                    stmt.setString(2, tableName);
+
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (!rs.next()) {
+                            missingTables.add(tableName);
+                        }
                     }
-                    initialized = true;
                 }
             }
-
         }
+        return missingTables;
     }
 
     public void startBackgroundWorkers() {
@@ -147,6 +190,32 @@ public class DbManager {
         this.errorListener = errorListener;
     }
 
+    private void clearCache() {
+        items = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onItemsChangedListenerList);
+        categories = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onCategoriesChangedListenerList);
+        products = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProductsChangedListenerList);
+        types = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onTypesChangedListenerList);
+        manufacturers = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onManufacturerChangedListenerList);
+        locations = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onLocationsChangedListenerList);
+        locationTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onLocationTYpeChangedListenerList);
+        orders = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrdersChangedListenerList);
+        orderItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderItemsChangedListenerList);
+        distributors = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDistributorsChangedListenerList);
+        distributorParts = null;
+        packageTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageTypesChangedListenerList);
+        projects = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectChangedListenerList);
+        projectDirectories = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectDirectoryChangedListenerList);
+        projectTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectTypeChangedListenerList);
+        projectTypeLinks = null;
+        orderFileFormats = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderFileFormatChangedListenerList);
+        packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
+        setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
+        dimensionTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDimensionTypeChangedListenerList);
+        kcComponents = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcComponentChangedListenerList);
+        kcItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcItemLinkChangedListenerList);
+        logs = null;
+    }
+
     public void close() {
         if(dataSource != null) {
             Status().setMessage("Closing down");
@@ -163,13 +232,13 @@ public class DbManager {
 
     private void workerDone(String workerName) {
         System.out.println(workerName + " :thread done");
-        try {
-            if (dataSource != null) {
-                dataSource.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (dataSource != null) {
+//                dataSource.close();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void registerShutDownHook() {
@@ -180,7 +249,7 @@ public class DbManager {
      *                  GETTERS - SETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    private BasicDataSource getDataSource() {
+    private MysqlDataSource getDataSource() {
         return dataSource;
     }
 
@@ -455,7 +524,6 @@ public class DbManager {
                 case OBJECT_UPDATE:
                     try {
                         SwingUtilities.invokeLater(() -> l.onUpdated(object));
-                        l.onUpdated(object);
                     } catch (Exception e) {
                         LOG.error("Error after update of " + object.getName(), e);
                     }
@@ -467,6 +535,12 @@ public class DbManager {
                         LOG.error("Error after delete of " + object.getName(), e);
                     }
                     break;
+                case OBJECT_CACHE_CLEAR:
+                    try {
+                        SwingUtilities.invokeLater(l::onCacheCleared);
+                    } catch (Exception e) {
+                        LOG.error("Error after clearing cache", e);
+                    }
             }
         }
     }
@@ -1712,30 +1786,6 @@ public class DbManager {
         }
         return logList;
     }
-
-
-//    public void asyncSave(DbObject objectToSave) {
-//        String sql = objectToSave.getScript(DbObject.SQL_INSERT);
-//        try (PreparedStatement stmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-//            objectToSave.addParameters(stmt);
-//            stmt.execute();
-//
-//            try (ResultSet rs = stmt.getGeneratedKeys()) {
-//                rs.next();
-//                objectToSave.setId(rs.getLong(1));
-//            }
-//
-//            // Listeners
-//            objectToSave.tableChanged(OBJECT_INSERT);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            //DbErrorObject object = new DbErrorObject(objectToSave, e, OBJECT_INSERT, sql);
-//            //nonoList.put(object);
-//        }
-//    }
-
-
-
 
 
     /*

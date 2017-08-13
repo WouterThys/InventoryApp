@@ -12,7 +12,7 @@ import java.awt.event.FocusListener;
 
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ITextField extends JTextField implements FocusListener {
+public class IPasswordField extends JPasswordField implements FocusListener {
 
     private String hint = "";
     private boolean showingHint = false;
@@ -27,15 +27,15 @@ public class ITextField extends JTextField implements FocusListener {
 
     private Error error;
 
-    public ITextField() {
+    public IPasswordField() {
         this("", 15);
     }
 
-    public ITextField(String hint) {
+    public IPasswordField(String hint) {
         this(hint, 15);
     }
 
-    public ITextField(String hint, int columns) {
+    public IPasswordField(String hint, int columns) {
         super(hint, columns);
         this.hint = hint;
         this.addFocusListener(this);

@@ -1,5 +1,7 @@
 package com.waldo.inventory.gui;
 
+import com.mysql.jdbc.MysqlErrorNumbers;
+import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
@@ -15,6 +17,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -321,18 +324,27 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     private void showErrorMessage(DbObject object, Throwable throwable, String error) {
         final String message;
         final String title;
-        if (throwable != null) {
-            message = throwable.getMessage();
+
+            if (throwable != null) {
+                message = throwable.getMessage();
+            } else {
+                message = error + " error";
+            }
+            if (object != null) {
+                title = error + " error on " + object.getName();
+            } else {
+                title = error + " error";
+            }
+
+        if (throwable instanceof SQLException) {
+            SQLException exception = (SQLException) throwable;
+            if (exception.getErrorCode() != MysqlErrorNumbers.ER_TABLEACCESS_DENIED_ERROR) {
+                LOG.error(title, throwable);
+            }
         } else {
-            message = error + " error";
-        }
-        if (object != null) {
-            title = error + " error on " + object.getName();
-        } else {
-            title = error + " error";
+            LOG.error(title, throwable);
         }
 
-        LOG.error(title, throwable);
         SwingUtilities.invokeLater(() -> {
             JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
         });

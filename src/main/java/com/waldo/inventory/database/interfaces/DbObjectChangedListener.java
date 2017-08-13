@@ -6,4 +6,5 @@ public interface DbObjectChangedListener<T extends DbObject> {
     void onInserted(T object);
     void onUpdated(T object);
     void onDeleted(T object);
+    void onCacheCleared();
 }

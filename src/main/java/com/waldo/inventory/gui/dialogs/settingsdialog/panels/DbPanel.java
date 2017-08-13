@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
@@ -15,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
@@ -43,10 +48,11 @@ public class DbPanel extends JPanel implements
     private ITextField dbNameTf;
     private ITextField dbIpTf;
     private ITextField userNameTf;
-    private ITextField userPwTf;
+    private IPasswordField userPwTf;
 
     private JButton saveBtn;
     private JButton useBtn;
+    private JButton testBtn;
 
 
     /*
@@ -167,6 +173,7 @@ public class DbPanel extends JPanel implements
                 application.beginWait();
                 try {
                     settings().selectNewSettings(toUse);
+                    DbManager.db().init();
                 } finally {
                     application.endWait();
                 }
@@ -179,6 +186,12 @@ public class DbPanel extends JPanel implements
                     updateComponents(get());
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Error updating components", e);
+                } catch (Exception e){
+                    LOG.error("Error initializing db");
+                    JOptionPane.showMessageDialog(DbPanel.this,
+                            "Error re-initializing daabase..",
+                            "Initialisation error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute();
@@ -214,6 +227,82 @@ public class DbPanel extends JPanel implements
             }.execute();
         }
     }
+
+    private void testDatabaseValues() {
+        boolean errors = false;
+
+        String dbName = dbNameTf.getText();
+        String dbIp = dbIpTf.getText();
+        String dbUserName = userNameTf.getText();
+        String dbUserPw = userPwTf.getText();
+
+        if (dbName == null || dbName.isEmpty()) {
+            dbNameTf.setError("Database name can not be empty..");
+            errors = true;
+        }
+        if (dbIp == null || dbIp.isEmpty()) {
+            dbIpTf.setError("Database ip can not be empty..");
+            errors = true;
+        } else {
+            if(!(OpenUtils.isValidIpAddress(dbIp))) {
+                dbIpTf.setError("Invalid ip address");
+                errors = true;
+            }
+        }
+
+        if (dbUserName == null) {
+            dbUserName = "";
+        }
+        if (dbUserPw == null) {
+            dbUserPw = "";
+        }
+
+        if (!errors) {
+            MysqlDataSource dataSource = new MysqlDataSource();
+            dataSource.setUrl(DbSettings.createMysqlUrl(dbIp, dbName));
+            dataSource.setDatabaseName(dbName);
+            dataSource.setUser(dbUserName);
+            dataSource.setPassword(dbUserPw);
+
+            try {
+                if (DbManager.testConnection(dataSource)) {
+                    try {
+                        java.util.List<String> missingTables = (DbManager.testDatabase(dataSource));
+                        if (missingTables.size() == 0) {
+                            JOptionPane.showMessageDialog(this,
+                                    "Success!!",
+                                    "Test result",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            StringBuilder missing = new StringBuilder();
+                            for (String m : missingTables) {
+                                missing.append(m).append(", ");
+                            }
+                            JOptionPane.showMessageDialog(this,
+                                    "Connection success, but the database is missing following tables: " + missing,
+                                    "Test result",
+                                    JOptionPane.WARNING_MESSAGE);
+                        }
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(this,
+                                "Connection success, but tables check encountered error: " + e.getMessage(),
+                                "Test result",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Connection failed",
+                            "Test result",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Connection failed with error: " + e.getMessage(),
+                        "Test result",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
     
     
     /*
@@ -240,7 +329,7 @@ public class DbPanel extends JPanel implements
         dbNameTf = new ITextField();
         dbIpTf = new ITextField();
         userNameTf = new ITextField();
-        userPwTf = new ITextField();
+        userPwTf = new IPasswordField();
         dbNameTf.addEditedListener(this, "dbName");
         dbIpTf.addEditedListener(this, "dbIp");
         userNameTf.addEditedListener(this, "dbUserName");
@@ -257,6 +346,9 @@ public class DbPanel extends JPanel implements
         useBtn.setAlignmentX(LEFT_ALIGNMENT);
         useBtn.addActionListener(this);
 
+        testBtn = new JButton("Test");
+        testBtn.addActionListener(this);
+
         // Toolbar
         toolBar = new IdBToolBar(this);
     }
@@ -266,6 +358,7 @@ public class DbPanel extends JPanel implements
         setLayout(new BorderLayout());
 
         JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(testBtn);
         buttonsPanel.add(saveBtn);
         buttonsPanel.add(useBtn);
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -437,7 +530,7 @@ public class DbPanel extends JPanel implements
         if (e.getSource().equals(saveBtn)) {
             // Save
             saveSettings(selectedDbSettings);
-        } else {
+        } else if(e.getSource().equals(useBtn)) {
             // Use
             if (selectedDbSettings.isSaved()) {
                 useSettings(selectedDbSettings);
@@ -449,17 +542,16 @@ public class DbPanel extends JPanel implements
                         JOptionPane.ERROR_MESSAGE
                 );
             }
+        } else if (e.getSource().equals(testBtn)) {
+            testDatabaseValues();
         }
     }
 
     //
     // Log settings changed
     //
-
     @Override
     public void onSettingsChanged(DbSettings newSettings) {
-        if (!application.isUpdating()) {
-            updateComponents(newSettings);
-        }
+
     }
 }

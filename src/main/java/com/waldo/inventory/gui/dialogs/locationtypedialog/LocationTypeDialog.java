@@ -171,6 +171,9 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
         updateComponents(null);
     }
 
+    @Override
+    public void onCacheCleared() {}
+
     //
     // Tool bar
     //

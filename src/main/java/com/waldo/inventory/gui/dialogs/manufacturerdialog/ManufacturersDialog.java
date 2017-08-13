@@ -205,6 +205,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         updateComponents(null);
     }
 
+    @Override
+    public void onCacheCleared() {}
 
     //
     // List selection listener
