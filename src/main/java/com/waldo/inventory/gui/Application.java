@@ -2,6 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.mysql.jdbc.MysqlErrorNumbers;
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
@@ -9,6 +10,8 @@ import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -52,6 +55,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         Application.startUpPath = startUpPath;
         // Status
         Status().init();
+        boolean result;
 
         // Resource manager
         try {
@@ -63,33 +67,61 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             //System.exit(-1);
         }
 
+        // Cache only
+        if (Main.CACHE_ONLY) {
+            JOptionPane.showMessageDialog(this,
+                    "Running on cache only..",
+                    "Cache only",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
         // Initialize dB
+        result = initDatabases();
+
+        if (!result) {
+            SettingsDialog dialog = new SettingsDialog(this, "Settings");
+            if (dialog.showDialog() == IDialog.OK) {
+                // Try again
+                if (initDatabases()) {
+                    initComponents();
+                } else {
+                    System.exit(-1);
+                }
+            } else {
+                System.exit(-1);
+            }
+        } else {
+            initComponents();
+        }
+    }
+
+    private boolean initDatabases() {
+        boolean result = false;
         try {
             if (settings().init()) {
                 LOG.info("Reading settings successful!!");
                 db().init();
+
+                settings().registerShutDownHook();
+                db().startBackgroundWorkers();
+                db().registerShutDownHook();
+                db().addErrorListener(this);
+
+                result = true;
             } else {
-                // TODO: cry a little
+                JOptionPane.showMessageDialog(this,
+                        "Error initializing database",
+                        "Initialize error",
+                        JOptionPane.ERROR_MESSAGE);
             }
-
-
-
         } catch (Exception e) {
-            LOG.error("Error initialising db", e);
             JOptionPane.showMessageDialog(this,
                     e.getMessage(),
                     "Initialize error",
                     JOptionPane.ERROR_MESSAGE);
-            //System.exit(-1);
         }
-        settings().registerShutDownHook();
-        db().startBackgroundWorkers();
-        db().registerShutDownHook();
-        db().addErrorListener(this);
-
-        initComponents();
+        return result;
     }
-
 
     private void initComponents() {
         setLayout(new BorderLayout());
@@ -339,14 +371,27 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         if (throwable instanceof SQLException) {
             SQLException exception = (SQLException) throwable;
             if (exception.getErrorCode() != MysqlErrorNumbers.ER_TABLEACCESS_DENIED_ERROR) {
-                LOG.error(title, throwable);
+                try {
+                    LOG.error(title, throwable);
+                } catch (Exception e) {
+                    System.err.println("Error while logging");
+                }
             }
         } else {
-            LOG.error(title, throwable);
+            try {
+                LOG.error(title, throwable);
+            } catch (Exception e) {
+                System.err.println("Error while logging");
+            }
         }
 
         SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+                try {
+                    JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e) {
+                    System.err.println("Error while logging");
+                }
+
         });
     }
 }
