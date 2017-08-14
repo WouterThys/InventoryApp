@@ -69,12 +69,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 // TODO: cry a little
             }
 
-            settings().registerShutDownHook();
-            db().startBackgroundWorkers();
-            db().registerShutDownHook();
-            db().addErrorListener(this);
 
-            initComponents();
 
         } catch (Exception e) {
             LOG.error("Error initialising db", e);
@@ -82,9 +77,14 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                     e.getMessage(),
                     "Initialize error",
                     JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
+            //System.exit(-1);
         }
+        settings().registerShutDownHook();
+        db().startBackgroundWorkers();
+        db().registerShutDownHook();
+        db().addErrorListener(this);
 
+        initComponents();
     }
 
 
