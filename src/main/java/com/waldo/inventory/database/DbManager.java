@@ -1,6 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
@@ -108,34 +109,40 @@ public class DbManager {
         initialized = false;
         DbSettings s = settings().getDbSettings();
         if (s != null) {
-            dataSource = new MysqlDataSource();
-            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-            dataSource.setDatabaseName(s.getDbName());
-            dataSource.setUser(s.getDbUserName());
-            dataSource.setPassword(s.getDbUserPw());
-            LOG.info("Database initialized with connection: " + s.createMySqlUrl());
+            if (!Main.CACHE_ONLY) {
+                dataSource = new MysqlDataSource();
+                dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+                dataSource.setDatabaseName(s.getDbName());
+                dataSource.setUser(s.getDbUserName());
+                dataSource.setPassword(s.getDbUserPw());
+                LOG.info("Database initialized with connection: " + s.createMySqlUrl());
 
-            // Test
-            initialized = testConnection(dataSource);
-            Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+                // Test
+                initialized = testConnection(dataSource);
+                Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+            } else {
+                Status().setDbConnectionText(false, "", "", "");
+            }
         }
     }
 
     public void reInit(DbSettings s) throws SQLException {
         initialized = false;
         if (s != null) {
-            dataSource = new MysqlDataSource();
-            dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-            dataSource.setDatabaseName(s.getDbName());
-            dataSource.setUser(s.getDbUserName());
-            dataSource.setPassword(s.getDbUserPw());
-            LOG.info("Database initialized with connection: " + s.createMySqlUrl());
+            if (!Main.CACHE_ONLY) {
+                dataSource = new MysqlDataSource();
+                dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+                dataSource.setDatabaseName(s.getDbName());
+                dataSource.setUser(s.getDbUserName());
+                dataSource.setPassword(s.getDbUserPw());
+                LOG.info("Database initialized with connection: " + s.createMySqlUrl());
 
-            // Test
-            initialized = testConnection(dataSource);
-            Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
-            if (initialized) {
-                clearCache();
+                // Test
+                initialized = testConnection(dataSource);
+                Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+                if (initialized) {
+                    clearCache();
+                }
             }
         }
     }
@@ -175,15 +182,17 @@ public class DbManager {
     }
 
     public void startBackgroundWorkers() {
-        workList = new DbQueue<>(100);
-        dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
-        dbQueueWorker.execute();
-        LOG.info("Database started thread: " + QUEUE_WORKER);
+        if (!Main.CACHE_ONLY) {
+            workList = new DbQueue<>(100);
+            dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
+            dbQueueWorker.execute();
+            LOG.info("Database started thread: " + QUEUE_WORKER);
 
-        nonoList = new DbQueue<>(100);
-        dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
-        dbErrorWorker.execute();
-        LOG.info("Database started thread: " + ERROR_WORKER);
+            nonoList = new DbQueue<>(100);
+            dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
+            dbErrorWorker.execute();
+            LOG.info("Database started thread: " + ERROR_WORKER);
+        }
     }
 
     public void addErrorListener(DbErrorListener errorListener) {
@@ -546,29 +555,44 @@ public class DbManager {
     }
 
     public void insert(DbObject object) {
-        DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
-        try {
-            workList.put(toInsert);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!Main.CACHE_ONLY) {
+            DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
+            try {
+                workList.put(toInsert);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Just write it into cache
+            object.tableChanged(OBJECT_INSERT);
         }
     }
 
     public void update(DbObject object) {
-        DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
-        try {
-            workList.put(toUpdate);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!Main.CACHE_ONLY) {
+            DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
+            try {
+                workList.put(toUpdate);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Just update into cache
+            object.tableChanged(OBJECT_UPDATE);
         }
     }
 
     public void delete(DbObject object) {
-        DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
-        try {
-            workList.put(toDelete);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!Main.CACHE_ONLY) {
+            DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
+            try {
+                workList.put(toDelete);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Just delete
+            object.tableChanged(OBJECT_DELETE);
         }
     }
 
@@ -585,6 +609,9 @@ public class DbManager {
 
     private void updateItems() {
         items = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching items from DB");
         Item i = null;
         String sql = scriptResource.readString(Item.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -642,6 +669,9 @@ public class DbManager {
 
     private void updateCategories() {
         categories = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching categories from DB");
         Category c = null;
         String sql = scriptResource.readString(Category.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -684,6 +714,9 @@ public class DbManager {
 
     private void updateProducts() {
         products = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching products from DB");
         Product p = null;
         String sql = scriptResource.readString(Product.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -728,6 +761,9 @@ public class DbManager {
 
     private void updateTypes() {
         types = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching types from DB");
         Type t = null;
         String sql = scriptResource.readString(Type.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -771,6 +807,9 @@ public class DbManager {
 
     private void updateManufacturers() {
         manufacturers = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching manufacturers from DB");
         Manufacturer m = null;
         String sql = scriptResource.readString(Manufacturer.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -814,6 +853,9 @@ public class DbManager {
 
     private void updateLocations() {
         locations = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching locations from DB");
         Location l = null;
         String sql = scriptResource.readString(Location.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -859,6 +901,9 @@ public class DbManager {
 
     private void updateLocationTypes() {
         locationTypes = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching location types from DB");
         LocationType l = null;
         String sql = scriptResource.readString(LocationType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -900,6 +945,9 @@ public class DbManager {
 
     private void updateOrders()    {
         orders = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching orders from DB");
         Order o = null;
         String sql = scriptResource.readString(Order.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -949,6 +997,9 @@ public class DbManager {
 
     private void updateOrderItems()    {
         orderItems = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching order items from DB");
         OrderItem o = null;
         String sql = scriptResource.readString(OrderItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -992,6 +1043,9 @@ public class DbManager {
     }
 
     public void removeItemFromOrder(OrderItem orderItem) {
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Removing \""+orderItem.getItem().toString()+"\" from \""+orderItem.getOrder().toString());
 
         String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
@@ -1021,6 +1075,9 @@ public class DbManager {
 
     private void updateDistributors()    {
         distributors = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching distributors from DB");
         Distributor d = null;
         String sql = scriptResource.readString(Distributor.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1066,6 +1123,9 @@ public class DbManager {
 
     private void updateDistributorParts()    {
         distributorParts = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching distributor parts from DB");
         DistributorPart pn = null;
         String sql = scriptResource.readString(DistributorPart.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1110,6 +1170,9 @@ public class DbManager {
 
     private void updatePackages()    {
         packages = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching packages from DB");
         Package pa = null;
         String sql = scriptResource.readString(Package.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1155,6 +1218,9 @@ public class DbManager {
 
     private void updatePackageTypes()    {
         packageTypes = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching package types from DB");
         PackageType pt = null;
         String sql = scriptResource.readString(PackageType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1196,6 +1262,9 @@ public class DbManager {
 
     private void updateProjects()    {
         projects = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching projects from DB");
         Project p = null;
         String sql = scriptResource.readString(Project.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1238,6 +1307,9 @@ public class DbManager {
 
     private void updateProjectDirectories()    {
         projectDirectories = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching projectDirectories from DB");
         ProjectDirectory p = null;
         String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1281,6 +1353,9 @@ public class DbManager {
 
     private void updateProjectTypes()    {
         projectTypes = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching ProjectType from DB");
         ProjectType p = null;
         String sql = scriptResource.readString(ProjectType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1330,6 +1405,9 @@ public class DbManager {
 
     private void updateProjectTypeLinks()    {
         projectTypeLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching projectTypeLinks from DB");
         ProjectTypeLink p = null;
         String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1371,6 +1449,9 @@ public class DbManager {
 
     private void updateOrderFileFormats()    {
         orderFileFormats = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching order file formats from DB");
         OrderFileFormat off = null;
         String sql = scriptResource.readString(OrderFileFormat.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1411,6 +1492,9 @@ public class DbManager {
 
     private void updateSetItems()    {
         setItems = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching set items from DB");
         SetItem si = null;
         String sql = scriptResource.readString(SetItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1454,6 +1538,9 @@ public class DbManager {
 
     private void updateDimensionTypes()    {
         dimensionTypes = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching dimension types from DB");
         DimensionType dt = null;
         String sql = scriptResource.readString(DimensionType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1496,6 +1583,9 @@ public class DbManager {
 
     private void updateKcComponents()    {
         kcComponents = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching kc components from DB");
         KcComponent kc = null;
         String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1561,6 +1651,9 @@ public class DbManager {
 
     private void updateKcItemLinks()    {
         kcItemLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching KcItemLinks from DB");
         KcItemLink kil = null;
         String sql = scriptResource.readString(KcItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1604,6 +1697,9 @@ public class DbManager {
 
     public void updateLogs()    {
         logs = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
         Status().setMessage("Fetching logs from DB");
         Log l = null;
         String sql = scriptResource.readString(Log.TABLE_NAME + DbObject.SQL_SELECT_ALL);
@@ -1852,8 +1948,10 @@ public class DbManager {
                                         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                                             insert(stmt, dbo);
                                         } catch (SQLException e) {
-                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
-                                            nonoList.put(object);
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
+                                                nonoList.put(object);
+                                            }
                                         }
                                     }
                                     break;
@@ -1862,8 +1960,10 @@ public class DbManager {
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             update(stmt, dbo);
                                         } catch (SQLException e) {
-                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
-                                            nonoList.put(object);
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                                nonoList.put(object);
+                                            }
                                         }
                                         break;
                                     }
@@ -1872,8 +1972,10 @@ public class DbManager {
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             delete(stmt, dbo);
                                         } catch (SQLException e) {
-                                            DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
-                                            nonoList.put(object);
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
+                                                nonoList.put(object);
+                                            }
                                         }
                                         break;
                                 }
@@ -1890,6 +1992,7 @@ public class DbManager {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            System.out.print("ROLLING BACK DB");
                             try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
                                 stmt.execute();
                             }

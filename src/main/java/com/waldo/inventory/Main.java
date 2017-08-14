@@ -19,11 +19,12 @@ import java.text.ParseException;
 public class Main {
 
     private static final LogManager LOG = LogManager.LOG(Main.class);
+    public static boolean CACHE_ONLY = false;
 
     public static void main(String[] args) throws SQLException {
-
         String startUpPath = new File("").getAbsolutePath() + File.separator;
         LOG.startup(startUpPath);
+        readArguments(args);
 
         SwingUtilities.invokeLater(() -> {
             setLookAndFeel();
@@ -36,6 +37,27 @@ public class Main {
             app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             app.setVisible(true);
         });
+    }
+
+    private static void readArguments(String[] args) {
+        if (args.length > 0) {
+            try {
+                for (String arg : args) {
+                    System.out.println("Reading main input parameter: " + arg);
+                    String[] split = arg.split("=");
+                    String param = split[0];
+                    String value = split[1];
+
+                    switch (param) {
+                        case "CACHE_ONLY":
+                            CACHE_ONLY = Boolean.valueOf(value);
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to read input params: " + e);
+            }
+        }
     }
 
     private static void setLookAndFeel() {
