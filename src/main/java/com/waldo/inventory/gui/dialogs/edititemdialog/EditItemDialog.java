@@ -118,11 +118,12 @@ public class EditItemDialog extends EditItemDialogLayout {
                 newPackage.save();
                 originalPackage = newPackage.createCopy();
             }
-            // Location
-            newItem.setLocationId(editItemStockPanel.getLocationId());
 
             newItem.save();
             originalItem = newItem.createCopy();
+
+            // Location
+            editItemStockPanel.locationSaved(newItem.getLocation());
 
             getButtonNeutral().setEnabled(false);
             // Don't call update for just one component
@@ -269,18 +270,18 @@ public class EditItemDialog extends EditItemDialogLayout {
                 (fieldName.equals("PackageTypeId") || fieldName.equals("Pins") || fieldName.equals("Height") || fieldName.equals("Width"))) {
             newPackage = newItem.getPackage();
         }
-            // Distributor part
-            if (editItemOrderPanel.getItemRefField().equals(component)) {
-                partNumberChanged = editItemOrderPanel.checkChange();
-                getButtonNeutral().setEnabled(partNumberChanged);
-            } else {
-                getButtonNeutral().setEnabled(checkChange());
-            }
+        // Distributor part
+        if (editItemOrderPanel.getItemRefField().equals(component)) {
+            partNumberChanged = editItemOrderPanel.checkChange();
+            getButtonNeutral().setEnabled(partNumberChanged);
+        } else {
+            getButtonNeutral().setEnabled(checkChange());
+        }
 
-            // Dimensions
-            if (componentPanel.getPackageTypeCb().equals(component)) {
-                componentPanel.updateDimensionPanel();
-            }
+        // Dimensions
+        if (componentPanel.getPackageTypeCb().equals(component)) {
+            componentPanel.updateDimensionPanel();
+        }
 
     }
 

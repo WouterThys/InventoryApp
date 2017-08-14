@@ -28,7 +28,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
 
     private Item newItem;
     private Application application;
-    private Location selectedLocation;
+    private Location originalLocation;
 
     // Listener
     private IEditedListener mainEditedListener;
@@ -49,18 +49,41 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
     }
 
     private boolean checkLocationChange() {
-        return !(selectedLocation != null && selectedLocation.equals(newItem.getLocation()));
+        return !(originalLocation != null && originalLocation.equals(newItem.getLocation()));
     }
 
     private void checkLocation() {
-
+        if (checkLocationChange()) {
+            LocationType type = (LocationType) locationTypeCb.getSelectedItem();
+            int row = getRow();
+            int col = getCol();
+            Location newLocation = SearchManager.sm().findLocation(type.getId(), row, col);
+            if (newLocation != null) {
+                long locId = newLocation.getId();
+                newItem.setLocationId(locId);
+                mainEditedListener.onValueChanged(null, "locationId", originalLocation.getId(), locId);
+            }
+        }
     }
 
-    public long getLocationId() {
-        if (selectedLocation == null) {
-            return DbObject.UNKNOWN_ID;
+    public void locationSaved(Location location) {
+        originalLocation = location.createCopy();
+    }
+
+    private int getRow() {
+        String rTxt = rowTf.getText();
+        if (!rTxt.isEmpty()) {
+            return Statics.indexOfAlphabet(rTxt);
         }
-        return selectedLocation.getId();
+        return 0;
+    }
+
+    private int getCol() {
+        String cTxt = colTf.getText();
+        if (!cTxt.isEmpty()) {
+            return Integer.valueOf(cTxt);
+        }
+        return 0;
     }
 
 
@@ -76,11 +99,6 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
         locationTypeModel.removeAllElements();
         for (LocationType locationType : DbManager.db().getLocationTypes()) {
             locationTypeModel.addElement(locationType);
-        }
-        if (newItem.getLocation() != null) {
-            locationTypeModel.setSelectedItem(newItem.getLocation().getLocationType());
-        } else {
-            locationTypeModel.setSelectedItem(null);
         }
     }
 
@@ -231,9 +249,9 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
         colTf.setEnabled(false);
 
         locationTypeModel = new DefaultComboBoxModel<>();
+        updateLocationTypeCb();
         locationTypeCb = new IComboBox<>(locationTypeModel);
         locationTypeCb.addEditedListener(this, "locationTypeId");
-        updateLocationTypeCb();
 
         setLocationBtn = new JButton("Set");
         setLocationBtn.addActionListener(e -> {
@@ -241,11 +259,11 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
             if (locationType != null &&locationType.canBeSaved() && !locationType.isUnknown()) {
                 if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
                     LocationMapDialog dialog;
-                    if (selectedLocation != null) {
-                        dialog = new LocationMapDialog(application, "Select", locationType, selectedLocation.getRow(), selectedLocation.getCol());
-                    } else {
-                        dialog = new LocationMapDialog(application, "Select", locationType, -1, -1);
-                    }
+                    dialog = new LocationMapDialog(application,
+                            "Select",
+                            locationType,
+                            newItem.getLocation().getRow(),
+                            newItem.getLocation().getCol());
 
                     if (dialog.showDialog() == IDialog.OK) {
                         rowTf.setText(Statics.Alphabet[dialog.getRow()]);
@@ -274,15 +292,16 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
                 amountSpinner.setValue(newItem.getAmount());
 
                 if (newItem.getLocation() != null) {
-                    selectedLocation = newItem.getLocation().createCopy();
-                    locationTypeCb.setSelectedItem(selectedLocation.getLocationType());
-                    if (selectedLocation.getRow() >= 0 && selectedLocation.getCol() >= 0) {
-                        rowTf.setText(Statics.Alphabet[selectedLocation.getRow()]);
-                        colTf.setText(String.valueOf(selectedLocation.getCol()));
+                    if (newItem.getLocation().getRow() >= 0 && newItem.getLocation().getCol() >= 0) {
+                        rowTf.setText(Statics.Alphabet[newItem.getLocation().getRow()]);
+                        colTf.setText(String.valueOf(newItem.getLocation().getCol()));
                     }
                 } else {
-                    selectedLocation = Location.getUnknownLocation();
+                    newItem.setLocationId(DbObject.UNKNOWN_ID);
+                    newItem.save();
                 }
+                originalLocation = newItem.getLocation().createCopy();
+                locationTypeCb.setSelectedItem(originalLocation.getLocationType());
             }
         } finally {
             application.endWait();
@@ -295,31 +314,12 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         if (!application.isUpdating()) {
-            if (component.equals(locationTypeCb)) {
-                LocationType type = (LocationType) locationTypeCb.getSelectedItem();
-                if (newItem.getLocation().getLocationTypeId() != type.getId()) {
-                    selectedLocation.setRow(0);
-                    selectedLocation.setCol(0);
-                } else {
-                    selectedLocation.setRow(newItem.getLocation().getRow());
-                    selectedLocation.setCol(newItem.getLocation().getCol());
-                }
-                rowTf.setText(Statics.Alphabet[selectedLocation.getRow()]);
-                colTf.setText(String.valueOf(selectedLocation.getCol()));
-            }
-            if (checkLocationChange()) {
-                Location newLocation = SearchManager.sm().findLocation(selectedLocation.getLocationTypeId(), selectedLocation.getRow(), selectedLocation.getCol());
-                if (newLocation != null) {
-                    selectedLocation = newLocation.createCopy();
-                    newItem.setLocationId(selectedLocation.getId());
-                    mainEditedListener.onValueChanged(null, "locationId", newItem.getLocationId(), selectedLocation.getId());
-                }
-            }
+            checkLocation();
         }
     }
 
     @Override
     public DbObject getGuiObject() {
-        return selectedLocation;
+        return newItem.getLocation();
     }
 }

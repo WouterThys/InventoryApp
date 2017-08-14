@@ -24,6 +24,15 @@ public class Location extends DbObject {
     }
 
     @Override
+    public String toString() {
+        if (getLocationType() != null) {
+            return getLocationType().getName() + "("+ Statics.Alphabet[row]+","+col+")";
+        } else {
+            return "*" + "("+ Statics.Alphabet[row]+","+col+")";
+        }
+    }
+
+    @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
