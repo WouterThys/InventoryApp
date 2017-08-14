@@ -64,6 +64,12 @@ public class DbSettings extends DbSettingsObject {
                 getDbName();
     }
 
+    public static String createMysqlUrl(String ip, String dbName) {
+        return "jdbc:mysql:" +
+                "//" + ip + "/" +
+                dbName;
+    }
+
 
     public String getDbIp() {
         if (dbIp == null) {

@@ -168,6 +168,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             public void onDeleted(Category object) {
                 updateCategoryList();
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -211,6 +214,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             public void onDeleted(Product object) {
                 updateProductList();
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -249,6 +255,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             public void onDeleted(com.waldo.inventory.classes.Type object) {
                 updateTypeList();
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 

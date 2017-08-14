@@ -20,10 +20,9 @@ public class IStatusStrip extends JPanel implements GuiInterface {
         return INSTANCE;
     }
 
-
     private JLabel statusLabel;
+    private JLabel dbConnectionLabel;
     private Timer timer;
-
 
     private IStatusStrip() {}
 
@@ -33,6 +32,16 @@ public class IStatusStrip extends JPanel implements GuiInterface {
 
         timer = new Timer(MESSAGE_TIME, e -> clear());
         timer.setRepeats(false);
+    }
+
+    public void setDbConnectionText(boolean connected, String ip, String dbName, String userName) {
+        if (connected) {
+            dbConnectionLabel.setText("Connected to " + dbName + " as " + userName + " at " + ip);
+            dbConnectionLabel.setForeground(Color.DARK_GRAY);
+        } else {
+            dbConnectionLabel.setText("Not connected..");
+            dbConnectionLabel.setForeground(Color.RED);
+        }
     }
 
     public void setMessage(String message) {
@@ -94,13 +103,15 @@ public class IStatusStrip extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         statusLabel = new JLabel("", JLabel.LEFT);
+        dbConnectionLabel = new JLabel("", JLabel.RIGHT);
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(3,10,3,3));
+        setBorder(BorderFactory.createEmptyBorder(3,10,3,20));
         add(statusLabel, BorderLayout.WEST);
+        add(dbConnectionLabel, BorderLayout.EAST);
     }
 
     @Override

@@ -392,6 +392,16 @@ public class SearchManager {
         return null;
     }
 
+    public List<Item> findItemsWithLocation(long locationTypeId) {
+        List<Item> items = new ArrayList<>();
+        for (Item item : db().getItems()) {
+            if (item.getLocation().getLocationTypeId() == locationTypeId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
     public Category findCategoryById(long id) {
         for (Category c : db().getCategories()) {
             if (c.getId() == id) {
@@ -518,9 +528,9 @@ public class SearchManager {
         return null;
     }
 
-    public Location findLocation(long locationTypeId, int row, int column) {
+    synchronized public Location findLocation(long locationTypeId, int row, int column) {
         for (Location l : db().getLocations()) {
-            if (l.getLocationTypeId() == locationTypeId && l.getRow() == row && l.getColumn() == column) {
+            if (l.getLocationTypeId() == locationTypeId && l.getRow() == row && l.getCol() == column) {
                 return l;
             }
         }

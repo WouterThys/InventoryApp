@@ -105,6 +105,12 @@ public class MainPanel extends MainPanelLayout {
                 selectedItem = null;
                 updateComponents(lastSelectedDivision);
             }
+
+            @Override
+            public void onCacheCleared() {
+                recreateNodes();
+                updateComponents(lastSelectedDivision);
+            }
         };
     }
 
@@ -158,6 +164,9 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Category category) {
                 treeModel.removeObject(category);
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -177,6 +186,9 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Product product) {
                 treeModel.removeObject(product);
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -196,6 +208,9 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Type type) {
                 treeModel.removeObject(type);
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 

@@ -146,25 +146,28 @@ public class ProjectPanel extends ProjectPanelLayout {
                 selectedDirectory = null;
                 updateComponents(null);
             }
+
+            @Override
+            public void onCacheCleared() {
+                recreateNodes();
+                updateComponents(selectedProject);
+            }
         };
     }
 
     private void setProjectDirectoryListener() {
         projectDirectoryListener = new DbObjectChangedListener<ProjectDirectory>() {
             @Override
-            public void onInserted(ProjectDirectory directory) {
-
-            }
+            public void onInserted(ProjectDirectory directory) {}
 
             @Override
-            public void onUpdated(ProjectDirectory newDirectory) {
-
-            }
+            public void onUpdated(ProjectDirectory newDirectory) {}
 
             @Override
-            public void onDeleted(ProjectDirectory directory) {
+            public void onDeleted(ProjectDirectory directory) {}
 
-            }
+            @Override
+            public void onCacheCleared() {}
         };
     }
 

@@ -6,8 +6,11 @@ import com.waldo.inventory.gui.Application;
 public class LocationMapDialog extends LocationMapDialogLayout {
 
 
-    public LocationMapDialog(Application application, String title, LocationType locationType) {
+    public LocationMapDialog(Application application, String title, LocationType locationType, int row, int col) {
         super(application, title);
+
+        this.row = row;
+        this.col = col;
 
         initializeComponents();
         initializeLayouts();

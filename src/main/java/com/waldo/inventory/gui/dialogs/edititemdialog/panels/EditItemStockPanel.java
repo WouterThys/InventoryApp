@@ -4,34 +4,34 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.locationmapdialog.LocationMapDialog;
 import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
-public class EditItemStockPanel extends JPanel implements GuiInterface {
+public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedListener {
 
     private static final LogManager LOG = LogManager.LOG(EditItemStockPanel.class);
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
     private Item newItem;
     private Application application;
+    private Location selectedLocation;
 
     // Listener
-    private IEditedListener editedListener;
+    private IEditedListener mainEditedListener;
 
     private ISpinner amountSpinner;
     private JComboBox<String> amountTypeCb;
@@ -45,7 +45,22 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     public EditItemStockPanel(Application application, Item newItem, IEditedListener editedListener) {
         this.application = application;
         this.newItem = newItem;
-        this.editedListener = editedListener;
+        this.mainEditedListener = editedListener;
+    }
+
+    private boolean checkLocationChange() {
+        return !(selectedLocation != null && selectedLocation.equals(newItem.getLocation()));
+    }
+
+    private void checkLocation() {
+
+    }
+
+    public long getLocationId() {
+        if (selectedLocation == null) {
+            return DbObject.UNKNOWN_ID;
+        }
+        return selectedLocation.getId();
     }
 
 
@@ -59,11 +74,8 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     private void updateLocationTypeCb() {
         locationTypeModel.removeAllElements();
-        locationTypeModel.addElement(LocationType.createDummyLocationType());
         for (LocationType locationType : DbManager.db().getLocationTypes()) {
-            if (!locationType.isUnknown()) {
-                locationTypeModel.addElement(locationType);
-            }
+            locationTypeModel.addElement(locationType);
         }
         if (newItem.getLocation() != null) {
             locationTypeModel.setSelectedItem(newItem.getLocation().getLocationType());
@@ -187,22 +199,22 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(spinnerModel);
-        amountSpinner.addEditedListener(editedListener, "amount");
+        amountSpinner.addEditedListener(mainEditedListener, "amount");
 
         DefaultComboBoxModel<String> cbModel = new DefaultComboBoxModel<>(amountTypes);
         amountTypeCb = new JComboBox<>(cbModel);
         amountTypeCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                if (editedListener != null) {
+                if (mainEditedListener != null) {
                     try {
-                        DbObject guiObject = editedListener.getGuiObject();
+                        DbObject guiObject = mainEditedListener.getGuiObject();
                         if (guiObject != null) {
                             String newVal = String.valueOf(e.getItem());
                             Item i = (Item) guiObject;
 
                             String oldVal = String.valueOf(i.getAmountType());
 
-                            editedListener.onValueChanged(amountTypeCb, "amountType", oldVal, newVal);
+                            mainEditedListener.onValueChanged(amountTypeCb, "amountType", oldVal, newVal);
                         }
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -212,15 +224,15 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         });
 
         rowTf = new ITextField();
-        rowTf.addEditedListener(editedListener, "row");
+        rowTf.addEditedListener(this, "rowAsString");
         rowTf.setEnabled(false);
         colTf = new ITextField();
-        colTf.addEditedListener(editedListener, "column");
+        colTf.addEditedListener(this, "col", int.class);
         colTf.setEnabled(false);
 
         locationTypeModel = new DefaultComboBoxModel<>();
         locationTypeCb = new IComboBox<>(locationTypeModel);
-        locationTypeCb.addEditedListener(editedListener, "locationId");
+        locationTypeCb.addEditedListener(this, "locationTypeId");
         updateLocationTypeCb();
 
         setLocationBtn = new JButton("Set");
@@ -228,10 +240,17 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
             LocationType locationType = (LocationType) locationTypeModel.getSelectedItem();
             if (locationType != null &&locationType.canBeSaved() && !locationType.isUnknown()) {
                 if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
-                    LocationMapDialog dialog = new LocationMapDialog(application, "Select", locationType);
+                    LocationMapDialog dialog;
+                    if (selectedLocation != null) {
+                        dialog = new LocationMapDialog(application, "Select", locationType, selectedLocation.getRow(), selectedLocation.getCol());
+                    } else {
+                        dialog = new LocationMapDialog(application, "Select", locationType, -1, -1);
+                    }
+
                     if (dialog.showDialog() == IDialog.OK) {
                         rowTf.setText(Statics.Alphabet[dialog.getRow()]);
                         colTf.setText(String.valueOf(dialog.getCol()));
+                        checkLocation();
                     }
                 }
             }
@@ -248,14 +267,59 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     @Override
     public void updateComponents(Object object) {
-        if (newItem != null) {
-            amountTypeCb.setSelectedIndex(newItem.getAmountType());
-            amountSpinner.setValue(newItem.getAmount());
+        application.beginWait();
+        try {
+            if (newItem != null) {
+                amountTypeCb.setSelectedIndex(newItem.getAmountType());
+                amountSpinner.setValue(newItem.getAmount());
 
-            if (newItem.getLocation() != null) {
-                rowTf.setText(Statics.Alphabet[newItem.getLocation().getRow()]);
-                colTf.setText(String.valueOf(newItem.getLocation().getColumn()));
+                if (newItem.getLocation() != null) {
+                    selectedLocation = newItem.getLocation().createCopy();
+                    locationTypeCb.setSelectedItem(selectedLocation.getLocationType());
+                    if (selectedLocation.getRow() >= 0 && selectedLocation.getCol() >= 0) {
+                        rowTf.setText(Statics.Alphabet[selectedLocation.getRow()]);
+                        colTf.setText(String.valueOf(selectedLocation.getCol()));
+                    }
+                } else {
+                    selectedLocation = Location.getUnknownLocation();
+                }
+            }
+        } finally {
+            application.endWait();
+        }
+    }
+
+    //
+    // Location edited listeners
+    //
+    @Override
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
+        if (!application.isUpdating()) {
+            if (component.equals(locationTypeCb)) {
+                LocationType type = (LocationType) locationTypeCb.getSelectedItem();
+                if (newItem.getLocation().getLocationTypeId() != type.getId()) {
+                    selectedLocation.setRow(0);
+                    selectedLocation.setCol(0);
+                } else {
+                    selectedLocation.setRow(newItem.getLocation().getRow());
+                    selectedLocation.setCol(newItem.getLocation().getCol());
+                }
+                rowTf.setText(Statics.Alphabet[selectedLocation.getRow()]);
+                colTf.setText(String.valueOf(selectedLocation.getCol()));
+            }
+            if (checkLocationChange()) {
+                Location newLocation = SearchManager.sm().findLocation(selectedLocation.getLocationTypeId(), selectedLocation.getRow(), selectedLocation.getCol());
+                if (newLocation != null) {
+                    selectedLocation = newLocation.createCopy();
+                    newItem.setLocationId(selectedLocation.getId());
+                    mainEditedListener.onValueChanged(null, "locationId", newItem.getLocationId(), selectedLocation.getId());
+                }
             }
         }
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return selectedLocation;
     }
 }

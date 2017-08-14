@@ -107,4 +107,9 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
     @Override
     public void onDeleted(Order order) {} // Should not happen
+
+    @Override
+    public void onCacheCleared() {
+        updateComponents(null);
+    }
 }

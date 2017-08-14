@@ -98,19 +98,16 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
 
 
     @Override
-    public void onInserted(KcItemLink link) {
-
-    }
+    public void onInserted(KcItemLink link) {}
 
     @Override
-    public void onUpdated(KcItemLink link) {
-
-    }
+    public void onUpdated(KcItemLink link) {}
 
     @Override
-    public void onDeleted(KcItemLink link) {
+    public void onDeleted(KcItemLink link) {}
 
-    }
+    @Override
+    public void onCacheCleared() {}
 
     //
     // Search stuff

@@ -207,6 +207,9 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         updateComponents(null);
     }
 
+    @Override
+    public void onCacheCleared() {}
+
     //
     //  Toolbar listener
     //

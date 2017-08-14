@@ -138,6 +138,12 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
+    public void recreateNodes() {
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
+        rootNode.removeAllChildren();
+        createNodes(rootNode);
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

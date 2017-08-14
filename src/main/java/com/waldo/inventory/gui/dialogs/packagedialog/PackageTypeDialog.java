@@ -116,6 +116,9 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
             public void onDeleted(PackageType object) {
                 updateComponents(null);
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
@@ -139,6 +142,9 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
                 dimensionTableDelete(object);
                 updateEnabledComponents();
             }
+
+            @Override
+            public void onCacheCleared() {}
         };
     }
 
