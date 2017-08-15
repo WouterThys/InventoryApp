@@ -588,4 +588,43 @@ public class Item extends DbObject {
         }
         return dimensionType;
     }
+
+    public int getLocationRow() {
+        if (getLocation() != null) {
+            return getLocation().getRow();
+        }
+        return 0;
+    }
+
+    public void setLocationRow(String row) {
+        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+            getLocation().setRow(Statics.indexOfAlphabet(row));
+        }
+    }
+
+    public int getLocationCol() {
+        if (getLocation() != null) {
+            return getLocation().getCol();
+        }
+        return 0;
+    }
+
+    public void setLocationCol(int col) {
+        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+            getLocation().setCol(col);
+        }
+    }
+
+    public long getLocationTypeId() {
+        if (getLocation() != null) {
+            return getLocation().getLocationTypeId();
+        }
+        return 0;
+    }
+
+    public void setLocationTypeId(long id) {
+        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+            getLocation().setLocationTypeId(id);
+        }
+    }
 }

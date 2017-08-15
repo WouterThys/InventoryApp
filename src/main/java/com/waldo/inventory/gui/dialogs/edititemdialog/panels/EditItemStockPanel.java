@@ -21,7 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
-public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedListener {
+public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     private static final LogManager LOG = LogManager.LOG(EditItemStockPanel.class);
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
@@ -31,7 +31,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
     private Location originalLocation;
 
     // Listener
-    private IEditedListener mainEditedListener;
+    private IEditedListener editedListener;
 
     private ISpinner amountSpinner;
     private JComboBox<String> amountTypeCb;
@@ -45,29 +45,31 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
     public EditItemStockPanel(Application application, Item newItem, IEditedListener editedListener) {
         this.application = application;
         this.newItem = newItem;
-        this.mainEditedListener = editedListener;
+        this.editedListener = editedListener;
     }
 
-    private boolean checkLocationChange() {
+    public boolean checkLocationChange() {
         return !(originalLocation != null && originalLocation.equals(newItem.getLocation()));
     }
 
-    private void checkLocation() {
-        if (checkLocationChange()) {
-            LocationType type = (LocationType) locationTypeCb.getSelectedItem();
-            int row = getRow();
-            int col = getCol();
-            Location newLocation = SearchManager.sm().findLocation(type.getId(), row, col);
-            if (newLocation != null) {
-                long locId = newLocation.getId();
-                newItem.setLocationId(locId);
-                mainEditedListener.onValueChanged(null, "locationId", originalLocation.getId(), locId);
-            }
+    public long getNewLocationId() {
+        Location newLocation = SearchManager.sm().findLocation(getLocationType().getId(), getRow(), getCol());
+        if (newLocation != null) {
+            return newLocation.getId();
         }
+        return DbObject.UNKNOWN_ID;
+    }
+
+    public IComboBox getLocationTypeCombobox() {
+        return locationTypeCb;
     }
 
     public void locationSaved(Location location) {
         originalLocation = location.createCopy();
+    }
+
+    private LocationType getLocationType() {
+        return (LocationType) locationTypeCb.getSelectedItem();
     }
 
     private int getRow() {
@@ -217,22 +219,22 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
     public void initializeComponents() {
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(spinnerModel);
-        amountSpinner.addEditedListener(mainEditedListener, "amount");
+        amountSpinner.addEditedListener(editedListener, "amount");
 
         DefaultComboBoxModel<String> cbModel = new DefaultComboBoxModel<>(amountTypes);
         amountTypeCb = new JComboBox<>(cbModel);
         amountTypeCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                if (mainEditedListener != null) {
+                if (editedListener != null) {
                     try {
-                        DbObject guiObject = mainEditedListener.getGuiObject();
+                        DbObject guiObject = editedListener.getGuiObject();
                         if (guiObject != null) {
                             String newVal = String.valueOf(e.getItem());
                             Item i = (Item) guiObject;
 
                             String oldVal = String.valueOf(i.getAmountType());
 
-                            mainEditedListener.onValueChanged(amountTypeCb, "amountType", oldVal, newVal);
+                            editedListener.onValueChanged(amountTypeCb, "amountType", oldVal, newVal);
                         }
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -242,18 +244,31 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
         });
 
         rowTf = new ITextField();
-        rowTf.addEditedListener(this, "rowAsString");
         rowTf.setEnabled(false);
+        rowTf.addEditedListener(editedListener, "locationRow", String.class);
         colTf = new ITextField();
-        colTf.addEditedListener(this, "col", int.class);
         colTf.setEnabled(false);
+        colTf.addEditedListener(editedListener, "locationCol", int.class);
 
         locationTypeModel = new DefaultComboBoxModel<>();
         updateLocationTypeCb();
         locationTypeCb = new IComboBox<>(locationTypeModel);
-        locationTypeCb.addEditedListener(this, "locationTypeId");
+        locationTypeCb.addEditedListener(editedListener, "locationTypeId");
+        locationTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                LocationType type = getLocationType();
+                if (type != null && type.getId() > DbObject.UNKNOWN_ID) {
+                    setLocationBtn.setEnabled(true);
+                    rowTf.setText("A");
+                    colTf.setText("0");
+                } else {
+                    setLocationBtn.setEnabled(false);
+                }
+            }
+        });
 
         setLocationBtn = new JButton("Set");
+        setLocationBtn.setEnabled(false);
         setLocationBtn.addActionListener(e -> {
             LocationType locationType = (LocationType) locationTypeModel.getSelectedItem();
             if (locationType != null &&locationType.canBeSaved() && !locationType.isUnknown()) {
@@ -268,7 +283,8 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
                     if (dialog.showDialog() == IDialog.OK) {
                         rowTf.setText(Statics.Alphabet[dialog.getRow()]);
                         colTf.setText(String.valueOf(dialog.getCol()));
-                        checkLocation();
+                        rowTf.fireValueChanged();
+                        colTf.fireValueChanged();
                     }
                 }
             }
@@ -306,20 +322,5 @@ public class EditItemStockPanel extends JPanel implements GuiInterface, IEditedL
         } finally {
             application.endWait();
         }
-    }
-
-    //
-    // Location edited listeners
-    //
-    @Override
-    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (!application.isUpdating()) {
-            checkLocation();
-        }
-    }
-
-    @Override
-    public DbObject getGuiObject() {
-        return newItem.getLocation();
     }
 }

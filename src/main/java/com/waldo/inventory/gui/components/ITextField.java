@@ -139,6 +139,8 @@ public class ITextField extends JTextField implements FocusListener {
         this.getDocument().addDocumentListener(documentListener);
     }
 
+
+
     public void setError(String errorText) {
         if (errorText != null) {
             originalText = this.getText();

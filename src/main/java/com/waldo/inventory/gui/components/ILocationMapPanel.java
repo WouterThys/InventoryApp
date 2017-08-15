@@ -250,7 +250,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         setLayout(new BorderLayout());
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
-        add(customizeBtn, BorderLayout.SOUTH);
+        //add(customizeBtn, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),

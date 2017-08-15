@@ -24,6 +24,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     private int currentTabIndex = 0;
     private boolean canClose = true;
     private boolean partNumberChanged = false;
+    private boolean locationChanged = false;
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
@@ -118,12 +119,15 @@ public class EditItemDialog extends EditItemDialogLayout {
                 newPackage.save();
                 originalPackage = newPackage.createCopy();
             }
+            // Location
+            if (locationChanged) {
+                newItem.setLocationId(editItemStockPanel.getNewLocationId());
+                editItemStockPanel.locationSaved(newItem.getLocation());
+                locationChanged = false;
+            }
 
             newItem.save();
             originalItem = newItem.createCopy();
-
-            // Location
-            editItemStockPanel.locationSaved(newItem.getLocation());
 
             getButtonNeutral().setEnabled(false);
             // Don't call update for just one component
@@ -274,6 +278,9 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (editItemOrderPanel.getItemRefField().equals(component)) {
             partNumberChanged = editItemOrderPanel.checkChange();
             getButtonNeutral().setEnabled(partNumberChanged);
+        } else if (fieldName.equals("LocationTypeId") || fieldName.equals("LocationRow") || fieldName.equals("LocationCol")) {
+            locationChanged = editItemStockPanel.checkLocationChange();
+            getButtonNeutral().setEnabled(locationChanged);
         } else {
             getButtonNeutral().setEnabled(checkChange());
         }

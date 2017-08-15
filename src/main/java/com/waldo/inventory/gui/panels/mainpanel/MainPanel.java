@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -66,16 +68,35 @@ public class MainPanel extends MainPanelLayout {
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 1) {
+                    int row = itemTable.rowAtPoint(e.getPoint());
+                    int col = itemTable.columnAtPoint(e.getPoint());
+                    if (row >= 0 && col == 4) {
+                        Item selectedItem = application.getSelectedItem();
+                        if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
+                                && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
+                            showLocationPopup(selectedItem, e.getX(), e.getY());
+                        }
+                    }
+                } else if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
                     EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-//                    if (dialog.showDialog() == EditItemDialog.OK) {
-//                        dialog.getOrderItem().save();
-//                    }
                     dialog.showDialog();
                 }
             }
         });
+    }
+
+    private void showLocationPopup(Item item, int x, int y) {
+        JPopupMenu menu = new JPopupMenu ();
+
+        ILocationMapPanel panel = new ILocationMapPanel(application, null);
+        panel.updateComponents(item.getLocation().getLocationType());
+        //panel.setItems(SearchManager.sm().findItemsWithLocation(item.getLocationTypeId()));
+        panel.setHighlighted(item.getLocationRow(), item.getLocationCol(), ILocationMapPanel.GREEN);
+
+        menu.add(panel);
+        menu.show(itemTable, x - panel.getPreferredSize().width, y);
     }
 
     private void initListeners() {

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Location extends DbObject {
 
@@ -30,6 +31,17 @@ public class Location extends DbObject {
         } else {
             return "*" + "("+ Statics.Alphabet[row]+","+col+")";
         }
+    }
+
+    public String getPrettyString() {
+        if (getLocationType() != null && getLocationTypeId() > UNKNOWN_ID) {
+            String locType = getLocationType().getName();
+            if (locType.length() > 3) {
+                locType = locType.substring(0,3);
+            }
+            return locType + "/"+ Statics.Alphabet[row]+"/"+col;
+        }
+        return "";
     }
 
     @Override
@@ -65,6 +77,28 @@ public class Location extends DbObject {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean hasMatch(String searchTerm) {
+        if (super.hasMatch(searchTerm)) {
+            return true;
+        } else {
+            if (getLocationType() == null) {
+                return false;
+            }
+            // Local objects
+            if (getLocationType().getName().toUpperCase().contains(searchTerm)) {
+                return true;
+            } else if (Statics.Alphabet[row].toUpperCase().contains(searchTerm)) {
+                return true;
+            } else if (String.valueOf(col).toUpperCase().contains(searchTerm)) {
+                return true;
+            } else if (getPrettyString().toUpperCase().contains(searchTerm)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
