@@ -195,6 +195,7 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
+                if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
                 if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
                 if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
@@ -423,7 +424,10 @@ public class Item extends DbObject {
 
     public Location getLocation() {
         if (location == null) {
-            location = SearchManager.sm().findLocationById(locationId);
+            Location loc = SearchManager.sm().findLocationById(locationId);
+            if (loc != null) {
+                location = loc.createCopy();
+            }
         }
         return location;
     }
@@ -597,7 +601,7 @@ public class Item extends DbObject {
     }
 
     public void setLocationRow(String row) {
-        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+        if (getLocation() != null) {
             getLocation().setRow(Statics.indexOfAlphabet(row));
         }
     }
@@ -610,7 +614,7 @@ public class Item extends DbObject {
     }
 
     public void setLocationCol(int col) {
-        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+        if (getLocation() != null) {
             getLocation().setCol(col);
         }
     }
@@ -623,7 +627,7 @@ public class Item extends DbObject {
     }
 
     public void setLocationTypeId(long id) {
-        if (getLocation() != null && getLocation().getId() > UNKNOWN_ID) {
+        if (getLocation() != null) {
             getLocation().setLocationTypeId(id);
         }
     }

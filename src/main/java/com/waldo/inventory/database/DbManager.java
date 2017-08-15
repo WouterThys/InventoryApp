@@ -872,9 +872,10 @@ public class DbManager {
                     l.setCol(rs.getInt("col"));
 
                     l.setInserted(true);
-                    if (l.getId() != DbObject.UNKNOWN_ID) {
-                        locations.add(l);
+                    if (l.isUnknown()) {
+                        l.setCanBeSaved(false);
                     }
+                    locations.add(l);
                 }
             }
         } catch (SQLException e) {
@@ -885,7 +886,6 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
-        locations.add(0, Location.getUnknownLocation());
     }
 
 

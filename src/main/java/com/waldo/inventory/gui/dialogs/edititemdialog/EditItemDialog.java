@@ -1,10 +1,13 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
@@ -14,9 +17,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditItemDialog extends EditItemDialogLayout {
@@ -178,19 +184,24 @@ public class EditItemDialog extends EditItemDialogLayout {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    JLabel lbl = (JLabel)e.getSource();
+                    ILabel lbl = (ILabel)e.getSource();
+
+                    String initialPath = SettingsManager.settings().getFileSettings().getImgItemsPath();
 
                     JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-                    fileChooser.setCurrentDirectory(new File("./Images/ItemImages/"));
+                    fileChooser.setCurrentDirectory(new File(initialPath));
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
                     if (fileChooser.showDialog(EditItemDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                        newItem.setIconPath(fileChooser.getSelectedFile().getAbsolutePath());
-                        try {
-                            URL url = fileChooser.getSelectedFile().toURI().toURL();
-                            lbl.setIcon(imageResource.readImage(url, 48,48));
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
+                        String iconPath = fileChooser.getSelectedFile().getPath();
+                        if (!iconPath.isEmpty()) {
+                            newItem.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
+                            try {
+                                lbl.setIcon(iconPath, 48,48);
+                                onValueChanged(lbl, "iconPath", "", iconPath);
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
+                            }
                         }
                     }
                 }
