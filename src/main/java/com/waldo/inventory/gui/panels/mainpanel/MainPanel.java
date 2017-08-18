@@ -80,8 +80,10 @@ public class MainPanel extends MainPanelLayout {
                     }
                 } else if (e.getClickCount() == 2) {
                     Item selectedItem = application.getSelectedItem();
-                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-                    dialog.showDialog();
+                    if (selectedItem != null && !selectedItem.isUnknown()) {
+                        EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                        dialog.showDialog();
+                    }
                 }
             }
         });

@@ -222,13 +222,9 @@ public class EditItemDialog extends EditItemDialogLayout {
                 e -> {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
                         Category selectedCategory = (Category) e.getItem();
-                        if (componentPanel.getProductComboBox() != null) {
-                            componentPanel.getProductComboBox().setEnabled(selectedCategory.getId() > UNKNOWN_ID); // Bigger than "UNKNOWN"
-                            componentPanel.updateProductCbValues(selectedCategory.getId());
-                        }
-                        if (componentPanel.getTypeComboBox() != null) {
-                            componentPanel.getTypeComboBox().setEnabled(selectedCategory.getId() > 1);
-                        }
+                        componentPanel.getProductComboBox().setEnabled(!selectedCategory.isUnknown());
+                        componentPanel.updateProductCbValues(selectedCategory.getId());
+                        componentPanel.getTypeComboBox().setEnabled(false);
                     }
                 });
     }
@@ -236,10 +232,8 @@ public class EditItemDialog extends EditItemDialogLayout {
         componentPanel.setProductChangedAction(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Product selectedProduct = (Product) e.getItem();
-                if (componentPanel.getTypeComboBox() != null) {
-                    componentPanel.getTypeComboBox().setEnabled(selectedProduct.getId() > 1); // Bigger than "UNKNOWN"
-                    componentPanel.updateTypeCbValues(selectedProduct.getId());
-                }
+                componentPanel.getTypeComboBox().setEnabled(!selectedProduct.isUnknown());
+                componentPanel.updateTypeCbValues(selectedProduct.getId());
             }
         });
     }

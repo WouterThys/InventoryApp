@@ -37,7 +37,7 @@ public class IStatusStrip extends JPanel implements GuiInterface {
     public void setDbConnectionText(boolean connected, String ip, String dbName, String userName) {
         if (connected) {
             dbConnectionLabel.setText("Connected to " + dbName + " as " + userName + " at " + ip);
-            dbConnectionLabel.setForeground(Color.DARK_GRAY);
+            dbConnectionLabel.setForeground(Color.GRAY);
         } else {
             dbConnectionLabel.setText("Not connected..");
             dbConnectionLabel.setForeground(Color.RED);
@@ -45,13 +45,13 @@ public class IStatusStrip extends JPanel implements GuiInterface {
     }
 
     public void setMessage(String message) {
-        statusLabel.setForeground(Color.DARK_GRAY);
+        statusLabel.setForeground(Color.GRAY);
         statusLabel.setText(message);
         runTimer(MESSAGE_TIME);
     }
 
     public void holdMessage(String message) {
-        statusLabel.setForeground(Color.DARK_GRAY);
+        statusLabel.setForeground(Color.GRAY);
         statusLabel.setText(message);
     }
 
@@ -109,7 +109,17 @@ public class IStatusStrip extends JPanel implements GuiInterface {
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(3,10,3,20));
+
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0,2,2,2),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.GRAY, 1),
+                        BorderFactory.createEmptyBorder(3,10,3,20)
+                )
+        ));
+
+
+        //setBorder(BorderFactory.createEmptyBorder(3,10,3,20));
         add(statusLabel, BorderLayout.WEST);
         add(dbConnectionLabel, BorderLayout.EAST);
     }
