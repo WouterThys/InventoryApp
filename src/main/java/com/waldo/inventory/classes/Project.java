@@ -90,11 +90,9 @@ public class Project extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -102,10 +100,10 @@ public class Project extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onProjectChangedListenerList);
     }
 
     /*
@@ -230,22 +228,6 @@ public class Project extends DbObject {
     }
 
     public void recreateProjectStructure() {
-//        // Resolve types
-//        for (int i = errorList.size()-1; i >= 0; i--) {
-//            ProjectValidationError error = errorList.get(i);
-//            if (error.getInvalidType() != null) {
-//                error.getInvalidDirectory().removeProjectType(error.getInvalidType(), error.getInvalidFile());
-//            }
-//        }
-//
-//        // Resolve Directories
-//        for (int i = errorList.size()-1; i >= 0; i--) {
-//            ProjectValidationError error = errorList.get(i);
-//            if (error.getInvalidDirectory() != null) {
-//                removeDirectory(error.getInvalidDirectory());
-//            }
-//        }
-
         List<ProjectDirectory> newDirs = new ArrayList<>();
 
         for (int i = getProjectDirectories().size() - 1; i >= 0; i--) {
@@ -262,6 +244,16 @@ public class Project extends DbObject {
         }
     }
 
+    public boolean hasItems() {
+        for (ProjectDirectory dir : getProjectDirectories()) {
+            for (ProjectType type : dir.getProjectTypes()) {
+                if (type.hasParser()) {
+                    type.getProjectParser().getParsedData();
+                }
+            }
+        }
+        return false;
+    }
 
     /*
      *                  GETTERS - SETTERS

@@ -77,10 +77,13 @@ public class OrderPanel extends OrderPanelLayout {
 
                 orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
             } else {
-                if (failedItems == null) {
-                    failedItems = new HashMap<>();
-                }
-                failedItems.put("Item " + item.getName() + " was already in the list..", item);
+                OrderItem orderItem = order.findOrderItemInOrder(item.getId());
+                orderItem.setAmount(orderItem.getAmount() + 1);
+                orderItem.save();
+//                if (failedItems == null) {
+//                    failedItems = new HashMap<>();
+//                }
+//                failedItems.put("Item " + item.getName() + " was already in the list..", item);
             }
         }
         return failedItems;
@@ -290,12 +293,11 @@ public class OrderPanel extends OrderPanelLayout {
             public void onInserted(OrderItem orderItem) {
                 Order order = sm().findOrderById(orderItem.getOrderId());
                 order.addItemToList(orderItem);
-                // Update table if not current selected order
-                if (selectedOrder == null || selectedOrder.getId() != order.getId()) {
-                    selectedOrder = order;
-                    tableInitialize(selectedOrder);
-                }
+                // Update table
+                selectedOrder = order;
+                tableInitialize(selectedOrder);
                 treeSelectOrder(selectedOrder);
+
                 // Select and highlight in table
                 SwingUtilities.invokeLater(() -> {
                     selectedOrderItem = orderItem;

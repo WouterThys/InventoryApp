@@ -254,6 +254,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        splitPane.setOneTouchExpandable(true);
         //add(pane, BorderLayout.WEST);
         //add(panel, BorderLayout.CENTER);
         add(splitPane, BorderLayout.CENTER);

@@ -680,6 +680,14 @@ public class SearchManager {
         return null;
     }
 
+    public List<Project> findProjectsForItem(long id) {
+        List<Project> projects = new ArrayList<>();
+        for (Project p : db().getProjects()) {
+
+        }
+        return projects;
+    }
+
     public ProjectDirectory findProjectDirectoryById(long id) {
         for (ProjectDirectory p : db().getProjectDirectories()) {
             if (p.getId() == id) {

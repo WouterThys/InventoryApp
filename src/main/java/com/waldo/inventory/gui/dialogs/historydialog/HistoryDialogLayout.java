@@ -9,10 +9,9 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
-import com.waldo.inventory.gui.components.tablemodels.HistoryTableModel;
+import com.waldo.inventory.gui.components.tablemodels.IHistoryTableModel;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -26,13 +25,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
 
-    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private static final String[] columnNames = {"", "Name", "Date", "Go"};
-
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private HistoryTableModel tableModel;
+    private IHistoryTableModel tableModel;
     private ITable historyTable;
 
     /*
@@ -67,26 +63,26 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        tableModel = new HistoryTableModel();
+        tableModel = new IHistoryTableModel();
         historyTable = new ITable(tableModel);
         historyTable.setRowHeight(50);
 
-        Action go = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int modelRow = Integer.valueOf(e.getActionCommand());
-                Order order = (Order) tableModel.getValueAt(modelRow, 1);
-                // Go to orders tab
-                application.setSelectedTab(Application.TAB_ORDERS);
-                // Select order
-                application.getOrderPanel().treeSelectOrder(order);
-                // Select order item
-                application.getOrderPanel().tableSelectOrderItem(order.findOrderItemInOrder(historyItem.getId()));
-            }
-        };
-
-        ITableEditors.ButtonEditor buttonEditor = new ITableEditors.ButtonEditor(historyTable, go, 3);
-        buttonEditor.setMnemonic(KeyEvent.VK_ENTER);
+//        Action go = new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int modelRow = Integer.valueOf(e.getActionCommand());
+//                Order order = (Order) tableModel.getValueAt(modelRow, 1);
+//                // Go to orders tab
+//                application.setSelectedTab(Application.TAB_ORDERS);
+//                // Select order
+//                application.getOrderPanel().treeSelectOrder(order);
+//                // Select order item
+//                application.getOrderPanel().tableSelectOrderItem(order.findOrderItemInOrder(historyItem.getId()));
+//            }
+//        };
+//
+//        ITableEditors.ButtonEditor buttonEditor = new ITableEditors.ButtonEditor(historyTable, go, 3);
+//        buttonEditor.setMnemonic(KeyEvent.VK_ENTER);
 
     }
 
@@ -105,23 +101,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
 
         if (object != null) {
             historyItem = (Item) object;
-            //tableModel.setHistoryObjectList(findHistoryObjects(historyItem));
-
-            for (DbObject o : findHistoryObjects(historyItem)) {
-                switch (DbObject.getType(o)) {
-                    case DbObject.TYPE_ORDER:
-                        Order order = (Order) o;
-//                        tableModel.addRow(new Object[] {
-//                                imageResource.readImage("HistoryDialog.OrderIcon"),
-//                                order,
-//                                dateFormatLong.format(order.getDateModified()),
-//                                "Go"
-//                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
+            tableModel.setHistoryObjectList(findHistoryObjects(historyItem));
             try {
                 setTitleName(historyItem.getName());
                 URL url = new File(historyItem.getIconPath()).toURI().toURL();

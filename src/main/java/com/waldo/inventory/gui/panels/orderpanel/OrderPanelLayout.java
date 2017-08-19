@@ -456,9 +456,19 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (selectedOrder != null) {
                     int res = JOptionPane.showConfirmDialog(OrderPanelLayout.this, "Are you sure you want to delete \"" + selectedOrder.getName() + "\"?");
                     if (res == JOptionPane.OK_OPTION) {
-                        selectedOrder.delete(); // Cascaded delete will delete order items too
-                        selectedOrder = null;
-                        selectedOrderItem = null;
+                        SwingUtilities.invokeLater(() -> {
+                            List<OrderItem> orderItems = selectedOrder.getOrderItems();
+
+                            selectedOrder.delete(); // Cascaded delete will delete order items too
+                            selectedOrder = null;
+                            selectedOrderItem = null;
+
+                            // Do this after delete: items will not be updated in change listener for orders
+                            for (OrderItem orderItem : orderItems) {
+                                orderItem.getItem().setOrderState(Statics.ItemOrderStates.NONE);
+                                orderItem.getItem().save();
+                            }
+                        });
                     }
                 }
             }
@@ -523,6 +533,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        splitPane.setOneTouchExpandable(true);
         //add(pane, BorderLayout.WEST);
         //add(panel, BorderLayout.CENTER);
         add(splitPane, BorderLayout.CENTER);

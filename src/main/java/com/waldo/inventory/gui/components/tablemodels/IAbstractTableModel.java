@@ -52,7 +52,8 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
             if (!itemList.contains(t)) {
                 itemList.add(t);
                 int ndx = itemList.indexOf(t);
-                fireTableRowsInserted(ndx, ndx);
+                //fireTableRowsInserted(ndx, ndx);
+                fireTableDataChanged();
             }
         }
     }

@@ -10,15 +10,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryTableModel extends IAbstractTableModel {
+public class IHistoryTableModel extends IAbstractTableModel {
 
-    private static final String[] columnNames = {"", "Name", "Date", "Go"};
-    private static final Class[] columnClasses = {ImageIcon.class, String.class, String.class, JCheckBox.class};
+    private static final String[] columnNames = {"", "Name", "Date"}; //, "Go"};
+    private static final Class[] columnClasses = {ImageIcon.class, String.class, String.class};//, JCheckBox.class};
     private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     private List<DbObject> historyObjectList;
 
-    public HistoryTableModel() {
+    public IHistoryTableModel() {
         super(columnNames, columnClasses);
         historyObjectList = new ArrayList<>();
     }
@@ -69,7 +69,7 @@ public class HistoryTableModel extends IAbstractTableModel {
                         case 0: // Icon
                             return Application.imageResource.readImage("HistoryDialog.OrderIcon");
                         case 1: // Name
-                            return order.getName();
+                            return "Ordered in " + order.getName();
                         case 2: // Date
                             if (order.isOrdered()) {
                                 return dateFormatLong.format(order.getDateOrdered());

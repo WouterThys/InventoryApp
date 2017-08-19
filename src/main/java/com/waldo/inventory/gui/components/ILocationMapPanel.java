@@ -38,8 +38,10 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
 
     private LocationButton locBtn;
 
-    private int rows = 0;
-    private int cols = 0;
+    private LocationType locationType;
+    //private int rows = 0;
+    //private int cols = 0;
+
 
     /*
      *                  CONSTRUCTOR
@@ -176,7 +178,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     }
 
     public LocationButton buttonRightOf(LocationButton button) {
-        if (button.getCol() + button.getW() < cols) {
+        if (button.getCol() + button.getW() < locationType.getColumns()) {
             return findButton(button.getRow(), button.getCol()+button.getW());
         }
         return null;
@@ -190,7 +192,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     }
 
     public LocationButton buttonDownOf(LocationButton button) {
-        if (button.getCol() < rows-1) {
+        if (button.getCol() < locationType.getRows()-1) {
             return findButton(button.getRow() + 1, button.getCol());
         }
         return null;
@@ -238,7 +240,13 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         customizeBtn = new JButton("Custom");
         customizeBtn.addActionListener(e -> {
             enableAllButtons(false);
-            ILocationCustomDialog dialog = new ILocationCustomDialog(application, this, 0,0,rows, cols);
+            ILocationCustomDialog dialog = new ILocationCustomDialog(
+                    application,
+                    this,
+                    0,
+                    0,
+                    locationType.getRows(),
+                    locationType.getColumns());
             dialog.showDialog();
             enableAllButtons(true);
         });
@@ -250,7 +258,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         setLayout(new BorderLayout());
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
-        //add(customizeBtn, BorderLayout.SOUTH);
+        add(customizeBtn, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
@@ -264,14 +272,12 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         int r = 0;
         if (object != null) {
             LocationType type = (LocationType) object;
-            c = type.getColumns();
-            r = type.getRows();
-        }
 
-        if (c != cols || r != rows) {
-            cols = c;
-            rows = r;
-            createInitialPanel(rows, cols);
+            if (!type.equals(locationType)) {
+                createInitialPanel(type.getRows(), type.getColumns());
+            }
+
+            locationType = type;
         }
     }
 

@@ -229,7 +229,8 @@ public class Order extends DbObject {
                 setDateModified(new Date(System.currentTimeMillis()));
                 // Update the item of the order item
                 SwingUtilities.invokeLater(() -> {
-                    item.getItem().updateOrderState();
+                    item.getItem().setOrderState(Statics.ItemOrderStates.NONE);
+                    item.getItem().save();
                 });
             }
         }

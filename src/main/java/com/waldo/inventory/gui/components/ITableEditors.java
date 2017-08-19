@@ -450,13 +450,13 @@ public class ITableEditors {
         //
         public Component getTableCellRendererComponent(
                 JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            if (isSelected) {
-//                renderButton.setForeground(table.getSelectionForeground());
-//                renderButton.setBackground(table.getSelectionBackground());
-//            } else {
-//                renderButton.setForeground(table.getForeground());
-//                renderButton.setBackground(UIManager.getColor("Button.background"));
-//            }
+            if (isSelected) {
+                renderButton.setForeground(table.getSelectionForeground());
+                renderButton.setBackground(table.getSelectionBackground());
+            } else {
+                renderButton.setForeground(table.getForeground());
+                renderButton.setBackground(UIManager.getColor("Button.background"));
+            }
 
             if (hasFocus) {
                 renderButton.setBorder(focusBorder);
