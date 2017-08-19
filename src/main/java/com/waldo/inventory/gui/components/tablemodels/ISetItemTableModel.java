@@ -8,15 +8,11 @@ import java.util.List;
 public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Name", "Value"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Location"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
     public ISetItemTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
-    }
-
-    public ISetItemTableModel(List<SetItem> itemList) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, itemList);
     }
 
     @Override
@@ -33,6 +29,10 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
                     return setItem.getName();
                 case 2: // Value
                     return setItem.getValue();
+                case 3: // Locations
+                    if (setItem.getLocation() != null) {
+                        return setItem.getLocation().getPrettyString();
+                    }
             }
         }
 

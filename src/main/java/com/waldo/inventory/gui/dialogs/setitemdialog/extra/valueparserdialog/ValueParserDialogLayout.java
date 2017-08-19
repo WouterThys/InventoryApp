@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
@@ -17,10 +18,10 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    DefaultComboBoxModel<String> typeCbModel;
-    DefaultComboBoxModel<String> seriesCbModel;
-    DefaultComboBoxModel<String> minUnitCbModel;
-    DefaultComboBoxModel<String> maxUnitCbModel;
+    private DefaultComboBoxModel<String> typeCbModel;
+    private DefaultComboBoxModel<String> seriesCbModel;
+    private DefaultComboBoxModel<String> minUnitCbModel;
+    private DefaultComboBoxModel<String> maxUnitCbModel;
 
     JComboBox<String> typeCb;
     JComboBox<String> seriesCb;
@@ -30,12 +31,11 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     ITextField minTf;
     ITextField maxTf;
 
-    SpinnerModel spinnerModel;
     ISpinner valueSkipSp;
 
     ITextArea resultTa;
 
-    JButton parseBtn;
+    private JButton parseBtn;
 
      /*
      *                  VARIABLES
@@ -53,7 +53,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    void updateTypeCb() {
+    private void updateTypeCb() {
         typeCbModel.removeAllElements();
         typeCbModel.addElement(SetItemParser.R);
         typeCbModel.addElement(SetItemParser.C);
@@ -86,17 +86,17 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemParser.R:
                 for (int i = 2; i < 6; i++) {
-                    minUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
             case SetItemParser.C:
                 for (int i = 0; i < 6; i++) {
-                    minUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
             case SetItemParser.L:
                 for (int i = 0; i < 6; i++) {
-                    minUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
         }
@@ -108,17 +108,17 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemParser.R:
                 for (int i = 2; i < 6; i++) {
-                    maxUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
             case SetItemParser.C:
                 for (int i = 0; i < 6; i++) {
-                    maxUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
             case SetItemParser.L:
                 for (int i = 0; i < 6; i++) {
-                    maxUnitCbModel.addElement(SetItemParser.UNITS[i]);
+                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
         }
@@ -215,7 +215,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         resultTa.setLineWrap(true);
         resultTa.setWrapStyleWord(true);
 
-        spinnerModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
+        SpinnerModel spinnerModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
         valueSkipSp = new ISpinner(spinnerModel);
 
         parseBtn = new JButton("Parse");

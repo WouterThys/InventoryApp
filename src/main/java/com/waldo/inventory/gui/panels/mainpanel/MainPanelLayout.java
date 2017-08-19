@@ -71,10 +71,13 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     public void updateTable(DbObject selectedObject) {
+        java.util.List<Item> itemList = new ArrayList<>();
         if (selectedObject == null || selectedObject.getName().equals("All")) {
-            tableModel.setItemList(db().getItems());
+            itemList = db().getItems();
+            if (itemList.contains(Item.getUnknownItem())) {
+                itemList.remove(Item.getUnknownItem());
+            }
         } else {
-            java.util.List<Item> itemList = new ArrayList<>();
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
@@ -91,9 +94,8 @@ public abstract class MainPanelLayout extends JPanel implements
                 default:
                     break;
             }
-
-            tableModel.setItemList(itemList);
         }
+        tableModel.setItemList(itemList);
     }
 
     public void selectItem(Item selectedItem) {
@@ -123,16 +125,18 @@ public abstract class MainPanelLayout extends JPanel implements
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
         for (Category category : db().getCategories()) {
-            DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
-            rootNode.add(cNode);
+            if (!category.isUnknown()) {
+                DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
+                rootNode.add(cNode);
 
-            for (Product product : db().getProductListForCategory(category.getId())) {
-                DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(product, true);
-                cNode.add(pNode);
+                for (Product product : db().getProductListForCategory(category.getId())) {
+                    DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(product, true);
+                    cNode.add(pNode);
 
-                for (Type type : db().getTypeListForProduct(product.getId())) {
-                    DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(type, false);
-                    pNode.add(tNode);
+                    for (Type type : db().getTypeListForProduct(product.getId())) {
+                        DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(type, false);
+                        pNode.add(tNode);
+                    }
                 }
             }
         }

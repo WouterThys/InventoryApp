@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.ValueUtils.convertUnit;
+
 public abstract  class SetItemParser {
 
     public static final String R = "R";
@@ -28,11 +30,6 @@ public abstract  class SetItemParser {
     public static final String E96 = "_E96";
 
     public static final String[] R_SERIES = {E3, E6, E12, E24, E48, E96};
-
-    public static final String R_UNIT = "\u2126";
-    public static final String C_UNIT = "F";
-
-    public static final String[] UNITS = {"n", "µ", "m", "" ,"k", "M", "G"};
 
     protected File parserFile;
     protected List<SetItem> setItems;
@@ -57,19 +54,6 @@ public abstract  class SetItemParser {
     public abstract List<SetItem> crop(int value);
 
     public abstract String getUnit();
-
-    public double convertUnit(double value, String unit) {
-        switch (unit) {
-            case "n": value /= 1000000000; break;
-            case "µ": value /= 1000000; break;
-            case "m": value /= 1000; break;
-            case "": break;
-            case "k": value *= 1000; break;
-            case "M": value *= 1000000; break;
-            case "G": value *= 1000000000; break;
-        }
-        return value;
-    }
 
     public void setMinValue(double value, String unit) {
         minValue = convertUnit(value, unit);
@@ -102,37 +86,6 @@ public abstract  class SetItemParser {
         }
 
         return decades;
-    }
-
-    public double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
-    }
-
-    public String convertToPrettyString(double value) {
-        if (value < 1/1000000) {
-            value *= 1000000000;
-            return String.valueOf(round(value, 6)) + "n";
-        } else if (value < 1/1000) {
-            value *= 1000000;
-            return String.valueOf(round(value, 6)) + "µ";
-        } else if (value < 1) {
-            value *= 1000;
-            return String.valueOf(round(value, 6)) + "m";
-        } else if (value < 1000) {
-            return String.valueOf(round(value, 6)) + "";
-        } else if (value < 1000000) {
-            value /= 1000;
-            return String.valueOf(round(value, 6)) + "k";
-        } else if (value < 1000000000) {
-            value /= 1000000;
-            return String.valueOf(round(value, 6)) + "M";
-        } else {
-            return String.valueOf(round(value, 6)) + "?";
-        }
     }
 
 }

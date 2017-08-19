@@ -53,7 +53,7 @@ public class EditSetItemDialog extends IDialog {
     protected void onOK() {
         if (verify()) {
             setItem.setName(nameTextField.getText());
-            setItem.setValue(valueTextField.getText());
+            setItem.getValue().setValue(Double.valueOf(valueTextField.getText()));
             setItem.setAmount(spinnerModel.getNumber().intValue());
             super.onOK();
         }
@@ -86,7 +86,7 @@ public class EditSetItemDialog extends IDialog {
             setItem = (SetItem) object;
 
             nameTextField.setText(setItem.getName());
-            valueTextField.setText(setItem.getValue());
+            valueTextField.setText(String.valueOf(setItem.getValue().getValue()));
             spinnerModel.setValue(setItem.getAmount());
         }
     }

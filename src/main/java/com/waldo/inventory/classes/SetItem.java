@@ -16,20 +16,26 @@ public class SetItem extends DbObject {
     public static final String TABLE_NAME = "setitems";
 
     private int amount;
-    private String value;
+    private Value value;
     private long itemId;
     private Item item;
+    private long locationId = UNKNOWN_ID;
+    private Location location;
 
     public SetItem() {
         super(TABLE_NAME);
+        value = new Value();
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
         statement.setInt(ndx++, amount);
-        statement.setString(ndx++, getValue());
+        statement.setDouble(ndx++, getValue().getValue());
+        statement.setInt(ndx++, getValue().getMultiplier());
+        statement.setString(ndx++, getValue().getUnit());
         statement.setLong(ndx++, getItemId());
+        statement.setLong(ndx++, getLocationId());
         return ndx;
     }
 
@@ -46,11 +52,9 @@ public class SetItem extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onSetItemChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onSetItemChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -58,10 +62,10 @@ public class SetItem extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onSetItemChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onSetItemChangedListenerList);
     }
 
     @Override
@@ -69,9 +73,7 @@ public class SetItem extends DbObject {
         if (super.hasMatch(searchTerm)) {
             return true;
         } else {
-            if (getValue().toUpperCase().contains(getValue().toUpperCase())) {
-                return true;
-            }
+            // TODO
         }
         return false;
     }
@@ -84,9 +86,10 @@ public class SetItem extends DbObject {
                 return false;
             } else {
                 SetItem ref = (SetItem) obj;
-                if (!(ref.getValue().equals(getValue()))) return false;
+                if (!(ref.getValue() == getValue())) return false;
                 if (!(ref.getAmount() == getAmount())) return false;
                 if (!(ref.getItemId() == getItemId())) return false;
+                if (!(ref.getLocationId() == getLocationId())) return false;
             }
         }
         return result;
@@ -110,9 +113,8 @@ public class SetItem extends DbObject {
     public static class SetItemComparator implements Comparator<SetItem> {
         @Override
         public int compare(SetItem o1, SetItem o2) {
-            String s1 = StringUtils.leftPad(o1.getValue(), 6, "0");
-            String s2 = StringUtils.leftPad(o2.getValue(), 6, "0");
-            return s1.compareTo(s2);
+            // TODO
+            return 0;
         }
     }
 
@@ -124,14 +126,11 @@ public class SetItem extends DbObject {
         this.amount = amount;
     }
 
-    public String getValue() {
-        if (value == null) {
-            value = "";
-        }
+    public Value getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Value value) {
         this.value = value;
     }
 
@@ -149,5 +148,21 @@ public class SetItem extends DbObject {
             item = SearchManager.sm().findItemById(itemId);
         }
         return item;
+    }
+
+    public long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(long locationId) {
+        location = null;
+        this.locationId = locationId;
+    }
+
+    public Location getLocation() {
+        if (location == null) {
+            location = SearchManager.sm().findLocationById(locationId);
+        }
+        return location;
     }
 }

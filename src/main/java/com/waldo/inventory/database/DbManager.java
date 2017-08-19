@@ -1508,8 +1508,11 @@ public class DbManager {
                     si.setName(rs.getString("name"));
                     si.setIconPath(rs.getString("iconPath"));
                     si.setAmount(rs.getInt("amount"));
-                    si.setValue(rs.getString("value"));
+                    si.getValue().setValue(rs.getDouble("value"));
+                    si.getValue().setMultiplier(rs.getInt("multiplier"));
+                    si.getValue().setUnit(rs.getString("unit"));
                     si.setItemId(rs.getLong("itemId"));
+                    si.setLocationId(rs.getLong("locationId"));
 
                     si.setInserted(true);
                     setItems.add(si);

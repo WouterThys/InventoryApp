@@ -1,13 +1,19 @@
 package com.waldo.inventory.Utils.parser.SetItem;
 
+import com.waldo.inventory.Utils.ValueUtils;
 import com.waldo.inventory.classes.SetItem;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.classes.Value;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.waldo.inventory.Utils.Statics.Units;
 
 public class ResistorParser extends SetItemParser {
 
@@ -30,9 +36,6 @@ public class ResistorParser extends SetItemParser {
                     stringValues.addAll(Arrays.asList(split));
                 }
             }
-
-            System.out.println("Min value: " + getMinValue());
-            System.out.println("Max value: " + getMaxValue());
 
             setItems = createSetItemsFromValues(stringValues);
         } catch (Exception e) {
@@ -61,13 +64,13 @@ public class ResistorParser extends SetItemParser {
 
     @Override
     public String getUnit() {
-        return R_UNIT;
+        return Units.R_UNIT;
     }
 
     private List<SetItem> createSetItemsFromValues(List<String> stringValues) {
         List<SetItem> setitems = new ArrayList<>();
         List<Double> decades = decadeValues(getMinValue(), getMaxValue());
-        List<Double> values = new ArrayList<>();
+        List<Value> values = new ArrayList<>();
 
         for (double d : decades) {
             for (String value : stringValues) {
@@ -75,7 +78,27 @@ public class ResistorParser extends SetItemParser {
                     double eVal = Double.valueOf(value);
                     double rVal = d * eVal;
                     if (rVal >= getMinValue() && rVal <= getMaxValue()) {
-                        values.add(rVal);
+                        int multiplier = 0;
+                        double newD = d;
+                        if (d / 1000000 > 1) {
+                            multiplier = 6;
+                            newD /= 1000000;
+                        }
+                        else if (d / 1000 > 1) {
+                            multiplier = 3;
+                            newD /= 1000;
+                        }
+                        else if (d < 1 && d * 1000 > 1) {
+                            multiplier = -3;
+                            newD *= 1000;
+                        }
+                        else if (d < 1 && d * 1000000 > 1) {
+                            multiplier = 6;
+                            newD *= 1000000;
+                        }
+
+                        Value v = new Value(ValueUtils.round(eVal * newD, 2), multiplier, Units.R_UNIT);
+                        values.add(v);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -83,10 +106,10 @@ public class ResistorParser extends SetItemParser {
             }
         }
 
-        for (double val : values) {
+        for (Value val : values) {
             SetItem si = new SetItem();
             si.setName(R);
-            si.setValue(convertToPrettyString(val));
+            si.setValue(val);
             setitems.add(si);
         }
 

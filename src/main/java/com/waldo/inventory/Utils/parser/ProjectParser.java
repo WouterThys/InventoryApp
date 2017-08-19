@@ -42,23 +42,7 @@ public abstract class ProjectParser<P> {
         return parserName;
     }
 
-    public void setParserName(String parserName) {
-        this.parserName = parserName;
-    }
-
-    public File getFileToParse() {
-        return fileToParse;
-    }
-
-    public void setFileToParse(File fileToParse) {
-        this.fileToParse = fileToParse;
-    }
-
     public String getFileExtension() {
         return fileExtension;
-    }
-
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
     }
 }

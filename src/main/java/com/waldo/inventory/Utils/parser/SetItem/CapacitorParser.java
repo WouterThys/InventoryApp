@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.Units.C_UNIT;
+import static com.waldo.inventory.Utils.ValueUtils.convertToPrettyString;
+
 public class CapacitorParser extends SetItemParser{
 
     CapacitorParser() {}
@@ -86,7 +89,7 @@ public class CapacitorParser extends SetItemParser{
         for (double val : values) {
             SetItem si = new SetItem();
             si.setName(C);
-            si.setValue(convertToPrettyString(val));
+            // TODO si.setValue(convertToPrettyString(val));
             setitems.add(si);
         }
 

@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Statics {
 
@@ -32,5 +33,54 @@ public class Statics {
 
     public static int indexOfAlphabet(String letter) {
         return Arrays.asList(Alphabet).indexOf(letter);
+    }
+
+    public static class UnitMultipliers {
+        public static final int n = -9;
+        public static final int µ = -6;
+        public static final int m = -3;
+        public static final int _ = 1;
+        public static final int k = 3;
+        public static final int M = 6;
+        public static final int G = 9;
+
+        public static final String[] ALL = {"n", "µ", "m", " ", "k", "M", "G"};
+
+        public static String get(int i) {
+            return ALL[i];
+        }
+
+        public static String multiplierFor(int multiplier) {
+            switch (multiplier) {
+                case n: return "n";
+                case µ: return "µ";
+                case m: return "m";
+                case k: return "k";
+                case M: return "M";
+                case G: return "G";
+                default: return "";
+            }
+        }
+
+        public static int toMultiplier(String mul) {
+            switch (mul) {
+                case "n": return n;
+                case "µ": return µ;
+                case "m": return m;
+                case " ": return 0;
+                case "k": return k;
+                case "M": return M;
+                case "G": return G;
+                default:return 0;
+            }
+        }
+    }
+
+    public static class Units {
+        public static final String R_UNIT = "\u2126";
+        public static final String C_UNIT = "F";
+        public static final String L_UNIT = "H";
+
+        public static final String[] ALL = {R_UNIT, C_UNIT, L_UNIT};
     }
 }

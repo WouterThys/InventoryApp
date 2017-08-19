@@ -253,6 +253,15 @@ public class Item extends DbObject {
         }
     }
 
+    public static Item getUnknownItem() {
+        Item unknown = new Item();
+        unknown.setId(UNKNOWN_ID);
+        unknown.setName(UNKNOWN_NAME);
+        unknown.setCanBeSaved(false);
+        unknown.setInserted(true);
+        return unknown;
+    }
+
     @Override
     public void setName(String name) {
         super.setName(name);

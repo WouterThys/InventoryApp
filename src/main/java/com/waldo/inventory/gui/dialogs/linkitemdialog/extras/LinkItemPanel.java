@@ -107,7 +107,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                         footprintTf.setText("");
                     }
                 }
-                setValueTf.setText(match.getSetItem().getValue());
+                setValueTf.setText(match.getSetItem().getValue().toString());
             }
         } else {
             descriptionTf.clearText();

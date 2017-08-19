@@ -223,7 +223,7 @@ public class KcComponent extends DbObject {
         for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
             int match = 0;
             String setItemName = setItem.getName().toUpperCase();
-            String setItemValue = setItem.getValue().toUpperCase();
+            String setItemValue = setItem.getValue().toString().toUpperCase();
             String setItemFp = "";
 
             if (item.getDimensionType() != null) {

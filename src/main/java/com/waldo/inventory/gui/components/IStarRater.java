@@ -257,7 +257,7 @@ public class IStarRater extends JPanel {
                   Method getMethod = guiObject.getClass().getDeclaredMethod("get" + this.fieldName);
 
                   String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                  setMethod.invoke(guiObject, newVal);
+                  setMethod.invoke(guiObject, Float.valueOf(newVal));
 
                   editedListener.onValueChanged(IStarRater.this, this.fieldName, oldVal, newVal);
               }
