@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.gui.dialogs.graphsdialog.GraphsDialog;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
@@ -36,11 +37,14 @@ public class MenuBar extends JMenuBar {
         settingsItem.addActionListener(settingsSelected());
         JMenuItem logItem = new JMenuItem("Logs", imageResource.readImage("MenuBar.LogsIcon"));
         logItem.addActionListener(logSelected());
+        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readImage("Common.Chart", 16));
+        dbHistoryItem.addActionListener(dbHistorySelected());
         JMenuItem closeItem = new JMenuItem(("Exit"));
         closeItem.addActionListener(e -> Main.closeApplication(1));
 
         fileMenu.add(settingsItem);
         fileMenu.add(logItem);
+        fileMenu.add(dbHistoryItem);
         fileMenu.addSeparator();
         fileMenu.add(closeItem);
 
@@ -107,6 +111,13 @@ public class MenuBar extends JMenuBar {
     private ActionListener logSelected() {
         return e -> {
             LogsDialog dialog = new LogsDialog(application, "Logs");
+            dialog.showDialog();
+        };
+    }
+
+    private ActionListener dbHistorySelected() {
+        return e -> {
+            GraphsDialog dialog = new GraphsDialog(application, "Statistics");
             dialog.showDialog();
         };
     }

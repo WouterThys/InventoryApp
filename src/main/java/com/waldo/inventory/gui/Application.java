@@ -1,19 +1,16 @@
 package com.waldo.inventory.gui;
 
 import com.mysql.jdbc.MysqlErrorNumbers;
-import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
-import com.waldo.inventory.gui.dialogs.testdialog.TestDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
@@ -34,9 +31,9 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class Application extends JFrame implements ChangeListener, DbErrorListener {
 
     private static final LogManager LOG = LogManager.LOG(Application.class);
-    public static final int TAB_ITEMS = 0;
-    public static final int TAB_ORDERS = 1;
-    public static final int TAB_PROJECTS = 2;
+    static final int TAB_ITEMS = 0;
+    static final int TAB_ORDERS = 1;
+    private static final int TAB_PROJECTS = 2;
 
     public static String startUpPath;
     public static ResourceManager imageResource;
@@ -162,27 +159,19 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         return mainPanel.getSelectedItem();
     }
 
-    public OrderItem getSelectedOrderItem() {
+    OrderItem getSelectedOrderItem() {
         return orderPanel.getSelectedOrderItem();
-    }
-
-    public Project getSelectedProject() {
-        return projectPanel.getSelectedProject();
     }
 
     public void setSelectedItem(Item selectedItem) {
         mainPanel.selectItem(selectedItem);
     }
 
-    public void setSelectedOrderItem(OrderItem selectedOrderItem) {
+    void setSelectedOrderItem(OrderItem selectedOrderItem) {
         orderPanel.tableSelectOrderItem(selectedOrderItem);
     }
 
-    public void setSelectedProject(Project selectedProject) {
-        projectPanel.selectProject(selectedProject);
-    }
-
-    public void setTableItems(java.util.List<DbObject> foundObject) {
+    void setTableItems(java.util.List<DbObject> foundObject) {
         switch (tabbedPane.getSelectedIndex()) {
             case TAB_ITEMS:
                 if (foundObject == null) {
@@ -293,18 +282,13 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         updating = false;
     }
 
-    public void setSelectedTab(int tab) {
+    private void setSelectedTab(int tab) {
         tabbedPane.setSelectedIndex(tab);
     }
 
-    public int getSelectedTab() {
+    int getSelectedTab() {
         return tabbedPane.getSelectedIndex();
     }
-
-    public OrderPanel getOrderPanel() {
-        return orderPanel;
-    }
-
 
     public static List<ProjectParser> getParserList() {
         if (parserList == null) {
