@@ -1,6 +1,9 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.ValueUtils;
+
+import java.math.BigDecimal;
 
 public class Value {
 
@@ -15,6 +18,11 @@ public class Value {
         unit = "";
     }
 
+    public Value(BigDecimal bigDecimal) {
+        multiplier = bigDecimal.precision() - bigDecimal.scale() - 1;
+        value = bigDecimal.scaleByPowerOfTen(-multiplier).doubleValue();
+    }
+
     public Value (double value, int multiplier, String unit) {
         this.value = value;
         this.multiplier = multiplier;
@@ -24,9 +32,7 @@ public class Value {
 
     @Override
     public String toString() {
-        String valueTxt = String.valueOf(value);
-        String multiplierTxt = Statics.UnitMultipliers.multiplierFor(multiplier);
-        return valueTxt + multiplierTxt + unit;
+        return ValueUtils.convert(getRealValue(), 1) + unit;
     }
 
     public double getValue() {
@@ -49,7 +55,31 @@ public class Value {
         return unit;
     }
 
+    public BigDecimal getRealValue() {
+        return new BigDecimal(String.valueOf(value * Math.pow(10, multiplier)));
+    }
+
+    public String getDbUnit() {
+        if (unit == null) {
+            unit = "";
+        } else {
+            if (unit.equals(Statics.Units.R_UNIT)) {
+                return "O";
+            }
+        }
+
+        return unit;
+    }
+
     public void setUnit(String unit) {
-        this.unit = unit;
+        if (unit == null) {
+            this.unit = "";
+        } else {
+            if (unit.equals("O")) {
+                this.unit = Statics.Units.R_UNIT;
+            } else {
+                this.unit = unit;
+            }
+        }
     }
 }

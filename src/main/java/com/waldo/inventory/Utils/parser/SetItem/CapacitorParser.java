@@ -1,18 +1,21 @@
 package com.waldo.inventory.Utils.parser.SetItem;
 
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.ValueUtils;
 import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.Value;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.Statics.Units.C_UNIT;
-import static com.waldo.inventory.Utils.ValueUtils.convertToPrettyString;
 
 public class CapacitorParser extends SetItemParser{
 
@@ -69,28 +72,23 @@ public class CapacitorParser extends SetItemParser{
 
     private List<SetItem> createSetItemsFromValues(List<String> stringValues) {
         List<SetItem> setitems = new ArrayList<>();
-        List<Double> decades = decadeValues(getMinValue(), getMaxValue());
-        List<Double> values = new ArrayList<>();
 
-        for (double d : decades) {
-            for (String value : stringValues) {
-                try {
-                    double eVal = Double.valueOf(value);
-                    double rVal = d * eVal;
-                    if (rVal >= getMinValue() && rVal <= getMaxValue()) {
-                        values.add(rVal);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        List<BigDecimal> bigDecimals = toDecimalList(stringValues);
+        List<Integer> exponents = ValueUtils.exponents(getMinValue(), getMaxValue());
+
+        for (int exp : exponents) {
+            for (BigDecimal bd : bigDecimals) {
+                BigDecimal decimal = bd.scaleByPowerOfTen(exp);
+                if (decimal.compareTo(getMinValue()) >= 0 && decimal.compareTo(getMaxValue()) <= 0) {
+
+                    Value value = new Value(decimal);
+                    value.setUnit(Statics.Units.C_UNIT);
+                    SetItem setItem = new SetItem("C");
+                    setItem.setValue(value);
+
+                    setitems.add(setItem);
                 }
             }
-        }
-
-        for (double val : values) {
-            SetItem si = new SetItem();
-            si.setName(C);
-            // TODO si.setValue(convertToPrettyString(val));
-            setitems.add(si);
         }
 
         return setitems;

@@ -85,7 +85,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         minUnitCbModel.removeAllElements();
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemParser.R:
-                for (int i = 2; i < 6; i++) {
+                for (int i = 3; i < 10; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
@@ -107,7 +107,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         maxUnitCbModel.removeAllElements();
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemParser.R:
-                for (int i = 2; i < 6; i++) {
+                for (int i = 3; i < 10; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
@@ -220,7 +220,6 @@ public abstract class ValueParserDialogLayout extends IDialog implements
 
         parseBtn = new JButton("Parse");
         parseBtn.addActionListener(this);
-        //parseBtn.setEnabled(false);
     }
 
     @Override

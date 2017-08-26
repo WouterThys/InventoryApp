@@ -76,7 +76,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Table
-        tableModel = new ISetItemTableModel();
+        tableModel = new ISetItemTableModel(new SetItem.SetItemComparator());
         setItemTable = new ITable(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);

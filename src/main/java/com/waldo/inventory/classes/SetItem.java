@@ -27,14 +27,23 @@ public class SetItem extends DbObject {
         value = new Value();
     }
 
+    public SetItem(String name) {
+        super(TABLE_NAME);
+        setName(name);
+        value = new Value();
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
         statement.setInt(ndx++, amount);
         statement.setDouble(ndx++, getValue().getValue());
         statement.setInt(ndx++, getValue().getMultiplier());
-        statement.setString(ndx++, getValue().getUnit());
+        statement.setString(ndx++, getValue().getDbUnit());
         statement.setLong(ndx++, getItemId());
+        if (locationId < UNKNOWN_ID) {
+            locationId = UNKNOWN_ID;
+        }
         statement.setLong(ndx++, getLocationId());
         return ndx;
     }
@@ -113,7 +122,9 @@ public class SetItem extends DbObject {
     public static class SetItemComparator implements Comparator<SetItem> {
         @Override
         public int compare(SetItem o1, SetItem o2) {
-            // TODO
+            if (o1.getValue() != null && o2.getValue() != null) {
+                return o1.getValue().getRealValue().compareTo(o2.getValue().getRealValue());
+            }
             return 0;
         }
     }

@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,49 +69,25 @@ public class ResistorParser extends SetItemParser {
     }
 
     private List<SetItem> createSetItemsFromValues(List<String> stringValues) {
+
         List<SetItem> setitems = new ArrayList<>();
-        List<Double> decades = decadeValues(getMinValue(), getMaxValue());
-        List<Value> values = new ArrayList<>();
 
-        for (double d : decades) {
-            for (String value : stringValues) {
-                try {
-                    double eVal = Double.valueOf(value);
-                    double rVal = d * eVal;
-                    if (rVal >= getMinValue() && rVal <= getMaxValue()) {
-                        int multiplier = 0;
-                        double newD = d;
-                        if (d / 1000000 > 1) {
-                            multiplier = 6;
-                            newD /= 1000000;
-                        }
-                        else if (d / 1000 > 1) {
-                            multiplier = 3;
-                            newD /= 1000;
-                        }
-                        else if (d < 1 && d * 1000 > 1) {
-                            multiplier = -3;
-                            newD *= 1000;
-                        }
-                        else if (d < 1 && d * 1000000 > 1) {
-                            multiplier = 6;
-                            newD *= 1000000;
-                        }
+        List<BigDecimal> bigDecimals = toDecimalList(stringValues);
+        List<Integer> exponents = ValueUtils.exponents(getMinValue(), getMaxValue());
 
-                        Value v = new Value(ValueUtils.round(eVal * newD, 2), multiplier, Units.R_UNIT);
-                        values.add(v);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        for (int exp : exponents) {
+            for (BigDecimal bd : bigDecimals) {
+                BigDecimal decimal = bd.scaleByPowerOfTen(exp);
+                if (decimal.compareTo(getMinValue()) >= 0 && decimal.compareTo(getMaxValue()) <= 0) {
+
+                    Value value = new Value(decimal);
+                    value.setUnit(Units.R_UNIT);
+                    SetItem setItem = new SetItem("R");
+                    setItem.setValue(value);
+
+                    setitems.add(setItem);
                 }
             }
-        }
-
-        for (Value val : values) {
-            SetItem si = new SetItem();
-            si.setName(R);
-            si.setValue(val);
-            setitems.add(si);
         }
 
         return setitems;

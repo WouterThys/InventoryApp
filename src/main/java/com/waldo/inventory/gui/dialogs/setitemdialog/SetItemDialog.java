@@ -161,7 +161,10 @@ public class SetItemDialog extends SetItemDialogLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Add set item", new SetItem());
+        SetItem setItem = new SetItem();
+        setItem.setLocationId(item.getLocationId());
+        setItem.setItemId(item.getId());
+        EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Add set item", setItem);
         if (itemDialog.showDialog() == IDialog.OK) {
             SetItem si = itemDialog.getSetItem();
 

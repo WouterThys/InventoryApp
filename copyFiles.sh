@@ -13,5 +13,12 @@ cp -ar /home/waldo/Documents/Geeken/Projects/InventoryApp/Images /opt/Inventory/
 echo "Copy 'settings.db' to /opt/Inventory"
 cp -ar /home/waldo/Documents/Geeken/Projects/InventoryApp/settings.db /opt/Inventory/
 
+echo "Done copying local files"
+echo "Trying to secure copy to laptop"
+echo "zip inventory to Inventory.zip"
+
+zip /opt/Inventory/Inventory.zip /opt/Inventory/* 
+echo "try to scp"
+scp /opt/Inventory/Inventory.zip wouter@192.168.0.250:~/Desktop
 
 echo "Done!"

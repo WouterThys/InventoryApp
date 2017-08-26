@@ -1,8 +1,11 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 
@@ -17,7 +20,7 @@ import java.util.List;
 public class ILocationMapPanel extends JPanel implements GuiInterface, ILocationCustomDialog.LocationMapToolbarListener {
 
     public interface LocationClickListener {
-        void onClick(ActionEvent e, List<Item> items, int row, int column);
+        void onClick(ActionEvent e, List<DbObject> items, int row, int column);
     }
 
     public static final Color GREEN = new Color(19,182,46);
@@ -121,12 +124,25 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
 
     public void setItems(List<Item> items) {
         for(Item item : items) {
-            if (item.getLocation() != null) {
-                LocationButton btn = setHighlighted(item.getLocation().getRow(), item.getLocation().getCol(), YELLOW);
-                if (btn != null) {
-                    btn.addItem(item);
+            if (item.isSet()) {
+                for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
+                    if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
+                        LocationButton btn = setHighlighted(
+                                setItem.getLocation().getRow(),
+                                setItem.getLocation().getCol(),
+                                YELLOW);
+                        if (btn != null) {
+                            btn.addItem(setItem);
+                        }
+                    }
                 }
-
+            } else {
+                if (item.getLocation() != null) {
+                    LocationButton btn = setHighlighted(item.getLocation().getRow(), item.getLocation().getCol(), YELLOW);
+                    if (btn != null) {
+                        btn.addItem(item);
+                    }
+                }
             }
         }
     }
@@ -150,7 +166,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         return button;
     }
 
-    public void setHighlighted(LocationButton button, Color color) {
+    private void setHighlighted(LocationButton button, Color color) {
         if (button != null) {
             if (color != null) {
                 button.setBackground(color);
@@ -250,7 +266,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
             dialog.showDialog();
             enableAllButtons(true);
         });
-
     }
 
     @Override
@@ -258,7 +273,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         setLayout(new BorderLayout());
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
-        add(customizeBtn, BorderLayout.SOUTH);
+        //add(customizeBtn, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
@@ -268,8 +283,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
 
     @Override
     public void updateComponents(Object object) {
-        int c = 0;
-        int r = 0;
         if (object != null) {
             LocationType type = (LocationType) object;
 
@@ -277,7 +290,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
                 createInitialPanel(type.getRows(), type.getColumns());
             }
 
-            locationType = type;
+            locationType = type.createCopy();
         }
     }
 
@@ -320,7 +333,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
 
     private class LocationButton extends JButton {
 
-        private List<Item> items;
+        private List<DbObject> items;
         private JPopupMenu popupMenu;
 
         private int r;
@@ -347,13 +360,19 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
             return getName() + "(" + r +"," + c + ")";
         }
 
-        public List<Item> getItems() {
+        public List<DbObject> getItems() {
             return items;
         }
 
         public void addItem(Item item) {
             items.add(item);
             JMenuItem menu = new JMenuItem(item.getName());
+            popupMenu.add(menu);
+        }
+
+        public void addItem(SetItem setItem) {
+            items.add(setItem);
+            JMenuItem menu = new JMenuItem(setItem.toString());
             popupMenu.add(menu);
         }
 

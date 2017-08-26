@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.components.tablemodels;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.components.ILabel;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
@@ -11,8 +12,8 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Location"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
-    public ISetItemTableModel() {
-        super(COLUMN_NAMES, COLUMN_CLASSES);
+    public ISetItemTableModel(Comparator<SetItem> comparator) {
+        super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
     }
 
     @Override
