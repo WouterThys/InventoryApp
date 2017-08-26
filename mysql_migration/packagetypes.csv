@@ -12,6 +12,6 @@ The package may be through-hole mounted to a printed circuit board or inserted i
 6,PSOP,Plastic Small-Outline Package
 7,SSOP,"SOIC variant.
 Shrink small outline package (SSOP) chips have ""gull wing"" leads protruding from the two long sides, and a lead spacing of 0.0256 inches (0.65mm). 0.5mm lead spacing is less common, but not rare."
-8,TSOP,"Thin Small Outline Package, or TSOP is a type of surface mount IC package. They are very low-profile (about 1mm) and have tight lead spacing (as low as 0.5mm)."
+8,TSOP,"Thin Small Outline Package, or TSOP is a dbAction of surface mount IC package. They are very low-profile (about 1mm) and have tight lead spacing (as low as 0.5mm)."
 9,TSSOP,Thin Shrink Small Outline Package
 10,SMD,

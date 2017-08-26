@@ -44,6 +44,7 @@ public abstract class DbObject {
     public static final int TYPE_KC_ITEM_LINK = 31;
 
     public static final int TYPE_LOG = 100;
+    public static final int TYPE_DB_HISTORY = 101;
 
     protected String TABLE_NAME;
     protected boolean isInserted = false;
@@ -94,6 +95,7 @@ public abstract class DbObject {
         if (dbObject instanceof KcItemLink) return TYPE_KC_ITEM_LINK;
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
+        if (dbObject instanceof DbHistory) return TYPE_DB_HISTORY;
 
         return TYPE_UNKNOWN;
     }

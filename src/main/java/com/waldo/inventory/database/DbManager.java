@@ -102,6 +102,7 @@ public class DbManager {
     private List<KcComponent> kcComponents;
     private List<KcItemLink> kcItemLinks;
     private List<Log> logs;
+    private List<DbHistory> dbHistoryList;
 
     private DbManager() {}
 
@@ -1689,8 +1690,8 @@ public class DbManager {
 
 
     /*
-   *                  LOGS
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    *                  LOGS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<Log> getLogs()    {
         if (logs == null) {
             updateLogs();
@@ -1732,6 +1733,52 @@ public class DbManager {
             }
         }
     }
+
+    /*
+    *                  DB HISTORY
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<DbHistory> getDbHistory() {
+        if (dbHistoryList == null) {
+            updateDbHistoryList();
+        }
+        return dbHistoryList;
+    }
+
+    private void updateDbHistoryList() {
+        dbHistoryList = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
+        Status().setMessage("Fetching db history from DB");
+        DbHistory dbh = null;
+        String sql = scriptResource.readString(DbHistory.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    dbh = new DbHistory();
+                    dbh.setId(rs.getLong("id"));
+                    dbh.setDate(rs.getTimestamp("date"));
+                    dbh.setDbAction(rs.getInt("dbAction"));
+                    dbh.setDbObjectType(rs.getInt("dbObjectType"));
+                    dbh.setDbObjectId(rs.getLong("dbObjectId"));
+
+                    dbh.setInserted(true);
+                    dbHistoryList.add(dbh);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(dbh, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
 
     /*
     *                  OTHER
@@ -1910,6 +1957,16 @@ public class DbManager {
 
             // Listeners
             dbo.tableChanged(OBJECT_INSERT);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_INSERT, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
@@ -1919,6 +1976,16 @@ public class DbManager {
 
             // Listeners
             dbo.tableChanged(OBJECT_UPDATE);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_UPDATE, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         private void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
@@ -1928,6 +1995,16 @@ public class DbManager {
 
             // Listeners
             dbo.tableChanged(OBJECT_DELETE);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_DELETE, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
@@ -1937,6 +2014,7 @@ public class DbManager {
                 DbQueueObject queueObject = workList.take();
                 if (queueObject != null) {
                     try (Connection connection = DbManager.getConnection()) {
+                        // Open db
                         try (PreparedStatement stmt = connection.prepareStatement("BEGIN;")) {
                             stmt.execute();
                         }
@@ -1990,6 +2068,7 @@ public class DbManager {
                                     hasMoreWork = false;
                                 }
                             } while (hasMoreWork && keepRunning);
+                            // Close db
                             try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
                                 stmt.execute();
                             }

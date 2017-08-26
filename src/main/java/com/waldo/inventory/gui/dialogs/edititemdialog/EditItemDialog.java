@@ -16,14 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.classes.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.SearchManager.sm;
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
@@ -122,8 +116,10 @@ public class EditItemDialog extends EditItemDialogLayout {
             }
             // Package
             if (newPackage != null) {
-                newPackage.save();
-                originalPackage = newPackage.createCopy();
+                if (!newPackage.equals(originalPackage)) {
+                    newPackage.save();
+                    originalPackage = newPackage.createCopy();
+                }
             }
             // Location
             if (locationChanged) {

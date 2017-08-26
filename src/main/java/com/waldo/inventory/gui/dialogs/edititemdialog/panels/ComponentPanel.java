@@ -163,7 +163,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
-    private void createProductTypeId() {
+    private void createPackageTypeCb() {
         DefaultComboBoxModel<PackageType> packageTypeCbModel = new DefaultComboBoxModel<>();
         packageTypeCbModel.addElement((PackageType.createDummyPackageType()));
         for (PackageType pt : db().getPackageTypes()) {
@@ -276,7 +276,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private void initializeDetailsComponents() {
         // Package
-        createProductTypeId();
+        createPackageTypeCb();
         SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         packagePinsSp = new ISpinner(spinnerModel);
         packagePinsSp.addEditedListener(editedListener, "pins");
@@ -593,6 +593,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             } else {
                 packageTypeComboBox.setSelectedIndex(0);
             }
+            updateDimensionPanel();
             packagePinsSp.setValue(newItem.getPackage().getPins());
             packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
             packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
