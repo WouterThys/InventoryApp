@@ -8,10 +8,12 @@ import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -142,6 +144,30 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
                     if (btn != null) {
                         btn.addItem(item);
                     }
+                }
+            }
+        }
+    }
+
+    public void setHighlighted(Item item, Color color) {
+        boolean isSet = item.isSet();
+        boolean hasLocation = item.getLocationId() > DbObject.UNKNOWN_ID;
+        boolean setHasLocations = false;
+        if (isSet && hasLocation) {
+            for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
+                if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
+                    setHasLocations = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isSet && hasLocation) {
+            setHighlighted(item.getLocationRow(), item.getLocationCol(), color);
+        } else if (isSet && setHasLocations) {
+            for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
+                if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
+                    setHighlighted(setItem.getLocation().getRow(), setItem.getLocation().getCol(), color);
                 }
             }
         }
@@ -367,12 +393,20 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         public void addItem(Item item) {
             items.add(item);
             JMenuItem menu = new JMenuItem(item.getName());
+            menu.addActionListener(e -> {
+                EditItemDialog dialog = new EditItemDialog(application, "Item", item);
+                dialog.showDialog();
+            });
             popupMenu.add(menu);
         }
 
         public void addItem(SetItem setItem) {
             items.add(setItem);
             JMenuItem menu = new JMenuItem(setItem.toString());
+            menu.addActionListener(e -> {
+                EditItemDialog dialog = new EditItemDialog(application, "Item", setItem.getItem());
+                dialog.showDialog();
+            });
             popupMenu.add(menu);
         }
 

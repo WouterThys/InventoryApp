@@ -95,7 +95,7 @@ public class MainPanel extends MainPanelLayout {
         ILocationMapPanel panel = new ILocationMapPanel(application, null);
         panel.updateComponents(item.getLocation().getLocationType());
         //panel.setItems(SearchManager.sm().findItemsWithLocation(item.getLocationTypeId()));
-        panel.setHighlighted(item.getLocationRow(), item.getLocationCol(), ILocationMapPanel.GREEN);
+        panel.setHighlighted(item, ILocationMapPanel.GREEN);
 
         menu.add(panel);
         menu.show(itemTable, x - panel.getPreferredSize().width, y);
