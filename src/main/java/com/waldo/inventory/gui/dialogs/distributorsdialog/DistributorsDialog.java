@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -41,7 +40,15 @@ public class DistributorsDialog extends DistributorsDialogLayout {
 
         db().addOnDistributorChangedListener(this);
 
-        updateComponents(null);
+        updateWithFirstDistributor();
+    }
+
+    private void updateWithFirstDistributor() {
+        if (db().getDistributors().size() > 0) {
+            updateComponents(db().getDistributors().get(0));
+        } else {
+            updateComponents(null);
+        }
     }
 
     @Override
@@ -204,7 +211,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
 
     @Override
     public void onDeleted(Distributor object) {
-        updateComponents(null);
+        updateWithFirstDistributor();
     }
 
     @Override
@@ -218,7 +225,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         selectedDistributor = null;
         originalDistributor = null;
         clearDetails();
-        updateComponents(null);
+        updateWithFirstDistributor();
     }
 
     @Override
