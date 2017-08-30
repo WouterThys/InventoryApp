@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 
 import static com.waldo.inventory.database.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static org.eclipse.jetty.io.nio.SelectorManager.LOG;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
@@ -113,8 +115,12 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     private void updateIcon(Item item) {
-        Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-        iconLabel.setIcon(path.toString());
+        try {
+            Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+            iconLabel.setIcon(path.toString());
+        } catch (Exception e) {
+            Status().setError("Failed to set item icon");
+        }
     }
 
     private void updateTextFields(Item item) {

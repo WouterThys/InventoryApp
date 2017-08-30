@@ -314,10 +314,14 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
                     }
                 } else {
                     newItem.setLocationId(DbObject.UNKNOWN_ID);
-                    newItem.save();
+                    if (newItem.getId() > 0) {
+                        newItem.save();
+                    }
                 }
-                originalLocation = newItem.getLocation().createCopy();
-                locationTypeCb.setSelectedItem(originalLocation.getLocationType());
+                if (newItem.getLocation() != null) {
+                    originalLocation = newItem.getLocation().createCopy();
+
+                }
             }
         } finally {
             application.endWait();

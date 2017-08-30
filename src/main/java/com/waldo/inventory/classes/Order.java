@@ -64,7 +64,11 @@ public class Order extends DbObject {
             if (isUnknown() || !canBeSaved()) {
                 return super.toString();
             } else {
-                return dateModified.toString() + " - " + super.toString();
+                if (dateModified != null) {
+                    return dateModified.toString() + " - " + super.toString();
+                } else {
+                    return "";
+                }
             }
         }
     }

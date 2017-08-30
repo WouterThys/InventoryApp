@@ -166,7 +166,9 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         for (Distributor d : db().getDistributors()) {
             distributorCbModel.addElement(d);
         }
-        distributorCb.setSelectedIndex(0);
+        if (distributorCbModel.getSize() > 0) {
+            distributorCb.setSelectedIndex(0);
+        }
     }
 
     public ITextField getItemRefField() {
