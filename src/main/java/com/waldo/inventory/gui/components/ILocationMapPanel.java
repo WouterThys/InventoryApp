@@ -1,19 +1,16 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -37,15 +34,12 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private List<LocationButton> buttonList = new ArrayList<>();
+    private List<ILocationButton> buttonList = new ArrayList<>();
     private Application application;
     private LocationClickListener locationClickListener;
 
-    private LocationButton locBtn;
-
+    private ILocationButton locBtn;
     private LocationType locationType;
-    //private int rows = 0;
-    //private int cols = 0;
 
 
     /*
@@ -71,7 +65,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         gbc.fill = GridBagConstraints.HORIZONTAL;
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
-                LocationButton button = new LocationButton(r, c);
+                ILocationButton button = new ILocationButton(r, c);
                 final int finalR = r;
                 final int finalC = c;
                 button.addActionListener(e -> {
@@ -98,25 +92,71 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         buttonPanel.repaint();
     }
 
-    private void drawButtons(List<LocationButton> locationButtons) {
+    public void drawButtons(List<ILocationButton> locationButtons) {
         buttonPanel.removeAll();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        for (LocationButton lb : locationButtons) {
-            gbc.gridx = lb.getCol();
-            gbc.gridy = lb.getRow();
-            gbc.gridwidth = lb.getW();
-            gbc.gridheight = lb.getH();
-            buttonPanel.add(lb, gbc);
+
+        GridBagConstraints btnGbc = new GridBagConstraints();
+        btnGbc.insets = new Insets(2,2,2,2);
+        btnGbc.fill = GridBagConstraints.HORIZONTAL;
+        btnGbc.weightx = 1;
+        btnGbc.gridy = 0;
+
+        GridBagConstraints pnlGbc = new GridBagConstraints();
+        pnlGbc.fill = GridBagConstraints.HORIZONTAL;
+        btnGbc.gridx = 0;
+
+        int r = 0;
+        List<ILocationButton> temp = new ArrayList<>(locationButtons);
+        while (temp.size() > 0) {
+            List<ILocationButton> btns = locationButtonsForRow(r, temp);
+
+            JPanel rowPanel = new JPanel(new GridBagLayout());
+            for (ILocationButton btn : btns) {
+                btnGbc.gridx = btn.getCol();
+                rowPanel.add(btn, btnGbc);
+            }
+            pnlGbc.gridy = r;
+            buttonPanel.add(rowPanel, pnlGbc);
+
+            temp.removeAll(btns);
+            r++;
         }
+
 
         buttonPanel.revalidate();
         buttonPanel.repaint();
     }
 
-    private LocationButton findButton(int row, int col) {
-        for (LocationButton button : buttonList) {
+    private List<ILocationButton> locationButtonsForRow(int row, List<ILocationButton> locationButtons) {
+        List<ILocationButton> buttons = new ArrayList<>();
+            for (ILocationButton btn : locationButtons) {
+                if (btn.getRow() == row) {
+                    buttons.add(btn);
+                }
+            }
+
+        return buttons;
+    }
+
+//    public void drawButtons(List<ILocationButton> locationButtons) {
+//        buttonPanel.removeAll();
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(2,2,2,2);
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        for (ILocationButton lb : locationButtons) {
+//            gbc.gridx = lb.getCol();
+//            gbc.gridy = lb.getRow();
+//            gbc.gridwidth = lb.getW();
+//            gbc.gridheight = lb.getH();
+//            buttonPanel.add(lb, gbc);
+//        }
+//
+//        buttonPanel.revalidate();
+//        buttonPanel.repaint();
+//    }
+
+    private ILocationButton findButton(int row, int col) {
+        for (ILocationButton button : buttonList) {
             if (button.getRow() == row && button.getCol() == col) {
                 return button;
             }
@@ -129,20 +169,20 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
             if (item.isSet()) {
                 for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
                     if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
-                        LocationButton btn = setHighlighted(
+                        ILocationButton btn = setHighlighted(
                                 setItem.getLocation().getRow(),
                                 setItem.getLocation().getCol(),
                                 YELLOW);
                         if (btn != null) {
-                            btn.addItem(setItem);
+                            btn.addItem(application, setItem);
                         }
                     }
                 }
             } else {
                 if (item.getLocation() != null) {
-                    LocationButton btn = setHighlighted(item.getLocation().getRow(), item.getLocation().getCol(), YELLOW);
+                    ILocationButton btn = setHighlighted(item.getLocation().getRow(), item.getLocation().getCol(), YELLOW);
                     if (btn != null) {
-                        btn.addItem(item);
+                        btn.addItem(application, item);
                     }
                 }
             }
@@ -173,8 +213,8 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         }
     }
 
-    public LocationButton setHighlighted(int row, int col, Color color) {
-        LocationButton button = null;
+    public ILocationButton setHighlighted(int row, int col, Color color) {
+        ILocationButton button = null;
         if (row >= 0 && col >= 0) {
             button = findButton(row, col);
             if (button != null) {
@@ -192,7 +232,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         return button;
     }
 
-    private void setHighlighted(LocationButton button, Color color) {
+    private void setHighlighted(ILocationButton button, Color color) {
         if (button != null) {
             if (color != null) {
                 button.setBackground(color);
@@ -207,33 +247,33 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     }
 
     public void enableAllButtons(boolean enabled) {
-        for (LocationButton button : buttonList) {
+        for (ILocationButton button : buttonList) {
             button.setEnabled(enabled);
         }
     }
 
-    public LocationButton buttonLeftOf(LocationButton button) {
+    public ILocationButton buttonLeftOf(ILocationButton button) {
         if (button.getCol() > 0) {
             return findButton(button.getRow(), button.getCol()-1);
         }
         return null;
     }
 
-    public LocationButton buttonRightOf(LocationButton button) {
+    public ILocationButton buttonRightOf(ILocationButton button) {
         if (button.getCol() + button.getW() < locationType.getColumns()) {
             return findButton(button.getRow(), button.getCol()+button.getW());
         }
         return null;
     }
 
-    public LocationButton buttonUpOf(LocationButton button) {
+    public ILocationButton buttonUpOf(ILocationButton button) {
         if (button.getRow() > 0) {
             return findButton(button.getRow() - 1, button.getCol());
         }
         return null;
     }
 
-    public LocationButton buttonDownOf(LocationButton button) {
+    public ILocationButton buttonDownOf(ILocationButton button) {
         if (button.getCol() < locationType.getRows()-1) {
             return findButton(button.getRow() + 1, button.getCol());
         }
@@ -245,7 +285,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
             if (locBtn.getW() != width) {
                 if (width > locBtn.getW()) {
                     while (width > locBtn.getW()) {
-                        LocationButton rightBtn = buttonRightOf(locBtn);
+                        ILocationButton rightBtn = buttonRightOf(locBtn);
                         if (rightBtn != null) {
                             buttonList.remove(rightBtn);
                             locBtn.setW(locBtn.getW() + 1);
@@ -257,7 +297,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
                 } else {
                     while (locBtn.getW() != width && locBtn.getW() > 0) {
 
-                        LocationButton fillBtn = new LocationButton(locBtn.getRow(), locBtn.getW() + locBtn.getCol() - 1);
+                        ILocationButton fillBtn = new ILocationButton(locBtn.getRow(), locBtn.getW() + locBtn.getCol() - 1);
                         fillBtn.setEnabled(false);
                         buttonList.add(fillBtn);
 
@@ -355,105 +395,5 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     @Override
     public int onHeightChanged(int height) {
         return height;
-    }
-
-    private class LocationButton extends JButton {
-
-        private List<DbObject> items;
-        private JPopupMenu popupMenu;
-
-        private int r;
-        private int c;
-        private int w;
-        private int h;
-
-        LocationButton(int row, int col) {
-            super();
-
-            this.r = row;
-            this.c = col;
-
-            w = 1;
-            h = 1;
-
-            items = new ArrayList<>();
-            popupMenu = new JPopupMenu();
-            updateName();
-        }
-
-        @Override
-        public String toString() {
-            return getName() + "(" + r +"," + c + ")";
-        }
-
-        public List<DbObject> getItems() {
-            return items;
-        }
-
-        public void addItem(Item item) {
-            items.add(item);
-            JMenuItem menu = new JMenuItem(item.getName());
-            menu.addActionListener(e -> {
-                EditItemDialog dialog = new EditItemDialog(application, "Item", item);
-                dialog.showDialog();
-            });
-            popupMenu.add(menu);
-        }
-
-        public void addItem(SetItem setItem) {
-            items.add(setItem);
-            JMenuItem menu = new JMenuItem(setItem.toString());
-            menu.addActionListener(e -> {
-                EditItemDialog dialog = new EditItemDialog(application, "Item", setItem.getItem());
-                dialog.showDialog();
-            });
-            popupMenu.add(menu);
-        }
-
-        public void showPopup(MouseEvent e) {
-            if (items.size() > 0) {
-                Component component = e.getComponent();
-                popupMenu.show(component, 0, component.getHeight());
-            }
-        }
-
-        public int getRow() {
-            return r;
-        }
-
-        public void setRow(int row) {
-            this.r = row;
-            updateName();
-        }
-
-        public int getCol() {
-            return c;
-        }
-
-        public void setCol(int col) {
-            this.c = col;
-        }
-
-        public int getW() {
-            return w;
-        }
-
-        public void setW(int width) {
-            this.w = width;
-        }
-
-        public int getH() {
-            return h;
-        }
-
-        public void setH(int height) {
-            this.h = height;
-        }
-
-        private void updateName() {
-            String name = Statics.Alphabet[r] + String.valueOf(c);
-            setName(name);
-            setText(name);
-        }
     }
 }

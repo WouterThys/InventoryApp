@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
@@ -23,15 +24,18 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
+        ActionListener,
         IEditedListener{
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<LocationType> locationTypeList;
-    DefaultListModel<LocationType> locationTypeModel;
+    private DefaultListModel<LocationType> locationTypeModel;
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
+
+    JButton detailCustomBtn;
 
     ITextField detailName;
     ISpinner detailRowsSpinner;
@@ -56,7 +60,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    void updateEnabledComponents() {
+    private void updateEnabledComponents() {
         toolBar.setEditActionEnabled(selectedLocationType != null);
         toolBar.setDeleteActionEnabled(selectedLocationType != null);
     }
@@ -144,6 +148,14 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         gbc.anchor = GridBagConstraints.EAST;
         northPanel.add(detailColumnsSpinner, gbc);
 
+        // - Custom btn
+        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridy = 3; gbc.weighty = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        northPanel.add(detailCustomBtn, gbc);
+
         // Add
         panel.add(northPanel, BorderLayout.NORTH);
         panel.setBorder(titledBorder);
@@ -187,6 +199,9 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         detailColumnsSpinner = new ISpinner(spinnerNumberModel);
         detailColumnsSpinner.setPreferredSize(new Dimension(60, 30));
         detailColumnsSpinner.addEditedListener(this, "columns");
+
+        detailCustomBtn = new JButton("Custom");
+        detailCustomBtn.addActionListener(this);
 
         ILocationMapPanel = new ILocationMapPanel(application, null);
     }
