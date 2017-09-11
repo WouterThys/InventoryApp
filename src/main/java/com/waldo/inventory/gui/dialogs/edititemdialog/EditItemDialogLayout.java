@@ -14,14 +14,11 @@ import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
 
@@ -146,7 +143,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
                     URL url = path.toUri().toURL();
                     setTitleIcon(imageResource.readImage(url, 64, 64));
                 } catch (Exception e) {
-                    Status().setError("Error updating components", e);
+                    //Status().setError("Error updating components", e);
                 }
             }
             setTitleName(newItem.getName().trim());

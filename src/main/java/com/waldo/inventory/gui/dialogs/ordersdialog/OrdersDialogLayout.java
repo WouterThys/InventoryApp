@@ -7,6 +7,7 @@ import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -25,8 +26,7 @@ public abstract class OrdersDialogLayout extends IDialog
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField nameField;
-    JComboBox<Distributor> distributorCb;
-    private DefaultComboBoxModel<Distributor> distributorCbModel;
+    IComboBox<Distributor> distributorCb;
 
     JCheckBox isOrderedCb;
     JDatePickerImpl orderedDatePicker;
@@ -41,13 +41,13 @@ public abstract class OrdersDialogLayout extends IDialog
     /*
     *                  CONSTRUCTORS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public OrdersDialogLayout(Application application, String title, boolean showDates) {
+    OrdersDialogLayout(Application application, String title, boolean showDates) {
         super(application, title);
         this.showDates = showDates;
         showTitlePanel(false);
     }
 
-    public OrdersDialogLayout(Dialog dialog, String title, boolean showDates) {
+    OrdersDialogLayout(Dialog dialog, String title, boolean showDates) {
         super(dialog, title);
         this.showDates = showDates;
         showTitlePanel(false);
@@ -56,7 +56,7 @@ public abstract class OrdersDialogLayout extends IDialog
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected void enableDatePickers(boolean enable) {
+    void enableDatePickers(boolean enable) {
         orderedDatePicker.getComponent(0).setEnabled(enable);
         orderedDatePicker.getComponent(1).setEnabled(enable);
         receivedDatePicker.getComponent(0).setEnabled(enable);
@@ -70,8 +70,7 @@ public abstract class OrdersDialogLayout extends IDialog
     @Override
     public void initializeComponents() {
         nameField = new ITextField("Order name");
-        distributorCbModel = new DefaultComboBoxModel<>();
-        distributorCb = new JComboBox<>(distributorCbModel);
+        distributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), false);
 
         isOrderedCb = new JCheckBox("Is ordered");
         isOrderedCb.addActionListener(this);
@@ -174,13 +173,6 @@ public abstract class OrdersDialogLayout extends IDialog
 
     @Override
     public void updateComponents(Object object) {
-        distributorCbModel.removeAllElements();
-        for (Distributor d : DbManager.db().getDistributors()) {
-            if (d.getId() != DbObject.UNKNOWN_ID) {
-                distributorCbModel.addElement(d);
-            }
-        }
-
         if (object != null) {
             nameField.setText(((Order) object).getName());
             distributorCb.setSelectedItem(((Order) object).getDistributor());

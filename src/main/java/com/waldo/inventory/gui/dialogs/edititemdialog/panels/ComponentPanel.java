@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -45,7 +46,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private IComboBox<PackageType> packageTypeComboBox;
     private ISpinner packagePinsSp;
     private IFormattedTextField packageWidthTf, packageHeightTf;
-    private DefaultComboBoxModel<Manufacturer> manufacturerModel;
     private IComboBox<Manufacturer> manufacturerComboBox;
     private ILabel iconLabel;
     private IStarRater starRater;
@@ -53,7 +53,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextArea remarksTa;
     private ICheckBox isSetCb;
     private JButton setValuesBtn;
-    private DefaultComboBoxModel<DimensionType> dimensionCbModel;
     private IComboBox<DimensionType> dimensionCb;
 
     // Basic info
@@ -61,9 +60,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextField nameTextField;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
-    private DefaultComboBoxModel<Category> categoryCbModel;
-    private DefaultComboBoxModel<Product> productCbModel;
-    private DefaultComboBoxModel<Type> typeCbModel;
     private IComboBox<Category> categoryComboBox;
     private IComboBox<Product> productComboBox;
     private IComboBox<Type> typeComboBox;
@@ -89,42 +85,24 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private void updateManufacturerCbValues() {
-        manufacturerModel.removeAllElements();
-        for (Manufacturer m : db().getManufacturers()) {
-            manufacturerModel.addElement(m);
-        }
         if (manufacturerComboBox != null) {
+            manufacturerComboBox.updateList();
             manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
         }
     }
 
     private void updateCategoryCbValues() {
-        categoryCbModel.removeAllElements();
-        categoryCbModel.addElement(Category.getUnknownCategory());
-        for (Category c : db().getCategories()) {
-            categoryCbModel.addElement(c);
-        }
-
+        categoryComboBox.updateList();
         categoryComboBox.setSelectedItem(newItem.getCategory());
     }
 
     public void updateProductCbValues(long categoryId) {
-        productCbModel.removeAllElements();
-        productCbModel.addElement(Product.getUnknownProduct()); // Add unknown
-        for (Product p : db().getProductListForCategory(categoryId)) {
-            productCbModel.addElement(p);
-        }
-
+        productComboBox.updateList(db().getProductListForCategory(categoryId));
         productComboBox.setSelectedItem(newItem.getProduct());
     }
 
     public void updateTypeCbValues(long productId) {
-        typeCbModel.removeAllElements();
-        typeCbModel.addElement(Type.getUnknownType()); // Add unknown
-        for (Type t : db().getTypeListForProduct(productId)) {
-            typeCbModel.addElement(t);
-        }
-
+        typeComboBox.updateList(db().getTypeListForProduct(productId));
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
@@ -132,45 +110,61 @@ public class ComponentPanel extends JPanel implements GuiInterface {
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void createCategoryCb() {
-        categoryCbModel = new DefaultComboBoxModel<>();
-        for (Category c : db().getCategories()) {
-            categoryCbModel.addElement(c);
-        }
-        categoryComboBox = new IComboBox<>(categoryCbModel);
+        categoryComboBox = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), true);
         categoryComboBox.addEditedListener(editedListener, "categoryId");
         categoryComboBox.setSelectedItem(newItem.getCategory());
     }
 
     private void createProductCb() {
-        productCbModel = new DefaultComboBoxModel<>();
-        for (Product p: db().getProducts()) {
-            productCbModel.addElement(p);
+        java.util.List<Product> productList;
+        if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+            productList = db().getProductListForCategory(newItem.getCategoryId());
+        } else {
+            productList = db().getProducts();
         }
-        productComboBox = new IComboBox<>(productCbModel);
+
+        productComboBox = new IComboBox<>(productList, new DbObjectNameComparator<>(), true);
         productComboBox.addEditedListener(editedListener, "productId");
         productComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getCategoryId() > DbObject.UNKNOWN_ID));
         productComboBox.setSelectedItem(newItem.getProduct());
     }
 
     private void createTypeCb() {
-        typeCbModel = new DefaultComboBoxModel<>();
-        for (Type t: db().getTypes()) {
-            typeCbModel.addElement(t);
+        java.util.List<Type> typeList;
+        if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+            typeList = db().getTypeListForProduct(newItem.getProductId());
+        } else {
+            typeList = db().getTypes();
         }
-        typeComboBox = new IComboBox<>(typeCbModel);
+
+        typeComboBox = new IComboBox<>(typeList, new DbObjectNameComparator<>(), true);
         typeComboBox.addEditedListener(editedListener, "typeId");
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
     private void createPackageTypeCb() {
-        DefaultComboBoxModel<PackageType> packageTypeCbModel = new DefaultComboBoxModel<>();
-        packageTypeCbModel.addElement((PackageType.createDummyPackageType()));
-        for (PackageType pt : db().getPackageTypes()) {
-            packageTypeCbModel.addElement(pt);
-        }
-        packageTypeComboBox = new IComboBox<>(packageTypeCbModel);
+        packageTypeComboBox = new IComboBox<>(db().getPackageTypes(), new DbObjectNameComparator<>(), true);
         packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
+    }
+
+    private void createDimensionTypeCb() {
+        java.util.List<DimensionType> dimensionTypes;
+        if (newItem.getPackageId() > DbObject.UNKNOWN_ID) {
+            dimensionTypes = sm().findDimensionTypesForPackageType(newItem.getPackage().getPackageTypeId());
+        } else {
+            dimensionTypes = db().getDimensionTypes();
+        }
+
+        dimensionCb = new IComboBox<>(dimensionTypes, new DbObjectNameComparator<>(), true);
+        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
+        dimensionCb.setEnabled(false);
+    }
+
+    private void createManufacturerCb() {
+        manufacturerComboBox = new IComboBox<>(db().getManufacturers(), new DbObjectNameComparator<>(), true);
+        manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
+        manufacturerComboBox.addEditedListener(editedListener, "manufacturerId");
     }
 
     private ActionListener createDivisionListener() {
@@ -204,13 +198,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     
     public void updateDimensionPanel() {
         PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
-        dimensionCbModel.removeAllElements();
-        dimensionCbModel.addElement(DimensionType.createDummyDimensionType());
         if (packageType != null) {
             java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
-            for (DimensionType dt : dimensionTypeList) {
-                dimensionCbModel.addElement(dt);
-            }
+            dimensionCb.updateList(dimensionTypeList);
             dimensionCb.setEnabled(dimensionTypeList.size() > 0);
         } else {
             dimensionCb.setEnabled(false);
@@ -284,15 +274,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         packageWidthTf.addEditedListener(editedListener, "width", double.class);
         packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
         packageHeightTf.addEditedListener(editedListener, "height", double.class);
-        dimensionCbModel = new DefaultComboBoxModel<>();
-        dimensionCb = new IComboBox<>(dimensionCbModel);
-        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
-        dimensionCb.setEnabled(false);
+        createDimensionTypeCb();
 
         // Manufacturer
-        manufacturerModel = new DefaultComboBoxModel<>();
-        updateManufacturerCbValues();
-        manufacturerComboBox = new IComboBox<>(manufacturerModel);
+        createManufacturerCb();
         manufacturerComboBox.addEditedListener(editedListener, "manufacturerId");
         manufacturerComboBox.setName(EditItemDialogLayout.COMP_MANUFACTURER);
         manufacturerComboBox.addItemListener(e -> {
@@ -662,11 +647,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         localDataSheetTextField.setText(localDataSheetFieldValue);
     }
 
-    public JComboBox getProductComboBox() {
+    public IComboBox getProductComboBox() {
         return productComboBox;
     }
 
-    public JComboBox getTypeComboBox() {
+    public IComboBox getTypeComboBox() {
         return typeComboBox;
     }
 

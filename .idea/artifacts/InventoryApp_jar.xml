@@ -36,6 +36,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar" path-in-jar="/" />
       <element id="file-copy" path="$PROJECT_DIR$/settings.db" />
       <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/setvalues" />
+      <element id="library" level="project" name="Maven: jfree:jcommon:1.0.16" />
     </root>
   </artifact>
 </component>

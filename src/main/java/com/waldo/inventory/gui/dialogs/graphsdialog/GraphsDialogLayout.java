@@ -25,8 +25,8 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -64,7 +64,7 @@ public abstract class GraphsDialogLayout extends IDialog {
         DefaultCategoryDataset barDataSet = new DefaultCategoryDataset();
         DefaultCategoryDataset lineDataSet = new DefaultCategoryDataset();
 
-        HashMap<Date, List<DbHistory>> historyMap = createHistoryMap();
+        TreeMap<Date, List<DbHistory>> historyMap = createHistoryMap();
         for (Date date : historyMap.keySet()) {
             List<DbHistory> historyList = historyMap.get(date);
 
@@ -151,8 +151,8 @@ public abstract class GraphsDialogLayout extends IDialog {
         dbHistoryChart.setMouseZoomable(true, true);
     }
 
-    private HashMap<Date, List<DbHistory>> createHistoryMap() {
-        HashMap<Date, List<DbHistory>> historyMap = new HashMap<>();
+    private TreeMap<Date, List<DbHistory>> createHistoryMap() {
+        TreeMap<Date, List<DbHistory>> historyMap = new TreeMap<>();
         List<DbHistory> historyList = DbManager.db().getDbHistory();
 
         for (DbHistory dbh : historyList) {

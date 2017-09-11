@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
 
@@ -16,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -34,11 +35,9 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private IImageButton nextBtn;
 
     private JToolBar advancedToolBar;
-    private JComboBox<Category> advancedCategoryCb;
-    private DefaultComboBoxModel<Product> productCbModel;
-    private JComboBox<Product> advancedProductCb;
-    private DefaultComboBoxModel<Type> typeCbModel;
-    private JComboBox<Type> advancedTypeCb;
+    private IComboBox<Category> advancedCategoryCb;
+    private IComboBox<Product> advancedProductCb;
+    private IComboBox<Type> advancedTypeCb;
     private JCheckBox advancedCheckbox1;
     private JCheckBox advancedCheckbox2;
     private JCheckBox advancedCheckbox3;
@@ -65,10 +64,6 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         this.objectSearchBtnListener = listener;
     }
 
-    public void removeSearchListener() {
-        this.objectSearchListener = null;
-    }
-
     public interface IObjectSearchListener {
         void onDbObjectFound(java.util.List<DbObject> foundObjects);
         void onSearchCleared();
@@ -77,10 +72,6 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     public interface IObjectSearchBtnListener {
         void nextSearchObject(DbObject next);
         void previousSearchObject(DbObject previous);
-    }
-
-    public void setSearchOptions(int... options) {
-        searchManager.setSearchOptions(options);
     }
 
     public void setSearchList(List<DbObject> searchList) {
@@ -151,13 +142,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createCategoryCb() {
-        DefaultComboBoxModel<Category> model = new DefaultComboBoxModel<>();
-        for (Category c : DbManager.db().getCategories()) {
-            if (!c.isUnknown()) {
-                model.addElement(c);
-            }
-        }
-        advancedCategoryCb = new JComboBox<>(model);
+        advancedCategoryCb = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), false);
         advancedCategoryCb.insertItemAt(null, 0);
         advancedCategoryCb.setSelectedIndex(0);
         advancedCategoryCb.addActionListener(e -> {
@@ -174,8 +159,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createProductCb() {
-        productCbModel = new DefaultComboBoxModel<>();
-        advancedProductCb = new JComboBox<>(productCbModel);
+        advancedProductCb = new IComboBox<>(db().getProducts(), new DbObjectNameComparator<>(), false);
         advancedProductCb.insertItemAt(null, 0);
         advancedProductCb.setEnabled(false);
         advancedProductCb.addActionListener(e -> {
@@ -191,29 +175,18 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createTypeCb() {
-        typeCbModel = new DefaultComboBoxModel<>();
-        advancedTypeCb = new JComboBox<>(typeCbModel);
+        advancedTypeCb = new IComboBox<>(db().getTypes(), new DbObjectNameComparator<>(), false);
         advancedTypeCb.setEnabled(false);
     }
 
     private void updateProductCb(Category category) {
-        productCbModel.removeAllElements();
-        for (Product p : DbManager.db().getProductListForCategory(category.getId())) {
-            if (!p.isUnknown()) {
-                productCbModel.addElement(p);
-            }
-        }
+        advancedProductCb.updateList(db().getProductListForCategory(category.getId()));
         advancedProductCb.insertItemAt(null, 0);
         advancedProductCb.setSelectedIndex(0);
     }
 
     private void updateTypeCb(Product product) {
-        typeCbModel.removeAllElements();
-        for (Type t : DbManager.db().getTypeListForProduct(product.getId())) {
-            if (!t.isUnknown()) {
-                typeCbModel.addElement(t);
-            }
-        }
+        advancedTypeCb.updateList(db().getTypeListForProduct(product.getId()));
         advancedTypeCb.insertItemAt(null, 0);
         advancedTypeCb.setSelectedIndex(0);
     }

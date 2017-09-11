@@ -7,20 +7,56 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Comparator;
+import java.util.List;
 
 public class IComboBox<E extends DbObject> extends JComboBox<E> {
 
-    private IEditedListener editedListener;
+    private DefaultComboBoxModel<E> comboBoxModel;
+    private boolean showUnknown;
+    private List<E> itemList;
+    private Comparator<E> comparator;
 
+    private IEditedListener editedListener;
     private String fieldName = "";
     private Class fieldClass;
 
-    public IComboBox() {
-        super();
+    public IComboBox(ComboBoxModel<E> comboBoxModel) {
+        super(comboBoxModel);
     }
 
-    public IComboBox(ComboBoxModel<E> model) {
-        super(model);
+    public IComboBox(List<E> itemList, Comparator<E> comparator, boolean showUnknown) {
+        super();
+
+        this.itemList = itemList;
+        this.comparator = comparator;
+        this.showUnknown = showUnknown;
+        this.comboBoxModel = new DefaultComboBoxModel<>();
+        setModel(comboBoxModel);
+
+        updateList();
+    }
+
+    public void updateList(List<E> itemList) {
+        if (itemList != null) {
+            this.itemList = itemList;
+            updateList();
+        }
+    }
+
+    public void updateList() {
+        if (itemList != null) {
+            if (comparator != null) {
+                itemList.sort(comparator);
+            }
+
+            comboBoxModel.removeAllElements();
+            for (E item : itemList) {
+                if (!item.isUnknown() || showUnknown) {
+                    comboBoxModel.addElement(item);
+                }
+            }
+        }
     }
 
     public void addEditedListener(IEditedListener listener, String fieldName) {

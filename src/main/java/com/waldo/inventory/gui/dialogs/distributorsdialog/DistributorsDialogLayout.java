@@ -3,22 +3,21 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.OrderFileFormat;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.IOException;
 
+import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
@@ -46,7 +45,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     ITextField detailOrderLink;
     private JButton detailOrderLinkBtn;
     IComboBox<OrderFileFormat> detailOrderFileFormatCb;
-    private DefaultComboBoxModel<OrderFileFormat> detailOrderFileFormatModel;
     private IdBToolBar detailOrderFileFormatTb;
 
 
@@ -91,10 +89,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private void updateOrderFileFormatComboBox() {
-        detailOrderFileFormatModel.removeAllElements();
-        for (OrderFileFormat off : DbManager.db().getOrderFileFormats()) {
-            detailOrderFileFormatModel.addElement(off);
-        }
+        detailOrderFileFormatCb.updateList();
     }
 
     private JPanel createWestPanel() {
@@ -292,8 +287,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
             }
         });
 
-        detailOrderFileFormatModel = new DefaultComboBoxModel<>();
-        detailOrderFileFormatCb = new IComboBox<>(detailOrderFileFormatModel);
+        detailOrderFileFormatCb = new IComboBox<>(db().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
         detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
@@ -360,7 +354,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         try {
             // Get all
             distributorDefaultListModel.removeAllElements();
-            for (Distributor d : DbManager.db().getDistributors()) {
+            for (Distributor d : db().getDistributors()) {
                 if (!d.isUnknown()) {
                     distributorDefaultListModel.addElement(d);
                 }

@@ -4,13 +4,13 @@ import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 public abstract class OrderItemDialogLayout extends IDialog implements
         ActionListener,
@@ -21,7 +21,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILabel textLabel;
     private JButton addNewOrderButton;
-    JComboBox<Order> orderCb;
+    IComboBox<Order> orderCb;
 
     /*
     *                  CONSTRUCTOR
@@ -39,7 +39,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
         textLabel = new ILabel("Select an order, or add a new one.");
         addNewOrderButton = new JButton("Add new");
         addNewOrderButton.addActionListener(this);
-        orderCb = new JComboBox<>();
+        orderCb = new IComboBox<>(DbManager.db().getOrders(), new Order.SortUnordered(), false);
     }
 
     @Override
@@ -77,16 +77,6 @@ public abstract class OrderItemDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object object) {
-        Vector<Order> orders = new Vector<>();
-        for (Order o : DbManager.db().getOrders()) {
-            if (!o.isUnknown() && !o.isOrdered()) {
-                orders.addElement(o);
-            }
-        }
-        orders.sort(new Order.SortUnordered());
-        DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>(orders);
-        orderCb.setModel(orderCbModel);
-
         if (object != null) {
             orderCb.setSelectedItem(object);
         }
