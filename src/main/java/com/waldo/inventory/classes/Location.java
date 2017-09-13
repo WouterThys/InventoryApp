@@ -6,6 +6,7 @@ import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -21,6 +22,9 @@ public class Location extends DbObject {
     private int col = 0;
     private String alias;
 
+    // Items for this location
+    private List<DbObject> items;
+
     public Location() {
         super(TABLE_NAME);
     }
@@ -31,10 +35,10 @@ public class Location extends DbObject {
             if (getLocationType().isCustom()) {
                 return getName();
             } else {
-                return getLocationType().getName() + "(" + Statics.Alphabet[row] + "," + col + ")";
+                return getLocationType().getName() + getName();
             }
         } else {
-            return "*" + "("+ Statics.Alphabet[row]+","+col+")";
+            return "*" + getName();
         }
     }
 
@@ -167,6 +171,34 @@ public class Location extends DbObject {
         db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onLocationsChangedListenerList);
     }
 
+    public List<DbObject> getItems() {
+        if (items == null) {
+            List<Item> itemList = SearchManager.sm().findItemsWithLocation(locationTypeId);
+            List<DbObject> itemsForLocation = new ArrayList<>();
+
+            for (Item item : itemList) {
+                if (item.isSet()) {
+                    boolean locationsFound = false;
+                    for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
+                        if (setItem.getLocationId() == getId()) {
+                            locationsFound = true;
+                            itemsForLocation.add(setItem);
+                        }
+
+                        if (!locationsFound) {
+                            itemsForLocation.add(item);
+                        }
+                    }
+                } else {
+                    itemsForLocation.add(item);
+                }
+            }
+            items = itemsForLocation;
+        }
+
+        return items;
+    }
+
     public long getLocationTypeId() {
         return locationTypeId;
     }
@@ -204,6 +236,9 @@ public class Location extends DbObject {
     }
 
     public String getAlias() {
+        if (alias == null) {
+            alias = "";
+        }
         return alias;
     }
 

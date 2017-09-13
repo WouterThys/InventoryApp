@@ -1,17 +1,9 @@
 package com.waldo.inventory.gui.dialogs.locationmapdialog;
 
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.LocationType;
-import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class LocationMapDialogLayout extends IDialog {
 
@@ -47,12 +39,18 @@ public abstract class LocationMapDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Panel
-        locationMapPanel = new ILocationMapPanel(application, (e, items, row, column) -> {
+        locationMapPanel = new ILocationMapPanel(application, (e, location) -> {
             locationMapPanel.setHighlighted(this.row, this.col, null);
-            this.row = row;
-            this.col = column;
+            this.row = location.getRow();
+            this.col = location.getCol();
             locationMapPanel.setHighlighted(this.row, this.col, ILocationMapPanel.GREEN);
         });
+
+
+//        locationMapPanel.setHighlighted(this.row, this.col, null);
+//        this.row = row;
+//        this.col = column;
+//        locationMapPanel.setHighlighted(this.row, this.col, ILocationMapPanel.GREEN);
     }
 
     @Override
@@ -66,7 +64,7 @@ public abstract class LocationMapDialogLayout extends IDialog {
         if (object != null) {
             LocationType type = (LocationType)object;
             locationMapPanel.updateComponents(object);
-            locationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(type.getId()));
+            //locationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(type.getId()));
             locationMapPanel.setHighlighted(row, col, ILocationMapPanel.GREEN);
         }
     }

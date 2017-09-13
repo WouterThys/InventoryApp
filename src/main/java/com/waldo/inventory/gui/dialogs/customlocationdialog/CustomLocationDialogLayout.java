@@ -15,6 +15,8 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class CustomLocationDialogLayout extends IDialog implements
         ILocationMapPanel.LocationClickListener,
         ActionListener,
@@ -38,6 +40,8 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     // Extra
     ITextField nameTf;
     ITextField aliasTf;
+    JButton setNameBtn;
+    JButton setAliasBtn;
 
 
      /*
@@ -148,7 +152,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         detailPanel.add(new ILabel("Name: ", ILabel.RIGHT), gbc);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
-        detailPanel.add(nameTf, gbc);
+        detailPanel.add(PanelUtils.createBrowsePanel(nameTf, setNameBtn), gbc);
 
         // Alias
         gbc.gridx = 0; gbc.weightx = 0;
@@ -156,7 +160,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         detailPanel.add(new ILabel("Alias: ", ILabel.RIGHT), gbc);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
-        detailPanel.add(aliasTf, gbc);
+        detailPanel.add(PanelUtils.createBrowsePanel(aliasTf, setAliasBtn), gbc);
 
         centerPanel.add(locationMapPanel, BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
@@ -246,6 +250,10 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         // Extra
         nameTf = new ITextField("Name");
         aliasTf = new ITextField("Alias");
+        setNameBtn = new JButton(imageResource.readImage("Common.Edit", 16));
+        setAliasBtn = new JButton(imageResource.readImage("Common.Edit", 16));
+        setNameBtn.addActionListener(this);
+        setAliasBtn.addActionListener(this);
 
     }
 

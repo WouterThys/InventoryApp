@@ -13,10 +13,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ILocationMapPanel extends JPanel implements GuiInterface, ILocationCustomDialog.LocationMapToolbarListener {
+public class ILocationMapPanel extends JPanel implements GuiInterface {
 
     public interface LocationClickListener {
-        void onClick(ActionEvent e, List<DbObject> items, int row, int column);
+        void onClick(ActionEvent e, Location location);
     }
 
     public static final Color GREEN = new Color(19,182,46);
@@ -26,7 +26,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private JPanel buttonPanel;
-    private JButton customizeBtn;
 
     /*
      *                  VARIABLES
@@ -60,7 +59,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         if (locationType != null) {
             List<Location> locations = SearchManager.sm().findLocationsByTypeId(locationType.getId());
             for (Location location : locations) {
-                ILocationButton button = new ILocationButton(location.getRow(), location.getCol());
+                ILocationButton button = new ILocationButton(location);
                 final int finalR = location.getRow();
                 final int finalC = location.getCol();
                 addButtonActionListener(button, finalR, finalC);
@@ -70,7 +69,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
                 button.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        button.showPopup(e);
+                        button.showPopup(e, application);
                     }
                 });
             }
@@ -82,7 +81,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     public void addButtonActionListener(ILocationButton button, final int r, final int c) {
         button.addActionListener(e -> {
             if (locationClickListener != null) {
-                locationClickListener.onClick(e, button.getItems(), r, c);
+                locationClickListener.onClick(e, button.getTheLocation());
             }
         });
     }
@@ -94,8 +93,17 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         buttonPanel.repaint();
     }
 
+    public void updateButtons() {
+        buttonPanel.revalidate();
+        buttonPanel.repaint();
+    }
+
     public void drawButtons(List<ILocationButton> locationButtons) {
         buttonPanel.removeAll();
+
+        if (!buttonList.equals(locationButtons)) {
+            buttonList = locationButtons;
+        }
 
         GridBagConstraints btnGbc = new GridBagConstraints();
         btnGbc.insets = new Insets(2,2,2,2);
@@ -149,31 +157,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         return null;
     }
 
-    public void setItems(List<Item> items) {
-        for(Item item : items) {
-            if (item.isSet()) {
-                for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
-                    if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
-                        ILocationButton btn = setHighlighted(
-                                setItem.getLocation().getRow(),
-                                setItem.getLocation().getCol(),
-                                YELLOW);
-                        if (btn != null) {
-                            btn.addItem(application, setItem);
-                        }
-                    }
-                }
-            } else {
-                if (item.getLocation() != null) {
-                    ILocationButton btn = setHighlighted(item.getLocation().getRow(), item.getLocation().getCol(), YELLOW);
-                    if (btn != null) {
-                        btn.addItem(application, item);
-                    }
-                }
-            }
-        }
-    }
-
     public void setHighlighted(Item item, Color color) {
         boolean isSet = item.isSet();
         boolean hasLocation = item.getLocationId() > DbObject.UNKNOWN_ID;
@@ -217,85 +200,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
         return button;
     }
 
-    private void setHighlighted(ILocationButton button, Color color) {
-        if (button != null) {
-            if (color != null) {
-                button.setBackground(color);
-            } else {
-                if (button.getItems().size() > 0) {
-                    button.setBackground(YELLOW);
-                } else {
-                    button.setBackground(null);
-                }
-            }
-        }
-    }
-
-    public void enableAllButtons(boolean enabled) {
-        for (ILocationButton button : buttonList) {
-            button.setEnabled(enabled);
-        }
-    }
-
-    public ILocationButton buttonLeftOf(ILocationButton button) {
-        if (button.getCol() > 0) {
-            return findButton(button.getRow(), button.getCol()-1);
-        }
-        return null;
-    }
-
-    public ILocationButton buttonRightOf(ILocationButton button) {
-        if (button.getCol() + button.getW() < locationType.getColumns()) {
-            return findButton(button.getRow(), button.getCol()+button.getW());
-        }
-        return null;
-    }
-
-    public ILocationButton buttonUpOf(ILocationButton button) {
-        if (button.getRow() > 0) {
-            return findButton(button.getRow() - 1, button.getCol());
-        }
-        return null;
-    }
-
-    public ILocationButton buttonDownOf(ILocationButton button) {
-        if (button.getCol() < locationType.getRows()-1) {
-            return findButton(button.getRow() + 1, button.getCol());
-        }
-        return null;
-    }
-
-    public int setLocationButtonWidth(int width) {
-        if (locBtn != null) {
-            if (locBtn.getW() != width) {
-                if (width > locBtn.getW()) {
-                    while (width > locBtn.getW()) {
-                        ILocationButton rightBtn = buttonRightOf(locBtn);
-                        if (rightBtn != null) {
-                            buttonList.remove(rightBtn);
-                            locBtn.setW(locBtn.getW() + 1);
-                        } else {
-                            break;
-                        }
-                    }
-                    drawButtons(buttonList);
-                } else {
-                    while (locBtn.getW() != width && locBtn.getW() > 0) {
-
-                        ILocationButton fillBtn = new ILocationButton(locBtn.getRow(), locBtn.getW() + locBtn.getCol() - 1);
-                        fillBtn.setEnabled(false);
-                        buttonList.add(fillBtn);
-
-                        locBtn.setW(locBtn.getW() - 1);
-                    }
-                    drawButtons(buttonList);
-                }
-            }
-            return locBtn.getW();
-        }
-        return 0;
-    }
-
     public List<ILocationButton> getLocationButtons() {
         return buttonList;
     }
@@ -307,20 +211,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
     public void initializeComponents() {
         buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
-
-        customizeBtn = new JButton("Custom");
-        customizeBtn.addActionListener(e -> {
-            enableAllButtons(false);
-            ILocationCustomDialog dialog = new ILocationCustomDialog(
-                    application,
-                    this,
-                    0,
-                    0,
-                    locationType.getRows(),
-                    locationType.getColumns());
-            dialog.showDialog();
-            enableAllButtons(true);
-        });
     }
 
     @Override
@@ -347,42 +237,5 @@ public class ILocationMapPanel extends JPanel implements GuiInterface, ILocation
 
             locationType = type.createCopy();
         }
-    }
-
-    //
-    // Custom tool bar
-    //
-
-    @Override
-    public void onLocationChanged(int row, int col) {
-        if (locBtn != null) {
-            setHighlighted(locBtn, null);
-            locBtn.setEnabled(false);
-        }
-        locBtn = findButton(row, col);
-        if (locBtn != null) {
-            locBtn.setEnabled(true);
-            setHighlighted(locBtn, GREEN);
-        }
-    }
-
-    @Override
-    public int onRowChanged(int row) {
-        return row;
-    }
-
-    @Override
-    public int onColChanged(int col) {
-        return col;
-    }
-
-    @Override
-    public int onWidthChanged(int width) {
-        return setLocationButtonWidth(width);
-    }
-
-    @Override
-    public int onHeightChanged(int height) {
-        return height;
     }
 }

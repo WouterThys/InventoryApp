@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILocationButton;
@@ -37,7 +38,9 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             for (String row : rows) {
                 String cols[] = row.split(",");
                 for (String col : cols) {
-                    ILocationButton btn = new ILocationButton(r, c);
+
+
+                    ILocationButton btn = new ILocationButton(createLocation(col, r, c));
                     locationMapPanel.addButtonActionListener(btn, r, c);
                     buttonList.add(btn);
                     c++;
@@ -50,24 +53,51 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
         return buttonList;
     }
 
+    private Location createLocation(String name, int r, int c) {
+        Location location = new Location();
+        if (name != null && !name.isEmpty()) {
+            location.setName(name);
+        } else {
+            location.setName("(" + Statics.Alphabet[r] + "," + c + ")");
+        }
+        location.setCol(c);
+        location.setRow(r);
+        location.setLocationTypeId(locationType.getId());
+
+        return location;
+    }
+
     //
     // Location map button click
     //
     @Override
-    public void onClick(ActionEvent e, List<DbObject> items, int row, int column) {
-        selectedLocationButton = locationMapPanel.findButton(row, column);
+    public void onClick(ActionEvent e,Location location) {
+        selectedLocationButton = locationMapPanel.findButton(location.getRow(), location.getCol());
         updateEnabledComponents();
-        setButtonDetails(locationType.findLocation(row, column));
+        setButtonDetails(location);
     }
 
     //
-    // Convert btn click
+    // Button click
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        String input = inputTa.getText();
-        selectedLocationButton = null;
-        locationMapPanel.drawButtons(convertInput(input));
+        if (e.getSource().equals(convertBtn)) {
+            String input = inputTa.getText();
+            selectedLocationButton = null;
+            locationMapPanel.drawButtons(convertInput(input));
+        } else if (e.getSource().equals(setNameBtn)) {
+            if (selectedLocationButton != null) {
+                selectedLocationButton.getTheLocation().setName(nameTf.getText());
+                locationMapPanel.updateButtons();
+            }
+        } else if (e.getSource().equals(setAliasBtn)) {
+            if (selectedLocationButton != null) {
+                selectedLocationButton.getTheLocation().setAlias(aliasTf.getText());
+                locationMapPanel.updateButtons();
+            }
+        }
+
         updateEnabledComponents();
     }
 

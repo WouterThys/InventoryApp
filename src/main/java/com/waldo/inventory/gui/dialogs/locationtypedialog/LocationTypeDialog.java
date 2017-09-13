@@ -40,7 +40,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
             detailRowsSpinner.setValue(selectedLocationType.getRows());
 
             ILocationMapPanel.updateComponents(selectedLocationType);
-            ILocationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(selectedLocationType.getId()));
+            //ILocationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(selectedLocationType.getId()));
         }
     }
 

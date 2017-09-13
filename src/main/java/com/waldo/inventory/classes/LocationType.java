@@ -102,10 +102,6 @@ public class LocationType extends DbObject {
         return u;
     }
 
-    public Location findLocation(int row, int col) {
-        return SearchManager.sm().findLocation(getId(), row, col).createCopy();
-    }
-
     public List<Location> getLocations() {
         return new ArrayList<>(SearchManager.sm().findLocationsByTypeId(getId()));
     }
