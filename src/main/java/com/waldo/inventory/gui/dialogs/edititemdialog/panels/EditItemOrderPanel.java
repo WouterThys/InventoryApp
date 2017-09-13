@@ -2,9 +2,10 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.DistributorPart;
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -14,7 +15,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.database.SearchManager.sm;
@@ -25,7 +25,6 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     private DistributorPart distributorPart;
 
     private IComboBox<Distributor> distributorCb;
-    private DefaultComboBoxModel<Distributor> distributorCbModel;
     private ITextField itemRefField;
 
     // Listener
@@ -91,18 +90,13 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     }
 
     private void updateManufacturerCombobox() {
-        distributorCbModel.removeAllElements();
-        for (Distributor d : db().getDistributors()) {
-            distributorCbModel.addElement(d);
-        }
-
+        distributorCb.updateList();
         distributorCb.setSelectedItem(newItem.getManufacturer());
     }
 
     @Override
     public void initializeComponents() {
-        distributorCbModel = new DefaultComboBoxModel<>();
-        distributorCb = new IComboBox<>(distributorCbModel);
+        distributorCb = new IComboBox<>(db().getDistributors(), new DbObjectNameComparator<>(), true);
         distributorCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 distributorPart = sm().findPartNumber(((Distributor)e.getItem()).getId(), newItem.getId());
@@ -162,13 +156,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
 
     @Override
     public void updateComponents(Object object) {
-        distributorCbModel.removeAllElements();
-        for (Distributor d : db().getDistributors()) {
-            distributorCbModel.addElement(d);
-        }
-        if (distributorCbModel.getSize() > 0) {
-            distributorCb.setSelectedIndex(0);
-        }
+        distributorCb.setSelectedIndex(0);
     }
 
     public ITextField getItemRefField() {

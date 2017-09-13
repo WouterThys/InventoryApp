@@ -3,11 +3,10 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -21,9 +20,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
+import static com.waldo.inventory.database.DbManager.db;
+
 public class EditItemStockPanel extends JPanel implements GuiInterface {
 
-    private static final LogManager LOG = LogManager.LOG(EditItemStockPanel.class);
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
     private Item newItem;
@@ -36,7 +36,6 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     private ISpinner amountSpinner;
     private JComboBox<String> amountTypeCb;
 
-    private DefaultComboBoxModel<LocationType> locationTypeModel;
     private IComboBox<LocationType> locationTypeCb;
     private ITextField rowTf;
     private ITextField colTf;
@@ -58,10 +57,6 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
             return newLocation.getId();
         }
         return DbObject.UNKNOWN_ID;
-    }
-
-    public IComboBox getLocationTypeCombobox() {
-        return locationTypeCb;
     }
 
     public void locationSaved(Location location) {
@@ -98,10 +93,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     }
 
     private void updateLocationTypeCb() {
-        locationTypeModel.removeAllElements();
-        for (LocationType locationType : DbManager.db().getLocationTypes()) {
-            locationTypeModel.addElement(locationType);
-        }
+        locationTypeCb.updateList();
     }
 
 
@@ -250,9 +242,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         colTf.setEnabled(false);
         colTf.addEditedListener(editedListener, "locationCol", int.class);
 
-        locationTypeModel = new DefaultComboBoxModel<>();
-        updateLocationTypeCb();
-        locationTypeCb = new IComboBox<>(locationTypeModel);
+        locationTypeCb = new IComboBox<>(db().getLocationTypes(), new DbObjectNameComparator<>(), true);
         locationTypeCb.addEditedListener(editedListener, "locationTypeId");
         locationTypeCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -270,7 +260,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         setLocationBtn = new JButton("Set");
         setLocationBtn.setEnabled(false);
         setLocationBtn.addActionListener(e -> {
-            LocationType locationType = (LocationType) locationTypeModel.getSelectedItem();
+            LocationType locationType = (LocationType) locationTypeCb.getSelectedItem();
             if (locationType != null &&locationType.canBeSaved() && !locationType.isUnknown()) {
                 if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
                     LocationMapDialog dialog;

@@ -8,6 +8,7 @@ import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -269,5 +270,14 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
                 }
             });
         }
+    }
+
+    //
+    // Custom  button press
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom");
+        dialog.showDialog();
     }
 }

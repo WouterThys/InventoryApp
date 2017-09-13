@@ -191,7 +191,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title
         setTitleIcon(imageResource.readImage("ManufacturersDialog.TitleIcon"));
-        setTitleName("Manufacturers");
+        setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);

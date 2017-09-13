@@ -36,6 +36,8 @@ public class Statics {
     }
 
     public static class UnitMultipliers {
+        public static final int f = -15;
+        public static final int p = -12;
         public static final int n = -9;
         public static final int µ = -6;
         public static final int m = -3;
@@ -43,27 +45,18 @@ public class Statics {
         public static final int k = 3;
         public static final int M = 6;
         public static final int G = 9;
+        public static final int T = 12;
 
-        public static final String[] ALL = {"n", "µ", "m", " ", "k", "M", "G"};
+        public static final String[] ALL = {"f","p","n", "µ", "m", " ", "k", "M", "G", "T"};
 
         public static String get(int i) {
             return ALL[i];
         }
 
-        public static String multiplierFor(int multiplier) {
-            switch (multiplier) {
-                case n: return "n";
-                case µ: return "µ";
-                case m: return "m";
-                case k: return "k";
-                case M: return "M";
-                case G: return "G";
-                default: return "";
-            }
-        }
-
         public static int toMultiplier(String mul) {
             switch (mul) {
+                case "f": return f;
+                case "p": return p;
                 case "n": return n;
                 case "µ": return µ;
                 case "m": return m;
@@ -71,6 +64,7 @@ public class Statics {
                 case "k": return k;
                 case "M": return M;
                 case "G": return G;
+                case "T": return T;
                 default:return 0;
             }
         }

@@ -39,7 +39,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
     ITitledPanel detailsPanel;
 
     DefaultComboBoxModel<DbObject> selectionCbModel;
-    JComboBox<DbObject> selectionComboBox;
+    IComboBox<DbObject> selectionComboBox;
 
     JLabel selectionLabel;
     ILabel iconLabel;
@@ -165,7 +165,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         // Combo box
         selectedSubType = 0;
         selectionCbModel = new DefaultComboBoxModel<>();
-        selectionComboBox = new JComboBox<>(selectionCbModel);
+        selectionComboBox = new IComboBox<>(selectionCbModel);
 
         // Icon
         iconLabel = new ILabel(imageResource.readImage("SubDivisionDialog.EditIcon"));

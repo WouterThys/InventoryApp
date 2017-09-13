@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
@@ -17,15 +18,11 @@ import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,13 +54,13 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbTotalItemsLbl;
     private ILabel tbTotalPriceLbl;
     private ILabel tbOrderNameLbl;
-    private JComboBox<Distributor> tbDistributorCb;
+    private IComboBox<Distributor> tbDistributorCb;
     private JPanel tbOrderFilePanel;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
+    //private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    //private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
     Application application;
 
     OrderItem selectedOrderItem;
@@ -131,13 +128,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeInitializeTree(rootNode);
     }
 
-    public void treeAddOrder(Order order) {
-        try {
-            treeModel.addObject(order);
-        } catch (Exception e) {
-            Status().setError("Failed to add order " + order.getName() + " to tree", e);
-        }
-    }
+//    public void treeAddOrder(Order order) {
+//        try {
+//            treeModel.addObject(order);
+//        } catch (Exception e) {
+//            Status().setError("Failed to add order " + order.getName() + " to tree", e);
+//        }
+//    }
 
     void treeDeleteOrder(Order order) {
         try {
@@ -157,7 +154,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         return orderId;
     }
 
-    public void treeSelectOrder(Order order) {
+    void treeSelectOrder(Order order) {
         treeModel.setSelectedObject(order);
     }
 
@@ -171,7 +168,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public long tableUpdate() {
+    long tableUpdate() {
         long orderItemId = -1;
         if (selectedOrderItem != null) {
             orderItemId = selectedOrderItem.getId();
@@ -180,22 +177,18 @@ public abstract class OrderPanelLayout extends JPanel implements
         return orderItemId;
     }
 
-    public void tableClear() {
+    void tableClear() {
         tableModel.setItemList(new ArrayList<>());
     }
 
-    public void tableAddOrderItems(List<OrderItem> orderItems) {
+    private void tableAddOrderItems(List<OrderItem> orderItems) {
         tableModel.addItems(orderItems);
     }
 
-    public void tableAddOrderItem(OrderItem orderItem) {
+    void tableAddOrderItem(OrderItem orderItem) {
         List<OrderItem> orderItems = new ArrayList<>(1);
         orderItems.add(orderItem);
         tableAddOrderItems(orderItems);
-    }
-
-    public void tableDeleteOrderItems(List<OrderItem> orderItems) {
-        tableModel.removeItems(orderItems);
     }
 
     public void tableSelectOrderItem(OrderItem orderItem) {
@@ -300,7 +293,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         amountPanel.add(tbTotalItemsLbl, gbc);
 
         // Total price
-        ILabel totalPriceLabel = new ILabel("Total price: ");
+        //ILabel totalPriceLabel = new ILabel("Total price: ");
         itemCntLabel.setHorizontalAlignment(ILabel.RIGHT);
         itemCntLabel.setVerticalAlignment(ILabel.CENTER);
         gbc.gridx = 1;
@@ -400,11 +393,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderNameLbl = new ILabel();
         Font f = tbOrderNameLbl.getFont();
         tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
-        DefaultComboBoxModel<Distributor> distributorCbModel = new DefaultComboBoxModel<>();
-        for (Distributor d : DbManager.db().getDistributors()) {
-            distributorCbModel.addElement(d);
-        }
-        tbDistributorCb = new JComboBox<>(distributorCbModel);
+        tbDistributorCb = new IComboBox<>( DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), true);
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (selectedOrder != null) {

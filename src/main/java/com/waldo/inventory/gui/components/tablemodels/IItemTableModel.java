@@ -54,7 +54,11 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 case 4: // Location
                     Location l = SearchManager.sm().findLocationById(item.getLocationId());
                     if (l != null && !l.isUnknown()) {
-                        return l.getPrettyString();
+                        if (item.isSet()) {
+                            return l.getLocationType().getName().substring(0,3);
+                        } else {
+                            return l.getPrettyString();
+                        }
                     }
                     return "";
             }

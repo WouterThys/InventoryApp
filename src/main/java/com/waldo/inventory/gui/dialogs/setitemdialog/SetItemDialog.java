@@ -1,11 +1,12 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog;
 
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemDialog;
+import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemLocationDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog.ValueParserDialog;
 
 import javax.swing.*;
@@ -82,7 +83,6 @@ public class SetItemDialog extends SetItemDialogLayout {
             }
             selectedSetItem = null;
         }
-
     }
 
     private void addSetItems(List<SetItem> itemsToAdd) {
@@ -104,6 +104,42 @@ public class SetItemDialog extends SetItemDialogLayout {
             getButtonNeutral().setEnabled(true);
             canClose = false;
             updateEnabledComponents();
+        }
+    }
+
+    private void computeLocations(boolean leftRight, boolean upDown, boolean overWrite, Location startLocation) {
+        LocationType locationType = item.getLocation().getLocationType();
+
+        long typeId = locationType.getId();
+        int row = startLocation.getRow();
+        int col = startLocation.getCol();
+
+        int maxRow = locationType.getRows();
+        int maxCol = locationType.getColumns();
+
+        for (SetItem setItem : getSetItems()) {
+            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
+                Location loc = SearchManager.sm().findLocation(typeId, row, col);
+                setItem.setLocationId(loc.getId());
+
+                int newRow = row;
+                int newCol = leftRight ? (col + 1) : (col - 1);
+                if (leftRight && newCol >= maxCol) {
+                    newRow = upDown ? (row+1) : (row-1);
+                    newCol = 0;
+                }
+
+                if (newRow >= 0 && newRow < maxRow) {
+                    row = newRow;
+                } else {
+                    return;
+                }
+                if (newCol >= 0 && newCol < maxCol) {
+                    col = newCol;
+                } else {
+                    return;
+                }
+            }
         }
     }
 
@@ -161,7 +197,10 @@ public class SetItemDialog extends SetItemDialogLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Add set item", new SetItem());
+        SetItem setItem = new SetItem();
+        setItem.setLocationId(item.getLocationId());
+        setItem.setItemId(item.getId());
+        EditSetItemDialog itemDialog = new EditSetItemDialog(application, "Add set item", setItem);
         if (itemDialog.showDialog() == IDialog.OK) {
             SetItem si = itemDialog.getSetItem();
 
@@ -204,13 +243,30 @@ public class SetItemDialog extends SetItemDialogLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        ValueParserDialog dialog = new ValueParserDialog(application, "Parse values");
-        if (dialog.showDialog() == IDialog.OK) {
-            List<SetItem> items = dialog.getSetItems();
-            if (items != null) {
-                addSetItems(items);
-                getButtonNeutral().setEnabled(true);
-                canClose = false;
+        if (e.getSource().equals(useKnownBtn) ) {
+            ValueParserDialog dialog = new ValueParserDialog(application, "Parse values");
+            if (dialog.showDialog() == IDialog.OK) {
+                List<SetItem> items = dialog.getSetItems();
+                if (items != null) {
+                    addSetItems(items);
+                    getButtonNeutral().setEnabled(true);
+                    canClose = false;
+                }
+            }
+        } else {
+            if (item.getLocation() != null) {
+                EditSetItemLocationDialog dialog = new EditSetItemLocationDialog(application, "Set locations", item.getLocation().getLocationType());
+                if (dialog.showDialog() == IDialog.OK) {
+                    computeLocations(
+                            dialog.leftToRight(),
+                            dialog.upDown(),
+                            dialog.overWrite(),
+                            dialog.startLocation()
+                    );
+                    updateTable();
+                    getButtonNeutral().setEnabled(true);
+                    canClose = false;
+                }
             }
         }
     }

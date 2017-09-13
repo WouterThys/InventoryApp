@@ -126,11 +126,9 @@ public class Order extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onOrdersChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onOrdersChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -138,10 +136,10 @@ public class Order extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onOrdersChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onOrdersChangedListenerList);
     }
 
     public static class SortAllOrders implements Comparator<Order> {

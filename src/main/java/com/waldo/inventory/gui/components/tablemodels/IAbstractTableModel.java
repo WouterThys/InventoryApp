@@ -10,6 +10,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     private final String[] columnNames;
     private final Class[] columnClasses;
+    private Comparator<? super T> comparator;
 
     private List<T> itemList;
 
@@ -19,19 +20,34 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         itemList = new ArrayList<>();
     }
 
+    IAbstractTableModel(String[] columnNames, Class[] columnClasses, Comparator<? super T> comparator) {
+        this.columnNames = columnNames;
+        this.columnClasses = columnClasses;
+        this.comparator = comparator;
+        itemList = new ArrayList<>();
+    }
+
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
         this.itemList = itemList;
     }
 
-    public void setItemList(List<T> itemList) {
-        this.itemList = itemList;
-        fireTableDataChanged();
+    IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList, Comparator<? super T> comparator) {
+        this.columnNames = columnNames;
+        this.columnClasses = columnClasses;
+        this.comparator = comparator;
+        setItemList(itemList);
     }
 
-    public void sortItemList(Comparator<? super T> c) {
-        this.itemList.sort(c);
+    public void setItemList(List<T> itemList) {
+        this.itemList = itemList;
+
+        if (comparator != null) {
+            this.itemList.sort(comparator);
+        }
+
+        fireTableDataChanged();
     }
 
     public void clearItemList() {
@@ -43,7 +59,11 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         for(T t : itemsToDelete) {
             int ndx = itemList.indexOf(t);
             itemList.remove(ndx);
+
             fireTableRowsDeleted(ndx, ndx);
+        }
+        if (comparator != null) {
+            this.itemList.sort(comparator);
         }
     }
 
@@ -51,8 +71,11 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         for (T t : itemsToAdd) {
             if (!itemList.contains(t)) {
                 itemList.add(t);
-                int ndx = itemList.indexOf(t);
-                //fireTableRowsInserted(ndx, ndx);
+
+                if (comparator != null) {
+                    this.itemList.sort(comparator);
+                }
+
                 fireTableDataChanged();
             }
         }
@@ -60,6 +83,9 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     public void updateTable() {
         if (itemList != null) {
+            if (comparator != null) {
+                this.itemList.sort(comparator);
+            }
             if (itemList.size() == 1) {
                 fireTableRowsUpdated(0, 0);
             } else if (itemList.size() > 1){

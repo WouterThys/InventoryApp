@@ -1,13 +1,20 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Location;
+import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ISpinner;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
+import com.waldo.inventory.gui.dialogs.locationmapdialog.LocationMapDialog;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class EditSetItemDialog extends IDialog {
 
@@ -15,6 +22,11 @@ public class EditSetItemDialog extends IDialog {
     private ITextField valueTextField;
     private SpinnerNumberModel spinnerModel;
     private ISpinner amountSpinner;
+
+    // Location
+    private ITextField rowTf;
+    private ITextField colTf;
+    private JButton setLocationBtn;
 
     private SetItem setItem;
 
@@ -29,6 +41,22 @@ public class EditSetItemDialog extends IDialog {
 
     public SetItem getSetItem() {
         return setItem;
+    }
+
+    private int getRow() {
+        String rTxt = rowTf.getText();
+        if (rTxt != null && !rTxt.isEmpty()) {
+            return Statics.indexOfAlphabet(rTxt);
+        }
+        return -1;
+    }
+
+    private int getCol() {
+        String cTxt = colTf.getText();
+        if (cTxt != null && !cTxt.isEmpty()) {
+            return Integer.valueOf(cTxt);
+        }
+        return  -1;
     }
 
     private boolean verify() {
@@ -55,6 +83,15 @@ public class EditSetItemDialog extends IDialog {
             setItem.setName(nameTextField.getText());
             setItem.getValue().setValue(Double.valueOf(valueTextField.getText()));
             setItem.setAmount(spinnerModel.getNumber().intValue());
+
+            if (getCol() >=0 && getRow() >= 0) {
+                long typeId = setItem.getItem().getLocationTypeId();
+                Location newLocation = SearchManager.sm().findLocation(typeId, getRow(), getCol());
+                if (newLocation != null)  {
+                    setItem.setLocationId(newLocation.getId());
+                }
+            }
+
             super.onOK();
         }
     }
@@ -66,6 +103,53 @@ public class EditSetItemDialog extends IDialog {
 
         spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(spinnerModel);
+
+        colTf = new ITextField();
+        colTf.setEnabled(false);
+        rowTf = new ITextField();
+        rowTf.setEnabled(false);
+        setLocationBtn = new JButton("Set");
+        setLocationBtn.addActionListener(e -> {
+            LocationType locationType = setItem.getItem().getLocation().getLocationType();
+            if (locationType != null && locationType.canBeSaved() && !locationType.isUnknown()) {
+                if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
+                    LocationMapDialog dialog;
+                    dialog = new LocationMapDialog(application,
+                            "Select",
+                            locationType,
+                            setItem.getLocation().getRow(),
+                            setItem.getLocation().getCol());
+                    if (dialog.showDialog() == IDialog.OK) {
+                        rowTf.setText(Statics.Alphabet[dialog.getRow()]);
+                        colTf.setText(String.valueOf(dialog.getCol()));
+                    }
+                }
+            }
+        });
+    }
+
+    private JPanel locationPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2,2,2,2);
+
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(rowTf, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(colTf, gbc);
+
+        gbc.gridx = 2; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(setLocationBtn, gbc);
+
+        return panel;
     }
 
     @Override
@@ -75,8 +159,8 @@ public class EditSetItemDialog extends IDialog {
         // Add all
         getContentPanel().add(new ITitledEditPanel(
                 "",
-                new String[] {"Name: ", "Value: ", "Amount: "},
-                new JComponent[] {nameTextField, valueTextField, amountSpinner}
+                new String[] {"Name: ", "Value: ", "Amount: ", "Location: "},
+                new JComponent[] {nameTextField, valueTextField, amountSpinner, locationPanel()}
         ));
     }
 
@@ -88,6 +172,19 @@ public class EditSetItemDialog extends IDialog {
             nameTextField.setText(setItem.getName());
             valueTextField.setText(String.valueOf(setItem.getValue().getValue()));
             spinnerModel.setValue(setItem.getAmount());
+
+            Location location = setItem.getItem().getLocation();
+            if (location != null) {
+                if (setItem.getLocation() == null) {
+                    setItem.setLocationId(DbObject.UNKNOWN_ID);
+                } else {
+                    rowTf.setText(Statics.Alphabet[setItem.getLocation().getRow()]);
+                    colTf.setText(String.valueOf(setItem.getLocation().getCol()));
+                }
+                setLocationBtn.setEnabled(true);
+            } else {
+                setLocationBtn.setEnabled(false);
+            }
         }
     }
 }

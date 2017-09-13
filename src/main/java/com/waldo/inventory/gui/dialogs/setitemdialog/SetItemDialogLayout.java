@@ -26,7 +26,8 @@ public abstract class SetItemDialogLayout extends IDialog implements
     ITable setItemTable;
 
     private IdBToolBar toolBar;
-    private JButton useKnownBtn;
+    JButton useKnownBtn;
+    private JButton locateBtn;
 
      /*
      *                  VARIABLES
@@ -63,6 +64,10 @@ public abstract class SetItemDialogLayout extends IDialog implements
         tableModel.setItemList(list);
     }
 
+    java.util.List<SetItem> getSetItems() {
+        return tableModel.getItemList();
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -76,7 +81,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Table
-        tableModel = new ISetItemTableModel();
+        tableModel = new ISetItemTableModel(new SetItem.SetItemComparator());
         setItemTable = new ITable(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
@@ -85,9 +90,12 @@ public abstract class SetItemDialogLayout extends IDialog implements
         // Tool bar
         toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
 
-        // Button
-        useKnownBtn = new JButton("Add special");
+        // Buttons
+        useKnownBtn = new JButton("Add series");
         useKnownBtn.addActionListener(this);
+
+        locateBtn = new JButton("Locations");
+        locateBtn.addActionListener(this);
 
     }
 
@@ -98,8 +106,9 @@ public abstract class SetItemDialogLayout extends IDialog implements
         JScrollPane pane = new JScrollPane(setItemTable);
         pane.setPreferredSize(new Dimension(600, 400));
 
-        JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(useKnownBtn, BorderLayout.EAST);
+        JPanel northPanel = new JPanel();
+        northPanel.add(useKnownBtn);
+        northPanel.add(locateBtn);
 
         getContentPanel().add(northPanel, BorderLayout.NORTH);
         getContentPanel().add(pane, BorderLayout.CENTER);

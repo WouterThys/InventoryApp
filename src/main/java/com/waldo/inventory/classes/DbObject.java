@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.LogManager;
 
 import java.sql.*;
+import java.util.Comparator;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.scriptResource;
@@ -44,6 +45,7 @@ public abstract class DbObject {
     public static final int TYPE_KC_ITEM_LINK = 31;
 
     public static final int TYPE_LOG = 100;
+    public static final int TYPE_DB_HISTORY = 101;
 
     protected String TABLE_NAME;
     protected boolean isInserted = false;
@@ -94,6 +96,7 @@ public abstract class DbObject {
         if (dbObject instanceof KcItemLink) return TYPE_KC_ITEM_LINK;
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
+        if (dbObject instanceof DbHistory) return TYPE_DB_HISTORY;
 
         return TYPE_UNKNOWN;
     }
@@ -167,6 +170,19 @@ public abstract class DbObject {
 
         newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
+    }
+
+    public static class DbObjectNameComparator<T extends DbObject> implements Comparator<T> {
+        @Override
+        public int compare(T dbo1, T dbo2) {
+            if (dbo1.isUnknown() && !dbo2.isUnknown()) {
+                return -1;
+            }
+            if (!dbo1.isUnknown() && dbo2.isUnknown()) {
+                return 1;
+            }
+            return dbo1.getName().compareTo(dbo2.getName());
+        }
     }
 
     public boolean isUnknown() {
