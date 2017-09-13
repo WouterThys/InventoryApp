@@ -1,12 +1,11 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -18,41 +17,12 @@ public class LocationType extends DbObject {
     // Variables
     private int rows;
     private int columns;
+    private boolean custom; // Not a straight forward location group
 
     public LocationType() {
         super(TABLE_NAME);
     }
 
-
-    public static LocationType createDummyLocationType() {
-        LocationType locationType = new LocationType();
-        locationType.canBeSaved = false;
-        return locationType;
-    }
-
-    public List<String> createRowStrings() {
-        List<String> rowStrings = new ArrayList<>();
-        rowStrings.addAll(Arrays.asList(Statics.Alphabet).subList(0, rows));
-        return rowStrings;
-    }
-
-    public List<String> createColumnStrings() {
-        List<String> columnStrings = new ArrayList<>();
-        for (int i = 0; i < columns; i++) {
-            columnStrings.add(String.valueOf(i));
-        }
-        return columnStrings;
-    }
-
-    public List<String> createLocationStrings() {
-        List<String> locationStrings = new ArrayList<>();
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < columns; c++) {
-                locationStrings.add(Statics.Alphabet[r] + String.valueOf(c));
-            }
-        }
-        return locationStrings;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -63,6 +33,7 @@ public class LocationType extends DbObject {
             }
             if (!(((LocationType)obj).getColumns() == getColumns())) return false;
             if (!(((LocationType)obj).getRows() == getRows())) return false;
+            if (!(((LocationType)obj).isCustom() == isCustom())) return false;
         }
         return result;
     }
@@ -73,6 +44,7 @@ public class LocationType extends DbObject {
 
         statement.setInt(ndx++, getRows());
         statement.setInt(ndx++, getColumns());
+        statement.setBoolean(ndx++, isCustom());
 
         return ndx;
     }
@@ -85,6 +57,7 @@ public class LocationType extends DbObject {
         // Add variables
         cpy.setRows(getRows());
         cpy.setColumns(getColumns());
+        cpy.setCustom(isCustom());
 
         return cpy;
     }
@@ -129,6 +102,14 @@ public class LocationType extends DbObject {
         return u;
     }
 
+    public Location findLocation(int row, int col) {
+        return SearchManager.sm().findLocation(getId(), row, col).createCopy();
+    }
+
+    public List<Location> getLocations() {
+        return new ArrayList<>(SearchManager.sm().findLocationsByTypeId(getId()));
+    }
+
     // Getters and setters
 
     public int getRows() {
@@ -147,11 +128,12 @@ public class LocationType extends DbObject {
         this.columns = columns;
     }
 
-    public int getTotalDrawers() {
-        return getRows() * getColumns();
+    public boolean isCustom() {
+        return custom;
     }
 
-    public boolean hasDrawers() {
-        return (getRows() > 0 && getColumns() > 0);
+    public void setCustom(boolean custom) {
+        this.custom = custom;
     }
+
 }

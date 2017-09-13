@@ -871,6 +871,7 @@ public class DbManager {
                     l.setLocationTypeId(rs.getLong("locationTypeId"));
                     l.setRow(rs.getInt("row"));
                     l.setCol(rs.getInt("col"));
+                    l.setAlias(rs.getString("alias"));
 
                     l.setInserted(true);
                     if (l.isUnknown()) {
@@ -919,6 +920,7 @@ public class DbManager {
                     l.setIconPath(rs.getString("iconPath"));
                     l.setRows(rs.getInt("rows"));
                     l.setColumns(rs.getInt("columns"));
+                    l.setCustom(rs.getBoolean("custom"));
 
                     l.setInserted(true);
                     locationTypes.add(l);

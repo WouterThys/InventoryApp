@@ -35,8 +35,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
-    JButton detailCustomBtn;
-
+    private JButton detailCustomBtn;
     ITextField detailName;
     ISpinner detailRowsSpinner;
     ISpinner detailColumnsSpinner;

@@ -861,4 +861,14 @@ public class SearchManager {
         }
         return null;
     }
+
+    public List<Location> findLocationsByTypeId(long locationTypeId) {
+        List<Location> locations = new ArrayList<>();
+        for (Location location : db().getLocations()) {
+            if (location.getLocationTypeId() == locationTypeId) {
+                locations.add(location);
+            }
+        }
+        return locations;
+    }
 }

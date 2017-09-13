@@ -268,7 +268,9 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom");
-        dialog.showDialog();
+        if (selectedLocationType != null) {
+            CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom", selectedLocationType);
+            dialog.showDialog();
+        }
     }
 }

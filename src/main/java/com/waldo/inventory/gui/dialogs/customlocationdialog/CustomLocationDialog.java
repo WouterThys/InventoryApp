@@ -1,22 +1,27 @@
 package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILocationButton;
 
+import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomLocationDialog extends CustomLocationDialogLayout {
 
 
-    public CustomLocationDialog(Application application, String title) {
+    public CustomLocationDialog(Application application, String title, LocationType locationType) {
         super(application, title);
+
+        this.locationType = locationType;
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents(locationType);
 
     }
 
@@ -33,6 +38,7 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
                 String cols[] = row.split(",");
                 for (String col : cols) {
                     ILocationButton btn = new ILocationButton(r, c);
+                    locationMapPanel.addButtonActionListener(btn, r, c);
                     buttonList.add(btn);
                     c++;
                 }
@@ -49,7 +55,9 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     //
     @Override
     public void onClick(ActionEvent e, List<DbObject> items, int row, int column) {
-
+        selectedLocationButton = locationMapPanel.findButton(row, column);
+        updateEnabledComponents();
+        setButtonDetails(locationType.findLocation(row, column));
     }
 
     //
@@ -58,9 +66,31 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     @Override
     public void actionPerformed(ActionEvent e) {
         String input = inputTa.getText();
+        selectedLocationButton = null;
+        locationMapPanel.drawButtons(convertInput(input));
+        updateEnabledComponents();
+    }
 
-        locationButtonList = convertInput(input);
+    //
+    // Row and col spinners
+    //
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        selectedLocationButton = null;
 
-        locationMapPanel.drawButtons(locationButtonList);
+        updateEnabledComponents();
+    }
+
+    //
+    // Custom check box
+    //
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED || e.getStateChange() == ItemEvent.DESELECTED) {
+            locationType.setCustom(customTb.isSelected());
+            setLocationDetails(locationType);
+            selectedLocationButton = null;
+            updateEnabledComponents();
+        }
     }
 }

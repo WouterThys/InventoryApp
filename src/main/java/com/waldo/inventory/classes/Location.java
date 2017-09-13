@@ -9,16 +9,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
 
 public class Location extends DbObject {
 
     public static final String TABLE_NAME = "locations";
 
+    // private String name; -> in DbObject
     private long locationTypeId;
     private LocationType locationType;
     private int row = 0;
     private int col = 0;
+    private String alias;
 
     public Location() {
         super(TABLE_NAME);
@@ -27,7 +28,11 @@ public class Location extends DbObject {
     @Override
     public String toString() {
         if (getLocationType() != null) {
-            return getLocationType().getName() + "("+ Statics.Alphabet[row]+","+col+")";
+            if (getLocationType().isCustom()) {
+                return getName();
+            } else {
+                return getLocationType().getName() + "(" + Statics.Alphabet[row] + "," + col + ")";
+            }
         } else {
             return "*" + "("+ Statics.Alphabet[row]+","+col+")";
         }
@@ -52,6 +57,7 @@ public class Location extends DbObject {
         statement.setLong(ndx++, getLocationTypeId());
         statement.setInt(ndx++, getRow());
         statement.setInt(ndx++, getCol());
+        statement.setString(ndx++, getAlias());
 
         return ndx;
     }
@@ -75,6 +81,10 @@ public class Location extends DbObject {
                 System.out.println("col differs");
                 return false;
             }
+            if (!(((Location)obj).getAlias().equals(getAlias()))) {
+                System.out.println("alias differs");
+                return false;
+            }
         }
         return result;
     }
@@ -96,6 +106,8 @@ public class Location extends DbObject {
                 return true;
             } else if (getPrettyString().toUpperCase().contains(searchTerm)) {
                 return true;
+            } else if (getAlias().toUpperCase().contains(searchTerm)) {
+                return true;
             }
         }
         return false;
@@ -109,6 +121,7 @@ public class Location extends DbObject {
         cpy.setLocationTypeId(getLocationTypeId());
         cpy.setRow(getRow());
         cpy.setCol(getCol());
+        cpy.setAlias(getAlias());
 
         return cpy;
     }
@@ -188,5 +201,13 @@ public class Location extends DbObject {
 
     public void setCol(int column) {
         this.col = column;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }
