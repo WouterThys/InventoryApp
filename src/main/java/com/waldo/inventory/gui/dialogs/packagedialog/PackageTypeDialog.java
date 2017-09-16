@@ -19,6 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import static com.waldo.inventory.database.DbManager.db;
+
 public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     private boolean canClose = true;
@@ -31,7 +33,15 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
         DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
         createNewMouseAdapter();
-        updateComponents(null);
+        updateWithFirstPackageType();
+    }
+
+    private void updateWithFirstPackageType() {
+        if (db().getPackageTypes().size() > 0) {
+            updateComponents(db().getPackageTypes().get(0));
+        } else {
+            updateComponents(null);
+        }
     }
 
     private void createNewMouseAdapter() {
@@ -114,7 +124,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
             @Override
             public void onDeleted(PackageType object) {
-                updateComponents(null);
+                updateWithFirstPackageType();
             }
 
             @Override
@@ -302,7 +312,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateComponents(null);
+        updateWithFirstPackageType();
     }
 
     @Override

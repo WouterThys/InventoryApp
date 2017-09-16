@@ -27,7 +27,16 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
 
         db().addOnLocationTypeChangedListener(this);
 
-        updateComponents(null);
+        updateWithFirstLocationType();
+    }
+
+
+    private void updateWithFirstLocationType() {
+        if (db().getLocationTypes().size() > 0) {
+            updateComponents(db().getLocationTypes().get(0));
+        } else {
+            updateComponents(null);
+        }
     }
 
     private void setDetails() {
@@ -140,7 +149,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
 
     @Override
     public void onDeleted(LocationType object) {
-        updateComponents(null);
+        updateWithFirstLocationType();
     }
 
     @Override

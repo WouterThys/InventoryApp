@@ -29,7 +29,15 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
         db().addOnManufacturerChangedListener(this);
 
-        updateComponents(null);
+        updateWithFirstManufacturer();
+    }
+
+    private void updateWithFirstManufacturer() {
+        if (db().getManufacturers().size() > 0) {
+            updateComponents(db().getManufacturers().get(0));
+        } else {
+            updateComponents(null);
+        }
     }
 
     @Override
@@ -202,7 +210,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     public void onDeleted(Manufacturer manufacturer) {
-        updateComponents(null);
+        updateWithFirstManufacturer();
     }
 
     @Override
@@ -236,7 +244,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateComponents(null);
+        updateWithFirstManufacturer();
     }
 
     @Override

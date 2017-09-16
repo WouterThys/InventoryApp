@@ -34,7 +34,15 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
         db().addOnProjectTypeChangedListener(this);
 
-        updateComponents(null);
+        updateWithFirstProjectType();
+    }
+
+    private void updateWithFirstProjectType() {
+        if (db().getProjectTypes().size() > 0) {
+            updateComponents(db().getProjectTypes().get(0));
+        } else {
+            updateComponents(null);
+        }
     }
 
     @Override
@@ -203,7 +211,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     @Override
     public void onDeleted(ProjectType projectType) {
-        updateComponents(null);
+        updateWithFirstProjectType();
     }
 
     @Override
@@ -237,7 +245,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateComponents(null);
+        updateWithFirstProjectType();
     }
 
     @Override

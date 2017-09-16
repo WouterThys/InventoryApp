@@ -601,7 +601,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 e1.printStackTrace();
             }
         } else {
-            manufacturerComboBox.setSelectedIndex(0);
+            if (manufacturerComboBox.getModel().getSize() > 0) {
+                manufacturerComboBox.setSelectedIndex(0);
+            }
         }
 
         // REMARKS
