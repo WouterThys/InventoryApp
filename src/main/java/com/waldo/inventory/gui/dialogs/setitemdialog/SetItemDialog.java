@@ -116,7 +116,6 @@ public class SetItemDialog extends SetItemDialogLayout {
         int row = startLocation.getRow();
         int col = startLocation.getCol();
 
-        // TODO with locations
 //        int maxRow = locationType.getRows();
 //        int maxCol = locationType.getColumns();
 //

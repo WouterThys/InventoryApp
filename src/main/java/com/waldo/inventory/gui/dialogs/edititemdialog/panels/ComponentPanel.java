@@ -313,7 +313,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         setValuesBtn.addActionListener(e -> {
             if (newItem != null && newItem.getId() > DbObject.UNKNOWN_ID) {
                 SetItemDialog dialog = new SetItemDialog(application, "Set items", newItem);
-                dialog.showDialog();
+                if (dialog.showDialog() == IDialog.OK) {
+                    editedListener.onValueChanged(null, "", 0, 0);
+                }
             } else {
                 JOptionPane.showMessageDialog(ComponentPanel.this,
                         "Save item first!",

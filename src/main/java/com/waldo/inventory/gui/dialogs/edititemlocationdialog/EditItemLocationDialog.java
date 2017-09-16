@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.locationmapdialog;
+package com.waldo.inventory.gui.dialogs.edititemlocationdialog;
 
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;

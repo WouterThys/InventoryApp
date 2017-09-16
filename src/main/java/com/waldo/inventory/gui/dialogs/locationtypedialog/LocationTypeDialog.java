@@ -32,8 +32,9 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
 
 
     private void updateWithFirstLocationType() {
-        if (db().getLocationTypes().size() > 0) {
-            updateComponents(db().getLocationTypes().get(0));
+        if (db().getLocationTypes().size() > 1) {
+            updateComponents(db().getLocationTypes().get(1)); // 0 is Unknown
+            setDetails();
         } else {
             updateComponents(null);
         }

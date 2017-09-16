@@ -1,17 +1,14 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Location;
-import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.classes.SetItem;
-import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ISpinner;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
-import com.waldo.inventory.gui.dialogs.locationmapdialog.EditItemLocationDialog;
+import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocationDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,20 +40,14 @@ public class EditSetItemDialog extends IDialog {
         return setItem;
     }
 
-    private int getRow() {
-        String rTxt = rowTf.getText();
-        if (rTxt != null && !rTxt.isEmpty()) {
-            return Statics.indexOfAlphabet(rTxt);
+    private void updateLocationFields(Location location) {
+        if (location != null && !location.isUnknown()) {
+            rowTf.setText(Statics.Alphabet[setItem.getLocation().getRow()]);
+            colTf.setText(String.valueOf(setItem.getLocation().getCol()));
+        } else {
+            rowTf.clearText();
+            colTf.clearText();
         }
-        return -1;
-    }
-
-    private int getCol() {
-        String cTxt = colTf.getText();
-        if (cTxt != null && !cTxt.isEmpty()) {
-            return Integer.valueOf(cTxt);
-        }
-        return  -1;
     }
 
     private boolean verify() {
@@ -84,14 +75,6 @@ public class EditSetItemDialog extends IDialog {
             setItem.getValue().setValue(Double.valueOf(valueTextField.getText()));
             setItem.setAmount(spinnerModel.getNumber().intValue());
 
-            if (getCol() >=0 && getRow() >= 0) {
-                long typeId = setItem.getItem().getLocation().getLocationTypeId();
-                Location newLocation = SearchManager.sm().findLocation(typeId, getRow(), getCol());
-                if (newLocation != null)  {
-                    setItem.setLocationId(newLocation.getId());
-                }
-            }
-
             super.onOK();
         }
     }
@@ -110,21 +93,15 @@ public class EditSetItemDialog extends IDialog {
         rowTf.setEnabled(false);
         setLocationBtn = new JButton("Set");
         setLocationBtn.addActionListener(e -> {
-            LocationType locationType = setItem.getItem().getLocation().getLocationType();
-            if (locationType != null && locationType.canBeSaved() && !locationType.isUnknown()) {
-                EditItemLocationDialog dialog;
-                dialog = new EditItemLocationDialog(application,
-                        "Select",
-                        setItem.getLocation());
-                if (dialog.showDialog() == IDialog.OK) {
-                    Location location = dialog.getItemLocation();
-                    if (location != null) {
-                        rowTf.setText(Statics.Alphabet[location.getRow()]);
-                        colTf.setText(String.valueOf(location.getCol()));
-                    } else {
-                        setItem.setLocationId(DbObject.UNKNOWN_ID);
-                    }
+            EditItemLocationDialog dialog = new EditItemLocationDialog(application, "Location", setItem.getLocation());
+            if (dialog.showDialog() == IDialog.OK) {
+                Location newLoc = dialog.getItemLocation();
+                if (newLoc != null) {
+                    setItem.setLocationId(newLoc.getId());
+                } else {
+                    setItem.setLocationId(-1);
                 }
+                updateLocationFields(newLoc);
             }
         });
     }
@@ -173,19 +150,7 @@ public class EditSetItemDialog extends IDialog {
             nameTextField.setText(setItem.getName());
             valueTextField.setText(String.valueOf(setItem.getValue().getValue()));
             spinnerModel.setValue(setItem.getAmount());
-
-            Location location = setItem.getItem().getLocation();
-            if (location != null) {
-                if (setItem.getLocation() == null) {
-                    setItem.setLocationId(DbObject.UNKNOWN_ID);
-                } else {
-                    rowTf.setText(Statics.Alphabet[setItem.getLocation().getRow()]);
-                    colTf.setText(String.valueOf(setItem.getLocation().getCol()));
-                }
-                setLocationBtn.setEnabled(true);
-            } else {
-                setLocationBtn.setEnabled(false);
-            }
+            updateLocationFields(setItem.getLocation());
         }
     }
 }

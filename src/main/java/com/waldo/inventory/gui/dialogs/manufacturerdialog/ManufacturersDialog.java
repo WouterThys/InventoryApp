@@ -33,8 +33,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     }
 
     private void updateWithFirstManufacturer() {
-        if (db().getManufacturers().size() > 0) {
-            updateComponents(db().getManufacturers().get(0));
+        if (db().getManufacturers().size() > 1) {
+            updateComponents(db().getManufacturers().get(1)); // 0 is unknown
+            setDetails();
         } else {
             updateComponents(null);
         }

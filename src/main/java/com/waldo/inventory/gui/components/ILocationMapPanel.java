@@ -65,17 +65,19 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     public void createButtonsFromLocations(List<Location> locationList) {
         buttonList.clear();
         for (Location location : locationList) {
-            ILocationButton button = new ILocationButton(location);
-            addButtonActionListener(button);
+            if (!location.isUnknown()) {
+                ILocationButton button = new ILocationButton(location);
+                addButtonActionListener(button);
 
-            buttonList.add(button);
+                buttonList.add(button);
 
-            button.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    button.showPopup(e, application);
-                }
-            });
+                button.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        button.showPopup(e, application);
+                    }
+                });
+            }
         }
     }
 

@@ -170,15 +170,15 @@ public class Location extends DbObject {
     public List<DbObject> getItems() {
         if (items == null) {
             items = new ArrayList<>();
-            List<Item> itemList = SearchManager.sm().findItemsWithLocation(getId());
+            List<Item> itemList = DbManager.db().getItems();
             for (Item item : itemList) {
                 // If locationId < UNKNOWN_ID, the item has no location or the location is derived from the SetItems
-                if (item.getLocationId() > UNKNOWN_ID) {
+                if (item.getLocationId() == getId()) {
                     items.add(item);
                 } else {
                     if (item.isSet()) {
                         for (SetItem setItem : item.getSetItems()) {
-                            if (setItem.getLocationId() > UNKNOWN_ID) {
+                            if (setItem.getLocationId() == getId()) {
                                 items.add(setItem);
                             }
                         }

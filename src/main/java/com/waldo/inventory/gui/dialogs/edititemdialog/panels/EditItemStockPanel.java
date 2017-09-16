@@ -8,7 +8,7 @@ import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.locationmapdialog.EditItemLocationDialog;
+import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocationDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -40,7 +40,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     }
 
     private void updateLocationFields(Location location) {
-        if (location != null) {
+        if (location != null && !location.isUnknown()) {
             rowTf.setText(Statics.Alphabet[location.getRow()]);
             colTf.setText(String.valueOf(location.getCol()));
             locationTypeTf.setText(location.getLocationType().getName());
@@ -205,7 +205,11 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
                         newItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {
                     Location newLocation = dialog.getItemLocation();
-                    newItem.setLocationId(newLocation.getId());
+                    if (newLocation != null) {
+                        newItem.setLocationId(newLocation.getId());
+                    } else {
+                        newItem.setLocationId(DbObject.UNKNOWN_ID);
+                    }
                     updateLocationFields(newLocation);
                     editedListener.onValueChanged(null, "", 0, 0);
                 }
