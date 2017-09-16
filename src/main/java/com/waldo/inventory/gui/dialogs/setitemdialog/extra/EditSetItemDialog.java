@@ -112,17 +112,15 @@ public class EditSetItemDialog extends IDialog {
         setLocationBtn.addActionListener(e -> {
             LocationType locationType = setItem.getItem().getLocation().getLocationType();
             if (locationType != null && locationType.canBeSaved() && !locationType.isUnknown()) {
-                if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
-                    LocationMapDialog dialog;
-                    dialog = new LocationMapDialog(application,
-                            "Select",
-                            locationType,
-                            setItem.getLocation().getRow(),
-                            setItem.getLocation().getCol());
-                    if (dialog.showDialog() == IDialog.OK) {
-                        rowTf.setText(Statics.Alphabet[dialog.getRow()]);
-                        colTf.setText(String.valueOf(dialog.getCol()));
-                    }
+                LocationMapDialog dialog;
+                dialog = new LocationMapDialog(application,
+                        "Select",
+                        locationType,
+                        setItem.getLocation().getRow(),
+                        setItem.getLocation().getCol());
+                if (dialog.showDialog() == IDialog.OK) {
+                    rowTf.setText(Statics.Alphabet[dialog.getRow()]);
+                    colTf.setText(String.valueOf(dialog.getCol()));
                 }
             }
         });

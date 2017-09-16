@@ -31,15 +31,7 @@ public class Location extends DbObject {
 
     @Override
     public String toString() {
-        if (getLocationType() != null) {
-            if (getLocationType().isCustom()) {
-                return getName();
-            } else {
-                return getLocationType().getName() + getName();
-            }
-        } else {
-            return "*" + getName();
-        }
+        return getName();
     }
 
     public String getPrettyString() {
@@ -171,28 +163,28 @@ public class Location extends DbObject {
         db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onLocationsChangedListenerList);
     }
 
+    public boolean hasItems() {
+        if(SearchManager.sm().findItemsWithLocation(getId()).size() > 0) {
+            return true;
+        }
+        if(SearchManager.sm().findSetItemsWithLocation(getId()).size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public List<DbObject> getItems() {
         if (items == null) {
-            List<Item> itemList = SearchManager.sm().findItemsWithLocation(locationTypeId);
+            List<Item> itemList = SearchManager.sm().findItemsWithLocation(getId());
+            List<SetItem> setItemList = SearchManager.sm().findSetItemsWithLocation(getId());
             List<DbObject> itemsForLocation = new ArrayList<>();
 
             for (Item item : itemList) {
-                if (item.isSet()) {
-                    boolean locationsFound = false;
-                    for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
-                        if (setItem.getLocationId() == getId()) {
-                            locationsFound = true;
-                            itemsForLocation.add(setItem);
-                        }
-
-                        if (!locationsFound) {
-                            itemsForLocation.add(item);
-                        }
-                    }
-                } else {
+                if (!item.isSet()) {
                     itemsForLocation.add(item);
                 }
             }
+            itemsForLocation.addAll(setItemList);
             items = itemsForLocation;
         }
 

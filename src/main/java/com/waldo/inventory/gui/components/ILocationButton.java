@@ -56,19 +56,27 @@ public class ILocationButton extends JButton {
 
     private void addItemsToPopup(JPopupMenu popupMenu, Application application) {
         for (DbObject item : location.getItems()) {
-            // TODO stuff with set items
-            JMenuItem menu = new JMenuItem(item.getName());
-            menu.addActionListener(e -> {
-                if (item instanceof Item) {
-                    EditItemDialog dialog = new EditItemDialog(application, "Item", (Item)item);
-                    dialog.showDialog();
-                } else if (item instanceof SetItem) {
-                    EditItemDialog dialog = new EditItemDialog(application, "Item", ((SetItem)item).getItem());
-                    dialog.showDialog();
-                }
-            });
 
-            popupMenu.add(menu);
+            JMenuItem menu;
+            if (item instanceof Item) {
+                menu = new JMenuItem(item.getName());
+            } else if (item instanceof SetItem) {
+                menu = new JMenuItem(item.getName() + " - " +((SetItem) item).getValue());
+            } else {
+                menu = null;
+            }
+            if (menu != null) {
+                menu.addActionListener(e -> {
+                    if (item instanceof Item) {
+                        EditItemDialog dialog = new EditItemDialog(application, "Item", (Item) item);
+                        dialog.showDialog();
+                    } else {
+                        EditItemDialog dialog = new EditItemDialog(application, "Item", ((SetItem) item).getItem());
+                        dialog.showDialog();
+                    }
+                });
+                popupMenu.add(menu);
+            }
         }
     }
 

@@ -392,10 +392,32 @@ public class SearchManager {
         return null;
     }
 
-    public List<Item> findItemsWithLocation(long locationTypeId) {
+    public List<Item> findItemsWithLocationType(long locationTypeId) {
         List<Item> items = new ArrayList<>();
         for (Item item : db().getItems()) {
             if (item.getLocation().getLocationTypeId() == locationTypeId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemsWithLocation(long locationId) {
+        List<Item> items = new ArrayList<>();
+        for (Item item : db().getItems()) {
+            Location loc = item.getLocation();
+            if (loc != null && loc.getId() == locationId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public List<SetItem> findSetItemsWithLocation(long locationId) {
+        List<SetItem> items = new ArrayList<>();
+        for (SetItem item : db().getSetItems()) {
+            Location loc = item.getLocation();
+            if (loc != null && loc.getId() == locationId) {
                 items.add(item);
             }
         }

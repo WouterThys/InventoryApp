@@ -5,7 +5,6 @@ import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -13,11 +12,6 @@ import static com.waldo.inventory.database.DbManager.db;
 public class LocationType extends DbObject {
 
     public static final String TABLE_NAME = "locationtypes";
-
-    // Variables
-    private int rows;
-    private int columns;
-    private boolean custom; // Not a straight forward location group
 
     public LocationType() {
         super(TABLE_NAME);
@@ -31,33 +25,19 @@ public class LocationType extends DbObject {
             if (!(obj instanceof LocationType)) {
                 return false;
             }
-            if (!(((LocationType)obj).getColumns() == getColumns())) return false;
-            if (!(((LocationType)obj).getRows() == getRows())) return false;
-            if (!(((LocationType)obj).isCustom() == isCustom())) return false;
         }
         return result;
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = addBaseParameters(statement);
-
-        statement.setInt(ndx++, getRows());
-        statement.setInt(ndx++, getColumns());
-        statement.setBoolean(ndx++, isCustom());
-
-        return ndx;
+        return addBaseParameters(statement);
     }
 
     @Override
     public LocationType createCopy(DbObject copyInto) {
         LocationType cpy = (LocationType) copyInto;
         copyBaseFields(cpy);
-
-        // Add variables
-        cpy.setRows(getRows());
-        cpy.setColumns(getColumns());
-        cpy.setCustom(isCustom());
 
         return cpy;
     }
@@ -103,33 +83,6 @@ public class LocationType extends DbObject {
     }
 
     public List<Location> getLocations() {
-        return new ArrayList<>(SearchManager.sm().findLocationsByTypeId(getId()));
+        return SearchManager.sm().findLocationsByTypeId(getId());
     }
-
-    // Getters and setters
-
-    public int getRows() {
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
-    }
-
-    public boolean isCustom() {
-        return custom;
-    }
-
-    public void setCustom(boolean custom) {
-        this.custom = custom;
-    }
-
 }

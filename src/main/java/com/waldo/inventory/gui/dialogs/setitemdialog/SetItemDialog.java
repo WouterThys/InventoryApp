@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog;
 
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Location;
+import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -114,33 +116,34 @@ public class SetItemDialog extends SetItemDialogLayout {
         int row = startLocation.getRow();
         int col = startLocation.getCol();
 
-        int maxRow = locationType.getRows();
-        int maxCol = locationType.getColumns();
-
-        for (SetItem setItem : getSetItems()) {
-            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
-                Location loc = SearchManager.sm().findLocation(typeId, row, col);
-                setItem.setLocationId(loc.getId());
-
-                int newRow = row;
-                int newCol = leftRight ? (col + 1) : (col - 1);
-                if (leftRight && newCol >= maxCol) {
-                    newRow = upDown ? (row+1) : (row-1);
-                    newCol = 0;
-                }
-
-                if (newRow >= 0 && newRow < maxRow) {
-                    row = newRow;
-                } else {
-                    return;
-                }
-                if (newCol >= 0 && newCol < maxCol) {
-                    col = newCol;
-                } else {
-                    return;
-                }
-            }
-        }
+        // TODO with locations
+//        int maxRow = locationType.getRows();
+//        int maxCol = locationType.getColumns();
+//
+//        for (SetItem setItem : getSetItems()) {
+//            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
+//                Location loc = SearchManager.sm().findLocation(typeId, row, col);
+//                setItem.setLocationId(loc.getId());
+//
+//                int newRow = row;
+//                int newCol = leftRight ? (col + 1) : (col - 1);
+//                if (leftRight && newCol >= maxCol) {
+//                    newRow = upDown ? (row+1) : (row-1);
+//                    newCol = 0;
+//                }
+//
+//                if (newRow >= 0 && newRow < maxRow) {
+//                    row = newRow;
+//                } else {
+//                    return;
+//                }
+//                if (newCol >= 0 && newCol < maxCol) {
+//                    col = newCol;
+//                } else {
+//                    return;
+//                }
+//            }
+//        }
     }
 
     @Override

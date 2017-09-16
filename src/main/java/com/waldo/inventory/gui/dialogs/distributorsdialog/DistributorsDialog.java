@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -52,8 +51,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         }
 
         if (canClose) {
-            dialogResult = OK;
-            dispose();
+            super.onOK();
         }
     }
 

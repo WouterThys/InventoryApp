@@ -262,20 +262,17 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         setLocationBtn.addActionListener(e -> {
             LocationType locationType = (LocationType) locationTypeCb.getSelectedItem();
             if (locationType != null &&locationType.canBeSaved() && !locationType.isUnknown()) {
-                if (locationType.getRows() > 0 && locationType.getColumns() > 0) {
-                    LocationMapDialog dialog;
-                    dialog = new LocationMapDialog(application,
-                            "Select",
-                            locationType,
-                            newItem.getLocation().getRow(),
-                            newItem.getLocation().getCol());
-
-                    if (dialog.showDialog() == IDialog.OK) {
-                        rowTf.setText(Statics.Alphabet[dialog.getRow()]);
-                        colTf.setText(String.valueOf(dialog.getCol()));
-                        rowTf.fireValueChanged();
-                        colTf.fireValueChanged();
-                    }
+                LocationMapDialog dialog;
+                dialog = new LocationMapDialog(application,
+                        "Select",
+                        locationType,
+                        newItem.getLocation().getRow(),
+                        newItem.getLocation().getCol());
+                if (dialog.showDialog() == IDialog.OK) {
+                    rowTf.setText(Statics.Alphabet[dialog.getRow()]);
+                    colTf.setText(String.valueOf(dialog.getCol()));
+                    rowTf.fireValueChanged();
+                    colTf.fireValueChanged();
                 }
             }
         });

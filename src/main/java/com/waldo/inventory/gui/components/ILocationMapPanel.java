@@ -33,8 +33,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     private List<ILocationButton> buttonList = new ArrayList<>();
     private Application application;
     private LocationClickListener locationClickListener;
-
-    private ILocationButton locBtn;
     private LocationType locationType;
 
 
@@ -58,27 +56,30 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
 
         if (locationType != null) {
             List<Location> locations = SearchManager.sm().findLocationsByTypeId(locationType.getId());
-            for (Location location : locations) {
-                ILocationButton button = new ILocationButton(location);
-                final int finalR = location.getRow();
-                final int finalC = location.getCol();
-                addButtonActionListener(button, finalR, finalC);
-
-                buttonList.add(button);
-
-                button.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        button.showPopup(e, application);
-                    }
-                });
-            }
+            createButtonsFromLocations(locations);
         }
 
         drawButtons(buttonList);
     }
 
-    public void addButtonActionListener(ILocationButton button, final int r, final int c) {
+    public void createButtonsFromLocations(List<Location> locationList) {
+        buttonList.clear();
+        for (Location location : locationList) {
+            ILocationButton button = new ILocationButton(location);
+            addButtonActionListener(button);
+
+            buttonList.add(button);
+
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    button.showPopup(e, application);
+                }
+            });
+        }
+    }
+
+    public void addButtonActionListener(ILocationButton button) {
         button.addActionListener(e -> {
             if (locationClickListener != null) {
                 locationClickListener.onClick(e, button.getTheLocation());
@@ -96,6 +97,10 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     public void updateButtons() {
         buttonPanel.revalidate();
         buttonPanel.repaint();
+    }
+
+    public void drawButtons() {
+        drawButtons(buttonList);
     }
 
     public void drawButtons(List<ILocationButton> locationButtons) {
@@ -181,6 +186,16 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         }
     }
 
+    public void setLocationsWithItemHighlighted(Color color) {
+        for (ILocationButton button : buttonList) {
+            if (button.getTheLocation().hasItems()) {
+                button.setBackground(color);
+            } else {
+                button.setBackground(null);
+            }
+        }
+    }
+
     public ILocationButton setHighlighted(int row, int col, Color color) {
         ILocationButton button = null;
         if (row >= 0 && col >= 0) {
@@ -237,5 +252,9 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
 
             locationType = type.createCopy();
         }
+    }
+
+    public void setLocationType(LocationType type) {
+        locationType = type.createCopy();
     }
 }

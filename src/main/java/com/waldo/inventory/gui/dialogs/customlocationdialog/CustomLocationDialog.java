@@ -3,17 +3,19 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.ILocationButton;
 
-import javax.swing.event.ChangeEvent;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CustomLocationDialog extends CustomLocationDialogLayout {
 
+    private boolean canClose = true;
 
     public CustomLocationDialog(Application application, String title, LocationType locationType) {
         super(application, title);
@@ -26,8 +28,30 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
 
     }
 
-    private List<ILocationButton> convertInput(String input) {
-        List<ILocationButton> buttonList = new ArrayList<>();
+    private void showSaveDialog() {
+        String msg = "Locations are edited, do you want to save?";
+        if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            saveLocations();
+        }
+
+        canClose = true;
+    }
+
+    private void saveLocations() {
+        // First delete all
+        DbManager.db().deleteLocationsByType(locationType.getId());
+
+        // Save all
+        for (Location location : newLocationList) {
+            location.setCanBeSaved(true);
+            location.setInserted(false);
+            location.setId(-1);
+            location.save();
+        }
+    }
+
+    private List<Location> convertInput(String input) {
+        List<Location> buttonList = new ArrayList<>();
 
         if (input != null && !input.isEmpty()) {
             String rows[] = input.split("\\r?\\n");
@@ -38,11 +62,8 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             for (String row : rows) {
                 String cols[] = row.split(",");
                 for (String col : cols) {
-
-
-                    ILocationButton btn = new ILocationButton(createLocation(col, r, c));
-                    locationMapPanel.addButtonActionListener(btn, r, c);
-                    buttonList.add(btn);
+                    Location loc = createLocation(col, r, c);
+                    buttonList.add(loc);
                     c++;
                 }
                 c = 0;
@@ -54,7 +75,12 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     }
 
     private Location createLocation(String name, int r, int c) {
-        Location location = new Location();
+        Location location = SearchManager.sm().findLocation(locationType.getId(), r, c);
+        if (location == null) {
+            location = new Location();
+        } else {
+            location = location.createCopy();
+        }
         if (name != null && !name.isEmpty()) {
             location.setName(name);
         } else {
@@ -65,6 +91,66 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
         location.setLocationTypeId(locationType.getId());
 
         return location;
+    }
+
+    private boolean compareLocations() {
+        List<Location> originalLocationList = locationType.getLocations();
+        if (newLocationList.size() != originalLocationList.size()) {
+            return false;
+        } else {
+
+            newLocationList.sort(new LocationSort());
+            originalLocationList.sort(new LocationSort());
+
+            for (int i = 0; i < newLocationList.size(); i++) {
+                if (!newLocationList.get(i).equals(originalLocationList.get(i))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static class LocationSort implements Comparator<Location> {
+        @Override
+        public int compare(Location o1, Location o2) {
+            if (o1 == null && o2 != null) return -1;
+            if (o1 == null) return 0;
+            if (o2 == null) return 1;
+
+            if (o1.getRow() < o1.getRow()) return 1;
+            if (o1.getRow() > o2.getRow()) return -1;
+            if (o1.getRow() == o2.getRow()) {
+                if (o1.getCol() < o1.getCol()) return 1;
+                if (o1.getCol() > o2.getCol()) return -1;
+                if (o1.getCol() == o2.getCol()) {
+                    return 0;
+                }
+            }
+            return 0;
+        }
+    }
+
+    //
+    // Dialog
+    //
+    @Override
+    protected void onOK() {
+        if (!compareLocations()) {
+            canClose = false;
+            showSaveDialog();
+        }
+
+        if (canClose) {
+            super.onOK();
+        }
+    }
+
+    @Override
+    protected void onNeutral() {
+        saveLocations();
+        getButtonNeutral().setEnabled(false);
     }
 
     //
@@ -85,7 +171,9 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
         if (e.getSource().equals(convertBtn)) {
             String input = inputTa.getText();
             selectedLocationButton = null;
-            locationMapPanel.drawButtons(convertInput(input));
+            newLocationList = convertInput(input);
+            locationMapPanel.createButtonsFromLocations(newLocationList);
+            locationMapPanel.drawButtons();
         } else if (e.getSource().equals(setNameBtn)) {
             if (selectedLocationButton != null) {
                 selectedLocationButton.getTheLocation().setName(nameTf.getText());
@@ -97,30 +185,7 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
                 locationMapPanel.updateButtons();
             }
         }
-
+        getButtonNeutral().setEnabled(!compareLocations());
         updateEnabledComponents();
-    }
-
-    //
-    // Row and col spinners
-    //
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        selectedLocationButton = null;
-
-        updateEnabledComponents();
-    }
-
-    //
-    // Custom check box
-    //
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED || e.getStateChange() == ItemEvent.DESELECTED) {
-            locationType.setCustom(customTb.isSelected());
-            setLocationDetails(locationType);
-            selectedLocationButton = null;
-            updateEnabledComponents();
-        }
     }
 }

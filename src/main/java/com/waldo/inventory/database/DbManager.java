@@ -845,7 +845,7 @@ public class DbManager {
     /*
     *                  LOCATIONS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Location> getLocations()   {
+    public synchronized List<Location> getLocations()   {
         if (locations == null) {
             updateLocations();
         }
@@ -890,6 +890,23 @@ public class DbManager {
         }
     }
 
+    public void deleteLocationsByType(long typeId) {
+        String sql = scriptResource.readString("locations.sqlDeleteByType");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setLong(1, typeId);
+                stmt.execute();
+            }
+            locations = null;
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(null, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
 
     /*
     *                  LOCATION TYPES
@@ -918,9 +935,6 @@ public class DbManager {
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconPath"));
-                    l.setRows(rs.getInt("rows"));
-                    l.setColumns(rs.getInt("columns"));
-                    l.setCustom(rs.getBoolean("custom"));
 
                     l.setInserted(true);
                     locationTypes.add(l);

@@ -8,10 +8,8 @@ import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,21 +17,13 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class CustomLocationDialogLayout extends IDialog implements
         ILocationMapPanel.LocationClickListener,
-        ActionListener,
-        ChangeListener,
-        ItemListener {
+        ActionListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ILocationMapPanel locationMapPanel;
 
-    // Easy number of rows and columns
-    ISpinner rowsSpinner;
-    ISpinner columnsSpinner;
-
-    // Custom
-    JCheckBox customTb;
     ITextArea inputTa;
     JButton convertBtn;
 
@@ -49,7 +39,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
      LocationType locationType;
      ILocationButton selectedLocationButton;
-     List<Location> locationList;
+     List<Location> newLocationList;
 
     /*
    *                  CONSTRUCTOR
@@ -70,20 +60,6 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
             nameTf.setEnabled(true);
             aliasTf.setEnabled(true);
         }
-
-        if (customTb.isSelected()) {
-            columnsSpinner.setEnabled(false);
-            rowsSpinner.setEnabled(false);
-
-            inputTa.setEnabled(true);
-            convertBtn.setEnabled(true);
-        } else {
-            columnsSpinner.setEnabled(true);
-            rowsSpinner.setEnabled(true);
-
-            inputTa.setEnabled(false);
-            convertBtn.setEnabled(false);
-        }
     }
 
     void setButtonDetails(Location location) {
@@ -97,27 +73,6 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     }
 
     void setLocationDetails(LocationType locationType) {
-        if (locationType != null) {
-            if (locationType.isCustom()) {
-                customTb.setSelected(true);
-                columnsSpinner.setValue(1);
-                rowsSpinner.setValue(1);
-                fillTextArea(locationType);
-            } else {
-                customTb.setSelected(false);
-                columnsSpinner.setValue(locationType.getColumns());
-                rowsSpinner.setValue(locationType.getRows());
-                inputTa.clearText();
-            }
-        } else {
-            customTb.setSelected(false);
-            columnsSpinner.setValue(1);
-            rowsSpinner.setValue(1);
-            inputTa.clearText();
-        }
-    }
-
-    private void fillTextArea(LocationType locationType) {
         if (locationType != null) {
             StringBuilder input = new StringBuilder();
             List<ILocationButton> tmp = new ArrayList<>(locationMapPanel.getLocationButtons());
@@ -141,6 +96,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     private JPanel createCenterPanel() {
         JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel detailPanel = new JPanel(new GridBagLayout());
+        TitledBorder resultBorder = PanelUtils.createTitleBorder("Result");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -164,54 +120,20 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
 
         centerPanel.add(locationMapPanel, BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
+        centerPanel.setBorder(resultBorder);
 
         return centerPanel;
     }
 
     private JPanel createEastPanel() {
         JPanel eastPanel = new JPanel(new BorderLayout());
-        JPanel simplePanel = new JPanel(new GridBagLayout());
         JPanel customPanel = new JPanel(new BorderLayout());
+        TitledBorder customBorder = PanelUtils.createTitleBorder("Values");
 
-        TitledBorder simpelBorder = PanelUtils.createTitleBorder("Simple");
-        eastPanel.setBorder(simpelBorder);
-        TitledBorder customBorder = PanelUtils.createTitleBorder("Custom");
-        customBorder.setBorder(customBorder);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        // Rows
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        simplePanel.add(new ILabel("Rows: ", ILabel.LEFT), gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        simplePanel.add(rowsSpinner, gbc);
-
-        // Columns
-        gbc.gridx = 1; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        simplePanel.add(new ILabel("Columns: ", ILabel.LEFT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        simplePanel.add(columnsSpinner, gbc);
-
-        customPanel.add(customTb, BorderLayout.NORTH);
         customPanel.add(new JScrollPane(inputTa), BorderLayout.CENTER);
         customPanel.add(convertBtn, BorderLayout.SOUTH);
+        customPanel.setBorder(customBorder);
 
-        eastPanel.add(simplePanel, BorderLayout.NORTH);
         eastPanel.add(customPanel, BorderLayout.CENTER);
 
         return eastPanel;
@@ -225,24 +147,14 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         // Dialog
         showTitlePanel(false);
         setResizable(true);
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setEnabled(false);
+        getButtonNeutral().setText("Save");
 
         // West panel
         locationMapPanel = new ILocationMapPanel(application, this);
         locationMapPanel.setPreferredSize(new Dimension(300,300));
 
-        // Easy number of rows and columns
-        SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
-        rowsSpinner = new ISpinner(spinnerNumberModel);
-        rowsSpinner.setPreferredSize(new Dimension(60, 30));
-        rowsSpinner.addChangeListener(this);
-        spinnerNumberModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
-        columnsSpinner = new ISpinner(spinnerNumberModel);
-        columnsSpinner.setPreferredSize(new Dimension(60, 30));
-        columnsSpinner.addChangeListener(this);
-
-        // Custom
-        customTb = new JCheckBox("Custom");
-        customTb.addItemListener(this);
         inputTa = new ITextArea();
         convertBtn = new JButton("Convert");
         convertBtn.addActionListener(this);
@@ -250,8 +162,10 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         // Extra
         nameTf = new ITextField("Name");
         aliasTf = new ITextField("Alias");
+
         setNameBtn = new JButton(imageResource.readImage("Common.Edit", 16));
         setAliasBtn = new JButton(imageResource.readImage("Common.Edit", 16));
+
         setNameBtn.addActionListener(this);
         setAliasBtn.addActionListener(this);
 
@@ -273,15 +187,27 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     public void updateComponents(Object object) {
         if (object != null && object instanceof LocationType) {
             locationType = (LocationType) object;
-            locationList = locationType.getLocations();
+            newLocationList = copyLocations(locationType.getLocations());
         } else {
             locationType = null;
-            locationList = new ArrayList<>();
+            newLocationList = new ArrayList<>();
         }
 
-        locationMapPanel.updateComponents(locationType);
+        locationMapPanel.setLocationType(locationType);
+        locationMapPanel.createButtonsFromLocations(newLocationList);
+        locationMapPanel.drawButtons();
         setLocationDetails(locationType);
 
         updateEnabledComponents();
+    }
+
+    private List<Location> copyLocations(List<Location> locations) {
+        ArrayList<Location> copy = new ArrayList<>();
+
+        for (Location location : locations) {
+            copy.add(location.createCopy());
+        }
+
+        return copy;
     }
 }
