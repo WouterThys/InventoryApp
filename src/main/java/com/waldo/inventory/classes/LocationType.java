@@ -13,6 +13,8 @@ public class LocationType extends DbObject {
 
     public static final String TABLE_NAME = "locationtypes";
 
+    private List<Location> locations;
+
     public LocationType() {
         super(TABLE_NAME);
     }
@@ -83,6 +85,9 @@ public class LocationType extends DbObject {
     }
 
     public List<Location> getLocations() {
-        return SearchManager.sm().findLocationsByTypeId(getId());
+        if (locations == null) {
+            locations = SearchManager.sm().findLocationsByTypeId(getId());
+        }
+        return locations;
     }
 }

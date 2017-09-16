@@ -172,8 +172,7 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             String input = inputTa.getText();
             selectedLocationButton = null;
             newLocationList = convertInput(input);
-            locationMapPanel.createButtonsFromLocations(newLocationList);
-            locationMapPanel.drawButtons();
+            locationMapPanel.setLocations(newLocationList);
         } else if (e.getSource().equals(setNameBtn)) {
             if (selectedLocationButton != null) {
                 selectedLocationButton.getTheLocation().setName(nameTf.getText());

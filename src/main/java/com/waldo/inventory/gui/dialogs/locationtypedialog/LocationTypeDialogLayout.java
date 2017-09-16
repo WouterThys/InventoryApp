@@ -164,7 +164,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         detailCustomBtn = new JButton("Custom");
         detailCustomBtn.addActionListener(this);
 
-        ILocationMapPanel = new ILocationMapPanel(application, null);
+        ILocationMapPanel = new ILocationMapPanel(application, null, true);
     }
 
     @Override

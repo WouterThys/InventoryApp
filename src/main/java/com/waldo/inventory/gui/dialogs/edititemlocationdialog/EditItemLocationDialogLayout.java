@@ -47,11 +47,11 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
     public void initializeComponents() {
         setResizable(true);
         // Panel
-        locationMapPanel = new ILocationMapPanel(application, (e, location) -> {
+        locationMapPanel = new ILocationMapPanel(application, null, (e, location) -> {
             this.location = location;
             locationMapPanel.clearHighlights();
             locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
-        });
+        }, true);
 
         locationTypeCb = new IComboBox<>(DbManager.db().getLocationTypes(), new DbObject.DbObjectNameComparator<>(), true);
         locationTypeCb.addItemListener(this);
@@ -72,12 +72,12 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
         try {
             if (object != null) {
                 location = (Location) object;
-                locationMapPanel.updateComponents(location.getLocationType());
+                locationMapPanel.setLocations(location.getLocationType().getLocations());
                 locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
                 locationTypeCb.setSelectedItem(location.getLocationType());
             } else {
                 location = null;
-                locationMapPanel.updateComponents(null);
+                locationMapPanel.setLocations(null);
                 locationMapPanel.clearHighlights();
                 locationTypeCb.setSelectedItem(null);
             }

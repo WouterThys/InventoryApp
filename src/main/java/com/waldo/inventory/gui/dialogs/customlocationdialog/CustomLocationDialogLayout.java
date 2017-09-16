@@ -152,7 +152,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         getButtonNeutral().setText("Save");
 
         // West panel
-        locationMapPanel = new ILocationMapPanel(application, this);
+        locationMapPanel = new ILocationMapPanel(application, this, true);
         locationMapPanel.setPreferredSize(new Dimension(300,300));
 
         inputTa = new ITextArea();
@@ -193,9 +193,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
             newLocationList = new ArrayList<>();
         }
 
-        locationMapPanel.setLocationType(locationType);
-        locationMapPanel.createButtonsFromLocations(newLocationList);
-        locationMapPanel.drawButtons();
+        locationMapPanel.setLocations(newLocationList);
         setLocationDetails(locationType);
 
         updateEnabledComponents();

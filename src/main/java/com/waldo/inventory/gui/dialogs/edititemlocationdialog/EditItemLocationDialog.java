@@ -30,7 +30,7 @@ public class EditItemLocationDialog extends EditItemLocationDialogLayout {
                 LocationType type = (LocationType) locationTypeCb.getSelectedItem();
                 if (type != null && (location == null || location.getLocationTypeId() != type.getId())) {
                     location = null;
-                    locationMapPanel.updateComponents(type);
+                    locationMapPanel.setLocations(type.getLocations());
                     pack();
                 }
             });

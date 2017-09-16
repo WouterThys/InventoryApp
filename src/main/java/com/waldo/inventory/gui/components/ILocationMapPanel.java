@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 
@@ -33,15 +32,28 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     private List<ILocationButton> buttonList = new ArrayList<>();
     private Application application;
     private LocationClickListener locationClickListener;
-    private LocationType locationType;
+    private boolean showPopup;
 
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ILocationMapPanel(Application application, LocationClickListener locationClickListener) {
+    public ILocationMapPanel(Application application, List<Location> locations, LocationClickListener locationClickListener, boolean showPopup) {
         this.application = application;
         this.locationClickListener = locationClickListener;
+        this.showPopup = showPopup;
+
+        initializeComponents();
+        initializeLayouts();
+        createButtonsFromLocations(locations, showPopup);
+        updateComponents(null);
+    }
+
+    public ILocationMapPanel(Application application, LocationClickListener locationClickListener, boolean showPopup) {
+        this.application = application;
+        this.locationClickListener = locationClickListener;
+        this.showPopup = showPopup;
+        createButtonsFromLocations(null, showPopup);
 
         initializeComponents();
         initializeLayouts();
@@ -51,32 +63,29 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void createInitialPanel(LocationType locationType) {
-        buttonList.clear();
 
-        if (locationType != null) {
-            List<Location> locations = SearchManager.sm().findLocationsByTypeId(locationType.getId());
-            createButtonsFromLocations(locations);
-        }
-
-        drawButtons(buttonList);
+    public void setLocations(List<Location> locations) {
+        createButtonsFromLocations(locations, showPopup);
+        drawButtons();
     }
 
-    public void createButtonsFromLocations(List<Location> locationList) {
+    public void createButtonsFromLocations(List<Location> locationList, boolean showPopup) {
         buttonList.clear();
-        for (Location location : locationList) {
-            if (!location.isUnknown()) {
-                ILocationButton button = new ILocationButton(location);
-                addButtonActionListener(button);
-
-                buttonList.add(button);
-
-                button.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        button.showPopup(e, application);
+        if (locationList != null) {
+            for (Location location : locationList) {
+                if (!location.isUnknown()) {
+                    ILocationButton button = new ILocationButton(location);
+                    addButtonActionListener(button);
+                    if (showPopup) {
+                        button.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                button.showPopup(e, application);
+                            }
+                        });
                     }
-                });
+                    buttonList.add(button);
+                }
             }
         }
     }
@@ -191,25 +200,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         }
     }
 
-    public ILocationButton setHighlighted(int row, int col, Color color) {
-        ILocationButton button = null;
-        if (row >= 0 && col >= 0) {
-            button = findButton(row, col);
-            if (button != null) {
-                if (color != null) {
-                    button.setBackground(color);
-                } else {
-                    if (button.getItems().size() > 0) {
-                        button.setBackground(YELLOW);
-                    } else {
-                        button.setBackground(null);
-                    }
-                }
-            }
-        }
-        return button;
-    }
-
     public List<ILocationButton> getLocationButtons() {
         return buttonList;
     }
@@ -228,7 +218,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         setLayout(new BorderLayout());
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
-        //add(customizeBtn, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
@@ -238,18 +227,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
 
     @Override
     public void updateComponents(Object object) {
-        if (object != null) {
-            LocationType type = (LocationType) object;
-
-            if (!type.equals(locationType)) {
-                createInitialPanel(type);
-            }
-
-            locationType = type.createCopy();
-        }
-    }
-
-    public void setLocationType(LocationType type) {
-        locationType = type.createCopy();
+        drawButtons();
     }
 }

@@ -43,7 +43,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     private void setDetails() {
         if (selectedLocationType != null) {
             detailName.setText(selectedLocationType.getName());
-            ILocationMapPanel.updateComponents(selectedLocationType);
+            ILocationMapPanel.setLocations(selectedLocationType.getLocations());
             ILocationMapPanel.setLocationsWithItemHighlighted(com.waldo.inventory.gui.components.ILocationMapPanel.GREEN);
         }
     }
@@ -127,7 +127,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
-        ILocationMapPanel.updateComponents(selectedLocationType);
+        ILocationMapPanel.setLocations(selectedLocationType.getLocations());
     }
 
     @Override

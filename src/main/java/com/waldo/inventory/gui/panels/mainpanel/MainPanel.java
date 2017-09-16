@@ -91,8 +91,9 @@ public class MainPanel extends MainPanelLayout {
     private void showLocationPopup(Item item, int x, int y) {
         JPopupMenu menu = new JPopupMenu ();
 
-        ILocationMapPanel panel = new ILocationMapPanel(application, null);
-        panel.updateComponents(item.getLocation().getLocationType());
+        LocationType type = item.getLocation().getLocationType();
+
+        ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(),null, false);;
         panel.setHighlighted(item.getLocation(), ILocationMapPanel.GREEN);
 
         menu.add(panel);
