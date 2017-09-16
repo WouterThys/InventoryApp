@@ -22,7 +22,7 @@ public class Location extends DbObject {
     private int col = 0;
     private String alias;
 
-    // Items for this location
+    // Items or SetItems for this location
     private List<DbObject> items;
 
     public Location() {
@@ -164,31 +164,34 @@ public class Location extends DbObject {
     }
 
     public boolean hasItems() {
-        if(SearchManager.sm().findItemsWithLocation(getId()).size() > 0) {
-            return true;
-        }
-        if(SearchManager.sm().findSetItemsWithLocation(getId()).size() > 0) {
-            return true;
-        }
-        return false;
+        return getItems().size() > 0;
     }
 
     public List<DbObject> getItems() {
         if (items == null) {
+            items = new ArrayList<>();
             List<Item> itemList = SearchManager.sm().findItemsWithLocation(getId());
-            List<SetItem> setItemList = SearchManager.sm().findSetItemsWithLocation(getId());
-            List<DbObject> itemsForLocation = new ArrayList<>();
-
             for (Item item : itemList) {
-                if (!item.isSet()) {
-                    itemsForLocation.add(item);
+                // If locationId < UNKNOWN_ID, the item has no location or the location is derived from the SetItems
+                if (item.getLocationId() > UNKNOWN_ID) {
+                    items.add(item);
+                } else {
+                    if (item.isSet()) {
+                        for (SetItem setItem : item.getSetItems()) {
+                            if (setItem.getLocationId() > UNKNOWN_ID) {
+                                items.add(setItem);
+                            }
+                        }
+                    }
                 }
             }
-            itemsForLocation.addAll(setItemList);
-            items = itemsForLocation;
         }
 
         return items;
+    }
+
+    public void updateItems() {
+        items = null;
     }
 
     public long getLocationTypeId() {

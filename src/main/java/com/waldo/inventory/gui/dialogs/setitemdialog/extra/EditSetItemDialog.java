@@ -11,7 +11,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ISpinner;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
-import com.waldo.inventory.gui.dialogs.locationmapdialog.LocationMapDialog;
+import com.waldo.inventory.gui.dialogs.locationmapdialog.EditItemLocationDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -85,7 +85,7 @@ public class EditSetItemDialog extends IDialog {
             setItem.setAmount(spinnerModel.getNumber().intValue());
 
             if (getCol() >=0 && getRow() >= 0) {
-                long typeId = setItem.getItem().getLocationTypeId();
+                long typeId = setItem.getItem().getLocation().getLocationTypeId();
                 Location newLocation = SearchManager.sm().findLocation(typeId, getRow(), getCol());
                 if (newLocation != null)  {
                     setItem.setLocationId(newLocation.getId());
@@ -112,15 +112,18 @@ public class EditSetItemDialog extends IDialog {
         setLocationBtn.addActionListener(e -> {
             LocationType locationType = setItem.getItem().getLocation().getLocationType();
             if (locationType != null && locationType.canBeSaved() && !locationType.isUnknown()) {
-                LocationMapDialog dialog;
-                dialog = new LocationMapDialog(application,
+                EditItemLocationDialog dialog;
+                dialog = new EditItemLocationDialog(application,
                         "Select",
-                        locationType,
-                        setItem.getLocation().getRow(),
-                        setItem.getLocation().getCol());
+                        setItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {
-                    rowTf.setText(Statics.Alphabet[dialog.getRow()]);
-                    colTf.setText(String.valueOf(dialog.getCol()));
+                    Location location = dialog.getItemLocation();
+                    if (location != null) {
+                        rowTf.setText(Statics.Alphabet[location.getRow()]);
+                        colTf.setText(String.valueOf(location.getCol()));
+                    } else {
+                        setItem.setLocationId(DbObject.UNKNOWN_ID);
+                    }
                 }
             }
         });

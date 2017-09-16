@@ -7,7 +7,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.dialogs.locationmapdialog.LocationMapDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -93,14 +92,14 @@ public class EditSetItemLocationDialog extends IDialog implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        LocationMapDialog dialog = new LocationMapDialog(application, "Locations", locationType, 0,0);
-        if (dialog.showDialog() == IDialog.OK) {
-            startLocation = SearchManager.sm().findLocation(
-                    locationType.getId(),
-                    dialog.getRow(),
-                    dialog.getCol()
-            );
-            startLocationTv.setText(startLocation.toString());
-        }
+//        EditItemLocationDialog dialog = new EditItemLocationDialog(application, "Locations", locationType, 0,0);
+//        if (dialog.showDialog() == IDialog.OK) {
+//            startLocation = SearchManager.sm().findLocation(
+//                    locationType.getId(),
+//                    dialog.getRow(),
+//                    dialog.getCol()
+//            );
+//            startLocationTv.setText(startLocation.toString());
+//        }
     }
 }

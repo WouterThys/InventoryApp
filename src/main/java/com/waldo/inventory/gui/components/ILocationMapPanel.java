@@ -162,27 +162,20 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         return null;
     }
 
-    public void setHighlighted(Item item, Color color) {
-        boolean isSet = item.isSet();
-        boolean hasLocation = item.getLocationId() > DbObject.UNKNOWN_ID;
-        boolean setHasLocations = false;
-        if (isSet && hasLocation) {
-            for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
-                if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
-                    setHasLocations = true;
-                    break;
-                }
+    public void setHighlighted(Location location, Color color) {
+        if (location != null) {
+            ILocationButton button = findButton(location.getRow(), location.getCol());
+            if (button != null) {
+                button.setBackground(color);
             }
+        } else {
+            clearHighlights();
         }
+    }
 
-        if (!isSet && hasLocation) {
-            setHighlighted(item.getLocationRow(), item.getLocationCol(), color);
-        } else if (isSet && setHasLocations) {
-            for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
-                if (setItem.getLocationId() > DbObject.UNKNOWN_ID) {
-                    setHighlighted(setItem.getLocation().getRow(), setItem.getLocation().getCol(), color);
-                }
-            }
+    public void clearHighlights() {
+        for (ILocationButton button : getLocationButtons()) {
+            button.setBackground(null);
         }
     }
 

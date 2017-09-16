@@ -533,9 +533,11 @@ public class SearchManager {
     }
 
     public Location findLocationById(long id) {
-        for (Location t : db().getLocations()) {
-            if (t.getId() == id) {
-                return t;
+        if (id >= DbObject.UNKNOWN_ID) {
+            for (Location t : db().getLocations()) {
+                if (t.getId() == id) {
+                    return t;
+                }
             }
         }
         return null;

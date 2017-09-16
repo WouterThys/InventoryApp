@@ -49,6 +49,7 @@ public class Item extends DbObject {
     private String remarks;
 
     private boolean isSet;
+    private List<SetItem> setItems;
 
     public Item() {
         super(TABLE_NAME);
@@ -423,6 +424,14 @@ public class Item extends DbObject {
     }
 
     public long getLocationId() {
+        if (isSet()) {
+            // Check if set has locations
+            for (SetItem setItem : getSetItems()) {
+                if (setItem.getLocationId() > UNKNOWN_ID) {
+                    return -1; // If one of the SetItems has a location, the item has no location
+                }
+            }
+        }
         return locationId;
     }
 
@@ -433,10 +442,7 @@ public class Item extends DbObject {
 
     public Location getLocation() {
         if (location == null) {
-            Location loc = SearchManager.sm().findLocationById(locationId);
-            if (loc != null) {
-                location = loc.createCopy();
-            }
+            location = SearchManager.sm().findLocationById(getLocationId());
         }
         return location;
     }
@@ -602,42 +608,13 @@ public class Item extends DbObject {
         return dimensionType;
     }
 
-    public int getLocationRow() {
-        if (getLocation() != null) {
-            return getLocation().getRow();
+    public List<SetItem> getSetItems() {
+        if (isSet()) {
+            if (setItems == null) {
+                setItems = SearchManager.sm().findSetItemsByItemId(getId());
+            }
+            return setItems;
         }
-        return 0;
-    }
-
-    public void setLocationRow(String row) {
-        if (getLocation() != null) {
-            getLocation().setRow(Statics.indexOfAlphabet(row));
-        }
-    }
-
-    public int getLocationCol() {
-        if (getLocation() != null) {
-            return getLocation().getCol();
-        }
-        return 0;
-    }
-
-    public void setLocationCol(int col) {
-        if (getLocation() != null) {
-            getLocation().setCol(col);
-        }
-    }
-
-    public long getLocationTypeId() {
-        if (getLocation() != null) {
-            return getLocation().getLocationTypeId();
-        }
-        return 0;
-    }
-
-    public void setLocationTypeId(long id) {
-        if (getLocation() != null) {
-            getLocation().setLocationTypeId(id);
-        }
+        return null;
     }
 }
