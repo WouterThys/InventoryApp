@@ -37,7 +37,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     LocationType locationType;
+    LocationType locationType;
      ILocationButton selectedLocationButton;
      List<Location> newLocationList;
 
@@ -72,8 +72,17 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         }
     }
 
-    void setLocationDetails(LocationType locationType) {
-        if (locationType != null) {
+    boolean isInLocationList(int row, int col) {
+        for (Location location : newLocationList) {
+            if (location.getRow() == row && location.getCol() == col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setLocationDetails() {
+        if (newLocationList.size() > 0) {
             StringBuilder input = new StringBuilder();
             List<ILocationButton> tmp = new ArrayList<>(locationMapPanel.getLocationButtons());
             int r = 0;
@@ -194,7 +203,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         }
 
         locationMapPanel.setLocations(newLocationList);
-        setLocationDetails(locationType);
+        setLocationDetails();
 
         updateEnabledComponents();
     }

@@ -90,4 +90,8 @@ public class LocationType extends DbObject {
         }
         return locations;
     }
+
+    public void updateLocations() {
+        locations = null;
+    }
 }

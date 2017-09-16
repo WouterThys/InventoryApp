@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.locationtypedialog;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
@@ -251,7 +252,10 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     public void actionPerformed(ActionEvent e) {
         if (selectedLocationType != null) {
             CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom", selectedLocationType);
-            dialog.showDialog();
+            if (dialog.showDialog() == IDialog.OK) {
+                selectedLocationType.updateLocations();
+                ILocationMapPanel.setLocations(selectedLocationType.getLocations());
+            }
         }
     }
 }

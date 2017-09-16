@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
 
@@ -19,8 +18,6 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
 
     public CustomLocationDialog(Application application, String title, LocationType locationType) {
         super(application, title);
-
-        this.locationType = locationType;
 
         initializeComponents();
         initializeLayouts();
@@ -38,16 +35,28 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     }
 
     private void saveLocations() {
-        // First delete all
-        DbManager.db().deleteLocationsByType(locationType.getId());
-
-        // Save all
-        for (Location location : newLocationList) {
-            location.setCanBeSaved(true);
-            location.setInserted(false);
-            location.setId(-1);
-            location.save();
+        // Delete
+        List<Location> oldLocations = new ArrayList<>(locationType.getLocations());
+        for (Location location : oldLocations) {
+            if (!isInLocationList(location.getRow(), location.getCol())) {
+                location.delete();
+            }
         }
+
+        // Insert or update
+        for (Location newLocation : newLocationList) {
+            Location oldLocation = SearchManager.sm().findLocation(locationType.getId(), newLocation.getRow(), newLocation.getCol());
+
+            if (oldLocation != null) {
+                oldLocation.setName(newLocation.getName());
+                oldLocation.setAlias(newLocation.getAlias());
+            } else {
+                oldLocation = newLocation.createCopy();
+                oldLocation.setCanBeSaved(true);
+            }
+            oldLocation.save();
+        }
+        locationType.updateLocations();
     }
 
     private List<Location> convertInput(String input) {
