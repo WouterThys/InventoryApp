@@ -74,8 +74,11 @@ public abstract class MainPanelLayout extends JPanel implements
         java.util.List<Item> itemList = new ArrayList<>();
         if (selectedObject == null || selectedObject.getName().equals("All")) {
             itemList = db().getItems();
-            if (itemList.contains(Item.getUnknownItem())) {
-                itemList.remove(Item.getUnknownItem());
+            for (Item item : itemList) {
+                if (item.getId() == DbObject.UNKNOWN_ID) {
+                    itemList.remove(item);
+                    break;
+                }
             }
         } else {
             switch (DbObject.getType(selectedObject)) {
@@ -170,11 +173,12 @@ public abstract class MainPanelLayout extends JPanel implements
         topToolBar = new TopToolBar(application, this);
 
         // Item table
-        tableModel = new IItemTableModel(db().getItems());
+        tableModel = new IItemTableModel();
         itemTable = new ITable(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.setOpaque(true);
+        updateTable(null);
 
         // Details
         detailPanel = new ItemDetailPanel(application);

@@ -24,6 +24,7 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Location location;
+    Location originalLocation;
 
     /*
    *                  CONSTRUCTOR
@@ -72,6 +73,7 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
         try {
             if (object != null) {
                 location = (Location) object;
+                originalLocation = location.createCopy();
                 locationMapPanel.setLocations(location.getLocationType().getLocations());
                 locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
                 locationTypeCb.setSelectedItem(location.getLocationType());

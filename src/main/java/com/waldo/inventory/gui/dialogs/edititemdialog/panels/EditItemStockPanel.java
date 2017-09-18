@@ -207,6 +207,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
                     Location newLocation = dialog.getItemLocation();
                     if (newLocation != null) {
                         newItem.setLocationId(newLocation.getId());
+                        newLocation.updateItems();
                     } else {
                         newItem.setLocationId(DbObject.UNKNOWN_ID);
                     }

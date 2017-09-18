@@ -193,6 +193,10 @@ public class SearchManager {
                     Status().setMessage("Searching for: Locations");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getLocations()), searchWord));
                     break;
+                case DbObject.TYPE_LOCATION_TYPE:
+                    Status().setMessage("Searching for: Location types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getLocationTypes()), searchWord));
+                    break;
                 case DbObject.TYPE_MANUFACTURER:
                     Status().setMessage("Searching for: Manufacturers");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getManufacturers()), searchWord));
@@ -261,6 +265,10 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_LOCATION:
                     Status().setMessage("Searching for: Locations");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_LOCATION_TYPE:
+                    Status().setMessage("Searching for: Location types");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 case DbObject.TYPE_MANUFACTURER:

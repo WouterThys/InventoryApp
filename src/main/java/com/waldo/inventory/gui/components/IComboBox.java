@@ -21,6 +21,10 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
     private String fieldName = "";
     private Class fieldClass;
 
+    public IComboBox() {
+        super();
+    }
+
     public IComboBox(ComboBoxModel<E> comboBoxModel) {
         super(comboBoxModel);
     }

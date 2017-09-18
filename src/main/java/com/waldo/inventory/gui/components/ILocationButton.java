@@ -22,6 +22,10 @@ public class ILocationButton extends JButton {
         this.location = location;
         setText(location.getName());
         setName(location.getName());
+
+        if (!location.getAlias().isEmpty()) {
+            setToolTipText(location.getAlias());
+        }
     }
 
     @Override

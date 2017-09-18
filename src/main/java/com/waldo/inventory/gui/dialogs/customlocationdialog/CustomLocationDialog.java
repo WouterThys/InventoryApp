@@ -128,11 +128,11 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             if (o1 == null) return 0;
             if (o2 == null) return 1;
 
-            if (o1.getRow() < o1.getRow()) return 1;
-            if (o1.getRow() > o2.getRow()) return -1;
+            if (o1.getRow() < o2.getRow()) return -1;
+            if (o1.getRow() > o2.getRow()) return 1;
             if (o1.getRow() == o2.getRow()) {
-                if (o1.getCol() < o1.getCol()) return 1;
-                if (o1.getCol() > o2.getCol()) return -1;
+                if (o1.getCol() < o2.getCol()) return -1;
+                if (o1.getCol() > o2.getCol()) return 1;
                 if (o1.getCol() == o2.getCol()) {
                     return 0;
                 }

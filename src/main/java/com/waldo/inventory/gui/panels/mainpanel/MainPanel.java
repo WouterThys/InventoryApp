@@ -96,6 +96,11 @@ public class MainPanel extends MainPanelLayout {
         ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(),null, false);;
         panel.setHighlighted(item.getLocation(), ILocationMapPanel.GREEN);
 
+        JMenuItem name = new JMenuItem(type.getName());
+        name.setEnabled(false);
+
+        menu.add(name);
+        menu.addSeparator();
         menu.add(panel);
         menu.show(itemTable, x - panel.getPreferredSize().width, y);
     }

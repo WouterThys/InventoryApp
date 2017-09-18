@@ -24,6 +24,13 @@ public class EditItemLocationDialog extends EditItemLocationDialogLayout {
     }
 
     @Override
+    protected void onCancel() {
+        location = originalLocation.createCopy();
+        location.setCanBeSaved(true);
+        super.onCancel();
+    }
+
+    @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED && !application.isUpdating()) {
             SwingUtilities.invokeLater(() -> {

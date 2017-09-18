@@ -254,7 +254,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
             CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom", selectedLocationType);
             if (dialog.showDialog() == IDialog.OK) {
                 selectedLocationType.updateLocations();
-                ILocationMapPanel.setLocations(selectedLocationType.getLocations());
+                setDetails();
             }
         }
     }

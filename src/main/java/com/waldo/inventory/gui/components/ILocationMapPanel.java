@@ -110,11 +110,11 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         buttonPanel.repaint();
     }
 
-    public void drawButtons() {
+    private void drawButtons() {
         drawButtons(buttonList);
     }
 
-    public void drawButtons(List<ILocationButton> locationButtons) {
+    private void drawButtons(List<ILocationButton> locationButtons) {
         buttonPanel.removeAll();
 
         if (!buttonList.equals(locationButtons)) {

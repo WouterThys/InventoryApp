@@ -139,6 +139,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
+        setResizable(true);
         setTitleIcon(imageResource.readImage("Common.Location", 48));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
@@ -161,7 +162,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailCustomBtn = new JButton("Custom");
+        detailCustomBtn = new JButton(imageResource.readImage("Common.Edit", 16));
         detailCustomBtn.addActionListener(this);
 
         ILocationMapPanel = new ILocationMapPanel(application, null, true);
