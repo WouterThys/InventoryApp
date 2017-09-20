@@ -262,10 +262,10 @@ public class ProjectPanel extends ProjectPanelLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (lastProjectFile != null && selectedProjectType != null) {
+        if (lastProjectFile != null && selectedProjectIDE != null) {
             try {
                 Status().setMessage("Opening file: " + lastProjectFile.getAbsolutePath());
-                selectedProjectType.launch(lastProjectFile);
+                selectedProjectIDE.launch(lastProjectFile);
             } catch (IOException e1) {
                 LOG.error("Error opening project.", e1);
             }
@@ -276,12 +276,12 @@ public class ProjectPanel extends ProjectPanelLayout {
     // Project tile clicked
     //
     @Override
-    public void onGridComponentClick(String name, ProjectType type, File file) {
-        selectedProjectType = type;
+    public void onGridComponentClick(String name, ProjectIDE type, File file) {
+        selectedProjectIDE = type;
         lastProjectFile = file;
         detailsPanel.updateComponents(selectedProject);
         projectTypeDetails.setProjectName(name);
-        projectTypeDetails.updateComponents(selectedProjectType);
+        projectTypeDetails.updateComponents(selectedProjectIDE);
 
         if (type.hasParser()) {
             kiCadItemPanel.updateComponents(file);

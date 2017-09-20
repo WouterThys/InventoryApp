@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 
@@ -33,7 +33,7 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
     private ImageIcon icon;
     private String name;
 
-    private ProjectType projectType;
+    private ProjectIDE projectIDE;
     private ProjectDirectory projectDirectory;
     private File file;
 
@@ -50,12 +50,12 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
         updateComponents(null);
     }
 
-    public ITileView(File file, ProjectType projectType, ProjectDirectory projectDirectory) {
+    public ITileView(File file, ProjectIDE projectIDE, ProjectDirectory projectDirectory) {
         this.projectDirectory = projectDirectory;
-        this.projectType = projectType;
+        this.projectIDE = projectIDE;
         this.file = file;
 
-        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectType.getIconPath());
+        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectIDE.getIconPath());
 
         this.name = getFileName(file.getAbsolutePath());
         this.icon = imageResource.readImage(path.toString(), 64, 64);
@@ -173,12 +173,12 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
         return name;
     }
 
-    public ProjectType getProjectType() {
-        return projectType;
+    public ProjectIDE getProjectIDE() {
+        return projectIDE;
     }
 
-    public void setProjectType(ProjectType projectType) {
-        this.projectType = projectType;
+    public void setProjectIDE(ProjectIDE projectIDE) {
+        this.projectIDE = projectIDE;
     }
 
     public ProjectDirectory getProjectDirectory() {

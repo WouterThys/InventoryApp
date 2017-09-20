@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.projectpanel.projecttypedetails;
 
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
@@ -39,7 +39,7 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
-    private ProjectType projectType;
+    private ProjectIDE projectIDE;
 
     /*
      *                  CONSTRUCTOR
@@ -56,7 +56,7 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        parseBtn.setEnabled((projectType != null) && (!projectType.getParserName().isEmpty()));
+        parseBtn.setEnabled((projectIDE != null) && (!projectIDE.getParserName().isEmpty()));
     }
 
     public void setProjectName(String name) {
@@ -143,29 +143,29 @@ public class ProjectTypeDetails extends JPanel implements GuiInterface, ActionLi
         if (object == null) {
             setVisible(false);
         } else {
-            if (object instanceof ProjectType) {
-                projectType = (ProjectType) object;
+            if (object instanceof ProjectIDE) {
+                projectIDE = (ProjectIDE) object;
 
-                if (!projectType.getIconPath().isEmpty()) {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectType.getIconPath());
+                if (!projectIDE.getIconPath().isEmpty()) {
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectIDE.getIconPath());
                     typeIconLbl.setIcon(path.toString(), 48,48);
                 } else {
                     typeIconLbl.setIcon(imageResource.readImage("Common.Unknown"));
                 }
 
-                if (projectType.isUseDefaultLauncher()) {
+                if (projectIDE.isUseDefaultLauncher()) {
                     launchPathTf.setText("Default");
                 } else {
-                    launchPathTf.setText(projectType.getLauncherPath());
+                    launchPathTf.setText(projectIDE.getLauncherPath());
                 }
 
-                if (projectType.getParserName().isEmpty()) {
+                if (projectIDE.getParserName().isEmpty()) {
                     parserNameLbl.setVisible(false);
                     parserNameTf.setVisible(false);
                 } else {
                     parserNameLbl.setVisible(true);
                     parserNameTf.setVisible(true);
-                    parserNameTf.setText(projectType.getParserName());
+                    parserNameTf.setText(projectIDE.getParserName());
                 }
 
                 updateEnabledComponents();

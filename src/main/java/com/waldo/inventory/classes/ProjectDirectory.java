@@ -22,7 +22,7 @@ public class ProjectDirectory extends DbObject {
     private Project project;
     private boolean validated = false;
 
-    private HashMap<ProjectType, List<File>> projectTypes;
+    private HashMap<ProjectIDE, List<File>> projectTypes;
 
 
     public ProjectDirectory() {
@@ -136,40 +136,40 @@ public class ProjectDirectory extends DbObject {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addProjectType(ProjectType projectType, File file) {
-        if (projectType != null) {
-            if (getProjectTypeMap().containsKey(projectType)) {
-                getProjectTypeMap().computeIfAbsent(projectType, k -> new ArrayList<>());
+    public void addProjectType(ProjectIDE projectIDE, File file) {
+        if (projectIDE != null) {
+            if (getProjectTypeMap().containsKey(projectIDE)) {
+                getProjectTypeMap().computeIfAbsent(projectIDE, k -> new ArrayList<>());
             } else {
-                getProjectTypeMap().put(projectType, new ArrayList<>());
+                getProjectTypeMap().put(projectIDE, new ArrayList<>());
             }
-            getProjectTypeMap().get(projectType).add(file);
+            getProjectTypeMap().get(projectIDE).add(file);
         }
     }
 
-    public void removeProjectType(ProjectType projectType, File file) {
-        if (projectType != null) {
-            List<File> filesForType = getProjectFilesForType(projectType);
+    public void removeProjectType(ProjectIDE projectIDE, File file) {
+        if (projectIDE != null) {
+            List<File> filesForType = getProjectFilesForType(projectIDE);
             if (file != null) {
                 if (filesForType.contains(file)) {
-                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file.getPath());
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectIDE.getId(), file.getPath());
                     if (linkToDelete != null) {
                         linkToDelete.delete();
                     }
                     filesForType.remove(file);
                     if (filesForType.size() == 0) {
-                        getProjectTypes().remove(projectType);
+                        getProjectTypes().remove(projectIDE);
                     }
                 }
             } else {
                 for (File file1 : filesForType) {
-                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectType.getId(), file1.getPath());
+                    ProjectTypeLink linkToDelete = SearchManager.sm().findProjectTypeLink(getId(), projectIDE.getId(), file1.getPath());
                     if (linkToDelete != null) {
                         linkToDelete.delete();
                     }
                     filesForType.remove(file1);
                     if (filesForType.size() == 0) {
-                        getProjectTypes().remove(projectType);
+                        getProjectTypes().remove(projectIDE);
                     }
                 }
             }
@@ -181,7 +181,7 @@ public class ProjectDirectory extends DbObject {
 
         File directoryFile = new File(getDirectory());
         if (directoryFile.exists()) {
-            for (ProjectType type : getProjectTypes()) {
+            for (ProjectIDE type : getProjectTypes()) {
                 for (File file : getProjectFilesForType(type)) {
                     if (!file.exists()) {
                         ProjectValidationError error = new ProjectValidationError(this, type, file, "Project type " + file.toString() + " does not exist..");
@@ -243,18 +243,18 @@ public class ProjectDirectory extends DbObject {
         return project;
     }
 
-    public HashMap<ProjectType, List<File>> getProjectTypeMap() {
+    public HashMap<ProjectIDE, List<File>> getProjectTypeMap() {
         if (projectTypes == null) {
             projectTypes = DbManager.db().getProjectTypesForProjectDirectory(id);
         }
         return projectTypes;
     }
 
-    public List<ProjectType> getProjectTypes() {
+    public List<ProjectIDE> getProjectTypes() {
         return new ArrayList<>(getProjectTypeMap().keySet());
     }
 
-    public List<File> getProjectFilesForType(ProjectType type) {
+    public List<File> getProjectFilesForType(ProjectIDE type) {
         return getProjectTypeMap().get(type);
     }
 

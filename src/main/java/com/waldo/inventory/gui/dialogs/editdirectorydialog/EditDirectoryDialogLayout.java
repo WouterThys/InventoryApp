@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.editdirectorydialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboCheckBox;
@@ -26,7 +26,7 @@ public class EditDirectoryDialogLayout extends IDialog {
     private JButton directoryBtn;
     IComboCheckBox useTypeCb;
 
-    java.util.List<ProjectType> projectTypeList;
+    java.util.List<ProjectIDE> projectIDEList;
 
     /*
     *                  CONSTRUCTORS
@@ -64,12 +64,12 @@ public class EditDirectoryDialogLayout extends IDialog {
             }
         });
 
-        projectTypeList = DbManager.db().getProjectTypes();
-        JCheckBox[] boxes = new JCheckBox[projectTypeList.size() + 1];
+        projectIDEList = DbManager.db().getProjectIDES();
+        JCheckBox[] boxes = new JCheckBox[projectIDEList.size() + 1];
 
         boxes[0] = new JCheckBox("All", true);
         for (int i = 1; i < boxes.length; i++) {
-            boxes[i] = new JCheckBox(projectTypeList.get(i-1).getName());
+            boxes[i] = new JCheckBox(projectIDEList.get(i-1).getName());
         }
 
         useTypeCb = new IComboCheckBox(boxes);

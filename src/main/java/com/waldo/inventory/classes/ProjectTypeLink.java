@@ -17,7 +17,7 @@ public class ProjectTypeLink extends DbObject {
     private ProjectDirectory projectDirectory;
 
     private long projectTypeId;
-    private ProjectType projectType;
+    private ProjectIDE projectIDE;
 
     private String filePath;
 
@@ -73,15 +73,15 @@ public class ProjectTypeLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                // TODO ?db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectTypeChangedListenerList);
+                // TODO ?db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectIDEChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                java.util.List<ProjectType> list = db().getProjectTypes();
+                java.util.List<ProjectIDE> list = db().getProjectIDES();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                // TODO ?db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectTypeChangedListenerList);
+                // TODO ?db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectIDEChangedListenerList);
                 break;
             }
         }
@@ -110,26 +110,26 @@ public class ProjectTypeLink extends DbObject {
     }
 
     public long getProjectTypeId() {
-        if (projectTypeId < UNKNOWN_ID && projectType != null) {
-            projectTypeId = projectType.getId();
+        if (projectTypeId < UNKNOWN_ID && projectIDE != null) {
+            projectTypeId = projectIDE.getId();
         }
         return projectTypeId;
     }
 
     public void setProjectTypeId(long projectTypeId) {
-        projectType = null;
+        projectIDE = null;
         this.projectTypeId = projectTypeId;
     }
 
-    public ProjectType getProjectType() {
-        if (projectType == null) {
-            projectType = SearchManager.sm().findProjectTypeById(projectTypeId);
+    public ProjectIDE getProjectIDE() {
+        if (projectIDE == null) {
+            projectIDE = SearchManager.sm().findProjectIDEById(projectTypeId);
         }
-        return projectType;
+        return projectIDE;
     }
 
-    public void setProjectType(ProjectType projectType) {
-        this.projectType = projectType;
+    public void setProjectIDE(ProjectIDE projectIDE) {
+        this.projectIDE = projectIDE;
     }
 
     public String getFilePath() {

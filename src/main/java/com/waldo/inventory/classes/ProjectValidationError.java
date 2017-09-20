@@ -5,7 +5,7 @@ import java.io.File;
 public class ProjectValidationError {
 
     private ProjectDirectory invalidDirectory;
-    private ProjectType invalidType;
+    private ProjectIDE invalidType;
     private File invalidFile;
     private String error;
 
@@ -14,7 +14,7 @@ public class ProjectValidationError {
         this.error = error;
     }
 
-    public ProjectValidationError(ProjectDirectory directory, ProjectType type, File file, String error) {
+    public ProjectValidationError(ProjectDirectory directory, ProjectIDE type, File file, String error) {
         this(directory, error);
         this.invalidType = type;
         this.invalidFile = file;
@@ -35,7 +35,7 @@ public class ProjectValidationError {
         return invalidDirectory;
     }
 
-    public ProjectType getInvalidType() {
+    public ProjectIDE getInvalidType() {
         return invalidType;
     }
 

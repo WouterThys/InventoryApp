@@ -40,6 +40,9 @@ public abstract class DbObject {
     public static final int TYPE_SET_ITEM = 16;
     public static final int TYPE_DIMENSION_TYPE = 17;
     public static final int TYPE_LOCATION_TYPE = 18;
+    public static final int TYPE_PROJECT_CODE = 19;
+    public static final int TYPE_PROJECT_PCB = 20;
+    public static final int TYPE_PROJECT_OTHER = 21;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -87,7 +90,7 @@ public abstract class DbObject {
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectDirectory) return TYPE_PROJECT_DIRECTORY;
-        if (dbObject instanceof ProjectType) return TYPE_PROJECT_TYPE;
+        if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
         if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
         if (dbObject instanceof Package) return TYPE_PACKAGE;
         if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
@@ -97,6 +100,9 @@ public abstract class DbObject {
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
         if (dbObject instanceof DbHistory) return TYPE_DB_HISTORY;
+        if (dbObject instanceof ProjectCode) return  TYPE_PROJECT_CODE;
+        if (dbObject instanceof ProjectPcb) return  TYPE_PROJECT_PCB;
+        if (dbObject instanceof ProjectOther) return TYPE_PROJECT_OTHER;
 
         return TYPE_UNKNOWN;
     }

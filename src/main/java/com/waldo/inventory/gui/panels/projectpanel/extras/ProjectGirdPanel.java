@@ -2,23 +2,20 @@ package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
-import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITileView;
 
 import javax.swing.*;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.TileClickListener {
 
     public interface GridComponentClicked {
-        void onGridComponentClick(String name, ProjectType type, File file);
+        void onGridComponentClick(String name, ProjectIDE type, File file);
     }
 
     /*
@@ -55,7 +52,7 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
         if (project != null) {
             tileViews.clear();
             for (ProjectDirectory directory : project.getProjectDirectories()) {
-                for (ProjectType type : directory.getProjectTypes()) {
+                for (ProjectIDE type : directory.getProjectTypes()) {
                     for (File file : directory.getProjectFilesForType(type)) {
                         ITileView tileView = new ITileView(file, type, directory);
                         tileView.addTileClickListener(this);
@@ -113,7 +110,7 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
     @Override
     public void onTileClick(ITileView view) {
         if (gridComponentListener != null) {
-            gridComponentListener.onGridComponentClick(view.getName(), view.getProjectType(), view.getFile());
+            gridComponentListener.onGridComponentClick(view.getName(), view.getProjectIDE(), view.getFile());
         }
     }
 }

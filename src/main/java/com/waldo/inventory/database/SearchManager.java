@@ -138,7 +138,7 @@ public class SearchManager {
 
         // Project types
         Status().setMessage("Searching for: Project types");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectIDES()), searchWord));
 
         // Dimension types
         Status().setMessage("Searching for: Dimension types");
@@ -223,7 +223,7 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectTypes()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectIDES()), searchWord));
                     break;
                 case DbObject.TYPE_DIMENSION_TYPE:
                     Status().setMessage("Searching for: Dimension types");
@@ -729,8 +729,8 @@ public class SearchManager {
         return null;
     }
 
-    public ProjectType findProjectTypeById(long id) {
-        for (ProjectType p : db().getProjectTypes()) {
+    public ProjectIDE findProjectIDEById(long id) {
+        for (ProjectIDE p : db().getProjectIDES()) {
             if (p.getId() == id) {
                 return p;
             }

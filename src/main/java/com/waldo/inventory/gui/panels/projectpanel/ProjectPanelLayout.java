@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.projectpanel;
 
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -20,12 +20,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -58,7 +54,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     Application application;
     Project selectedProject;
     ProjectDirectory selectedDirectory;
-    ProjectType selectedProjectType;
+    ProjectIDE selectedProjectIDE;
     File lastProjectFile;
 
 
@@ -281,7 +277,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             // Details
             detailsPanel.updateComponents(selectedProject);
-            projectTypeDetails.updateComponents(selectedProjectType);
+            projectTypeDetails.updateComponents(selectedProjectIDE);
         } finally {
             application.endWait();
         }

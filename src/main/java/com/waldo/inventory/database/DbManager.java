@@ -68,13 +68,15 @@ public class DbManager {
     public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectType>> onProjectTypeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectIDE>> onProjectIDEChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<KcComponent>> onKcComponentChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<KcItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -93,7 +95,7 @@ public class DbManager {
     private List<PackageType> packageTypes;
     private List<Project> projects;
     private List<ProjectDirectory> projectDirectories;
-    private List<ProjectType> projectTypes;
+    private List<ProjectIDE> projectIDES;
     private List<ProjectTypeLink> projectTypeLinks;
     private List<OrderFileFormat> orderFileFormats;
     private List<Package> packages;
@@ -103,6 +105,8 @@ public class DbManager {
     private List<KcItemLink> kcItemLinks;
     private List<Log> logs;
     private List<DbHistory> dbHistoryList;
+    private List<ProjectCode> projectCodes;
+    private List<ProjectPcb> projectPcbs;
 
     private DbManager() {}
 
@@ -215,7 +219,7 @@ public class DbManager {
         packageTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageTypesChangedListenerList);
         projects = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectChangedListenerList);
         projectDirectories = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectDirectoryChangedListenerList);
-        projectTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectTypeChangedListenerList);
+        projectIDES = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectIDEChangedListenerList);
         projectTypeLinks = null;
         orderFileFormats = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderFileFormatChangedListenerList);
         packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
@@ -383,9 +387,9 @@ public class DbManager {
         }
     }
 
-    public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectType> dbObjectChangedListener) {
-        if (!onProjectTypeChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectTypeChangedListenerList.add(dbObjectChangedListener);
+    public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectIDE> dbObjectChangedListener) {
+        if (!onProjectIDEChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectIDEChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -413,15 +417,19 @@ public class DbManager {
         }
     }
 
-
-
-    public void removeOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
-        if (onItemsChangedListenerList != null) {
-            if (onItemsChangedListenerList.contains(dbObjectChangedListener)) {
-                onItemsChangedListenerList.remove(dbObjectChangedListener);
-            }
+    public void addOnProjectCodeChangedListener(DbObjectChangedListener<ProjectCode> dbObjectChangedListener) {
+        if (!onProjectCodeChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectCodeChangedListenerList.add(dbObjectChangedListener);
         }
     }
+
+    public void addOnProjectPcbChangedListener(DbObjectChangedListener<ProjectPcb> dbObjectChangedListener) {
+        if (!onProjectPcbChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectPcbChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+
 
     public void removeOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {
         if (onCategoriesChangedListenerList != null) {
@@ -447,74 +455,10 @@ public class DbManager {
         }
     }
 
-    public void removeOnManufacturersChangedListener(DbObjectChangedListener<Manufacturer> dbObjectChangedListener) {
-        if (onManufacturerChangedListenerList != null) {
-            if (onManufacturerChangedListenerList.contains(dbObjectChangedListener)) {
-                onManufacturerChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnLocationChangedListener(DbObjectChangedListener<Location> dbObjectChangedListener) {
-        if (onLocationsChangedListenerList != null) {
-            if (onLocationsChangedListenerList.contains(dbObjectChangedListener)) {
-                onLocationsChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
     public void removeOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
         if (onOrdersChangedListenerList != null) {
             if (onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
                 onOrdersChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnOrderItemsChangedListener(DbObjectChangedListener<OrderItem> dbObjectChangedListener) {
-        if (onOrderItemsChangedListenerList != null) {
-            if (onOrderItemsChangedListenerList.contains(dbObjectChangedListener)) {
-                onOrderItemsChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnDistributorChangedListener(DbObjectChangedListener<Distributor> dbObjectChangedListener) {
-        if (onDistributorsChangedListenerList != null) {
-            if (onDistributorsChangedListenerList.contains(dbObjectChangedListener)) {
-                onDistributorsChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnPackageTypesChangedListener(DbObjectChangedListener<PackageType> dbObjectChangedListener) {
-        if (onPackageTypesChangedListenerList != null) {
-            if (onPackageTypesChangedListenerList.contains(dbObjectChangedListener)) {
-                onPackageTypesChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnProjectsChangedListener(DbObjectChangedListener<Project> dbObjectChangedListener) {
-        if (onProjectChangedListenerList != null) {
-            if (onProjectChangedListenerList.contains(dbObjectChangedListener)) {
-                onProjectChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnProjectsDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
-        if (onProjectDirectoryChangedListenerList != null) {
-            if (onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
-                onProjectDirectoryChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnProjectTypesChangedListener(DbObjectChangedListener<ProjectType> dbObjectChangedListener) {
-        if (onProjectTypeChangedListenerList != null) {
-            if (onProjectTypeChangedListenerList.contains(dbObjectChangedListener)) {
-                onProjectTypeChangedListenerList.remove(dbObjectChangedListener);
             }
         }
     }
@@ -1313,6 +1257,103 @@ public class DbManager {
     }
 
     /*
+    *                  PROJECT CODEs
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ProjectCode> getProjectCodes()    {
+        if (projectCodes == null) {
+            updateProjectCodes();
+        }
+        return projectCodes;
+    }
+
+    private void updateProjectCodes()    {
+        projectCodes = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
+        Status().setMessage("Fetching ProjectCode from DB");
+        ProjectCode p = null;
+        String sql = scriptResource.readString(ProjectCode.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ProjectCode();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+                    p.setLanguage(rs.getString("language"));
+                    p.setDirectory(rs.getString("directory"));
+                    p.setProjectId(rs.getLong("projectId"));
+                    p.setProjectIDEId(rs.getLong("projectIDEId"));
+                    p.setRemarks(rs.getBlob("remarks").toString());
+
+                    p.setInserted(true);
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        projectCodes.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
+    *                  PROJECT PCBs
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ProjectPcb> getProjectPcbs()    {
+        if (projectPcbs == null) {
+            updateProjectPcbs();
+        }
+        return projectPcbs;
+    }
+
+    private void updateProjectPcbs()    {
+        projectPcbs = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
+        Status().setMessage("Fetching ProjectPcb from DB");
+        ProjectPcb p = null;
+        String sql = scriptResource.readString(ProjectPcb.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ProjectPcb();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+                    p.setDirectory(rs.getString("directory"));
+                    p.setProjectId(rs.getLong("projectId"));
+                    p.setProjectIDEId(rs.getLong("projectIDEId"));
+                    p.setRemarks(rs.getBlob("remarks").toString());
+
+                    p.setInserted(true);
+                    if (p.getId() != DbObject.UNKNOWN_ID) {
+                        projectPcbs.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
     *                  PROJECT DIRECTORIES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<ProjectDirectory> getProjectDirectories()    {
@@ -1359,32 +1400,33 @@ public class DbManager {
     }
 
     /*
-    *                  PROJECT TYPES
+    *                  PROJECT IDES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectType> getProjectTypes()    {
-        if (projectTypes == null) {
-            updateProjectTypes();
+    public List<ProjectIDE> getProjectIDES()    {
+        if (projectIDES == null) {
+            updateProjectIDEs();
         }
-        return projectTypes;
+        return projectIDES;
     }
 
-    private void updateProjectTypes()    {
-        projectTypes = new ArrayList<>();
+    private void updateProjectIDEs()    {
+        projectIDES = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
-        Status().setMessage("Fetching ProjectType from DB");
-        ProjectType p = null;
-        String sql = scriptResource.readString(ProjectType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        Status().setMessage("Fetching ProjectIDE from DB");
+        ProjectIDE p = null;
+        String sql = scriptResource.readString(ProjectIDE.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    p = new ProjectType();
+                    p = new ProjectIDE();
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
+                    p.setProjectType(rs.getString("projectType"));
                     p.setOpenAsFolder(rs.getBoolean("openasfolder"));
                     p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
                     p.setLauncherPath(rs.getString("launcherpath"));
@@ -1395,7 +1437,7 @@ public class DbManager {
 
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
-                        projectTypes.add(p);
+                        projectIDES.add(p);
                     }
                 }
             }
@@ -1896,16 +1938,16 @@ public class DbManager {
         return directories;
     }
 
-    public HashMap<ProjectType, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
-        HashMap<ProjectType, List<File>> projectTypes = new HashMap<>();
+    public HashMap<ProjectIDE, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
+        HashMap<ProjectIDE, List<File>> projectTypes = new HashMap<>();
         for (ProjectTypeLink ptl : getProjectTypeLinks()) {
             if(ptl.getProjectDirectoryId() == directoryId) {
-                if (projectTypes.containsKey(ptl.getProjectType())) {
-                    projectTypes.computeIfAbsent(ptl.getProjectType(), k -> new ArrayList<>());
+                if (projectTypes.containsKey(ptl.getProjectIDE())) {
+                    projectTypes.computeIfAbsent(ptl.getProjectIDE(), k -> new ArrayList<>());
                 } else {
-                    projectTypes.put(ptl.getProjectType(), new ArrayList<>());
+                    projectTypes.put(ptl.getProjectIDE(), new ArrayList<>());
                 }
-                projectTypes.get(ptl.getProjectType()).add(ptl.getFile());
+                projectTypes.get(ptl.getProjectIDE()).add(ptl.getFile());
             }
         }
         return projectTypes;
@@ -1915,7 +1957,7 @@ public class DbManager {
         List<Project> projects = new ArrayList<>();
         for(Project project : getProjects()) {
             for (ProjectDirectory pd : project.getProjectDirectories()) {
-                for (ProjectType pt : pd.getProjectTypeMap().keySet()) {
+                for (ProjectIDE pt : pd.getProjectTypeMap().keySet()) {
                     if (pt.getId() == id) {
                         if (!projects.contains(project)) {
                             projects.add(project);

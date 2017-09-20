@@ -1,25 +1,27 @@
-package com.waldo.inventory.gui.dialogs.projecttypesdialog;
+package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
-public abstract class ProjectTypesDialogLayout extends IDialog implements
+public abstract class ProjectIDEDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectChangedListener<ProjectType>,
+        DbObjectChangedListener<ProjectIDE>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
@@ -29,8 +31,8 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JList<ProjectType> projectTypeList;
-    DefaultListModel<ProjectType> projectTypeModel;
+    JList<ProjectIDE> projectTypeList;
+    DefaultListModel<ProjectIDE> projectTypeModel;
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
@@ -40,6 +42,8 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
     private JList<Project> detailProjectList;
     DefaultListModel<Project> detailProjectModel;
 
+    IComboBox<String> projectTypeCb;
+
     JButton detailLauncherBtn;
     JButton detailDetectionBtn;
     JButton detailParserBtn;
@@ -47,13 +51,13 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectType selectedProjectType;
-    ProjectType originalProjectType;
+    ProjectIDE selectedProjectIDE;
+    ProjectIDE originalProjectIDE;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectTypesDialogLayout(Application application, String title) {
+    ProjectIDEDialogLayout(Application application, String title) {
         super(application, title);
     }
 
@@ -61,24 +65,26 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        if (selectedProjectType == null || selectedProjectType.isUnknown()) {
+        if (selectedProjectIDE == null || selectedProjectIDE.isUnknown()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
             detailLauncherBtn.setEnabled(false);
             detailDetectionBtn.setEnabled(false);
             detailParserBtn.setEnabled(false);
+            projectTypeCb.setEnabled(false);
         } else {
             toolBar.setDeleteActionEnabled(true);
             toolBar.setEditActionEnabled(true);
             detailLauncherBtn.setEnabled(true);
             detailDetectionBtn.setEnabled(true);
             detailParserBtn.setEnabled(true);
+            projectTypeCb.setEnabled(true);
         }
     }
 
 
     private JPanel createWestPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Project types");
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Project IDEs");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
@@ -129,6 +135,11 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         nameLabel.setHorizontalAlignment(ILabel.RIGHT);
         nameLabel.setVerticalAlignment(ILabel.CENTER);
 
+        // - Name
+        ILabel typeLabel = new ILabel("Type: ");
+        typeLabel.setHorizontalAlignment(ILabel.RIGHT);
+        typeLabel.setVerticalAlignment(ILabel.CENTER);
+
         // - Buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(detailParserBtn);
@@ -151,13 +162,25 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         gbc.anchor = GridBagConstraints.EAST;
         textFieldPanel.add(detailName, gbc);
 
-        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        textFieldPanel.add(typeLabel, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 3;
+        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        textFieldPanel.add(projectTypeCb, gbc);
+
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         textFieldPanel.add(buttonPanel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 1;
+        gbc.gridy = 3; gbc.weighty = 1;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
         textFieldPanel.add(detailLogo, gbc);
@@ -215,6 +238,10 @@ public abstract class ProjectTypesDialogLayout extends IDialog implements
         detailName.setEnabled(false);
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        List<String> types = Arrays.asList(Statics.ProjectTypes.All);
+        projectTypeCb = new IComboBox<>(types, null, true);
+        projectTypeCb.addEditedListener(this, "projectType", String.class);
 
         detailProjectModel = new DefaultListModel<>();
         detailProjectList = new JList<>(detailProjectModel);

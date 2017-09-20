@@ -119,9 +119,9 @@ public class Project extends DbObject {
     }
 
 
-    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
         if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
-            updateProjectTypesToDirectory(projectDirectory, projectTypes);
+            updateProjectTypesToDirectory(projectDirectory, projectIDES);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
@@ -131,15 +131,15 @@ public class Project extends DbObject {
         }
     }
 
-    public void addDirectory(String projectDirectory, List<ProjectType> projectTypes) {
+    public void addDirectory(String projectDirectory, List<ProjectIDE> projectIDES) {
         ProjectDirectory directory = new ProjectDirectory();
         directory.setDirectory(projectDirectory);
-        addDirectory(directory, projectTypes);
+        addDirectory(directory, projectIDES);
     }
 
-    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
         if (projectDirectory != null && getProjectDirectories().contains(projectDirectory)) {
-            updateProjectTypesToDirectory(projectDirectory, projectTypes);
+            updateProjectTypesToDirectory(projectDirectory, projectIDES);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
@@ -155,8 +155,8 @@ public class Project extends DbObject {
         }
     }
 
-    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
-        for (ProjectType type : projectTypes) {
+    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
+        for (ProjectIDE type : projectIDES) {
 
             if (type.isOpenAsFolder()) {
                 if (type.isMatchExtension()) {
@@ -202,14 +202,14 @@ public class Project extends DbObject {
             }
             // Save directory
             directory.save();
-            for (ProjectType type : directory.getProjectTypeMap().keySet())  {
+            for (ProjectIDE type : directory.getProjectTypeMap().keySet())  {
                 for (File file : directory.getProjectTypeMap().get(type)) {
                     // Save link between type and directory
                     ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId(), file.getAbsolutePath());
                     if (ptl == null) {
                         ptl = new ProjectTypeLink();
                     }
-                    ptl.setProjectType(type);
+                    ptl.setProjectIDE(type);
                     ptl.setProjectDirectory(directory);
                     ptl.setFilePath(file.getAbsolutePath());
                     ptl.save();
@@ -240,13 +240,13 @@ public class Project extends DbObject {
         }
 
         for (ProjectDirectory directory : newDirs) {
-            addDirectory(directory, DbManager.db().getProjectTypes());
+            addDirectory(directory, DbManager.db().getProjectIDES());
         }
     }
 
     public boolean hasItems() {
         for (ProjectDirectory dir : getProjectDirectories()) {
-            for (ProjectType type : dir.getProjectTypes()) {
+            for (ProjectIDE type : dir.getProjectTypes()) {
                 if (type.hasParser()) {
                     type.getProjectParser().getParsedData();
                 }
