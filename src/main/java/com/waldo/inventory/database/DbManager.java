@@ -1238,6 +1238,7 @@ public class DbManager {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconPath"));
+                    p.setMainDirectory(rs.getString("mainDirectory"));
 
                     // ProjectDirectories are fetched in object itself
                     p.setInserted(true);

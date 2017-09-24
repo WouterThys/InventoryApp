@@ -7,12 +7,15 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
 import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog.EditProjectCodeDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class ProjectCodePanel extends JPanel implements
         GuiInterface,
@@ -24,6 +27,11 @@ public class ProjectCodePanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectGirdPanel<ProjectCode> gridPanel;
     private IdBToolBar codeToolBar;
+    private JTree codeFilesTree;
+    private IFileTreeModel fileTreeModel;
+    private ProjectCodeDetailPanel detailPanel;
+
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -55,16 +63,29 @@ public class ProjectCodePanel extends JPanel implements
         codeToolBar.setEditActionEnabled(enabled);
     }
 
+    private void updateDetails() {
+        detailPanel.updateComponents(selectedProjectCode);
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        // Center
         gridPanel = new ProjectGirdPanel<>(projectObject -> {
             selectedProjectCode = projectObject;
+            fileTreeModel = new IFileTreeModel(new File(selectedProjectCode.getDirectory()));
+            codeFilesTree.setModel(fileTreeModel);
             updateEnabledComponents();
+            updateDetails();
         });
         codeToolBar = new IdBToolBar(this);
+
+        // East
+        codeFilesTree = new JTree();
+        codeFilesTree.setCellRenderer(ITree.getFilesRenderer());
+        detailPanel = new ProjectCodeDetailPanel(application);
     }
 
     @Override
@@ -76,9 +97,13 @@ public class ProjectCodePanel extends JPanel implements
         JPanel centerPanel = new JPanel(new BorderLayout());
 
         // Add stuff to panels
-        JScrollPane pane = new JScrollPane(gridPanel);
-        centerPanel.add(pane, BorderLayout.CENTER);
+        centerPanel.add(gridPanel, BorderLayout.CENTER);
         centerPanel.add(codeToolBar, BorderLayout.PAGE_START);
+
+        JScrollPane pane = new JScrollPane(codeFilesTree);
+        eastPanel.add(pane, BorderLayout.CENTER);
+        eastPanel.add(detailPanel, BorderLayout.SOUTH);
+        eastPanel.setMinimumSize(new Dimension(300, 0));
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, centerPanel, eastPanel);
@@ -94,7 +119,11 @@ public class ProjectCodePanel extends JPanel implements
         } else {
             selectedProject = null;
         }
+        selectedProjectCode = null;
+        fileTreeModel = new IFileTreeModel();
+        codeFilesTree.setModel(fileTreeModel);
         updateEnabledComponents();
+        updateDetails();
     }
 
     //
@@ -111,10 +140,6 @@ public class ProjectCodePanel extends JPanel implements
             ProjectCode newProjectCode = new ProjectCode(selectedProject.getId());
             EditProjectCodeDialog dialog = new EditProjectCodeDialog(application, "Add code", newProjectCode);
             dialog.showDialog();
-            //if (dialog.showDialog() == IDialog.OK) {
-                //newProjectCode = dialog.getProjectCode();
-                //newProjectCode.save();
-            //}
         }
     }
 

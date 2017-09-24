@@ -25,9 +25,6 @@ public class TopToolBar extends JPanel implements
     public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener){
         this.application = application;
 
-        // Layout
-        setLayout(new BorderLayout());
-
         // Tool bars
         mainViewToolBar = new IdBToolBar(toolBarListener);
         mainViewToolBar.setFloatable(false);
@@ -39,11 +36,10 @@ public class TopToolBar extends JPanel implements
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 
-        // Add
+        //createLayout();
+        setLayout(new BorderLayout());
         add(mainViewToolBar, BorderLayout.WEST);
-        //addSeparator();
         add(contentPane, BorderLayout.CENTER);
-        //addSeparator();
         add(searchPanel, BorderLayout.EAST);
     }
 
@@ -61,6 +57,32 @@ public class TopToolBar extends JPanel implements
 
     public JPanel getContentPane() {
         return contentPane;
+    }
+
+    private void createLayout() {
+        SpringLayout layout = new SpringLayout();
+
+        // Tool bar
+        layout.putConstraint(SpringLayout.NORTH, mainViewToolBar, 5, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.SOUTH, mainViewToolBar, -5, SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.WEST, mainViewToolBar, -5, SpringLayout.WEST, this);
+
+        // Search panel
+        layout.putConstraint(SpringLayout.NORTH, searchPanel, 5, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.SOUTH, searchPanel, -5, SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.EAST, searchPanel, 5, SpringLayout.EAST, this);
+
+        // Content
+        layout.putConstraint(SpringLayout.NORTH, contentPane, 5, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.SOUTH, contentPane, -5, SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.WEST, contentPane, 5, SpringLayout.EAST, mainViewToolBar);
+        layout.putConstraint(SpringLayout.EAST, contentPane, 5, SpringLayout.WEST, searchPanel);
+
+        add(mainViewToolBar);
+        add(contentPane);
+        add(searchPanel);
+        setPreferredSize(new Dimension(600,  60));
+        setLayout(layout);
     }
 
     @Override

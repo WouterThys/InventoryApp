@@ -74,6 +74,15 @@ public class FileUtils {
         }
     }
 
+    public static String getLastPathPart(String path) {
+        String result = "";
+        if (!path.isEmpty()) {
+            int ndx = path.lastIndexOf(File.separator);
+            result = path.substring(ndx+1, path.length());
+        }
+        return result;
+    }
+
 
     public static ImageFilter getImageFilter() {
         return new ImageFilter();

@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
@@ -47,6 +48,9 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     ProjectPcbPanel projectPcbPanel;
     ProjectOtherPanel projectOtherPanel;
 
+    private ILabel tbProjectNameLbl;
+    private ILabel tbProjectDirLbl;
+
 
     /*
      *                  VARIABLES
@@ -75,6 +79,16 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     }
 
+    void updateToolBar() {
+        if (selectedProject != null) {
+            tbProjectNameLbl.setText(selectedProject.getName());
+            tbProjectDirLbl.setText(selectedProject.getMainDirectory());
+        } else  {
+            tbProjectNameLbl.setText("");
+            tbProjectDirLbl.setText("");
+        }
+    }
+
     void selectTab(int tab, Project project) {
         switch (tab) {
             case TAB_CODE:
@@ -98,6 +112,10 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             TreeNode node = projectNode.getChildAt(tab);
             treeModel.setSelectedNode(node);
         }
+    }
+
+    void treeCollapseAll() {
+        treeModel.collapseNodes();
     }
 
     ProjectPcb treeGetPcbTab(Project project) {
@@ -213,11 +231,24 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Top tool bar
         topToolBar = new TopToolBar(application, null);
         topToolBar.setDbToolbarVisible(false);
+
+        tbProjectDirLbl = new ILabel("", ILabel.CENTER);
+        tbProjectNameLbl = new ILabel("", ILabel.CENTER);
+        Font f = tbProjectNameLbl.getFont();
+        tbProjectNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
+
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
+
+        // Tool bar
+        JPanel tbPanel = new JPanel(new BorderLayout());
+        tbPanel.add(tbProjectNameLbl, BorderLayout.CENTER);
+        tbPanel.add(tbProjectDirLbl, BorderLayout.SOUTH);
+        topToolBar.getContentPane().setLayout(new BorderLayout());
+        topToolBar.getContentPane().add(tbPanel);
 
         // Panels
         JPanel westPanel = new JPanel(new BorderLayout());
@@ -239,17 +270,19 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object object) {
+        if (object == null) {
+            return;
+        }
         if (application.isUpdating()) {
             return;
         }
         application.beginWait();
         try {
-            if (object != null) {
-                selectedProject = (Project) object;
-            } else {
-                selectedProject = null;
-            }
+            selectedProject = (Project) object;
+            selectTreeTab(TAB_CODE, selectedProject);
+            projectCodePanel.updateComponents(selectedProject);
 
+            updateToolBar();
             updateEnabledComponents();
             updateVisibleComponents();
 

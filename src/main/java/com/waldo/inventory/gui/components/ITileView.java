@@ -29,13 +29,12 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     private JButton iconBtn;
     private JTextPane nameTp;
     private String name;
-    private Path path;
     private IT projectObject;
     private TileClickListener<IT> listener;
 
     public ITileView(IT projectObject) {
         this.projectObject = projectObject;
-        this.name = projectObject.getDirectory();
+        this.name = projectObject.getName();
 
         initializeComponents();
         initializeLayouts();
@@ -93,7 +92,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     public void updateComponents(Object object) {
         ProjectIDE ide = projectObject.getProjectIDE();
         if (ide != null) {
-            path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
+            Path path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
             setIcon(path.toString());
         } else {
             setIcon("");

@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
+import java.io.File;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -50,6 +51,23 @@ public class ITree extends JTree {
                     } else {
                         setIcon(null);
                     }
+                }
+
+                return c;
+            }
+        };
+    }
+
+    public static DefaultTreeCellRenderer getFilesRenderer() {
+        return new DefaultTreeCellRenderer() {
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+                if (value instanceof File) {
+                    setText(((File)value).getName());
+                    //setName(());
                 }
 
                 return c;

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -56,6 +57,12 @@ public abstract class ProjectObject extends DbObject {
         return cpy;
     }
 
+    public void createName() {
+        if (!getDirectory().isEmpty()) {
+            setName(FileUtils.getLastPathPart(getDirectory()));
+        }
+    }
+
     // Getters and setters
     public String getDirectory() {
         if (directory == null) {
@@ -79,7 +86,7 @@ public abstract class ProjectObject extends DbObject {
 
     public Project getProject() {
         if (project == null) {
-            SearchManager.sm().findProjectById(projectId);
+            project = SearchManager.sm().findProjectById(projectId);
         }
         return project;
     }

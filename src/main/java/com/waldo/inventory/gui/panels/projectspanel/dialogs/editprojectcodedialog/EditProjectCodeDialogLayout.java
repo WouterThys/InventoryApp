@@ -20,10 +20,10 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    IComboBox<String> languageCb;
+    private IComboBox<String> languageCb;
     ITextField directoryTf;
     private JButton directoryBtn;
-    IComboBox<ProjectIDE> projectIdeCb;
+    private IComboBox<ProjectIDE> projectIdeCb;
     private ITextArea remarksTa;
 
      /*

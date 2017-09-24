@@ -43,6 +43,14 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
         expandNodes(0, tree.getRowCount());
     }
 
+    public void collapseNodes()  {
+        int row = tree.getRowCount()-1;
+        while (row >= 1) {
+            tree.collapseRow(row);
+            row--;
+        }
+    }
+
     public void expandNodes(int startingIndex, int rowCount){
         for(int i=startingIndex;i<rowCount;++i){
             tree.expandRow(i);

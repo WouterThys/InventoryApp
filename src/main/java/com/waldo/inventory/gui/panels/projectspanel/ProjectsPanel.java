@@ -112,6 +112,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                     return; // Not a selectable node
                 }
 
+                treeCollapseAll();
                 int tabToSelect = 0;
                 switch (DbObject.getType(object)) {
                     case DbObject.TYPE_PROJECT_CODE:
@@ -127,14 +128,17 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                         selectedProject = (Project) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
                         break;
                     case DbObject.TYPE_PROJECT:
+                        tabToSelect = TAB_CODE;
                         selectedProject = (Project) object;
                         break;
                 }
 
                 application.clearSearch();
+                selectTreeTab(tabToSelect, selectedProject);
                 selectTab(tabToSelect, selectedProject);
                 // TODO: update panels
 
+                updateToolBar();
                 updateVisibleComponents();
                 updateEnabledComponents();
             }

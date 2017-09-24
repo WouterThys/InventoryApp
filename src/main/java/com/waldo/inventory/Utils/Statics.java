@@ -78,7 +78,7 @@ public class Statics {
     }
 
     public static class CodeLanguage {
-        public static final String Unknown = "Unknown";
+        public static final String Unknown = "";
         public static final String C = "C";
         public static final String Cs = "C#";
         public static final String Cpp = "C++";
@@ -90,10 +90,11 @@ public class Statics {
     }
 
     public static class ProjectTypes {
+        public static final String Unknown = "";
         public static final String Code = "Code";
         public static final String Pcb = "Pcb";
         public static final String Other = "Other";
 
-        public static final String[] All  = {Code, Pcb, Other };
+        public static final String[] All  = {Unknown, Code, Pcb, Other };
     }
 }

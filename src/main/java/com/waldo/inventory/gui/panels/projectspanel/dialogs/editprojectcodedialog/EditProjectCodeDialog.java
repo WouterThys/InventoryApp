@@ -1,20 +1,14 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog;
 
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.ProjectCode;
-import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.IDEFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.waldo.inventory.database.SearchManager.sm;
 
 public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
 
@@ -43,6 +37,7 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
             String msg = projectCode.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
+                    projectCode.createName();
                     projectCode.save();
                     projectCode = originalProjectCode.createCopy();
                     if (closeAfter) {
@@ -61,12 +56,32 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
 
     private boolean verify() {
         boolean ok = true;
-        if (directoryTf.getText().isEmpty()) {
+        if (projectCode.getDirectory().isEmpty()) {
             directoryTf.setError("Directory can not be empty..");
             ok = false;
+        } else {
+            File dir = new File(projectCode.getDirectory());
+            if (!dir.exists()) {
+                directoryTf.setError("Directory does not exist..");
+                ok = false;
+            }
         }
 
-        // TODO check if project IDE matches the selected project type -> should also be in the file open dialog, only with the extension files..
+        if (ok) {
+            if (projectCode.getProjectIDEId() > DbObject.UNKNOWN_ID) {
+                if (projectCode.getProjectIDE().isUseParentFolder()) {
+                    File parent = new File(projectCode.getDirectory());
+                    if (!(parent.exists() && parent.isDirectory() && FileUtils.contains(parent, projectCode.getProjectIDE().getExtension()))) {
+                        directoryTf.setWarning("Directory does not match with IDE");
+                    }
+                } else {
+                    File file = new File(projectCode.getDirectory());
+                    if (!(file.exists() && FileUtils.is(file, projectCode.getProjectIDE().getExtension()))) {
+                        directoryTf.setWarning("Directory does not match with IDE");
+                    }
+                }
+            }
+        }
 
         return ok;
     }
@@ -99,6 +114,7 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
+            projectCode.createName();
             projectCode.save();
             originalProjectCode = projectCode.createCopy();
             getButtonNeutral().setEnabled(false);
@@ -127,23 +143,23 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        List<ProjectIDE> ideList = new ArrayList<>();
-        if (projectCode.getProjectId() > DbObject.UNKNOWN_ID) {
-            ideList.add(projectCode.getProjectIDE());
-        } else {
-            ideList = sm().findProjectIDEsByType(Statics.ProjectTypes.Code);
-        }
-        JFileChooser fileChooser = IDEFileChooser.getFileChooser(ideList);
+        JFileChooser fileChooser = new JFileChooser();
+        String home = "";
         if (projectCode.getProject() != null) {
-            // TODO get project dir
+            home = projectCode.getProject().getMainDirectory();
         }
-        fileChooser.setCurrentDirectory(new File("home/Documents/"));
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (home.isEmpty()) {
+            home = "/home/waldo/Documents/";
+        }
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setCurrentDirectory(new File(home));
 
         if (fileChooser.showDialog(EditProjectCodeDialog.this, "Select") == JFileChooser.APPROVE_OPTION) {
             String dir = fileChooser.getSelectedFile().getAbsolutePath();
+            directoryTf.setError(null);
             directoryTf.setText(dir);
             projectCode.setDirectory(dir);
+            verify();
             onValueChanged(directoryTf, "", 0,0);
         }
     }

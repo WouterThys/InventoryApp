@@ -17,9 +17,11 @@ public class Project extends DbObject {
 
     public static final String TABLE_NAME = "projects";
 
+    @Deprecated
     private List<ProjectDirectory> projectDirectories;
     private boolean validated = false;
 
+    private String mainDirectory;
     private List<ProjectCode> projectCodes;
     private List<ProjectPcb> projectPcbs;
     private List<ProjectOther> projectOthers;
@@ -43,9 +45,9 @@ public class Project extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        return 3;
+        int ndx = addBaseParameters(statement);
+        statement.setString(ndx++, getMainDirectory());
+        return ndx;
     }
 
     @Override
@@ -324,5 +326,16 @@ public class Project extends DbObject {
 
     public void updateProjectOthers() {
         projectOthers = null;
+    }
+
+    public String getMainDirectory() {
+        if (mainDirectory == null) {
+            mainDirectory = "";
+        }
+        return mainDirectory;
+    }
+
+    public void setMainDirectory(String mainDirectory) {
+        this.mainDirectory = mainDirectory;
     }
 }
