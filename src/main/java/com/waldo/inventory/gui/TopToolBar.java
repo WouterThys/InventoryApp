@@ -27,8 +27,6 @@ public class TopToolBar extends JPanel implements
 
         // Layout
         setLayout(new BorderLayout());
-        //setFloatable(false);
-        //setRollover(true);
 
         // Tool bars
         mainViewToolBar = new IdBToolBar(toolBarListener);
@@ -47,6 +45,14 @@ public class TopToolBar extends JPanel implements
         add(contentPane, BorderLayout.CENTER);
         //addSeparator();
         add(searchPanel, BorderLayout.EAST);
+    }
+
+    public void setDbToolbarVisible(boolean visible) {
+        mainViewToolBar.setVisible(visible);
+    }
+
+    public void setAdvancedSearchVisible(boolean visible) {
+
     }
 
     public void clearSearch() {

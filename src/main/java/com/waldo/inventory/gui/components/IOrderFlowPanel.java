@@ -2,14 +2,12 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.gui.Application.imageResource;

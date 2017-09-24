@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -18,6 +19,10 @@ public class Project extends DbObject {
 
     private List<ProjectDirectory> projectDirectories;
     private boolean validated = false;
+
+    private List<ProjectCode> projectCodes;
+    private List<ProjectPcb> projectPcbs;
+    private List<ProjectOther> projectOthers;
 
     public Project() {
         super(TABLE_NAME);
@@ -286,5 +291,38 @@ public class Project extends DbObject {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
+    }
+
+    public List<ProjectCode> getProjectCodes() {
+        if (projectCodes == null) {
+            projectCodes = SearchManager.sm().findProjectCodesByProjectId(getId());
+        }
+        return projectCodes;
+    }
+
+    public List<ProjectPcb> getProjectPcbs() {
+        if (projectPcbs == null) {
+            projectPcbs = SearchManager.sm().findProjectPcbsByProjectId(getId());
+        }
+        return projectPcbs;
+    }
+
+    public List<ProjectOther> getProjectOthers() {
+        if (projectOthers == null) {
+            projectOthers = SearchManager.sm().findProjectOthersByProjectId(getId());
+        }
+        return projectOthers;
+    }
+
+    public void updateProjectCodes() {
+        projectCodes = null;
+    }
+
+    public void updateProjectPcbs() {
+        projectPcbs = null;
+    }
+
+    public void updateProjectOthers() {
+        projectOthers = null;
     }
 }

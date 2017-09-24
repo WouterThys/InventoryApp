@@ -1,9 +1,8 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.classes.ProjectIDE;
-import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.classes.ProjectObject;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
@@ -14,103 +13,47 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView extends JPanel implements GuiInterface, ActionListener {
+public class ITileView<IT extends ProjectObject> extends JPanel implements GuiInterface, ActionListener {
 
-    public interface TileClickListener {
-        void onTileClick(ITileView view);
+    public interface TileClickListener<IT extends ProjectObject> {
+        void onTileClick(IT projectObject);
     }
 
-    private long tileId;
     private JButton iconBtn;
-    private JTextPane nameTp;;
-
-    private ImageIcon icon;
+    private JTextPane nameTp;
     private String name;
+    private Path path;
+    private IT projectObject;
+    private TileClickListener<IT> listener;
 
-    private ProjectIDE projectIDE;
-    private ProjectDirectory projectDirectory;
-    private File file;
-
-    private TileClickListener listener;
-
-    public ITileView(String iconPath, String name, long id) {
-        this.icon = imageResource.readImage(iconPath, 64, 64);
-        this.name = name;
-        this.tileId = id;
+    public ITileView(IT projectObject) {
+        this.projectObject = projectObject;
+        this.name = projectObject.getDirectory();
 
         initializeComponents();
         initializeLayouts();
-
         updateComponents(null);
     }
 
-    public ITileView(File file, ProjectIDE projectIDE, ProjectDirectory projectDirectory) {
-        this.projectDirectory = projectDirectory;
-        this.projectIDE = projectIDE;
-        this.file = file;
-
-        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), projectIDE.getIconPath());
-
-        this.name = getFileName(file.getAbsolutePath());
-        this.icon = imageResource.readImage(path.toString(), 64, 64);
-
-        initializeComponents();
-        initializeLayouts();
-
-        updateComponents(null);
-    }
-
-    public ITileView(String iconPath, String name) {
-        this (iconPath, name, -1);
-    }
-
-    public ITileView(ImageIcon icon, String name) {
-        this.icon = icon;
-        this.name = name;
-
-        initializeComponents();
-        initializeLayouts();
-
-        updateComponents(null);
-    }
-
-    private String getFileName(String filePath) {
-        if (filePath.contains("/")) {
-            int ndx = filePath.lastIndexOf("/");
-            return filePath.substring(ndx + 1, filePath.length());
-        }
-        return filePath;
-    }
-
-    public void addTileClickListener(TileClickListener listener) {
+    public void addTileClickListener(TileClickListener<IT> listener) {
         this.listener = listener;
+    }
+
+    public IT getProjectObject() {
+        return projectObject;
     }
 
     private String createName(String text) {
         return FileUtils.formatFileNameString(text);
     }
 
-    public long getTileId() {
-        return tileId;
-    }
-
-    public void setTileId(long tileId) {
-        this.tileId = tileId;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
 
     @Override
     public void initializeComponents() {
@@ -148,45 +91,42 @@ public class ITileView extends JPanel implements GuiInterface, ActionListener {
 
     @Override
     public void updateComponents(Object object) {
-        iconBtn.setIcon(icon);
+        ProjectIDE ide = projectObject.getProjectIDE();
+        if (ide != null) {
+            path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
+            setIcon(path.toString());
+        } else {
+            setIcon("");
+        }
+
+
         nameTp.setText(createName(name));
     }
 
-    public static class ITileViewComparator implements Comparator<ITileView> {
-
-        @Override
-        public int compare(ITileView o1, ITileView o2) {
-            return o1.name.compareToIgnoreCase(o2.name);
+    private void setIcon(String path) {
+        if (!path.isEmpty()) {
+            URL url;
+            try {
+                url = new File(path).toURI().toURL();
+                iconBtn.setIcon(imageResource.readImage(url, 48, 48));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            iconBtn.setIcon(imageResource.readImage("Common.UnknownIcon48"));
         }
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (listener != null) {
-            listener.onTileClick(this);
+            listener.onTileClick(projectObject);
         }
     }
 
     @Override
     public String getName() {
         return name;
-    }
-
-    public ProjectIDE getProjectIDE() {
-        return projectIDE;
-    }
-
-    public void setProjectIDE(ProjectIDE projectIDE) {
-        this.projectIDE = projectIDE;
-    }
-
-    public ProjectDirectory getProjectDirectory() {
-        return projectDirectory;
-    }
-
-    public void setProjectDirectory(ProjectDirectory projectDirectory) {
-        this.projectDirectory = projectDirectory;
     }
 }
 

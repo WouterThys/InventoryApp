@@ -14,7 +14,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
-import com.waldo.inventory.gui.panels.projectpanel.ProjectPanel;
+import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -45,7 +45,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     private MainPanel mainPanel;
     private OrderPanel orderPanel;
-    private ProjectPanel projectPanel;
+    private ProjectsPanel projectPanel;
 
     private boolean updating = false;
 
@@ -140,7 +140,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // - Create components
         mainPanel = new MainPanel(this);
         orderPanel = new OrderPanel(this);
-        projectPanel = new ProjectPanel(this);
+        projectPanel = new ProjectsPanel(this);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);

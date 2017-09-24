@@ -275,18 +275,23 @@ public class ProjectPanel extends ProjectPanelLayout {
     //
     // Project tile clicked
     //
-    @Override
-    public void onGridComponentClick(String name, ProjectIDE type, File file) {
-        selectedProjectIDE = type;
-        lastProjectFile = file;
-        detailsPanel.updateComponents(selectedProject);
-        projectTypeDetails.setProjectName(name);
-        projectTypeDetails.updateComponents(selectedProjectIDE);
+//    @Override
+//    public void onGridComponentClick(String name, ProjectIDE type, File file) {
+//        selectedProjectIDE = type;
+//        lastProjectFile = file;
+//        detailsPanel.updateComponents(selectedProject);
+//        projectTypeDetails.setProjectName(name);
+//        projectTypeDetails.updateComponents(selectedProjectIDE);
+//
+//        if (type.hasParser()) {
+//            kiCadItemPanel.updateComponents(file);
+//        } else {
+//            kiCadItemPanel.updateComponents(null);
+//        }
+//    }
 
-        if (type.hasParser()) {
-            kiCadItemPanel.updateComponents(file);
-        } else {
-            kiCadItemPanel.updateComponents(null);
-        }
+    @Override
+    public void onGridComponentClick(ProjectObject projectObject) {
+
     }
 }

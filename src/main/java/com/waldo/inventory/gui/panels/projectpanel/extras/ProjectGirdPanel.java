@@ -1,43 +1,43 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
-import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectIDE;
+import com.waldo.inventory.classes.ProjectObject;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITileView;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.TileClickListener {
+public class ProjectGirdPanel<P extends ProjectObject> extends JPanel implements
+        GuiInterface,
+        ITileView.TileClickListener<P> {
 
-    public interface GridComponentClicked {
-        void onGridComponentClick(String name, ProjectIDE type, File file);
+    @Override
+    public void onTileClick(P projectObject) {
+        if (gridComponentListener != null) {
+            gridComponentListener.onGridComponentClick(projectObject);
+        }
+    }
+
+    public interface GridComponentClicked<PO extends ProjectObject> {
+        void onGridComponentClick(PO projectObject);
     }
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private List<ITileView> tileViews = new ArrayList<>();
+    private List<ITileView<P>> tileViews = new ArrayList<>();
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
-    private Project project;
-
-    private GridComponentClicked gridComponentListener;
+    private GridComponentClicked<P> gridComponentListener;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectGirdPanel(Application application, Project project, GridComponentClicked gridComponentListener) {
-        this.application = application;
-        this.project = project;
+    public ProjectGirdPanel(GridComponentClicked<P> gridComponentListener) {
         this.gridComponentListener = gridComponentListener;
 
         initializeComponents();
@@ -48,19 +48,18 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void initializeTiles() {
-        if (project != null) {
-            tileViews.clear();
-            for (ProjectDirectory directory : project.getProjectDirectories()) {
-                for (ProjectIDE type : directory.getProjectTypes()) {
-                    for (File file : directory.getProjectFilesForType(type)) {
-                        ITileView tileView = new ITileView(file, type, directory);
-                        tileView.addTileClickListener(this);
-                        tileViews.add(tileView);
-                    }
-                }
-            }
+    private ITileView<P> createTile(P projectObject) {
+        ITileView<P> tileView = new ITileView<>(projectObject);
+        tileView.addTileClickListener(this);
+        return  tileView;
+    }
+
+    public void drawTiles(List<P> projectObjects) {
+        tileViews.clear();
+        for (P po : projectObjects) {
+            tileViews.add(createTile(po));
         }
+        redrawTiles();
     }
 
     public void redrawTiles() {
@@ -70,6 +69,29 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
         }
         revalidate();
         repaint();
+    }
+
+    public void updateTiles() {
+        for (ITileView view : tileViews) {
+            view.revalidate();
+            view.repaint();
+        }
+    }
+
+    public void addTile(P projectObject) {
+        tileViews.add(createTile(projectObject));
+        redrawTiles();
+    }
+
+    public void removeTile(P projectObject) {
+        for (int i = tileViews.size()-1; i >= 0; i--) {
+            ITileView<P> tileView = tileViews.get(i);
+            if (tileView.getProjectObject().equals(projectObject)) {
+                tileViews.remove(tileView);
+                break;
+            }
+        }
+        redrawTiles();
     }
 
 
@@ -88,29 +110,13 @@ public class ProjectGirdPanel extends JPanel implements GuiInterface, ITileView.
 
     @Override
     public void updateComponents(Object object) {
-        if (object != null && object instanceof Project) {
-            if (!object.equals(project)) {
-
-                project = (Project) object;
-
-                initializeTiles();
-                redrawTiles();
-
-
-            }
+        if (object != null) {
+            redrawTiles();
         } else {
             tileViews.clear();
             removeAll();
         }
     }
 
-    //
-    // Tile clicked
-    //
-    @Override
-    public void onTileClick(ITileView view) {
-        if (gridComponentListener != null) {
-            gridComponentListener.onGridComponentClick(view.getName(), view.getProjectIDE(), view.getFile());
-        }
-    }
+
 }

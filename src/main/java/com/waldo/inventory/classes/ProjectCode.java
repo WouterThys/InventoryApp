@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -9,27 +8,24 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class ProjectCode extends DbObject {
+public class ProjectCode extends ProjectObject {
 
     public static final String TABLE_NAME = "projectcodes";
 
     // Variables
     private String language;
-    private String directory;
-
-    private long projectId;
-    private Project project;
-
-    private long projectIDEId;
-    private ProjectIDE projectIDE;
-
-    private String remarks;
-
 
     public ProjectCode() {
         super(TABLE_NAME);
     }
-
+    public ProjectCode(String name) {
+        super(TABLE_NAME);
+        setName(name);
+    }
+    public ProjectCode(long projectId) {
+        super(TABLE_NAME);
+        setProjectId(projectId);
+    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -58,6 +54,22 @@ public class ProjectCode extends DbObject {
         cpy.setRemarks(getRemarks());
 
         return cpy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof ProjectCode)) {
+                return false;
+            }
+            if (!(((ProjectCode)obj).getLanguage().equals(getLanguage()))) return false;
+            if (!(((ProjectCode)obj).getDirectory().equals(getDirectory()))) return false;
+            if (!(((ProjectCode)obj).getRemarks().equals(getRemarks()))) return false;
+            if (!(((ProjectCode)obj).getProjectId() == getProjectId())) return false;
+            if (!(((ProjectCode)obj).getProjectIDEId() == getProjectIDEId())) return false;
+        }
+        return result;
     }
 
     @Override
@@ -113,57 +125,33 @@ public class ProjectCode extends DbObject {
         this.language = language;
     }
 
+    @Override
     public String getDirectory() {
-        if (directory == null) {
-            directory = "";
-        }
-        return directory;
+        return super.getDirectory();
     }
 
+    @Override
     public void setDirectory(String directory) {
-        this.directory = directory;
+        super.setDirectory(directory);
     }
 
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        project = null;
-        this.projectId = projectId;
-    }
-
-    public Project getProject() {
-        if (project == null) {
-            SearchManager.sm().findProjectById(projectId);
-        }
-        return project;
-    }
-
+    @Override
     public long getProjectIDEId() {
-        return projectIDEId;
+        return super.getProjectIDEId();
     }
 
+    @Override
     public void setProjectIDEId(long projectIDEId) {
-        projectIDE = null;
-        this.projectIDEId = projectIDEId;
+        super.setProjectIDEId(projectIDEId);
     }
 
-    public ProjectIDE getProjectIDE() {
-        if (projectIDE == null) {
-            projectIDE = SearchManager.sm().findProjectIDEById(projectIDEId);
-        }
-        return projectIDE;
-    }
-
+    @Override
     public String getRemarks() {
-        if (remarks == null) {
-            remarks = "";
-        }
-        return remarks;
+        return super.getRemarks();
     }
 
+    @Override
     public void setRemarks(String remarks) {
-        this.remarks = remarks;
+        super.setRemarks(remarks);
     }
 }

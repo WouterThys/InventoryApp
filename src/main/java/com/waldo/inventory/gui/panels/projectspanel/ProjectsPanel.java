@@ -1,0 +1,166 @@
+package com.waldo.inventory.gui.panels.projectspanel;
+
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.IdBToolBar;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import static com.waldo.inventory.database.DbManager.db;
+
+public class ProjectsPanel extends ProjectsPanelLayout {
+
+    private DbObjectChangedListener<Project> projectChanged;
+
+    public ProjectsPanel(Application application) {
+        super(application);
+
+        initializeComponents();
+        initializeLayouts();
+        initializeListeners();
+
+        db().addOnProjectChangedListener(projectChanged);
+
+        updateWithFirstProject();
+    }
+
+    private void updateWithFirstProject() {
+        if (db().getProjects().size() > 0) {
+            updateComponents(db().getProjects().get(0));
+        } else {
+            updateComponents(null);
+        }
+    }
+
+    private void initializeListeners() {
+        setProjectChangedListener();
+    }
+
+    private void setProjectChangedListener() {
+        projectChanged = new DbObjectChangedListener<Project>() {
+            @Override
+            public void onInserted(Project object) {
+
+            }
+
+            @Override
+            public void onUpdated(Project object) {
+
+            }
+
+            @Override
+            public void onDeleted(Project object) {
+
+            }
+
+            @Override
+            public void onCacheCleared() {
+
+            }
+        };
+    }
+
+    public TopToolBar getToolBar() {
+        return topToolBar;
+    }
+
+    //
+    // Tool bars
+    //
+
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+
+    }
+
+    //
+    // Tree value changed
+    //
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        if (!application.isUpdating()) {
+            application.beginWait();
+            try {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) projectsTree.getLastSelectedPathComponent();
+
+                if (node == null) {
+                    selectedProject = null;
+                    return; // Nothing selected
+                }
+                DbObject object = (DbObject) node.getUserObject();
+                if (object.isUnknown()) {
+                    selectedProject = null;
+                    return; // Not a selectable node
+                }
+
+                int tabToSelect = 0;
+                switch (DbObject.getType(object)) {
+                    case DbObject.TYPE_PROJECT_CODE:
+                        tabToSelect = TAB_CODE;
+                        selectedProject = (Project) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
+                        break;
+                    case DbObject.TYPE_PROJECT_PCB:
+                        tabToSelect = TAB_PCBS;
+                        selectedProject = (Project) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
+                        break;
+                    case DbObject.TYPE_PROJECT_OTHER:
+                        tabToSelect = TAB_OTHER;
+                        selectedProject = (Project) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
+                        break;
+                    case DbObject.TYPE_PROJECT:
+                        selectedProject = (Project) object;
+                        break;
+                }
+
+                application.clearSearch();
+                selectTab(tabToSelect, selectedProject);
+                // TODO: update panels
+
+                updateVisibleComponents();
+                updateEnabledComponents();
+            }
+            finally {
+                application.endWait();
+            }
+        }
+    }
+
+    //
+    // Tab index changed
+    //
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource().equals(tabbedPane)) {
+            if (!application.isUpdating()) {
+                application.beginWait();
+                try {
+                    if (selectedProject != null) {
+                        int tab = tabbedPane.getSelectedIndex();
+                        selectTreeTab(tab, selectedProject);
+                    }
+                } finally {
+                    application.endWait();
+                }
+            }
+        }
+    }
+}

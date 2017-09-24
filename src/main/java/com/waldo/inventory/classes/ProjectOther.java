@@ -2,10 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-public class ProjectOther extends DbObject {
+public class ProjectOther extends ProjectObject {
 
     public static final String TABLE_NAME = "projectothers";
 
@@ -16,29 +13,14 @@ public class ProjectOther extends DbObject {
         super(TABLE_NAME);
     }
 
-
-    @Override
-    public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = 1;
-
-        // Add parameters
-
-        return ndx;
-    }
-
-    @Override
-    public ProjectOther createCopy(DbObject copyInto) {
-        ProjectOther cpy = (ProjectOther) copyInto;
-        copyBaseFields(cpy);
-
-        // Add variables
-
-        return cpy;
+    public ProjectOther(String name) {
+        super(TABLE_NAME);
+        setName(name);
     }
 
     @Override
     public ProjectOther createCopy() {
-        return createCopy(new ProjectOther());
+        return (ProjectOther) createCopy(new ProjectOther());
     }
 
     //

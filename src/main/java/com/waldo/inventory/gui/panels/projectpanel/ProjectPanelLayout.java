@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
 import com.waldo.inventory.classes.ProjectIDE;
@@ -7,7 +8,9 @@ import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
@@ -38,7 +41,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITree projectTree;
-    IDbObjectTreeModel treeModel;
+    IDbObjectTreeModel<Project> treeModel;
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
@@ -138,7 +141,15 @@ public abstract class ProjectPanelLayout extends JPanel implements
         virtualRoot.setCanBeSaved(false);
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
         createNodes(rootNode);
-        treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_PROJECTS);
+        treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
+            if (DbObject.getType(child) == DbObject.TYPE_PROJECT_TYPE) { // Types are children of projects, types have no children
+                DefaultMutableTreeNode node = treeModel.findNode(child);
+                if (node != null) {
+                    return (DefaultMutableTreeNode) node.getParent();
+                }
+            }
+            return null;
+        });
 
         projectTree = new ITree(treeModel);
         projectTree.addTreeSelectionListener(this);
@@ -199,7 +210,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectToolBar.setFloatable(false);
 
         // Type panel
-        projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
+        //projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
 
         // Detail panel
         detailsPanel = new ProjectDetailsPanel(application);

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.SearchManager.sm;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
@@ -32,7 +33,7 @@ public abstract class MainPanelLayout extends JPanel implements
     IItemTableModel tableModel;
 
     ITree subDivisionTree;
-    IDbObjectTreeModel treeModel;
+    IDbObjectTreeModel<DbObject> treeModel;
     ItemDetailPanel detailPanel;
     TopToolBar topToolBar;
 
@@ -161,7 +162,25 @@ public abstract class MainPanelLayout extends JPanel implements
         virtualRoot.setCanBeSaved(false);
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
         createNodes(rootNode);
-        treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_DIVISIONS);
+        treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
+            switch (DbObject.getType(child)) {
+                case DbObject.TYPE_CATEGORY:
+                    return rootNode;
+
+                case DbObject.TYPE_PRODUCT: {
+                    Product p = (Product) child;
+                    Category c = sm().findCategoryById(p.getCategoryId()); // The parent object
+                    return treeModel.findNode(c);
+                }
+
+                case DbObject.TYPE_TYPE: {
+                    Type t = (Type) child;
+                    Product p = sm().findProductById(t.getProductId()); // The parent object
+                    return treeModel.findNode(p);
+                }
+            }
+            return null;
+        });
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);

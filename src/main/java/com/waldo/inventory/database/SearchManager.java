@@ -738,6 +738,16 @@ public class SearchManager {
         return null;
     }
 
+    public List<ProjectIDE> findProjectIDEsByType(String type) {
+        List<ProjectIDE> projectIDES = new ArrayList<>();
+        for (ProjectIDE pi : db().getProjectIDES()) {
+            if (pi.getProjectType().isEmpty() || pi.getProjectType().equals(type)) {
+                projectIDES.add(pi);
+            }
+        }
+        return projectIDES;
+    }
+
     public ProjectTypeLink findProjectTypeLink(long directoryId, long typeId, String path) {
         for (ProjectTypeLink tpl : db().getProjectTypeLinks()) {
             if ((tpl.getProjectDirectoryId() == directoryId) &&
@@ -902,5 +912,35 @@ public class SearchManager {
             }
         }
         return locations;
+    }
+
+    public List<ProjectCode> findProjectCodesByProjectId(long projectId) {
+        List<ProjectCode> projectCodes = new ArrayList<>();
+        for (ProjectCode pc : db().getProjectCodes()) {
+            if (pc.getProjectId() == projectId) {
+                projectCodes.add(pc);
+            }
+        }
+        return projectCodes;
+    }
+
+    public List<ProjectPcb> findProjectPcbsByProjectId(long projectId) {
+        List<ProjectPcb> projectPcbs = new ArrayList<>();
+        for (ProjectPcb pp : db().getProjectPcbs()) {
+            if (pp.getProjectId() == projectId) {
+                projectPcbs.add(pp);
+            }
+        }
+        return projectPcbs;
+    }
+
+    public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
+        List<ProjectOther> projectOthers = new ArrayList<>();
+//        for (ProjectOther po : db().getProjectOthers()) {
+//            if (po.getProjectId() == projectId) {
+//                projectOthers.add(pc);
+//            }
+//        }
+        return projectOthers;
     }
 }

@@ -42,7 +42,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     IOrderItemTableModel tableModel;
 
     ITree ordersTree;
-    private IDbObjectTreeModel treeModel;
+    private IDbObjectTreeModel<Order> treeModel;
     ItemDetailPanel itemDetailPanel;
     OrderItemDetailPanel orderItemDetailPanel;
 
@@ -127,14 +127,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         rootNode.removeAllChildren();
         treeInitializeTree(rootNode);
     }
-
-//    public void treeAddOrder(Order order) {
-//        try {
-//            treeModel.addObject(order);
-//        } catch (Exception e) {
-//            Status().setError("Failed to add order " + order.getName() + " to tree", e);
-//        }
-//    }
 
     void treeDeleteOrder(Order order) {
         try {
@@ -254,13 +246,6 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     void updateVisibleComponents() {
-//        if (selectedOrder != null) {
-//            boolean visible = !(selectedOrder.isUnknown() || !selectedOrder.canBeSaved());
-//            orderTbPanel.setVisible(visible);
-//            tbOrderFilePanel.setVisible(selectedOrder.hasOrderFile());
-//        } else {
-//            orderTbPanel.setVisible(false);
-//        }
         orderTbPanel.setVisible(true);
         tbOrderFilePanel.setVisible(true);
     }
@@ -360,10 +345,17 @@ public abstract class OrderPanelLayout extends JPanel implements
         virtualRootOrder.setCanBeSaved(false);
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRootOrder, true);
         treeInitializeTree(rootNode);
-        treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_ORDERS);
+        treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
+            if(child.isOrdered()) {
+                return (DefaultMutableTreeNode) rootNode.getChildAt(0); // Ordered
+            } else {
+                return (DefaultMutableTreeNode) rootNode.getChildAt(1); // Not ordered
+            }
+        });
 
         ordersTree = new ITree(treeModel);
         ordersTree.addTreeSelectionListener(this);
+        ordersTree.setCellRenderer(ITree.getOrdersRenderer());
         treeModel.setTree(ordersTree);
 
         // Item table
@@ -473,7 +465,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
         });
-        treeToolBar.setFloatable(false);
         tableToolBar = new TopToolBar(application, this);
         tableToolBar.getContentPane().add(createOrderToolbar());
 
@@ -517,14 +508,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
 
         // Add
-        //add(westPanel, BorderLayout.WEST);
-        //add(centerPanel, BorderLayout.CENTER);
-
-        // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
         splitPane.setOneTouchExpandable(true);
-        //add(pane, BorderLayout.WEST);
-        //add(panel, BorderLayout.CENTER);
         add(splitPane, BorderLayout.CENTER);
     }
 
@@ -533,9 +518,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         if (application.isUpdating()) {
             return;
         }
+        application.beginWait();
         try {
-            application.beginWait();
-
             // Update table if needed
             if (object != null) {
                 if (selectedOrder == null || !selectedOrder.equals(object)) {

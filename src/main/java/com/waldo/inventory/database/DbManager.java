@@ -1287,7 +1287,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarks(rs.getBlob("remarks").toString());
+                    p.setRemarks(rs.getString("remarks"));
 
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
@@ -1335,7 +1335,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarks(rs.getBlob("remarks").toString());
+                    p.setRemarks(rs.getString("remarks"));
 
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {

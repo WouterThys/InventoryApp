@@ -1,5 +1,7 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.classes.ProjectIDE;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.BufferedReader;
@@ -88,6 +90,11 @@ public class FileUtils {
     public static DbFilter getDbFilter() {
         return new DbFilter();
     }
+
+    public static IDEFilter getIDEFilter(List<ProjectIDE> projectIDEs) {
+        return new IDEFilter(projectIDEs);
+    }
+
 
     private static class ImageFilter extends FileFilter {
 
@@ -180,8 +187,44 @@ public class FileUtils {
         }
     }
 
+    private static class IDEFilter extends  FileFilter {
+
+        private List<ProjectIDE> ideList;
+
+        IDEFilter(List<ProjectIDE> ideList) {
+            this.ideList = ideList;
+        }
+
+        @Override
+        public boolean accept(File f) {
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (ProjectIDE pi : ideList) {
+                if (first) {
+                    builder.append(pi.getName()).append(" (").append(pi.getExtension()).append(")");
+                } else {
+                    builder.append(", ").append(pi.getName()).append(" (").append(pi.getExtension()).append(")");
+                }
+                first = false;
+            }
+            return builder.toString();
+        }
+    }
+
+    private static class IDEFileChooser extends JFileChooser {
+        @Override
+        public void approveSelection() {
+            super.approveSelection();
+        }
+    }
+
     public static String getRawStringFromFile(File file) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (file != null) {
             if (file.exists()) {
                 BufferedReader bufferedReader = null;
@@ -189,7 +232,7 @@ public class FileUtils {
                     bufferedReader = new BufferedReader(new FileReader(file));
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        result += line + "\n";
+                        result.append(line).append("\n");
                     }
                 } catch (IOException e) {
                     Status().setError("Error getting raw string from file.", e);
@@ -204,7 +247,7 @@ public class FileUtils {
                 }
             }
         }
-        return result;
+        return result.toString();
     }
 
 
