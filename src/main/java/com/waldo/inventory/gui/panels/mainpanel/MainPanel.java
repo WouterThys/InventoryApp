@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
@@ -92,11 +91,16 @@ public class MainPanel extends MainPanelLayout {
     private void showLocationPopup(Item item, int x, int y) {
         JPopupMenu menu = new JPopupMenu ();
 
-        ILocationMapPanel panel = new ILocationMapPanel(application, null);
-        panel.updateComponents(item.getLocation().getLocationType());
-        //panel.setItems(SearchManager.sm().findItemsWithLocation(item.getLocationTypeId()));
-        panel.setHighlighted(item, ILocationMapPanel.GREEN);
+        LocationType type = item.getLocation().getLocationType();
 
+        ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(),null, false);;
+        panel.setHighlighted(item.getLocation(), ILocationMapPanel.GREEN);
+
+        JMenuItem name = new JMenuItem(type.getName());
+        name.setEnabled(false);
+
+        menu.add(name);
+        menu.addSeparator();
         menu.add(panel);
         menu.show(itemTable, x - panel.getPreferredSize().width, y);
     }

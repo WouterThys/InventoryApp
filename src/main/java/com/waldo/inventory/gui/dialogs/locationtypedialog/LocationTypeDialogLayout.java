@@ -35,11 +35,8 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     private IdBToolBar toolBar;
     private IObjectSearchPanel searchPanel;
 
-    JButton detailCustomBtn;
-
+    private JButton detailCustomBtn;
     ITextField detailName;
-    ISpinner detailRowsSpinner;
-    ISpinner detailColumnsSpinner;
 
     ILocationMapPanel ILocationMapPanel;
 
@@ -121,38 +118,11 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         gbc.anchor = GridBagConstraints.EAST;
         northPanel.add(detailName, gbc);
 
-        // - Row
-        gbc.gridx = 1; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        northPanel.add(new ILabel("Rows: ", ILabel.LEFT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        northPanel.add(detailRowsSpinner, gbc);
-
-        // - Column
-        gbc.gridx = 2; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        northPanel.add(new ILabel("Columns: ", ILabel.LEFT), gbc);
-
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        northPanel.add(detailColumnsSpinner, gbc);
-
         // - Custom btn
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 0;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.EAST;
         northPanel.add(detailCustomBtn, gbc);
 
@@ -169,6 +139,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
+        setResizable(true);
         setTitleIcon(imageResource.readImage("Common.Location", 48));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
@@ -191,19 +162,10 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
-        detailRowsSpinner = new ISpinner(spinnerNumberModel);
-        detailRowsSpinner.setPreferredSize(new Dimension(60, 30));
-        detailRowsSpinner.addEditedListener(this, "rows");
-        spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
-        detailColumnsSpinner = new ISpinner(spinnerNumberModel);
-        detailColumnsSpinner.setPreferredSize(new Dimension(60, 30));
-        detailColumnsSpinner.addEditedListener(this, "columns");
-
-        detailCustomBtn = new JButton("Custom");
+        detailCustomBtn = new JButton(imageResource.readImage("Common.Edit", 16));
         detailCustomBtn.addActionListener(this);
 
-        ILocationMapPanel = new ILocationMapPanel(application, null);
+        ILocationMapPanel = new ILocationMapPanel(application, null, true);
     }
 
     @Override

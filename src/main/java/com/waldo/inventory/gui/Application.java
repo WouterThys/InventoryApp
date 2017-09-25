@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui;
 
 import com.mysql.jdbc.MysqlErrorNumbers;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
@@ -336,6 +337,10 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
+        if (throwable instanceof MySQLIntegrityConstraintViolationException) {
+            // Can not delete: object
+            //
+        }
         showErrorMessage(object, throwable, "Delete");
     }
 

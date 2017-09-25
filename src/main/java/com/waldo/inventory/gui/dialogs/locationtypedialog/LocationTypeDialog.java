@@ -1,11 +1,9 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
-import com.waldo.inventory.database.SearchManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
@@ -30,13 +28,14 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
 
         db().addOnLocationTypeChangedListener(this);
 
-        updateWithFirstLocation();
+        updateWithFirstLocationType();
     }
 
 
-    private void updateWithFirstLocation() {
-        if (db().getLocations().size() > 0) {
-            updateComponents(db().getLocations().get(0));
+    private void updateWithFirstLocationType() {
+        if (db().getLocationTypes().size() > 1) {
+            updateComponents(db().getLocationTypes().get(1)); // 0 is Unknown
+            setDetails();
         } else {
             updateComponents(null);
         }
@@ -45,18 +44,13 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     private void setDetails() {
         if (selectedLocationType != null) {
             detailName.setText(selectedLocationType.getName());
-            detailColumnsSpinner.setValue(selectedLocationType.getColumns());
-            detailRowsSpinner.setValue(selectedLocationType.getRows());
-
-            ILocationMapPanel.updateComponents(selectedLocationType);
-            ILocationMapPanel.setItems(SearchManager.sm().findItemsWithLocation(selectedLocationType.getId()));
+            ILocationMapPanel.setLocations(selectedLocationType.getLocations());
+            ILocationMapPanel.setLocationsWithItemHighlighted(com.waldo.inventory.gui.components.ILocationMapPanel.GREEN);
         }
     }
 
     private void clearDetails() {
         detailName.setText("");
-        detailColumnsSpinner.setValue(0);
-        detailRowsSpinner.setValue(0);
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -92,25 +86,6 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
 
     private boolean checkChange() {
         return (selectedLocationType != null) && !(selectedLocationType.equals(originalLocationType));
-    }
-
-    private void createLocations(LocationType locationType) {
-        if (locationType != null) {
-            for (int c = 0; c < locationType.getColumns(); c++) {
-                for (int r = 0; r < locationType.getRows(); r++) {
-                    Location location = SearchManager.sm().findLocation(locationType.getId(), r, c);
-                    if (location == null) {
-                        location = new Location();
-                        location.setName(Statics.Alphabet[r] + String.valueOf(c));
-                        location.setLocationTypeId(locationType.getId());
-                        location.setCol(c);
-                        location.setRow(r);
-                        location.save();
-                    }
-                }
-            }
-
-        }
     }
 
     //
@@ -153,7 +128,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
         getButtonNeutral().setEnabled(checkChange());
-        ILocationMapPanel.updateComponents(selectedLocationType);
+        ILocationMapPanel.setLocations(selectedLocationType.getLocations());
     }
 
     @Override
@@ -167,18 +142,16 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     @Override
     public void onInserted(LocationType location) {
         updateComponents(location);
-        createLocations(location);
     }
 
     @Override
     public void onUpdated(LocationType location) {
         updateComponents(location);
-        createLocations(location);
     }
 
     @Override
     public void onDeleted(LocationType object) {
-        updateWithFirstLocation();
+        updateWithFirstLocationType();
     }
 
     @Override
@@ -277,7 +250,12 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom");
-        dialog.showDialog();
+        if (selectedLocationType != null) {
+            CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom", selectedLocationType);
+            if (dialog.showDialog() == IDialog.OK) {
+                selectedLocationType.updateLocations();
+                setDetails();
+            }
+        }
     }
 }

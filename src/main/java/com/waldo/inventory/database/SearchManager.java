@@ -193,6 +193,10 @@ public class SearchManager {
                     Status().setMessage("Searching for: Locations");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getLocations()), searchWord));
                     break;
+                case DbObject.TYPE_LOCATION_TYPE:
+                    Status().setMessage("Searching for: Location types");
+                    foundList.addAll(searchForObject(new ArrayList<>(db().getLocationTypes()), searchWord));
+                    break;
                 case DbObject.TYPE_MANUFACTURER:
                     Status().setMessage("Searching for: Manufacturers");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getManufacturers()), searchWord));
@@ -261,6 +265,10 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_LOCATION:
                     Status().setMessage("Searching for: Locations");
+                    foundList.addAll(searchForObject(searchList, searchWord));
+                    break;
+                case DbObject.TYPE_LOCATION_TYPE:
+                    Status().setMessage("Searching for: Location types");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 case DbObject.TYPE_MANUFACTURER:
@@ -392,10 +400,32 @@ public class SearchManager {
         return null;
     }
 
-    public List<Item> findItemsWithLocation(long locationTypeId) {
+    public List<Item> findItemsWithLocationType(long locationTypeId) {
         List<Item> items = new ArrayList<>();
         for (Item item : db().getItems()) {
             if (item.getLocation().getLocationTypeId() == locationTypeId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemsWithLocation(long locationId) {
+        List<Item> items = new ArrayList<>();
+        for (Item item : db().getItems()) {
+            Location loc = item.getLocation();
+            if (loc != null && loc.getId() == locationId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public List<SetItem> findSetItemsWithLocation(long locationId) {
+        List<SetItem> items = new ArrayList<>();
+        for (SetItem item : db().getSetItems()) {
+            Location loc = item.getLocation();
+            if (loc != null && loc.getId() == locationId) {
                 items.add(item);
             }
         }
@@ -511,9 +541,11 @@ public class SearchManager {
     }
 
     public Location findLocationById(long id) {
-        for (Location t : db().getLocations()) {
-            if (t.getId() == id) {
-                return t;
+        if (id >= DbObject.UNKNOWN_ID) {
+            for (Location t : db().getLocations()) {
+                if (t.getId() == id) {
+                    return t;
+                }
             }
         }
         return null;
@@ -860,5 +892,15 @@ public class SearchManager {
             }
         }
         return null;
+    }
+
+    public List<Location> findLocationsByTypeId(long locationTypeId) {
+        List<Location> locations = new ArrayList<>();
+        for (Location location : db().getLocations()) {
+            if (location.getLocationTypeId() == locationTypeId) {
+                locations.add(location);
+            }
+        }
+        return locations;
     }
 }

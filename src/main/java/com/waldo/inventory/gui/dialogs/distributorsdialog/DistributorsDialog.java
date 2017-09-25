@@ -46,6 +46,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     private void updateWithFirstDistributor() {
         if (db().getDistributors().size() > 0) {
             updateComponents(db().getDistributors().get(0));
+            setDetails();
         } else {
             updateComponents(null);
         }
@@ -59,8 +60,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         }
 
         if (canClose) {
-            dialogResult = OK;
-            dispose();
+            super.onOK();
         }
     }
 

@@ -169,7 +169,13 @@ public class Order extends DbObject {
     public static class SortUnordered implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
-            return o1.getDateModified().compareTo(o2.getDateModified());
+            if (o1.getDateModified() != null && o2.getDateReceived() == null) {
+                return -1;
+            } else if (o1.getDateModified() == null && o2.getDateModified() != null) {
+                return 1;
+            } else {
+                return o1.getDateModified().compareTo(o2.getDateModified());
+            }
         }
     }
 

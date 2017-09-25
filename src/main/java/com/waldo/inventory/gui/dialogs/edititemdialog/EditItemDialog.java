@@ -121,12 +121,6 @@ public class EditItemDialog extends EditItemDialogLayout {
                     originalPackage = newPackage.createCopy();
                 }
             }
-            // Location
-            if (locationChanged) {
-                newItem.setLocationId(editItemStockPanel.getNewLocationId());
-                editItemStockPanel.locationSaved(newItem.getLocation());
-                locationChanged = false;
-            }
 
             newItem.save();
             originalItem = newItem.createCopy();
@@ -279,9 +273,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (editItemOrderPanel.getItemRefField().equals(component)) {
             partNumberChanged = editItemOrderPanel.checkChange();
             getButtonNeutral().setEnabled(partNumberChanged);
-        } else if (fieldName.equals("LocationTypeId") || fieldName.equals("LocationRow") || fieldName.equals("LocationCol")) {
-            locationChanged = editItemStockPanel.checkLocationChange();
-            getButtonNeutral().setEnabled(locationChanged);
         } else {
             getButtonNeutral().setEnabled(checkChange());
         }
