@@ -1,7 +1,9 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.classes.ProjectIDE;
+import org.apache.commons.io.IOUtils;
 
+import javax.sql.rowset.serial.SerialBlob;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.*;
@@ -403,6 +405,19 @@ public class FileUtils {
             }
         }
         return f;
+    }
+
+    public static SerialBlob fileToBlob(File file) throws SQLException {
+        SerialBlob blob = null;
+        if (file != null && file.exists()) {
+            try (InputStream inputStream = new FileInputStream(file)) {
+                byte[] bytes = IOUtils.toByteArray(inputStream);
+                blob = new SerialBlob(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return blob;
     }
 
     public static File createTempFile(String fileName) throws IOException {

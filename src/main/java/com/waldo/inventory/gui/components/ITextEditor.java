@@ -59,11 +59,11 @@ public class ITextEditor extends JPanel {
     private JButton insertPictureButton;
     private JButton undoButton;
     private JButton redoButton;
+    private JButton saveButton;
     private JButton bulletInsertButton;
     private JButton numbersInsertButton;
 
-    public ITextEditor() {
-
+    public ITextEditor(ActionListener saveActionListener) {
         editor = new JTextPane();
         JScrollPane editorScrollPane = new JScrollPane(editor);
         editorScrollPane.setPreferredSize(new Dimension(300, 200));
@@ -99,6 +99,12 @@ public class ITextEditor extends JPanel {
         undoButton.addActionListener(new UndoActionListener(UndoActionType.UNDO));
         redoButton = createEditButton("Redo", imageResource.readImage("Common.Redo", 16));
         redoButton.addActionListener(new UndoActionListener(UndoActionType.REDO));
+        saveButton = createEditButton("Save", imageResource.readImage("Common.Save", 16));
+        if (saveActionListener != null) {
+            saveButton.addActionListener(saveActionListener);
+        } else {
+            saveButton.setEnabled(false);
+        }
 
         bulletInsertButton = createEditButton("Bullets", imageResource.readImage("TextEdit.ListBullets", 16));
         bulletInsertButton.addActionListener(new BulletActionListener(BulletActionType.INSERT));
@@ -132,6 +138,7 @@ public class ITextEditor extends JPanel {
         undoRedoPanel.setLayout(new BoxLayout(undoRedoPanel, BoxLayout.Y_AXIS));
         undoRedoPanel.add(undoButton);
         undoRedoPanel.add(redoButton);
+        undoRedoPanel.add(saveButton);
 
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setFloatable(false);
@@ -155,6 +162,10 @@ public class ITextEditor extends JPanel {
         setPreferredSize(dim);
 
         editor.requestFocusInWindow();
+    }
+
+    public ITextEditor() {
+        this(null);
     }
 
     private JButton createEditButton(TextAction action, String text, ImageIcon icon) {
@@ -193,6 +204,7 @@ public class ITextEditor extends JPanel {
         redoButton.setEnabled(enabled);
         bulletInsertButton.setEnabled(enabled);
         numbersInsertButton.setEnabled(enabled);
+        saveButton.setEnabled(enabled);
         editor.setEnabled(enabled);
     }
 

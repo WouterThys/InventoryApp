@@ -1,8 +1,9 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
 
-import java.io.*;
+import javax.sql.rowset.serial.SerialBlob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -37,15 +38,14 @@ public class ProjectCode extends ProjectObject {
         statement.setString(ndx++, getDirectory());
         statement.setLong(ndx++, getProjectId());
         statement.setLong(ndx++, getProjectIDEId());
-        try (InputStream inputStream = new FileInputStream(getRemarksFile())) {
-            statement.setBlob(ndx++, inputStream);
-            statement.setLong(ndx, getId());
-            statement.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+        SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
+        if (blob != null) {
+            statement.setBlob(ndx++, blob);
+        } else {
+            statement.setString(ndx++, null);
         }
 
-        return DbManager.OBJECT_SCRIPT_EXECUTED;
+        return ndx;
     }
 
     @Override
@@ -119,6 +119,7 @@ public class ProjectCode extends ProjectObject {
         return u;
     }
 
+    @Override
     public String createRemarksFileName() {
         return getId() + "_CodeRemarks_";
     }

@@ -222,8 +222,7 @@ public abstract class MainPanelLayout extends JPanel implements
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
         splitPane.setOneTouchExpandable(true);
-        //add(pane, BorderLayout.WEST);
-        //add(panel, BorderLayout.CENTER);
+
         add(splitPane, BorderLayout.CENTER);
     }
 

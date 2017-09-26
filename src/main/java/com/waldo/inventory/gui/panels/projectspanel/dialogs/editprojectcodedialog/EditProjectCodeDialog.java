@@ -32,7 +32,7 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
         return (projectCode != null) && !(projectCode.equals(originalProjectCode));
     }
 
-    private void showSaveDialog(boolean closeAfter) {
+    private void showSaveDialog() {
         if (projectCode != null) {
             String msg = projectCode.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
@@ -40,16 +40,12 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
                     projectCode.createName();
                     projectCode.save();
                     projectCode = originalProjectCode.createCopy();
-                    if (closeAfter) {
-                        dispose();
-                    }
+                    dispose();
                 }
             }
         } else {
-            if (closeAfter) {
-                dialogResult = OK;
-                dispose();
-            }
+            dialogResult = OK;
+            dispose();
         }
         canClose = true;
     }
@@ -94,7 +90,7 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
     protected void onOK() {
         if (checkChange()) {
             canClose = false;
-            showSaveDialog(true);
+            showSaveDialog();
         }
         if (canClose) {
             super.onOK();

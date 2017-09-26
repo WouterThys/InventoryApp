@@ -24,7 +24,6 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
     ITextField directoryTf;
     private JButton directoryBtn;
     private IComboBox<ProjectIDE> projectIdeCb;
-    private ITextArea remarksTa;
 
      /*
      *                  VARIABLES
@@ -74,10 +73,6 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
                 new DbObject.DbObjectNameComparator<>(),
                 true);
         projectIdeCb.addEditedListener(this, "projectIDEId");
-
-        // Remarks
-        remarksTa = new ITextArea("", 10, 10);
-        remarksTa.addEditedListener(this, "remarks");
     }
 
     @Override
@@ -85,7 +80,6 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
         getContentPanel().setLayout(new BorderLayout());
 
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
-        JPanel remarksPanel = new JPanel(new BorderLayout());
 
         // Fields
         GridBagConstraints gbc = new GridBagConstraints();
@@ -121,13 +115,8 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
         gbc.fill = GridBagConstraints.HORIZONTAL;
         fieldsPanel.add(PanelUtils.createFileOpenPanel(directoryTf, directoryBtn), gbc);
 
-        // Remarks
-        JScrollPane pane  = new JScrollPane(remarksTa);
-        remarksPanel.add(pane);
-
         // Add
-        getContentPanel().add(fieldsPanel, BorderLayout.NORTH);
-        getContentPanel().add(remarksPanel, BorderLayout.CENTER);
+        getContentPanel().add(fieldsPanel, BorderLayout.CENTER);
 
         // Border
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,20,10,20));

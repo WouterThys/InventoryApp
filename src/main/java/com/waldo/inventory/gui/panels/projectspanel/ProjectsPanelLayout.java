@@ -90,6 +90,11 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     void selectTab(int tab, Project project) {
+        updatePanels(tab, project);
+        tabbedPane.setSelectedIndex(tab);
+    }
+
+    void updatePanels(int tab, Project project) {
         switch (tab) {
             case TAB_CODE:
                 projectCodePanel.updateComponents(project);
@@ -103,7 +108,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             default:
                 break;
         }
-        tabbedPane.setSelectedIndex(tab);
     }
 
     void selectTreeTab(int tab, Project project) {

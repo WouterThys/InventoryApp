@@ -136,7 +136,6 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                 application.clearSearch();
                 selectTreeTab(tabToSelect, selectedProject);
                 selectTab(tabToSelect, selectedProject);
-                // TODO: update panels
 
                 updateToolBar();
                 updateVisibleComponents();
@@ -159,6 +158,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                 try {
                     if (selectedProject != null) {
                         int tab = tabbedPane.getSelectedIndex();
+                        updatePanels(tab, selectedProject);
                         selectTreeTab(tab, selectedProject);
                     }
                 } finally {

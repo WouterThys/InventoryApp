@@ -1,62 +1,139 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 
-import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
-public class ProjectPcbPanel extends JPanel implements GuiInterface {    
-    
+public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    private KiCadItemPanel kiCadItemPanel;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectPcbPanel(Application application) {
-        this.application = application;
-
-        initializeComponents();
-        initializeLayouts();
+        super(application);
+        DbManager.db().addOnProjectPcbChangedListener(this);
     }
 
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    @Override
+    protected void selectProjectObject(ProjectPcb projectPcb) {
+        super.selectProjectObject(projectPcb);
+        if (projectPcb != null) {
+            kiCadItemPanel.updateComponents(selectedProjectObject.getDirectory());
+        } else {
+            kiCadItemPanel.updateComponents(null);
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-
+        super.initializeComponents();
+        kiCadItemPanel = new KiCadItemPanel(application);
     }
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BorderLayout());
-
-        // Panels
-        JPanel westPanel = new JPanel(new BorderLayout());
-        JPanel centerPanel = new JPanel(new BorderLayout());
-
-        // Add stuff to panels
-
-        // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
-        add(splitPane, BorderLayout.CENTER);
+        super.initializeLayouts();
+        eastPanel.add(kiCadItemPanel, BorderLayout.CENTER);
+        menuPanel.add(kiCadItemPanel.getToolbarPanel(), BorderLayout.EAST);
+        hideRemarks(true);
     }
 
     @Override
     public void updateComponents(Object object) {
+        if (object != null) {
+            selectedProject = (Project) object;
+            gridPanel.drawTiles(selectedProject.getProjectPcbs());
+        } else {
+            selectedProject = null;
+        }
+        selectedProjectObject = null;
+        selectProjectObject(null);
+    }
 
+    //
+    // Tool bar
+    //
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+        if (selectedProject != null) {
+            ProjectPcb newProjectPcb = new ProjectPcb(selectedProject.getId());
+            EditProjectPcbDialog dialog = new EditProjectPcbDialog(application, "Add pcb", newProjectPcb);
+            dialog.showDialog();
+        }
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+        if (selectedProjectObject != null) {
+            EditProjectPcbDialog dialog = new EditProjectPcbDialog(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
+            if (dialog.showDialog() == IDialog.OK) {
+                selectedProjectObject.save();
+            }
+        }
+    }
+
+    //
+    // Project code changed
+    //
+    @Override
+    public void onUpdated(ProjectPcb object) {
+        gridPanel.drawTiles(selectedProject.getProjectPcbs());
+        updateEnabledComponents();
+    }
+
+    //
+    // Text edit save action listener
+    //
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        DefaultStyledDocument doc = remarksTe.getStyledDocument();
+        if (selectedProjectObject.getRemarksFileName().isEmpty()) {
+            try {
+                selectedProjectObject.setRemarksFile(FileUtils.createTempFile(selectedProjectObject.createRemarksFileName()));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return;
+            }
+        }
+        try (OutputStream fos = new FileOutputStream(selectedProjectObject.getRemarksFile());
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+            oos.writeObject(doc);
+            selectedProjectObject.save();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

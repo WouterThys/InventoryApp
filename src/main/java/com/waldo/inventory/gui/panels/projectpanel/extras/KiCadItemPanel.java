@@ -40,6 +40,8 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     private JButton parseBtn;
     private JButton saveToDbBtn;
 
+    private JPanel buttonPanel;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -72,6 +74,10 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     ITable getTable() {
         KiCadSheetTab panel = (KiCadSheetTab) sheetTabs.getSelectedComponent();
         return panel.getTable();
+    }
+
+    public JPanel getToolbarPanel() {
+        return buttonPanel;
     }
 
     private void updateEnabledComponents() {
@@ -213,13 +219,14 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         orderBtn.setToolTipText("Order linked");
         parseBtn.setToolTipText("Parse again");
         saveToDbBtn.setToolTipText("Save to database");
+
+        buttonPanel = new JPanel();
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel buttonPanel = new JPanel();
         buttonPanel.add(linkBtn);
         buttonPanel.add(orderBtn);
         buttonPanel.add(parseBtn);
@@ -227,20 +234,20 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        //add(buttonPanel, BorderLayout.SOUTH);
 
     }
 
     @Override
     public void updateComponents(Object object) {
-        if (object != null && object instanceof File) {
+        if (object != null && object instanceof String) {
             setVisible(true);
             if (parseFile == null || !parseFile.equals(object)) {
                 application.beginWait();
                 try {
                     hasParsed = false;
                     hasMatched = false;
-                    parseFile = (File) object;
+                    parseFile = new File(object.toString());
                     parseFile(parseFile);
                 } finally {
                     application.endWait();

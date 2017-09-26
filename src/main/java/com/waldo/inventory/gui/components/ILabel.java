@@ -2,8 +2,6 @@ package com.waldo.inventory.gui.components;
 
 
 import com.waldo.inventory.database.LogManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicLabelUI;
@@ -12,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -81,6 +78,11 @@ public class ILabel extends JLabel {
     public void setFont(int size, int style) {
         Font labelFont = this.getFont();
         this.setFont(new Font(labelFont.getName(), style, size));
+    }
+
+    public void setFont(int style) {
+        Font labelFont = this.getFont();
+        this.setFont(new Font(labelFont.getName(), style, labelFont.getSize()));
     }
 
     public void setIcon(String path) {

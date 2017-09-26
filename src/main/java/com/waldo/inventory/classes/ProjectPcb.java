@@ -23,6 +23,15 @@ public class ProjectPcb extends ProjectObject {
         super(TABLE_NAME);
         setName(name);
     }
+    public ProjectPcb(long projectId) {
+        super(TABLE_NAME);
+        setProjectId(projectId);
+    }
+
+    @Override
+    public String createRemarksFileName() {
+        return getId() + "_PcbRemarks_";
+    }
 
     @Override
     public ProjectPcb createCopy() {
@@ -62,5 +71,25 @@ public class ProjectPcb extends ProjectObject {
         u.setId(UNKNOWN_ID);
         u.setCanBeSaved(false);
         return u;
+    }
+
+    @Override
+    public String getDirectory() {
+        return super.getDirectory();
+    }
+
+    @Override
+    public void setDirectory(String directory) {
+        super.setDirectory(directory);
+    }
+
+    @Override
+    public long getProjectIDEId() {
+        return super.getProjectIDEId();
+    }
+
+    @Override
+    public void setProjectIDEId(long projectIDEId) {
+        super.setProjectIDEId(projectIDEId);
     }
 }

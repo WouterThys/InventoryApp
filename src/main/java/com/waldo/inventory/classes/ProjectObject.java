@@ -1,13 +1,10 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -34,6 +31,10 @@ public abstract class ProjectObject extends DbObject {
         setName(name);
     }
 
+    public String createRemarksFileName() {
+        return getId() + "_ProjectObject_";
+    }
+
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -43,15 +44,14 @@ public abstract class ProjectObject extends DbObject {
         statement.setString(ndx++, getDirectory());
         statement.setLong(ndx++, getProjectId());
         statement.setLong(ndx++, getProjectIDEId());
-        try (InputStream inputStream = new FileInputStream(getRemarksFile())) {
-            statement.setBlob(ndx++, inputStream);
-            statement.setLong(ndx, getId());
-            statement.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+        SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
+        if (blob != null) {
+            statement.setBlob(ndx++, blob);
+        } else {
+            statement.setString(ndx++, null);
         }
 
-        return DbManager.OBJECT_SCRIPT_EXECUTED;
+        return ndx;
     }
 
     @Override
@@ -66,6 +66,21 @@ public abstract class ProjectObject extends DbObject {
         cpy.setRemarksFile(getRemarksFile());
 
         return cpy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof ProjectObject)) {
+                return false;
+            }
+            if (!(((ProjectObject)obj).getDirectory().equals(getDirectory()))) return false;
+            if (!(((ProjectObject)obj).getRemarksFileName().equals(getRemarksFileName()))) return false;
+            if (!(((ProjectObject)obj).getProjectId() == getProjectId())) return false;
+            if (!(((ProjectObject)obj).getProjectIDEId() == getProjectIDEId())) return false;
+        }
+        return result;
     }
 
     public void createName() {

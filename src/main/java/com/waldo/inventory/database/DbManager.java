@@ -29,7 +29,6 @@ public class DbManager {
 
     private static final LogManager LOG = LogManager.LOG(DbManager.class);
 
-    public static final int OBJECT_SCRIPT_EXECUTED = -2;
     public static final int OBJECT_INSERT = 0;
     public static final int OBJECT_UPDATE = 1;
     public static final int OBJECT_DELETE = 2;
@@ -1242,7 +1241,6 @@ public class DbManager {
                     p.setIconPath(rs.getString("iconPath"));
                     p.setMainDirectory(rs.getString("mainDirectory"));
 
-                    // ProjectDirectories are fetched in object itself
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projects.add(p);
@@ -1293,9 +1291,7 @@ public class DbManager {
                     p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
 
                     p.setInserted(true);
-                    if (p.getId() != DbObject.UNKNOWN_ID) {
-                        projectCodes.add(p);
-                    }
+                    projectCodes.add(p);
                 }
             }
         } catch (SQLException e) {
@@ -1338,12 +1334,10 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.getId() + "_PcbRemarks"));
+                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
 
                     p.setInserted(true);
-                    if (p.getId() != DbObject.UNKNOWN_ID) {
-                        projectPcbs.add(p);
-                    }
+                    projectPcbs.add(p);
                 }
             }
         } catch (SQLException e) {
