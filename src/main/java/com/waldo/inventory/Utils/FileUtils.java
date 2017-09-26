@@ -4,11 +4,10 @@ import com.waldo.inventory.classes.ProjectIDE;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -384,6 +383,32 @@ public class FileUtils {
             result = iconPath.substring(ndx + 1, iconPath.length());
         }
         return result;
+    }
+
+    public static File blobToFile(Blob blob, String fileName) throws SQLException {
+        File f = null;
+        if (blob != null && blob.length() > 0) {
+            try {
+                f = createTempFile(fileName);
+                try (InputStream in = blob.getBinaryStream();
+                     OutputStream out = new FileOutputStream(f)) {
+                    byte[] buff = new byte[4096];
+                    int len;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return f;
+    }
+
+    public static File createTempFile(String fileName) throws IOException {
+        File file = File.createTempFile(fileName, "");
+        file.deleteOnExit();
+        return file;
     }
 
 }

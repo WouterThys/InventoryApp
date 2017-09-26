@@ -129,9 +129,9 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     private void treeInitializeTree(DefaultMutableTreeNode rootNode) {
         for (Project p : db().getProjects()) {
             if (!p.isUnknown()) {
-                ProjectCode code = new ProjectCode("Code");
-                ProjectPcb pcb = new ProjectPcb("Pcbs");
-                ProjectOther other = new ProjectOther("Other");
+                ProjectCode code = new ProjectCode("Code  ");
+                ProjectPcb pcb = new ProjectPcb("Pcbs  ");
+                ProjectOther other = new ProjectOther("Other  ");
 
                 code.setCanBeSaved(false);
                 pcb.setCanBeSaved(false);
@@ -254,10 +254,11 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
 
-        projectsTree.setPreferredSize(new Dimension(300,200));
+        projectsTree.setPreferredSize(new Dimension(200,200));
         JScrollPane pane = new JScrollPane(projectsTree);
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(projectsToolBar, BorderLayout.PAGE_END);
+        westPanel.setMinimumSize(new Dimension(250, 200));
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);

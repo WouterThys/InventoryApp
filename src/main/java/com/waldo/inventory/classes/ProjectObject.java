@@ -1,8 +1,13 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -17,7 +22,7 @@ public abstract class ProjectObject extends DbObject {
     private long projectIDEId;
     private ProjectIDE projectIDE;
 
-    private String remarks;
+    private String remarksFile;
 
 
     public ProjectObject(String tableName) {
@@ -38,9 +43,15 @@ public abstract class ProjectObject extends DbObject {
         statement.setString(ndx++, getDirectory());
         statement.setLong(ndx++, getProjectId());
         statement.setLong(ndx++, getProjectIDEId());
-        statement.setString(ndx++, getRemarks());
+        try (InputStream inputStream = new FileInputStream(getRemarksFile())) {
+            statement.setBlob(ndx++, inputStream);
+            statement.setLong(ndx, getId());
+            statement.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return ndx;
+        return DbManager.OBJECT_SCRIPT_EXECUTED;
     }
 
     @Override
@@ -52,7 +63,7 @@ public abstract class ProjectObject extends DbObject {
         cpy.setDirectory(getDirectory());
         cpy.setProjectId(getProjectId());
         cpy.setProjectIDEId(getProjectIDEId());
-        cpy.setRemarks(getRemarks());
+        cpy.setRemarksFile(getRemarksFile());
 
         return cpy;
     }
@@ -107,14 +118,23 @@ public abstract class ProjectObject extends DbObject {
         return projectIDE;
     }
 
-    public String getRemarks() {
-        if (remarks == null) {
-            remarks = "";
+    public File getRemarksFile() {
+        if (remarksFile != null && !remarksFile.isEmpty()) {
+            return new File(remarksFile);
         }
-        return remarks;
+        return null;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public String getRemarksFileName() {
+        if (remarksFile == null) {
+            remarksFile = "";
+        }
+        return remarksFile;
+    }
+
+    public void setRemarksFile(File remarksFile) {
+        if (remarksFile != null && remarksFile.exists()) {
+            this.remarksFile = remarksFile.getAbsolutePath();
+        }
     }
 }

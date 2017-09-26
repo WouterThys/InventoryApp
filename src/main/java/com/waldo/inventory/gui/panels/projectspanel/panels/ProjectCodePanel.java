@@ -1,21 +1,25 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
+import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectCode;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITree;
-import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
 import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog.EditProjectCodeDialog;
 
 import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
-import java.io.File;
+import java.io.*;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ProjectCodePanel extends JPanel implements
         GuiInterface,
@@ -27,10 +31,12 @@ public class ProjectCodePanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectGirdPanel<ProjectCode> gridPanel;
     private IdBToolBar codeToolBar;
+    private JButton runIdeBtn;
+    private ILabel projectCodeNameLbl;
     private JTree codeFilesTree;
     private IFileTreeModel fileTreeModel;
-    private ProjectCodeDetailPanel detailPanel;
-
+    private ITextEditor remarksTe;
+    private JButton saveRemarksBtn;
 
     /*
      *                  VARIABLES
@@ -61,10 +67,25 @@ public class ProjectCodePanel extends JPanel implements
         boolean enabled = selectedProjectCode != null;
         codeToolBar.setDeleteActionEnabled(enabled);
         codeToolBar.setEditActionEnabled(enabled);
+        remarksTe.setEnabled(enabled);
+        runIdeBtn.setEnabled(enabled);
     }
 
-    private void updateDetails() {
-        detailPanel.updateComponents(selectedProjectCode);
+    private void selectProjectCode(ProjectCode projectCode) {
+        if (projectCode != null) {
+            selectedProjectCode = projectCode;
+            fileTreeModel = new IFileTreeModel(new File(selectedProjectCode.getDirectory()));
+            codeFilesTree.setModel(fileTreeModel);
+            remarksTe.setDocument(selectedProjectCode.getRemarksFile());
+            projectCodeNameLbl.setText(projectCode.getName());
+        } else {
+            selectedProjectCode = null;
+            fileTreeModel = new IFileTreeModel();
+            codeFilesTree.setModel(fileTreeModel);
+            remarksTe.setDocument(null);
+            projectCodeNameLbl.setText("");
+        }
+        updateEnabledComponents();
     }
 
     /*
@@ -73,19 +94,53 @@ public class ProjectCodePanel extends JPanel implements
     @Override
     public void initializeComponents() {
         // Center
-        gridPanel = new ProjectGirdPanel<>(projectObject -> {
-            selectedProjectCode = projectObject;
-            fileTreeModel = new IFileTreeModel(new File(selectedProjectCode.getDirectory()));
-            codeFilesTree.setModel(fileTreeModel);
-            updateEnabledComponents();
-            updateDetails();
-        });
+        gridPanel = new ProjectGirdPanel<>(this::selectProjectCode);
         codeToolBar = new IdBToolBar(this);
+        projectCodeNameLbl = new ILabel("", ILabel.CENTER);
+        projectCodeNameLbl.setFont(18, Font.BOLD);
+        runIdeBtn = new JButton(imageResource.readImage("Common.Execute", 24));
+        runIdeBtn.addActionListener(e -> {
+            if (selectedProjectCode != null && selectedProjectCode.getProjectIDEId() > DbObject.UNKNOWN_ID) {
+                ProjectIDE ide = selectedProjectCode.getProjectIDE();
+                try {
+                    ide.launch(new File(selectedProjectCode.getDirectory()));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to open IDE",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
 
         // East
         codeFilesTree = new JTree();
         codeFilesTree.setCellRenderer(ITree.getFilesRenderer());
-        detailPanel = new ProjectCodeDetailPanel(application);
+        remarksTe = new ITextEditor();
+        remarksTe.setEnabled(false);
+        saveRemarksBtn = new JButton("Save");
+        saveRemarksBtn.addActionListener(e -> {
+            DefaultStyledDocument doc = remarksTe.getStyledDocument();
+            if (selectedProjectCode.getRemarksFileName().isEmpty()) {
+                try {
+                    selectedProjectCode.setRemarksFile(FileUtils.createTempFile(selectedProjectCode.createRemarksFileName()));
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    return;
+                }
+            }
+            try (OutputStream fos = new FileOutputStream(selectedProjectCode.getRemarksFile());
+                 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+                oos.writeObject(doc);
+                selectedProjectCode.save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -95,14 +150,25 @@ public class ProjectCodePanel extends JPanel implements
         // Panels
         JPanel eastPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel remarksPanel = new JPanel(new BorderLayout());
+        JPanel menuPanel = new JPanel(new BorderLayout());
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+
+        JScrollPane pane = new JScrollPane(codeFilesTree);
 
         // Add stuff to panels
+        menuPanel.add(projectCodeNameLbl, BorderLayout.CENTER);
+        menuPanel.add(runIdeBtn, BorderLayout.EAST);
+
         centerPanel.add(gridPanel, BorderLayout.CENTER);
         centerPanel.add(codeToolBar, BorderLayout.PAGE_START);
 
-        JScrollPane pane = new JScrollPane(codeFilesTree);
+        remarksPanel.add(remarksTe, BorderLayout.CENTER);
+        remarksPanel.add(saveRemarksBtn, BorderLayout.SOUTH);
+
+        eastPanel.add(menuPanel, BorderLayout.PAGE_START);
         eastPanel.add(pane, BorderLayout.CENTER);
-        eastPanel.add(detailPanel, BorderLayout.SOUTH);
+        eastPanel.add(remarksPanel, BorderLayout.SOUTH);
         eastPanel.setMinimumSize(new Dimension(300, 0));
 
         // Add
@@ -120,10 +186,7 @@ public class ProjectCodePanel extends JPanel implements
             selectedProject = null;
         }
         selectedProjectCode = null;
-        fileTreeModel = new IFileTreeModel();
-        codeFilesTree.setModel(fileTreeModel);
-        updateEnabledComponents();
-        updateDetails();
+        selectProjectCode(null);
     }
 
     //

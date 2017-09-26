@@ -506,6 +506,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         JScrollPane pane = new JScrollPane(ordersTree);
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
+        westPanel.setMinimumSize(new Dimension(200, 200));
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);

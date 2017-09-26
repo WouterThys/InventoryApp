@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
 
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,9 +37,15 @@ public class ProjectCode extends ProjectObject {
         statement.setString(ndx++, getDirectory());
         statement.setLong(ndx++, getProjectId());
         statement.setLong(ndx++, getProjectIDEId());
-        statement.setString(ndx++, getRemarks());
+        try (InputStream inputStream = new FileInputStream(getRemarksFile())) {
+            statement.setBlob(ndx++, inputStream);
+            statement.setLong(ndx, getId());
+            statement.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return ndx;
+        return DbManager.OBJECT_SCRIPT_EXECUTED;
     }
 
     @Override
@@ -51,7 +58,7 @@ public class ProjectCode extends ProjectObject {
         cpy.setDirectory(getDirectory());
         cpy.setProjectId(getProjectId());
         cpy.setProjectIDEId(getProjectIDEId());
-        cpy.setRemarks(getRemarks());
+        cpy.setRemarksFile(getRemarksFile());
 
         return cpy;
     }
@@ -65,7 +72,7 @@ public class ProjectCode extends ProjectObject {
             }
             if (!(((ProjectCode)obj).getLanguage().equals(getLanguage()))) return false;
             if (!(((ProjectCode)obj).getDirectory().equals(getDirectory()))) return false;
-            if (!(((ProjectCode)obj).getRemarks().equals(getRemarks()))) return false;
+            if (!(((ProjectCode)obj).getRemarksFileName().equals(getRemarksFileName()))) return false;
             if (!(((ProjectCode)obj).getProjectId() == getProjectId())) return false;
             if (!(((ProjectCode)obj).getProjectIDEId() == getProjectIDEId())) return false;
         }
@@ -112,6 +119,10 @@ public class ProjectCode extends ProjectObject {
         return u;
     }
 
+    public String createRemarksFileName() {
+        return getId() + "_CodeRemarks_";
+    }
+
     // Getters and setters
 
     public String getLanguage() {
@@ -143,15 +154,5 @@ public class ProjectCode extends ProjectObject {
     @Override
     public void setProjectIDEId(long projectIDEId) {
         super.setProjectIDEId(projectIDEId);
-    }
-
-    @Override
-    public String getRemarks() {
-        return super.getRemarks();
-    }
-
-    @Override
-    public void setRemarks(String remarks) {
-        super.setRemarks(remarks);
     }
 }

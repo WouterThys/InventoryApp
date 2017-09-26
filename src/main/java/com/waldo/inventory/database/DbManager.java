@@ -2,6 +2,7 @@ package com.waldo.inventory.database;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
@@ -28,6 +29,7 @@ public class DbManager {
 
     private static final LogManager LOG = LogManager.LOG(DbManager.class);
 
+    public static final int OBJECT_SCRIPT_EXECUTED = -2;
     public static final int OBJECT_INSERT = 0;
     public static final int OBJECT_UPDATE = 1;
     public static final int OBJECT_DELETE = 2;
@@ -1288,7 +1290,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarks(rs.getString("remarks"));
+                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
 
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
@@ -1336,7 +1338,7 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarks(rs.getString("remarks"));
+                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.getId() + "_PcbRemarks"));
 
                     p.setInserted(true);
                     if (p.getId() != DbObject.UNKNOWN_ID) {
@@ -2030,8 +2032,10 @@ public class DbManager {
 
         private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
             int ndx = dbo.addParameters(stmt);
-            stmt.setLong(ndx, dbo.getId());
-            stmt.execute();
+            if (ndx > 0) {
+                stmt.setLong(ndx, dbo.getId());
+                stmt.execute();
+            }
 
             // Listeners
             dbo.tableChanged(OBJECT_UPDATE);

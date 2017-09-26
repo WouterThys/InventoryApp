@@ -209,6 +209,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
         //subDivisionTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(subDivisionTree);
+        pane.setMinimumSize(new Dimension(200, 200));
         JPanel treePanel = new JPanel(new BorderLayout());
         treePanel.add(pane);
 
