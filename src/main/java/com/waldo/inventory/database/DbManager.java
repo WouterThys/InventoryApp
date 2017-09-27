@@ -1343,6 +1343,7 @@ public class DbManager {
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
                     p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+                    p.setLastParsedDate(rs.getTimestamp("lastParsedDate"));
 
                     p.setInserted(true);
                     projectPcbs.add(p);
@@ -1359,7 +1360,7 @@ public class DbManager {
     }
 
     /*
-    *                  PROJECT PCBs
+    *                  PROJECT PCB ITEMS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<PcbItemLink> getPcbItemLinks()    {
         if (pcbItemLinks == null) {

@@ -7,7 +7,7 @@ import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectpanel.extras.PcbItemPanel;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 
 import javax.swing.text.DefaultStyledDocument;
@@ -23,7 +23,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private KiCadItemPanel kiCadItemPanel;
+    private PcbItemPanel pcbItemPanel;
 
     /*
      *                  VARIABLES
@@ -46,9 +46,9 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     protected void selectProjectObject(ProjectPcb projectPcb) {
         super.selectProjectObject(projectPcb);
         if (projectPcb != null) {
-            kiCadItemPanel.updateComponents(selectedProjectObject.getDirectory());
+            pcbItemPanel.updateComponents(selectedProjectObject);
         } else {
-            kiCadItemPanel.updateComponents(null);
+            pcbItemPanel.updateComponents(null);
         }
     }
 
@@ -58,14 +58,14 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     @Override
     public void initializeComponents() {
         super.initializeComponents();
-        kiCadItemPanel = new KiCadItemPanel(application);
+        pcbItemPanel = new PcbItemPanel(application);
     }
 
     @Override
     public void initializeLayouts() {
         super.initializeLayouts();
-        eastPanel.add(kiCadItemPanel, BorderLayout.CENTER);
-        menuPanel.add(kiCadItemPanel.getToolbarPanel(), BorderLayout.EAST);
+        eastPanel.add(pcbItemPanel, BorderLayout.CENTER);
+        menuPanel.add(pcbItemPanel.getToolbarPanel(), BorderLayout.WEST);
         hideRemarks(true);
     }
 

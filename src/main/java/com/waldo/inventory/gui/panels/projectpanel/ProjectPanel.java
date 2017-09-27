@@ -284,9 +284,9 @@ public class ProjectPanel extends ProjectPanelLayout {
 //        projectTypeDetails.updateComponents(selectedProjectIDE);
 //
 //        if (type.hasParser()) {
-//            kiCadItemPanel.updateComponents(file);
+//            pcbItemPanel.updateComponents(file);
 //        } else {
-//            kiCadItemPanel.updateComponents(null);
+//            pcbItemPanel.updateComponents(null);
 //        }
 //    }
 

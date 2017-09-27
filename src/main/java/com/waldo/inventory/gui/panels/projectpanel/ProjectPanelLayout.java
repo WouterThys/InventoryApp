@@ -13,7 +13,7 @@ import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
-import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectpanel.extras.PcbItemPanel;
 import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projecttypedetails.ProjectTypeDetails;
@@ -49,7 +49,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     ProjectDetailsPanel detailsPanel;
     ProjectTypeDetails projectTypeDetails;
 
-    KiCadItemPanel kiCadItemPanel;
+    PcbItemPanel pcbItemPanel;
 
     /*
      *                  VARIABLES
@@ -217,7 +217,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTypeDetails = new ProjectTypeDetails(application, this);
 
         // KiCad items panel
-        kiCadItemPanel = new KiCadItemPanel(application);
+        pcbItemPanel = new PcbItemPanel(application);
     }
 
     @Override
@@ -227,7 +227,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectTree);
 
-        JScrollPane kcPane = new JScrollPane(kiCadItemPanel);
+        JScrollPane kcPane = new JScrollPane(pcbItemPanel);
         kcPane.setPreferredSize(new Dimension(600,400));
 
         // West panel
@@ -241,7 +241,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
         //centerPanel.add(split, BorderLayout.CENTER);
         centerPanel.add(projectGirdPanel, BorderLayout.CENTER);
-        centerPanel.add(kiCadItemPanel, BorderLayout.EAST);
+        centerPanel.add(pcbItemPanel, BorderLayout.EAST);
 
         // Details panel
         JPanel infoPanel = new JPanel(new BorderLayout());
@@ -281,7 +281,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             // Update tile view
             projectGirdPanel.updateComponents(selectedProject);
-            kiCadItemPanel.updateComponents(null);
+            pcbItemPanel.updateComponents(null);
 
             // Enabled components
             updateEnabledComponents();

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.database.SearchManager;
@@ -28,7 +29,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectionListener, ChangeListener, ActionListener {
+public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionListener, ChangeListener, ActionListener {
 
     /*
      *                  COMPONENTS
@@ -46,8 +47,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
-    private File parseFile;
-    private KiCadParser kiCadParser = (com.waldo.inventory.Utils.parser.KiCad.KiCadParser) Application.getProjectParser("KiCadParser");
+    private ProjectPcb projectPcb;
 
     private boolean hasParsed = false;
     private boolean hasMatched = false;
@@ -55,7 +55,7 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public KiCadItemPanel(Application application) {
+    public PcbItemPanel(Application application) {
         this.application = application;
 
         initializeComponents();
@@ -81,8 +81,15 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
     }
 
     private void updateEnabledComponents() {
-        saveToDbBtn.setEnabled(!kiCadParser.allComponentsInDb());
-        orderBtn.setEnabled(kiCadParser.hasLinkedItems());
+        if (projectPcb.getParser() != null) {
+            saveToDbBtn.setEnabled(!projectPcb.getParser().allComponentsInDb());
+            orderBtn.setEnabled(projectPcb.getParser().hasLinkedItems());
+            linkBtn.setEnabled(true);
+        } else {
+            saveToDbBtn.setEnabled(false);
+            orderBtn.setEnabled(false);
+            linkBtn.setEnabled(false);
+        }
     }
 
     private void updateComponentTable(HashMap<String, List<KcComponent>> componentMap) {
@@ -98,79 +105,74 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
         sheetTabs.removeAll();
     }
 
-    private void reParse(File fileToParse) {
-        hasParsed = false;
-        parseFile(fileToParse);
-    }
+//    private void reParse(File fileToParse) {
+//        hasParsed = false;
+//        parseFile(fileToParse);
+//    }
 
-    void reMatch() {
-        hasMatched = false;
-        matchItems();
-    }
-
-    private void matchItems() {
-        if (!hasMatched) {
-            application.beginWait();
-            try {
-                SwingUtilities.invokeLater(() -> {
-                    for (KcComponent component : getTableModel().getItemList()) {
-                        component.findMatchingItems();
-                        getTableModel().updateItem(component);
-                    }
-                    updateEnabledComponents();
-                });
-            } finally {
-                application.endWait();
-            }
-        }
-    }
-
-    private void parseFile(File fileToParse) {
-        if (!hasParsed) {
-            application.beginWait();
-            try {
-                if (fileToParse.isFile()) {
-                    if (kiCadParser.isFileValid(fileToParse)) {
-                        clearComponentTable();
-                        kiCadParser.parse(fileToParse);
-                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-                        hasParsed = true;
-                        matchItems();
-                    } else {
-                        if (FileUtils.getExtension(fileToParse).equals("pro")) {
-                            parseFile(fileToParse.getParentFile());
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    KiCadItemPanel.this,
-                                    "The file cannot be parsed with the KiCad parser..",
-                                    "Invalid file",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                    }
-                } else {
-                    // Search for file
-                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
-                    if (actualFiles != null && actualFiles.size() == 1) {
-                        clearComponentTable();
-                        kiCadParser.parse(actualFiles.get(0));
-                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-                        hasParsed = true;
-                        matchItems();
-                    } else {
-                        JOptionPane.showMessageDialog(
-                                KiCadItemPanel.this,
-                                "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
-                                "File not found",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-                }
-            } finally {
-                application.endWait();
-            }
-        }
-    }
+//    private void matchItems() {
+//        if (!hasMatched) {
+//            application.beginWait();
+//            try {
+//                SwingUtilities.invokeLater(() -> {
+//                    for (KcComponent component : getTableModel().getItemList()) {
+//                        component.findMatchingItems();
+//                        getTableModel().updateItem(component);
+//                    }
+//                    updateEnabledComponents();
+//                });
+//            } finally {
+//                application.endWait();
+//            }
+//        }
+//    }
+//
+//    private void parseFile(File fileToParse) {
+//        if (!hasParsed) {
+//            application.beginWait();
+//            try {
+//                if (fileToParse.isFile()) {
+//                    if (kiCadParser.isFileValid(fileToParse)) {
+//                        clearComponentTable();
+//                        kiCadParser.parse(fileToParse);
+//                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
+//                        hasParsed = true;
+//                        matchItems();
+//                    } else {
+//                        if (FileUtils.getExtension(fileToParse).equals("pro")) {
+//                            parseFile(fileToParse.getParentFile());
+//                        } else {
+//                            JOptionPane.showMessageDialog(
+//                                    PcbItemPanel.this,
+//                                    "The file cannot be parsed with the KiCad parser..",
+//                                    "Invalid file",
+//                                    JOptionPane.ERROR_MESSAGE
+//                            );
+//                        }
+//                    }
+//                } else {
+//                    // Search for file
+//                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
+//                    if (actualFiles != null && actualFiles.size() == 1) {
+//                        clearComponentTable();
+//                        kiCadParser.parse(actualFiles.get(0));
+//                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
+//                        hasParsed = true;
+//                        matchItems();
+//                    } else {
+//                        JOptionPane.showMessageDialog(
+//                                PcbItemPanel.this,
+//                                "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
+//                                "File not found",
+//                                JOptionPane.ERROR_MESSAGE
+//                        );
+//                    }
+//                }
+//            } finally {
+//                application.endWait();
+//            }
+//        }
+//    }
 
     private HashMap<String, List<KcComponent>> createComponentMap(List<KcComponent> components) {
         HashMap<String, List<KcComponent>> sheetMap = new HashMap<>();
@@ -240,19 +242,18 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
 
     @Override
     public void updateComponents(Object object) {
-        if (object != null && object instanceof String) {
+        if (object != null && object instanceof ProjectPcb) {
             setVisible(true);
-            if (parseFile == null || !parseFile.equals(object)) {
-                application.beginWait();
-                try {
-                    hasParsed = false;
-                    hasMatched = false;
-                    parseFile = new File(object.toString());
-                    parseFile(parseFile);
-                } finally {
-                    application.endWait();
-                }
+            projectPcb = (ProjectPcb) object;
+
+            application.beginWait();
+            try {
+                clearComponentTable();
+                updateComponentTable(createComponentMap(projectPcb.getPcbItemList()));
+            } finally {
+                application.endWait();
             }
+
             updateEnabledComponents();
         } else {
             setVisible(false);
@@ -285,17 +286,20 @@ public class KiCadItemPanel extends JPanel implements GuiInterface, ListSelectio
 
         if (source.equals(linkBtn)) {
             // Show dialog to link items
-            LinkItemDialog dialog = new LinkItemDialog(application, "Link items", kiCadParser);
+            LinkItemDialog dialog = new LinkItemDialog(application, "Link items", projectPcb.getParser());
             dialog.showDialog();
         } else if (source.equals(orderBtn)) {
             // Order known items
-            KcComponentOrderDialog orderDialog = new KcComponentOrderDialog(application, "Order items", kiCadParser.getLinkedItems());
+            KcComponentOrderDialog orderDialog = new KcComponentOrderDialog(
+                    application,
+                    "Order items",
+                    projectPcb.getParser().getLinkedItems());
             orderDialog.showDialog();
         } else if (source.equals(parseBtn)) {
-            reParse(parseFile);
+//            reParse(parseFile); // TODO
         } else if (source.equals(saveToDbBtn)) {
-            if (kiCadParser != null) {
-                saveKcComponents(kiCadParser);
+            if (projectPcb.getParser() != null) {
+                saveKcComponents(projectPcb.getParser());
             }
             saveToDbBtn.setEnabled(false);
         }

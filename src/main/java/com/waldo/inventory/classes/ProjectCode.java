@@ -50,16 +50,8 @@ public class ProjectCode extends ProjectObject {
 
     @Override
     public ProjectCode createCopy(DbObject copyInto) {
-        ProjectCode cpy = (ProjectCode) copyInto;
-        copyBaseFields(cpy);
-
-        // Add variables
+        ProjectCode cpy = (ProjectCode) super.createCopy(copyInto);
         cpy.setLanguage(getLanguage());
-        cpy.setDirectory(getDirectory());
-        cpy.setProjectId(getProjectId());
-        cpy.setProjectIDEId(getProjectIDEId());
-        cpy.setRemarksFile(getRemarksFile());
-
         return cpy;
     }
 

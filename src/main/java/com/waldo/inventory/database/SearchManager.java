@@ -952,4 +952,14 @@ public class SearchManager {
 //        }
         return projectOthers;
     }
+
+    public List<KcComponent> findPcbItemsForProjectPcb(long projectPcbId) {
+        List<KcComponent> pcbItems = new ArrayList<>();
+        for (PcbItemLink link : db().getPcbItemLinks()) {
+            if (link.getProjectPcbId() == projectPcbId) {
+                pcbItems.add(link.getPcbItem());
+            }
+        }
+        return pcbItems;
+    }
 }
