@@ -49,8 +49,8 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     private Application application;
     private ProjectPcb projectPcb;
 
-    private boolean hasParsed = false;
-    private boolean hasMatched = false;
+    private boolean hasParsed = true;
+    private boolean hasMatched = true;
 
     /*
      *                  CONSTRUCTOR
@@ -81,15 +81,8 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     }
 
     private void updateEnabledComponents() {
-        if (projectPcb.getParser() != null) {
-            saveToDbBtn.setEnabled(!projectPcb.getParser().allComponentsInDb());
-            orderBtn.setEnabled(projectPcb.getParser().hasLinkedItems());
-            linkBtn.setEnabled(true);
-        } else {
-            saveToDbBtn.setEnabled(false);
-            orderBtn.setEnabled(false);
-            linkBtn.setEnabled(false);
-        }
+        //saveToDbBtn.setEnabled(!projectPcb.getParser().allComponentsInDb());
+        //orderBtn.setEnabled(projectPcb.getParser().hasLinkedItems());
     }
 
     private void updateComponentTable(HashMap<String, List<KcComponent>> componentMap) {
