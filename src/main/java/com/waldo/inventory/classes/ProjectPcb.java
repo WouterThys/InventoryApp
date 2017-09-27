@@ -119,6 +119,11 @@ public class ProjectPcb extends ProjectObject {
         return u;
     }
 
+    public void reParse() throws Exception {
+        File file = new File(getDirectory());
+        pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
+    }
+
     private List<KcComponent> getPcbItemsFromParser(File fileToParse, ProjectParser<KcComponent> parser) {
         if (parser == null) {
             this.parser = (KiCadParser) parser;

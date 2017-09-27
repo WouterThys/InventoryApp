@@ -1,11 +1,15 @@
 package com.waldo.inventory.gui.panels.projectspanel;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -71,25 +75,51 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     //
     // Tool bars
     //
-
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-
+        if (source.equals(projectsToolBar)) {
+            updateComponents(selectedProject);
+        }
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-
+        if (source.equals(projectsToolBar)) {
+            AddProjectDialog dialog = new AddProjectDialog(application, "New Project");
+            if (dialog.showDialog() == IDialog.OK) {
+                // Add Project
+                Project p = dialog.getProject();
+                p.save();
+            }
+        }
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-
+        if (selectedProject != null) {
+            int res = JOptionPane.showConfirmDialog(ProjectsPanel.this, "Are you sure you want to delete \"" + selectedProject.getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                application.beginWait();
+                try {
+                    selectedProject.delete();
+                } finally {
+                    application.endWait();
+                }
+                selectedProject = null;
+            }
+        }
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-
+        if (selectedProject != null) {
+            AddProjectDialog dialog = new AddProjectDialog(application, "New Project", selectedProject);
+            if (dialog.showDialog() == IDialog.OK) {
+                // Add order
+                Project p = dialog.getProject();
+                p.save();
+            }
+        }
     }
 
     //

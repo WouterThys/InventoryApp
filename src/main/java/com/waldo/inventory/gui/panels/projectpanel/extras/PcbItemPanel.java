@@ -1,12 +1,11 @@
 package com.waldo.inventory.gui.panels.projectpanel.extras;
 
-import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.classes.kicad.KcComponent;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
@@ -22,12 +21,12 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionListener, ChangeListener, ActionListener {
 
@@ -48,9 +47,6 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
     private ProjectPcb projectPcb;
-
-    private boolean hasParsed = true;
-    private boolean hasMatched = true;
 
     /*
      *                  CONSTRUCTOR
@@ -289,7 +285,17 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                     projectPcb.getParser().getLinkedItems());
             orderDialog.showDialog();
         } else if (source.equals(parseBtn)) {
-//            reParse(parseFile); // TODO
+            try {
+                projectPcb.reParse();
+            } catch (Exception ex) {
+                Status().setError("Error parsing", ex);
+                JOptionPane.showMessageDialog(
+                        PcbItemPanel.this,
+                        "Error parsing: " + ex,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         } else if (source.equals(saveToDbBtn)) {
             if (projectPcb.getParser() != null) {
                 saveKcComponents(projectPcb.getParser());

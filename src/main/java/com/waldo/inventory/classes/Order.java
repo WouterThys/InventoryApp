@@ -197,8 +197,6 @@ public class Order extends DbObject {
         this.name = name;
     }
 
-
-
     public boolean containsOrderItemId(long id) {
         for (OrderItem oi : getOrderItems()) {
             if (oi.getId() == id) {

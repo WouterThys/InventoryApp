@@ -103,13 +103,13 @@ public class ProjectCode extends ProjectObject {
         db().notifyListeners(changedHow, this, db().onProjectCodeChangedListenerList);
     }
 
-    public static ProjectCode getUnknownProjectCode() {
-        ProjectCode u = new ProjectCode();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
-    }
+//    public static ProjectCode getUnknownProjectCode() {
+//        ProjectCode u = new ProjectCode();
+//        u.setName(UNKNOWN_NAME);
+//        u.setId(UNKNOWN_ID);
+//        u.setCanBeSaved(false);
+//        return u;
+//    }
 
     @Override
     public String createRemarksFileName() {
