@@ -28,6 +28,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
 
     private JButton iconBtn;
     private JTextPane nameTp;
+
     private String name;
     private IT projectObject;
     private TileClickListener<IT> listener;
@@ -93,21 +94,27 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
         ProjectIDE ide = projectObject.getProjectIDE();
         if (ide != null) {
             Path path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
-            setIcon(path.toString());
+            setIcon(path.toString(), projectObject.validate());
         } else {
-            setIcon("");
+            setIcon("", projectObject.validate());
         }
 
 
         nameTp.setText(createName(name));
     }
 
-    private void setIcon(String path) {
+    private void setIcon(String path, boolean isValid) {
         if (!path.isEmpty()) {
             URL url;
             try {
                 url = new File(path).toURI().toURL();
-                iconBtn.setIcon(imageResource.readImage(url, 48, 48));
+                ImageIcon ideIcon = imageResource.readImage(url, 48, 48);
+                if (isValid) {
+                    iconBtn.setIcon(ideIcon);
+                } else {
+                    ImageIcon warnIcon = imageResource.readImage("ErrorProvider.WarningIcon", 16);
+                    iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -126,6 +133,32 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     @Override
     public String getName() {
         return name;
+    }
+
+
+    class CombinedIcon implements Icon {
+        private Icon center;
+        private Icon error;
+
+        public CombinedIcon(Icon center, Icon error) {
+            this.center = center;
+            this.error = error;
+        }
+
+        public int getIconHeight() {
+            return center.getIconHeight();// + (error.getIconHeight()/2);
+        }
+
+        public int getIconWidth() {
+            return center.getIconWidth();// + (error.getIconWidth()/2);
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            center.paintIcon(c, g, x, y);
+            int errorX = x + center.getIconWidth() - (error.getIconWidth()/3);
+            int errorY = y - (error.getIconWidth()/3);
+            error.paintIcon(c, g, errorX, errorY);
+        }
     }
 }
 

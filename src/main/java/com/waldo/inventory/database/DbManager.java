@@ -78,6 +78,7 @@ public class DbManager {
     public List<DbObjectChangedListener<KcItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PcbItemLink>> onPcbItemLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -108,6 +109,7 @@ public class DbManager {
     private List<DbHistory> dbHistoryList;
     private List<ProjectCode> projectCodes;
     private List<ProjectPcb> projectPcbs;
+    private List<PcbItemLink> pcbItemLinks;
 
     private DbManager() {}
 
@@ -427,6 +429,12 @@ public class DbManager {
     public void addOnProjectPcbChangedListener(DbObjectChangedListener<ProjectPcb> dbObjectChangedListener) {
         if (!onProjectPcbChangedListenerList.contains(dbObjectChangedListener)) {
             onProjectPcbChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnPcbItemLinkChangedListener(DbObjectChangedListener<PcbItemLink> dbObjectChangedListener) {
+        if (!onPcbItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onPcbItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -1338,6 +1346,48 @@ public class DbManager {
 
                     p.setInserted(true);
                     projectPcbs.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /*
+    *                  PROJECT PCBs
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<PcbItemLink> getPcbItemLinks()    {
+        if (pcbItemLinks == null) {
+            updatePcbItemLinks();
+        }
+        return pcbItemLinks;
+    }
+
+    private void updatePcbItemLinks()    {
+        pcbItemLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
+        Status().setMessage("Fetching PcbItemLink from DB");
+        PcbItemLink p = null;
+        String sql = scriptResource.readString(PcbItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new PcbItemLink();
+                    p.setId(rs.getLong("id"));
+                    p.setPcbItemId(rs.getLong("pcbItemId"));
+                    p.setProjectPcbId(rs.getLong("projectPcbId"));
+
+                    p.setInserted(true);
+                    pcbItemLinks.add(p);
                 }
             }
         } catch (SQLException e) {

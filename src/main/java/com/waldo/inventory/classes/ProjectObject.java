@@ -83,6 +83,15 @@ public abstract class ProjectObject extends DbObject {
         return result;
     }
 
+    public boolean validate() {
+        boolean result = true;
+        if (!getDirectory().isEmpty()) {
+            File check = new File(getDirectory());
+            result = check.exists();
+        }
+        return result;
+    }
+
     public void createName() {
         if (!getDirectory().isEmpty()) {
             setName(FileUtils.getLastPathPart(getDirectory()));

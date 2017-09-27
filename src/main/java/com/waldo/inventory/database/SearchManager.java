@@ -934,6 +934,15 @@ public class SearchManager {
         return projectPcbs;
     }
 
+    public ProjectPcb findProjectPcbById(long id) {
+        for (ProjectPcb pp : db().getProjectPcbs()) {
+            if (pp.getId() == id) {
+                return pp;
+            }
+        }
+        return null;
+    }
+
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();
 //        for (ProjectOther po : db().getProjectOthers()) {
