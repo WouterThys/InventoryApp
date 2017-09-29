@@ -3,8 +3,6 @@ package com.waldo.inventory.gui.dialogs;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;
@@ -105,7 +103,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             if (fileChooser.showDialog(DbObjectDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                iconPathTextField.setText(fileChooser.getSelectedFile().getPath());
+                iconPathTextField.setText(fileChooser.getSelectedFile().getName());
             }
         });
     }

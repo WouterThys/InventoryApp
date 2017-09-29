@@ -9,7 +9,7 @@ import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
 import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
-import com.waldo.inventory.gui.dialogs.projecttypesdialog.ProjectTypesDialog;
+import com.waldo.inventory.gui.dialogs.projectidesdialog.ProjectIDEDialog;
 import com.waldo.inventory.gui.dialogs.querydialog.QueryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
@@ -64,7 +64,7 @@ public class MenuBar extends JMenuBar {
         JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("MenuBar.Packages"));
         packages.addActionListener(packagesSelected());
 
-        JMenuItem projectTypes = new JMenuItem("Project types", imageResource.readImage("MenuBar.Project"));
+        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readImage("MenuBar.Project"));
         projectTypes.addActionListener(projectTypesSelected());
 
         JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("MenuBar.Location"));
@@ -168,7 +168,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener projectTypesSelected() {
         return (e -> {
-           ProjectTypesDialog dialog = new ProjectTypesDialog(application, "Project types");
+           ProjectIDEDialog dialog = new ProjectIDEDialog(application, "Project IDEs");
            dialog.showDialog();
         });
     }

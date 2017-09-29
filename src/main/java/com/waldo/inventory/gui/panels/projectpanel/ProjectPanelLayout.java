@@ -1,16 +1,19 @@
 package com.waldo.inventory.gui.panels.projectpanel;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectDirectory;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.addprojectdialog.AddProjectDialog;
-import com.waldo.inventory.gui.panels.projectpanel.extras.KiCadItemPanel;
+import com.waldo.inventory.gui.panels.projectpanel.extras.PcbItemPanel;
 import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projectdetails.ProjectDetailsPanel;
 import com.waldo.inventory.gui.panels.projectpanel.projecttypedetails.ProjectTypeDetails;
@@ -20,12 +23,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.waldo.inventory.database.DbManager.db;
 
@@ -42,7 +41,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITree projectTree;
-    IDbObjectTreeModel treeModel;
+    IDbObjectTreeModel<Project> treeModel;
 
     TopToolBar topToolBar;
     private IdBToolBar projectToolBar;
@@ -50,7 +49,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     ProjectDetailsPanel detailsPanel;
     ProjectTypeDetails projectTypeDetails;
 
-    KiCadItemPanel kiCadItemPanel;
+    PcbItemPanel pcbItemPanel;
 
     /*
      *                  VARIABLES
@@ -58,7 +57,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
     Application application;
     Project selectedProject;
     ProjectDirectory selectedDirectory;
-    ProjectType selectedProjectType;
+    ProjectIDE selectedProjectIDE;
     File lastProjectFile;
 
 
@@ -142,7 +141,15 @@ public abstract class ProjectPanelLayout extends JPanel implements
         virtualRoot.setCanBeSaved(false);
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
         createNodes(rootNode);
-        treeModel = new IDbObjectTreeModel(rootNode, IDbObjectTreeModel.TYPE_PROJECTS);
+        treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
+            if (DbObject.getType(child) == DbObject.TYPE_PROJECT_TYPE) { // Types are children of projects, types have no children
+                DefaultMutableTreeNode node = treeModel.findNode(child);
+                if (node != null) {
+                    return (DefaultMutableTreeNode) node.getParent();
+                }
+            }
+            return null;
+        });
 
         projectTree = new ITree(treeModel);
         projectTree.addTreeSelectionListener(this);
@@ -203,14 +210,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectToolBar.setFloatable(false);
 
         // Type panel
-        projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
+        //projectGirdPanel = new ProjectGirdPanel(application, selectedProject, this);
 
         // Detail panel
         detailsPanel = new ProjectDetailsPanel(application);
         projectTypeDetails = new ProjectTypeDetails(application, this);
 
         // KiCad items panel
-        kiCadItemPanel = new KiCadItemPanel(application);
+        pcbItemPanel = new PcbItemPanel(application);
     }
 
     @Override
@@ -220,7 +227,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         projectTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectTree);
 
-        JScrollPane kcPane = new JScrollPane(kiCadItemPanel);
+        JScrollPane kcPane = new JScrollPane(pcbItemPanel);
         kcPane.setPreferredSize(new Dimension(600,400));
 
         // West panel
@@ -234,7 +241,7 @@ public abstract class ProjectPanelLayout extends JPanel implements
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
         //centerPanel.add(split, BorderLayout.CENTER);
         centerPanel.add(projectGirdPanel, BorderLayout.CENTER);
-        centerPanel.add(kiCadItemPanel, BorderLayout.EAST);
+        centerPanel.add(pcbItemPanel, BorderLayout.EAST);
 
         // Details panel
         JPanel infoPanel = new JPanel(new BorderLayout());
@@ -274,14 +281,14 @@ public abstract class ProjectPanelLayout extends JPanel implements
 
             // Update tile view
             projectGirdPanel.updateComponents(selectedProject);
-            kiCadItemPanel.updateComponents(null);
+            pcbItemPanel.updateComponents(null);
 
             // Enabled components
             updateEnabledComponents();
 
             // Details
             detailsPanel.updateComponents(selectedProject);
-            projectTypeDetails.updateComponents(selectedProjectType);
+            projectTypeDetails.updateComponents(selectedProjectIDE);
         } finally {
             application.endWait();
         }

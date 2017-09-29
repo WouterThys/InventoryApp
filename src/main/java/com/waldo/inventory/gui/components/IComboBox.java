@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 
-public class IComboBox<E extends DbObject> extends JComboBox<E> {
+public class IComboBox<E> extends JComboBox<E> {
 
     private DefaultComboBoxModel<E> comboBoxModel;
     private boolean showUnknown;
@@ -56,7 +56,7 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
 
             comboBoxModel.removeAllElements();
             for (E item : itemList) {
-                if (!item.isUnknown() || showUnknown) {
+                if (item instanceof DbObject && !((DbObject)item).isUnknown() || showUnknown) {
                     comboBoxModel.addElement(item);
                 }
             }
@@ -102,8 +102,13 @@ public class IComboBox<E extends DbObject> extends JComboBox<E> {
                         DbObject guiObject = editedListener.getGuiObject();
                         if (guiObject != null) {
 
-                            String newVal = String.valueOf(((DbObject) e.getItem()).getId());
-                            String oldVal = "";
+                            String newVal;
+                            if (e.getItem() instanceof DbObject) {
+                                newVal = String.valueOf(((DbObject) e.getItem()).getId());
+                            } else {
+                                newVal = String.valueOf(e.getItem());
+                            }
+                            String oldVal;
                             if (!fieldName.isEmpty()) {
                                 Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
                                 Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);

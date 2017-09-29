@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog;
+package com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog;
 
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;

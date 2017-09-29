@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.projecttypesdialog.parserdialog;
+package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 
 import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.gui.Application;

@@ -29,7 +29,9 @@ public abstract class ProjectParser<P> {
     }
 
     public boolean isFileValid(File fileToParse) {
-        return ((fileToParse.exists()) && FileUtils.getExtension(fileToParse).equals(fileExtension));
+        boolean fileExists = fileToParse.exists();
+        boolean extensionOk = FileUtils.getExtension(fileToParse).equals(fileExtension);
+        return fileExists && extensionOk;
     }
 
     public abstract void parse(File fileToParse);

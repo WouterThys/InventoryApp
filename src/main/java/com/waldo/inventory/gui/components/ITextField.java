@@ -139,8 +139,6 @@ public class ITextField extends JTextField implements FocusListener {
         this.getDocument().addDocumentListener(documentListener);
     }
 
-
-
     public void setError(String errorText) {
         if (errorText != null) {
             originalText = this.getText();
@@ -162,16 +160,18 @@ public class ITextField extends JTextField implements FocusListener {
     public void setWarning(String warningText) {
         if (warningText != null) {
             originalText = this.getText();
-//            originalBorder = this.getBorder();
+            originalBorder = this.getBorder();
             originalToolTip = this.getToolTipText();
             error = new Error(Error.WARNING, warningText);
-//            this.setBorder(new IconBorder(error.getImage(), originalBorder));
+            this.setBorder(new IconBorder(error.getImage(), originalBorder));
             this.setToolTipText(error.getMessage());
+            showingError = true;
         } else {
             error = null;
             this.setText(originalText);
-//            this.setBorder(originalBorder);
+            this.setBorder(originalBorder);
             this.setToolTipText(originalToolTip);
+            showingError = false;
         }
     }
 

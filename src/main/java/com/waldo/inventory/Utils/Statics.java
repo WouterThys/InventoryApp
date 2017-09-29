@@ -1,7 +1,6 @@
 package com.waldo.inventory.Utils;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class Statics {
 
@@ -76,5 +75,26 @@ public class Statics {
         public static final String L_UNIT = "H";
 
         public static final String[] ALL = {R_UNIT, C_UNIT, L_UNIT};
+    }
+
+    public static class CodeLanguage {
+        public static final String Unknown = "";
+        public static final String C = "C";
+        public static final String Cs = "C#";
+        public static final String Cpp = "C++";
+        public static final String Java = "Java";
+        public static final String Python = "Python";
+
+        public static final String[] All = {Unknown, C, Cs, Cpp, Java, Python };
+
+    }
+
+    public static class ProjectTypes {
+        public static final String Unknown = "";
+        public static final String Code = "Code";
+        public static final String Pcb = "Pcb";
+        public static final String Other = "Other";
+
+        public static final String[] All  = {Unknown, Code, Pcb, Other };
     }
 }

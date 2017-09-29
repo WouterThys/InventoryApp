@@ -1,12 +1,15 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.classes.ProjectIDE;
+import org.apache.commons.io.IOUtils;
+
+import javax.sql.rowset.serial.SerialBlob;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +75,15 @@ public class FileUtils {
         }
     }
 
+    public static String getLastPathPart(String path) {
+        String result = "";
+        if (!path.isEmpty()) {
+            int ndx = path.lastIndexOf(File.separator);
+            result = path.substring(ndx+1, path.length());
+        }
+        return result;
+    }
+
 
     public static ImageFilter getImageFilter() {
         return new ImageFilter();
@@ -88,6 +100,11 @@ public class FileUtils {
     public static DbFilter getDbFilter() {
         return new DbFilter();
     }
+
+    public static IDEFilter getIDEFilter(List<ProjectIDE> projectIDEs) {
+        return new IDEFilter(projectIDEs);
+    }
+
 
     private static class ImageFilter extends FileFilter {
 
@@ -180,8 +197,44 @@ public class FileUtils {
         }
     }
 
+    private static class IDEFilter extends  FileFilter {
+
+        private List<ProjectIDE> ideList;
+
+        IDEFilter(List<ProjectIDE> ideList) {
+            this.ideList = ideList;
+        }
+
+        @Override
+        public boolean accept(File f) {
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (ProjectIDE pi : ideList) {
+                if (first) {
+                    builder.append(pi.getName()).append(" (").append(pi.getExtension()).append(")");
+                } else {
+                    builder.append(", ").append(pi.getName()).append(" (").append(pi.getExtension()).append(")");
+                }
+                first = false;
+            }
+            return builder.toString();
+        }
+    }
+
+    private static class IDEFileChooser extends JFileChooser {
+        @Override
+        public void approveSelection() {
+            super.approveSelection();
+        }
+    }
+
     public static String getRawStringFromFile(File file) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (file != null) {
             if (file.exists()) {
                 BufferedReader bufferedReader = null;
@@ -189,7 +242,7 @@ public class FileUtils {
                     bufferedReader = new BufferedReader(new FileReader(file));
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        result += line + "\n";
+                        result.append(line).append("\n");
                     }
                 } catch (IOException e) {
                     Status().setError("Error getting raw string from file.", e);
@@ -204,7 +257,7 @@ public class FileUtils {
                 }
             }
         }
-        return result;
+        return result.toString();
     }
 
 
@@ -332,6 +385,45 @@ public class FileUtils {
             result = iconPath.substring(ndx + 1, iconPath.length());
         }
         return result;
+    }
+
+    public static File blobToFile(Blob blob, String fileName) throws SQLException {
+        File f = null;
+        if (blob != null && blob.length() > 0) {
+            try {
+                f = createTempFile(fileName);
+                try (InputStream in = blob.getBinaryStream();
+                     OutputStream out = new FileOutputStream(f)) {
+                    byte[] buff = new byte[4096];
+                    int len;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return f;
+    }
+
+    public static SerialBlob fileToBlob(File file) throws SQLException {
+        SerialBlob blob = null;
+        if (file != null && file.exists()) {
+            try (InputStream inputStream = new FileInputStream(file)) {
+                byte[] bytes = IOUtils.toByteArray(inputStream);
+                blob = new SerialBlob(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return blob;
+    }
+
+    public static File createTempFile(String fileName) throws IOException {
+        File file = File.createTempFile(fileName, "");
+        file.deleteOnExit();
+        return file;
     }
 
 }

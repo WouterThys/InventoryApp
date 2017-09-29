@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog;
+package com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog;
 
 
 import com.waldo.inventory.Utils.PanelUtils;

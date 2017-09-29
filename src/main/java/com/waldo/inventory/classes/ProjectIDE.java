@@ -6,19 +6,19 @@ import com.waldo.inventory.database.LogManager;
 import com.waldo.inventory.gui.Application;
 
 import java.awt.*;
-import java.awt.List;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class ProjectType extends DbObject {
+public class ProjectIDE extends DbObject {
 
-    private static final LogManager LOG = LogManager.LOG(ProjectType.class);
-    public static final String TABLE_NAME = "projecttypes";
+    private static final LogManager LOG = LogManager.LOG(ProjectIDE.class);
+    public static final String TABLE_NAME = "projectides";
+
+    private String projectType; // Statics.ProjectTypes
 
     // Launcher
     private boolean useDefaultLauncher;
@@ -33,16 +33,8 @@ public class ProjectType extends DbObject {
     // Parser
     private String parserName; // For db
 
-    public ProjectType() {
+    public ProjectIDE() {
         super(TABLE_NAME);
-    }
-
-    public static ProjectType getUnknownProjectType() {
-        ProjectType pt = new ProjectType();
-        pt.setName(UNKNOWN_NAME);
-        pt.setId(UNKNOWN_ID);
-        pt.setCanBeSaved(false);
-        return pt;
     }
 
     public void launch(File file) throws IOException {
@@ -56,6 +48,7 @@ public class ProjectType extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+        statement.setString(ndx++, projectType);
         statement.setString(ndx++, extension);
         statement.setBoolean(ndx++, openAsFolder);
         statement.setBoolean(ndx++, useDefaultLauncher);
@@ -70,11 +63,14 @@ public class ProjectType extends DbObject {
     public boolean equals(Object obj) {
         boolean result = super.equals(obj);
         if (result) {
-            if (!(obj instanceof ProjectType)) {
+            if (!(obj instanceof ProjectIDE)) {
                 return false;
             } else {
-                ProjectType ref = (ProjectType) obj;
+                ProjectIDE ref = (ProjectIDE) obj;
 
+                if (!(ref.getProjectType().equals(getProjectType()))) {
+                    return false;
+                }
                 if (!(ref.getExtension().equals(getExtension()))) {
                     return false;
                 }
@@ -111,23 +107,24 @@ public class ProjectType extends DbObject {
     }
 
     @Override
-    public ProjectType createCopy(DbObject copyInto) {
-        ProjectType projectType = (ProjectType) copyInto;
-        copyBaseFields(projectType);
-        projectType.setExtension(getExtension());
-        projectType.setOpenAsFolder(isOpenAsFolder());
-        projectType.setUseDefaultLauncher(isUseDefaultLauncher());
-        projectType.setLauncherPath(getLauncherPath());
-        projectType.setMatchExtension(isMatchExtension());
-        projectType.setUseParentFolder(isUseParentFolder());
-        projectType.setParserName(getParserName());
+    public ProjectIDE createCopy(DbObject copyInto) {
+        ProjectIDE projectIDE = (ProjectIDE) copyInto;
+        copyBaseFields(projectIDE);
+        projectIDE.setProjectType(getProjectType());
+        projectIDE.setExtension(getExtension());
+        projectIDE.setOpenAsFolder(isOpenAsFolder());
+        projectIDE.setUseDefaultLauncher(isUseDefaultLauncher());
+        projectIDE.setLauncherPath(getLauncherPath());
+        projectIDE.setMatchExtension(isMatchExtension());
+        projectIDE.setUseParentFolder(isUseParentFolder());
+        projectIDE.setParserName(getParserName());
 
-        return projectType;
+        return projectIDE;
     }
 
     @Override
-    public ProjectType createCopy() {
-        return createCopy(new ProjectType());
+    public ProjectIDE createCopy() {
+        return createCopy(new ProjectIDE());
     }
 
     //
@@ -137,26 +134,37 @@ public class ProjectType extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                java.util.List<ProjectType> list = db().getProjectTypes();
+                java.util.List<ProjectIDE> list = db().getProjectIDES();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectTypeChangedListenerList);
+                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectIDEChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectTypeChangedListenerList);
+                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectIDEChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                java.util.List<ProjectType> list = db().getProjectTypes();
+                java.util.List<ProjectIDE> list = db().getProjectIDES();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectTypeChangedListenerList);
+                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectIDEChangedListenerList);
                 break;
             }
         }
+    }
+
+    public String getProjectType() {
+        if (projectType == null) {
+            projectType = "";
+        }
+        return projectType;
+    }
+
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
     }
 
     public String getExtension() {

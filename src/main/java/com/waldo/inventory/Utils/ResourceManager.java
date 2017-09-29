@@ -1,7 +1,6 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.database.LogManager;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,8 +12,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -35,7 +32,6 @@ public class ResourceManager {
         } catch (Exception ex) {
             LOG.error("Error creating ResourceManager", ex);
         }
-
     }
 
 

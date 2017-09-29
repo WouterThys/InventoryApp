@@ -2,6 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.SearchManager;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -16,8 +17,14 @@ public class Project extends DbObject {
 
     public static final String TABLE_NAME = "projects";
 
+    @Deprecated
     private List<ProjectDirectory> projectDirectories;
     private boolean validated = false;
+
+    private String mainDirectory;
+    private List<ProjectCode> projectCodes;
+    private List<ProjectPcb> projectPcbs;
+    private List<ProjectOther> projectOthers;
 
     public Project() {
         super(TABLE_NAME);
@@ -38,9 +45,9 @@ public class Project extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        return 3;
+        int ndx = addBaseParameters(statement);
+        statement.setString(ndx++, getMainDirectory());
+        return ndx;
     }
 
     @Override
@@ -119,9 +126,9 @@ public class Project extends DbObject {
     }
 
 
-    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
         if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
-            updateProjectTypesToDirectory(projectDirectory, projectTypes);
+            updateProjectTypesToDirectory(projectDirectory, projectIDES);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
@@ -131,15 +138,15 @@ public class Project extends DbObject {
         }
     }
 
-    public void addDirectory(String projectDirectory, List<ProjectType> projectTypes) {
+    public void addDirectory(String projectDirectory, List<ProjectIDE> projectIDES) {
         ProjectDirectory directory = new ProjectDirectory();
         directory.setDirectory(projectDirectory);
-        addDirectory(directory, projectTypes);
+        addDirectory(directory, projectIDES);
     }
 
-    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
+    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
         if (projectDirectory != null && getProjectDirectories().contains(projectDirectory)) {
-            updateProjectTypesToDirectory(projectDirectory, projectTypes);
+            updateProjectTypesToDirectory(projectDirectory, projectIDES);
             if (id > UNKNOWN_ID) {
                 projectDirectory.setProjectId(id);
                 projectDirectory.save();
@@ -155,8 +162,8 @@ public class Project extends DbObject {
         }
     }
 
-    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectType> projectTypes) {
-        for (ProjectType type : projectTypes) {
+    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
+        for (ProjectIDE type : projectIDES) {
 
             if (type.isOpenAsFolder()) {
                 if (type.isMatchExtension()) {
@@ -202,14 +209,14 @@ public class Project extends DbObject {
             }
             // Save directory
             directory.save();
-            for (ProjectType type : directory.getProjectTypeMap().keySet())  {
+            for (ProjectIDE type : directory.getProjectTypeMap().keySet())  {
                 for (File file : directory.getProjectTypeMap().get(type)) {
                     // Save link between type and directory
                     ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId(), file.getAbsolutePath());
                     if (ptl == null) {
                         ptl = new ProjectTypeLink();
                     }
-                    ptl.setProjectType(type);
+                    ptl.setProjectIDE(type);
                     ptl.setProjectDirectory(directory);
                     ptl.setFilePath(file.getAbsolutePath());
                     ptl.save();
@@ -240,13 +247,13 @@ public class Project extends DbObject {
         }
 
         for (ProjectDirectory directory : newDirs) {
-            addDirectory(directory, DbManager.db().getProjectTypes());
+            addDirectory(directory, DbManager.db().getProjectIDES());
         }
     }
 
     public boolean hasItems() {
         for (ProjectDirectory dir : getProjectDirectories()) {
-            for (ProjectType type : dir.getProjectTypes()) {
+            for (ProjectIDE type : dir.getProjectTypes()) {
                 if (type.hasParser()) {
                     type.getProjectParser().getParsedData();
                 }
@@ -286,5 +293,49 @@ public class Project extends DbObject {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
+    }
+
+    public List<ProjectCode> getProjectCodes() {
+        if (projectCodes == null) {
+            projectCodes = SearchManager.sm().findProjectCodesByProjectId(getId());
+        }
+        return projectCodes;
+    }
+
+    public List<ProjectPcb> getProjectPcbs() {
+        if (projectPcbs == null) {
+            projectPcbs = SearchManager.sm().findProjectPcbsByProjectId(getId());
+        }
+        return projectPcbs;
+    }
+
+    public List<ProjectOther> getProjectOthers() {
+        if (projectOthers == null) {
+            projectOthers = SearchManager.sm().findProjectOthersByProjectId(getId());
+        }
+        return projectOthers;
+    }
+
+    public void updateProjectCodes() {
+        projectCodes = null;
+    }
+
+    public void updateProjectPcbs() {
+        projectPcbs = null;
+    }
+
+    public void updateProjectOthers() {
+        projectOthers = null;
+    }
+
+    public String getMainDirectory() {
+        if (mainDirectory == null) {
+            mainDirectory = "";
+        }
+        return mainDirectory;
+    }
+
+    public void setMainDirectory(String mainDirectory) {
+        this.mainDirectory = mainDirectory;
     }
 }

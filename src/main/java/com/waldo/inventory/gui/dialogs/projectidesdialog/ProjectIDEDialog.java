@@ -1,16 +1,16 @@
-package com.waldo.inventory.gui.dialogs.projecttypesdialog;
+package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectType;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
-import com.waldo.inventory.gui.dialogs.projecttypesdialog.detectiondialog.DetectionDialog;
-import com.waldo.inventory.gui.dialogs.projecttypesdialog.launcherdialog.LauncherDialog;
-import com.waldo.inventory.gui.dialogs.projecttypesdialog.parserdialog.ParserDialog;
+import com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog.DetectionDialog;
+import com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog.LauncherDialog;
+import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.ParserDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -23,11 +23,11 @@ import java.util.List;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ProjectTypesDialog extends ProjectTypesDialogLayout {
+public class ProjectIDEDialog extends ProjectIDEDialogLayout {
 
     private boolean canClose = true;
 
-    public ProjectTypesDialog(Application application, String title) {
+    public ProjectIDEDialog(Application application, String title) {
         super(application, title);
         initializeComponents();
         initializeLayouts();
@@ -38,8 +38,8 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     private void updateWithFirstProjectType() {
-        if (db().getProjectTypes().size() > 0) {
-            updateComponents(db().getProjectTypes().get(0));
+        if (db().getProjectIDES().size() > 0) {
+            updateComponents(db().getProjectIDES().get(0));
         } else {
             updateComponents(null);
         }
@@ -61,34 +61,35 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
-            selectedProjectType.save();
-            originalProjectType = selectedProjectType.createCopy();
+            selectedProjectIDE.save();
+            originalProjectIDE = selectedProjectIDE.createCopy();
             getButtonNeutral().setEnabled(false);
         }
     }
 
     @Override
     protected void onCancel() {
-        if (selectedProjectType != null && originalProjectType != null) {
-            originalProjectType.createCopy(selectedProjectType);
-            selectedProjectType.setCanBeSaved(true);
+        if (selectedProjectIDE != null && originalProjectIDE != null) {
+            originalProjectIDE.createCopy(selectedProjectIDE);
+            selectedProjectIDE.setCanBeSaved(true);
         }
         super.onCancel();
     }
 
     private void setDetails() {
-        if (selectedProjectType != null) {
-            detailName.setText(selectedProjectType.getName());
+        if (selectedProjectIDE != null) {
+            detailName.setText(selectedProjectIDE.getName());
+            projectTypeCb.setSelectedItem(selectedProjectIDE.getProjectType());
 
-            if (!selectedProjectType.getIconPath().isEmpty()) {
-                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), selectedProjectType.getIconPath());
+            if (!selectedProjectIDE.getIconPath().isEmpty()) {
+                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), selectedProjectIDE.getIconPath());
                 detailLogo.setIcon(path.toString(), 48,48);
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }
 
             detailProjectModel.removeAllElements();
-            for (Project p : db().getProjectForProjectType(selectedProjectType.getId())) {
+            for (Project p : db().getProjectForProjectType(selectedProjectIDE.getId())) {
                 detailProjectModel.addElement(p);
             }
         }
@@ -96,19 +97,20 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     private void clearDetails() {
         detailName.setText("");
+        projectTypeCb.setSelectedItem(null);
         detailLogo.setIcon((Icon) null);
         detailProjectModel.removeAllElements();
     }
 
     private void showSaveDialog(boolean closeAfter) {
-        if (selectedProjectType != null) {
-            String msg = selectedProjectType.getName() + " is edited, do you want to save?";
+        if (selectedProjectIDE != null) {
+            String msg = selectedProjectIDE.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
 //                    selectedManufacturer.setName(detailName.getText());
 //                    selectedManufacturer.setWebsite(detailWebsite.getText());
-                    selectedProjectType.save();
-                    originalProjectType = selectedProjectType.createCopy();
+                    selectedProjectIDE.save();
+                    originalProjectIDE = selectedProjectIDE.createCopy();
                     if (closeAfter) {
                         dialogResult = OK;
                         dispose();
@@ -136,7 +138,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     private boolean checkChange() {
-        return (selectedProjectType != null) && !(selectedProjectType.equals(originalProjectType));
+        return (selectedProjectIDE != null) && !(selectedProjectIDE.equals(originalProjectIDE));
     }
 
     //
@@ -149,21 +151,21 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
             application.beginWait();
             // Get all menus
             projectTypeModel.removeAllElements();
-            for (ProjectType pt : db().getProjectTypes()) {
+            for (ProjectIDE pt : db().getProjectIDES()) {
                 if (!pt.isUnknown()) {
                     projectTypeModel.addElement(pt);
                 }
             }
 
-            selectedProjectType = (ProjectType) object;
+            selectedProjectIDE = (ProjectIDE) object;
             updateEnabledComponents();
 
-            if (selectedProjectType != null) {
-                originalProjectType = selectedProjectType.createCopy();
-                projectTypeList.setSelectedValue(selectedProjectType, true);
+            if (selectedProjectIDE != null) {
+                originalProjectIDE = selectedProjectIDE.createCopy();
+                projectTypeList.setSelectedValue(selectedProjectIDE, true);
                 setDetails();
             } else {
-                originalProjectType = null;
+                originalProjectIDE = null;
             }
         } finally {
             application.endWait();
@@ -177,13 +179,13 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
-        ProjectType ptFound = (ProjectType) foundObjects.get(0);
+        ProjectIDE ptFound = (ProjectIDE) foundObjects.get(0);
         projectTypeList.setSelectedValue(ptFound, true);
     }
 
     @Override
     public void onSearchCleared() {
-        projectTypeList.setSelectedValue(selectedProjectType, true);
+        projectTypeList.setSelectedValue(selectedProjectIDE, true);
     }
 
     @Override
@@ -197,20 +199,20 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     }
 
     //
-    // ProjectType listener
+    // ProjectIDE listener
     //
     @Override
-    public void onInserted(ProjectType projectType) {
-        updateComponents(projectType);
+    public void onInserted(ProjectIDE projectIDE) {
+        updateComponents(projectIDE);
     }
 
     @Override
-    public void onUpdated(ProjectType newProjectType) {
-        updateComponents(newProjectType);
+    public void onUpdated(ProjectIDE newProjectIDE) {
+        updateComponents(newProjectIDE);
     }
 
     @Override
-    public void onDeleted(ProjectType projectType) {
+    public void onDeleted(ProjectIDE projectIDE) {
         updateWithFirstProjectType();
     }
 
@@ -231,7 +233,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
             }
             getButtonNeutral().setEnabled(false);
             updateComponents(selected);
-            if (selectedProjectType != null && !selectedProjectType.isUnknown()) {
+            if (selectedProjectIDE != null && !selectedProjectIDE.isUnknown()) {
                 setDetails();
             } else {
                 clearDetails();
@@ -250,32 +252,32 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<ProjectType> dialog = new DbObjectDialog<>(application, "New Project Type", new ProjectType());
+        DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(application, "New Project Type", new ProjectIDE());
         if (dialog.showDialog() == DbObjectDialog.OK) {
-            ProjectType pt = dialog.getDbObject();
+            ProjectIDE pt = dialog.getDbObject();
             pt.save();
         }
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (selectedProjectType != null) {
-            int res = JOptionPane.showConfirmDialog(ProjectTypesDialog.this, "Are you sure you want to delete \"" + selectedProjectType.getName() + "\"?");
+        if (selectedProjectIDE != null) {
+            int res = JOptionPane.showConfirmDialog(ProjectIDEDialog.this, "Are you sure you want to delete \"" + selectedProjectIDE.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
-                selectedProjectType.delete();
-                selectedProjectType = null;
-                originalProjectType = null;
+                selectedProjectIDE.delete();
+                selectedProjectIDE = null;
+                originalProjectIDE = null;
             }
         }
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (selectedProjectType != null) {
-            DbObjectDialog<ProjectType> dialog = new DbObjectDialog<>(application, "Update " + selectedProjectType.getName(), selectedProjectType);
+        if (selectedProjectIDE != null) {
+            DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(application, "Update " + selectedProjectIDE.getName(), selectedProjectIDE);
             if (dialog.showDialog() == DbObjectDialog.OK) {
-                selectedProjectType.save();
-                originalProjectType = selectedProjectType.createCopy();
+                selectedProjectIDE.save();
+                originalProjectIDE = selectedProjectIDE.createCopy();
             }
         }
     }
@@ -290,7 +292,7 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        return selectedProjectType;
+        return selectedProjectIDE;
     }
 
     //
@@ -300,42 +302,42 @@ public class ProjectTypesDialog extends ProjectTypesDialogLayout {
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
-        if (selectedProjectType != null) {
+        if (selectedProjectIDE != null) {
             if (source == detailLauncherBtn) {
                 LauncherDialog dialog = new LauncherDialog(application, "Launcher",
-                        selectedProjectType.isUseDefaultLauncher(),
-                        selectedProjectType.getLauncherPath());
+                        selectedProjectIDE.isUseDefaultLauncher(),
+                        selectedProjectIDE.getLauncherPath());
 
                 if (dialog.showDialog() == IDialog.OK) {
-                    selectedProjectType.setUseDefaultLauncher(dialog.isUseDefaultLauncher());
-                    selectedProjectType.setLauncherPath(dialog.getLauncherPath());
+                    selectedProjectIDE.setUseDefaultLauncher(dialog.isUseDefaultLauncher());
+                    selectedProjectIDE.setLauncherPath(dialog.getLauncherPath());
                     getButtonNeutral().setEnabled(checkChange());
                 }
             }
             if (source == detailDetectionBtn) {
                 DetectionDialog dialog = new DetectionDialog(application, "Detection",
-                        selectedProjectType.getExtension(),
-                        selectedProjectType.isOpenAsFolder(),
-                        selectedProjectType.isMatchExtension(),
-                        selectedProjectType.isUseParentFolder());
+                        selectedProjectIDE.getExtension(),
+                        selectedProjectIDE.isOpenAsFolder(),
+                        selectedProjectIDE.isMatchExtension(),
+                        selectedProjectIDE.isUseParentFolder());
 
                 if (dialog.showDialog() == IDialog.OK) {
-                    selectedProjectType.setExtension(dialog.getExtension());
-                    selectedProjectType.setOpenAsFolder(dialog.isOpenAsFolder());
-                    selectedProjectType.setMatchExtension(dialog.isMatchExtension());
-                    selectedProjectType.setUseParentFolder(dialog.isUseParentFolder());
+                    selectedProjectIDE.setExtension(dialog.getExtension());
+                    selectedProjectIDE.setOpenAsFolder(dialog.isOpenAsFolder());
+                    selectedProjectIDE.setMatchExtension(dialog.isMatchExtension());
+                    selectedProjectIDE.setUseParentFolder(dialog.isUseParentFolder());
                     getButtonNeutral().setEnabled(checkChange());
                 }
             }
             if (source == detailParserBtn) {
-                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectType.hasParser(), selectedProjectType.getProjectParser());
+                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectIDE.hasParser(), selectedProjectIDE.getProjectParser());
 
                 if (dialog.showDialog() == IDialog.OK) {
-                    if (selectedProjectType != null) {
+                    if (selectedProjectIDE != null) {
                         if (dialog.useParser()) {
-                            selectedProjectType.setParserName(dialog.getParser().getParserName());
+                            selectedProjectIDE.setParserName(dialog.getParser().getParserName());
                         } else {
-                            selectedProjectType.setParserName("");
+                            selectedProjectIDE.setParserName("");
                         }
                         getButtonNeutral().setEnabled(checkChange());
                     }
