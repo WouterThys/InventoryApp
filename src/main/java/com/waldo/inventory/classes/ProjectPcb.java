@@ -6,8 +6,6 @@ import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.kicad.KcComponent;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.gui.Application;
-import javafx.util.converter.TimeStringConverter;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.swing.*;
@@ -124,8 +122,28 @@ public class ProjectPcb extends ProjectObject {
         pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
     }
 
+    private void writeLinksToDb(final List<KcComponent> pcbItemList) {
+        SwingUtilities.invokeLater(() -> {
+            // Write items to db
+            for (KcComponent item : pcbItemList) {
+                if (item.getId() < DbObject.UNKNOWN_ID) {
+                    item.save();
+                }
+            }
+
+            // Item links
+            for (KcComponent item : pcbItemList) {
+                PcbItemLink link = SearchManager.sm().findPcbItemLink(item.getId(), getProjectId());
+                if (link == null) {
+                    link = new PcbItemLink(item, this);
+                    link.save();
+                }
+            }
+        });
+    }
+
     private List<KcComponent> getPcbItemsFromParser(File fileToParse, ProjectParser<KcComponent> parser) {
-        if (parser == null) {
+        if (this.parser == null) {
             this.parser = (KiCadParser) parser;
         }
         List<KcComponent> pcbItems = new ArrayList<>();
@@ -135,16 +153,10 @@ public class ProjectPcb extends ProjectObject {
                 parser.parse(fileToParse);
                 pcbItems = parser.sortList(parser.getParsedData());
                 matchItems(pcbItems);
+                writeLinksToDb(pcbItems);
             } else {
                 if (FileUtils.getExtension(fileToParse).equals(parser.getFileExtension())) { // getFileExtension should be "pro"
                     getPcbItemsFromParser(fileToParse.getParentFile(), parser);
-                } else {
-//                    JOptionPane.showMessageDialog(
-//                            PcbItemPanel.this,
-//                            "The file cannot be parsed with the KiCad parser..",
-//                            "Invalid file",
-//                            JOptionPane.ERROR_MESSAGE
-//                    ); // TODO: log errors
                 }
             }
         } else {
@@ -154,17 +166,12 @@ public class ProjectPcb extends ProjectObject {
                 parser.parse(actualFiles.get(0));
                 pcbItems = parser.sortList(parser.getParsedData());
                 matchItems(pcbItems);
-            } else {
-//                JOptionPane.showMessageDialog(
-//                        PcbItemPanel.this,
-//                        "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
-//                        "File not found",
-//                        JOptionPane.ERROR_MESSAGE
-//                ); // TODO: log errors
+                writeLinksToDb(pcbItems);
             }
         }
 
         lastParsedDate = new Date(Calendar.getInstance().getTime().getTime());
+        save();
         return pcbItems;
     }
 
@@ -194,7 +201,11 @@ public class ProjectPcb extends ProjectObject {
                 }
             } else { // Never parsed: try to parse if file exists
                 if (file.exists()) {
-                    pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
+                    if (file.isFile() && FileUtils.getExtension(file).equals(getProjectIDE().getExtension())) {
+                        pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
+                    } else {
+                        pcbItemList = getPcbItemsFromParser(file.getParentFile(), getProjectIDE().getProjectParser());
+                    }
                 } else { // Try db anyway??
                     pcbItemList = getPcbItemsFromDb();
                 }

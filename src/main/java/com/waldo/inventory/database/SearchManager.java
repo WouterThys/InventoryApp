@@ -89,7 +89,7 @@ public class SearchManager {
     }
 
 
-    public List<DbObject> searchAllKnownObjects(String searchWord) {
+    private List<DbObject> searchAllKnownObjects(String searchWord) {
         List<DbObject> foundList = new ArrayList<>();
 
         // Categories
@@ -155,21 +155,7 @@ public class SearchManager {
         return foundList;
     }
 
-    public List<DbObject> searchSpecificAnd(int[] searchResultType, String... args) {
-        List<DbObject> foundList = new ArrayList<>();
-        if (args.length > 0) {
-            // First search
-            foundList = searchSpecific(searchResultType, args[0]);
-            if (args.length > 1) {
-                for (int i = 1; i < args.length; i++) {
-                    foundList.addAll(searchSpecific(foundList, searchResultType, args[i]));
-                }
-            }
-        }
-        return foundList;
-    }
-
-    public List<DbObject> searchSpecific(int[] searchOptions, String searchWord) {
+    private List<DbObject> searchSpecific(int[] searchOptions, String searchWord) {
         List<DbObject> foundList = new ArrayList<>();
         for (int type : searchOptions) {
             switch (type) {
@@ -243,7 +229,7 @@ public class SearchManager {
         return foundList;
     }
 
-    public List<DbObject> searchSpecific(List<DbObject> searchList, int[] searchOptions, String searchWord) {
+    private List<DbObject> searchSpecific(List<DbObject> searchList, int[] searchOptions, String searchWord) {
         List<DbObject> foundList = new ArrayList<>();
         for (int type : searchOptions) {
             switch (type) {
@@ -318,7 +304,7 @@ public class SearchManager {
         return foundList;
     }
 
-    public List<DbObject> searchForObject(List<DbObject> listToSearch, String searchWord) {
+    private List<DbObject> searchForObject(List<DbObject> listToSearch, String searchWord) {
         List<DbObject> foundList = new ArrayList<>();
         if (listToSearch == null || listToSearch.size() == 0) {
             return foundList;
@@ -359,16 +345,8 @@ public class SearchManager {
         this.hasAdvancedSearchOption = hasAdvancedSearchOption;
     }
 
-    public int[] getSearchOptions() {
-        return searchOptions;
-    }
-
     public void setSearchOptions(int[] searchOptions) {
         this.searchOptions = searchOptions;
-    }
-
-    public List<DbObject> getSearchList() {
-        return searchList;
     }
 
     public void setSearchList(List<DbObject> searchList) {
@@ -400,38 +378,6 @@ public class SearchManager {
         return null;
     }
 
-    public List<Item> findItemsWithLocationType(long locationTypeId) {
-        List<Item> items = new ArrayList<>();
-        for (Item item : db().getItems()) {
-            if (item.getLocation().getLocationTypeId() == locationTypeId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> findItemsWithLocation(long locationId) {
-        List<Item> items = new ArrayList<>();
-        for (Item item : db().getItems()) {
-            Location loc = item.getLocation();
-            if (loc != null && loc.getId() == locationId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public List<SetItem> findSetItemsWithLocation(long locationId) {
-        List<SetItem> items = new ArrayList<>();
-        for (SetItem item : db().getSetItems()) {
-            Location loc = item.getLocation();
-            if (loc != null && loc.getId() == locationId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
     public Category findCategoryById(long id) {
         for (Category c : db().getCategories()) {
             if (c.getId() == id) {
@@ -439,24 +385,6 @@ public class SearchManager {
             }
         }
         return null;
-    }
-
-    public Category findCategoryByName(String name) {
-        for (Category c : db().getCategories()) {
-            if (c.getName().equals(name)) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public int findCategoryIndex(long categoryId) {
-        for (int i = 0; i < db().getCategories().size(); i++) {
-            if (db().getCategories().get(i).getId() == categoryId) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public Product findProductById(long id) {
@@ -468,24 +396,6 @@ public class SearchManager {
         return null;
     }
 
-    public Product findProductByName(String name) {
-        for (Product p : db().getProducts()) {
-            if (p.getName().equals(name)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public int findProductIndex(long productNdx) {
-        for (int i = 0; i < db().getProducts().size(); i++) {
-            if (db().getProducts().get(i).getId() == productNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public Type findTypeById(long id) {
         for (Type t : db().getTypes()) {
             if (t.getId() == id) {
@@ -493,24 +403,6 @@ public class SearchManager {
             }
         }
         return null;
-    }
-
-    public Type findTypeByName(String name) {
-        for (Type t : db().getTypes()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findTypeIndex(long typeNdx) {
-        for (int i = 0; i < db().getTypes().size(); i++) {
-            if (db().getTypes().get(i).getId() == typeNdx) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public Manufacturer findManufacturerById(long id) {
@@ -522,39 +414,12 @@ public class SearchManager {
         return null;
     }
 
-    public Manufacturer findManufacturerByName(String name) {
-        for (Manufacturer m : db().getManufacturers()) {
-            if (m.getName().equals(name)) {
-                return m;
-            }
-        }
-        return null;
-    }
-
-    public int findManufacturerIndex(long manufacturerId) {
-        for (int i = 0; i < db().getManufacturers().size(); i++) {
-            if (db().getManufacturers().get(i).getId() == manufacturerId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public Location findLocationById(long id) {
         if (id >= DbObject.UNKNOWN_ID) {
             for (Location t : db().getLocations()) {
                 if (t.getId() == id) {
                     return t;
                 }
-            }
-        }
-        return null;
-    }
-
-    public Location findLocationByName(String name) {
-        for (Location t : db().getLocations()) {
-            if (t.getName().equals(name)) {
-                return t;
             }
         }
         return null;
@@ -578,24 +443,6 @@ public class SearchManager {
         return null;
     }
 
-    public Order findOrderByName(String name) {
-        for (Order t : db().getOrders()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findOrderIndex(long typeNdx) {
-        for (int i = 0; i < db().getOrders().size(); i++) {
-            if (db().getOrders().get(i).getId() == typeNdx) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public OrderItem findOrderItemById(long id) {
         for (OrderItem t : db().getOrderItems()) {
             if (t.getId() == id) {
@@ -603,24 +450,6 @@ public class SearchManager {
             }
         }
         return null;
-    }
-
-    public OrderItem findOrderItemByName(String name) {
-        for (OrderItem t : db().getOrderItems()) {
-            if (t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public int findOrderItemIndex(long orderItemId) {
-        for (int i = 0; i < db().getOrders().size(); i++) {
-            if (db().getOrderItems().get(i).getId() == orderItemId) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public Distributor findDistributorById(long distributorId) {
@@ -648,16 +477,6 @@ public class SearchManager {
             }
         }
         return null;
-    }
-
-    public List<DistributorPart> getPartNumbersForDistributor(long id) {
-        List<DistributorPart> distributorParts = new ArrayList<>();
-        for (DistributorPart pn : db().getDistributorParts()) {
-            if (pn.getDistributorId() == id) {
-                distributorParts.add(pn);
-            }
-        }
-        return distributorParts;
     }
 
     public List<Order> findOrdersForItem(long itemId) {
@@ -694,15 +513,6 @@ public class SearchManager {
         return null;
     }
 
-    public PackageType findPackageTypeByName(String name) {
-        for (PackageType pt : db().getPackageTypes()) {
-            if (pt.getName().equals(name)) {
-                return pt;
-            }
-        }
-        return null;
-    }
-
     public Project findProjectById(long id) {
         for (Project p : db().getProjects()) {
             if (p.getId() == id) {
@@ -710,14 +520,6 @@ public class SearchManager {
             }
         }
         return null;
-    }
-
-    public List<Project> findProjectsForItem(long id) {
-        List<Project> projects = new ArrayList<>();
-        for (Project p : db().getProjects()) {
-
-        }
-        return projects;
     }
 
     public ProjectDirectory findProjectDirectoryById(long id) {
@@ -786,27 +588,9 @@ public class SearchManager {
         return null;
     }
 
-    public Package findPackage(long packageTypeId, int pins, double width, double height) {
-        for (Package pa : db().getPackages()) {
-            if (pa.getPackageTypeId() == packageTypeId && pa.getPins() == pins && pa.getWidth() == width && pa.getHeight() == height) {
-                return pa;
-            }
-        }
-        return null;
-    }
-
     public SetItem findSetItemById(long id) {
         for (SetItem si : db().getSetItems()) {
             if (si.getId() == id) {
-                return si;
-            }
-        }
-        return null;
-    }
-
-    public SetItem findSetItemByValue(String value) {
-        for (SetItem si : db().getSetItems()) {
-            if (si.getValue().equals(value)) {
                 return si;
             }
         }
@@ -859,15 +643,6 @@ public class SearchManager {
                     component.getLibSource().getPart().equals(part)) {
 
                 return component;
-            }
-        }
-        return null;
-    }
-
-    public KcItemLink findKcItemLinkById(long id) {
-        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
-            if (kcItemLink.getId() == id) {
-                return kcItemLink;
             }
         }
         return null;
@@ -926,18 +701,22 @@ public class SearchManager {
 
     public List<ProjectPcb> findProjectPcbsByProjectId(long projectId) {
         List<ProjectPcb> projectPcbs = new ArrayList<>();
-        for (ProjectPcb pp : db().getProjectPcbs()) {
-            if (pp.getProjectId() == projectId) {
-                projectPcbs.add(pp);
+        if (projectId > 0) {
+            for (ProjectPcb pp : db().getProjectPcbs()) {
+                if (pp.getProjectId() == projectId) {
+                    projectPcbs.add(pp);
+                }
             }
         }
         return projectPcbs;
     }
 
     public ProjectPcb findProjectPcbById(long id) {
-        for (ProjectPcb pp : db().getProjectPcbs()) {
-            if (pp.getId() == id) {
-                return pp;
+        if (id > 0) {
+            for (ProjectPcb pp : db().getProjectPcbs()) {
+                if (pp.getId() == id) {
+                    return pp;
+                }
             }
         }
         return null;
@@ -955,11 +734,24 @@ public class SearchManager {
 
     public List<KcComponent> findPcbItemsForProjectPcb(long projectPcbId) {
         List<KcComponent> pcbItems = new ArrayList<>();
-        for (PcbItemLink link : db().getPcbItemLinks()) {
-            if (link.getProjectPcbId() == projectPcbId) {
-                pcbItems.add(link.getPcbItem());
+        if (projectPcbId > 0) {
+            for (PcbItemLink link : db().getPcbItemLinks()) {
+                if (link.getProjectPcbId() == projectPcbId) {
+                    pcbItems.add(link.getPcbItem());
+                }
             }
         }
         return pcbItems;
+    }
+
+    public PcbItemLink findPcbItemLink(long pcbItemId, long projectPcbId) {
+        if (pcbItemId > 0 && projectPcbId > 0) {
+            for (PcbItemLink pil : db().getPcbItemLinks()) {
+                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId) {
+                    return pil;
+                }
+            }
+        }
+        return null;
     }
 }
