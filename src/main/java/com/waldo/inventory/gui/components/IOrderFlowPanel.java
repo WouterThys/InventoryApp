@@ -62,9 +62,9 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        plannedIcon = new ILabel(imageResource.readImage("OrderFlow.Planned", 48));
-        orderedIcon = new ILabel(imageResource.readImage("OrderFlow.Ordered", 48));
-        receivedIcon = new ILabel(imageResource.readImage("OrderFlow.Received", 40));
+        plannedIcon = new ILabel(imageResource.readImage("OrderFlow.Planned"));
+        orderedIcon = new ILabel(imageResource.readImage("OrderFlow.Ordered"));
+        receivedIcon = new ILabel(imageResource.readImage("OrderFlow.Received"));
 
         plannedIcon.setToolTipText("Planned");
         orderedIcon.setToolTipText("Ordered");
@@ -85,15 +85,15 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
         dateReceivedLbl.setToolTipText("Received date");
 
         setOrderedBtn = new IImageButton(
-                imageResource.readImage("Common.RArrow", 32),
-                imageResource.readImage("Common.RArrowGreen", 32),
-                imageResource.readImage("Common.RArrowGreen", 32),
-                imageResource.readImage("Common.RArrowGray", 32));
+                imageResource.readImage("OrderFlow.ArrowBlue"),
+                imageResource.readImage("OrderFlow.ArrowGreen"),
+                imageResource.readImage("OrderFlow.ArrowGreen"),
+                imageResource.readImage("OrderFlow.ArrowGray"));
         setReceivedBtn = new IImageButton(
-                imageResource.readImage("Common.RArrow", 32),
-                imageResource.readImage("Common.RArrowGreen", 32),
-                imageResource.readImage("Common.RArrowGreen", 32),
-                imageResource.readImage("Common.RArrowGray", 32));
+                imageResource.readImage("OrderFlow.ArrowBlue"),
+                imageResource.readImage("OrderFlow.ArrowGreen"),
+                imageResource.readImage("OrderFlow.ArrowGreen"),
+                imageResource.readImage("OrderFlow.ArrowGray"));
 
         setOrderedBtn.setBorder(BorderFactory.createEmptyBorder());
         setOrderedBtn.setContentAreaFilled(false);

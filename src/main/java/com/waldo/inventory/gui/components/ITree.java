@@ -23,10 +23,9 @@ public class ITree extends JTree {
 
     public static DefaultTreeCellRenderer getOrdersRenderer() {
         return new DefaultTreeCellRenderer() {
-            private ImageIcon orderIcon = imageResource.readImage("Common.Order", 16);
-            private ImageIcon receivedIcon = imageResource.readImage("OrderFlow.Received", 16);
-            private ImageIcon orderedIcon = imageResource.readImage("OrderFlow.Ordered", 16);
-            private ImageIcon plannedIcon = imageResource.readImage("OrderFlow.Planned", 16);
+            private ImageIcon receivedIcon = imageResource.readImage("OrdersTree.Received");
+            private ImageIcon orderedIcon = imageResource.readImage("OrdersTree.Ordered");
+            private ImageIcon plannedIcon = imageResource.readImage("OrdersTree.Planned");
 
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -78,9 +77,9 @@ public class ITree extends JTree {
 
     public static DefaultTreeCellRenderer getProjectsRenderer() {
         return new DefaultTreeCellRenderer() {
-            private ImageIcon codeIcon = imageResource.readImage("Common.Code", 16);
-            private ImageIcon pcbIcon = imageResource.readImage("Common.Pcb", 16);
-            private ImageIcon otherIcon = imageResource.readImage("Common.Other", 16);
+            private ImageIcon codeIcon = imageResource.readImage("ProjectsTree.Code");
+            private ImageIcon pcbIcon = imageResource.readImage("ProjectsTree.Pcb");
+            private ImageIcon otherIcon = imageResource.readImage("ProjectsTree.Other");
 
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {

@@ -236,7 +236,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("DistributorsDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Distributors.Title"));
         setTitleName("Distributors");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

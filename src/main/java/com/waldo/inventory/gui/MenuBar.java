@@ -33,13 +33,13 @@ public class MenuBar extends JMenuBar {
         // File menu
         JMenu fileMenu = new JMenu("Inventory");
 
-        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readImage("MenuBar.SettingsIcon"));
+        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readImage("Settings.Menu"));
         settingsItem.addActionListener(settingsSelected());
-        JMenuItem logItem = new JMenuItem("Logs", imageResource.readImage("MenuBar.LogsIcon"));
+        JMenuItem logItem = new JMenuItem("Logs", imageResource.readImage("Log.Menu"));
         logItem.addActionListener(logSelected());
-        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readImage("Common.Chart", 16));
+        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readImage("Statistics.Menu"));
         dbHistoryItem.addActionListener(dbHistorySelected());
-        JMenuItem closeItem = new JMenuItem(("Exit"));
+        JMenuItem closeItem = new JMenuItem("Exit", imageResource.readImage("MainMenu.Quit"));
         closeItem.addActionListener(e -> Main.closeApplication(1));
 
         fileMenu.add(settingsItem);
@@ -52,22 +52,22 @@ public class MenuBar extends JMenuBar {
         // Database menu
         JMenu dbMenu = new JMenu("Database");
 
-        JMenuItem subDivisions = new JMenuItem("Sub divisions", imageResource.readImage("MenuBar.EditSubDivisionsIcon"));
+        JMenuItem subDivisions = new JMenuItem("Sub divisions", imageResource.readImage("SubDivisions.Menu"));
         subDivisions.addActionListener(subDivisionsSelected());
 
-        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readImage("MenuBar.EditManufacturers"));
+        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readImage("Manufacturers.Menu"));
         manufacturers.addActionListener(manufacturersSelected());
 
-        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readImage("MenuBar.EditDistributors"));
+        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readImage("Distributors.Menu"));
         distributors.addActionListener(distributorsSelected());
 
-        JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("MenuBar.Packages"));
+        JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("Packages.Menu"));
         packages.addActionListener(packagesSelected());
 
-        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readImage("MenuBar.Project"));
+        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readImage("Ides.Menu"));
         projectTypes.addActionListener(projectTypesSelected());
 
-        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("MenuBar.Location"));
+        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("Locations.Menu"));
         locationTypes.addActionListener(locationTypesSelected());
 
         dbMenu.add(subDivisions);

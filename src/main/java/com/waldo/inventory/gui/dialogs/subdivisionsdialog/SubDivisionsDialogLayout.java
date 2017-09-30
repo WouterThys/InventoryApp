@@ -151,7 +151,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title
         setTitleName("Sub Divisions");
-        setTitleIcon(imageResource.readImage("SubDivisionDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("SubDivisions.Title"));
 
         // Sub divisions list
         String[] subDivisions = new String[]{"Categories", "Products", "Types"};
@@ -168,7 +168,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
         selectionComboBox = new IComboBox<>(selectionCbModel);
 
         // Icon
-        iconLabel = new ILabel(imageResource.readImage("SubDivisionDialog.EditIcon"));
+        iconLabel = new ILabel(imageResource.readImage("SubDivisions.Edit"));
 
         // Toolbar
         toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);

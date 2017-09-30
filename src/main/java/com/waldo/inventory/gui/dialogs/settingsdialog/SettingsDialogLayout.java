@@ -17,11 +17,11 @@ public abstract class SettingsDialogLayout extends IDialog {
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ITabbedPane tabbedPane;
+    private ITabbedPane tabbedPane;
 
-    DbPanel dbPanel;
-    FilesPanel filesPanel;
-    LogsPanel logsPanel;
+    private DbPanel dbPanel;
+    private FilesPanel filesPanel;
+    private LogsPanel logsPanel;
 
     /*
      *                  VARIABLES
@@ -48,7 +48,7 @@ public abstract class SettingsDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("SettingsDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Settings.Title"));
         setTitleName("Settings");
 
         // Panels

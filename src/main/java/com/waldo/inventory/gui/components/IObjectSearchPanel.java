@@ -119,9 +119,9 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     private void setSearched(boolean searched) {
         searchManager.setSearched(searched);
         if (searched) {
-            searchButton.setIcon(imageResource.readImage("Common.SearchDelete"));
+            searchButton.setIcon(imageResource.readImage("Search.RemoveSearch"));
         } else {
-            searchButton.setIcon(imageResource.readImage("Common.Search"));
+            searchButton.setIcon(imageResource.readImage("Search.Search"));
         }
     }
 
@@ -288,7 +288,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         });
 
         // Search button
-        searchButton = new JButton(imageResource.readImage("Common.Search"));
+        searchButton = new JButton(imageResource.readImage("Search.Search"));
         searchButton.addActionListener(e -> {
             if (searchManager.isSearched()) {
                 clearSearch();
@@ -323,17 +323,17 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
         btnPanel = new JPanel();
         btnPanel.setVisible(false);
         previousBtn = new IImageButton(
-                imageResource.readImage("Common.ArrowRight"),
-                imageResource.readImage("Common.ArrowRightActive"),
-                imageResource.readImage("Common.ArrowRightActive"),
-                imageResource.readImage("Common.ArrowRightDisabled"));
+                imageResource.readImage("Search.ArrowRightBlue"),
+                imageResource.readImage("Search.ArrowRightGreen"),
+                imageResource.readImage("Search.ArrowRightGreen"),
+                imageResource.readImage("Search.ArrowRightGray"));
         previousBtn.setBorder(BorderFactory.createEmptyBorder());
         previousBtn.setContentAreaFilled(false);
         nextBtn = new IImageButton(
-                imageResource.readImage("Common.ArrowLeft"),
-                imageResource.readImage("Common.ArrowLeftActive"),
-                imageResource.readImage("Common.ArrowLeftActive"),
-                imageResource.readImage("Common.ArrowLeftDisabled"));
+                imageResource.readImage("Search.ArrowLeftBlue"),
+                imageResource.readImage("Search.ArrowLeftGreen"),
+                imageResource.readImage("Search.ArrowLeftGreen"),
+                imageResource.readImage("Search.ArrowLeftGray"));
         nextBtn.setBorder(BorderFactory.createEmptyBorder());
         nextBtn.setContentAreaFilled(false);
 

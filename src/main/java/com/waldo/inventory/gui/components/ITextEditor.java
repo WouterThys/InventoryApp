@@ -76,39 +76,39 @@ public class ITextEditor extends JPanel {
         undoManager = new UndoManager();
         EditButtonActionListener editButtonActionListener = new EditButtonActionListener();
 
-        cutButton = createEditButton(new CutAction(), "Cut", imageResource.readImage("TextEdit.Cut", 16));
+        cutButton = createEditButton(new CutAction(), "Cut", imageResource.readImage("TextEdit.Cut"));
         cutButton.addActionListener(editButtonActionListener);
-        copyButton = createEditButton(new CopyAction(), "Copy", imageResource.readImage("TextEdit.Copy", 16));
+        copyButton = createEditButton(new CopyAction(), "Copy", imageResource.readImage("TextEdit.Copy"));
         copyButton.addActionListener(editButtonActionListener);
-        pasteButton = createEditButton(new PasteAction(), "Paste", imageResource.readImage("TextEdit.Paste", 16));
+        pasteButton = createEditButton(new PasteAction(), "Paste", imageResource.readImage("TextEdit.Paste"));
         pasteButton.addActionListener(editButtonActionListener);
 
-        boldButton = createEditButton(new StyledEditorKit.BoldAction(), "Bold", imageResource.readImage("TextEdit.Bold", 16));
+        boldButton = createEditButton(new StyledEditorKit.BoldAction(), "Bold", imageResource.readImage("TextEdit.Bold"));
         boldButton.addActionListener(editButtonActionListener);
-        italicButton = createEditButton(new ItalicAction(), "Italic", imageResource.readImage("TextEdit.Italic", 16));
+        italicButton = createEditButton(new ItalicAction(), "Italic", imageResource.readImage("TextEdit.Italic"));
         italicButton.addActionListener(editButtonActionListener);
-        underlineButton = createEditButton(new StyledEditorKit.UnderlineAction(), "Underline", imageResource.readImage("TextEdit.Underline", 16));
+        underlineButton = createEditButton(new StyledEditorKit.UnderlineAction(), "Underline", imageResource.readImage("TextEdit.Underline"));
         underlineButton.addActionListener(editButtonActionListener);
 
-        colorButton = createEditButton("Color", imageResource.readImage("TextEdit.Color", 16));
+        colorButton = createEditButton("Color", imageResource.readImage("TextEdit.Color"));
         colorButton.addActionListener(new ColorActionListener());
-        insertPictureButton = createEditButton("Picture", imageResource.readImage("TextEdit.Picture", 16));
+        insertPictureButton = createEditButton("Picture", imageResource.readImage("TextEdit.Picture"));
         insertPictureButton.addActionListener(new PictureInsertActionListener());
 
-        undoButton = createEditButton("Undo", imageResource.readImage("Common.Undo", 16));
+        undoButton = createEditButton("Undo", imageResource.readImage("TextEdit.Undo"));
         undoButton.addActionListener(new UndoActionListener(UndoActionType.UNDO));
-        redoButton = createEditButton("Redo", imageResource.readImage("Common.Redo", 16));
+        redoButton = createEditButton("Redo", imageResource.readImage("TextEdit.Redo"));
         redoButton.addActionListener(new UndoActionListener(UndoActionType.REDO));
-        saveButton = createEditButton("Save", imageResource.readImage("Common.Save", 16));
+        saveButton = createEditButton("Save", imageResource.readImage("TextEdit.Save"));
         if (saveActionListener != null) {
             saveButton.addActionListener(saveActionListener);
         } else {
             saveButton.setEnabled(false);
         }
 
-        bulletInsertButton = createEditButton("Bullets", imageResource.readImage("TextEdit.ListBullets", 16));
+        bulletInsertButton = createEditButton("Bullets", imageResource.readImage("TextEdit.ListBullets"));
         bulletInsertButton.addActionListener(new BulletActionListener(BulletActionType.INSERT));
-        numbersInsertButton = createEditButton("Numbers", imageResource.readImage("TextEdit.ListNumbers", 16));
+        numbersInsertButton = createEditButton("Numbers", imageResource.readImage("TextEdit.ListNumbers"));
         numbersInsertButton.addActionListener(new NumbersActionListener(NumbersActionType.INSERT));
 
 

@@ -172,8 +172,8 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         nameTf = new ITextField("Name");
         aliasTf = new ITextField("Alias");
 
-        setNameBtn = new JButton(imageResource.readImage("Common.Edit", 16));
-        setAliasBtn = new JButton(imageResource.readImage("Common.Edit", 16));
+        setNameBtn = new JButton(imageResource.readImage("Locations.Edit", 16));
+        setAliasBtn = new JButton(imageResource.readImage("Locations.Edit", 16));
 
         setNameBtn.addActionListener(this);
         setAliasBtn.addActionListener(this);

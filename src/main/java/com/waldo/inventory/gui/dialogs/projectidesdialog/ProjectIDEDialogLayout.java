@@ -214,7 +214,7 @@ public abstract class ProjectIDEDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("ProjectTypeDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Ides.Title"));
         setTitleName("Project types");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

@@ -145,9 +145,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
-        tabbedPane.addTab("Components", imageResource.readImage("EditItem.InfoIcon"), mainPanel, "Components");
-        tabbedPane.addTab("Orders", imageResource.readImage("EditItem.OrderIcon"), orderPanel, "Orders");
-        tabbedPane.addTab("Projects", imageResource.readImage("EditItem.ProjectIcon"), projectPanel, "Projects");
+        tabbedPane.addTab("Components ", imageResource.readImage("MainTab.Components"), mainPanel, "Components");
+        tabbedPane.addTab("Orders ", imageResource.readImage("MainTab.Orders"), orderPanel, "Orders");
+        tabbedPane.addTab("Projects ", imageResource.readImage("MainTab.Projects"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 

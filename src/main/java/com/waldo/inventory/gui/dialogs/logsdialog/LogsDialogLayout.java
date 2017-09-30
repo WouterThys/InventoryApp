@@ -109,7 +109,7 @@ public abstract class LogsDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("LogsDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Log.Title"));
         setTitleName("Logs");
 
         // Checkboxes

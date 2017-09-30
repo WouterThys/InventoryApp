@@ -7,11 +7,9 @@ import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -190,7 +188,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("ManufacturersDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Manufacturers.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

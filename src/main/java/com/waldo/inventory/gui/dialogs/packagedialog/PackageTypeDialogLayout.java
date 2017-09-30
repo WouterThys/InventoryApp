@@ -4,21 +4,16 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.DimensionType;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.database.SearchManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IDimensionTypeTableModel;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
@@ -231,7 +226,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title and neutral button
-        setTitleIcon(imageResource.readImage("PackageDialog.TitleIcon"));
+        setTitleIcon(imageResource.readImage("Packages.Title"));
         setTitleName("Package Types");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
