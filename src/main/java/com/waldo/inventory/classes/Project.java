@@ -2,7 +2,7 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Project extends DbObject {
 

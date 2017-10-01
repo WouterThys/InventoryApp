@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,

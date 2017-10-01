@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -70,7 +70,7 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
         return panel.getTable();
     }
 
-    void updateComponentTable(HashMap<String, List<KcComponent>> componentMap) {
+    void updateComponentTable(HashMap<String, List<PcbItem>> componentMap) {
         for (String sheet : componentMap.keySet()) {
             KiCadSheetTab tab = new KiCadSheetTab(application, this);
             tab.updateComponents(componentMap.get(sheet));
@@ -150,9 +150,9 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
     public void updateComponents(Object object) {
         application.beginWait();
         try {
-            KcComponent selectedComponent;
+            PcbItem selectedComponent;
             if (object != null) {
-                selectedComponent = (KcComponent) object;
+                selectedComponent = (PcbItem) object;
             } else {
                 selectedComponent = null;
             }

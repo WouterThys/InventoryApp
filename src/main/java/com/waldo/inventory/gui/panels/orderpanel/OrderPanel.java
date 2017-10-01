@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
@@ -19,11 +19,10 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Date;
 import java.util.*;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class OrderPanel extends OrderPanelLayout {
 

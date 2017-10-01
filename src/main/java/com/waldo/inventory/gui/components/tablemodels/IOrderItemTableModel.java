@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Manufacturer;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.classes.DistributorPart;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 

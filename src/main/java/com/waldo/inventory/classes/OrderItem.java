@@ -1,15 +1,15 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.LogManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class OrderItem extends DbObject {
 

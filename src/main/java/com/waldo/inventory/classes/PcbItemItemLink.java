@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,9 +10,9 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class KcItemLink extends DbObject {
+public class PcbItemItemLink extends DbObject {
 
-    public static final String TABLE_NAME = "kcitemlink";
+    public static final String TABLE_NAME = "pcbitemitemlink";
 
     // Bitwise matches
     public static final int MATCH_NAME = 1;
@@ -20,28 +20,31 @@ public class KcItemLink extends DbObject {
     public static final int MATCH_FOOTPRINT = 4;
 
     private int match;
+
     private long itemId;
     private Item item;
+
     private long setItemId;
     private SetItem setItem;
-    private long kcComponentId;
-    private KcComponent kcComponent;
+
+    private long pcbItemId;
+    private PcbItem pcbItem;
 
     private boolean isSetItem;
     private boolean isMatched;
 
-    public KcItemLink() {
+    public PcbItemItemLink() {
         super(TABLE_NAME);
     }
 
-    public KcItemLink(int match, KcComponent kcComponent, Item item) {
+    public PcbItemItemLink(int match, PcbItem pcbItem, Item item) {
         super(TABLE_NAME);
         this.match = match;
         this.item = item;
-        this.kcComponent = kcComponent;
+        this.pcbItem = pcbItem;
 
-        if (kcComponent != null) {
-            kcComponentId = kcComponent.getId();
+        if (pcbItem != null) {
+            pcbItemId = pcbItem.getId();
         }
 
         if (item != null) {
@@ -52,14 +55,14 @@ public class KcItemLink extends DbObject {
         setItemId = -1;
     }
 
-    public KcItemLink(int match, KcComponent kcComponent, SetItem setItem) {
+    public PcbItemItemLink(int match, PcbItem pcbItem, SetItem setItem) {
         super(TABLE_NAME);
         this.match = match;
         this.setItem = setItem;
-        this.kcComponent = kcComponent;
+        this.pcbItem = pcbItem;
 
-        if (kcComponent != null) {
-            kcComponentId = kcComponent.getId();
+        if (pcbItem != null) {
+            pcbItemId = pcbItem.getId();
         }
 
         if (setItem != null) {
@@ -85,7 +88,7 @@ public class KcItemLink extends DbObject {
         statement.setLong(ndx++, getSetItemId());
         statement.setBoolean(ndx++, isSetItem());
         statement.setInt(ndx++, getMatch());
-        statement.setLong(ndx++, getKcComponentId());
+        statement.setLong(ndx++, getPcbItemId());
 
         return ndx;
     }
@@ -94,7 +97,7 @@ public class KcItemLink extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<KcItemLink> list = db().getKcItemLinks();
+                List<PcbItemItemLink> list = db().getPcbItemItemLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -105,7 +108,7 @@ public class KcItemLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<KcItemLink> list = db().getKcItemLinks();
+                List<PcbItemItemLink> list = db().getPcbItemItemLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
@@ -116,13 +119,13 @@ public class KcItemLink extends DbObject {
     }
 
     @Override
-    public KcItemLink createCopy() {
-        return createCopy(new KcItemLink());
+    public PcbItemItemLink createCopy() {
+        return createCopy(new PcbItemItemLink());
     }
 
     @Override
-    public KcItemLink createCopy(DbObject copyInto) {
-        KcItemLink cpy = (KcItemLink) copyInto;
+    public PcbItemItemLink createCopy(DbObject copyInto) {
+        PcbItemItemLink cpy = (PcbItemItemLink) copyInto;
 
         copyBaseFields(cpy);
         cpy.setItemId(getItemId());
@@ -215,20 +218,20 @@ public class KcItemLink extends DbObject {
         return setItemId;
     }
 
-    public long getKcComponentId() {
-        return kcComponentId;
+    public long getPcbItemId() {
+        return pcbItemId;
     }
 
-    public void setKcComponentId(long kcComponentId) {
-        kcComponent = null;
-        this.kcComponentId = kcComponentId;
+    public void setPcbItemId(long pcbItemId) {
+        pcbItem = null;
+        this.pcbItemId = pcbItemId;
     }
 
-    public KcComponent getKcComponent() {
-        if (kcComponent == null) {
-            kcComponent = SearchManager.sm().findKcComponentById(kcComponentId);
+    public PcbItem getPcbItem() {
+        if (pcbItem == null) {
+            pcbItem = SearchManager.sm().findKcComponentById(pcbItemId);
         }
-        return kcComponent;
+        return pcbItem;
     }
 
     public boolean isMatched() {

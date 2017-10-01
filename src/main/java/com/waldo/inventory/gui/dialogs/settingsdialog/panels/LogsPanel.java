@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.GuiInterface;

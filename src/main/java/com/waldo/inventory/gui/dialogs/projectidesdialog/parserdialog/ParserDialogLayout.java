@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 
-import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICheckBox;
+import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 
 import javax.swing.*;
@@ -15,24 +17,23 @@ public abstract class ParserDialogLayout extends IDialog implements ActionListen
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ICheckBox useParserCb;
-    DefaultComboBoxModel<ProjectParser> parserCbModel;
-    JComboBox<ProjectParser> parserCb;
+    IComboBox<PcbParser> parserCb;
 
 
     /*
     *                  VARIABLES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    boolean useParser;
-    ProjectParser projectParser;
+    private boolean useParser;
+    private PcbItemParser selectedParser;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ParserDialogLayout(Application application, String title, boolean useParser, ProjectParser projectParser) {
+    ParserDialogLayout(Application application, String title, boolean useParser, PcbItemParser selectedParser) {
         super(application, title);
 
         this.useParser = useParser;
-        this.projectParser = projectParser;
+        this.selectedParser = selectedParser;
 
         showTitlePanel(false);
     }
@@ -50,8 +51,7 @@ public abstract class ParserDialogLayout extends IDialog implements ActionListen
         useParserCb = new ICheckBox("User parser", false);
         useParserCb.addActionListener(this);
 
-        parserCbModel = new DefaultComboBoxModel<>();
-        parserCb = new JComboBox<>(parserCbModel);
+        parserCb = new IComboBox<>(PcbItemParser.getInstance().getPcbParsers(), null, false);
     }
 
     @Override
@@ -69,12 +69,7 @@ public abstract class ParserDialogLayout extends IDialog implements ActionListen
 
     @Override
     public void updateComponents(Object object) {
-        parserCbModel.removeAllElements();
-        for (ProjectParser pp : Application.getParserList()) {
-            parserCbModel.addElement(pp);
-        }
-
-        parserCb.setSelectedItem(projectParser);
+        parserCb.setSelectedItem(selectedParser);
         parserCb.setEnabled(useParser);
         useParserCb.setSelected(useParser);
     }

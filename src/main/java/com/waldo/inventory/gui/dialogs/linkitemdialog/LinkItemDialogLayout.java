@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
-import com.waldo.inventory.classes.KcItemLink;
+import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
@@ -31,11 +31,11 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     JButton linkBtn;
     private JButton matchBtn;
 
-    KcComponent selectedComponent;
-    KcItemLink selectedMatchItem;
+    PcbItem selectedComponent;
+    PcbItemItemLink selectedMatchItem;
 
-    List<KcItemLink> itemLinksToSave = new ArrayList<>();
-    List<KcItemLink> itemLinksToDelete = new ArrayList<>();
+    List<PcbItemItemLink> itemLinksToSave = new ArrayList<>();
+    List<PcbItemItemLink> itemLinksToDelete = new ArrayList<>();
 
     /*
    *                  CONSTRUCTOR

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -72,7 +72,7 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            java.util.List<KcComponent> components = (java.util.List<KcComponent>) object;
+            java.util.List<PcbItem> components = (java.util.List<PcbItem>) object;
             componentTableModel.setItemList(components);
         }
     }

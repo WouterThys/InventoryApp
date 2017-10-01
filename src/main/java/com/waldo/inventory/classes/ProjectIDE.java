@@ -1,9 +1,9 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.parser.ProjectParser;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.LogManager;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.managers.LogManager;
 
 import java.awt.*;
 import java.io.File;
@@ -256,11 +256,11 @@ public class ProjectIDE extends DbObject {
         this.parserName = parserName;
     }
 
-    public ProjectParser getProjectParser() {
+    public PcbParser getProjectParser() {
         if (getParserName().isEmpty()) {
              return null;
         } else {
-            return Application.getProjectParser(parserName);
+            return PcbItemParser.getInstance().getParser(parserName);
         }
     }
 

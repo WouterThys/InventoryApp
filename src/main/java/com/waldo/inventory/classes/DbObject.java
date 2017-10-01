@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.managers.LogManager;
 
 import java.sql.*;
 import java.util.Comparator;
@@ -95,8 +95,8 @@ public abstract class DbObject {
         if (dbObject instanceof Package) return TYPE_PACKAGE;
         if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
         if (dbObject instanceof DimensionType) return TYPE_DIMENSION_TYPE;
-        if (dbObject instanceof KcComponent) return TYPE_KC_COMPONENT;
-        if (dbObject instanceof KcItemLink) return TYPE_KC_ITEM_LINK;
+        if (dbObject instanceof PcbItem) return TYPE_KC_COMPONENT;
+        if (dbObject instanceof PcbItemItemLink) return TYPE_KC_ITEM_LINK;
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
         if (dbObject instanceof Log) return TYPE_LOG;
         if (dbObject instanceof DbHistory) return TYPE_DB_HISTORY;

@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.setitemdialog;
 
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.SetItem;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.ISetItemTableModel;

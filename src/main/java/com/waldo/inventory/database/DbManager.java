@@ -6,13 +6,14 @@ import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import java.io.*;
@@ -20,7 +21,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.List;
 
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -74,11 +75,11 @@ public class DbManager {
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<KcComponent>> onKcComponentChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<KcItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PcbItem>> onPcbItemChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PcbItemItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PcbItemLink>> onPcbItemLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -103,13 +104,14 @@ public class DbManager {
     private List<Package> packages;
     private List<SetItem> setItems;
     private List<DimensionType> dimensionTypes;
-    private List<KcComponent> kcComponents;
-    private List<KcItemLink> kcItemLinks;
+    private List<PcbItem> pcbItems;
+    private List<PcbItemItemLink> pcbItemItemLinks;
+    private List<PcbItemProjectLink> pcbItemProjectLinks;
     private List<Log> logs;
     private List<DbHistory> dbHistoryList;
     private List<ProjectCode> projectCodes;
     private List<ProjectPcb> projectPcbs;
-    private List<PcbItemLink> pcbItemLinks;
+
 
     private DbManager() {}
 
@@ -228,8 +230,8 @@ public class DbManager {
         packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
         setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
         dimensionTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDimensionTypeChangedListenerList);
-        kcComponents = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcComponentChangedListenerList);
-        kcItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcItemLinkChangedListenerList);
+        pcbItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemChangedListenerList);
+        pcbItemItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcItemLinkChangedListenerList);
         logs = null;
     }
 
@@ -408,13 +410,13 @@ public class DbManager {
         }
     }
 
-    public void addOnKcComponentChangedListener(DbObjectChangedListener<KcComponent> dbObjectChangedListener) {
-        if (!onKcComponentChangedListenerList.contains(dbObjectChangedListener)) {
-            onKcComponentChangedListenerList.add(dbObjectChangedListener);
+    public void addOnKcComponentChangedListener(DbObjectChangedListener<PcbItem> dbObjectChangedListener) {
+        if (!onPcbItemChangedListenerList.contains(dbObjectChangedListener)) {
+            onPcbItemChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
-    public void addOnKcItemLinkChangedListener(DbObjectChangedListener<KcItemLink> dbObjectChangedListener) {
+    public void addOnKcItemLinkChangedListener(DbObjectChangedListener<PcbItemItemLink> dbObjectChangedListener) {
         if (!onKcItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
             onKcItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
@@ -432,9 +434,9 @@ public class DbManager {
         }
     }
 
-    public void addOnPcbItemLinkChangedListener(DbObjectChangedListener<PcbItemLink> dbObjectChangedListener) {
-        if (!onPcbItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onPcbItemLinkChangedListenerList.add(dbObjectChangedListener);
+    public void addOnPcbItemLinkChangedListener(DbObjectChangedListener<PcbItemProjectLink> dbObjectChangedListener) {
+        if (!onPcbItemProjectLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onPcbItemProjectLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -1362,33 +1364,33 @@ public class DbManager {
     /*
     *                  PROJECT PCB ITEMS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PcbItemLink> getPcbItemLinks()    {
-        if (pcbItemLinks == null) {
+    public List<PcbItemProjectLink> getPcbItemProjectLinks()    {
+        if (pcbItemProjectLinks == null) {
             updatePcbItemLinks();
         }
-        return pcbItemLinks;
+        return pcbItemProjectLinks;
     }
 
     private void updatePcbItemLinks()    {
-        pcbItemLinks = new ArrayList<>();
+        pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
-        Status().setMessage("Fetching PcbItemLink from DB");
-        PcbItemLink p = null;
-        String sql = scriptResource.readString(PcbItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        Status().setMessage("Fetching PcbItemProjectLink from DB");
+        PcbItemProjectLink p = null;
+        String sql = scriptResource.readString(PcbItemProjectLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    p = new PcbItemLink();
+                    p = new PcbItemProjectLink();
                     p.setId(rs.getLong("id"));
                     p.setPcbItemId(rs.getLong("pcbItemId"));
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
 
                     p.setInserted(true);
-                    pcbItemLinks.add(p);
+                    pcbItemProjectLinks.add(p);
                 }
             }
         } catch (SQLException e) {
@@ -1684,35 +1686,36 @@ public class DbManager {
     /*
     *                  KC COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<KcComponent> getKcComponents()    {
-        if (kcComponents == null) {
+    public List<PcbItem> getPcbItems()    {
+        if (pcbItems == null) {
             updateKcComponents();
         }
-        return kcComponents;
+        return pcbItems;
     }
 
     private void updateKcComponents()    {
-        kcComponents = new ArrayList<>();
+        pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
         Status().setMessage("Fetching kc components from DB");
-        KcComponent kc = null;
-        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        PcbItem kc = null;
+        String sql = scriptResource.readString(PcbItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    kc = new KcComponent();
+                    kc = new PcbItem();
                     kc.setId(rs.getLong("id"));
                     kc.setValue(rs.getString("value"));
                     kc.setFootprint(rs.getString("footprint"));
-                    kc.getLibSource().setLib(rs.getString("lib"));
-                    kc.getLibSource().setPart(rs.getString("part"));
+                    kc.setLibrary(rs.getString("lib"));
+                    kc.setPartName(rs.getString("part"));
+                    kc.setSheetName(rs.getString("sheet"));
 
                     kc.setInserted(true);
-                    kcComponents.add(kc);
+                    pcbItems.add(kc);
                 }
             }
         } catch (SQLException e) {
@@ -1727,7 +1730,7 @@ public class DbManager {
 
     public long findKcComponentId(String value, String footprint, String lib, String part) {
         long id = -1;
-        String sql = scriptResource.readString(KcComponent.TABLE_NAME + DbObject.SQL_SELECT_ONE);
+        String sql = scriptResource.readString(PcbItem.TABLE_NAME + DbObject.SQL_SELECT_ONE);
 
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -1752,36 +1755,36 @@ public class DbManager {
     /*
     *                  KC ITEM LINKS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<KcItemLink> getKcItemLinks()    {
-        if (kcItemLinks == null) {
+    public List<PcbItemItemLink> getPcbItemItemLinks()    {
+        if (pcbItemItemLinks == null) {
             updateKcItemLinks();
         }
-        return kcItemLinks;
+        return pcbItemItemLinks;
     }
 
     private void updateKcItemLinks()    {
-        kcItemLinks = new ArrayList<>();
+        pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
         Status().setMessage("Fetching KcItemLinks from DB");
-        KcItemLink kil = null;
-        String sql = scriptResource.readString(KcItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        PcbItemItemLink kil = null;
+        String sql = scriptResource.readString(PcbItemItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    kil = new KcItemLink();
+                    kil = new PcbItemItemLink();
                     kil.setId(rs.getLong("id"));
                     kil.setItemId(rs.getLong("itemId"));
                     kil.setSetItemId(rs.getLong("setItemId"));
                     kil.setIsSetItem(rs.getBoolean("isSetItem"));
                     kil.setMatch(rs.getByte("componentMatch"));
-                    kil.setKcComponentId(rs.getLong("kcComponentId"));
+                    kil.setPcbItemId(rs.getLong("kcComponentId"));
 
                     kil.setInserted(true);
-                    kcItemLinks.add(kil);
+                    pcbItemItemLinks.add(kil);
                 }
             }
         } catch (SQLException e) {

@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.components.ILabel;
 
-public class ILinkKiCadTableModel extends IAbstractTableModel<KcComponent> {
+public class ILinkKiCadTableModel extends IAbstractTableModel<PcbItem> {
     private static final String[] COLUMN_NAMES = {"", "Part", "Value", "M"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, Boolean.class};
 
@@ -23,7 +23,7 @@ public class ILinkKiCadTableModel extends IAbstractTableModel<KcComponent> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        KcComponent component = getItemAt(rowIndex);
+        PcbItem component = getItemAt(rowIndex);
         if (component != null) {
             switch (columnIndex) {
                 case -1:

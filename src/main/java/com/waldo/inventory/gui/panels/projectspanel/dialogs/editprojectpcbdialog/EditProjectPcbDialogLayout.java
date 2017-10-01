@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedListener, ActionListener {

@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.kccomponentorderdialog;
 
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
@@ -16,7 +16,7 @@ import java.util.List;
 public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
 
 
-    public KcComponentOrderDialog(Application application, String title, List<KcComponent> componentList) {
+    public KcComponentOrderDialog(Application application, String title, List<PcbItem> componentList) {
         super(application, title);
 
         initializeComponents();
@@ -53,7 +53,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
         };
     }
 
-    private OrderItem createOrderItem(KcComponent component) {
+    private OrderItem createOrderItem(PcbItem component) {
         OrderItem orderItem = new OrderItem();
 
         orderItem.setOrderId(selectedOrder.getId());
@@ -61,15 +61,15 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
         orderItem.setName(component.getMatchedItem().getItem().getName() + " - " + selectedOrder.toString());
         orderItem.setAmount(1);
 
-        for (KcComponent c : sameSetComponents(component)) {
+        for (PcbItem c : sameSetComponents(component)) {
             c.setOrderItem(orderItem);
         }
 
         return orderItem;
     }
 
-    private KcComponent findComponentForOrderItem(OrderItem orderItem) {
-        for (KcComponent component : kcPanel.getKcComponentList()) {
+    private PcbItem findComponentForOrderItem(OrderItem orderItem) {
+        for (PcbItem component : kcPanel.getKcComponentList()) {
             if (component.isOrdered()) {
                 if (component.getOrderItem().equals(orderItem)) {
                     return component;
@@ -79,13 +79,13 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
         return null;
     }
 
-    private List<KcComponent> sameSetComponents(KcComponent component) {
-        List<KcComponent> sameSet = new ArrayList<>();
+    private List<PcbItem> sameSetComponents(PcbItem component) {
+        List<PcbItem> sameSet = new ArrayList<>();
         sameSet.add(component);
         if (component.getMatchedItem().isSetItem()) {
             Item parentItem = component.getMatchedItem().getItem();
             if (parentItem != null) {
-                for (KcComponent c : kcPanel.getKcComponentList()) {
+                for (PcbItem c : kcPanel.getKcComponentList()) {
                     if (c.getMatchedItem().isSetItem()) {
                         if (c.getMatchedItem().getItem().getId() == parentItem.getId()) {
                             sameSet.add(c);
@@ -98,7 +98,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
     }
 
     private void alreadyInOrder(OrderItem orderItem) {
-        for (KcComponent component : kcPanel.getKcComponentList()) {
+        for (PcbItem component : kcPanel.getKcComponentList()) {
             if (component.getMatchedItem().getItemId() == orderItem.getItemId()) {
                 component.setOrderItem(orderItem);
                 oiPanel.addOrderItem(orderItem,  false);
@@ -164,9 +164,9 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
                     selectedOrderItem.setAmount(selectedOrderItem.getAmount() - 1);
                     oiPanel.updateTable();
                 } else {
-                    KcComponent component = findComponentForOrderItem(selectedOrderItem);
+                    PcbItem component = findComponentForOrderItem(selectedOrderItem);
                     if (component != null) {
-                        for (KcComponent c : sameSetComponents(component)) {
+                        for (PcbItem c : sameSetComponents(component)) {
                             c.setOrderItem(null);
                         }
                     }

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -34,7 +34,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
-    private KcComponent selectedComponent;
+    private PcbItem selectedComponent;
 
     /*
      *                  CONSTRUCTOR
@@ -136,8 +136,8 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
             setVisible(false);
             selectedComponent = null;
         } else {
-            if (object instanceof KcComponent) {
-                selectedComponent = (KcComponent) object;
+            if (object instanceof PcbItem) {
+                selectedComponent = (PcbItem) object;
 
                 setValues();
 

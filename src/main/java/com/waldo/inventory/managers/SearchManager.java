@@ -1,8 +1,8 @@
-package com.waldo.inventory.database;
+package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -626,8 +626,8 @@ public class SearchManager {
         return dimensionTypes;
     }
 
-    public KcComponent findKcComponentById(long id) {
-        for (KcComponent component : db().getKcComponents()) {
+    public PcbItem findKcComponentById(long id) {
+        for (PcbItem component : db().getPcbItems()) {
             if (component.getId() == id) {
                 return component;
             }
@@ -635,12 +635,12 @@ public class SearchManager {
         return null;
     }
 
-    public KcComponent findKcComponent(String value, String footprint, String lib, String part) {
-        for (KcComponent component : db().getKcComponents()) {
+    public PcbItem findKcComponent(String value, String footprint, String lib, String part) {
+        for (PcbItem component : db().getPcbItems()) {
             if (component.getValue().equals(value) &&
                     component.getFootprint().equals(footprint) &&
-                    component.getLibSource().getLib().equals(lib) &&
-                    component.getLibSource().getPart().equals(part)) {
+                    component.getLibrary().equals(lib) &&
+                    component.getPartName().equals(part)) {
 
                 return component;
             }
@@ -648,22 +648,22 @@ public class SearchManager {
         return null;
     }
 
-    public KcItemLink findKcItemLinkWithItemId(long itemId, long kcComponentId) {
-        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
-            if (!kcItemLink.isSetItem()) {
-                if(kcItemLink.getItemId() == itemId && kcItemLink.getKcComponentId() == kcComponentId) {
-                    return kcItemLink;
+    public PcbItemItemLink findPcbItemLinkWithItem(long itemId, long pcbItemId) {
+        for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+            if (!pcbItemItemLink.isSetItem()) {
+                if(pcbItemItemLink.getItemId() == itemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
+                    return pcbItemItemLink;
                 }
             }
         }
         return null;
     }
 
-    public KcItemLink findKcItemLinkWithSetItemId(long setItemId, long kcComponentId) {
-        for (KcItemLink kcItemLink : db().getKcItemLinks()) {
-            if (kcItemLink.isSetItem()) {
-                if(kcItemLink.getSetItemId() == setItemId && kcItemLink.getKcComponentId() == kcComponentId) {
-                    return kcItemLink;
+    public PcbItemItemLink findKcItemLinkWithSetItemId(long setItemId, long kcComponentId) {
+        for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+            if (pcbItemItemLink.isSetItem()) {
+                if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == kcComponentId) {
+                    return pcbItemItemLink;
                 }
             }
         }
@@ -732,10 +732,10 @@ public class SearchManager {
         return projectOthers;
     }
 
-    public List<KcComponent> findPcbItemsForProjectPcb(long projectPcbId) {
-        List<KcComponent> pcbItems = new ArrayList<>();
+    public List<PcbItem> findPcbItemsForProjectPcb(long projectPcbId) {
+        List<PcbItem> pcbItems = new ArrayList<>();
         if (projectPcbId > 0) {
-            for (PcbItemLink link : db().getPcbItemLinks()) {
+            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
                 if (link.getProjectPcbId() == projectPcbId) {
                     pcbItems.add(link.getPcbItem());
                 }
@@ -744,9 +744,9 @@ public class SearchManager {
         return pcbItems;
     }
 
-    public PcbItemLink findPcbItemLink(long pcbItemId, long projectPcbId) {
+    public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId) {
         if (pcbItemId > 0 && projectPcbId > 0) {
-            for (PcbItemLink pil : db().getPcbItemLinks()) {
+            for (PcbItemProjectLink pil : db().getPcbItemProjectLinks()) {
                 if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId) {
                     return pil;
                 }

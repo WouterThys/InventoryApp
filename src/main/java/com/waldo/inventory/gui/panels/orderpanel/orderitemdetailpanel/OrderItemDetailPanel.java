@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
 import com.waldo.inventory.classes.DistributorPart;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 
 public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {

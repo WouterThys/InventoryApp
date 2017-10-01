@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.gui.GuiInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;

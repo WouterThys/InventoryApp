@@ -1,6 +1,6 @@
 package com.waldo.inventory;
 
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;

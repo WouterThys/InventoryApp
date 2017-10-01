@@ -1,14 +1,12 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
-import com.waldo.inventory.Utils.parser.ProjectParser;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.Utils.parser.PcbParser;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.swing.*;
 import java.io.File;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -26,8 +25,9 @@ public class ProjectPcb extends ProjectObject {
 
     // Variables
     private Date lastParsedDate; // Compare with pcb file's 'Last modified' date to check if should parse again
-    private List<KcComponent> pcbItemList;
-    private KiCadParser parser;
+    private HashMap<String, List<PcbItem>> pcbItemMap;
+    private PcbParser parser;
+    private boolean hasParsed;
 
     public ProjectPcb() {
         super(TABLE_NAME);
@@ -109,109 +109,58 @@ public class ProjectPcb extends ProjectObject {
         db().notifyListeners(changedHow, this, db().onProjectPcbChangedListenerList);
     }
 
-    public static ProjectPcb getUnknownProjectPcbs() {
-        ProjectPcb u = new ProjectPcb();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
-    }
+    private HashMap<String, List<PcbItem>> getPcbItemsFromParser(File fileToParse) {
+        HashMap<String, List<PcbItem>> pcbItems = new HashMap<>();
 
-    public void reParse() throws Exception {
-        File file = new File(getDirectory());
-        pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
-    }
-
-    private void writeLinksToDb(final List<KcComponent> pcbItemList) {
-        SwingUtilities.invokeLater(() -> {
-            // Write items to db
-            for (KcComponent item : pcbItemList) {
-                if (item.getId() < DbObject.UNKNOWN_ID) {
-                    item.save();
-                }
-            }
-
-            // Item links
-            for (KcComponent item : pcbItemList) {
-                PcbItemLink link = SearchManager.sm().findPcbItemLink(item.getId(), getProjectId());
-                if (link == null) {
-                    link = new PcbItemLink(item, this);
-                    link.save();
-                }
-            }
-        });
-    }
-
-    private List<KcComponent> getPcbItemsFromParser(File fileToParse, ProjectParser<KcComponent> parser) {
-        if (this.parser == null) {
-            this.parser = (KiCadParser) parser;
-        }
-        List<KcComponent> pcbItems = new ArrayList<>();
-
-        if (fileToParse != null && fileToParse.isFile()) {
-            if (parser.isFileValid(fileToParse)) {
-                parser.parse(fileToParse);
-                pcbItems = parser.sortList(parser.getParsedData());
-                matchItems(pcbItems);
-                writeLinksToDb(pcbItems);
-            } else {
-                if (FileUtils.getExtension(fileToParse).equals(parser.getFileExtension())) { // getFileExtension should be "pro"
-                    getPcbItemsFromParser(fileToParse.getParentFile(), parser);
-                }
-            }
-        } else {
-            // Search for file
-            List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, parser.getFileExtension(), true);
-            if (actualFiles != null && actualFiles.size() == 1) {
-                parser.parse(actualFiles.get(0));
-                pcbItems = parser.sortList(parser.getParsedData());
-                matchItems(pcbItems);
-                writeLinksToDb(pcbItems);
-            }
+        if (getParser() == null) {
+            return pcbItems;
         }
 
+        pcbItems = getParser().parse(fileToParse);
         lastParsedDate = new Date(Calendar.getInstance().getTime().getTime());
+        hasParsed = true;
         save();
         return pcbItems;
     }
 
-    private void matchItems(List<KcComponent> pcbItems) {
-        for (KcComponent component : pcbItems) {
-            component.findMatchingItems();
+    private HashMap<String, List<PcbItem>> getPcbItemsFromDb() {
+        List<PcbItem> itemList = SearchManager.sm().findPcbItemsForProjectPcb(getId());
+        HashMap<String, List<PcbItem>> itemMap = new HashMap<>();
+
+        for (PcbItem item : itemList) {
+            String sheet = item.getSheetName();
+            if (!itemMap.containsKey(sheet)) {
+                itemMap.put(sheet, new ArrayList<>());
+            }
+            itemMap.get(sheet).add(item);
         }
+
+        return itemMap;
     }
 
-    private List<KcComponent> getPcbItemsFromDb() {
-        return SearchManager.sm().findPcbItemsForProjectPcb(getId());
-    }
-
-    public List<KcComponent> getPcbItemList() {
-        if (pcbItemList == null) {
+    public HashMap<String, List<PcbItem>> getPcbItemMap() {
+        if (pcbItemMap == null) {
             File file = new File(getDirectory());
             if (lastParsedDate != null) {
                 if (file.exists()) {
                     Date fileLastModified = new Date(file.lastModified());
                     if (fileLastModified.after(lastParsedDate)) { // Parse again
-                        pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
+                        pcbItemMap = getPcbItemsFromParser(file);
                     } else { // Get from db
-                        pcbItemList = getPcbItemsFromDb();
+                        pcbItemMap = getPcbItemsFromDb();
                     }
                 } else { // Invalid file, can happen when opening app on different computer, try to get items from db
-                    pcbItemList = getPcbItemsFromDb();
+                    pcbItemMap = getPcbItemsFromDb();
                 }
             } else { // Never parsed: try to parse if file exists
                 if (file.exists()) {
-                    if (file.isFile() && FileUtils.getExtension(file).equals(getProjectIDE().getExtension())) {
-                        pcbItemList = getPcbItemsFromParser(file, getProjectIDE().getProjectParser());
-                    } else {
-                        pcbItemList = getPcbItemsFromParser(file.getParentFile(), getProjectIDE().getProjectParser());
-                    }
-                } else { // Try db anyway??
-                    pcbItemList = getPcbItemsFromDb();
+                    pcbItemMap = getPcbItemsFromParser(file);
+                } else { // Invalid file, can happen when opening app on different computer, try to get items from db
+                    pcbItemMap = getPcbItemsFromDb();
                 }
             }
         }
-        return pcbItemList;
+        return pcbItemMap;
     }
 
     public Date getLastParsedDate() {
@@ -228,7 +177,12 @@ public class ProjectPcb extends ProjectObject {
         }
     }
 
-    public KiCadParser getParser() {
+    public PcbParser getParser() {
+        if (parser == null) {
+            if (getProjectIDEId() > UNKNOWN_ID) {
+                parser = getProjectIDE().getProjectParser();
+            }
+        }
         return parser;
     }
 

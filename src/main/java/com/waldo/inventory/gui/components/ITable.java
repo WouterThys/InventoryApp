@@ -73,8 +73,8 @@ public class ITable<T> extends JTable {
 
 //        if (getModel() instanceof ILinkItemTableModel) {
 //            Object o = getValueAtRow(row);
-//            if (o instanceof KcItemLink) {
-//                KcItemLink match = (KcItemLink) o;
+//            if (o instanceof PcbItemItemLink) {
+//                PcbItemItemLink match = (PcbItemItemLink) o;
 //                if (!isRowSelected(row)) {
 //                    component.setBackground(getBackground());
 //                    if (match.isMatched()) {

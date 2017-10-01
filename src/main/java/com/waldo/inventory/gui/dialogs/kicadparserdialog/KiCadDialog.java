@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.gui.Application;
 
@@ -59,11 +59,11 @@ public class KiCadDialog extends KiCadDialogLayout {
         }
     }
 
-    private HashMap<String, List<KcComponent>> createComponentMap(List<KcComponent> components) {
-        HashMap<String, List<KcComponent>> sheetMap = new HashMap<>();
+    private HashMap<String, List<PcbItem>> createComponentMap(List<PcbItem> components) {
+        HashMap<String, List<PcbItem>> sheetMap = new HashMap<>();
         sheetMap.put("Main", new ArrayList<>());
 
-        for (KcComponent c : components) {
+        for (PcbItem c : components) {
             List<String> sheetNames = c.getSheetPath().getNames();
             if (sheetNames.size() == 0) {
                 sheetMap.get("Main").add(c);

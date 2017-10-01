@@ -4,7 +4,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.GuiInterface;
@@ -19,7 +19,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;

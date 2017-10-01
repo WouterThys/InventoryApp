@@ -1,8 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
-import org.apache.commons.lang3.StringUtils;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

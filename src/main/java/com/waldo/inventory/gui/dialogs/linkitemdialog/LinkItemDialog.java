@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.classes.KcItemLink;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.PcbItemItemLink;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
@@ -16,7 +16,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChangedListener<KcItemLink> {
+public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChangedListener<PcbItemItemLink> {
 
 
     public LinkItemDialog(Application application, String title, KiCadParser parser) {
@@ -36,12 +36,12 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
                 selectedComponent = kcPanel.getSelectedComponent();
                 if (selectedComponent != null) {
                     kcPanel.updateSelectedValueData(selectedComponent);
-                    itemPanel.setItemList(selectedComponent.getItemMatchMap());
+                    itemPanel.setItemList(selectedComponent.getItemLinkList());
                     if (selectedComponent.hasMatch()) {
                         itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
                     } else {
-                        if (selectedComponent.getItemMatchMap().size() > 0) {
-                            itemPanel.selectMatchItem(selectedComponent.getItemMatchMap().get(0));
+                        if (selectedComponent.getItemLinkList().size() > 0) {
+                            itemPanel.selectMatchItem(selectedComponent.getItemLinkList().get(0));
                         } else {
                             selectedMatchItem = null;
                         }
@@ -85,7 +85,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
 
     @Override
     protected void onNeutral() {
-        for (KcItemLink link : itemLinksToSave) {
+        for (PcbItemItemLink link : itemLinksToSave) {
             link.save();
         }
         itemLinksToSave.clear();
@@ -98,13 +98,13 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
 
 
     @Override
-    public void onInserted(KcItemLink link) {}
+    public void onInserted(PcbItemItemLink link) {}
 
     @Override
-    public void onUpdated(KcItemLink link) {}
+    public void onUpdated(PcbItemItemLink link) {}
 
     @Override
-    public void onDeleted(KcItemLink link) {}
+    public void onDeleted(PcbItemItemLink link) {}
 
     @Override
     public void onCacheCleared() {}
@@ -114,33 +114,33 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
     //
     @Override
     public void onDbObjectFound(List<DbObject> foundObjects) {
-        List<KcItemLink> itemMatches = new ArrayList<>();
+        List<PcbItemItemLink> itemMatches = new ArrayList<>();
         for (DbObject object : foundObjects) {
             int type = DbObject.getType(object);
             if (type == DbObject.TYPE_ITEM) {
                 if (selectedComponent != null) {
-                    List<KcItemLink> matches = KcComponent.findInItem(selectedComponent, (Item) object);
+                    List<PcbItemItemLink> matches = PcbItem.findInItem(selectedComponent, (Item) object);
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemLink m = new KcItemLink(0, selectedComponent, (Item)object);
+                        PcbItemItemLink m = new PcbItemItemLink(0, selectedComponent, (Item)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemLink m = new KcItemLink(0, null, (Item)object);
+                    PcbItemItemLink m = new PcbItemItemLink(0, null, (Item)object);
                     itemMatches.add(m);
                 }
             } else if (type == DbObject.TYPE_SET_ITEM) {
                 if (selectedComponent != null) {
-                    List<KcItemLink> matches = KcComponent.findInSet(selectedComponent, ((SetItem) object).getItem());
+                    List<PcbItemItemLink> matches = PcbItem.findInSet(selectedComponent, ((SetItem) object).getItem());
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        KcItemLink m = new KcItemLink(0,selectedComponent,  (SetItem)object);
+                        PcbItemItemLink m = new PcbItemItemLink(0,selectedComponent,  (SetItem)object);
                         itemMatches.add(m);
                     }
                 } else {
-                    KcItemLink m = new KcItemLink(0, null, (SetItem) object);
+                    PcbItemItemLink m = new PcbItemItemLink(0, null, (SetItem) object);
                     itemMatches.add(m);
                 }
             }
@@ -181,7 +181,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
                         }
                     }
                 } else {
-                    selectedComponent.getItemMatchMap().add(selectedMatchItem);
+                    selectedComponent.getItemLinkList().add(selectedMatchItem);
                     selectedComponent.setMatchedItem(selectedMatchItem);
                     if (itemLinksToDelete.contains(selectedMatchItem)) {
                         itemLinksToDelete.remove(selectedMatchItem);

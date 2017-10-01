@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.kccomponentorderdialog;
 
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
@@ -28,7 +28,7 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
     JButton addToOrderBtn;
     JButton removeFromOrderBtn;
 
-     KcComponent selectedComponent;
+     PcbItem selectedComponent;
      OrderItem selectedOrderItem;
      Order selectedOrder;
 
@@ -112,7 +112,7 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
     @Override
     public void updateComponents(Object object) {
         if (object != null && object instanceof List) {
-            kcPanel.setItemList((List<KcComponent>)object);
+            kcPanel.setItemList((List<PcbItem>)object);
         }
     }
 }

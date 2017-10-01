@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.classes.SetItem;
@@ -270,7 +270,7 @@ public class ITableEditors {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (column == 0) {
 
-                KcComponent component = (KcComponent) value;
+                PcbItem component = (PcbItem) value;
                 ILabel lblText = new ILabel();
                 lblText.setForeground(Color.WHITE);
                 Font f = lblText.getFont();
@@ -283,7 +283,7 @@ public class ITableEditors {
                 } else {
                     if (component.matchCount() > 0) {
                         int highest = component.highestMatch();
-                        if (KcComponent.getMatchCount(highest) == 3) {
+                        if (PcbItem.getMatchCount(highest) == 3) {
                             lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                         } else {
                             lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));

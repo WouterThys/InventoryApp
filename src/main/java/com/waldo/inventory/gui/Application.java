@@ -5,10 +5,8 @@ import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
-import com.waldo.inventory.Utils.parser.ProjectParser;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
@@ -49,8 +47,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     private boolean updating = false;
 
-    private static List<ProjectParser> parserList;
-
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
         // Status
@@ -64,7 +60,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             scriptResource = new ResourceManager("db/scripts/", "scripts.properties");
         } catch (Exception e) {
             LOG.error("Error initializing resources.", e);
-            //System.exit(-1);
         }
 
         // Cache only
@@ -129,10 +124,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(Status(), BorderLayout.PAGE_END);
         Status().setMessage("Initializing");
 
-        // Toolbars
-//        toolBar = new TopToolBar(this);
-//        add(toolBar, BorderLayout.PAGE_START);
-
         // Menu
         setJMenuBar(new MenuBar(this));
 
@@ -152,8 +143,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
-        //add(createTablePane(), BorderLayout.CENTER); // TODO: to MainPanel
-        //add(new QueryPanel(this), BorderLayout.SOUTH);
     }
 
     public Item getSelectedItem() {
@@ -289,26 +278,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     int getSelectedTab() {
         return tabbedPane.getSelectedIndex();
-    }
-
-    public static List<ProjectParser> getParserList() {
-        if (parserList == null) {
-            parserList = new ArrayList<>();
-            parserList.add(new KiCadParser("KiCadParser"));
-            // add more..
-        }
-        return parserList;
-    }
-
-    public static ProjectParser getProjectParser(String name) {
-        if (name != null && !name.isEmpty()) {
-            for (ProjectParser parser : getParserList()) {
-                if (parser.getParserName().equals(name)) {
-                    return parser;
-                }
-            }
-        }
-        return null;
     }
 
 

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 
-import com.waldo.inventory.database.LogManager;
+import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicLabelUI;

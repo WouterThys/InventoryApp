@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,22 +10,22 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class PcbItemLink extends DbObject {
+public class PcbItemProjectLink extends DbObject {
 
-    public static final String TABLE_NAME = "pcbitemlinks";
+    public static final String TABLE_NAME = "pcbitemprojectlinks";
 
     // Variables
-    private long pcbItemId; // Id of KcComponent TODO: rename KcComponent to PcbItem ie, make generic stuff for pcbs
+    private long pcbItemId; // Id of PcbItem
     private long projectPcbId; // Link to pcb in project
 
-    private KcComponent pcbItem; // TODO...
+    private PcbItem pcbItem;
     private ProjectPcb projectPcb;
 
-    public PcbItemLink() {
+    public PcbItemProjectLink() {
         super(TABLE_NAME);
     }
 
-    public PcbItemLink(KcComponent pcbItem, ProjectPcb projectPcb) {
+    public PcbItemProjectLink(PcbItem pcbItem, ProjectPcb projectPcb) {
         super(TABLE_NAME);
         this.pcbItem = pcbItem;
         this.projectPcb = projectPcb;
@@ -57,13 +57,13 @@ public class PcbItemLink extends DbObject {
     }
 
     @Override
-    public PcbItemLink createCopy() {
-        return createCopy(new PcbItemLink());
+    public PcbItemProjectLink createCopy() {
+        return createCopy(new PcbItemProjectLink());
     }
 
     @Override
-    public PcbItemLink createCopy(DbObject copyInto) {
-        PcbItemLink cpy = (PcbItemLink) copyInto;
+    public PcbItemProjectLink createCopy(DbObject copyInto) {
+        PcbItemProjectLink cpy = (PcbItemProjectLink) copyInto;
         copyBaseFields(cpy);
 
         // Add variables
@@ -77,7 +77,7 @@ public class PcbItemLink extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<PcbItemLink> list = db().getPcbItemLinks();
+                List<PcbItemProjectLink> list = db().getPcbItemProjectLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -88,14 +88,14 @@ public class PcbItemLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<PcbItemLink> list = db().getPcbItemLinks();
+                List<PcbItemProjectLink> list = db().getPcbItemProjectLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onPcbItemLinkChangedListenerList);
+        db().notifyListeners(changedHow, this, db().onPcbItemProjectLinkChangedListenerList);
     }
 
     // Getters and setters
@@ -118,7 +118,7 @@ public class PcbItemLink extends DbObject {
         this.projectPcbId = projectPcbId;
     }
 
-    public KcComponent getPcbItem() {
+    public PcbItem getPcbItem() {
         if (pcbItem == null) {
             pcbItem = SearchManager.sm().findKcComponentById(pcbItemId);
         }

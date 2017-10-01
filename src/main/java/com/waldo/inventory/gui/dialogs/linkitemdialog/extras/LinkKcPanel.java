@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.classes.kicad.KcComponent;
+import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
@@ -49,11 +49,11 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
         itemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
-    public void setItemList(java.util.List<KcComponent> componentList) {
+    public void setItemList(java.util.List<PcbItem> componentList) {
         tableModel.setItemList(componentList);
     }
 
-    public void updateSelectedValueData(KcComponent component) {
+    public void updateSelectedValueData(PcbItem component) {
         if (component != null) {
             referencesTf.setText(component.getReferenceString());
             footprintTf.setText(component.getFootprint());
@@ -63,10 +63,10 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
         }
     }
 
-    public KcComponent getSelectedComponent() {
+    public PcbItem getSelectedComponent() {
         int row = itemTable.getSelectedRow();
         if (row >=0) {
-            return (KcComponent) itemTable.getValueAtRow(row);
+            return (PcbItem) itemTable.getValueAtRow(row);
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
         sortByRefBtn.setVisible(visible);
     }
 
-    public java.util.List<KcComponent> getKcComponentList() {
+    public java.util.List<PcbItem> getKcComponentList() {
         return tableModel.getItemList();
     }
 

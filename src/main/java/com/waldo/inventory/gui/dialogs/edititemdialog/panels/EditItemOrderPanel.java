@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.database.SearchManager.sm;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class EditItemOrderPanel extends JPanel implements GuiInterface {
 

@@ -119,7 +119,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.InfoIcon"), componentPanel, "Component info");
         tabbedPane.addTab("Stock  ", imageResource.readImage("EditItem.StockIcon"), editItemStockPanel, "Stock info");
         tabbedPane.addTab("Order  ", imageResource.readImage("EditItem.OrderIcon"), editItemOrderPanel, "Order info");
-        //tabbedPane.setPreferredSize(new Dimension(600, 600));
 
         // Add
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);

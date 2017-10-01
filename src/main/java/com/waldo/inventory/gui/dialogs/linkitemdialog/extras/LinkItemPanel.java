@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.KcItemLink;
+import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
@@ -23,7 +23,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILinkItemTableModel tableModel;
-    private ITable<KcItemLink> itemTable;
+    private ITable<PcbItemItemLink> itemTable;
     private IObjectSearchPanel searchPanel;
 
     private ITextField descriptionTf;
@@ -57,15 +57,15 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
         itemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
-    public void setItemList(List<KcItemLink> matches) {
+    public void setItemList(List<PcbItemItemLink> matches) {
         tableModel.setItemList(matches);
         updateSelectedValueData(null);
     }
 
-    public KcItemLink getSelectedItem() {
+    public PcbItemItemLink getSelectedItem() {
         int row = itemTable.getSelectedRow();
         if (row >=0) {
-            return (KcItemLink) itemTable.getValueAtRow(row);
+            return (PcbItemItemLink) itemTable.getValueAtRow(row);
         }
         return null;
     }
@@ -74,11 +74,11 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
         tableModel.clearItemList();
     }
 
-    public void selectMatchItem(KcItemLink matchedItem) {
+    public void selectMatchItem(PcbItemItemLink matchedItem) {
         itemTable.selectItem(matchedItem);
     }
 
-    public void updateSelectedValueData(KcItemLink match) {
+    public void updateSelectedValueData(PcbItemItemLink match) {
         if (match != null) {
             if (!match.isSetItem()) {
                 Item item = match.getItem();

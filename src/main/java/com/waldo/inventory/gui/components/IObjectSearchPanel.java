@@ -5,7 +5,7 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.database.SearchManager;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
