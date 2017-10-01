@@ -1,9 +1,6 @@
-package com.waldo.inventory.classes.kicad;
+package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.database.DbManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +18,7 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class PcbItem extends DbObject {
 
-    public static final String TABLE_NAME = "pcbitem";
+    public static final String TABLE_NAME = "pcbitems";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     private String ref;
@@ -37,8 +34,6 @@ public class PcbItem extends DbObject {
     // Link with item
     private List<PcbItemItemLink> itemLinkList;
     private PcbItemItemLink matchedItem;
-
-    // Link with project
 
     // Order
     private OrderItem orderItem = null;
@@ -66,6 +61,15 @@ public class PcbItem extends DbObject {
     }
 
     @Override
+    public String toString() {
+        String result = getRef() + ", " + getValue();
+        if (getId() <= 0) {
+            result += " *";
+        }
+        return result;
+    }
+
+    @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
@@ -73,7 +77,6 @@ public class PcbItem extends DbObject {
         statement.setString(ndx++, getFootprint());
         statement.setString(ndx++, getLibrary());
         statement.setString(ndx++, getPartName());
-        statement.setString(ndx++, getSheetName());
 
         return ndx;
     }
@@ -115,6 +118,7 @@ public class PcbItem extends DbObject {
         cpy.setFootprint(getFootprint());
         cpy.setLibrary(getLibrary());
         cpy.setRef(getRef());
+        cpy.setReferences(getReferences());
         cpy.setPartName(getPartName());
         cpy.settStamp(gettStamp());
         cpy.setSheetName(getSheetName());
@@ -216,9 +220,13 @@ public class PcbItem extends DbObject {
     public List<String> getReferences() {
         if (references == null) {
             references = new ArrayList<>();
-            references.add(getRef());
+            references.add(getRef()); // Add your own reference
         }
         return references;
+    }
+
+    public void setReferences(List<String> references) {
+        this.references = references;
     }
 
 

@@ -256,7 +256,7 @@ public class ProjectIDE extends DbObject {
         this.parserName = parserName;
     }
 
-    public PcbParser getProjectParser() {
+    public PcbParser getPcbItemParser() {
         if (getParserName().isEmpty()) {
              return null;
         } else {

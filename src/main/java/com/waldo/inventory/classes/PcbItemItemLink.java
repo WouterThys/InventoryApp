@@ -1,6 +1,5 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -12,7 +11,7 @@ import static com.waldo.inventory.database.DbManager.db;
 
 public class PcbItemItemLink extends DbObject {
 
-    public static final String TABLE_NAME = "pcbitemitemlink";
+    public static final String TABLE_NAME = "pcbitemitemlinks";
 
     // Bitwise matches
     public static final int MATCH_NAME = 1;
@@ -229,7 +228,7 @@ public class PcbItemItemLink extends DbObject {
 
     public PcbItem getPcbItem() {
         if (pcbItem == null) {
-            pcbItem = SearchManager.sm().findKcComponentById(pcbItemId);
+            pcbItem = SearchManager.sm().findPcbItemById(pcbItemId);
         }
         return pcbItem;
     }

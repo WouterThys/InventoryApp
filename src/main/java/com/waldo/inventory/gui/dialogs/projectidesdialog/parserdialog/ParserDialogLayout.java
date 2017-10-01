@@ -24,12 +24,12 @@ public abstract class ParserDialogLayout extends IDialog implements ActionListen
     *                  VARIABLES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private boolean useParser;
-    private PcbItemParser selectedParser;
+    private PcbParser selectedParser;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ParserDialogLayout(Application application, String title, boolean useParser, PcbItemParser selectedParser) {
+    ParserDialogLayout(Application application, String title, boolean useParser, PcbParser selectedParser) {
         super(application, title);
 
         this.useParser = useParser;

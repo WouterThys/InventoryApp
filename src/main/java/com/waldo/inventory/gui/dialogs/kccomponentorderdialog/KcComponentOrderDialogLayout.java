@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.kccomponentorderdialog;
 
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;

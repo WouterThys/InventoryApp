@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
-import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -117,6 +117,13 @@ public class ProjectPcb extends ProjectObject {
         }
 
         pcbItems = getParser().parse(fileToParse);
+
+        // Update pcb items in database
+        PcbItemParser.getInstance().updatePcbItemDb(pcbItems);
+
+        // Update links with project
+        PcbItemParser.getInstance().updatePcbItemProjectLinksDb(pcbItems, this);
+
         lastParsedDate = new Date(Calendar.getInstance().getTime().getTime());
         hasParsed = true;
         save();
@@ -180,10 +187,14 @@ public class ProjectPcb extends ProjectObject {
     public PcbParser getParser() {
         if (parser == null) {
             if (getProjectIDEId() > UNKNOWN_ID) {
-                parser = getProjectIDE().getProjectParser();
+                parser = getProjectIDE().getPcbItemParser();
             }
         }
         return parser;
+    }
+
+    public boolean hasParsed() {
+        return hasParsed;
     }
 
     @Override

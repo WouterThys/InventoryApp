@@ -2,10 +2,7 @@ package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.PcbItemItemLink;
-import com.waldo.inventory.classes.SetItem;
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
@@ -23,7 +20,7 @@ import static com.waldo.inventory.classes.PcbItemItemLink.MATCH_VALUE;
 
 public class PcbItemParser {
 
-    private static final String KiCadParser = "KiCadParser";
+    public static final String KiCadParser = "KiCadParser";
     private static final String EagleParser = "EagleParser";
 
     /*
@@ -169,6 +166,65 @@ public class PcbItemParser {
         return itemLinkList;
     }
 
+    public void updatePcbItemDb(HashMap<String, List<PcbItem>> pcbItemMap) {
+        List<PcbItem> itemsToSave = new ArrayList<>();
+        for (String sheet : pcbItemMap.keySet()) {
+            for (PcbItem pcbItem : pcbItemMap.get(sheet)) {
+                PcbItem foundItem = SearchManager.sm().findPcbItem(
+                        pcbItem.getValue(),
+                        pcbItem.getFootprint(),
+                        pcbItem.getLibrary(),
+                        pcbItem.getPartName()
+                );
+
+                if (foundItem == null) {
+                   itemsToSave.add(pcbItem);
+                } else {
+                    PcbItem newItem = foundItem.createCopy();
+                    newItem.setRef(pcbItem.getRef());
+                    newItem.setReferences(pcbItem.getReferences());
+                    newItem.settStamp(pcbItem.gettStamp());
+                    newItem.setSheetName(pcbItem.getSheetName());
+
+                    int ndx = pcbItemMap.get(sheet).indexOf(pcbItem);
+                    pcbItemMap.get(sheet).set(ndx, newItem);
+                }
+            }
+        }
+
+        for (PcbItem item : itemsToSave) {
+            item.save();
+        }
+    }
+
+    public void updatePcbItemProjectLinksDb(HashMap<String, List<PcbItem>> pcbItems, ProjectPcb projectPcb) {
+        // Create new list with links
+        List<PcbItemProjectLink> toDelete = new ArrayList<>(SearchManager.sm().findPcbItemLinksWithProjectPcb(projectPcb.getId()));
+        List<PcbItemProjectLink> toSave = new ArrayList<>();
+
+        for (String sheet : pcbItems.keySet()) {
+            for (PcbItem pcbItem : pcbItems.get(sheet)) {
+                PcbItemProjectLink link = SearchManager.sm().findPcbItemLink(pcbItem.getId(), projectPcb.getId(), sheet);
+                if (link != null) {
+                    toDelete.remove(link);
+                } else {
+                    link = new PcbItemProjectLink(pcbItem, projectPcb);
+                    toSave.add(link);
+                }
+            }
+        }
+
+        // Save
+        for (PcbItemProjectLink link : toSave) {
+            link.save();
+        }
+
+        // What remains in currentLinks can be removed
+        for (PcbItemProjectLink link : toDelete) {
+            link.delete();
+        }
+    }
+
     public int getMatchCount(int i) {
         i = i - ((i >>> 1) & 0x55555555);
         i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
@@ -191,13 +247,16 @@ public class PcbItemParser {
         public HashMap<String, List<PcbItem>> parse(File fileToParse) {
             HashMap<String, List<PcbItem>> resultMap = new HashMap<>();
 
+            // Parse from file
             if (fileToParse != null && fileToParse.isFile()) {
                 if (kiCadParser.isFileValid(fileToParse)) {
                     kiCadParser.parse(fileToParse);
                     resultMap = createMap(kiCadParser.getParsedData());
                 } else {
-                    if (FileUtils.getExtension(fileToParse).equals(kiCadParser.getFileExtension())) { // getFileExtension should be "pro"
-                        resultMap = parse(fileToParse.getParentFile());
+                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse.getParentFile(), kiCadParser.getFileExtension(), true);
+                    if (actualFiles != null && actualFiles.size() == 1) {
+                        kiCadParser.parse(actualFiles.get(0));
+                        resultMap = createMap(kiCadParser.getParsedData());
                     }
                 }
             } else {
@@ -217,19 +276,37 @@ public class PcbItemParser {
             for (String sheet : kiCadMap.keySet()) {
                 resultMap.put(sheet, new ArrayList<>());
                 for (Component c : kiCadMap.get(sheet)) {
-                    PcbItem item = new PcbItem(
-                            c.getRef(),
-                            c.getValue(),
-                            c.getFootprint(),
-                            c.getLibSource().getLib(),
-                            c.getLibSource().getPart(),
-                            sheet,
-                            c.gettStamp()
-                    );
-                    resultMap.get(sheet).add(item);
+                    PcbItem item = findItem(resultMap.get(sheet), c.getValue(), c.getFootprint(), c.getLibSource().getLib(), c.getLibSource().getPart());
+                    if (item != null) {
+                        item.addReference(c.getRef());
+                    } else {
+                        item = new PcbItem(
+                                c.getRef(),
+                                c.getValue(),
+                                c.getFootprint(),
+                                c.getLibSource().getLib(),
+                                c.getLibSource().getPart(),
+                                sheet,
+                                c.gettStamp()
+                        );
+                        resultMap.get(sheet).add(item);
+                    }
                 }
             }
             return resultMap;
+        }
+
+        private PcbItem findItem(List<PcbItem> items, String value, String footprint, String library, String part) {
+            for (PcbItem item : items) {
+                if (item.getValue().equals(value) &&
+                        item.getFootprint().equals(footprint) &&
+                        item.getLibrary().equals(library) &&
+                        item.getPartName().equals(part)) {
+
+                    return item;
+                }
+            }
+            return null;
         }
 
         @Override

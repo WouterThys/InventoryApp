@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextEditor;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.panels.projectpanel.extras.ProjectGirdPanel;
 
 import javax.swing.*;
 import javax.swing.text.DefaultStyledDocument;
@@ -33,7 +32,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected ProjectGirdPanel<T> gridPanel;
+    protected ProjectGridPanel<T> gridPanel;
     protected IdBToolBar objectToolBar;
     protected JButton runIdeBtn;
     protected ILabel projectObjectNameLbl;
@@ -107,7 +106,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     @Override
     public void initializeComponents() {
         // Center
-        gridPanel = new ProjectGirdPanel<>(this::selectProjectObject);
+        gridPanel = new ProjectGridPanel<>(this::selectProjectObject);
         objectToolBar = new IdBToolBar(this);
         projectObjectNameLbl = new ILabel("", ILabel.CENTER);
         projectObjectNameLbl.setFont(18, Font.BOLD);

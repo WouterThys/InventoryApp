@@ -6,7 +6,7 @@ import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
@@ -1388,6 +1388,8 @@ public class DbManager {
                     p.setId(rs.getLong("id"));
                     p.setPcbItemId(rs.getLong("pcbItemId"));
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    p.setPcbItemReferences(rs.getString("pcbItemReferences"));
+                    p.setSheetName(rs.getString("sheetName"));
 
                     p.setInserted(true);
                     pcbItemProjectLinks.add(p);
@@ -1684,21 +1686,21 @@ public class DbManager {
     }
 
     /*
-    *                  KC COMPONENTS
+    *                  PCB ITEMS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<PcbItem> getPcbItems()    {
         if (pcbItems == null) {
-            updateKcComponents();
+            updatePcbItems();
         }
         return pcbItems;
     }
 
-    private void updateKcComponents()    {
+    private void updatePcbItems()    {
         pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
-        Status().setMessage("Fetching kc components from DB");
+        Status().setMessage("Fetching pcb items from DB");
         PcbItem kc = null;
         String sql = scriptResource.readString(PcbItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
@@ -1712,7 +1714,6 @@ public class DbManager {
                     kc.setFootprint(rs.getString("footprint"));
                     kc.setLibrary(rs.getString("lib"));
                     kc.setPartName(rs.getString("part"));
-                    kc.setSheetName(rs.getString("sheet"));
 
                     kc.setInserted(true);
                     pcbItems.add(kc);
@@ -1753,7 +1754,7 @@ public class DbManager {
 
 
     /*
-    *                  KC ITEM LINKS
+    *                  PCB ITEM LINKS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<PcbItemItemLink> getPcbItemItemLinks()    {
         if (pcbItemItemLinks == null) {

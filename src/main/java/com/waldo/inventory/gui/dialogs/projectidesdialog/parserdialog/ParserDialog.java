@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 
-import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.gui.Application;
 
 import java.awt.event.ActionEvent;
@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 public class ParserDialog extends ParserDialogLayout {
 
 
-    public ParserDialog(Application application, String title, boolean useParser, PcbItemParser parser) {
+    public ParserDialog(Application application, String title, boolean useParser, PcbParser parser) {
         super(application, title, useParser, parser);
 
         initializeComponents();
@@ -21,8 +21,8 @@ public class ParserDialog extends ParserDialogLayout {
         return useParserCb.isSelected();
     }
 
-    public PcbItemParser getParser() {
-        return (PcbItemParser) parserCb.getSelectedItem();
+    public PcbParser getParser() {
+        return (PcbParser) parserCb.getSelectedItem();
     }
 
     @Override

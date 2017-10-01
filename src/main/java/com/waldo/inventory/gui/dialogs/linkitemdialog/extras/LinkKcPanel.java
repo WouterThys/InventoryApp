@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
@@ -26,8 +26,8 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
-    private KiCadParser kiCadParser;
+    private Application application;
+    private PcbParser pcbParser;
     private int type;
 
     /*
@@ -144,12 +144,12 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
         sortByRefBtn = new JToggleButton("Order by reference ");
         sortByRefBtn.setSelected(true);
         sortByRefBtn.addActionListener(e -> {
-            if (kiCadParser != null) {
-                if (sortByRefBtn.isSelected()) {
-                    tableModel.setItemList(kiCadParser.sortList(kiCadParser.getParsedData()));
-                } else {
-                    tableModel.setItemList(kiCadParser.getParsedData());
-                }
+            if (pcbParser != null) {
+//                if (sortByRefBtn.isSelected()) {
+//                    tableModel.setItemList(pcbParser.sortList(pcbParser.getParsedData()));
+//                } else {
+//                    tableModel.setItemList(pcbParser.getParsedData());
+//                }
             }
         });
     }
@@ -173,8 +173,8 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            kiCadParser = (KiCadParser) object;
-            tableModel.setItemList(kiCadParser.sortList(kiCadParser.getParsedData()));
+            pcbParser = (PcbParser) object;
+            //tableModel.setItemList(pcbParser.sortList(pcbParser.getParsedData()));
         } else {
             tableModel.clearItemList();
         }

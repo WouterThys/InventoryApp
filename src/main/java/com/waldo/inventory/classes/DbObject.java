@@ -1,6 +1,5 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.managers.LogManager;
 
 import java.sql.*;

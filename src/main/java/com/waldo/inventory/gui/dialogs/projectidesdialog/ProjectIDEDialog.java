@@ -330,12 +330,12 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
                 }
             }
             if (source == detailParserBtn) {
-                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectIDE.hasParser(), selectedProjectIDE.getProjectParser());
+                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectIDE.hasParser(), selectedProjectIDE.getPcbItemParser());
 
                 if (dialog.showDialog() == IDialog.OK) {
                     if (selectedProjectIDE != null) {
                         if (dialog.useParser()) {
-                            selectedProjectIDE.setParserName(dialog.getParser().getParserName());
+                            selectedProjectIDE.setParserName(dialog.getParser().getName());
                         } else {
                             selectedProjectIDE.setParserName("");
                         }

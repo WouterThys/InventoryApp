@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -123,8 +123,8 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            KiCadParser kiCadParser = (KiCadParser) object;
-            kcPanel.updateComponents(kiCadParser);
+            PcbParser parser = (PcbParser) object;
+            kcPanel.updateComponents(parser);
         } else {
             //componentList.clear();
         }

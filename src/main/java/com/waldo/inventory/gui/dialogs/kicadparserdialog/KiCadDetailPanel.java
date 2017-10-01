@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.components.ITextField;
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class KiCadDetailPanel extends JPanel implements GuiInterface {    
 
@@ -54,17 +53,19 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
             refTf.setText(selectedComponent.getRef());
             valueTf.setText(selectedComponent.getValue());
             footprintTf.setText(selectedComponent.getFootprint());
-            lsLibTf.setText(selectedComponent.getLibSource().getLib());
-            lsPartTf.setText(selectedComponent.getLibSource().getPart());
+            lsLibTf.setText(selectedComponent.getLibrary());
+            lsPartTf.setText(selectedComponent.getPartName());
             tStampTf.setText(sdf.format(selectedComponent.gettStamp()));
             spNamesTa.clearText();
-            for (String name : selectedComponent.getSheetPath().getNames()) {
-                spNamesTa.append(name + "\n");
-            }
+//            for (String name : selectedComponent.getSheetName()) {
+//                spNamesTa.append(name + "\n");
+//            }
+            spNamesTa.setText(selectedComponent.getSheetName());
             spTStampsTa.clearText();
-            for (Date date : selectedComponent.getSheetPath().gettStamps()) {
-                spTStampsTa.setText(sdf.format(date));
-            }
+//            for (Date date : selectedComponent.getSheetPath().gettStamps()) {
+//                spTStampsTa.setText(sdf.format(date));
+//            }
+            spTStampsTa.setText(sdf.format(selectedComponent.gettStamp()));
         }
     }
 

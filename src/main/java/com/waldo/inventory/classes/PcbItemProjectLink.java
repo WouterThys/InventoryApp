@@ -1,11 +1,11 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -20,6 +20,9 @@ public class PcbItemProjectLink extends DbObject {
 
     private PcbItem pcbItem;
     private ProjectPcb projectPcb;
+
+    // Needed because multiple links can point to same pcbItem
+    private String sheetName;
 
     public PcbItemProjectLink() {
         super(TABLE_NAME);
@@ -43,8 +46,14 @@ public class PcbItemProjectLink extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
+        String references = "";
+        String sheetName = "";
+
         if (getPcbItemId() < UNKNOWN_ID) {
             setPcbItemId(UNKNOWN_ID);
+        } else {
+            references = getPcbItem().getReferenceString();
+            sheetName = getPcbItem().getSheetName();
         }
         if (getProjectPcbId() < UNKNOWN_ID) {
             setProjectPcbId(UNKNOWN_ID);
@@ -52,6 +61,10 @@ public class PcbItemProjectLink extends DbObject {
 
         statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getProjectPcbId());
+
+        // Pcb item variables relevant for project
+        statement.setString(ndx++, references);
+        statement.setString(ndx++, sheetName);
 
         return ndx;
     }
@@ -98,6 +111,27 @@ public class PcbItemProjectLink extends DbObject {
         db().notifyListeners(changedHow, this, db().onPcbItemProjectLinkChangedListenerList);
     }
 
+    public void setPcbItemReferences(String references) {
+        if (getPcbItemId() > UNKNOWN_ID) {
+            String[] split = references.split(",");
+            List<String> refs = new ArrayList<>();
+            for (String ref : split) {
+                refs.add(ref.trim());
+            }
+            if (refs.size() > 0) {
+                getPcbItem().setRef(refs.get(0));
+            }
+            getPcbItem().setReferences(refs);
+        }
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+        if (getPcbItemId() > UNKNOWN_ID) {
+            getPcbItem().setSheetName(sheetName);
+        }
+    }
+
     // Getters and setters
 
     public long getPcbItemId() {
@@ -120,7 +154,8 @@ public class PcbItemProjectLink extends DbObject {
 
     public PcbItem getPcbItem() {
         if (pcbItem == null) {
-            pcbItem = SearchManager.sm().findKcComponentById(pcbItemId);
+            PcbItem foundItem = SearchManager.sm().findPcbItemById(pcbItemId);
+            pcbItem = foundItem.createCopy();
         }
         return pcbItem;
     }
@@ -130,5 +165,12 @@ public class PcbItemProjectLink extends DbObject {
             projectPcb = SearchManager.sm().findProjectPcbById(projectPcbId);
         }
         return projectPcb;
+    }
+
+    public String getSheetName() {
+        if (sheetName == null) {
+            sheetName = "";
+        }
+        return sheetName;
     }
 }

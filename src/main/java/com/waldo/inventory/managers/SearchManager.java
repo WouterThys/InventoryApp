@@ -2,7 +2,7 @@ package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.PcbItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -626,7 +626,7 @@ public class SearchManager {
         return dimensionTypes;
     }
 
-    public PcbItem findKcComponentById(long id) {
+    public PcbItem findPcbItemById(long id) {
         for (PcbItem component : db().getPcbItems()) {
             if (component.getId() == id) {
                 return component;
@@ -635,7 +635,7 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItem findKcComponent(String value, String footprint, String lib, String part) {
+    public PcbItem findPcbItem(String value, String footprint, String lib, String part) {
         for (PcbItem component : db().getPcbItems()) {
             if (component.getValue().equals(value) &&
                     component.getFootprint().equals(footprint) &&
@@ -744,14 +744,27 @@ public class SearchManager {
         return pcbItems;
     }
 
-    public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId) {
+    public List<PcbItemProjectLink> findPcbItemLinksWithProjectPcb(long projectPcbId) {
+        List<PcbItemProjectLink> links = new ArrayList<>();
+        if (projectPcbId > 0) {
+            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
+                if (link.getProjectPcbId() == projectPcbId) {
+                    links.add(link);
+                }
+            }
+        }
+        return links;
+    }
+
+    public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId, String sheet) {
         if (pcbItemId > 0 && projectPcbId > 0) {
             for (PcbItemProjectLink pil : db().getPcbItemProjectLinks()) {
-                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId) {
+                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId && pil.getSheetName().equals(sheet)) {
                     return pil;
                 }
             }
         }
         return null;
     }
+
 }

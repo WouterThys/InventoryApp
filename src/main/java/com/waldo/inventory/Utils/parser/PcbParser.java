@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils.parser;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.PcbItem;
 
 import java.io.File;
 import java.util.HashMap;

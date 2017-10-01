@@ -1,7 +1,8 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.classes.SetItem;
@@ -283,7 +284,7 @@ public class ITableEditors {
                 } else {
                     if (component.matchCount() > 0) {
                         int highest = component.highestMatch();
-                        if (PcbItem.getMatchCount(highest) == 3) {
+                        if (PcbItemParser.getInstance().getMatchCount(highest) == 3) {
                             lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                         } else {
                             lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));

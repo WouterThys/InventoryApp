@@ -1,22 +1,21 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.kicad.PcbItem;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class KiCadDialog extends KiCadDialogLayout {
 
-    private KiCadParser kiCadParser = (KiCadParser) Application.getProjectParser("KiCadParser");
+    private PcbParser pcbParser = PcbItemParser.getInstance().getParser(PcbItemParser.KiCadParser);
 
     public KiCadDialog(Application application, String title) {
         super(application, title);
@@ -29,33 +28,33 @@ public class KiCadDialog extends KiCadDialogLayout {
 
     private void parseSelected() {
         if (fileToParse.isFile()) {
-            if (kiCadParser.isFileValid(fileToParse)) {
-                clearComponentTable();
-                kiCadParser.parse(fileToParse);
-                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-            } else {
-                JOptionPane.showMessageDialog(
-                        KiCadDialog.this,
-                        "The file cannot be parsed with the KiCad parser..",
-                        "Invalid file",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+//            if (pcbParser.isFileValid(fileToParse)) {
+//                clearComponentTable();
+//                pcbParser.parse(fileToParse);
+//                updateComponentTable(createComponentMap(pcbParser.sortList(pcbParser.getParsedData())));
+//            } else {
+//                JOptionPane.showMessageDialog(
+//                        KiCadDialog.this,
+//                        "The file cannot be parsed with the KiCad parser..",
+//                        "Invalid file",
+//                        JOptionPane.ERROR_MESSAGE
+//                );
+//            }
         } else {
             // Search for file
-            List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
-            if (actualFiles != null && actualFiles.size() == 1) {
-                clearComponentTable();
-                kiCadParser.parse(actualFiles.get(0));
-                updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-            } else {
-                JOptionPane.showMessageDialog(
-                        KiCadDialog.this,
-                        "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
-                        "File not found",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+//            List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, pcbParser.getFileExtension(), true);
+//            if (actualFiles != null && actualFiles.size() == 1) {
+//                clearComponentTable();
+//                pcbParser.parse(actualFiles.get(0));
+//                updateComponentTable(createComponentMap(pcbParser.sortList(pcbParser.getParsedData())));
+//            } else {
+//                JOptionPane.showMessageDialog(
+//                        KiCadDialog.this,
+//                        "Found no or too many files with extension " + pcbParser.getFileExtension() + " ..",
+//                        "File not found",
+//                        JOptionPane.ERROR_MESSAGE
+//                );
+//            }
         }
     }
 
@@ -64,17 +63,17 @@ public class KiCadDialog extends KiCadDialogLayout {
         sheetMap.put("Main", new ArrayList<>());
 
         for (PcbItem c : components) {
-            List<String> sheetNames = c.getSheetPath().getNames();
-            if (sheetNames.size() == 0) {
-                sheetMap.get("Main").add(c);
-            } else {
-                for (String name : sheetNames) {
-                    if (!sheetMap.containsKey(name)) {
-                        sheetMap.put(name, new ArrayList<>());
-                    }
-                    sheetMap.get(name).add(c);
-                }
-            }
+//            List<String> sheetNames = c.getSheetPath().getNames();
+//            if (sheetNames.size() == 0) {
+//                sheetMap.get("Main").add(c);
+//            } else {
+//                for (String name : sheetNames) {
+//                    if (!sheetMap.containsKey(name)) {
+//                        sheetMap.put(name, new ArrayList<>());
+//                    }
+//                    sheetMap.get(name).add(c);
+//                }
+//            }
         }
         return sheetMap;
     }

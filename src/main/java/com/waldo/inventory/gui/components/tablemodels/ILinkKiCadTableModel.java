@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.kicad.PcbItem;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.components.ILabel;
 
 public class ILinkKiCadTableModel extends IAbstractTableModel<PcbItem> {
@@ -31,7 +31,7 @@ public class ILinkKiCadTableModel extends IAbstractTableModel<PcbItem> {
                 case 0: // Amount
                     return component;
                 case 1: // LibSource value
-                    return component.getLibSource().getPart();
+                    return component.getPartName();
                 case 2: // Value
                     return component.getValue();
                 case 3:

@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.classes.PcbItemItemLink;
-import com.waldo.inventory.classes.kicad.PcbItem;
-import com.waldo.inventory.Utils.parser.KiCad.KiCadParser;
+import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
@@ -19,7 +19,7 @@ import java.util.List;
 public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChangedListener<PcbItemItemLink> {
 
 
-    public LinkItemDialog(Application application, String title, KiCadParser parser) {
+    public LinkItemDialog(Application application, String title, PcbParser parser) {
         super(application, title);
 
         initializeComponents();
@@ -119,7 +119,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
             int type = DbObject.getType(object);
             if (type == DbObject.TYPE_ITEM) {
                 if (selectedComponent != null) {
-                    List<PcbItemItemLink> matches = PcbItem.findInItem(selectedComponent, (Item) object);
+                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedComponent, (Item) object);
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
@@ -132,7 +132,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
                 }
             } else if (type == DbObject.TYPE_SET_ITEM) {
                 if (selectedComponent != null) {
-                    List<PcbItemItemLink> matches = PcbItem.findInSet(selectedComponent, ((SetItem) object).getItem());
+                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithSetItem(selectedComponent, ((SetItem) object).getItem());
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {

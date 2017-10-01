@@ -251,17 +251,6 @@ public class Project extends DbObject {
         }
     }
 
-    public boolean hasItems() {
-        for (ProjectDirectory dir : getProjectDirectories()) {
-            for (ProjectIDE type : dir.getProjectTypes()) {
-                if (type.hasParser()) {
-                    type.getProjectParser().getParsedData();
-                }
-            }
-        }
-        return false;
-    }
-
     /*
      *                  GETTERS - SETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

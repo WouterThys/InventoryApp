@@ -7,7 +7,6 @@ import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.panels.projectpanel.extras.PcbItemPanel;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 
 import javax.swing.text.DefaultStyledDocument;
