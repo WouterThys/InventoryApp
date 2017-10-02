@@ -5,13 +5,15 @@ import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
-import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras.KcOrderItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
+import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras.KcOrderItemPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
-
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -25,17 +27,21 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
      LinkPcbPanel pcbPanel;
      KcOrderItemPanel orderPanel;
 
-    JButton addToOrderBtn;
-    JButton removeFromOrderBtn;
+     OrderAction addToOrder;
+     OrderAction removeFromOrder;
+     OrderAction addAll;
+     OrderAction addAllCheckStock;
 
      PcbItem selectedComponent;
      OrderItem selectedOrderItem;
      Order selectedOrder;
 
+     private ILabel infoLbl;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    List<PcbItem> pcbItemList;
 
     /*
      *                  CONSTRUCTOR
@@ -49,8 +55,9 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        addToOrderBtn.setEnabled(selectedComponent != null);
-        removeFromOrderBtn.setEnabled(selectedOrderItem != null);
+        boolean enable = selectedComponent != null;
+        addToOrder.setEnabled(enable);
+        removeFromOrder.setEnabled(enable);
 
         getButtonOK().setEnabled(orderPanel.hasOrderItems());
     }
@@ -77,31 +84,78 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
         orderPanel = new KcOrderItemPanel(application);
         orderPanel.addOnAmountChangedListener(this);
 
-        // Button
-        addToOrderBtn = new JButton(imageResource.readImage("Projects.Order.AddToBtn"));
-        addToOrderBtn.setToolTipText("Add to order");
-        addToOrderBtn.setEnabled(false);
-        addToOrderBtn.addActionListener(this);
+        // Actions
+        addToOrder =
+                new OrderAction(this,
+                        imageResource.readImage("Projects.Order.AddToBtn"),
+                        "Add to order",
+                        false);
+        removeFromOrder =
+                new OrderAction(this,
+                        imageResource.readImage("Projects.Order.RemoveFromBtn"),
+                        "Remove from order",
+                        false);
+        addAll =
+                new OrderAction(this,
+                        imageResource.readImage("Projects.Order.AddAllBtn"),
+                        "Add all",
+                        true);
+        addAllCheckStock =
+                new OrderAction(this,
+                        imageResource.readImage("Projects.Order.AddAllCheckStockBtn"),
+                        "Add items short in stock",
+                        true);
 
-        removeFromOrderBtn = new JButton(imageResource.readImage("Projects.Order.RemoveFromBtn"));
-        removeFromOrderBtn.setToolTipText("Remove from order");
-        removeFromOrderBtn.setEnabled(false);
-        removeFromOrderBtn.addActionListener(this);
+        // Info label
+        infoLbl = new ILabel();
+        infoLbl.setForeground(Color.gray);
+        infoLbl.setText(" ");
+    }
+
+    private class OrderAction extends AbstractAction {
+
+        ActionListener listener;
+        String toolTip;
+
+        OrderAction(ActionListener listener, ImageIcon actionIcon, String toolTip, boolean enabled) {
+            super("", actionIcon);
+            this.listener = listener;
+            this.toolTip = toolTip;
+            setEnabled(enabled);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            e.setSource(this);
+            listener.actionPerformed(e);
+        }
+
+        String getToolTip() {
+            return toolTip;
+        }
     }
 
     @Override
     public void initializeLayouts() {
-        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.X_AXIS));
+        getContentPanel().setLayout(new BorderLayout());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.add(addToOrderBtn);
-        buttonPanel.add(removeFromOrderBtn);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        JToolBar buttonPanel = new JToolBar(JToolBar.VERTICAL);
 
-        getContentPanel().add(pcbPanel);
-        getContentPanel().add(buttonPanel);
-        getContentPanel().add(orderPanel);
+        buttonPanel.setFloatable(false);
+        buttonPanel.add(addToOrder);
+        buttonPanel.add(removeFromOrder);
+        buttonPanel.addSeparator();
+        buttonPanel.add(addAll);
+        buttonPanel.add(addAllCheckStock);
 
+        mainPanel.add(pcbPanel);
+        mainPanel.add(buttonPanel);
+        mainPanel.add(orderPanel);
+
+        getContentPanel().add(mainPanel, BorderLayout.CENTER);
+        getContentPanel().add(infoLbl, BorderLayout.SOUTH);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
 
         pack();
@@ -110,7 +164,8 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
     @Override
     public void updateComponents(Object object) {
         if (object != null && object instanceof List) {
-            pcbPanel.setItemList((List<PcbItem>)object);
+            pcbItemList = (List<PcbItem>) object;
+            pcbPanel.setItemList(pcbItemList);
         }
     }
 }

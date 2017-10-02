@@ -68,7 +68,11 @@ public class KcOrderItemPanel extends JPanel implements GuiInterface {
             if (incrementIfKnown) {
                 int ndx = tableModel.getItemList().indexOf(orderItem);
                 OrderItem item = tableModel.getItemList().get(ndx);
-                item.setAmount(item.getAmount() + 1);
+                int increment = orderItem.getAmount();
+                if (increment == 0) {
+                    increment = 1;
+                }
+                item.setAmount(item.getAmount() + increment);
                 tableModel.updateTable();
             }
         } else {

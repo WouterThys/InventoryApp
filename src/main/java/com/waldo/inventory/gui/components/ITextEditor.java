@@ -76,6 +76,7 @@ public class ITextEditor extends JPanel {
         undoManager = new UndoManager();
         EditButtonActionListener editButtonActionListener = new EditButtonActionListener();
 
+
         cutButton = createEditButton(new CutAction(), "Cut", imageResource.readImage("TextEdit.Cut"));
         cutButton.addActionListener(editButtonActionListener);
         copyButton = createEditButton(new CopyAction(), "Copy", imageResource.readImage("TextEdit.Copy"));
