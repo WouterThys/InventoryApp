@@ -16,10 +16,10 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChangedListener<PcbItemItemLink> {
+public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObjectChangedListener<PcbItemItemLink> {
 
 
-    public LinkItemDialog(Application application, String title, PcbParser parser) {
+    public LinkPcbItemDialog(Application application, String title, PcbParser parser) {
         super(application, title);
 
         initializeComponents();
@@ -27,15 +27,15 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
         updateComponents(parser);
 
         addListeners(createKcListListener(), createItemListListener());
-        DbManager.db().addOnKcItemLinkChangedListener(this);
+        DbManager.db().addOnPcbItemItemLinkChangedListener(this);
     }
 
     private ListSelectionListener createKcListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedComponent = kcPanel.getSelectedComponent();
+                selectedComponent = pcbPanel.getSelectedComponent();
                 if (selectedComponent != null) {
-                    kcPanel.updateSelectedValueData(selectedComponent);
+                    pcbPanel.updateSelectedValueData(selectedComponent);
                     itemPanel.setItemList(selectedComponent.getItemLinkList());
                     if (selectedComponent.hasMatch()) {
                         itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
@@ -69,7 +69,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
     protected void onOK() {
         if (itemLinksToSave.size() > 0) {
             int result = JOptionPane.showConfirmDialog(
-                    LinkItemDialog.this,
+                    LinkPcbItemDialog.this,
                     "There are unsaved links, do you realy want to close this dialog?",
                     "Unsaved links",
                     JOptionPane.YES_NO_OPTION,
@@ -191,7 +191,7 @@ public class LinkItemDialog extends LinkItemDialogLayout implements DbObjectChan
                         }
                     }
                 }
-                kcPanel.updateTable();
+                pcbPanel.updateTable();
                 updateEnabledComponents();
             }
         }

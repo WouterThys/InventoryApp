@@ -7,7 +7,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.kccomponentorderdialog.extras.KcOrderItemPanel;
-import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkKcPanel;
+import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -22,7 +22,7 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     LinkKcPanel kcPanel;
+     LinkPcbPanel kcPanel;
      KcOrderItemPanel oiPanel;
 
     JButton addToOrderBtn;
@@ -73,7 +73,7 @@ public abstract class KcComponentOrderDialogLayout extends IDialog implements Ac
         getButtonOK().setEnabled(false);
 
         // Panels
-        kcPanel = new LinkKcPanel(application, ILinkKiCadTableModel.ORDER_COMPONENTS);
+        kcPanel = new LinkPcbPanel(application, ILinkKiCadTableModel.ORDER_COMPONENTS);
         oiPanel = new KcOrderItemPanel(application);
 
         kcPanel.setSortByRefButtonVisible(false);

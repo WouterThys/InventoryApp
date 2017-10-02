@@ -1,13 +1,14 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
-import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadSheetTab;
+import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
+import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
+import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -37,7 +38,6 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     private JButton linkBtn;
     private JButton orderBtn;
     private JButton parseBtn;
-    private JButton saveToDbBtn;
 
     private JPanel buttonPanel;
 
@@ -65,13 +65,13 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    IKiCadParserModel getTableModel() {
-        KiCadSheetTab panel = (KiCadSheetTab) sheetTabs.getSelectedComponent();
+    IPcbItemModel getTableModel() {
+        PcbItemSheetTab panel = (PcbItemSheetTab) sheetTabs.getSelectedComponent();
         return panel.getTableModel();
     }
 
     ITable getTable() {
-        KiCadSheetTab panel = (KiCadSheetTab) sheetTabs.getSelectedComponent();
+        PcbItemSheetTab panel = (PcbItemSheetTab) sheetTabs.getSelectedComponent();
         return panel.getTable();
     }
 
@@ -86,7 +86,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
         for (String sheet : pcbItemMap.keySet()) {
-            KiCadSheetTab tab = new KiCadSheetTab(application, this);
+            PcbItemSheetTab tab = new PcbItemSheetTab(application, this);
             tab.updateComponents(pcbItemMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
@@ -145,75 +145,6 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
     }
 
-//    private void reParse(File fileToParse) {
-//        hasParsed = false;
-//        parseFile(fileToParse);
-//    }
-
-//    private void matchItems() {
-//        if (!hasMatched) {
-//            application.beginWait();
-//            try {
-//                SwingUtilities.invokeLater(() -> {
-//                    for (KcComponent component : getTableModel().getItemList()) {
-//                        component.findMatchingItems();
-//                        getTableModel().updateItem(component);
-//                    }
-//                    updateEnabledComponents();
-//                });
-//            } finally {
-//                application.endWait();
-//            }
-//        }
-//    }
-//
-//    private void parseFile(File fileToParse) {
-//        if (!hasParsed) {
-//            application.beginWait();
-//            try {
-//                if (fileToParse.isFile()) {
-//                    if (kiCadParser.isFileValid(fileToParse)) {
-//                        clearComponentTable();
-//                        kiCadParser.parse(fileToParse);
-//                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-//                        hasParsed = true;
-//                        matchItems();
-//                    } else {
-//                        if (FileUtils.getExtension(fileToParse).equals("pro")) {
-//                            parseFile(fileToParse.getParentFile());
-//                        } else {
-//                            JOptionPane.showMessageDialog(
-//                                    PcbItemPanel.this,
-//                                    "The file cannot be parsed with the KiCad parser..",
-//                                    "Invalid file",
-//                                    JOptionPane.ERROR_MESSAGE
-//                            );
-//                        }
-//                    }
-//                } else {
-//                    // Search for file
-//                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
-//                    if (actualFiles != null && actualFiles.size() == 1) {
-//                        clearComponentTable();
-//                        kiCadParser.parse(actualFiles.get(0));
-//                        updateComponentTable(createComponentMap(kiCadParser.sortList(kiCadParser.getParsedData())));
-//                        hasParsed = true;
-//                        matchItems();
-//                    } else {
-//                        JOptionPane.showMessageDialog(
-//                                PcbItemPanel.this,
-//                                "Found no or too many files with extension " + kiCadParser.getFileExtension() + " ..",
-//                                "File not found",
-//                                JOptionPane.ERROR_MESSAGE
-//                        );
-//                    }
-//                }
-//            } finally {
-//                application.endWait();
-//            }
-//        }
-//    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -228,20 +159,17 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         titleLbl.setFont(20, Font.BOLD);
 
         // Buttons
-        linkBtn = new JButton(imageResource.readImage("Common.NewLink", 24));
-        orderBtn = new JButton(imageResource.readImage("Common.Order", 24));
-        parseBtn = new JButton(imageResource.readImage("Common.Parse", 24));
-        saveToDbBtn = new JButton(imageResource.readImage("Common.DbSave", 24));
+        linkBtn = new JButton(imageResource.readImage("Projects.Pcb.LinkBtn"));
+        orderBtn = new JButton(imageResource.readImage("Projects.Pcb.OrderBtn"));
+        parseBtn = new JButton(imageResource.readImage("Projects.Pcb.ParseBtn"));
 
         linkBtn.addActionListener(this);
         orderBtn.addActionListener(this);
         parseBtn.addActionListener(this);
-        saveToDbBtn.addActionListener(this);
 
         linkBtn.setToolTipText("Link to known items");
         orderBtn.setToolTipText("Order linked");
         parseBtn.setToolTipText("Parse again");
-        saveToDbBtn.setToolTipText("Save to database");
 
         buttonPanel = new JPanel();
 
@@ -261,7 +189,6 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         buttonPanel.add(linkBtn);
         buttonPanel.add(orderBtn);
         buttonPanel.add(parseBtn);
-        buttonPanel.add(saveToDbBtn);
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
@@ -313,15 +240,14 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     //
     // Buttons pressed
     //
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
         if (source.equals(linkBtn)) {
             // Show dialog to link items
-//            LinkItemDialog dialog = new LinkItemDialog(application, "Link items", projectPcb.getParser());
-//            dialog.showDialog();
+            LinkPcbItemDialog dialog = new LinkPcbItemDialog(application, "Link items", projectPcb.getParser());
+            dialog.showDialog();
         } else if (source.equals(orderBtn)) {
             // Order known items
 //            KcComponentOrderDialog orderDialog = new KcComponentOrderDialog(
@@ -331,7 +257,10 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 //            orderDialog.showDialog();
         } else if (source.equals(parseBtn)) {
             try {
-//                projectPcb.reParse();
+                if (projectPcb.parseAgain()) {
+                    clearComponentTable();
+                    updateComponentTable(projectPcb.getPcbItemMap());
+                }
             } catch (Exception ex) {
                 Status().setError("Error parsing", ex);
                 JOptionPane.showMessageDialog(
@@ -341,34 +270,8 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                         JOptionPane.ERROR_MESSAGE
                 );
             }
-        } else if (source.equals(saveToDbBtn)) {
-            if (projectPcb.getParser() != null) {
-//                saveKcComponents(projectPcb.getParser());
-            }
-            saveToDbBtn.setEnabled(false);
         }
         updateEnabledComponents();
     }
-
-//    private void saveKcComponents(KiCadParser parser) {
-//        List<KcComponent> toSaveList = parser.createUniqueList(parser.getParsedData());
-//        int cnt = 0;
-//        for (KcComponent component : toSaveList) {
-//            KcComponent dbComponent = SearchManager.sm().findPcbItem(component.getValue(), component.getFootprint(), component.getLibSource().getLib(), component.getLibSource().getPart());
-//            if (dbComponent == null) {
-//                component.save();
-//                cnt++;
-//            }
-//        }
-//
-//        String msg = "Saved " + cnt + " new components, " + (toSaveList.size() - cnt) + " where already saved in the database!";
-//
-//        JOptionPane.showMessageDialog(
-//                application,
-//                msg,
-//                "Saved components",
-//                JOptionPane.INFORMATION_MESSAGE
-//        );
-//    }
 
 }

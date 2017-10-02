@@ -5,7 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
+import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -27,7 +27,7 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
     JButton selectFileBtn;
     ILabel  fileLbl;
 
-//    IKiCadParserModel componentTableModel;
+//    IPcbItemModel componentTableModel;
 //    ITable componentTable;
 
     JTabbedPane sheetTabs;
@@ -60,19 +60,19 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
     }
 
 
-     IKiCadParserModel getTableModel() {
-        KiCadSheetTab panel = (KiCadSheetTab) sheetTabs.getSelectedComponent();
+     IPcbItemModel getTableModel() {
+        PcbItemSheetTab panel = (PcbItemSheetTab) sheetTabs.getSelectedComponent();
         return panel.getTableModel();
     }
 
     ITable getTable() {
-        KiCadSheetTab panel = (KiCadSheetTab) sheetTabs.getSelectedComponent();
+        PcbItemSheetTab panel = (PcbItemSheetTab) sheetTabs.getSelectedComponent();
         return panel.getTable();
     }
 
     void updateComponentTable(HashMap<String, List<PcbItem>> componentMap) {
         for (String sheet : componentMap.keySet()) {
-            KiCadSheetTab tab = new KiCadSheetTab(application, this);
+            PcbItemSheetTab tab = new PcbItemSheetTab(application, this);
             tab.updateComponents(componentMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
@@ -119,7 +119,7 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
         sheetTabs.addChangeListener(this);
 
         // Table
-//        componentTableModel = new IKiCadParserModel();
+//        componentTableModel = new IPcbItemModel();
 //        componentTable = new ITable(componentTableModel);
 //        componentTable.getSelectionModel().addListSelectionListener(this);
 //        componentTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);

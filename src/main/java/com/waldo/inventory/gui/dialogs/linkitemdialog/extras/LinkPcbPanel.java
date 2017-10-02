@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
-public class LinkKcPanel extends JPanel implements GuiInterface {    
+public class LinkPcbPanel extends JPanel implements GuiInterface {
     
     /*
      *                  COMPONENTS
@@ -33,7 +33,7 @@ public class LinkKcPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LinkKcPanel(Application application, int type) {
+    public LinkPcbPanel(Application application, int type) {
         this.application = application;
         this.type = type;
 

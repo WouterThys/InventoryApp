@@ -110,6 +110,7 @@ public class ProjectPcb extends ProjectObject {
     }
 
     private HashMap<String, List<PcbItem>> getPcbItemsFromParser(File fileToParse) {
+        hasParsed = false;
         HashMap<String, List<PcbItem>> pcbItems = new HashMap<>();
 
         if (getParser() == null) {
@@ -143,6 +144,19 @@ public class ProjectPcb extends ProjectObject {
         }
 
         return itemMap;
+    }
+
+    public boolean parseAgain() {
+        boolean result = false;
+        File file = new File(getDirectory());
+        if (file.exists()) {
+            HashMap<String, List<PcbItem>> newMap = getPcbItemsFromParser(file);
+            if (newMap.size() > 0) {
+                pcbItemMap = newMap;
+                result = true;
+            }
+        }
+        return result;
     }
 
     public HashMap<String, List<PcbItem>> getPcbItemMap() {

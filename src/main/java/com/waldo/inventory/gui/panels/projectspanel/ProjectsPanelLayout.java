@@ -225,9 +225,9 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         projectPcbPanel = new ProjectPcbPanel(application);
         projectOtherPanel = new ProjectOtherPanel(application);
 
-        tabbedPane.addTab("Code ", imageResource.readImage("ProjectsTab.Code"), projectCodePanel);
-        tabbedPane.addTab("Pcbs ", imageResource.readImage("ProjectsTab.Pcb"), projectPcbPanel);
-        tabbedPane.addTab("Other ", imageResource.readImage("ProjectsTab.Other"), projectOtherPanel);
+        tabbedPane.addTab("Code ", imageResource.readImage("Projects.Tab.Code"), projectCodePanel);
+        tabbedPane.addTab("Pcbs ", imageResource.readImage("Projects.Tab.Pcb"), projectPcbPanel);
+        tabbedPane.addTab("Other ", imageResource.readImage("Projects.Tab.Other"), projectOtherPanel);
 
         // Tree toolbar
         projectsToolBar = new IdBToolBar(this);

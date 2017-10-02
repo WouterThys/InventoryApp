@@ -6,19 +6,19 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
-import com.waldo.inventory.gui.components.tablemodels.IKiCadParserModel;
+import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
-public class KiCadSheetTab extends JPanel implements GuiInterface {
+public class PcbItemSheetTab extends JPanel implements GuiInterface {
     
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IKiCadParserModel componentTableModel;
-    private ITable componentTable;
+    private IPcbItemModel pcbItemTableModel;
+    private ITable pcbItemTable;
 
     /*
      *                  VARIABLES
@@ -29,7 +29,7 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public KiCadSheetTab(Application application, ListSelectionListener listSelectionListener) {
+    public PcbItemSheetTab(Application application, ListSelectionListener listSelectionListener) {
         this.application = application;
         this.listSelectionListener = listSelectionListener;
         initializeComponents();
@@ -39,12 +39,12 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public IKiCadParserModel getTableModel() {
-        return componentTableModel;
+    public IPcbItemModel getTableModel() {
+        return pcbItemTableModel;
     }
 
     public ITable getTable() {
-        return componentTable;
+        return pcbItemTable;
     }
 
     /*
@@ -53,17 +53,17 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        componentTableModel = new IKiCadParserModel();
-        componentTable = new ITable(componentTableModel);
-        componentTable.getSelectionModel().addListSelectionListener(listSelectionListener);
-        componentTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
-        componentTable.getColumnModel().getColumn(0).setMaxWidth(30);
+        pcbItemTableModel = new IPcbItemModel();
+        pcbItemTable = new ITable(pcbItemTableModel);
+        pcbItemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
+        pcbItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
+        pcbItemTable.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        JScrollPane pane = new JScrollPane(componentTable);
+        JScrollPane pane = new JScrollPane(pcbItemTable);
         pane.setPreferredSize(new Dimension(600, 400));
         add(pane);
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -73,7 +73,7 @@ public class KiCadSheetTab extends JPanel implements GuiInterface {
     public void updateComponents(Object object) {
         if (object != null) {
             java.util.List<PcbItem> components = (java.util.List<PcbItem>) object;
-            componentTableModel.setItemList(components);
+            pcbItemTableModel.setItemList(components);
         }
     }
 }

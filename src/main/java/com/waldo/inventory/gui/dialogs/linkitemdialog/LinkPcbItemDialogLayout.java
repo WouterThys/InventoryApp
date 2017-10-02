@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkItemPanel;
-import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkKcPanel;
+import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -19,13 +19,13 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
-public abstract class LinkItemDialogLayout extends IDialog implements
+public abstract class LinkPcbItemDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener, ActionListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    LinkKcPanel kcPanel;
+    LinkPcbPanel pcbPanel;
     LinkItemPanel itemPanel;
 
     JButton linkBtn;
@@ -40,7 +40,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    LinkItemDialogLayout(Application application, String title) {
+    LinkPcbItemDialogLayout(Application application, String title) {
         super(application, title);
 
     }
@@ -53,9 +53,9 @@ public abstract class LinkItemDialogLayout extends IDialog implements
 
         if (selectedComponent != null) {
             if (selectedComponent.hasMatch()) {
-                linkBtn.setIcon(imageResource.readImage("Common.RemoveLink", 32));
+                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
             } else {
-                linkBtn.setIcon(imageResource.readImage("Common.NewLink", 32));
+                linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
             }
         }
 
@@ -67,7 +67,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     }
 
     void addListeners(ListSelectionListener kcListListener, ListSelectionListener itemListListener) {
-        kcPanel.addListSelectionListener(kcListListener);
+        pcbPanel.addListSelectionListener(kcListListener);
         itemPanel.addListSelectionListener(itemListListener);
     }
 
@@ -77,25 +77,25 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Common.NewLink", 48));
+        setTitleIcon(imageResource.readImage("Projects.Link.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
 
         // Panels
-        kcPanel = new LinkKcPanel(application, ILinkKiCadTableModel.LINK_COMPONENTS);
+        pcbPanel = new LinkPcbPanel(application, ILinkKiCadTableModel.LINK_COMPONENTS);
 
         itemPanel = new LinkItemPanel(application);
         itemPanel.addSearchListener(this);
 
         // Buttons
-        linkBtn = new JButton(imageResource.readImage("Common.NewLink", 32));
+        linkBtn = new JButton(imageResource.readImage("Projects.Link.AddLinkBtn"));
         linkBtn.setToolTipText("Link to item");
         linkBtn.setEnabled(false);
         linkBtn.addActionListener(this);
 
-        matchBtn = new JButton(imageResource.readImage("Common.Parse", 32));
+        matchBtn = new JButton(imageResource.readImage("Projects.Link.ParseBtn"));
         matchBtn.setToolTipText("Find match");
         matchBtn.setEnabled(false);
         matchBtn.addActionListener(this);
@@ -111,7 +111,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
         buttonPanel.add(linkBtn);
         buttonPanel.add(matchBtn);
 
-        getContentPanel().add(kcPanel);
+        getContentPanel().add(pcbPanel);
         getContentPanel().add(buttonPanel);
         getContentPanel().add(itemPanel);
 
@@ -124,7 +124,7 @@ public abstract class LinkItemDialogLayout extends IDialog implements
     public void updateComponents(Object object) {
         if (object != null) {
             PcbParser parser = (PcbParser) object;
-            kcPanel.updateComponents(parser);
+            pcbPanel.updateComponents(parser);
         } else {
             //componentList.clear();
         }

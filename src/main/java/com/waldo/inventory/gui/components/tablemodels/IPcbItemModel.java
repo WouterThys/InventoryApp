@@ -3,11 +3,11 @@ package com.waldo.inventory.gui.components.tablemodels;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.components.ILabel;
 
-public class IKiCadParserModel extends IAbstractTableModel<PcbItem> {
+public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
     private static final String[] COLUMN_NAMES = {"", "Part", "Value", "Reference"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
 
-    public IKiCadParserModel() {
+    public IPcbItemModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 

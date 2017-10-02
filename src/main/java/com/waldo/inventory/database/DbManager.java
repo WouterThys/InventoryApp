@@ -76,7 +76,7 @@ public class DbManager {
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItem>> onPcbItemChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PcbItemItemLink>> onKcItemLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<PcbItemItemLink>> onPcbItemItemLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
@@ -231,7 +231,7 @@ public class DbManager {
         setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
         dimensionTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDimensionTypeChangedListenerList);
         pcbItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemChangedListenerList);
-        pcbItemItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onKcItemLinkChangedListenerList);
+        pcbItemItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemItemLinkChangedListenerList);
         logs = null;
     }
 
@@ -416,9 +416,9 @@ public class DbManager {
         }
     }
 
-    public void addOnKcItemLinkChangedListener(DbObjectChangedListener<PcbItemItemLink> dbObjectChangedListener) {
-        if (!onKcItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onKcItemLinkChangedListenerList.add(dbObjectChangedListener);
+    public void addOnPcbItemItemLinkChangedListener(DbObjectChangedListener<PcbItemItemLink> dbObjectChangedListener) {
+        if (!onPcbItemItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onPcbItemItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
