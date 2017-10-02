@@ -1,15 +1,21 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITable;
+import com.waldo.inventory.gui.components.ITableEditors;
+import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class LinkPcbPanel extends JPanel implements GuiInterface {
     
@@ -21,13 +27,11 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
     private ITextField referencesTf;
     private ITextField footprintTf;
-
-    private JToggleButton sortByRefBtn;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
-    private PcbParser pcbParser;
+    private ProjectPcb projectPcb;
     private int type;
 
     /*
@@ -75,8 +79,12 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
         tableModel.updateTable();
     }
 
-    public void setSortByRefButtonVisible(boolean visible) {
-        sortByRefBtn.setVisible(visible);
+    public void updateTable(HashMap<String, List<PcbItem>> pcbItems) {
+        List<PcbItem> pcbItemsList = new ArrayList<>();
+        for (String sheet : pcbItems.keySet()) {
+            pcbItemsList.addAll(pcbItems.get(sheet));
+        }
+        tableModel.setItemList(pcbItemsList);
     }
 
     public java.util.List<PcbItem> getKcComponentList() {
@@ -128,7 +136,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
         // Table
         tableModel = new ILinkKiCadTableModel(type);
         itemTable = new ITable(tableModel);
-        itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.KcMatchRenderer());
+        itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
         itemTable.getColumnModel().getColumn(0).setMaxWidth(30);
         itemTable.getColumnModel().getColumn(3).setMaxWidth(30);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -139,19 +147,6 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
         referencesTf.setEnabled(false);
         footprintTf.setEnabled(false);
-
-        // Button
-        sortByRefBtn = new JToggleButton("Order by reference ");
-        sortByRefBtn.setSelected(true);
-        sortByRefBtn.addActionListener(e -> {
-            if (pcbParser != null) {
-//                if (sortByRefBtn.isSelected()) {
-//                    tableModel.setItemList(pcbParser.sortList(pcbParser.getParsedData()));
-//                } else {
-//                    tableModel.setItemList(pcbParser.getParsedData());
-//                }
-            }
-        });
     }
 
     @Override
@@ -161,11 +156,8 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
         // Extras
         JScrollPane pane = new JScrollPane(itemTable);
         pane.setPreferredSize(new Dimension(400, 300));
-        JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(sortByRefBtn, BorderLayout.WEST);
 
         // Add
-        add(northPanel, BorderLayout.NORTH);
         add(pane, BorderLayout.CENTER);
         add(createSouthPanel(), BorderLayout.SOUTH);
     }
@@ -173,8 +165,8 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            pcbParser = (PcbParser) object;
-            //tableModel.setItemList(pcbParser.sortList(pcbParser.getParsedData()));
+            projectPcb = (ProjectPcb) object;
+            updateTable(projectPcb.getPcbItemMap());
         } else {
             tableModel.clearItemList();
         }

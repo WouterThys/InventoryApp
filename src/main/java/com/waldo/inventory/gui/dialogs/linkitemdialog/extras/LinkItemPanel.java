@@ -57,6 +57,10 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
         itemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
+    public void updateTable() {
+        tableModel.updateTable();
+    }
+
     public void setItemList(List<PcbItemItemLink> matches) {
         tableModel.setItemList(matches);
         updateSelectedValueData(null);

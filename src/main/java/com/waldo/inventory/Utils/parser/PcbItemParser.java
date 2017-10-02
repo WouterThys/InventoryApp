@@ -163,6 +163,13 @@ public class PcbItemParser {
 
         itemLinkList.sort(new MatchComparator());
 
+        if (itemLinkList.size() == 1) {
+            int match = itemLinkList.get(0).getMatch();
+            if (getMatchCount(match) == 3) {
+                pcbItem.setMatchedItem(itemLinkList.get(0));
+            }
+        }
+
         return itemLinkList;
     }
 

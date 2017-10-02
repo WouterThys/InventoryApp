@@ -26,7 +26,6 @@ public class ProjectPcb extends ProjectObject {
     // Variables
     private Date lastParsedDate; // Compare with pcb file's 'Last modified' date to check if should parse again
     private HashMap<String, List<PcbItem>> pcbItemMap;
-    private PcbParser parser;
     private boolean hasParsed;
 
     public ProjectPcb() {
@@ -188,7 +187,7 @@ public class ProjectPcb extends ProjectObject {
         return lastParsedDate;
     }
 
-    public void setLastParsedDate(Date lastParsedDate) {
+    private void setLastParsedDate(Date lastParsedDate) {
         this.lastParsedDate = lastParsedDate;
     }
 
@@ -199,12 +198,10 @@ public class ProjectPcb extends ProjectObject {
     }
 
     public PcbParser getParser() {
-        if (parser == null) {
-            if (getProjectIDEId() > UNKNOWN_ID) {
-                parser = getProjectIDE().getPcbItemParser();
-            }
+        if (getProjectIDEId() > UNKNOWN_ID) {
+            return getProjectIDE().getPcbItemParser();
         }
-        return parser;
+        return null;
     }
 
     public boolean hasParsed() {

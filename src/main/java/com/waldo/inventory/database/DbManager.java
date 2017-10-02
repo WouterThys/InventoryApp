@@ -1782,7 +1782,7 @@ public class DbManager {
                     kil.setSetItemId(rs.getLong("setItemId"));
                     kil.setIsSetItem(rs.getBoolean("isSetItem"));
                     kil.setMatch(rs.getByte("componentMatch"));
-                    kil.setPcbItemId(rs.getLong("kcComponentId"));
+                    kil.setPcbItemId(rs.getLong("pcbItemId"));
 
                     kil.setInserted(true);
                     pcbItemItemLinks.add(kil);

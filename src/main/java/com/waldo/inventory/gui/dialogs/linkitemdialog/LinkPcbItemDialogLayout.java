@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.gui.Application;
@@ -31,8 +30,8 @@ public abstract class LinkPcbItemDialogLayout extends IDialog implements
     JButton linkBtn;
     private JButton matchBtn;
 
-    PcbItem selectedComponent;
-    PcbItemItemLink selectedMatchItem;
+    PcbItem selectedPcbItem;
+    PcbItemItemLink selectedItemLink;
 
     List<PcbItemItemLink> itemLinksToSave = new ArrayList<>();
     List<PcbItemItemLink> itemLinksToDelete = new ArrayList<>();
@@ -49,13 +48,13 @@ public abstract class LinkPcbItemDialogLayout extends IDialog implements
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        linkBtn.setEnabled(selectedComponent != null && selectedMatchItem != null);
+        linkBtn.setEnabled(selectedPcbItem != null && selectedItemLink != null);
 
-        if (selectedComponent != null) {
-            if (selectedComponent.hasMatch()) {
-                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
-            } else {
+        if (selectedPcbItem != null) {
+            if (selectedPcbItem.hasMatch()) {
                 linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
+            } else {
+                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
             }
         }
 
@@ -77,6 +76,7 @@ public abstract class LinkPcbItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
+        setResizable(true);
         setTitleIcon(imageResource.readImage("Projects.Link.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
@@ -123,8 +123,7 @@ public abstract class LinkPcbItemDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            PcbParser parser = (PcbParser) object;
-            pcbPanel.updateComponents(parser);
+            pcbPanel.updateComponents(object);
         } else {
             //componentList.clear();
         }

@@ -49,5 +49,7 @@
     <orderEntry type="library" name="Maven: jfree:jcommon:1.0.16" level="project" />
     <orderEntry type="library" name="EagleParser" level="project" />
     <orderEntry type="library" name="KiCadParser" level="project" />
+    <orderEntry type="library" name="EagleParser" level="project" />
+    <orderEntry type="library" name="KiCadParser" level="project" />
   </component>
 </module>

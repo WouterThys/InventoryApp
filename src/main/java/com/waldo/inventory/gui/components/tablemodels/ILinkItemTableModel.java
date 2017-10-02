@@ -4,11 +4,13 @@ import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.gui.components.ILabel;
 
 public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
+
+    private static final String[] COLUMN_HEADER_TOOLTIPS = {null, "Item name", "Matches name", "Matches value", "Matches footprint"};
     private static final String[] COLUMN_NAMES = {"", "Name", "N", "V", "FP"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, Boolean.class, Boolean.class, Boolean.class};
 
     public ILinkItemTableModel() {
-        super(COLUMN_NAMES, COLUMN_CLASSES);
+        super(COLUMN_NAMES, COLUMN_CLASSES, COLUMN_HEADER_TOOLTIPS);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.kccomponentorderdialog;
+package com.waldo.inventory.gui.dialogs.pcbitemorderdialog;
 
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.OrderItem;
@@ -13,29 +13,29 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
+public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
 
 
-    public KcComponentOrderDialog(Application application, String title, List<PcbItem> componentList) {
+    public PcbItemOrderDialog(Application application, String title, List<PcbItem> componentList) {
         super(application, title);
 
         initializeComponents();
         initializeLayouts();
         updateComponents(componentList);
 
-        addTableListeners(createKcListListener(), createOrderItemListListener());
+        addTableListeners(createPcbItemListListener(), createOrderItemListListener());
     }
 
-    private ListSelectionListener createKcListListener() {
+    private ListSelectionListener createPcbItemListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedComponent = kcPanel.getSelectedComponent();
-                kcPanel.updateSelectedValueData(selectedComponent);
+                selectedComponent = pcbPanel.getSelectedComponent();
+                pcbPanel.updateSelectedValueData(selectedComponent);
 
                 if (selectedComponent.isOrdered()) {
-                    oiPanel.setSelectedOrderItem(selectedComponent.getOrderItem());
+                    orderPanel.setSelectedOrderItem(selectedComponent.getOrderItem());
                 } else {
-                    oiPanel.setSelectedOrderItem(null);
+                    orderPanel.setSelectedOrderItem(null);
                 }
 
                 updateEnabledComponents();
@@ -46,8 +46,8 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
     private ListSelectionListener createOrderItemListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedOrderItem = oiPanel.getSelectedOrderItem();
-                oiPanel.updateSelectedValueData(selectedOrderItem);
+                selectedOrderItem = orderPanel.getSelectedOrderItem();
+                orderPanel.updateSelectedValueData(selectedOrderItem);
                 updateEnabledComponents();
             }
         };
@@ -69,7 +69,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
     }
 
     private PcbItem findComponentForOrderItem(OrderItem orderItem) {
-        for (PcbItem component : kcPanel.getKcComponentList()) {
+        for (PcbItem component : pcbPanel.getKcComponentList()) {
             if (component.isOrdered()) {
                 if (component.getOrderItem().equals(orderItem)) {
                     return component;
@@ -85,7 +85,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
         if (component.getMatchedItem().isSetItem()) {
             Item parentItem = component.getMatchedItem().getItem();
             if (parentItem != null) {
-                for (PcbItem c : kcPanel.getKcComponentList()) {
+                for (PcbItem c : pcbPanel.getKcComponentList()) {
                     if (c.getMatchedItem().isSetItem()) {
                         if (c.getMatchedItem().getItem().getId() == parentItem.getId()) {
                             sameSet.add(c);
@@ -98,10 +98,10 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
     }
 
     private void alreadyInOrder(OrderItem orderItem) {
-        for (PcbItem component : kcPanel.getKcComponentList()) {
+        for (PcbItem component : pcbPanel.getKcComponentList()) {
             if (component.getMatchedItem().getItemId() == orderItem.getItemId()) {
                 component.setOrderItem(orderItem);
-                oiPanel.addOrderItem(orderItem,  false);
+                orderPanel.addOrderItem(orderItem,  false);
             }
         }
     }
@@ -120,7 +120,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
                 for (OrderItem oi : selectedOrder.getOrderItems()) {
                     alreadyInOrder(oi);
                 }
-                kcPanel.updateTable();
+                pcbPanel.updateTable();
             }
         } else {
             super.onCancel();
@@ -129,7 +129,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
 
     @Override
     protected void onOK() {
-        List<OrderItem> orderItems = oiPanel.getOrderItems();
+        List<OrderItem> orderItems = orderPanel.getOrderItems();
         for (int i = orderItems.size()-1; i >= 0; i--) {
             OrderItem orderItem = orderItems.get(i);
             if (selectedOrder.containsItemId(orderItem.getItemId())) {
@@ -155,14 +155,14 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
         if (e.getSource().equals(addToOrderBtn)) {
             if (selectedComponent != null) {
                 OrderItem toOrder = createOrderItem(selectedComponent);
-                oiPanel.addOrderItem(toOrder, true);
-                oiPanel.setSelectedOrderItem(toOrder);
+                orderPanel.addOrderItem(toOrder, true);
+                orderPanel.setSelectedOrderItem(toOrder);
             }
         } else if (e.getSource().equals(removeFromOrderBtn)) {
             if (selectedOrderItem != null) {
                 if (selectedOrderItem.getAmount() > 1) {
                     selectedOrderItem.setAmount(selectedOrderItem.getAmount() - 1);
-                    oiPanel.updateTable();
+                    orderPanel.updateTable();
                 } else {
                     PcbItem component = findComponentForOrderItem(selectedOrderItem);
                     if (component != null) {
@@ -170,13 +170,13 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
                             c.setOrderItem(null);
                         }
                     }
-                    oiPanel.removeOrderItem(selectedOrderItem);
+                    orderPanel.removeOrderItem(selectedOrderItem);
                     selectedOrderItem = null;
-                    oiPanel.setSelectedOrderItem(null);
+                    orderPanel.setSelectedOrderItem(null);
                 }
             }
         }
-        kcPanel.updateTable();
+        pcbPanel.updateTable();
         updateEnabledComponents();
     }
 
@@ -185,7 +185,7 @@ public class KcComponentOrderDialog extends KcComponentOrderDialogLayout {
     //
     @Override
     public void onAmountChanged(int amount) {
-        OrderItem selected = oiPanel.getSelectedOrderItem();
+        OrderItem selected = orderPanel.getSelectedOrderItem();
         if (selected != null) {
             selected.setAmount(amount);
         }

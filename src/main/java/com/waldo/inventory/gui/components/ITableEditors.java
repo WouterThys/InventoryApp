@@ -30,7 +30,7 @@ public class ITableEditors {
         JTextField textField;
         boolean valueSet;
 
-        public SpinnerEditor() {
+        protected SpinnerEditor() {
             super(new JTextField());
             SpinnerModel model = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
             spinner = new JSpinner(model);
@@ -265,7 +265,7 @@ public class ITableEditors {
         }
     }
 
-    public static class KcMatchRenderer extends DefaultTableCellRenderer {
+    public static class PcbItemMatchRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -280,14 +280,16 @@ public class ITableEditors {
 
                 ILabel lblIcon;
                 if (component.hasMatch()) {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.blue"));
+                    lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                 } else {
                     if (component.matchCount() > 0) {
                         int highest = component.highestMatch();
                         if (PcbItemParser.getInstance().getMatchCount(highest) == 3) {
                             lblIcon = new ILabel(imageResource.readImage("Ball.green"));
-                        } else {
+                        } else if (PcbItemParser.getInstance().getMatchCount(highest) == 2) {
                             lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
+                        } else {
+                            lblIcon = new ILabel(imageResource.readImage("Ball.orange"));
                         }
                     } else {
                         lblIcon = new ILabel(imageResource.readImage("Ball.red"));

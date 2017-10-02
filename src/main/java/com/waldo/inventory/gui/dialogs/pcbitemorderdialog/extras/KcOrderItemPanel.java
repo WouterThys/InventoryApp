@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.kccomponentorderdialog.extras;
+package com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras;
 
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.OrderItem;

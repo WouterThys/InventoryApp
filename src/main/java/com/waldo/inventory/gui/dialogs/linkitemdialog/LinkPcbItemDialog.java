@@ -1,11 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
-import com.waldo.inventory.Utils.parser.PcbParser;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.PcbItemItemLink;
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -16,34 +12,33 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObjectChangedListener<PcbItemItemLink> {
+public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
 
-
-    public LinkPcbItemDialog(Application application, String title, PcbParser parser) {
+    public LinkPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(parser);
+        updateComponents(projectPcb);
 
         addListeners(createKcListListener(), createItemListListener());
-        DbManager.db().addOnPcbItemItemLinkChangedListener(this);
+        addDbObjectListeners();
     }
 
     private ListSelectionListener createKcListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedComponent = pcbPanel.getSelectedComponent();
-                if (selectedComponent != null) {
-                    pcbPanel.updateSelectedValueData(selectedComponent);
-                    itemPanel.setItemList(selectedComponent.getItemLinkList());
-                    if (selectedComponent.hasMatch()) {
-                        itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
+                selectedPcbItem = pcbPanel.getSelectedComponent();
+                if (selectedPcbItem != null) {
+                    pcbPanel.updateSelectedValueData(selectedPcbItem);
+                    itemPanel.setItemList(selectedPcbItem.getItemLinkList());
+                    if (selectedPcbItem.hasMatch()) {
+                        itemPanel.selectMatchItem(selectedPcbItem.getMatchedItem());
                     } else {
-                        if (selectedComponent.getItemLinkList().size() > 0) {
-                            itemPanel.selectMatchItem(selectedComponent.getItemLinkList().get(0));
+                        if (selectedPcbItem.getItemLinkList().size() > 0) {
+                            itemPanel.selectMatchItem(selectedPcbItem.getItemLinkList().get(0));
                         } else {
-                            selectedMatchItem = null;
+                            selectedItemLink = null;
                         }
                     }
                 }
@@ -55,8 +50,8 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
     private ListSelectionListener createItemListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedMatchItem = itemPanel.getSelectedItem();
-                itemPanel.updateSelectedValueData(selectedMatchItem);
+                selectedItemLink = itemPanel.getSelectedItem();
+                itemPanel.updateSelectedValueData(selectedItemLink);
                 updateEnabledComponents();
             }
         };
@@ -92,22 +87,40 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
         getButtonNeutral().setEnabled(false);
     }
 
-    //
-    // Db listener
-    //
+    private void addDbObjectListeners() {
+        DbManager.db().addOnPcbItemItemLinkChangedListener(new DbObjectChangedListener<PcbItemItemLink>() {
+            @Override
+            public void onInserted(PcbItemItemLink link) {}
 
+            @Override
+            public void onUpdated(PcbItemItemLink link) {
+//                itemPanel.updateTable();
+//                pcbPanel.updateTable();
+            }
 
-    @Override
-    public void onInserted(PcbItemItemLink link) {}
+            @Override
+            public void onDeleted(PcbItemItemLink link) {}
 
-    @Override
-    public void onUpdated(PcbItemItemLink link) {}
+            @Override
+            public void onCacheCleared() {}
+        });
 
-    @Override
-    public void onDeleted(PcbItemItemLink link) {}
+        DbManager.db().addOnItemsChangedListener(new DbObjectChangedListener<Item>() {
+            @Override
+            public void onInserted(Item item) {}
 
-    @Override
-    public void onCacheCleared() {}
+            @Override
+            public void onUpdated(Item item) {
+                itemPanel.updateTable();
+            }
+
+            @Override
+            public void onDeleted(Item item) {}
+
+            @Override
+            public void onCacheCleared() {}
+        });
+    }
 
     //
     // Search stuff
@@ -118,12 +131,12 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
         for (DbObject object : foundObjects) {
             int type = DbObject.getType(object);
             if (type == DbObject.TYPE_ITEM) {
-                if (selectedComponent != null) {
-                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedComponent, (Item) object);
+                if (selectedPcbItem != null) {
+                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, (Item) object);
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        PcbItemItemLink m = new PcbItemItemLink(0, selectedComponent, (Item)object);
+                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem, (Item)object);
                         itemMatches.add(m);
                     }
                 } else {
@@ -131,12 +144,12 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
                     itemMatches.add(m);
                 }
             } else if (type == DbObject.TYPE_SET_ITEM) {
-                if (selectedComponent != null) {
-                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithSetItem(selectedComponent, ((SetItem) object).getItem());
+                if (selectedPcbItem != null) {
+                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, ((SetItem) object).getItem());
                     if (matches.size() > 0) {
                         itemMatches.addAll(matches);
                     } else {
-                        PcbItemItemLink m = new PcbItemItemLink(0,selectedComponent,  (SetItem)object);
+                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem,  (SetItem)object);
                         itemMatches.add(m);
                     }
                 } else {
@@ -151,11 +164,11 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
 
     @Override
     public void onSearchCleared() {
-        if (selectedComponent != null) {
-            if (selectedComponent.hasMatch()) {
-                itemPanel.selectMatchItem(selectedComponent.getMatchedItem());
+        if (selectedPcbItem != null) {
+            if (selectedPcbItem.hasMatch()) {
+                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItem());
             } else {
-                selectedMatchItem = null;
+                selectedItemLink = null;
             }
         } else {
             itemPanel.clearItemList();
@@ -169,25 +182,25 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout implements DbObje
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(linkBtn)) {
-            if (selectedComponent != null && selectedMatchItem != null) {
-                if (selectedComponent.hasMatch()) {
-                    selectedComponent.setMatchedItem(null);
-                    selectedMatchItem.setMatched(false);
-                    if (itemLinksToSave.contains(selectedMatchItem)) {
-                        itemLinksToSave.remove(selectedMatchItem);
+            if (selectedPcbItem != null && selectedItemLink != null) {
+                if (selectedPcbItem.hasMatch()) { // Remove link
+                    selectedPcbItem.setMatchedItem(null);
+                    selectedItemLink.setMatched(false);
+                    if (itemLinksToSave.contains(selectedItemLink)) {
+                        itemLinksToSave.remove(selectedItemLink);
                     } else {
-                        if (!itemLinksToDelete.contains(selectedMatchItem)) {
-                            itemLinksToDelete.add(selectedMatchItem);
+                        if (!itemLinksToDelete.contains(selectedItemLink)) {
+                            itemLinksToDelete.add(selectedItemLink);
                         }
                     }
-                } else {
-                    selectedComponent.getItemLinkList().add(selectedMatchItem);
-                    selectedComponent.setMatchedItem(selectedMatchItem);
-                    if (itemLinksToDelete.contains(selectedMatchItem)) {
-                        itemLinksToDelete.remove(selectedMatchItem);
+                } else { // Set link
+                    selectedPcbItem.getItemLinkList().add(selectedItemLink);
+                    selectedPcbItem.setMatchedItem(selectedItemLink);
+                    if (itemLinksToDelete.contains(selectedItemLink)) {
+                        itemLinksToDelete.remove(selectedItemLink);
                     } else {
-                        if (!itemLinksToSave.contains(selectedMatchItem)) {
-                            itemLinksToSave.add(selectedMatchItem);
+                        if (!itemLinksToSave.contains(selectedItemLink)) {
+                            itemLinksToSave.add(selectedItemLink);
                         }
                     }
                 }

@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
+import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.PcbItemOrderDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 
@@ -20,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -221,6 +223,22 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         }
     }
 
+    private String getSelectedSheet() {
+        return sheetTabs.getTitleAt(sheetTabs.getSelectedIndex());
+    }
+
+    private List<PcbItem> getLinkedPcbItems(List<PcbItem> allItems) {
+        List<PcbItem> linkedItems = new ArrayList<>();
+
+        for (PcbItem pcbItem : allItems) {
+            if (pcbItem.hasMatch()) {
+                linkedItems.add(pcbItem);
+            }
+        }
+
+        return linkedItems;
+    }
+
     //
     // One of the list values in the sheet tabs selected
     //
@@ -246,15 +264,25 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
         if (source.equals(linkBtn)) {
             // Show dialog to link items
-            LinkPcbItemDialog dialog = new LinkPcbItemDialog(application, "Link items", projectPcb.getParser());
+            LinkPcbItemDialog dialog = new LinkPcbItemDialog(application, "Link items", projectPcb);
             dialog.showDialog();
         } else if (source.equals(orderBtn)) {
             // Order known items
-//            KcComponentOrderDialog orderDialog = new KcComponentOrderDialog(
-//                    application,
-//                    "Order items",
-//                    projectPcb.getParser().getLinkedItems());
-//            orderDialog.showDialog();
+            List<PcbItem> linkedItems = getLinkedPcbItems(projectPcb.getPcbItemMap().get(getSelectedSheet()));
+            if (linkedItems.size() > 0) {
+                PcbItemOrderDialog orderDialog = new PcbItemOrderDialog(
+                        application,
+                        "Order items",
+                        linkedItems);
+                orderDialog.showDialog();
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Items need to be linked with known item..",
+                        "No linked items",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         } else if (source.equals(parseBtn)) {
             try {
                 if (projectPcb.parseAgain()) {

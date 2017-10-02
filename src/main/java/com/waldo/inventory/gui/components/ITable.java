@@ -5,17 +5,18 @@ import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class ITable<T> extends JTable {
 
-    private IAbstractTableModel model;
+    private IAbstractTableModel<T> model;
 
-    public ITable(IAbstractTableModel model) {
-        super();
+    public ITable(IAbstractTableModel<T> model) {
+        super(model);
 
         this.model = model;
 
@@ -26,20 +27,6 @@ public class ITable<T> extends JTable {
         setAutoCreateRowSorter(true);
 
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    }
-
-    public void resizeColumns(Integer[] widths) {
-        int tableWidth = getWidth();
-
-        TableColumn column;
-        TableColumnModel columnModel = getColumnModel();
-
-        int columnCnt = columnModel.getColumnCount();
-        for (int i = 0; i < columnCnt; i++) {
-            column = columnModel.getColumn(i);
-            int width = Math.round(widths[i]*tableWidth);
-            column.setPreferredWidth(width);
-        }
     }
 
     @Override
@@ -71,22 +58,6 @@ public class ITable<T> extends JTable {
             }
         }
 
-//        if (getModel() instanceof ILinkItemTableModel) {
-//            Object o = getValueAtRow(row);
-//            if (o instanceof PcbItemItemLink) {
-//                PcbItemItemLink match = (PcbItemItemLink) o;
-//                if (!isRowSelected(row)) {
-//                    component.setBackground(getBackground());
-//                    if (match.isMatched()) {
-//                        component.setBackground(Color.green);
-//                    } else {
-//                        component.setBackground(getBackground());
-//                    }
-//                }
-//            }
-//
-//        }
-
         return component;
     }
 
@@ -107,16 +78,22 @@ public class ITable<T> extends JTable {
         }
     }
 
-    //
-//    public java.util.List<DbObject> getSelectedObjects() {
-//        java.util.List<DbObject> selectedObjects = new ArrayList<>();
-//        int[] selectedRows = getSelectedRows();
-//        if (selectedRows.length > 0) {
-//            for (int row : selectedRows) {
-//
-//            }
-//        }
-//
-//        return selectedObjects;
-//    }
+    @Override
+    protected JTableHeader createDefaultTableHeader() {
+        IAbstractTableModel model = (IAbstractTableModel) getModel();
+        if ((model != null) &&
+                (model.getColumnHeaderToolTips() != null) &&
+                (model.getColumnHeaderToolTips().length == model.getColumnCount())) {
+             return new JTableHeader(columnModel) {
+                 @Override
+                 public String getToolTipText(MouseEvent event) {
+                     Point p = event.getPoint();
+                     int ndx = columnModel.getColumnIndexAtX(p.x);
+                     int realNdx = columnModel.getColumn(ndx).getModelIndex();
+                     return model.getColumnHeaderToolTips()[realNdx];
+                 }
+             };
+        }
+        return super.createDefaultTableHeader();
+    }
 }

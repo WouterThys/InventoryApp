@@ -8,21 +8,29 @@ import java.util.List;
 
 public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
+    private String[] columnHeaderToolTips;
     private final String[] columnNames;
     private final Class[] columnClasses;
     private Comparator<? super T> comparator;
 
     private List<T> itemList;
 
+    IAbstractTableModel(String[] columnNames, Class[] columnClasses, String[] columnHeaderToolTips) {
+        this(columnNames, columnClasses);
+        this.columnHeaderToolTips = columnHeaderToolTips;
+    }
+
     IAbstractTableModel(String[] columnNames, Class[] columnClasses) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
+        this.columnHeaderToolTips = columnNames;
         itemList = new ArrayList<>();
     }
 
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, Comparator<? super T> comparator) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
+        this.columnHeaderToolTips = columnNames;
         this.comparator = comparator;
         itemList = new ArrayList<>();
     }
@@ -30,12 +38,14 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
+        this.columnHeaderToolTips = columnNames;
         this.itemList = itemList;
     }
 
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList, Comparator<? super T> comparator) {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
+        this.columnHeaderToolTips = columnNames;
         this.comparator = comparator;
         setItemList(itemList);
     }
@@ -124,6 +134,10 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void setColumnName(int i, String name) {
         columnNames[i] = name;
         fireTableStructureChanged();
+    }
+
+    public String[] getColumnHeaderToolTips() {
+        return columnHeaderToolTips;
     }
 
     @Override
