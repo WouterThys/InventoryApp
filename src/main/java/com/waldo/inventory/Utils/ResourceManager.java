@@ -144,9 +144,6 @@ public class ResourceManager {
     }
 
     private ImageIcon getScaledImageIcon(BufferedImage image, int width, int height) {
-//        double scale = imageScale(image.getWidth(), image.getHeight(), width, height);
-//        Image scaledImage = image.getScaledInstance((int)(width * scale), (int) (height * scale), Image.SCALE_SMOOTH);
-//        return new ImageIcon(scaledImage);
         int newWidth;
         int newHeight;
         double targetRatio = (double) width / height;
@@ -160,12 +157,6 @@ public class ResourceManager {
         }
         Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
-    }
-
-    private double imageScale(int originalW, int originalH, int targetW, int targetH) {
-        double scaleW = (double) targetW / originalW;
-        double scaleH = (double) targetH / originalH;
-        return Math.min(scaleW, scaleH);
     }
 
     public ImageIcon readImage (String path, int width, int height) {

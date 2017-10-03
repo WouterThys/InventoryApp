@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
@@ -22,7 +23,6 @@ public class PanelUtils {
         constraints.fill = BOTH;
         return constraints;
     }
-
 
     public static JPanel createBrowsePanel(ITextField urlTf, JButton browseBtn) {
         JPanel browsePanel = new JPanel(new GridBagLayout());
@@ -65,6 +65,74 @@ public class PanelUtils {
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
         return titledBorder;
+    }
+
+
+
+    public class GridBagHelper {
+
+        private JPanel panel;
+
+        private GridBagConstraints gbc;
+        private int x = 0;
+        private int y = 0;
+
+        public GridBagHelper(JPanel panel) {
+            this.panel = panel;
+            this.gbc = new GridBagConstraints();
+
+            gbc.insets = new Insets(2,2,2,2);
+            gbc.anchor = GridBagConstraints.NORTHEAST;
+        }
+
+        public void addLine(String labelText, JComponent component) {
+            addLine(labelText, component, GridBagConstraints.HORIZONTAL);
+        }
+
+        public void addLine(String labelText, JComponent component, int fill) {
+            gbc.gridx = 0; gbc.weightx = 0;
+            gbc.gridy = 0; gbc.weighty = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            panel.add(new ILabel(labelText, ILabel.RIGHT), gbc);
+
+            gbc.gridx = 1; gbc.weightx = 1;
+            gbc.gridy = 0; gbc.weighty = 1;
+            gbc.fill = fill;
+            panel.add(component, gbc);
+        }
+
+
+        public JPanel getPanel() {
+            return panel;
+        }
+
+        public void setPanel(JPanel panel) {
+            this.panel = panel;
+        }
+
+        public GridBagConstraints getGbc() {
+            return gbc;
+        }
+
+        public void setGbc(GridBagConstraints gbc) {
+            this.gbc = gbc;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
     }
 
 }

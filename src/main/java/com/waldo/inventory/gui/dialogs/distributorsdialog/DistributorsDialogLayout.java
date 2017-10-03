@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
@@ -15,7 +14,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.io.IOException;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -38,12 +36,9 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    ITextField detailWebsite;
-    private JButton detailsBrowseButton;
+    IBrowsePanel browseDistributorPanel;
+    IBrowsePanel browseOrderLinkPanel;
     ILabel detailLogo;
-
-    ITextField detailOrderLink;
-    private JButton detailOrderLinkBtn;
     IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     private IdBToolBar detailOrderFileFormatTb;
 
@@ -143,10 +138,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
 
-        PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
-
-        JPanel browsePanel = PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
-
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -171,7 +162,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         gbc.gridx = 1; gbc.weightx = 3;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        textFieldPanel.add(browsePanel, gbc);
+        textFieldPanel.add(browseDistributorPanel, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 2; gbc.weighty = 1;
@@ -192,8 +183,6 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         formatLabel.setVerticalAlignment(ILabel.CENTER);
 
         // - Browse panel
-        JPanel bPanel = PanelUtils.createBrowsePanel(detailOrderLink, detailOrderLinkBtn);
-
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -202,7 +191,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        orderPanel.add(bPanel, gbc);
+        orderPanel.add(browseOrderLinkPanel, gbc);
 
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 2; gbc.weighty = 0;
@@ -257,35 +246,11 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailWebsite = new ITextField("Web site");
-        detailWebsite.addEditedListener(this, "website");
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBrowseButton = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
-        detailsBrowseButton.addActionListener(e -> {
-            if (!detailWebsite.getText().isEmpty()) {
-                try {
-                    OpenUtils.browseLink(detailWebsite.getText());
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(DistributorsDialogLayout.this, "Unable to browse: " + detailWebsite.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-            }
-        });
 
-        detailOrderLink = new ITextField("Order link");
-        detailOrderLink.addEditedListener(this, "orderLink");
-        detailOrderLinkBtn = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
-        detailOrderLinkBtn.addActionListener(e -> {
-            if (!detailOrderLink.getText().isEmpty()) {
-                try {
-                    OpenUtils.browseLink(detailOrderLink.getText());
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(DistributorsDialogLayout.this, "Unable to browse: " + detailOrderLink.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-            }
-        });
+        browseDistributorPanel = new IBrowsePanel("Web site", "website", this);
+        browseOrderLinkPanel = new IBrowsePanel("Order link", "orderLink", this);
 
         detailOrderFileFormatCb = new IComboBox<>(db().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");

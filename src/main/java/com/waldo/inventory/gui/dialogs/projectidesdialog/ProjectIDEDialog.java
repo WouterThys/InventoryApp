@@ -108,7 +108,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
 //                    selectedManufacturer.setName(detailName.getText());
-//                    selectedManufacturer.setWebsite(detailWebsite.getText());
+//                    selectedManufacturer.setText(detailWebsite.getText());
                     selectedProjectIDE.save();
                     originalProjectIDE = selectedProjectIDE.createCopy();
                     if (closeAfter) {

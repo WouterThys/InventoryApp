@@ -1,7 +1,5 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
-import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Manufacturer;
@@ -13,7 +11,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
@@ -35,8 +32,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    ITextField detailWebsite;
-    private JButton detailsBrowseButton;
+    IBrowsePanel browsePanel;
     ILabel detailLogo;
 
     private JList<Item> detailItemList;
@@ -126,8 +122,6 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         browseLabel.setHorizontalAlignment(ILabel.RIGHT);
         browseLabel.setVerticalAlignment(ILabel.CENTER);
 
-        JPanel browsePanel = PanelUtils.createBrowsePanel(detailWebsite, detailsBrowseButton);
-
         // - Add to panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -210,21 +204,9 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailWebsite = new ITextField("Web site");
-        detailWebsite.addEditedListener(this, "website");
         detailLogo = new ILabel();
-        //detailLogo.setPreferredSize(new Dimension(48,48));
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailsBrowseButton = new JButton(imageResource.readImage("Common.BrowseWebSiteIcon"));
-        detailsBrowseButton.addActionListener(e -> {
-            if (!detailWebsite.getText().isEmpty())
-                try {
-                    OpenUtils.browseLink(detailWebsite.getText());
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(ManufacturersDialogLayout.this, "Unable to browse: " + detailWebsite.getText(), "Browse error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-        });
+        browsePanel = new IBrowsePanel("Web site", "website", this);
 
         detailItemDefaultListModel = new DefaultListModel<>();
         detailItemList = new JList<>(detailItemDefaultListModel);

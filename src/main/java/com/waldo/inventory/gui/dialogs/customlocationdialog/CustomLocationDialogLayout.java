@@ -28,10 +28,8 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     JButton convertBtn;
 
     // Extra
-    ITextField nameTf;
-    ITextField aliasTf;
-    JButton setNameBtn;
-    JButton setAliasBtn;
+    ITextFieldButtonPanel namePanel;
+    ITextFieldButtonPanel aliasPanel;
 
 
      /*
@@ -53,22 +51,18 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        if (selectedLocationButton == null) {
-            nameTf.setEnabled(false);
-            aliasTf.setEnabled(false);
-        } else {
-            nameTf.setEnabled(true);
-            aliasTf.setEnabled(true);
-        }
+        boolean enabled = selectedLocationButton != null;
+        namePanel.setEnabled(enabled);
+        namePanel.setEnabled(enabled);
     }
 
     void setButtonDetails(Location location) {
         if (location != null) {
-            nameTf.setText(location.getName());
-            aliasTf.setText(location.getAlias());
+            namePanel.setText(location.getName());
+            aliasPanel.setText(location.getAlias());
         } else {
-            nameTf.clearText();
-            aliasTf.clearText();
+            namePanel.clearText();
+            aliasPanel.clearText();
         }
     }
 
@@ -117,7 +111,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         detailPanel.add(new ILabel("Name: ", ILabel.RIGHT), gbc);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
-        detailPanel.add(PanelUtils.createBrowsePanel(nameTf, setNameBtn), gbc);
+        detailPanel.add(namePanel, gbc);
 
         // Alias
         gbc.gridx = 0; gbc.weightx = 0;
@@ -125,7 +119,7 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         detailPanel.add(new ILabel("Alias: ", ILabel.RIGHT), gbc);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
-        detailPanel.add(PanelUtils.createBrowsePanel(aliasTf, setAliasBtn), gbc);
+        detailPanel.add(aliasPanel, gbc);
 
         centerPanel.add(locationMapPanel, BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
@@ -169,14 +163,8 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         convertBtn.addActionListener(this);
 
         // Extra
-        nameTf = new ITextField("Name");
-        aliasTf = new ITextField("Alias");
-
-        setNameBtn = new JButton(imageResource.readImage("Locations.Edit", 16));
-        setAliasBtn = new JButton(imageResource.readImage("Locations.Edit", 16));
-
-        setNameBtn.addActionListener(this);
-        setAliasBtn.addActionListener(this);
+        namePanel = new ITextFieldButtonPanel("Name", imageResource.readImage("Locations.Edit", 16), this);
+        aliasPanel = new ITextFieldButtonPanel("Alias",imageResource.readImage("Locations.Edit", 16), this );
 
     }
 

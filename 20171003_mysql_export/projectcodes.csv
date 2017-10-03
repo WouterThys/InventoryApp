@@ -1,0 +1,7 @@
+"id";"name";"iconPath";"language";"directory";"projectId";"projectIDEId";"remarks"
+5;"lcd.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/lcd.X";25;3;"¬í"
+6;"PowerSupply.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/PowerSupply.X";25;3;""
+7;"PowerSupply_main.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/PowerSupply_main.X";25;3;""
+8;"PowerSupply_uart.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/PowerSupply_uart.X";25;3;""
+9;"PowerSupply_lcd.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/PowerSupply_lcd.X";25;3;""
+10;"PowerSupply_variable.X";"";"C";"/home/waldo/Documents/Geeken/Projects/PowerSupply/PIC/PowerSupply_variable.X";25;3;""

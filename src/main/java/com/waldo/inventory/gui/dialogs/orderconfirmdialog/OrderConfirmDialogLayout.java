@@ -21,7 +21,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
 
-    public static final String TAB_ORDER_FILE = "Order file ";
+    static final String TAB_ORDER_FILE = "Order file ";
     public static final String TAB_ORDER_DETAILS = "Order details";
 
     private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("MMM d, yyyy");
@@ -31,14 +31,12 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<String> stepList;
-    DefaultListModel<String> stepListModel;
 
     JPanel cardPanel;
     CardLayout cardLayout;
-    JPanel mainPanel;
-    JPanel filePanel;
-    JPanel detailPanel;
-    TitledBorder mainBorder;
+    private JPanel mainPanel;
+    private JPanel filePanel;
+    private JPanel detailPanel;
 
     JButton parseBtn;
     JButton copyToClipboardBtn;
@@ -46,21 +44,21 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
     JButton distributorsBrowseBtn;
     JButton orderUrlBrowseBtn;
 
-    ILabel orderByLbl;
+    private ILabel orderByLbl;
     ILabel fileOkLbl;
 
     // Order file panel
-    JTable orderFileTable;
-    DefaultTableModel orderFileTableModel;
+    private JTable orderFileTable;
+    private DefaultTableModel orderFileTableModel;
 
     // Order panel
-    ITextField referenceTf;
-    ITextField trackingNrTf;
-    ITextField dateOrderedTf;
-    ITextField dateReceivedTf;
-    ITextField dateModifiedTf;
-    ITextField itemsTf;
-    ITextField totalPriceTf;
+    private ITextField referenceTf;
+    private ITextField trackingNrTf;
+    private ITextField dateOrderedTf;
+    private ITextField dateReceivedTf;
+    private ITextField dateModifiedTf;
+    private ITextField itemsTf;
+    private ITextField totalPriceTf;
 
     /*
      *                  VARIABLES
@@ -286,7 +284,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
 
-        mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
+        TitledBorder mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
         mainPanel.setBorder(mainBorder);
     }
 
@@ -304,7 +302,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         cardLayout = new CardLayout(5,5);
         cardPanel = new JPanel(cardLayout);
 
-        stepListModel = new DefaultListModel<>();
+        DefaultListModel<String> stepListModel = new DefaultListModel<>();
         stepListModel.addElement(TAB_ORDER_FILE);
         stepListModel.addElement(TAB_ORDER_DETAILS);
         stepList = new JList<>(stepListModel);
@@ -317,24 +315,24 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         // File panel
         orderByLbl = new ILabel();
-        fileOkLbl = new ILabel(imageResource.readImage("OrderConfirm.Error", 16));
+        fileOkLbl = new ILabel(imageResource.readImage("Orders.Confirm.Error"));
 
         orderFileTableModel = new DefaultTableModel();
         orderFileTable = new JTable(orderFileTableModel);
 
-        parseBtn = new JButton(imageResource.readImage("Common.Refresh", 24));
+        parseBtn = new JButton(imageResource.readImage("Orders.Confirm.Refresh"));
         parseBtn.setToolTipText("Parse again");
         parseBtn.addActionListener(this);
-        copyToClipboardBtn = new JButton(imageResource.readImage("Common.Copy", 24));
+        copyToClipboardBtn = new JButton(imageResource.readImage("Orders.Confirm.Copy"));
         copyToClipboardBtn.setToolTipText("Copy to clipboard");
         copyToClipboardBtn.addActionListener(this);
-        viewParsedBtn = new JButton(imageResource.readImage("Common.View", 24));
+        viewParsedBtn = new JButton(imageResource.readImage("Orders.Confirm.View"));
         viewParsedBtn.setToolTipText("View parsed file");
         viewParsedBtn.addActionListener(this);
-        distributorsBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseDistributor", 24));
+        distributorsBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseDistributor"));
         distributorsBrowseBtn.setToolTipText("Browse distributor website");
         distributorsBrowseBtn.addActionListener(this);
-        orderUrlBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseOrder", 24));
+        orderUrlBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseOrder"));
         orderUrlBrowseBtn.setToolTipText("Go to order page");
         orderUrlBrowseBtn.addActionListener(this);
 
