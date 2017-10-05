@@ -101,25 +101,9 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
         JPanel detailPanel = new JPanel(new GridBagLayout());
         TitledBorder resultBorder = PanelUtils.createTitleBorder("Result");
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Name
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        detailPanel.add(new ILabel("Name: ", ILabel.RIGHT), gbc);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        detailPanel.add(namePanel, gbc);
-
-        // Alias
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        detailPanel.add(new ILabel("Alias: ", ILabel.RIGHT), gbc);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        detailPanel.add(aliasPanel, gbc);
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(detailPanel);
+        gbh.addLine("Name: ", namePanel);
+        gbh.addLine("Alias: ", aliasPanel);
 
         centerPanel.add(locationMapPanel, BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);

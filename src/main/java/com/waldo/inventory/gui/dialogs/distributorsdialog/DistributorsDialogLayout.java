@@ -125,91 +125,23 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
 
-        // Text fields
-        JPanel textFieldPanel = new JPanel(new GridBagLayout());
-
-        // - Name
-        ILabel nameLabel = new ILabel("Name: ");
-        nameLabel.setHorizontalAlignment(ILabel.RIGHT);
-        nameLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Browse
-        ILabel browseLabel = new ILabel("Web site: ");
-        browseLabel.setHorizontalAlignment(ILabel.RIGHT);
-        browseLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Add to panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        textFieldPanel.add(nameLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        textFieldPanel.add(detailName, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(browseLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        textFieldPanel.add(browseDistributorPanel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(detailLogo, gbc);
-
-        // Order stuff
+        // Panels
+        JPanel textFieldPanel = new JPanel();
         JPanel orderPanel = new JPanel(new GridBagLayout());
 
-        // - Link
-        ILabel linkLabel = new ILabel("Order link: ");
-        linkLabel.setHorizontalAlignment(ILabel.RIGHT);
-        linkLabel.setVerticalAlignment(ILabel.CENTER);
+        // - Text fields
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(textFieldPanel);
+        gbh.addLine("Name: ", detailName);
+        gbh.addLine("Web site: ", browseDistributorPanel);
+        gbh.add(detailLogo, 1, 2, 1, 1);
 
-        // - Format
-        ILabel formatLabel = new ILabel("File format: ");
-        formatLabel.setHorizontalAlignment(ILabel.RIGHT);
-        formatLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Browse panel
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        orderPanel.add(linkLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        orderPanel.add(browseOrderLinkPanel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        orderPanel.add(formatLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        orderPanel.add(detailOrderFileFormatCb, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.EAST;
-        orderPanel.add(detailOrderFileFormatTb, gbc);
+        // - Order stuff
+        gbh = new PanelUtils.GridBagHelper(orderPanel);
+        gbh.addLine("Order link: ", browseOrderLinkPanel);
+        gbh.gridwidth = 2;
+        gbh.addLine("File format: ", detailOrderFileFormatCb, GridBagConstraints.BOTH);
+        gbh.gridwidth = 1;
+        gbh.add(detailOrderFileFormatTb, 1, 2);
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.CENTER);
