@@ -66,9 +66,9 @@ public abstract class SettingsDialogLayout extends IDialog {
     @Override
     public void initializeLayouts() {
         // Add tabs
-        tabbedPane.addTab("Database ", imageResource.readImage("SettingsDialog.DbIcon"), dbPanel, "Database settings");
-        tabbedPane.addTab("Files ", imageResource.readImage("SettingsDialog.FileIcon"), filesPanel, "File settings");
-        tabbedPane.addTab("Logs ", imageResource.readImage("SettingsDialog.LogIcon"), logsPanel, "Log settings");
+        tabbedPane.addTab("Database ", imageResource.readImage("Settings.Tab.Db"), dbPanel, "Database settings");
+        tabbedPane.addTab("Files ", imageResource.readImage("Settings.Tab.File"), filesPanel, "File settings");
+        tabbedPane.addTab("Logs ", imageResource.readImage("Settings.Tab.Log"), logsPanel, "Log settings");
 
         getContentPanel().add(tabbedPane);
         pack();

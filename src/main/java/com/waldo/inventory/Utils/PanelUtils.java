@@ -84,6 +84,18 @@ public class PanelUtils {
             gridy = 0;
         }
 
+        public void addLineVertical(String labelText, JComponent component) {
+            gridx = 0; weightx = 0;
+            gridy = 0; weighty = 0;
+            fill = GridBagConstraints.HORIZONTAL;
+            panel.add(new ILabel(labelText, ILabel.LEFT), this);
+
+            gridx = 0; weightx = 1;
+            gridy = 1; weighty = 1;
+            fill = GridBagConstraints.BOTH;
+            panel.add(component, this);
+        }
+
         public void addLine(String labelText, JComponent component) {
             addLine(labelText, component, GridBagConstraints.HORIZONTAL);
         }
@@ -102,7 +114,9 @@ public class PanelUtils {
             gridheight = oldGh;
             gridx = 1; weightx = 1;
             this.fill = fill;
-            panel.add(component, this);
+            if (component != null) {
+                panel.add(component, this);
+            }
 
 
             gridx = 0; gridy++;

@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
-import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras.KcOrderItemPanel;
+import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras.PcbItemPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -19,13 +19,13 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class PcbItemOrderDialogLayout extends IDialog implements ActionListener, KcOrderItemPanel.AmountChangeListener {
+public abstract class PcbItemOrderDialogLayout extends IDialog implements ActionListener, PcbItemPanel.AmountChangeListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
      LinkPcbPanel pcbPanel;
-     KcOrderItemPanel orderPanel;
+     PcbItemPanel orderPanel;
 
      OrderAction addToOrder;
      OrderAction removeFromOrder;
@@ -81,7 +81,7 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
 
         // Panels
         pcbPanel = new LinkPcbPanel(application, ILinkKiCadTableModel.ORDER_COMPONENTS);
-        orderPanel = new KcOrderItemPanel(application);
+        orderPanel = new PcbItemPanel(application);
         orderPanel.addOnAmountChangedListener(this);
 
         // Actions

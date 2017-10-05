@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
 import com.waldo.inventory.gui.Application;
@@ -128,8 +129,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     private JPanel createWestPanel() {
         JPanel westPanel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(westPanel);
 
         JPanel minPanel = new JPanel(new BorderLayout());
         minPanel.add(minTf, BorderLayout.CENTER);
@@ -143,13 +143,13 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         skipPanel.add(valueSkipSp, BorderLayout.CENTER);
         skipPanel.add(new ILabel("th value", ILabel.LEFT), BorderLayout.EAST);
 
-        ILabel[] labels = new ILabel[] {
-                new ILabel("Type: ", ILabel.RIGHT),
-                new ILabel("Series: ", ILabel.RIGHT),
-                new ILabel("Min value: ", ILabel.RIGHT),
-                new ILabel("Max value: ", ILabel.RIGHT),
-                new ILabel("Take every ", ILabel.RIGHT),
-                new ILabel("Parse: ", ILabel.RIGHT)
+        String[] labels = new String[] {
+                "Type: ",
+                "Series: ",
+                "Min value: ",
+                "Max value: ",
+                "Take every ",
+                "Parse: "
         };
 
         JComponent component[] = new JComponent[] {
@@ -162,18 +162,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
         };
 
         for (int i = 0; i < labels.length; i++) {
-            // Label
-            gbc.gridx = 0; gbc.weightx = 0;
-            gbc.gridy = i; gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.EAST;
-            westPanel.add(labels[i], gbc);
-            // Value
-            gbc.gridx = 1; gbc.weightx = 1;
-            gbc.gridy = i; gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.WEST;
-            westPanel.add(component[i], gbc);
+            gbc.addLine(labels[i], component[i]);
         }
 
         return westPanel;
@@ -186,7 +175,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Common.Parse", 48));
+        setTitleIcon(imageResource.readImage("SetItem.Parse"));
         setTitleName("Default series");
 
         // Components

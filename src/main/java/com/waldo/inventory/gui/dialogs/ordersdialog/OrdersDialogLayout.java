@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
@@ -9,7 +10,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -89,83 +89,23 @@ public abstract class OrdersDialogLayout extends IDialog
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
 
-        // Name
-        ILabel nameLabel = new ILabel("Name: ");
-        nameLabel.setHorizontalAlignment(JLabel.RIGHT);
-        nameLabel.setVerticalAlignment(JLabel.CENTER);
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        getContentPanel().add(nameLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        getContentPanel().add(nameField, gbc);
-
-        // Distributor
-        ILabel distributorLabel = new ILabel("Distributor: ");
-        distributorLabel.setHorizontalAlignment(JLabel.RIGHT);
-        distributorLabel.setVerticalAlignment(JLabel.CENTER);
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        getContentPanel().add(distributorLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        getContentPanel().add(distributorCb, gbc);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(getContentPanel());
+        gbc.addLine("Name: ", nameField);
+        gbc.addLine("Distributor: ", distributorCb);
 
         if (showDates) {
             // Date check box
-            gbc.gridx = 1;
-            gbc.weightx = 0;
-            gbc.gridy = 2;
-            gbc.weighty = 0;
+            gbc.gridx = 1;gbc.weightx = 0;
+            gbc.gridy = 2;gbc.weighty = 0;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             isOrderedCb.setHorizontalAlignment(JLabel.RIGHT);
             isOrderedCb.setVerticalAlignment(JLabel.CENTER);
             getContentPanel().add(isOrderedCb, gbc);
 
             // Date ordered
-            ILabel orderedLabel = new ILabel("Date ordered: ");
-            orderedLabel.setHorizontalAlignment(JLabel.RIGHT);
-            orderedLabel.setVerticalAlignment(JLabel.CENTER);
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.gridy = 3;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            getContentPanel().add(orderedLabel, gbc);
-
-            gbc.gridx = 1;
-            gbc.weightx = 1;
-            gbc.gridy = 3;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            getContentPanel().add(orderedDatePicker, gbc);
-
-            // Date received
-            ILabel receivedLabel = new ILabel("Date received: ");
-            receivedLabel.setHorizontalAlignment(JLabel.RIGHT);
-            receivedLabel.setVerticalAlignment(JLabel.CENTER);
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.gridy = 4;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            getContentPanel().add(receivedLabel, gbc);
-
-            gbc.gridx = 1;
-            gbc.weightx = 1;
-            gbc.gridy = 4;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            getContentPanel().add(receivedDatePicker, gbc);
+            gbc.addLine("Date ordered: ", orderedDatePicker);
+            gbc.addLine("Date received: ", receivedDatePicker);
         }
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));

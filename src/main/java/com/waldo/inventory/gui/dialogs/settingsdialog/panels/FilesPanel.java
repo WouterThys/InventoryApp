@@ -348,36 +348,17 @@ public class FilesPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
 
         ITextField[] iTextFields = new ITextField[]{distributorsPathTf, divisionsPathTF, idesPathTf, itemsPathTf, manufacturersPathTf, projectsPathTf, orderFilesPathTf};
-        ILabel[] iLabels = new ILabel[]{
-                new ILabel("Distributor images: ", ILabel.RIGHT), new ILabel("Division images: ", ILabel.RIGHT), new ILabel("Ide images: ", ILabel.RIGHT),
-                new ILabel("Item images: ", ILabel.RIGHT), new ILabel("Manufacturer images: ", ILabel.RIGHT), new ILabel("Project images: ", ILabel.RIGHT),
-                new ILabel("Order files: ", ILabel.RIGHT)
+        String[] iLabels = new String[] {
+                "Distributor images: ", "Division images: ", "Ide images: ", "Item images: ","Manufacturer images: ","Project images: ", "Order files: "
         };
         JButton[] jButtons = new JButton[]{distributorsPathBtn, divisionsPathBtn, idesPathBtn, itemsPathBtn, manufacturersPathBtn, projectsPathBtn, orderFilesPathBtn};
 
         for (int i = 0; i < iTextFields.length; i++) {
             JPanel panel = PanelUtils.createFileOpenPanel(iTextFields[i], jButtons[i]);
-
-            // Label
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.gridy = i;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.EAST;
-            settingsPanel.add(iLabels[i], gbc);
-            // Panel
-            gbc.gridx = 1;
-            gbc.weightx = 1;
-            gbc.gridy = i;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.WEST;
-            settingsPanel.add(panel, gbc);
+            gbc.addLine(iLabels[i], panel);
         }
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder("File options");

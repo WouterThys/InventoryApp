@@ -17,7 +17,8 @@ public class ILinkKiCadTableModel extends IAbstractTableModel<PcbItem> {
 
         this.type = type;
         if (type == ORDER_COMPONENTS) {
-            setColumnName(3, "O");
+            columnNames[3] = "O";
+            fireTableStructureChanged();
         }
     }
 
