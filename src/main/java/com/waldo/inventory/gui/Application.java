@@ -124,6 +124,14 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(Status(), BorderLayout.PAGE_END);
         Status().setMessage("Initializing");
 
+        // Icon
+        try {
+            Image image = imageResource.readImage("Main.Icon").getImage();
+            setIconImage(image);
+        } catch (Exception e) {
+            Status().setError("Error setting application image", e);
+        }
+
         // Menu
         setJMenuBar(new MenuBar(this));
 
