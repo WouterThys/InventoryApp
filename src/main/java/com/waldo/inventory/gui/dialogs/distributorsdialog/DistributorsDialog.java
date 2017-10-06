@@ -86,7 +86,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
     private void setDetails() {
         if (selectedDistributor != null) {
             detailName.setText(selectedDistributor.getName());
-            detailWebsite.setText(selectedDistributor.getWebsite());
+            browseDistributorPanel.setText(selectedDistributor.getWebsite());
 
             if (!selectedDistributor.getIconPath().isEmpty()) {
                 Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), selectedDistributor.getIconPath());
@@ -96,17 +96,17 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             }
 
             // Orders
-            detailOrderLink.setText(selectedDistributor.getOrderLink());
+            browseOrderLinkPanel.setText(selectedDistributor.getOrderLink());
             detailOrderFileFormatCb.setSelectedItem(selectedDistributor.getOrderFileFormat());
         }
     }
 
     private void clearDetails() {
         detailName.setText("");
-        detailWebsite.setText("");
+        browseDistributorPanel.clearText();
         detailLogo.setIcon((Icon)null);
         // List
-        detailOrderLink.setText("");
+        browseOrderLinkPanel.clearText();
         detailOrderFileFormatCb.setSelectedItem(null);
     }
 
@@ -116,7 +116,6 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
                     selectedDistributor.setName(detailName.getText());
-                    selectedDistributor.setWebsite(detailWebsite.getText());
                     selectedDistributor.save();
                     originalDistributor = selectedDistributor.createCopy();
                     if (closeAfter) {

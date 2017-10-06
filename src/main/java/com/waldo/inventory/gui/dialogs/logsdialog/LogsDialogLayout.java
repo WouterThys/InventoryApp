@@ -70,30 +70,19 @@ public abstract class LogsDialogLayout extends IDialog implements
         gbc.insets = new Insets(2,2,2,2);
 
         gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
         cbPanel.add(showInfoCb, gbc);
 
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 1;
         cbPanel.add(showDebugCb, gbc);
 
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 2;
         cbPanel.add(showWarnCb, gbc);
 
-        gbc.gridx = 3; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 3;
         cbPanel.add(showErrorCb, gbc);
 
-        gbc.gridx = 4; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 4;
         cbPanel.add(clearLogsBtn, gbc);
-
 
         cbPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),

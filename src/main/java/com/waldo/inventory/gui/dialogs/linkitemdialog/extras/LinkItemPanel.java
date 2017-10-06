@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.database.DbManager;
@@ -123,42 +124,10 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     private JPanel createSouthPanel() {
         JPanel southPanel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // - Description
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Description: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(descriptionTf, gbc);
-
-        // - FootPrint
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Foot print: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(footprintTf, gbc);
-
-        // - Value
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Value: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(setValueTf, gbc);
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(southPanel);
+        gbh.addLine("Description: ", descriptionTf);
+        gbh.addLine("Footprint: ", footprintTf);
+        gbh.addLine("Value: ", setValueTf);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),

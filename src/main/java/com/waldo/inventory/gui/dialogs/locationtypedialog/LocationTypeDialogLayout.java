@@ -100,31 +100,12 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel northPanel = new JPanel(new GridBagLayout());
+        JPanel buttonPanel = new JPanel(new BorderLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        // - Name
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        northPanel.add(new ILabel("Name: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        northPanel.add(detailName, gbc);
-
-        // - Custom btn
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        northPanel.add(detailCustomBtn, gbc);
+        buttonPanel.add(detailCustomBtn, BorderLayout.EAST);
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(northPanel);
+        gbh.addLine("Name: ", detailName);
+        gbh.add(buttonPanel, 1,1);
 
         // Add
         panel.add(northPanel, BorderLayout.NORTH);
@@ -172,11 +153,11 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        getContentPanel().add(createWestPanel(), BorderLayout.WEST);
-
         JPanel eastPanel = new JPanel(new BorderLayout());
         eastPanel.add(createLocationTypeDetailPanel(), BorderLayout.NORTH);
         eastPanel.add(ILocationMapPanel, BorderLayout.CENTER);
+
+        getContentPanel().add(createWestPanel(), BorderLayout.WEST);
         getContentPanel().add(eastPanel, BorderLayout.CENTER);
 
         pack();

@@ -76,7 +76,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     private void setDetails() {
         if (selectedManufacturer != null) {
             detailName.setText(selectedManufacturer.getName());
-            detailWebsite.setText(selectedManufacturer.getWebsite());
+            browsePanel.setText(selectedManufacturer.getWebsite());
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
                 Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), selectedManufacturer.getIconPath());
@@ -94,7 +94,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
 
     private void clearDetails() {
         detailName.setText("");
-        detailWebsite.setText("");
+        browsePanel.clearText();
         detailLogo.setIcon((Icon) null);
         detailItemDefaultListModel.removeAllElements();
     }
@@ -104,8 +104,6 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             String msg = selectedManufacturer.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-//                    selectedManufacturer.setName(detailName.getText());
-//                    selectedManufacturer.setWebsite(detailWebsite.getText());
                     selectedManufacturer.save();
                     originalManufacturer = selectedManufacturer.createCopy();
                     if (closeAfter) {

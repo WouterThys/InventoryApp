@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.DimensionType;
 import com.waldo.inventory.classes.PackageType;
@@ -39,7 +40,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
 
     private IDimensionTypeTableModel tableModel;
     private ITable detailTypeTable;
-    IdBToolBar detailToolBar;
+    private IdBToolBar detailToolBar;
 
 
     /*
@@ -49,7 +50,6 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     PackageType originalPackageType;
 
     DimensionType selectedDimensionType;
-    DimensionType originalDimensionType;
 
 
     /*
@@ -166,47 +166,15 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel tablePanel = new JPanel(new BorderLayout());
         JScrollPane pane = new JScrollPane(detailDescription);
-        pane.setPreferredSize(new Dimension(100, 100));
 
         // Text fields
         JPanel textFieldPanel = new JPanel(new GridBagLayout());
 
-        // - Name
-        ILabel nameLabel = new ILabel("Name: ");
-        nameLabel.setHorizontalAlignment(ILabel.RIGHT);
-        nameLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // Description
-        ILabel descriptionLabel = new ILabel("Description: ");
-        descriptionLabel.setHorizontalAlignment(ILabel.RIGHT);
-        descriptionLabel.setVerticalAlignment(ILabel.CENTER);
-
-        // - Add to panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        textFieldPanel.add(nameLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        textFieldPanel.add(detailName, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        textFieldPanel.add(descriptionLabel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 3;
-        gbc.gridy = 2; gbc.weighty = 3;
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(textFieldPanel);
+        gbc.addLine("Name: ", detailName);
+        gbc.addLine("Description: ", null);
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        textFieldPanel.add(pane, gbc);
+        gbc.add(pane, 0, 2, 1, 1);
 
         // TABLE
         tablePanel.add(new JScrollPane(detailTypeTable), BorderLayout.CENTER);

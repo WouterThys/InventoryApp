@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.ITextField;
@@ -18,7 +18,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KcOrderItemPanel extends JPanel implements GuiInterface {
+public class PcbItemPanel extends JPanel implements GuiInterface {
 
     public interface AmountChangeListener {
         void onAmountChanged(int amount);
@@ -44,7 +44,7 @@ public class KcOrderItemPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public KcOrderItemPanel(Application application) {
+    public PcbItemPanel(Application application) {
         this.application = application;
 
         initializeComponents();
@@ -68,7 +68,11 @@ public class KcOrderItemPanel extends JPanel implements GuiInterface {
             if (incrementIfKnown) {
                 int ndx = tableModel.getItemList().indexOf(orderItem);
                 OrderItem item = tableModel.getItemList().get(ndx);
-                item.setAmount(item.getAmount() + 1);
+                int increment = orderItem.getAmount();
+                if (increment == 0) {
+                    increment = 1;
+                }
+                item.setAmount(item.getAmount() + increment);
                 tableModel.updateTable();
             }
         } else {
@@ -130,31 +134,9 @@ public class KcOrderItemPanel extends JPanel implements GuiInterface {
     private JPanel createSouthPanel() {
         JPanel southPanel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // - Description
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Description: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(descriptionTf, gbc);
-
-        // - FootPrint
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Foot print: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(footprintTf, gbc);
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(southPanel);
+        gbh.addLine("Description: ", descriptionTf);
+        gbh.addLine("Footprint: ", footprintTf);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),

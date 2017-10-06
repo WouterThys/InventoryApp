@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -27,18 +28,12 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
     private ITextField referencesTf;
     private ITextField footprintTf;
-    /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
-    private ProjectPcb projectPcb;
     private int type;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public LinkPcbPanel(Application application, int type) {
-        this.application = application;
         this.type = type;
 
         initializeComponents();
@@ -94,31 +89,9 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     private JPanel createSouthPanel() {
         JPanel southPanel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // - Description
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("References: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(referencesTf, gbc);
-
-        // - FootPrint
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        southPanel.add(new ILabel("Foot print: ", ILabel.RIGHT), gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        southPanel.add(footprintTf, gbc);
+        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(southPanel);
+        gbh.addLine("References: ", referencesTf);
+        gbh.addLine("Footprint: ", footprintTf);
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
@@ -135,7 +108,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         // Table
         tableModel = new ILinkKiCadTableModel(type);
-        itemTable = new ITable(tableModel);
+        itemTable = new ITable<>(tableModel);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
         itemTable.getColumnModel().getColumn(0).setMaxWidth(30);
         itemTable.getColumnModel().getColumn(3).setMaxWidth(30);
@@ -165,7 +138,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            projectPcb = (ProjectPcb) object;
+            ProjectPcb projectPcb = (ProjectPcb) object;
             updateTable(projectPcb.getPcbItemMap());
         } else {
             tableModel.clearItemList();

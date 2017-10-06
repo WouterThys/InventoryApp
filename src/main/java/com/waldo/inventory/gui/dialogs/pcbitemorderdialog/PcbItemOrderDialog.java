@@ -152,32 +152,67 @@ public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(addToOrderBtn)) {
-            if (selectedComponent != null) {
-                OrderItem toOrder = createOrderItem(selectedComponent);
+        Object source = e.getSource();
+        if (source.equals(addToOrder)) {
+            addToOrder();
+        } else if (source.equals(removeFromOrder)) {
+            removeFromOrder();
+        } else if (source.equals(addAll)) {
+            addAll();
+        } else if (source.equals(addAllCheckStock)) {
+            addAllCheckStock();
+        }
+    }
+
+    private void addToOrder() {
+        if (selectedComponent != null) {
+            OrderItem toOrder = createOrderItem(selectedComponent);
+            orderPanel.addOrderItem(toOrder, true);
+            orderPanel.setSelectedOrderItem(toOrder);
+        }
+    }
+
+    private void removeFromOrder() {
+        if (selectedOrderItem != null) {
+            if (selectedOrderItem.getAmount() > 1) {
+                selectedOrderItem.setAmount(selectedOrderItem.getAmount() - 1);
+                orderPanel.updateTable();
+            } else {
+                PcbItem component = findComponentForOrderItem(selectedOrderItem);
+                if (component != null) {
+                    for (PcbItem c : sameSetComponents(component)) {
+                        c.setOrderItem(null);
+                    }
+                }
+                orderPanel.removeOrderItem(selectedOrderItem);
+                selectedOrderItem = null;
+                orderPanel.setSelectedOrderItem(null);
+            }
+            pcbPanel.updateTable();
+            updateEnabledComponents();
+        }
+    }
+
+    private void addAll() {
+        for (PcbItem pcbItem : pcbItemList) {
+            OrderItem toOrder = createOrderItem(pcbItem);
+            orderPanel.addOrderItem(toOrder, true);
+            orderPanel.setSelectedOrderItem(toOrder);
+        }
+    }
+
+    private void addAllCheckStock() {
+        for (PcbItem pcbItem : pcbItemList) {
+            int pcbAmount = pcbItem.getReferences().size();
+            int itmAmount = pcbItem.getMatchedItem().getAmount();
+
+            if (itmAmount < pcbAmount) {
+                OrderItem toOrder = createOrderItem(pcbItem);
+                toOrder.setAmount(pcbAmount - itmAmount);
                 orderPanel.addOrderItem(toOrder, true);
                 orderPanel.setSelectedOrderItem(toOrder);
             }
-        } else if (e.getSource().equals(removeFromOrderBtn)) {
-            if (selectedOrderItem != null) {
-                if (selectedOrderItem.getAmount() > 1) {
-                    selectedOrderItem.setAmount(selectedOrderItem.getAmount() - 1);
-                    orderPanel.updateTable();
-                } else {
-                    PcbItem component = findComponentForOrderItem(selectedOrderItem);
-                    if (component != null) {
-                        for (PcbItem c : sameSetComponents(component)) {
-                            c.setOrderItem(null);
-                        }
-                    }
-                    orderPanel.removeOrderItem(selectedOrderItem);
-                    selectedOrderItem = null;
-                    orderPanel.setSelectedOrderItem(null);
-                }
-            }
         }
-        pcbPanel.updateTable();
-        updateEnabledComponents();
     }
 
     //

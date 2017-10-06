@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Utils.OpenUtils;
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.LogManager;
@@ -375,34 +376,13 @@ public class DbPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
 
         JComponent[] jComponents = new JComponent[]{ dbNameTf, dbIpTf, userNameTf, userPwTf};
-        ILabel[] iLabels = new ILabel[]{
-                new ILabel("Db file name: ", ILabel.RIGHT),
-                new ILabel("Db ip address: ", ILabel.RIGHT),
-                new ILabel("Db user name: ", ILabel.RIGHT),
-                new ILabel("Db user password: ", ILabel.RIGHT)
-        };
+        String[] iLabels = new String[]{"Db file name: ", "Db ip address: ", "Db user name: ", "Db user password: "};
 
         for (int i = 0; i < jComponents.length; i++) {
-            // Label
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.gridy = i;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.EAST;
-            settingsPanel.add(iLabels[i], gbc);
-            // Component
-            gbc.gridx = 1;
-            gbc.weightx = 1;
-            gbc.gridy = i;
-            gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.WEST;
-            settingsPanel.add(jComponents[i], gbc);
+            gbc.addLine(iLabels[i], jComponents[i]);
         }
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder("File options");

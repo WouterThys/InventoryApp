@@ -10,7 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
@@ -211,9 +212,9 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         remarksTa.setWrapStyleWord(true);
         remarksTa.addMouseListener(mouseAdapter);
 
-        dataSheetButton = new JButton("Data sheet");
-        orderButton = new JButton("Order");
-        historyButton = new JButton("History");
+        dataSheetButton = new JButton(imageResource.readImage("Items.Buttons.History"));
+        orderButton = new JButton(imageResource.readImage("Items.Buttons.Order"));
+        historyButton = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         remarksPanel = new JPanel(new BorderLayout());
 
     }

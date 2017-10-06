@@ -21,7 +21,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
 
-    public static final String TAB_ORDER_FILE = "Order file ";
+    static final String TAB_ORDER_FILE = "Order file ";
     public static final String TAB_ORDER_DETAILS = "Order details";
 
     private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("MMM d, yyyy");
@@ -31,14 +31,12 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<String> stepList;
-    DefaultListModel<String> stepListModel;
 
     JPanel cardPanel;
     CardLayout cardLayout;
-    JPanel mainPanel;
-    JPanel filePanel;
-    JPanel detailPanel;
-    TitledBorder mainBorder;
+    private JPanel mainPanel;
+    private JPanel filePanel;
+    private JPanel detailPanel;
 
     JButton parseBtn;
     JButton copyToClipboardBtn;
@@ -46,21 +44,21 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
     JButton distributorsBrowseBtn;
     JButton orderUrlBrowseBtn;
 
-    ILabel orderByLbl;
+    private ILabel orderByLbl;
     ILabel fileOkLbl;
 
     // Order file panel
-    JTable orderFileTable;
-    DefaultTableModel orderFileTableModel;
+    private JTable orderFileTable;
+    private DefaultTableModel orderFileTableModel;
 
     // Order panel
-    ITextField referenceTf;
-    ITextField trackingNrTf;
-    ITextField dateOrderedTf;
-    ITextField dateReceivedTf;
-    ITextField dateModifiedTf;
-    ITextField itemsTf;
-    ITextField totalPriceTf;
+    private ITextField referenceTf;
+    private ITextField trackingNrTf;
+    private ITextField dateOrderedTf;
+    private ITextField dateReceivedTf;
+    private ITextField dateModifiedTf;
+    private ITextField itemsTf;
+    private ITextField totalPriceTf;
 
     /*
      *                  VARIABLES
@@ -148,11 +146,18 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
                 orderUrlBrowseBtn.setVisible(false);
                 break;
             case TAB_ORDER_DETAILS:
-                switch(order.getOrderState()) {
-                    case Statics.ItemOrderStates.PLANNED: getButtonOK().setText("order"); break;
-                    case Statics.ItemOrderStates.ORDERED: getButtonOK().setText("received"); break;
-                    case Statics.ItemOrderStates.RECEIVED: getButtonOK().setText("ok"); break;
-                    default: break;
+                switch (order.getOrderState()) {
+                    case Statics.ItemOrderStates.PLANNED:
+                        getButtonOK().setText("order");
+                        break;
+                    case Statics.ItemOrderStates.ORDERED:
+                        getButtonOK().setText("received");
+                        break;
+                    case Statics.ItemOrderStates.RECEIVED:
+                        getButtonOK().setText("ok");
+                        break;
+                    default:
+                        break;
                 }
                 getButtonNeutral().setVisible(true);
                 getButtonNeutral().setText("back");
@@ -176,12 +181,12 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         JPanel refPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        gbc.insets = new Insets(2, 2, 2, 2);
 
         // Date panel
         // - Labels
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.gridx = 0;gbc.weightx = 0;
+        gbc.gridy = 0;gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -193,8 +198,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         gbc.gridy++;
 
         // - Fields
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.gridx = 1;gbc.weightx = 1;
+        gbc.gridy = 0;gbc.weighty = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
 
@@ -210,8 +215,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         // Number panel
         // - Labels
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.gridx = 0;gbc.weightx = 0;
+        gbc.gridy = 0;gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -220,8 +225,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         numberPanel.add(new ILabel("Total price: "), gbc);
 
         // - Fields
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.gridx = 1;gbc.weightx = 1;
+        gbc.gridy = 0;gbc.weighty = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
 
@@ -235,8 +240,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         // Ref panel
         // - Labels
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.gridx = 0;gbc.weightx = 0;
+        gbc.gridy = 0;gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -245,8 +250,8 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         refPanel.add(new ILabel("Tracking number: "), gbc);
 
         // - Fields
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.gridx = 1;gbc.weightx = 1;
+        gbc.gridy = 0;gbc.weighty = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
 
@@ -286,7 +291,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
 
-        mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
+        TitledBorder mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
         mainPanel.setBorder(mainBorder);
     }
 
@@ -301,10 +306,10 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         getButtonOK().setEnabled(false);
 
         // Main layout
-        cardLayout = new CardLayout(5,5);
+        cardLayout = new CardLayout(5, 5);
         cardPanel = new JPanel(cardLayout);
 
-        stepListModel = new DefaultListModel<>();
+        DefaultListModel<String> stepListModel = new DefaultListModel<>();
         stepListModel.addElement(TAB_ORDER_FILE);
         stepListModel.addElement(TAB_ORDER_DETAILS);
         stepList = new JList<>(stepListModel);
@@ -317,24 +322,24 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         // File panel
         orderByLbl = new ILabel();
-        fileOkLbl = new ILabel(imageResource.readImage("OrderConfirm.Error", 16));
+        fileOkLbl = new ILabel(imageResource.readImage("Orders.Confirm.Error"));
 
         orderFileTableModel = new DefaultTableModel();
         orderFileTable = new JTable(orderFileTableModel);
 
-        parseBtn = new JButton(imageResource.readImage("Common.Refresh", 24));
+        parseBtn = new JButton(imageResource.readImage("Orders.Confirm.Refresh"));
         parseBtn.setToolTipText("Parse again");
         parseBtn.addActionListener(this);
-        copyToClipboardBtn = new JButton(imageResource.readImage("Common.Copy", 24));
+        copyToClipboardBtn = new JButton(imageResource.readImage("Orders.Confirm.Copy"));
         copyToClipboardBtn.setToolTipText("Copy to clipboard");
         copyToClipboardBtn.addActionListener(this);
-        viewParsedBtn = new JButton(imageResource.readImage("Common.View", 24));
+        viewParsedBtn = new JButton(imageResource.readImage("Orders.Confirm.View"));
         viewParsedBtn.setToolTipText("View parsed file");
         viewParsedBtn.addActionListener(this);
-        distributorsBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseDistributor", 24));
+        distributorsBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseDistributor"));
         distributorsBrowseBtn.setToolTipText("Browse distributor website");
         distributorsBrowseBtn.addActionListener(this);
-        orderUrlBrowseBtn = new JButton(imageResource.readImage("OrderConfirm.BrowseOrder", 24));
+        orderUrlBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseOrder"));
         orderUrlBrowseBtn.setToolTipText("Go to order page");
         orderUrlBrowseBtn.addActionListener(this);
 
@@ -343,7 +348,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         referenceTf.addEditedListener(this, "orderReference");
         trackingNrTf = new ITextField("Tracking number");
         trackingNrTf.addEditedListener(this, "trackingNumber");
-        dateOrderedTf  = new ITextField("Date ordered");
+        dateOrderedTf = new ITextField("Date ordered");
         dateOrderedTf.setEnabled(false);
         dateReceivedTf = new ITextField("Date received");
         dateReceivedTf.setEnabled(false);
@@ -368,7 +373,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
         JPanel listPanel = new JPanel(new BorderLayout());
         listPanel.add(new JScrollPane(stepList), BorderLayout.CENTER);
-        listPanel.setBorder(BorderFactory.createEmptyBorder(16,2,2,2));
+        listPanel.setBorder(BorderFactory.createEmptyBorder(16, 2, 2, 2));
 
         getContentPanel().add(listPanel, BorderLayout.WEST);
         getContentPanel().add(mainPanel, BorderLayout.CENTER);
@@ -410,45 +415,3 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
         }
     }
 }
-
-
-//    getContentPanel().setLayout(new GridBagLayout());
-//
-//        // Labels
-//        ILabel referenceLabel = new ILabel("Reference: ");
-//        referenceLabel.setHorizontalAlignment(ILabel.RIGHT);
-//        referenceLabel.setVerticalAlignment(ILabel.CENTER);
-//        ILabel trackingLabel = new ILabel("Tracking: ");
-//        trackingLabel.setHorizontalAlignment(ILabel.RIGHT);
-//        trackingLabel.setVerticalAlignment(ILabel.CENTER);
-//
-//        // Layout
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(2,2,2,2);
-//
-//        // - Reference Label
-//        gbc.gridx = 0; gbc.weightx = 0;
-//        gbc.gridy = 0; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        getContentPanel().add(referenceLabel, gbc);
-//
-//        // - Reference field
-//        gbc.gridx = 1; gbc.weightx = 1;
-//        gbc.gridy = 0; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        getContentPanel().add(referenceTf, gbc);
-//
-//        // - Tracking Label
-//        gbc.gridx = 0; gbc.weightx = 0;
-//        gbc.gridy = 1; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        getContentPanel().add(trackingLabel, gbc);
-//
-//        // - Tracking field
-//        gbc.gridx = 1; gbc.weightx = 1;
-//        gbc.gridy = 1; gbc.weighty = 0;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        getContentPanel().add(trackingNrTf, gbc);
-//
-//        // - Border
-//        getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));

@@ -74,7 +74,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("SetItemDialog.TitleIcon", 48));
+        setTitleIcon(imageResource.readImage("SetItem.Title"));
         setTitleName("Set items");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -82,7 +82,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
 
         // Table
         tableModel = new ISetItemTableModel(new SetItem.SetItemComparator());
-        setItemTable = new ITable(tableModel);
+        setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
         setItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());

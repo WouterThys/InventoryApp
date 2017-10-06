@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
@@ -22,7 +23,6 @@ public class PanelUtils {
         constraints.fill = BOTH;
         return constraints;
     }
-
 
     public static JPanel createBrowsePanel(ITextField urlTf, JButton browseBtn) {
         JPanel browsePanel = new JPanel(new GridBagLayout());
@@ -65,6 +65,93 @@ public class PanelUtils {
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
         return titledBorder;
+    }
+
+
+
+    public static class GridBagHelper extends GridBagConstraints {
+
+        private JPanel panel;
+
+        public GridBagHelper(JPanel panel) {
+            this.panel = panel;
+            this.panel.setLayout(new GridBagLayout());
+
+            insets = new Insets(2,2,2,2);
+            anchor = GridBagConstraints.EAST;
+
+            gridx = 0;
+            gridy = 0;
+        }
+
+        public void addLineVertical(String labelText, JComponent component) {
+            gridx = 0; weightx = 0;
+            gridy = 0; weighty = 0;
+            fill = GridBagConstraints.HORIZONTAL;
+            panel.add(new ILabel(labelText, ILabel.LEFT), this);
+
+            gridx = 0; weightx = 1;
+            gridy = 1; weighty = 1;
+            fill = GridBagConstraints.BOTH;
+            panel.add(component, this);
+        }
+
+        public void addLine(String labelText, JComponent component) {
+            addLine(labelText, component, GridBagConstraints.HORIZONTAL);
+        }
+
+        public void addLine(String labelText, JComponent component, int fill) {
+            int oldGw = gridwidth;
+            int oldGh = gridheight;
+
+            weightx = 0; weighty = 0;
+            gridwidth = 1;
+            this.fill = GridBagConstraints.NONE;
+            panel.add(new ILabel(labelText, ILabel.RIGHT), this);
+
+
+            gridwidth = oldGw;
+            gridheight = oldGh;
+            gridx = 1; weightx = 1;
+            this.fill = fill;
+            if (component != null) {
+                panel.add(component, this);
+            }
+
+
+            gridx = 0; gridy++;
+        }
+
+        public void add(JComponent component, int x, int y) {
+            add(component, x, y, 1, weighty);
+        }
+
+        public void add(JComponent component, int x, int y, double weightX, double weightY) {
+            int oldX = gridx;
+            int oldY = gridy;
+            double oldWeightX = weightx;
+            double oldWeightY = weighty;
+
+            gridx = x; weightx = weightX;
+            gridy = y; weighty = weightY;
+            panel.add(component, this);
+
+            gridx = oldX; weightx = oldWeightX;
+            gridy = oldY; weighty = oldWeightY;
+
+            gridx = 0;
+            gridy++;
+        }
+
+
+
+        public JPanel getPanel() {
+            return panel;
+        }
+
+        public void setPanel(JPanel panel) {
+            this.panel = panel;
+        }
     }
 
 }

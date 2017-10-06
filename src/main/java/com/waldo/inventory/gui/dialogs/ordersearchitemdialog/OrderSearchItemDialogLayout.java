@@ -2,11 +2,10 @@ package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.ITable;
+import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -19,7 +18,7 @@ public abstract class OrderSearchItemDialogLayout extends IDialog implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel searchPanel;
     ITable resultTable;
     IItemTableModel resultTableModel;
 
@@ -50,7 +49,7 @@ public abstract class OrderSearchItemDialogLayout extends IDialog implements
 
         // Item table
         resultTableModel = new IItemTableModel();
-        resultTable = new ITable(resultTableModel);
+        resultTable = new ITable<>(resultTableModel);
         resultTable.getSelectionModel().addListSelectionListener(this);
         resultTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
     }

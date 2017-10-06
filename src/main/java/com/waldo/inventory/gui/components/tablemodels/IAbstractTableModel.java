@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     private String[] columnHeaderToolTips;
-    private final String[] columnNames;
+    final String[] columnNames;
     private final Class[] columnClasses;
     private Comparator<? super T> comparator;
 
@@ -129,11 +129,6 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
             return itemList.get(index);
         }
         return null;
-    }
-
-    public void setColumnName(int i, String name) {
-        columnNames[i] = name;
-        fireTableStructureChanged();
     }
 
     public String[] getColumnHeaderToolTips() {
