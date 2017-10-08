@@ -32,26 +32,26 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected ProjectGridPanel<T> gridPanel;
-    protected IdBToolBar objectToolBar;
-    protected JButton runIdeBtn;
-    protected ILabel projectObjectNameLbl;
-    protected ITextEditor remarksTe;
-    protected ILabel hideRemarksLbl;
+    ProjectGridPanel<T> gridPanel;
+    private IdBToolBar objectToolBar;
+    private JButton runIdeBtn;
+    private ILabel projectObjectNameLbl;
+    ITextEditor remarksTe;
+    private ILabel hideRemarksLbl;
 
-    protected JPanel eastPanel = new JPanel(new BorderLayout());
-    protected JPanel centerPanel = new JPanel(new BorderLayout());
-    protected JPanel remarksPanel = new JPanel(new BorderLayout());
-    protected JPanel menuPanel = new JPanel(new BorderLayout());
+    JPanel eastPanel = new JPanel(new BorderLayout());
+    private JPanel centerPanel = new JPanel(new BorderLayout());
+    private JPanel remarksPanel = new JPanel(new BorderLayout());
+    JPanel menuPanel = new JPanel(new BorderLayout());
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected Application application;
-    protected Project selectedProject;
-    protected T selectedProjectObject;
-    protected boolean hidingRemarks = false;
+    Project selectedProject;
+    T selectedProjectObject;
+    private boolean hidingRemarks = false;
 
     /*
      *                  CONSTRUCTOR
@@ -69,11 +69,19 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected void updateEnabledComponents() {
-        boolean enabled = selectedProjectObject != null;
-        objectToolBar.setDeleteActionEnabled(enabled);
-        objectToolBar.setEditActionEnabled(enabled);
-        remarksTe.setEnabled(enabled);
-        runIdeBtn.setEnabled(enabled);
+        boolean projectSelected = (selectedProject != null && !selectedProject.isUnknown() && selectedProject.canBeSaved());
+        boolean objectSelected = selectedProjectObject != null;
+        if (projectSelected) {
+            objectToolBar.setEnabled(true);
+            objectToolBar.setDeleteActionEnabled(objectSelected);
+            objectToolBar.setEditActionEnabled(objectSelected);
+            remarksTe.setEnabled(objectSelected);
+            runIdeBtn.setEnabled(objectSelected);
+        } else {
+            objectToolBar.setEnabled(false);
+            remarksTe.setEnabled(false);
+            runIdeBtn.setEnabled(false);
+        }
     }
 
     protected void selectProjectObject(T projectObject) {
@@ -89,7 +97,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         updateEnabledComponents();
     }
 
-    protected void hideRemarks(boolean hide) {
+    void hideRemarks(boolean hide) {
         if (!hide) {
             remarksTe.setVisible(true);
             hideRemarksLbl.setText("Remarks");
