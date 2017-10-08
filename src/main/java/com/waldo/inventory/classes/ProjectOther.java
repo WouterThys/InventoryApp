@@ -18,6 +18,11 @@ public class ProjectOther extends ProjectObject {
         setName(name);
     }
 
+    public ProjectOther(long projectId) {
+        super(TABLE_NAME);
+        setProjectId(projectId);
+    }
+
     @Override
     public ProjectOther createCopy() {
         return (ProjectOther) createCopy(new ProjectOther());

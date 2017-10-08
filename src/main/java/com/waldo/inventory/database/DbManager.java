@@ -79,6 +79,7 @@ public class DbManager {
     public List<DbObjectChangedListener<PcbItemItemLink>> onPcbItemItemLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ProjectOther>> onProjectOtherChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
@@ -111,7 +112,7 @@ public class DbManager {
     private List<DbHistory> dbHistoryList;
     private List<ProjectCode> projectCodes;
     private List<ProjectPcb> projectPcbs;
-
+    private List<ProjectOther> projectOthers;
 
     private DbManager() {}
 
@@ -440,6 +441,11 @@ public class DbManager {
         }
     }
 
+    public void addOnProjectOtherChangedListener(DbObjectChangedListener<ProjectOther> dbObjectChangedListener) {
+        if (!onProjectOtherChangedListenerList.contains(dbObjectChangedListener)) {
+            onProjectOtherChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
 
 
     public void removeOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {

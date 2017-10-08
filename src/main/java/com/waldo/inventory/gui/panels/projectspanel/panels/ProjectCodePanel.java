@@ -45,11 +45,10 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
         IFileTreeModel fileTreeModel;
         if (projectCode != null) {
             fileTreeModel = new IFileTreeModel(new File(selectedProjectObject.getDirectory()));
-            codeFilesTree.setModel(fileTreeModel);
         } else {
             fileTreeModel = new IFileTreeModel();
-            codeFilesTree.setModel(fileTreeModel);
         }
+        codeFilesTree.setModel(fileTreeModel);
     }
 
     /*
@@ -77,9 +76,8 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
         if (object != null) {
             selectedProject = (Project) object;
             gridPanel.drawTiles(selectedProject.getProjectCodes());
-        } else {
-            selectedProject = null;
         }
+        // else selectedProject = null ??
         selectedProjectObject = null;
         selectProjectObject(null);
     }
@@ -87,7 +85,6 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     //
     // Tool bar
     //
-
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (selectedProject != null) {

@@ -1,62 +1,110 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectOther;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
+import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog.EditProjectObjectDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
-public class ProjectOtherPanel extends JPanel implements GuiInterface {    
+public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    private JTree otherFilesTree;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectOtherPanel(Application application) {
-        this.application = application;
-
-        initializeComponents();
-        initializeLayouts();
+        super(application);
+        DbManager.db().addOnProjectOtherChangedListener(this);
     }
 
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    @Override
+    protected void selectProjectObject(ProjectOther projectCode) {
+        super.selectProjectObject(projectCode);
+        IFileTreeModel fileTreeModel;
+        if (projectCode != null) {
+            fileTreeModel = new IFileTreeModel(new File(selectedProjectObject.getDirectory()));
+        } else {
+            fileTreeModel = new IFileTreeModel();
+        }
+        otherFilesTree.setModel(fileTreeModel);
+    }
+
+
     /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+         *                  LISTENERS
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        super.initializeComponents();
 
+        otherFilesTree = new JTree();
+        otherFilesTree.setCellRenderer(ITree.getFilesRenderer());
     }
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BorderLayout());
+        super.initializeLayouts();
 
-        // Panels
-        JPanel westPanel = new JPanel(new BorderLayout());
-        JPanel centerPanel = new JPanel(new BorderLayout());
-
-        // Add stuff to panels
-
-        // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
-        add(splitPane, BorderLayout.CENTER);
+        JScrollPane pane = new JScrollPane(otherFilesTree);
+        eastPanel.add(pane, BorderLayout.CENTER);
     }
 
     @Override
     public void updateComponents(Object object) {
+        if (object != null) {
+            selectedProject = (Project) object;
+            gridPanel.drawTiles(selectedProject.getProjectOthers());
+        }
+        // else ..
+        selectedProjectObject = null;
+        selectProjectObject(null);
+    }
 
+    //
+    // Tool bar
+    //
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+        if (selectedProject != null) {
+            ProjectOther newProjectOther = new ProjectOther(selectedProject.getId());
+            EditProjectObjectDialog dialog = new EditProjectObjectDialog<>(application, "Add", newProjectOther);
+            dialog.showDialog();
+        }
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+        if (selectedProjectObject != null) {
+            EditProjectObjectDialog dialog = new EditProjectObjectDialog<>(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
+            dialog.showDialog();
+        }
+    }
+
+    //
+    // Project Other changed
+    //
+    @Override
+    public void onUpdated(ProjectOther object) {
+        gridPanel.drawTiles(selectedProject.getProjectOthers());
+        updateEnabledComponents();
     }
 }
