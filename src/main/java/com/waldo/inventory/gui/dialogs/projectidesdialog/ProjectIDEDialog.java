@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
@@ -89,9 +88,9 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             }
 
             detailProjectModel.removeAllElements();
-            for (Project p : db().getProjectForProjectType(selectedProjectIDE.getId())) {
-                detailProjectModel.addElement(p);
-            }
+//            for (Project p : db().getProjectForProjectType(selectedProjectIDE.getId())) {
+//                detailProjectModel.addElement(p);
+//            }
         }
     }
 

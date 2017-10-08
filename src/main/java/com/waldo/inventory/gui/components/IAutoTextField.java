@@ -1,7 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.gui.components.ITextField;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;

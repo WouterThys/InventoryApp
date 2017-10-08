@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
@@ -16,15 +15,14 @@ import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
-import java.io.*;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class DbManager {
 
@@ -69,7 +67,7 @@ public class DbManager {
     public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
+    //public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectIDE>> onProjectIDEChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
@@ -98,9 +96,7 @@ public class DbManager {
     private List<DistributorPart> distributorParts;
     private List<PackageType> packageTypes;
     private List<Project> projects;
-    private List<ProjectDirectory> projectDirectories;
     private List<ProjectIDE> projectIDES;
-    private List<ProjectTypeLink> projectTypeLinks;
     private List<OrderFileFormat> orderFileFormats;
     private List<Package> packages;
     private List<SetItem> setItems;
@@ -224,9 +220,7 @@ public class DbManager {
         distributorParts = null;
         packageTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageTypesChangedListenerList);
         projects = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectChangedListenerList);
-        projectDirectories = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectDirectoryChangedListenerList);
         projectIDES = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectIDEChangedListenerList);
-        projectTypeLinks = null;
         orderFileFormats = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderFileFormatChangedListenerList);
         packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
         setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
@@ -387,11 +381,11 @@ public class DbManager {
         }
     }
 
-    public void addOnProjectDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
-        if (!onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectDirectoryChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
+//    public void addOnProjectDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
+//        if (!onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
+//            onProjectDirectoryChangedListenerList.add(dbObjectChangedListener);
+//        }
+//    }
 
     public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectIDE> dbObjectChangedListener) {
         if (!onProjectIDEChangedListenerList.contains(dbObjectChangedListener)) {
@@ -1412,52 +1406,6 @@ public class DbManager {
     }
 
     /*
-    *                  PROJECT DIRECTORIES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectDirectory> getProjectDirectories()    {
-        if (projectDirectories == null) {
-            updateProjectDirectories();
-        }
-        return projectDirectories;
-    }
-
-    private void updateProjectDirectories()    {
-        projectDirectories = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return;
-        }
-        Status().setMessage("Fetching projectDirectories from DB");
-        ProjectDirectory p = null;
-        String sql = scriptResource.readString(ProjectDirectory.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new ProjectDirectory();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-
-                    p.setDirectory(rs.getString("directory"));
-                    p.setProjectId(rs.getLong("projectid"));
-
-                    p.setInserted(true);
-                    if (p.getId() != DbObject.UNKNOWN_ID) {
-                        projectDirectories.add(p);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-
-    /*
     *                  PROJECT IDES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<ProjectIDE> getProjectIDES()    {
@@ -1497,50 +1445,6 @@ public class DbManager {
                     if (p.getId() != DbObject.UNKNOWN_ID) {
                         projectIDES.add(p);
                     }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-
-
-    /*
-    *                  PROJECT TYPE LINKS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectTypeLink> getProjectTypeLinks()    {
-        if (projectTypeLinks == null) {
-            updateProjectTypeLinks();
-        }
-        return projectTypeLinks;
-    }
-
-    private void updateProjectTypeLinks()    {
-        projectTypeLinks = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return;
-        }
-        Status().setMessage("Fetching projectTypeLinks from DB");
-        ProjectTypeLink p = null;
-        String sql = scriptResource.readString(ProjectTypeLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new ProjectTypeLink();
-                    p.setId(rs.getLong("id"));
-                    p.setProjectDirectoryId(rs.getLong("projectdirectoryid"));
-                    p.setProjectTypeId(rs.getLong("projecttypeid"));
-                    p.setFilePath(rs.getString("filepath"));
-
-                    p.setInserted(true);
-                    projectTypeLinks.add(p);
                 }
             }
         } catch (SQLException e) {
@@ -1986,47 +1890,47 @@ public class DbManager {
         return false;
     }
 
-    public List<ProjectDirectory> getProjectDirectoryListForProject(long projectId) {
-        List<ProjectDirectory> directories = new ArrayList<>();
-        for (ProjectDirectory directory : getProjectDirectories()) {
-            if (directory.getProjectId() == projectId) {
-                directories.add(directory);
-            }
-        }
-        return directories;
-    }
+//    public List<ProjectDirectory> getProjectDirectoryListForProject(long projectId) {
+//        List<ProjectDirectory> directories = new ArrayList<>();
+//        for (ProjectDirectory directory : getProjectDirectories()) {
+//            if (directory.getProjectId() == projectId) {
+//                directories.add(directory);
+//            }
+//        }
+//        return directories;
+//    }
 
-    public HashMap<ProjectIDE, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
-        HashMap<ProjectIDE, List<File>> projectTypes = new HashMap<>();
-        for (ProjectTypeLink ptl : getProjectTypeLinks()) {
-            if(ptl.getProjectDirectoryId() == directoryId) {
-                if (projectTypes.containsKey(ptl.getProjectIDE())) {
-                    projectTypes.computeIfAbsent(ptl.getProjectIDE(), k -> new ArrayList<>());
-                } else {
-                    projectTypes.put(ptl.getProjectIDE(), new ArrayList<>());
-                }
-                projectTypes.get(ptl.getProjectIDE()).add(ptl.getFile());
-            }
-        }
-        return projectTypes;
-    }
+//    public HashMap<ProjectIDE, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
+//        HashMap<ProjectIDE, List<File>> projectTypes = new HashMap<>();
+//        for (ProjectTypeLink ptl : getProjectTypeLinks()) {
+//            if(ptl.getProjectDirectoryId() == directoryId) {
+//                if (projectTypes.containsKey(ptl.getProjectIDE())) {
+//                    projectTypes.computeIfAbsent(ptl.getProjectIDE(), k -> new ArrayList<>());
+//                } else {
+//                    projectTypes.put(ptl.getProjectIDE(), new ArrayList<>());
+//                }
+//                projectTypes.get(ptl.getProjectIDE()).add(ptl.getFile());
+//            }
+//        }
+//        return projectTypes;
+//    }
 
-    public List<Project> getProjectForProjectType(long id) {
-        List<Project> projects = new ArrayList<>();
-        for(Project project : getProjects()) {
-            for (ProjectDirectory pd : project.getProjectDirectories()) {
-                for (ProjectIDE pt : pd.getProjectTypeMap().keySet()) {
-                    if (pt.getId() == id) {
-                        if (!projects.contains(project)) {
-                            projects.add(project);
-                        }
-                    }
-                }
-            }
-
-        }
-        return projects;
-    }
+//    public List<Project> getProjectForProjectType(long id) {
+//        List<Project> projects = new ArrayList<>();
+//        for(Project project : getProjects()) {
+//            for (ProjectDirectory pd : project.getProjectDirectories()) {
+//                for (ProjectIDE pt : pd.getProjectTypeMap().keySet()) {
+//                    if (pt.getId() == id) {
+//                        if (!projects.contains(project)) {
+//                            projects.add(project);
+//                        }
+//                    }
+//                }
+//            }
+//
+//        }
+//        return projects;
+//    }
 
     public List<Log> getLogsByType(boolean info, boolean debug, boolean warn, boolean error) {
         List<Log> logList = new ArrayList<>();

@@ -133,8 +133,8 @@ public class SearchManager {
         foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
 
         // Project directories
-        Status().setMessage("Searching for: Project directories");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
+        //Status().setMessage("Searching for: Project directories");
+        //foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
 
         // Project types
         Status().setMessage("Searching for: Project types");
@@ -202,10 +202,6 @@ public class SearchManager {
                 case DbObject.TYPE_PROJECT:
                     Status().setMessage("Searching for: Projects");
                     foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT_DIRECTORY:
-                    Status().setMessage("Searching for: Project directories");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
@@ -279,10 +275,6 @@ public class SearchManager {
                     break;
                 case DbObject.TYPE_PROJECT:
                     Status().setMessage("Searching for: Projects");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT_DIRECTORY:
-                    Status().setMessage("Searching for: Project directories");
                     foundList.addAll(searchForObject(searchList, searchWord));
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
@@ -522,15 +514,6 @@ public class SearchManager {
         return null;
     }
 
-    public ProjectDirectory findProjectDirectoryById(long id) {
-        for (ProjectDirectory p : db().getProjectDirectories()) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     public ProjectIDE findProjectIDEById(long id) {
         for (ProjectIDE p : db().getProjectIDES()) {
             if (p.getId() == id) {
@@ -548,17 +531,6 @@ public class SearchManager {
             }
         }
         return projectIDES;
-    }
-
-    public ProjectTypeLink findProjectTypeLink(long directoryId, long typeId, String path) {
-        for (ProjectTypeLink tpl : db().getProjectTypeLinks()) {
-            if ((tpl.getProjectDirectoryId() == directoryId) &&
-                    (tpl.getProjectTypeId() == typeId) &&
-                    (tpl.getFilePath().equals(path))) {
-                return tpl;
-            }
-        }
-        return null;
     }
 
     public OrderFileFormat findOrderFileFormatById(long id) {

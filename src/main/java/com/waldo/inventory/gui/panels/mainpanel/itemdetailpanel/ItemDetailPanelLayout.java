@@ -212,11 +212,15 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         remarksTa.setWrapStyleWord(true);
         remarksTa.addMouseListener(mouseAdapter);
 
-        dataSheetButton = new JButton(imageResource.readImage("Items.Buttons.History"));
+        dataSheetButton = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         orderButton = new JButton(imageResource.readImage("Items.Buttons.Order"));
-        historyButton = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
-        remarksPanel = new JPanel(new BorderLayout());
+        historyButton = new JButton(imageResource.readImage("Items.Buttons.History"));
 
+        dataSheetButton.setToolTipText("Data sheets");
+        orderButton.setToolTipText("Order");
+        historyButton.setToolTipText("History");
+
+        remarksPanel = new JPanel(new BorderLayout());
     }
 
     @Override

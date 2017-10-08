@@ -59,8 +59,6 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    //private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    //private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
     Application application;
 
     OrderItem selectedOrderItem;
@@ -218,29 +216,21 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     void updateEnabledComponents() {
-        // Orders
-        if (selectedOrder == null || selectedOrder.isUnknown() || !selectedOrder.canBeSaved()) {
-            treeToolBar.setEditActionEnabled(false);
-            treeToolBar.setDeleteActionEnabled(false);
-            tableToolBar.setAddActionEnabled(false);
-            tableToolBar.setRefreshActionEnabled(false);
-            tbDistributorCb.setEnabled(false);
+        boolean orderSelected = (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved());
+        boolean itemSelected = (selectedOrderItem != null && !selectedOrderItem.isUnknown());
+
+        treeToolBar.setEditActionEnabled(orderSelected);
+        treeToolBar.setDeleteActionEnabled(orderSelected);
+
+        if (orderSelected) {
+            tableToolBar.setEnabled(true);
+            tableToolBar.setEditActionEnabled(itemSelected);
+            tableToolBar.setDeleteActionEnabled(itemSelected);
         } else {
-            treeToolBar.setEditActionEnabled(true);
-            treeToolBar.setDeleteActionEnabled(true);
-            tableToolBar.setAddActionEnabled(true);
-            tableToolBar.setRefreshActionEnabled(true);
-            tbDistributorCb.setEnabled(!selectedOrder.isOrdered());
+            tableToolBar.setEnabled(false);
         }
 
-        // Items
-        if (selectedOrderItem == null) {
-            tableToolBar.setEditActionEnabled(false);
-            tableToolBar.setDeleteActionEnabled(false);
-        } else {
-            tableToolBar.setEditActionEnabled(true);
-            tableToolBar.setDeleteActionEnabled(true);
-        }
+        tbDistributorCb.setEnabled(orderSelected && selectedOrder.isPlanned());
 
         tbOrderFlowPanel.updateComponents(selectedOrder);
     }
@@ -262,35 +252,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Total items
-        ILabel itemCntLabel = new ILabel("Item count: ");
-        itemCntLabel.setHorizontalAlignment(ILabel.RIGHT);
-        itemCntLabel.setVerticalAlignment(ILabel.CENTER);
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
-        //amountPanel.add(itemCntLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         amountPanel.add(tbTotalItemsLbl, gbc);
 
         // Total price
-        //ILabel totalPriceLabel = new ILabel("Total price: ");
-        itemCntLabel.setHorizontalAlignment(ILabel.RIGHT);
-        itemCntLabel.setVerticalAlignment(ILabel.CENTER);
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 0;
-        //amountPanel.add(totalPriceLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         amountPanel.add(tbTotalPriceLbl, gbc);
 
         // Add to toolbar
@@ -360,15 +328,13 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IOrderItemTableModel();
-        orderItemTable = new ITable(tableModel);
+        orderItemTable = new ITable<>(tableModel);
 
         orderItemTable.getSelectionModel().addListSelectionListener(this);
         orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application);
-        //itemDetailPanel.setOrderButtonVisible(false);
-
         orderItemDetailPanel = new OrderItemDetailPanel(application);
 
         // Tool bar
@@ -530,15 +496,11 @@ public abstract class OrderPanelLayout extends JPanel implements
                     // Search list
                     tableToolBar.setSearchList(new ArrayList<>(selectedOrder.getOrderItems()));
                 }
-            } else {
-                selectedOrder = null;
             }
 
             treeModel.expandNodes(0, ordersTree.getRowCount());
 
             updateToolBar(selectedOrder);
-            updateVisibleComponents();
-            updateEnabledComponents();
 
             // Update detail panel
             if (selectedOrderItem != null) {
@@ -553,6 +515,8 @@ public abstract class OrderPanelLayout extends JPanel implements
                 itemDetailPanel.updateComponents(null);
                 orderItemDetailPanel.updateComponents(null);
             }
+            updateVisibleComponents();
+            updateEnabledComponents();
         } finally {
             application.endWait();
         }

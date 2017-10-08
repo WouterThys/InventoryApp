@@ -173,4 +173,11 @@ public class TopToolBar extends JPanel implements
             searchPanel.setSearchList(searchList);
         }
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        setSearchEnabled(enabled);
+        mainViewToolBar.setEnabled(enabled);
+    }
 }
