@@ -77,7 +77,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         return panel.getTable();
     }
 
-    public JPanel getToolbarPanel() {
+    JPanel getToolbarPanel() {
         return buttonPanel;
     }
 

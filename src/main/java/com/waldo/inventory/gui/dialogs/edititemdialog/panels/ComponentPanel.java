@@ -149,14 +149,14 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private void createDimensionTypeCb() {
-        java.util.List<DimensionType> dimensionTypes;
-        if (newItem.getPackageId() > DbObject.UNKNOWN_ID) {
-            dimensionTypes = sm().findDimensionTypesForPackageType(newItem.getPackage().getPackageTypeId());
-        } else {
-            dimensionTypes = db().getDimensionTypes();
-        }
+//        java.util.List<DimensionType> dimensionTypes;
+//        if (newItem.getPackageId() > DbObject.UNKNOWN_ID) {
+//            dimensionTypes = sm().findDimensionTypesForPackageType(newItem.getPackage().getPackageTypeId());
+//        } else {
+//            dimensionTypes = db().getDimensionTypes();
+//        }
 
-        dimensionCb = new IComboBox<>(dimensionTypes, new DbObjectNameComparator<>(), true);
+        dimensionCb = new IComboBox<>(db().getDimensionTypes(), new DbObjectNameComparator<>(), true);
         dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
         dimensionCb.setEnabled(false);
     }
@@ -380,115 +380,31 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         TitledBorder remarksBorder = PanelUtils.createTitleBorder("Remarks");
         TitledBorder setBorder = PanelUtils.createTitleBorder("Set");
 
-        // Labels
-        ILabel typeLabel = new ILabel("Type: ");
-        typeLabel.setHorizontalAlignment(ILabel.RIGHT);
-        typeLabel.setVerticalAlignment(ILabel.CENTER);
-        ILabel pinsLabel = new ILabel("Pins: ");
-        pinsLabel.setHorizontalAlignment(ILabel.RIGHT);
-        pinsLabel.setVerticalAlignment(ILabel.CENTER);
-        ILabel dimLabel = new ILabel("Dimensions: ");
-        dimLabel.setHorizontalAlignment(ILabel.RIGHT);
-        dimLabel.setVerticalAlignment(ILabel.CENTER);
-        ILabel dimTypeLabel = new ILabel("Type: ");
-        dimTypeLabel.setHorizontalAlignment(ILabel.RIGHT);
-        dimTypeLabel.setVerticalAlignment(ILabel.CENTER);
+        packagePanel.setBorder(packageBorder);
+        manufacturerPanel.setBorder(manufacturerBorder);
+        remarksPanel.setBorder(remarksBorder);
+        setPanel.setBorder(setBorder);
 
-        // Layout
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        // PACKAGE
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(packagePanel);
 
         // - extra
         JPanel dimPanel = new JPanel();
         dimPanel.add(packageWidthTf);
         dimPanel.add(packageHeightTf);
 
-        // - type
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(typeLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(PanelUtils.createComboBoxWithButton(packageTypeComboBox, createPackageTypeListener()), gbc);
-
-        // - pins
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(pinsLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(packagePinsSp, gbc);
-
-        // - dimensions
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(dimLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(dimPanel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(dimTypeLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 3;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        packagePanel.add(PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()), gbc);
-
-        // - border
-        packagePanel.setBorder(packageBorder);
-
+        gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(packageTypeComboBox, createPackageTypeListener()));
+        gbc.addLine("Pins: ", packagePinsSp);
+        gbc.addLine("Dimensions: ", dimPanel);
+        gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()));
 
         // MANUFACTURER
-        ILabel manufacturerLabel = new ILabel("Name: ", ILabel.RIGHT);
-
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        // Name
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        manufacturerPanel.add(manufacturerLabel, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        manufacturerPanel.add(PanelUtils.createComboBoxWithButton(manufacturerComboBox, createManufacturerAddListener()), gbc);
-
-        // Icon
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.EAST;
-        manufacturerPanel.add(iconLabel, gbc);
-
-        // Border
-        manufacturerPanel.setBorder(manufacturerBorder);
-
+        gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
+        gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerComboBox, createManufacturerAddListener()));
+        gbc.add(iconLabel, 2,0,1,1);
 
         // REMARKS
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        gbc = new PanelUtils.GridBagHelper(remarksPanel);
 
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
@@ -515,13 +431,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.anchor = GridBagConstraints.WEST;
         remarksPanel.add(new JScrollPane(remarksTa), gbc);
 
-        // Border
-        remarksPanel.setBorder(remarksBorder);
-
         // SET
         setPanel.add(isSetCb, BorderLayout.CENTER);
         setPanel.add(setValuesBtn, BorderLayout.EAST);
-        setPanel.setBorder(setBorder);
+
 
         // Add to panel
         JPanel panel = new JPanel();
