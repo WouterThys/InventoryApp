@@ -82,8 +82,10 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     }
 
     private void updateEnabledComponents() {
-        //saveToDbBtn.setEnabled(!projectPcb.getParser().allComponentsInDb());
-        //orderBtn.setEnabled(projectPcb.getParser().hasLinkedItems());
+        boolean enable = projectPcb != null;
+        linkBtn.setEnabled(enable);
+        parseBtn.setEnabled(enable);
+        orderBtn.setEnabled(enable);
     }
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
@@ -217,10 +219,11 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                 application.endWait();
             }
 
-            updateEnabledComponents();
         } else {
+            projectPcb = null;
             setVisible(false);
         }
+        updateEnabledComponents();
     }
 
     private String getSelectedSheet() {

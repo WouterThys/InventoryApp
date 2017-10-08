@@ -49,7 +49,7 @@ public abstract class EditProjectPcbDialogLayout extends IDialog implements IEdi
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Common.Pcb", 48));
+        setTitleIcon(imageResource.readImage("Projects.Pcb.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
