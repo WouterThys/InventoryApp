@@ -33,7 +33,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    IBrowsePanel browsePanel;
+    PanelUtils.IBrowseWebPanel browsePanel;
     ILabel detailLogo;
 
     private JList<Item> detailItemList;
@@ -172,7 +172,7 @@ public abstract class ManufacturersDialogLayout extends IDialog implements
         detailName.setEnabled(false);
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        browsePanel = new IBrowsePanel("Web site", "website", this);
+        browsePanel = new PanelUtils.IBrowseWebPanel("Web site", "website", this);
 
         detailItemDefaultListModel = new DefaultListModel<>();
         detailItemList = new JList<>(detailItemDefaultListModel);

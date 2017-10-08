@@ -110,20 +110,12 @@ public class IdBToolBar extends JToolBar {
         editAction.setEnabled(enabled);
     }
 
-    public void setRefreshVisible(boolean visible) {
-        Component c = getComponentAtIndex(0);
-        c.setVisible(visible);
-    }
-
-    public void setAddVisible(boolean visible) {
-        getComponentAtIndex(1).setVisible(visible);
-    }
-
-    public void setDeleteVisible(boolean visible) {
-        getComponentAtIndex(2).setVisible(visible);
-    }
-
-    public void setEditVisible(boolean visible) {
-        getComponentAtIndex(3).setVisible(visible);
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        refreshAction.setEnabled(enabled);
+        addAction.setEnabled(enabled);
+        deleteAction.setEnabled(enabled);
+        editAction.setEnabled(enabled);
     }
 }

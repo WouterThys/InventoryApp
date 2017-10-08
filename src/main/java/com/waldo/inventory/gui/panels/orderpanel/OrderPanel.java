@@ -397,25 +397,27 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            selectedOrderItem = (OrderItem) orderItemTable.getValueAtRow(orderItemTable.getSelectedRow());
-            if (selectedOrderItem != null) {
-                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-                if (selectedOrder != null) {
-                    if (selectedOrder.isOrdered() || selectedOrder.isReceived()) {
-                        itemDetailPanel.setRemarksPanelVisible(true);
-                        orderItemDetailPanel.updateComponents(null);
-                    } else {
-                        itemDetailPanel.setRemarksPanelVisible(false);
-                        orderItemDetailPanel.updateComponents(selectedOrderItem);
+            SwingUtilities.invokeLater(() -> {
+                selectedOrderItem = (OrderItem) orderItemTable.getValueAtRow(orderItemTable.getSelectedRow());
+                if (selectedOrderItem != null) {
+                    itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                    if (selectedOrder != null) {
+                        if (selectedOrder.isOrdered() || selectedOrder.isReceived()) {
+                            itemDetailPanel.setRemarksPanelVisible(true);
+                            orderItemDetailPanel.updateComponents(null);
+                        } else {
+                            itemDetailPanel.setRemarksPanelVisible(false);
+                            orderItemDetailPanel.updateComponents(selectedOrderItem);
+                        }
                     }
+                } else {
+                    itemDetailPanel.updateComponents(null);
+                    orderItemDetailPanel.updateComponents(null);
                 }
-            } else {
-                itemDetailPanel.updateComponents(null);
-                orderItemDetailPanel.updateComponents(null);
-            }
-            updateToolBar(selectedOrder);
-            updateVisibleComponents();
-            updateEnabledComponents();
+                updateToolBar(selectedOrder);
+                updateVisibleComponents();
+                updateEnabledComponents();
+            });
         }
     }
 

@@ -36,8 +36,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    IBrowsePanel browseDistributorPanel;
-    IBrowsePanel browseOrderLinkPanel;
+    PanelUtils.IBrowseWebPanel browseDistributorPanel;
+    PanelUtils.IBrowseWebPanel browseOrderLinkPanel;
     ILabel detailLogo;
     IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     private IdBToolBar detailOrderFileFormatTb;
@@ -181,8 +181,8 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        browseDistributorPanel = new IBrowsePanel("Web site", "website", this);
-        browseOrderLinkPanel = new IBrowsePanel("Order link", "orderLink", this);
+        browseDistributorPanel = new PanelUtils.IBrowseWebPanel("Web site", "website", this);
+        browseOrderLinkPanel = new PanelUtils.IBrowseWebPanel("Order link", "orderLink", this);
 
         detailOrderFileFormatCb = new IComboBox<>(db().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");

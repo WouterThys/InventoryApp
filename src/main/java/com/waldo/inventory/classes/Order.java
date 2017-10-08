@@ -391,6 +391,10 @@ public class Order extends DbObject {
         return dateReceived != null;
     }
 
+    public boolean isPlanned() {
+        return (dateOrdered == null && dateReceived == null);
+    }
+
     public int getOrderState() {
         if (!isOrdered() && !isReceived()) {
             return Statics.ItemOrderStates.PLANNED;
