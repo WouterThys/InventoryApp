@@ -183,6 +183,18 @@ public class ProjectPcb extends ProjectObject {
         return pcbItemMap;
     }
 
+    public List<Item> getLinkedItems() {
+        List<Item> items = new ArrayList<>();
+        for (String sheet : getPcbItemMap().keySet()) {
+            for (PcbItem pcbItem : getPcbItemMap().get(sheet)) {
+                if (pcbItem.hasMatch()) {
+                    items.add(pcbItem.getMatchedItemLink().getItem());
+                }
+            }
+        }
+        return items;
+    }
+
     public Date getLastParsedDate() {
         return lastParsedDate;
     }

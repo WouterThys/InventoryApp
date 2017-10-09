@@ -39,6 +39,18 @@ public class Project extends DbObject {
         return p;
     }
 
+    public boolean hasCodes() {
+        return getProjectCodes().size() > 0;
+    }
+
+    public boolean hasPcbs() {
+        return getProjectPcbs().size() > 0;
+    }
+
+    public boolean hasOthers() {
+        return getProjectOthers().size() > 0;
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);

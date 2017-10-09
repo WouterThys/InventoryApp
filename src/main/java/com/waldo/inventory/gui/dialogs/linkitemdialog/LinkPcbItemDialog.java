@@ -33,7 +33,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
                     pcbPanel.updateSelectedValueData(selectedPcbItem);
                     itemPanel.setItemList(selectedPcbItem.getItemLinkList());
                     if (selectedPcbItem.hasMatch()) {
-                        itemPanel.selectMatchItem(selectedPcbItem.getMatchedItem());
+                        itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
                     } else {
                         if (selectedPcbItem.getItemLinkList().size() > 0) {
                             itemPanel.selectMatchItem(selectedPcbItem.getItemLinkList().get(0));
@@ -184,7 +184,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     public void onSearchCleared() {
         if (selectedPcbItem != null) {
             if (selectedPcbItem.hasMatch()) {
-                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItem());
+                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
             } else {
                 selectedItemLink = null;
             }

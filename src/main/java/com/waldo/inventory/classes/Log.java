@@ -4,14 +4,13 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.database.DbManager;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import javax.swing.*;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.waldo.inventory.Utils.Statics.LogTypes.*;
 import static com.waldo.inventory.database.DbManager.db;
@@ -229,15 +228,11 @@ public class Log extends DbObject {
         return logTime;
     }
 
-    public void setLogTime(Date logTime) {
-        this.logTime = logTime;
-    }
-
     public void setLogTime(Timestamp logTime) {
         if (logTime != null) {
             this.logTime = new Date(logTime.getTime());
         } else {
-            this.logTime = new Date(0,0,0);
+            this.logTime = new Date(0);
         }
     }
 

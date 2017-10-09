@@ -481,6 +481,21 @@ public class SearchManager {
         return orders;
     }
 
+    public List<ProjectPcb> findPcbsForItem(long itemId) {
+        List<ProjectPcb> projects = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (ProjectPcb pcb : db().getProjectPcbs()) {
+                for (Item item : pcb.getLinkedItems()) {
+                    if (item.getId() == itemId) {
+                        projects.add(pcb);
+                        break;
+                    }
+                }
+            }
+        }
+        return projects;
+    }
+
     /**
      * Last order where the item in appeared
      * @param itemId: Id of the item

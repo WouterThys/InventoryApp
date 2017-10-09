@@ -45,6 +45,7 @@ public class DbManager {
     private MysqlDataSource dataSource;//BasicDataSource dataSource;
     private List<String> tableNames;
     private boolean initialized = false;
+    private String loggedUser = "";
 
     private DbQueue<DbQueueObject> workList;
     private DbQueue<DbErrorObject> nonoList;
@@ -67,7 +68,6 @@ public class DbManager {
     public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
-    //public List<DbObjectChangedListener<ProjectDirectory>> onProjectDirectoryChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectIDE>> onProjectIDEChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
@@ -127,6 +127,8 @@ public class DbManager {
                 // Test
                 initialized = testConnection(dataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+
+                loggedUser = s.getDbUserName();
             } else {
                 Status().setDbConnectionText(false, "", "", "");
             }
@@ -512,6 +514,7 @@ public class DbManager {
 
     public void insert(DbObject object) {
         if (!Main.CACHE_ONLY) {
+            object.getAud().setInserted(loggedUser);
             DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
             try {
                 workList.put(toInsert);
@@ -526,6 +529,7 @@ public class DbManager {
 
     public void update(DbObject object) {
         if (!Main.CACHE_ONLY) {
+            object.getAud().setUpdated(loggedUser);
             DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
             try {
                 workList.put(toUpdate);

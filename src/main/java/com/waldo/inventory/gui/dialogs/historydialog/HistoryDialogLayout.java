@@ -1,18 +1,22 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.managers.SearchManager;
+import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IHistoryTableModel;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +30,19 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     private IHistoryTableModel tableModel;
     private ITable historyTable;
 
+    private ILabel insertedByLbl;
+    private ILabel insertedWhenLbl;
+
+    private ILabel updatedByLbl;
+    private ILabel updatedWhenLbl;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Item historyItem;
+
+    private List<Order> orderHistoryList = new ArrayList<>();
+    private List<ProjectPcb> pcbHistoryList = new ArrayList<>();
 
     /*
      *                  CONSTRUCTOR
@@ -41,16 +54,12 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private List<DbObject> findHistoryObjects(Item item) {
-
-        List<DbObject> foundObjects = new ArrayList<>();
-
+    private void updateHistoryViews(Item item) {
         // Find orders
-        foundObjects.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
+        orderHistoryList.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
 
-        // Later: find projects and other stuff??
-
-        return foundObjects;
+        // Find projects
+        pcbHistoryList.addAll(SearchManager.sm().findPcbsForItem(item.getId()));
     }
 
     /*
@@ -59,7 +68,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     @Override
     public void initializeComponents() {
         tableModel = new IHistoryTableModel();
-        historyTable = new ITable(tableModel);
+        historyTable = new ITable<>(tableModel);
         historyTable.setRowHeight(50);
 
 //        Action go = new AbstractAction() {
@@ -96,14 +105,18 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
 
         if (object != null) {
             historyItem = (Item) object;
-            tableModel.setHistoryObjectList(findHistoryObjects(historyItem));
-            try {
-                setTitleName(historyItem.getName());
-                URL url = new File(historyItem.getIconPath()).toURI().toURL();
-                setTitleIcon(imageResource.readImage(url));
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            if (!historyItem.getIconPath().isEmpty()) {
+                try {
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), historyItem.getIconPath());
+                    URL url = path.toUri().toURL();
+                    setTitleIcon(imageResource.readImage(url, 64, 64));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+
+            updateHistoryViews(historyItem);
         }
 
     }
