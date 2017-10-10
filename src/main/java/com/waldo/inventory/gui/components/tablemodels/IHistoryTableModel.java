@@ -1,12 +1,11 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ public class IHistoryTableModel extends IAbstractTableModel {
 
     private static final String[] columnNames = {"", "Name", "Date"}; //, "Go"};
     private static final Class[] columnClasses = {ImageIcon.class, String.class, String.class};//, JCheckBox.class};
-    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     private List<DbObject> historyObjectList;
 
@@ -72,9 +70,9 @@ public class IHistoryTableModel extends IAbstractTableModel {
                             return "Ordered in " + order.getName();
                         case 2: // Date
                             if (order.isOrdered()) {
-                                return dateFormatLong.format(order.getDateOrdered());
+                                return DateUtils.formatDateTime(order.getDateOrdered());
                             } else {
-                                return dateFormatLong.format(order.getDateModified());
+                                return DateUtils.formatDateTime(order.getDateModified());
                             }
                         case 3: // Go to
                             return "Go";//imageResource.readImage("Common.ArrowRight");

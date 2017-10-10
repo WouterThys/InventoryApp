@@ -1,12 +1,12 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.database.DbManager;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 
 public class DbHistory extends DbObject {
@@ -35,7 +35,7 @@ public class DbHistory extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
-        date = new Date(Calendar.getInstance().getTime().getTime());
+        date = DateUtils.now();
 
         statement.setTimestamp(ndx++, new Timestamp(date.getTime()));
         statement.setInt(ndx++, getDbAction());

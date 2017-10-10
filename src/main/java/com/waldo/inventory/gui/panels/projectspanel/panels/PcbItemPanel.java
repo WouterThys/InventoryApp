@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -7,9 +8,9 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
-import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.PcbItemOrderDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
+import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.PcbItemOrderDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -19,8 +20,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,6 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionListener, ChangeListener, ActionListener {
-
-    private static final DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     /*
      *                  COMPONENTS
@@ -212,7 +209,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                 updateComponentTable(projectPcb.getPcbItemMap());
 
                 parsedHowLbl.setText(projectPcb.hasParsed() ? "Items from file" : "Items from database");
-                lastParsedLbl.setText(sdf.format(projectPcb.getLastParsedDate()));
+                lastParsedLbl.setText(DateUtils.formatDateTime(projectPcb.getLastParsedDate()));
                 itemAmountLbl.setText("45");
 
             } finally {

@@ -9,6 +9,7 @@ import com.waldo.kicadparser.KiCadParser;
 import com.waldo.kicadparser.classes.Component;
 
 import java.io.File;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -294,7 +295,7 @@ public class PcbItemParser {
                                 c.getLibSource().getLib(),
                                 c.getLibSource().getPart(),
                                 sheet,
-                                c.gettStamp()
+                                new Date(c.gettStamp().getTime())
                         );
                         resultMap.get(sheet).add(item);
                     }

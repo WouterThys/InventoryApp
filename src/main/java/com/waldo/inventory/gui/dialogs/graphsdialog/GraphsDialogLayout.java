@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.graphsdialog;
 
-import com.waldo.inventory.Utils.TimeUtils;
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.DbHistory;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
@@ -156,7 +156,7 @@ public abstract class GraphsDialogLayout extends IDialog {
         List<DbHistory> historyList = DbManager.db().getDbHistory();
 
         for (DbHistory dbh : historyList) {
-            Date date = TimeUtils.stripTime(dbh.getDate());
+            Date date = DateUtils.stripTime(dbh.getDate());
 
             if (!historyMap.containsKey(date)) {
                 historyMap.put(date, new ArrayList<>());

@@ -18,11 +18,6 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
-    public IItemTableModel(List<Item> itemList) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, itemList);
-        getItemList().sort(new Item.ItemComparator());
-    }
-
     public void setItemList(List<Item> itemList) {
         itemList.sort(new Item.ItemComparator());
         super.setItemList(itemList);

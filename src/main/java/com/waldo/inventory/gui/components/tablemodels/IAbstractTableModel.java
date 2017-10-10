@@ -39,7 +39,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         this.columnNames = columnNames;
         this.columnClasses = columnClasses;
         this.columnHeaderToolTips = columnNames;
-        this.itemList = itemList;
+        setItemList(itemList);
     }
 
     IAbstractTableModel(String[] columnNames, Class[] columnClasses, List<T> itemList, Comparator<? super T> comparator) {

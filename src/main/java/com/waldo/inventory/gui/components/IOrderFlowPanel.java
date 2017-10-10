@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.gui.Application;
@@ -8,13 +9,10 @@ import com.waldo.inventory.gui.GuiInterface;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IOrderFlowPanel extends JPanel implements GuiInterface {
-
-    private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy-MM-dd");
 
     /*
      *                  COMPONENTS
@@ -134,7 +132,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
 
             switch (order.getOrderState()) {
                 case Statics.ItemOrderStates.PLANNED:
-                    dateModifiedLbl.setText(dateFormatShort.format(order.getDateModified()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
                     dateOrderedLbl.setText("");
                     dateReceivedLbl.setText("");
 
@@ -147,8 +145,8 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
                     break;
 
                 case Statics.ItemOrderStates.ORDERED:
-                    dateModifiedLbl.setText(dateFormatShort.format(order.getDateModified()));
-                    dateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
+                    dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
                     dateReceivedLbl.setText("");
 
                     setOrderedBtn.setEnabled(false);
@@ -160,9 +158,9 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
                     break;
 
                 case Statics.ItemOrderStates.RECEIVED:
-                    dateModifiedLbl.setText(dateFormatShort.format(order.getDateModified()));
-                    dateOrderedLbl.setText(dateFormatShort.format(order.getDateOrdered()));
-                    dateReceivedLbl.setText(dateFormatShort.format(order.getDateReceived()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
+                    dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
+                    dateReceivedLbl.setText(DateUtils.formatDate(order.getDateReceived()));
 
                     setOrderedBtn.setEnabled(false);
                     setReceivedBtn.setEnabled(false);

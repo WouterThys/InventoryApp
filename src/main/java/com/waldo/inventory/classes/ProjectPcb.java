@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
@@ -13,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -124,7 +124,7 @@ public class ProjectPcb extends ProjectObject {
         // Update links with project
         PcbItemParser.getInstance().updatePcbItemProjectLinksDb(pcbItems, this);
 
-        lastParsedDate = new Date(Calendar.getInstance().getTime().getTime());
+        lastParsedDate = DateUtils.now();
         hasParsed = true;
         save();
         return pcbItems;

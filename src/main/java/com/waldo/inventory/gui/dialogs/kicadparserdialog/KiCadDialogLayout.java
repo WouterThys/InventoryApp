@@ -32,7 +32,7 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
 
     JTabbedPane sheetTabs;
 
-    KiCadDetailPanel detailPanel;
+    private KiCadDetailPanel detailPanel;
 
 
      /*

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Log;
 import com.waldo.inventory.gui.Application;
@@ -12,13 +13,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class LogsDetailPanel extends JPanel implements GuiInterface {
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
    private Log selectedLog;
 
@@ -165,7 +163,7 @@ public class LogsDetailPanel extends JPanel implements GuiInterface {
                         break;
                 }
 
-                timeLabel.setText(sdf.format(selectedLog.getLogTime()));
+                timeLabel.setText(DateUtils.formatDateTime(selectedLog.getLogTime()));
                 classLabel.setText(selectedLog.getLogClass());
 
                 messageTa.setText(selectedLog.getLogMessage());

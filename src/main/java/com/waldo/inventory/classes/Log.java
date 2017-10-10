@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.database.DbManager;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -8,7 +9,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class Log extends DbObject {
     }
 
     public Log(int logType, String logClass, String logMessage, String logException) {
-        this(logType, new Date(Calendar.getInstance().getTime().getTime()), logClass, logMessage, logException);
+        this(logType, DateUtils.now(), logClass, logMessage, logException);
     }
 
     public Log(int logType, Date logTime, String logClass, String logMessage, String logException) {

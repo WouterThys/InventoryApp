@@ -4,14 +4,11 @@ import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.database.DbManager;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigInteger;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -19,7 +16,6 @@ import static com.waldo.inventory.database.DbManager.db;
 public class PcbItem extends DbObject {
 
     public static final String TABLE_NAME = "pcbitems";
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     private String ref;
     private String value; // db
@@ -51,13 +47,6 @@ public class PcbItem extends DbObject {
         this.partName = partName;
         this.sheetName = sheetName;
         this.tStamp = tStamp;
-    }
-
-    public void parseTimeStamp(String tStamp) {
-        if (!tStamp.isEmpty()) {
-            long l = new BigInteger(tStamp, 16).longValue();
-            this.tStamp = new Date(l*1000);
-        }
     }
 
     @Override
@@ -137,10 +126,6 @@ public class PcbItem extends DbObject {
                     ref.getPartName().equals(getPartName());
         }
         return false;
-    }
-
-    public static DateFormat getDateFormat() {
-        return dateFormat;
     }
 
     public String getRef() {
