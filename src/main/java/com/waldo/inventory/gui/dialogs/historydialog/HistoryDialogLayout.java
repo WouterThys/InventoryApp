@@ -13,14 +13,13 @@ import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IOrderHistoryTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -55,17 +54,13 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         orderHistoryModel.clearItemList();
         pcbHistoryModel.clearItemList();
 
-
-
-        //orderHistoryModel.addItems(toAdd);
-
-//        // Find orders
-
+        // Find Orders
+        orderHistoryModel.setItemList(SearchManager.sm().findOrdersForItem(item.getId()));
+        pcbPane.setVisible(orderHistoryModel.getRowCount() > 0);
 
         // Find projects
-//        pcbHistoryList.addAll(SearchManager.sm().findPcbsForItem(item.getId()));
-//        pcbHistoryModel.setItemList(pcbHistoryList);
-//        pcbPane.setVisible(pcbHistoryList.size() > 0);
+        pcbHistoryModel.setItemList(SearchManager.sm().findPcbsForItem(item.getId()));
+        //pcbPane.setVisible(pcbHistoryList.getRowCount() > 0);
 
         // Labels
         insertedByLbl.setText(item.getAud().getInsertedBy());
@@ -104,18 +99,8 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         setTitleName(getTitle());
         setResizable(true);
 
-
-        Order o1 = new Order("Order 1 ");
-        Order o2 = new Order("Order 2 ");
-        Order o3 = new Order("Order 3 ");
-
-        List<Order> toAdd = new ArrayList<>();
-        toAdd.add(o1);
-        toAdd.add(o2);
-        toAdd.add(o3);
-
         // This
-        orderHistoryModel = new IOrderHistoryTableModel(toAdd);
+        orderHistoryModel = new IOrderHistoryTableModel();
         orderHistoryTable = new ITable<>(orderHistoryModel);
 
         pcbHistoryModel = new IPcbHistoryTableModel();
@@ -148,16 +133,19 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     @Override
     public void initializeLayouts() {
         JPanel labelPanel = createLabelPanel();
-        JPanel tablePanel = new JPanel(new BorderLayout());
+        JPanel tablePanel = new JPanel();
         orderPane = new JScrollPane(orderHistoryTable);
+        orderPane.setPreferredSize(new Dimension(200, 150));
         pcbPane = new JScrollPane(pcbHistoryTable);
+        pcbPane.setPreferredSize(new Dimension(200, 150));
 
         labelPanel.setBorder(PanelUtils.createTitleBorder("AUD"));
         orderPane.setBorder(PanelUtils.createTitleBorder("Order history"));
         pcbPane.setBorder(PanelUtils.createTitleBorder("Pcb history"));
 
-        tablePanel.add(orderPane, BorderLayout.CENTER);
-        tablePanel.add(pcbPane, BorderLayout.SOUTH);
+        tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
+        tablePanel.add(orderPane);
+        tablePanel.add(pcbPane);
 
         getContentPanel().setLayout(new BorderLayout());
         getContentPanel().add(labelPanel, BorderLayout.NORTH);
