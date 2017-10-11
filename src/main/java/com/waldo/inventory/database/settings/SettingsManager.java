@@ -397,7 +397,7 @@ public class SettingsManager {
     /*
      *                  SELECT SETTINGS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public boolean selectNewSettings(DbSettingsObject settings) {
+    public void selectNewSettings(DbSettingsObject settings) {
         String sql = "";
         switch (getType(settings)) {
             case SETTINGS_TYPE_LOG:
@@ -415,7 +415,6 @@ public class SettingsManager {
             selectSettings(settings, sql);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
 
         switch (getType(settings)) {
@@ -432,7 +431,6 @@ public class SettingsManager {
                 notifyListeners((FileSettings) settings, onFileSettingsChangedList);
                 break;
         }
-        return true;
     }
 
 
@@ -479,6 +477,7 @@ public class SettingsManager {
                     dbSettings.setDbIp(rs.getString("dbip"));
                     dbSettings.setDbUserName(rs.getString("dbusername"));
                     dbSettings.setDbUserPw(rs.getString("dbuserpw"));
+                    dbSettings.setDbType(rs.getString("dbtype"));
 
                     dbSettings.setSaved(true);
 
@@ -592,6 +591,7 @@ public class SettingsManager {
                 stmt.setString(3, set.getDbIp());
                 stmt.setString(4, set.getDbUserName());
                 stmt.setString(5, set.getDbUserPw());
+                stmt.setString(6, set.getDbType());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -647,8 +647,9 @@ public class SettingsManager {
                 stmt.setString(2, set.getDbIp());
                 stmt.setString(3, set.getDbUserName());
                 stmt.setString(4, set.getDbUserPw());
+                stmt.setString(5, set.getDbType());
 
-                stmt.setString(5, set.getName()); // Where name
+                stmt.setString(6, set.getName()); // Where name
 
                 stmt.execute();
             }

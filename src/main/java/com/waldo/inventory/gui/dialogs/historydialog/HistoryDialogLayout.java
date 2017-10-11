@@ -54,13 +54,18 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         orderHistoryModel.clearItemList();
         pcbHistoryModel.clearItemList();
 
+//        java.util.List<Order> toAdd = new ArrayList<>();
+//        toAdd.add(new Order("Order 1"));
+//        toAdd.add(new Order("Order 2 "));
+//        toAdd.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
+
         // Find Orders
         orderHistoryModel.setItemList(SearchManager.sm().findOrdersForItem(item.getId()));
-        pcbPane.setVisible(orderHistoryModel.getRowCount() > 0);
+        orderPane.setVisible(orderHistoryModel.getRowCount() > 0);
 
         // Find projects
         pcbHistoryModel.setItemList(SearchManager.sm().findPcbsForItem(item.getId()));
-        //pcbPane.setVisible(pcbHistoryList.getRowCount() > 0);
+        pcbPane.setVisible(pcbHistoryModel.getRowCount() > 0);
 
         // Labels
         insertedByLbl.setText(item.getAud().getInsertedBy());
@@ -97,14 +102,13 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         // Dialog
         setTitleIcon(imageResource.readImage("History.Title"));
         setTitleName(getTitle());
-        setResizable(true);
 
         // This
         orderHistoryModel = new IOrderHistoryTableModel();
-        orderHistoryTable = new ITable<>(orderHistoryModel);
+        orderHistoryTable = new ITable<>(orderHistoryModel, true);
 
         pcbHistoryModel = new IPcbHistoryTableModel();
-        pcbHistoryTable = new ITable<>(pcbHistoryModel);
+        pcbHistoryTable = new ITable<>(pcbHistoryModel, true);
 
         insertedByLbl = new ILabel();
         insertedWhenLbl = new ILabel();
@@ -135,9 +139,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         JPanel labelPanel = createLabelPanel();
         JPanel tablePanel = new JPanel();
         orderPane = new JScrollPane(orderHistoryTable);
-        orderPane.setPreferredSize(new Dimension(200, 150));
         pcbPane = new JScrollPane(pcbHistoryTable);
-        pcbPane.setPreferredSize(new Dimension(200, 150));
 
         labelPanel.setBorder(PanelUtils.createTitleBorder("AUD"));
         orderPane.setBorder(PanelUtils.createTitleBorder("Order history"));

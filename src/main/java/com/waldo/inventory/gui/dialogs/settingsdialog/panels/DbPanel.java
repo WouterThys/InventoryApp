@@ -3,14 +3,15 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -39,12 +40,15 @@ public class DbPanel extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+    // Db settings
     private IdBToolBar toolBar;
     private ILabel currentSettingLbl;
 
     private DefaultComboBoxModel<DbSettings> dbSettingsCbModel;
     private JComboBox<DbSettings> dbSettingsComboBox;
-    
+
+    private DefaultComboBoxModel<String> dbTypeCbModel;
+    private IComboBox<String> dbTypeCb;
     private ITextField dbNameTf;
     private ITextField dbIpTf;
     private ITextField userNameTf;
@@ -53,6 +57,10 @@ public class DbPanel extends JPanel implements
     private JButton saveBtn;
     private JButton useBtn;
     private JButton testBtn;
+
+    // Backups and cache settings
+    private ITextFieldButtonPanel backupPathPnl;
+    private JButton createBackupBtn;
 
 
     /*
@@ -78,25 +86,22 @@ public class DbPanel extends JPanel implements
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        if (selectedDbSettings == null || selectedDbSettings.isDefault()) {
-            toolBar.setDeleteActionEnabled(false);
-            toolBar.setEditActionEnabled(false);
-            dbNameTf.setEnabled(false);
-            dbIpTf.setEnabled(false);
-            userNameTf.setEnabled(false);
-            userPwTf.setEnabled(false);
+        boolean settingSelected = !(selectedDbSettings == null || selectedDbSettings.isDefault());
+        boolean onlineDb = (dbTypeCb.getSelectedItem() != null && dbTypeCb.getSelectedItem().equals(Statics.DbTypes.Online));
 
+        toolBar.setEditActionEnabled(false);
+        toolBar.setDeleteActionEnabled(settingSelected);
+
+        dbNameTf.setEnabled(settingSelected);
+        dbIpTf.setEnabled(settingSelected);
+        userNameTf.setEnabled(settingSelected && onlineDb);
+        userPwTf.setEnabled(settingSelected && onlineDb);
+        dbTypeCb.setEnabled(settingSelected);
+
+        if (settingSelected) {
             saveBtn.setEnabled(false);
         } else {
-            toolBar.setDeleteActionEnabled(true);
-            dbNameTf.setEnabled(true);
-            dbIpTf.setEnabled(true);
-            userNameTf.setEnabled(true);
-            userPwTf.setEnabled(true);
-
-            saveBtn.setEnabled(
-                    !selectedDbSettings.isSaved() ||
-                            !selectedDbSettings.equals(originalDbSettings));
+            saveBtn.setEnabled(!selectedDbSettings.isSaved() || !selectedDbSettings.equals(originalDbSettings));
         }
 
         if (selectedDbSettings != null) {
@@ -112,6 +117,7 @@ public class DbPanel extends JPanel implements
             dbIpTf.setText(selectedDbSettings.getDbIp());
             userNameTf.setText(selectedDbSettings.getDbUserName());
             userPwTf.setText(selectedDbSettings.getDbUserPw());
+            dbTypeCb.setSelectedItem(selectedDbSettings.getDbType());
 
             currentSettingLbl.setText(settings().getSelectedDbSettingsName());
         }
@@ -264,6 +270,8 @@ public class DbPanel extends JPanel implements
             dataSource.setUser(dbUserName);
             dataSource.setPassword(dbUserPw);
 
+            // TODO: on new thread with timeout
+
             try {
                 if (DbManager.testConnection(dataSource)) {
                     try {
@@ -303,6 +311,63 @@ public class DbPanel extends JPanel implements
             }
         }
     }
+
+    private JPanel createDbSettingsPanel() {
+        JPanel dbSettingsPanel = new JPanel();
+        dbSettingsPanel.setLayout(new BorderLayout());
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(testBtn);
+        buttonsPanel.add(saveBtn);
+        buttonsPanel.add(useBtn);
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        JPanel currentPanel = new JPanel(new BorderLayout());
+        currentPanel.add(new ILabel("Current file setting: "), BorderLayout.NORTH);
+        currentPanel.add(currentSettingLbl, BorderLayout.CENTER);
+        currentPanel.setBorder(BorderFactory.createEmptyBorder(2, 15, 2, 15));
+
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(dbSettingsComboBox, BorderLayout.WEST);
+        headerPanel.add(currentPanel, BorderLayout.CENTER);
+        headerPanel.add(toolBar, BorderLayout.EAST);
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
+        // - Add to panel
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
+
+        gbc.addLine("Db type: ", dbTypeCb);
+        gbc.addLine("Db file name: ", dbNameTf);
+        gbc.addLine("Db ip address: ", dbIpTf);
+        gbc.addLine("Db user name: ", userNameTf);
+        gbc.addLine("Db user password: ", userPwTf);
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Db options");
+        titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        titledBorder.setTitleColor(Color.gray);
+
+        settingsPanel.setBorder(BorderFactory.createCompoundBorder(
+                titledBorder,
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+
+        // Add to panel
+        dbSettingsPanel.add(headerPanel, BorderLayout.NORTH);
+        dbSettingsPanel.add(settingsPanel, BorderLayout.CENTER);
+        dbSettingsPanel.add(buttonsPanel, BorderLayout.SOUTH);
+
+        return dbSettingsPanel;
+    }
+
+    private JPanel createDbBackupPanel() {
+        JPanel dbBackupPanel = new JPanel(new BorderLayout());
+
+        dbBackupPanel.add(backupPathPnl, BorderLayout.CENTER);
+        dbBackupPanel.add(createBackupBtn, BorderLayout.SOUTH);
+
+        return dbBackupPanel;
+    }
     
     
     /*
@@ -310,6 +375,7 @@ public class DbPanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        // SETTINGS
         // Label
         currentSettingLbl = new ILabel();
         currentSettingLbl.setAlignmentX(CENTER_ALIGNMENT);
@@ -324,6 +390,12 @@ public class DbPanel extends JPanel implements
         dbSettingsComboBox.setAlignmentX(RIGHT_ALIGNMENT);
         dbSettingsComboBox.addItemListener(this);
         dbSettingsComboBox.setPreferredSize(new Dimension(120, 30));
+
+        // Type
+        dbTypeCbModel = new DefaultComboBoxModel<>(Statics.DbTypes.All);
+        dbTypeCb = new IComboBox<>(dbTypeCbModel);
+        dbTypeCb.addItemListener(this);
+        dbTypeCb.addEditedListener(this, "dbType", String.class);
 
         //  fields
         dbNameTf = new ITextField();
@@ -351,53 +423,24 @@ public class DbPanel extends JPanel implements
 
         // Toolbar
         toolBar = new IdBToolBar(this);
+
+        // BACKUP
+        backupPathPnl = new PanelUtils.IBrowseFilePanel("", "/home/");
+        createBackupBtn = new JButton();
     }
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.add(testBtn);
-        buttonsPanel.add(saveBtn);
-        buttonsPanel.add(useBtn);
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        JPanel settings = createDbSettingsPanel();
+        JPanel backup = createDbBackupPanel();
 
-        JPanel currentPanel = new JPanel(new BorderLayout());
-        currentPanel.add(new ILabel("Current file setting: "), BorderLayout.NORTH);
-        currentPanel.add(currentSettingLbl, BorderLayout.CENTER);
-        currentPanel.setBorder(BorderFactory.createEmptyBorder(2, 15, 2, 15));
+        settings.setBorder(PanelUtils.createTitleBorder("Settings"));
+        backup.setBorder(PanelUtils.createTitleBorder("Backups and Cache"));
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.add(dbSettingsComboBox, BorderLayout.WEST);
-        headerPanel.add(currentPanel, BorderLayout.CENTER);
-        headerPanel.add(toolBar, BorderLayout.EAST);
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-        JPanel settingsPanel = new JPanel(new GridBagLayout());
-        // - Add to panel
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
-
-        JComponent[] jComponents = new JComponent[]{ dbNameTf, dbIpTf, userNameTf, userPwTf};
-        String[] iLabels = new String[]{"Db file name: ", "Db ip address: ", "Db user name: ", "Db user password: "};
-
-        for (int i = 0; i < jComponents.length; i++) {
-            gbc.addLine(iLabels[i], jComponents[i]);
-        }
-
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("File options");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
-        settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                titledBorder,
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // Add to panel
-        add(headerPanel, BorderLayout.NORTH);
-        add(settingsPanel, BorderLayout.CENTER);
-        add(buttonsPanel, BorderLayout.SOUTH);
+        add(settings);
+        add(backup);
     }
 
     @Override
@@ -431,10 +474,14 @@ public class DbPanel extends JPanel implements
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (!application.isUpdating()) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Object o = e.getItem();
-                if (o instanceof DbSettings) {
-                    updateComponents(o);
+            if (e.getSource().equals(dbTypeCb)) {
+
+            } else {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    Object o = e.getItem();
+                    if (o instanceof DbSettings) {
+                        updateComponents(o);
+                    }
                 }
             }
         }

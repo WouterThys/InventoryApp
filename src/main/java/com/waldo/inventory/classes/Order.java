@@ -432,4 +432,17 @@ public class Order extends DbObject {
     public void setTrackingNumber(String trackingNumber) {
         this.trackingNumber = trackingNumber;
     }
+
+    //
+    // Override to work with edited listener
+    //
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 }

@@ -46,6 +46,7 @@ public class DbManager {
     private List<String> tableNames;
     private boolean initialized = false;
     private String loggedUser = "";
+    private long cacheOnlyFakedId = 2;
 
     private DbQueue<DbQueueObject> workList;
     private DbQueue<DbErrorObject> nonoList;
@@ -522,6 +523,8 @@ public class DbManager {
             }
         } else {
             // Just write it into cache
+            object.setId(cacheOnlyFakedId);
+            cacheOnlyFakedId++;
             object.tableChanged(OBJECT_INSERT);
         }
     }

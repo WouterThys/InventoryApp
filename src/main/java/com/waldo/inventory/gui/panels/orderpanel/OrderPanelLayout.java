@@ -358,7 +358,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                     application.beginWait();
                     try {
                         Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
-                        if (selectedOrder.getDistributorId() != d.getId()) {
+                        if (d != null && selectedOrder.getDistributorId() != d.getId()) {
                             selectedOrder.setDistributorId(d.getId());
                             selectedOrder.updateItemReferences();
                             SwingUtilities.invokeLater(() -> selectedOrder.save());
@@ -391,7 +391,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
             @Override
             public void onToolBarAdd(IdBToolBar source) {
-                OrdersDialog dialog = new OrdersDialog(application, "New order", true);
+                OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(),true);
                 if (dialog.showDialog() == IDialog.OK) {
                     Order o = dialog.getOrder();
                     o.save();

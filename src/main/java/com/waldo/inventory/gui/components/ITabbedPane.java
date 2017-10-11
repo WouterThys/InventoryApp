@@ -125,7 +125,7 @@ public class ITabbedPane extends JTabbedPane {
             addPropertyChangeListener(this);
         }
 
-        private Component generateRendererComponent(String text, Icon icon, int horizontalTabTextAlignmen) {
+        private Component generateRendererComponent(String text, Icon icon, int horizontalTabTextAlignment) {
             JPanel rendererComponent = new JPanel(new GridBagLayout());
             rendererComponent.setOpaque(false);
 
@@ -136,7 +136,7 @@ public class ITabbedPane extends JTabbedPane {
 
             c.gridx = 1;
             c.weightx = 1;
-            rendererComponent.add(new JLabel(text, horizontalTabTextAlignmen), c);
+            rendererComponent.add(new JLabel(text, horizontalTabTextAlignment), c);
 
             return rendererComponent;
         }
@@ -144,8 +144,12 @@ public class ITabbedPane extends JTabbedPane {
         @Override
         public Component getTabRendererComponent(JTabbedPane tabbedPane, String text, Icon icon, int tabIndex) {
             Component rendererComponent = generateRendererComponent(text, icon, getHorizontalTextAlignment());
-            int prototypeWidth = prototypeComponent.getPreferredSize().width;
-            int prototypeHeight = prototypeComponent.getPreferredSize().height;
+            int prototypeWidth;
+            int prototypeHeight;
+
+            prototypeWidth = prototypeComponent.getPreferredSize().width;
+            prototypeHeight = prototypeComponent.getPreferredSize().height;
+
             rendererComponent.setPreferredSize(new Dimension(prototypeWidth, prototypeHeight));
             return rendererComponent;
         }

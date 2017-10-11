@@ -1,5 +1,6 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
 
 public class DbSettings extends DbSettingsObject {
@@ -10,6 +11,7 @@ public class DbSettings extends DbSettingsObject {
     private String dbName = "";
     private String dbUserName = "waldo";
     private String dbUserPw = "";
+    private String dbType; // Online, Local, ...
 
     public DbSettings() {
         super(TABLE_NAME);
@@ -29,7 +31,8 @@ public class DbSettings extends DbSettingsObject {
                 if ((ref.getDbIp().equals(getDbIp())) &&
                         (ref.getDbUserName().equals(getDbUserName())) &&
                         (ref.getDbUserPw().equals(getDbUserPw())) &&
-                        (ref.getDbName().equals(getDbName())) ) {
+                        (ref.getDbName().equals(getDbName())) &&
+                        (ref.getDbType().equals(getDbType())) ) {
                     return true;
                 }
             }
@@ -45,6 +48,7 @@ public class DbSettings extends DbSettingsObject {
         copy.setDbName(getDbName());
         copy.setDbUserName(getDbUserName());
         copy.setDbUserPw(getDbUserPw());
+        copy.setDbType(getDbType());
         return copy;
     }
 
@@ -113,5 +117,16 @@ public class DbSettings extends DbSettingsObject {
 
     public void setDbUserPw(String dbUserPw) {
         this.dbUserPw = dbUserPw;
+    }
+
+    public String getDbType() {
+        if (dbType == null) {
+            dbType = Statics.DbTypes.Unknown;
+        }
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }

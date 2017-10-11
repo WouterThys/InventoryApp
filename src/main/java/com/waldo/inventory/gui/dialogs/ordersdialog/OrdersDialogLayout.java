@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITextField;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -20,7 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public abstract class OrdersDialogLayout extends IDialog
-        implements GuiInterface, ActionListener {
+        implements GuiInterface, ActionListener, IEditedListener {
 
     /*
     *                  COMPONENTS
@@ -37,6 +38,7 @@ public abstract class OrdersDialogLayout extends IDialog
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     boolean showDates;
+    Order order;
 
     /*
     *                  CONSTRUCTORS
@@ -70,7 +72,9 @@ public abstract class OrdersDialogLayout extends IDialog
     @Override
     public void initializeComponents() {
         nameField = new ITextField("Order name");
+        nameField.addEditedListener(this, "name");
         distributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), false);
+        distributorCb.addEditedListener(this, "distributorId");
 
         isOrderedCb = new JCheckBox("Is ordered");
         isOrderedCb.addActionListener(this);
@@ -78,10 +82,12 @@ public abstract class OrdersDialogLayout extends IDialog
         SqlDateModel model = new SqlDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model);
         orderedDatePicker = new JDatePickerImpl(datePanel);
+        // TODO: with edited listener
 
         model = new SqlDateModel();
         datePanel = new JDatePanelImpl(model);
         receivedDatePicker = new JDatePickerImpl(datePanel);
+        // TODO: with edited listener
 
         enableDatePickers(false);
     }
@@ -97,13 +103,15 @@ public abstract class OrdersDialogLayout extends IDialog
         if (showDates) {
             // Date check box
             gbc.gridx = 1;gbc.weightx = 0;
-            gbc.gridy = 2;gbc.weighty = 0;
+            gbc.gridy += 1; gbc.weighty = 0;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             isOrderedCb.setHorizontalAlignment(JLabel.RIGHT);
             isOrderedCb.setVerticalAlignment(JLabel.CENTER);
             getContentPanel().add(isOrderedCb, gbc);
 
             // Date ordered
+            gbc.gridx = 0;
+            gbc.gridy += 1;
             gbc.addLine("Date ordered: ", orderedDatePicker);
             gbc.addLine("Date received: ", receivedDatePicker);
         }
@@ -114,8 +122,9 @@ public abstract class OrdersDialogLayout extends IDialog
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            nameField.setText(((Order) object).getName());
-            distributorCb.setSelectedItem(((Order) object).getDistributor());
+            order = (Order) object;
+            nameField.setText(order.getName());
+            distributorCb.setSelectedItem(order.getDistributor());
         }
     }
 }
