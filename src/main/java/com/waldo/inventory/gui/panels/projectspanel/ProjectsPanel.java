@@ -122,7 +122,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
 
     //
     // Tree value changed
-    //
+    //g
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!application.isUpdating()) {
