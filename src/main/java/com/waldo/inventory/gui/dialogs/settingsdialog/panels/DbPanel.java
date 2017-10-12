@@ -47,7 +47,6 @@ public class DbPanel extends JPanel implements
     private DefaultComboBoxModel<DbSettings> dbSettingsCbModel;
     private JComboBox<DbSettings> dbSettingsComboBox;
 
-    private DefaultComboBoxModel<String> dbTypeCbModel;
     private IComboBox<String> dbTypeCb;
     private ITextField dbNameTf;
     private ITextField dbIpTf;
@@ -392,7 +391,7 @@ public class DbPanel extends JPanel implements
         dbSettingsComboBox.setPreferredSize(new Dimension(120, 30));
 
         // Type
-        dbTypeCbModel = new DefaultComboBoxModel<>(Statics.DbTypes.All);
+        DefaultComboBoxModel<String> dbTypeCbModel = new DefaultComboBoxModel<>(Statics.DbTypes.All);
         dbTypeCb = new IComboBox<>(dbTypeCbModel);
         dbTypeCb.addItemListener(this);
         dbTypeCb.addEditedListener(this, "dbType", String.class);
