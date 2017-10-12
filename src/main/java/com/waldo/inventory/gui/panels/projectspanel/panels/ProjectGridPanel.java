@@ -5,12 +5,16 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITileView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         GuiInterface,
         ITileView.TileClickListener<P> {
+
+    private int rows = -1;
+    private int cols = -1;
 
 
     @Override
@@ -40,6 +44,17 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectGridPanel(GridComponentClicked<P> gridComponentListener) {
         this.gridComponentListener = gridComponentListener;
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents(null);
+    }
+
+    public ProjectGridPanel(GridComponentClicked<P> gridComponentListener, int rows, int cols) {
+        this.gridComponentListener = gridComponentListener;
+
+        this.rows = rows;
+        this.cols = cols;
 
         initializeComponents();
         initializeLayouts();
@@ -101,7 +116,9 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-
+        if (rows > 0 && cols > 0) {
+            setLayout(new GridLayout(rows, cols));
+        }
     }
 
     @Override

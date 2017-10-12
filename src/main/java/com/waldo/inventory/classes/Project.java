@@ -3,6 +3,7 @@ package com.waldo.inventory.classes;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -12,10 +13,6 @@ import static com.waldo.inventory.database.DbManager.db;
 public class Project extends DbObject {
 
     public static final String TABLE_NAME = "projects";
-
-//    @Deprecated
-//    private List<ProjectDirectory> projectDirectories;
-    private boolean validated = false;
 
     private String mainDirectory;
     private List<ProjectCode> projectCodes;
@@ -51,6 +48,14 @@ public class Project extends DbObject {
         return getProjectOthers().size() > 0;
     }
 
+    public boolean isValidDirectory() {
+        if (!getMainDirectory().isEmpty()) {
+            File file = new File(getMainDirectory());
+            return file.exists();
+        }
+        return false;
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
@@ -65,9 +70,9 @@ public class Project extends DbObject {
             if (!(obj instanceof Project)) {
                 return false;
             }
-//            if (!(((Project) obj).getProjectDirectories().equals(getProjectDirectories()))) {
-//                return false;
-//            }
+            if (!(((Project) obj).getMainDirectory().equals(getMainDirectory()))) {
+                return false;
+            }
         }
         return result;
     }
@@ -85,7 +90,9 @@ public class Project extends DbObject {
     public Project createCopy(DbObject copyInto) {
         Project product = (Project) copyInto;
         copyBaseFields(product);
-        // Directories will be fetched from db when the getter is called
+
+        product.setMainDirectory(getMainDirectory());
+
         return product;
     }
 
@@ -284,12 +291,14 @@ public class Project extends DbObject {
         return super.getName();
     }
 
-    public boolean isValidated() {
-        return validated;
+    @Override
+    public String getIconPath() {
+        return super.getIconPath();
     }
 
-    public void setValidated(boolean validated) {
-        this.validated = validated;
+    @Override
+    public void setIconPath(String iconPath) {
+        super.setIconPath(iconPath);
     }
 
     public List<ProjectCode> getProjectCodes() {

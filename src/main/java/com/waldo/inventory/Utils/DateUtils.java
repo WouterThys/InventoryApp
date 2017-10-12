@@ -19,10 +19,8 @@ public class DateUtils {
     private static final SimpleDateFormat longDateAndTime = new SimpleDateFormat("ddd MMM, yyyy HH:mm");
     private static final SimpleDateFormat longDate = new SimpleDateFormat("ddd MMM, yyyy");
 
-
-
     public static String formatDateTime(Date date) {
-        if (date != null) {
+        if (date != null && !date.equals(minDate())) {
             return shortDateAndTime.format(date);
         } else {
             return shortDateAndTimeStr;
@@ -30,7 +28,7 @@ public class DateUtils {
     }
 
     public static String formatTime(Date date) {
-        if (date != null) {
+        if (date != null && !date.equals(minDate())) {
             return shortTime.format(date);
         } else {
             return shortTimeStr;
@@ -38,7 +36,7 @@ public class DateUtils {
     }
 
     public static String formatDate(Date date) {
-        if (date != null) {
+        if (date != null && !date.equals(minDate())) {
             return shortDate.format(date);
         } else {
             return shortDateStr;
@@ -46,7 +44,7 @@ public class DateUtils {
     }
 
     public static String formatDateTimeLong(Date date) {
-        if (date != null) {
+        if (date != null && !date.equals(minDate())) {
             return longDateAndTime.format(date);
         } else {
             return longDateAndTimeStr;
@@ -54,7 +52,7 @@ public class DateUtils {
     }
 
     public static String formatDateLong(Date date) {
-        if (date != null) {
+        if (date != null && !date.equals(minDate())) {
             return longDate.format(date);
         } else {
             return longDateStr;
@@ -66,7 +64,9 @@ public class DateUtils {
         return new Date(Calendar.getInstance().getTime().getTime());
     }
 
-
+    public static Date minDate() {
+        return new Date(0);
+    }
 
     public static Date stripTime(Date date) {
         Calendar calendar = Calendar.getInstance();

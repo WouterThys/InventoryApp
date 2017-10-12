@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
@@ -12,6 +11,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.managers.LogManager;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -263,10 +263,11 @@ public class DbPanel extends JPanel implements
         }
 
         if (!errors) {
-            MysqlDataSource dataSource = new MysqlDataSource();
+            BasicDataSource dataSource = new BasicDataSource();
             dataSource.setUrl(DbSettings.createMysqlUrl(dbIp, dbName));
-            dataSource.setDatabaseName(dbName);
-            dataSource.setUser(dbUserName);
+            //dataSource.setDatabaseName(dbName);
+            //dataSource.setUser(dbUserName);
+            dataSource.setUsername(dbUserName);
             dataSource.setPassword(dbUserPw);
 
             // TODO: on new thread with timeout

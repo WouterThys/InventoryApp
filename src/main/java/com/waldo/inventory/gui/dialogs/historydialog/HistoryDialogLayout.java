@@ -54,11 +54,6 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         orderHistoryModel.clearItemList();
         pcbHistoryModel.clearItemList();
 
-//        java.util.List<Order> toAdd = new ArrayList<>();
-//        toAdd.add(new Order("Order 1"));
-//        toAdd.add(new Order("Order 2 "));
-//        toAdd.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
-
         // Find Orders
         orderHistoryModel.setItemList(SearchManager.sm().findOrdersForItem(item.getId()));
         orderPane.setVisible(orderHistoryModel.getRowCount() > 0);
@@ -73,6 +68,7 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
         updatedByLbl.setText(item.getAud().getUpdatedBy());
         updatedWhenLbl.setText(DateUtils.formatDateTime(item.getAud().getUpdatedDate()));
     }
+
 
     private JPanel createLabelPanel() {
         JPanel panel = new JPanel();

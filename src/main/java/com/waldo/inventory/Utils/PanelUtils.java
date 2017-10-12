@@ -4,6 +4,7 @@ import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITextFieldButtonPanel;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -161,6 +162,7 @@ public class PanelUtils {
     public static class IBrowseFilePanel extends ITextFieldButtonPanel implements ActionListener {
 
         private String defaultPath = "";
+        private int fileType = JFileChooser.DIRECTORIES_ONLY;
 
         public IBrowseFilePanel() {
             super("", imageResource.readImage("Common.FileBrowse", 20));
@@ -174,11 +176,32 @@ public class PanelUtils {
             addButtonActionListener(this);
         }
 
+        public IBrowseFilePanel(String hint, String defaultPath, IEditedListener listener, String fieldName) {
+            super(hint, fieldName, listener, imageResource.readImage("Common.FileBrowse", 20));
+            this.defaultPath = defaultPath;
+            addButtonActionListener(this);
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File(defaultPath));
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            File openFile;
+            if (getText().isEmpty()) {
+                openFile = new File(defaultPath);
+            } else {
+                openFile = new File(getText());
+                if (openFile.exists()) {
+                    if (openFile.isFile()) {
+                        openFile = openFile.getParentFile();
+                    }
+                } else {
+                    openFile = new File(defaultPath);
+                }
+            }
+
+            fileChooser.setCurrentDirectory(openFile);
+            fileChooser.setFileSelectionMode(fileType);
 
             if (fileChooser.showDialog(IBrowseFilePanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
                 textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
@@ -186,8 +209,16 @@ public class PanelUtils {
             }
         }
 
+        public void setFileType(int fileType) {
+            this.fileType = fileType;
+        }
+
         public void setDefaultPath(String defaultPath) {
             this.defaultPath = defaultPath;
+        }
+
+        public void setEditable(boolean editable) {
+            textField.setEditable(editable);
         }
     }
 
@@ -246,4 +277,48 @@ public class PanelUtils {
         }
     }
 
+    public static class IBrowseImagePanel extends ITextFieldButtonPanel implements ActionListener {
+
+        private String defaultPath = "";
+
+        public IBrowseImagePanel(String defaultPath, IEditedListener listener, String fieldName) {
+            super("", fieldName, listener, imageResource.readImage("Common.FileBrowse", 20));
+            this.defaultPath = defaultPath;
+            addButtonActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+            fileChooser.setCurrentDirectory(new File(defaultPath));
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            File openFile;
+            if (getText().isEmpty()) {
+                openFile = new File(defaultPath);
+            } else {
+                openFile = new File(getText());
+                if (openFile.exists()) {
+                    if (openFile.isFile()) {
+                        openFile = openFile.getParentFile();
+                    }
+                } else {
+                    openFile = new File(defaultPath);
+                }
+            }
+
+            if (fileChooser.showDialog(IBrowseImagePanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                textField.setText(fileChooser.getSelectedFile().getName());
+                textField.fireValueChanged();
+            }
+        }
+
+        public void setDefaultPath(String defaultPath) {
+            this.defaultPath = defaultPath;
+        }
+
+        public void setEditable(boolean editable) {
+            textField.setEditable(editable);
+        }
+    }
 }

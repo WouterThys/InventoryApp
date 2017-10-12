@@ -7,6 +7,8 @@ import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -99,6 +101,11 @@ public class Item extends DbObject {
             dimensionTypeId = UNKNOWN_ID;
         }
         statement.setLong(ndx++, getDimensionTypeId());
+
+        statement.setString(ndx++, getAud().getInsertedBy());
+        statement.setTimestamp(ndx++, new Timestamp(getAud().getInsertedDate().getTime()), Calendar.getInstance());
+        statement.setString(ndx++, getAud().getUpdatedBy());
+        statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()), Calendar.getInstance());
 
         return ndx;
     }

@@ -1,6 +1,5 @@
 package com.waldo.inventory.database;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
@@ -13,6 +12,7 @@ import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.managers.LogManager;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
 import java.sql.*;
@@ -42,7 +42,7 @@ public class DbManager {
     public static DbManager db() {
         return INSTANCE;
     }
-    private MysqlDataSource dataSource;//BasicDataSource dataSource;
+    private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
     private List<String> tableNames;
     private boolean initialized = false;
     private String loggedUser = "";
@@ -119,12 +119,14 @@ public class DbManager {
         if (s != null) {
             loggedUser = s.getDbUserName();
             if (!Main.CACHE_ONLY) {
-                dataSource = new MysqlDataSource();
-                dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-                dataSource.setDatabaseName(s.getDbName());
-                dataSource.setUser(s.getDbUserName());
-                dataSource.setPassword(s.getDbUserPw());
-                LOG.info("Database initialized with connection: " + s.createMySqlUrl());
+                switch (s.getDbType()) {
+                    case Statics.DbTypes.Online:
+                        initMySql(s);
+                        break;
+                    case Statics.DbTypes.Local:
+                        initSqLite(s);
+                        break;
+                }
 
                 // Test
                 initialized = testConnection(dataSource);
@@ -135,17 +137,43 @@ public class DbManager {
         }
     }
 
+    private void initMySql(DbSettings settings) {
+        dataSource = new BasicDataSource(); // new MySqlDataSource
+        dataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+        dataSource.setUsername(settings.getDbUserName());
+        dataSource.setPassword(settings.getDbUserPw());
+        LOG.info("Database initialized with connection: " + settings.createMySqlUrl());
+    }
+
+    private void initSqLite(DbSettings settings) {
+            dataSource = new BasicDataSource();
+            dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
+            dataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
+            dataSource.setUsername(settings.getDbUserName());
+            dataSource.setPassword("");
+            dataSource.setMaxIdle(10);
+            dataSource.setMaxActive(10);
+            dataSource.setPoolPreparedStatements(true);
+            dataSource.setLogAbandoned(false);
+            dataSource.setRemoveAbandoned(true);
+            dataSource.setInitialSize(5);
+            dataSource.setRemoveAbandonedTimeout(60);
+
+                String sql = "PRAGMA foreign_keys=ON;";
+                try (Connection connection = getConnection()) {
+                    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                        stmt.execute();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+    }
+
     public void reInit(DbSettings s) throws SQLException {
         initialized = false;
         if (s != null) {
             if (!Main.CACHE_ONLY) {
-                dataSource = new MysqlDataSource();
-                dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-                dataSource.setDatabaseName(s.getDbName());
-                dataSource.setUser(s.getDbUserName());
-                dataSource.setPassword(s.getDbUserPw());
-                LOG.info("Database initialized with connection: " + s.createMySqlUrl());
-
                 // Test
                 initialized = testConnection(dataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
@@ -156,7 +184,7 @@ public class DbManager {
         }
     }
 
-    public static boolean testConnection(MysqlDataSource dataSource) throws SQLException {
+    public static boolean testConnection(BasicDataSource dataSource) throws SQLException {
         String sql = "SELECT 1;";
 
         try (Connection connection = dataSource.getConnection()) {
@@ -167,23 +195,23 @@ public class DbManager {
         }
     }
 
-    public static List<String> testDatabase(MysqlDataSource dataSource) throws SQLException {
+    public static List<String> testDatabase(BasicDataSource dataSource) throws SQLException {
         List<String> missingTables = new ArrayList<>();
         int numberOfTables = scriptResource.readInteger("test.numberOfTables");
         String sql = scriptResource.readString("test.script");
         try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < numberOfTables; i++) {
                 try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                    String schemaName = dataSource.getDatabaseName();
-                    stmt.setString(1, schemaName);
-                    String tableName = scriptResource.readString("test.tableNames." + i);
-                    stmt.setString(2, tableName);
-
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (!rs.next()) {
-                            missingTables.add(tableName);
-                        }
-                    }
+                    //String schemaName = dataSource.get();
+//                    stmt.setString(1, schemaName);
+//                    String tableName = scriptResource.readString("test.tableNames." + i);
+//                    stmt.setString(2, tableName);
+//
+//                    try (ResultSet rs = stmt.executeQuery()) {
+//                        if (!rs.next()) {
+//                            missingTables.add(tableName);
+//                        }
+//                    }
                 }
             }
         }
@@ -265,7 +293,7 @@ public class DbManager {
      *                  GETTERS - SETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    private MysqlDataSource getDataSource() {
+    private BasicDataSource getDataSource() {
         return dataSource;
     }
 
@@ -382,12 +410,6 @@ public class DbManager {
             onPackageTypesChangedListenerList.add(dbObjectChangedListener);
         }
     }
-
-//    public void addOnProjectDirectoryChangedListener(DbObjectChangedListener<ProjectDirectory> dbObjectChangedListener) {
-//        if (!onProjectDirectoryChangedListenerList.contains(dbObjectChangedListener)) {
-//            onProjectDirectoryChangedListenerList.add(dbObjectChangedListener);
-//        }
-//    }
 
     public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectIDE> dbObjectChangedListener) {
         if (!onProjectIDEChangedListenerList.contains(dbObjectChangedListener)) {
@@ -604,6 +626,8 @@ public class DbManager {
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
                     i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
+                    i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                    i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
 
                     i.setInserted(true);
                     items.add(i);
