@@ -57,8 +57,8 @@ public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
         OrderItem orderItem = new OrderItem();
 
         orderItem.setOrderId(selectedOrder.getId());
-        orderItem.setItemId(component.getMatchedItem().getItemId());
-        orderItem.setName(component.getMatchedItem().getItem().getName() + " - " + selectedOrder.toString());
+        orderItem.setItemId(component.getMatchedItemLink().getItemId());
+        orderItem.setName(component.getMatchedItemLink().getItem().getName() + " - " + selectedOrder.toString());
         orderItem.setAmount(1);
 
         for (PcbItem c : sameSetComponents(component)) {
@@ -82,12 +82,12 @@ public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
     private List<PcbItem> sameSetComponents(PcbItem component) {
         List<PcbItem> sameSet = new ArrayList<>();
         sameSet.add(component);
-        if (component.getMatchedItem().isSetItem()) {
-            Item parentItem = component.getMatchedItem().getItem();
+        if (component.getMatchedItemLink().isSetItem()) {
+            Item parentItem = component.getMatchedItemLink().getItem();
             if (parentItem != null) {
                 for (PcbItem c : pcbPanel.getKcComponentList()) {
-                    if (c.getMatchedItem().isSetItem()) {
-                        if (c.getMatchedItem().getItem().getId() == parentItem.getId()) {
+                    if (c.getMatchedItemLink().isSetItem()) {
+                        if (c.getMatchedItemLink().getItem().getId() == parentItem.getId()) {
                             sameSet.add(c);
                         }
                     }
@@ -99,7 +99,7 @@ public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
 
     private void alreadyInOrder(OrderItem orderItem) {
         for (PcbItem component : pcbPanel.getKcComponentList()) {
-            if (component.getMatchedItem().getItemId() == orderItem.getItemId()) {
+            if (component.getMatchedItemLink().getItemId() == orderItem.getItemId()) {
                 component.setOrderItem(orderItem);
                 orderPanel.addOrderItem(orderItem,  false);
             }
@@ -204,7 +204,7 @@ public class PcbItemOrderDialog extends PcbItemOrderDialogLayout {
     private void addAllCheckStock() {
         for (PcbItem pcbItem : pcbItemList) {
             int pcbAmount = pcbItem.getReferences().size();
-            int itmAmount = pcbItem.getMatchedItem().getAmount();
+            int itmAmount = pcbItem.getMatchedItemLink().getAmount();
 
             if (itmAmount < pcbAmount) {
                 OrderItem toOrder = createOrderItem(pcbItem);

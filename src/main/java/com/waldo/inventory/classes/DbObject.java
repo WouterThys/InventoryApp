@@ -55,6 +55,7 @@ public abstract class DbObject {
     protected String name = "";
     protected String iconPath = "";
     protected boolean canBeSaved = true;
+    protected AddUpdateDelete aud = new AddUpdateDelete();
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
@@ -240,5 +241,9 @@ public abstract class DbObject {
 
     public void setInserted(boolean inserted) {
         this.isInserted = inserted;
+    }
+
+    public AddUpdateDelete getAud() {
+        return aud;
     }
 }

@@ -277,7 +277,7 @@ public class PcbItem extends DbObject {
         return matchedItem != null;
     }
 
-    public PcbItemItemLink getMatchedItem() {
+    public PcbItemItemLink getMatchedItemLink() {
         return matchedItem;
     }
 
