@@ -19,6 +19,10 @@ public class ITextFieldButtonPanel extends JPanel implements GuiInterface {
     protected JButton button;
     protected ActionListener actionListener;
 
+    public ITextFieldButtonPanel(String hint, ImageIcon buttonIcon) {
+        this(hint, "", null, buttonIcon, null);
+    }
+
     public ITextFieldButtonPanel(String hint, ImageIcon buttonIcon, ActionListener actionListener) {
         this(hint, "", null, buttonIcon, actionListener);
     }
@@ -40,6 +44,10 @@ public class ITextFieldButtonPanel extends JPanel implements GuiInterface {
 
     public ITextFieldButtonPanel(String hint, String fieldName, IEditedListener editedListener, ImageIcon buttonIcon) {
         this(hint, fieldName, editedListener, buttonIcon, null);
+    }
+
+    public void addFieldEditedListener(IEditedListener listener, String fieldName) {
+        textField.addEditedListener(listener, fieldName);
     }
 
     public void addButtonActionListener(ActionListener actionListener) {

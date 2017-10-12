@@ -1,12 +1,16 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.ITextFieldButtonPanel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -23,21 +27,6 @@ public class PanelUtils {
         constraints.insets = new Insets(2,2,2,2);
         constraints.fill = BOTH;
         return constraints;
-    }
-
-    public static JPanel createBrowsePanel(ITextField urlTf, JButton browseBtn) {
-        JPanel browsePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0; constraints.weightx = 1;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        browsePanel.add(urlTf, constraints);
-        constraints.gridx = 1; constraints.weightx = 0;
-        constraints.gridy = 0; constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        browsePanel.add(browseBtn, constraints);
-
-        return browsePanel;
     }
 
     public static JPanel createFileOpenPanel(ITextField fileTf, JButton openBtn) {
@@ -86,15 +75,29 @@ public class PanelUtils {
         }
 
         public void addLineVertical(String labelText, JComponent component) {
-            gridx = 0; weightx = 0;
-            gridy = 0; weighty = 0;
-            fill = GridBagConstraints.HORIZONTAL;
+            addLineVertical(labelText, component, GridBagConstraints.HORIZONTAL);
+        }
+
+        public void addLineVertical(String labelText, JComponent component, int fill) {
+            int oldGw = gridwidth;
+            int oldGh = gridheight;
+            int oldAnchor = anchor;
+
+            weightx = 0; weighty = 0;
+            gridwidth = 1; anchor = GridBagConstraints.WEST;
+            this.fill = GridBagConstraints.NONE;
             panel.add(new ILabel(labelText, ILabel.LEFT), this);
 
-            gridx = 0; weightx = 1;
-            gridy = 1; weighty = 1;
-            fill = GridBagConstraints.BOTH;
-            panel.add(component, this);
+            gridwidth = oldGw;
+            gridheight = oldGh;
+            gridy += 1; weightx = 1;
+            this.fill = fill;
+            if (component != null) {
+                panel.add(component, this);
+            }
+
+            anchor = oldAnchor;
+            gridy += 1;
         }
 
         public void addLine(String labelText, JComponent component) {
@@ -152,6 +155,39 @@ public class PanelUtils {
 
         public void setPanel(JPanel panel) {
             this.panel = panel;
+        }
+    }
+
+    public static class IBrowseFilePanel extends ITextFieldButtonPanel implements ActionListener {
+
+        private String defaultPath = "";
+
+        public IBrowseFilePanel() {
+            super("", imageResource.readImage("Common.FileBrowse", 20));
+            this.defaultPath = "";
+            addButtonActionListener(this);
+        }
+
+        public IBrowseFilePanel(String hint, String defaultPath) {
+            super(hint, imageResource.readImage("Common.FileBrowse", 20));
+            this.defaultPath = defaultPath;
+            addButtonActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(defaultPath));
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            if (fileChooser.showDialog(IBrowseFilePanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
+                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                textField.fireValueChanged();
+            }
+        }
+
+        public void setDefaultPath(String defaultPath) {
+            this.defaultPath = defaultPath;
         }
     }
 

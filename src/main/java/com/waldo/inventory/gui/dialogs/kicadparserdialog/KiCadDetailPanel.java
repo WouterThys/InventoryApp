@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -9,11 +10,8 @@ import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
 
-public class KiCadDetailPanel extends JPanel implements GuiInterface {    
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+public class KiCadDetailPanel extends JPanel implements GuiInterface {
 
     /*
      *                  COMPONENTS
@@ -55,7 +53,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
             footprintTf.setText(selectedComponent.getFootprint());
             lsLibTf.setText(selectedComponent.getLibrary());
             lsPartTf.setText(selectedComponent.getPartName());
-            tStampTf.setText(sdf.format(selectedComponent.gettStamp()));
+            tStampTf.setText(DateUtils.formatDateTime(selectedComponent.gettStamp()));
             spNamesTa.clearText();
 //            for (String name : selectedComponent.getSheetName()) {
 //                spNamesTa.append(name + "\n");
@@ -65,7 +63,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
 //            for (Date date : selectedComponent.getSheetPath().gettStamps()) {
 //                spTStampsTa.setText(sdf.format(date));
 //            }
-            spTStampsTa.setText(sdf.format(selectedComponent.gettStamp()));
+            spTStampsTa.setText(DateUtils.formatDateTime(selectedComponent.gettStamp()));
         }
     }
 

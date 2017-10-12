@@ -2,15 +2,14 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -19,11 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class FilesPanel extends JPanel implements
         GuiInterface,
@@ -43,21 +40,13 @@ public class FilesPanel extends JPanel implements
     private DefaultComboBoxModel<FileSettings> fileSettingsCbModel;
     private JComboBox<FileSettings> fileSettingsComboBox;
 
-    private ITextField distributorsPathTf;
-    private ITextField divisionsPathTF;
-    private ITextField idesPathTf;
-    private ITextField itemsPathTf;
-    private ITextField manufacturersPathTf;
-    private ITextField projectsPathTf;
-    private ITextField orderFilesPathTf;
-
-    private JButton distributorsPathBtn;
-    private JButton divisionsPathBtn;
-    private JButton idesPathBtn;
-    private JButton itemsPathBtn;
-    private JButton manufacturersPathBtn;
-    private JButton projectsPathBtn;
-    private JButton orderFilesPathBtn;
+    private PanelUtils.IBrowseFilePanel distributorsPathPnl;
+    private PanelUtils.IBrowseFilePanel divisionsPathPnl;
+    private PanelUtils.IBrowseFilePanel idesPathPnl;
+    private PanelUtils.IBrowseFilePanel itemsPathPnl;
+    private PanelUtils.IBrowseFilePanel manufacturersPathPnl;
+    private PanelUtils.IBrowseFilePanel projectsPathPnl;
+    private PanelUtils.IBrowseFilePanel orderFilesPathPnl;
 
     private JButton saveBtn;
     private JButton useBtn;
@@ -89,36 +78,21 @@ public class FilesPanel extends JPanel implements
         if (selectedFileSettings == null || selectedFileSettings.isDefault()) {
             toolBar.setDeleteActionEnabled(false);
             toolBar.setEditActionEnabled(false);
-            distributorsPathTf.setEnabled(false);
-            distributorsPathBtn.setEnabled(false);
-            divisionsPathTF.setEnabled(false);
-            divisionsPathBtn.setEnabled(false);
-            idesPathTf.setEnabled(false);
-            idesPathBtn.setEnabled(false);
-            itemsPathTf.setEnabled(false);
-            itemsPathBtn.setEnabled(false);
-            manufacturersPathTf.setEnabled(false);
-            manufacturersPathBtn.setEnabled(false);
-            projectsPathTf.setEnabled(false);
-            projectsPathBtn.setEnabled(false);
-            orderFilesPathTf.setEnabled(false);
-            orderFilesPathBtn.setEnabled(false);
+            distributorsPathPnl.setEnabled(false);
+            divisionsPathPnl.setEnabled(false);
+            idesPathPnl.setEnabled(false);
+            itemsPathPnl.setEnabled(false);
+            manufacturersPathPnl.setEnabled(false);
+            projectsPathPnl.setEnabled(false);
+            orderFilesPathPnl.setEnabled(false);
             saveBtn.setEnabled(false);
         } else {
-            distributorsPathTf.setEnabled(true);
-            distributorsPathBtn.setEnabled(true);
-            divisionsPathTF.setEnabled(true);
-            divisionsPathBtn.setEnabled(true);
-            idesPathTf.setEnabled(true);
-            idesPathBtn.setEnabled(true);
-            itemsPathTf.setEnabled(true);
-            itemsPathBtn.setEnabled(true);
-            manufacturersPathTf.setEnabled(true);
-            manufacturersPathBtn.setEnabled(true);
-            projectsPathTf.setEnabled(true);
-            projectsPathBtn.setEnabled(true);
-            orderFilesPathTf.setEnabled(true);
-            orderFilesPathBtn.setEnabled(true);
+            divisionsPathPnl.setEnabled(true);
+            idesPathPnl.setEnabled(true);
+            itemsPathPnl.setEnabled(true);
+            manufacturersPathPnl.setEnabled(true);
+            projectsPathPnl.setEnabled(true);
+            orderFilesPathPnl.setEnabled(true);
             saveBtn.setEnabled(!selectedFileSettings.isSaved() || !selectedFileSettings.equals(originalFileSettings));
         }
 
@@ -131,13 +105,13 @@ public class FilesPanel extends JPanel implements
 
     private void updateFieldValues() {
         if (selectedFileSettings != null) {
-            distributorsPathTf.setText(selectedFileSettings.getImgDistributorsPath());
-            divisionsPathTF.setText(selectedFileSettings.getImgDivisionsPath());
-            idesPathTf.setText(selectedFileSettings.getImgIdesPath());
-            itemsPathTf.setText(selectedFileSettings.getImgItemsPath());
-            manufacturersPathTf.setText(selectedFileSettings.getImgManufacturersPath());
-            projectsPathTf.setText(selectedFileSettings.getImgProjectsPath());
-            orderFilesPathTf.setText(selectedFileSettings.getFileOrdersPath());
+            distributorsPathPnl.setText(selectedFileSettings.getImgDistributorsPath());
+            divisionsPathPnl.setText(selectedFileSettings.getImgDivisionsPath());
+            idesPathPnl.setText(selectedFileSettings.getImgIdesPath());
+            itemsPathPnl.setText(selectedFileSettings.getImgItemsPath());
+            manufacturersPathPnl.setText(selectedFileSettings.getImgManufacturersPath());
+            projectsPathPnl.setText(selectedFileSettings.getImgProjectsPath());
+            orderFilesPathPnl.setText(selectedFileSettings.getFileOrdersPath());
 
             currentSettingLbl.setText(settings().getSelectedFileSettingsName());
         }
@@ -165,17 +139,6 @@ public class FilesPanel extends JPanel implements
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
-        }
-    }
-
-    private void browseFiles(ITextField textField, String initialPath) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(initialPath));
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        if (fileChooser.showDialog(FilesPanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
-            textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            textField.fireValueChanged();
         }
     }
 
@@ -258,6 +221,25 @@ public class FilesPanel extends JPanel implements
         }
     }
 
+    private void setDefaultPaths() {
+        if (selectedFileSettings == null) {
+            distributorsPathPnl.setDefaultPath("home/");
+            divisionsPathPnl.setDefaultPath("home/");
+            idesPathPnl.setDefaultPath("home/");
+            itemsPathPnl.setDefaultPath("home/");
+            manufacturersPathPnl.setDefaultPath("home/");
+            projectsPathPnl.setDefaultPath("home/");
+            orderFilesPathPnl.setDefaultPath("home/");
+        } else {
+            distributorsPathPnl.setDefaultPath(selectedFileSettings.getImgDistributorsPath());
+            divisionsPathPnl.setDefaultPath(selectedFileSettings.getImgDivisionsPath());
+            idesPathPnl.setDefaultPath(selectedFileSettings.getImgIdesPath());
+            itemsPathPnl.setDefaultPath(selectedFileSettings.getImgItemsPath());
+            manufacturersPathPnl.setDefaultPath(selectedFileSettings.getImgManufacturersPath());
+            projectsPathPnl.setDefaultPath(selectedFileSettings.getImgProjectsPath());
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -279,37 +261,21 @@ public class FilesPanel extends JPanel implements
         fileSettingsComboBox.setPreferredSize(new Dimension(120, 30));
 
         // Text fields
-        distributorsPathTf = new ITextField();
-        divisionsPathTF = new ITextField();
-        idesPathTf = new ITextField();
-        itemsPathTf = new ITextField();
-        manufacturersPathTf = new ITextField();
-        projectsPathTf = new ITextField();
-        orderFilesPathTf = new ITextField();
+        distributorsPathPnl = new PanelUtils.IBrowseFilePanel();
+        divisionsPathPnl = new PanelUtils.IBrowseFilePanel();
+        idesPathPnl = new PanelUtils.IBrowseFilePanel();
+        itemsPathPnl = new PanelUtils.IBrowseFilePanel();
+        manufacturersPathPnl = new PanelUtils.IBrowseFilePanel();
+        projectsPathPnl = new PanelUtils.IBrowseFilePanel();
+        orderFilesPathPnl = new PanelUtils.IBrowseFilePanel();
 
-        distributorsPathTf.addEditedListener(this, "imgDistributorsPath");
-        divisionsPathTF.addEditedListener(this, "imgDivisionsPath");
-        idesPathTf.addEditedListener(this, "imgIdesPath");
-        itemsPathTf.addEditedListener(this, "imgItemsPath");
-        manufacturersPathTf.addEditedListener(this, "imgManufacturersPath");
-        projectsPathTf.addEditedListener(this, "imgProjectsPath");
-        orderFilesPathTf.addEditedListener(this, "fileOrdersPath");
-
-        distributorsPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        divisionsPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        idesPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        itemsPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        manufacturersPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        projectsPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        orderFilesPathBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-
-        distributorsPathBtn.addActionListener(this);
-        divisionsPathBtn.addActionListener(this);
-        idesPathBtn.addActionListener(this);
-        itemsPathBtn.addActionListener(this);
-        manufacturersPathBtn.addActionListener(this);
-        projectsPathBtn.addActionListener(this);
-        orderFilesPathBtn.addActionListener(this);
+        distributorsPathPnl.addFieldEditedListener(this, "imgDistributorsPath");
+        divisionsPathPnl.addFieldEditedListener(this, "imgDivisionsPath");
+        idesPathPnl.addFieldEditedListener(this, "imgIdesPath");
+        itemsPathPnl.addFieldEditedListener(this, "imgItemsPath");
+        manufacturersPathPnl.addFieldEditedListener(this, "imgManufacturersPath");
+        projectsPathPnl.addFieldEditedListener(this, "imgProjectsPath");
+        orderFilesPathPnl.addFieldEditedListener(this, "fileOrdersPath");
 
         // Buttons
         saveBtn = new JButton("Save");
@@ -350,16 +316,13 @@ public class FilesPanel extends JPanel implements
         // - Add to panel
         PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
 
-        ITextField[] iTextFields = new ITextField[]{distributorsPathTf, divisionsPathTF, idesPathTf, itemsPathTf, manufacturersPathTf, projectsPathTf, orderFilesPathTf};
-        String[] iLabels = new String[] {
-                "Distributor images: ", "Division images: ", "Ide images: ", "Item images: ","Manufacturer images: ","Project images: ", "Order files: "
-        };
-        JButton[] jButtons = new JButton[]{distributorsPathBtn, divisionsPathBtn, idesPathBtn, itemsPathBtn, manufacturersPathBtn, projectsPathBtn, orderFilesPathBtn};
-
-        for (int i = 0; i < iTextFields.length; i++) {
-            JPanel panel = PanelUtils.createFileOpenPanel(iTextFields[i], jButtons[i]);
-            gbc.addLine(iLabels[i], panel);
-        }
+        gbc.addLine("Distributor images: ", distributorsPathPnl);
+        gbc.addLine("Division images: ", divisionsPathPnl);
+        gbc.addLine("IDE images: ", idesPathPnl);
+        gbc.addLine("Item images: ", itemsPathPnl);
+        gbc.addLine("Manufacturer images: ", manufacturersPathPnl);
+        gbc.addLine("Project images: ", projectsPathPnl);
+        gbc.addLine("Order file images: ", orderFilesPathPnl);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder("File options");
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
@@ -394,6 +357,7 @@ public class FilesPanel extends JPanel implements
             } else {
                 originalFileSettings = null;
             }
+            setDefaultPaths();
             updateEnabledComponents();
         } finally {
             application.endWait();
@@ -483,54 +447,11 @@ public class FilesPanel extends JPanel implements
                         JOptionPane.ERROR_MESSAGE
                 );
             }
-        } else if (source.equals(distributorsPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(distributorsPathTf, "home/");
-            } else {
-                browseFiles(distributorsPathTf, selectedFileSettings.getImgDistributorsPath());
-            }
-        } else if (source.equals(divisionsPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(divisionsPathTF, "home/");
-            } else {
-                browseFiles(divisionsPathTF, selectedFileSettings.getImgDivisionsPath());
-            }
-        } else if (source.equals(idesPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(idesPathTf, "home/");
-            } else {
-                browseFiles(idesPathTf, selectedFileSettings.getImgIdesPath());
-            }
-        } else if (source.equals(itemsPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(itemsPathTf, "home/");
-            } else {
-                browseFiles(itemsPathTf, selectedFileSettings.getImgItemsPath());
-            }
-        } else if (source.equals(manufacturersPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(manufacturersPathTf, "home/");
-            } else {
-                browseFiles(manufacturersPathTf, selectedFileSettings.getImgManufacturersPath());
-            }
-        } else if (source.equals(projectsPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(projectsPathTf, "home/");
-            } else {
-                browseFiles(projectsPathTf, selectedFileSettings.getImgProjectsPath());
-            }
-        } else if (source.equals(orderFilesPathBtn)) {
-            if (selectedFileSettings == null) {
-                browseFiles(orderFilesPathTf, "home/");
-            } else {
-                browseFiles(orderFilesPathTf, selectedFileSettings.getFileOrdersPath());
-            }
         }
-
     }
 
     //
-    // Combobox value changed
+    // Combo box value changed
     //
     @Override
     public void itemStateChanged(ItemEvent e) {

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.LogManager;
@@ -36,7 +37,7 @@ public class Order extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        dateModified = new Date(Calendar.getInstance().getTime().getTime());
+        dateModified = DateUtils.now();
 
         int ndx = addBaseParameters(statement);
         if (dateOrdered != null) {
@@ -173,6 +174,8 @@ public class Order extends DbObject {
                 return -1;
             } else if (o1.getDateModified() == null && o2.getDateModified() != null) {
                 return 1;
+            } else if (o1.getDateModified() == null && o2.getDateModified() == null) {
+                return 0;
             } else {
                 return o1.getDateModified().compareTo(o2.getDateModified());
             }
@@ -195,15 +198,6 @@ public class Order extends DbObject {
     public Order(String name) {
         super(TABLE_NAME);
         this.name = name;
-    }
-
-    public boolean containsOrderItemId(long id) {
-        for (OrderItem oi : getOrderItems()) {
-            if (oi.getId() == id) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean containsItemId(long id) {
@@ -326,7 +320,7 @@ public class Order extends DbObject {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    private void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 
@@ -334,7 +328,7 @@ public class Order extends DbObject {
         return dateModified;
     }
 
-    public void setDateModified(Date dateModified) {
+    private void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
     }
 
@@ -437,5 +431,18 @@ public class Order extends DbObject {
 
     public void setTrackingNumber(String trackingNumber) {
         this.trackingNumber = trackingNumber;
+    }
+
+    //
+    // Override to work with edited listener
+    //
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
     }
 }

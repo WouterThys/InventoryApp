@@ -1,7 +1,8 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.DateUtils;
+
 import java.sql.Date;
-import java.util.Calendar;
 
 public class AddUpdateDelete {
 
@@ -13,12 +14,12 @@ public class AddUpdateDelete {
 
     public void setUpdated(String updatedBy) {
         this.updatedBy = updatedBy;
-        updatedDate = new Date(Calendar.getInstance().getTime().getTime());
+        updatedDate = DateUtils.now();
     }
 
     public void setInserted(String insertedBy) {
         this.insertedBy = insertedBy;
-        insertedDate = new Date(Calendar.getInstance().getTime().getTime());
+        insertedDate = DateUtils.now();
     }
 
     public String getInsertedBy() {

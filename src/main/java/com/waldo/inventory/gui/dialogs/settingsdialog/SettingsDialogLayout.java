@@ -8,6 +8,8 @@ import com.waldo.inventory.gui.dialogs.settingsdialog.panels.LogsPanel;
 
 import javax.swing.*;
 
+import java.awt.*;
+
 import static com.waldo.inventory.database.settings.SettingsManager.*;
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -65,12 +67,20 @@ public abstract class SettingsDialogLayout extends IDialog {
 
     @Override
     public void initializeLayouts() {
+        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
         // Add tabs
         tabbedPane.addTab("Database ", imageResource.readImage("Settings.Tab.Db"), dbPanel, "Database settings");
         tabbedPane.addTab("Files ", imageResource.readImage("Settings.Tab.File"), filesPanel, "File settings");
         tabbedPane.addTab("Logs ", imageResource.readImage("Settings.Tab.Log"), logsPanel, "Log settings");
 
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        getContentPanel().add(separator);
         getContentPanel().add(tabbedPane);
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        getContentPanel().add(separator);
+
         pack();
     }
 

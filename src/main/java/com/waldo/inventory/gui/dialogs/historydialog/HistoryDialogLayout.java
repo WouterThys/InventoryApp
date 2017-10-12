@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
@@ -15,19 +16,18 @@ import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
 
-    /*
-     *                  COMPONENTS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private JScrollPane orderPane;
+    private JScrollPane pcbPane;
+
     private IOrderHistoryTableModel orderHistoryModel;
     private ITable<Order> orderHistoryTable;
 
@@ -41,14 +41,6 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     private ILabel updatedWhenLbl;
 
     /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Item historyItem;
-
-    private List<Order> orderHistoryList = new ArrayList<>();
-    private List<ProjectPcb> pcbHistoryList = new ArrayList<>();
-
-    /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     HistoryDialogLayout(Application application) {
@@ -59,13 +51,47 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateHistoryViews(Item item) {
-        // Find orders
-        orderHistoryList.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
-        orderHistoryModel.setItemList(orderHistoryList);
+        orderHistoryModel.clearItemList();
+        pcbHistoryModel.clearItemList();
+
+//        java.util.List<Order> toAdd = new ArrayList<>();
+//        toAdd.add(new Order("Order 1"));
+//        toAdd.add(new Order("Order 2 "));
+//        toAdd.addAll(SearchManager.sm().findOrdersForItem(item.getId()));
+
+        // Find Orders
+        orderHistoryModel.setItemList(SearchManager.sm().findOrdersForItem(item.getId()));
+        orderPane.setVisible(orderHistoryModel.getRowCount() > 0);
 
         // Find projects
-        pcbHistoryList.addAll(SearchManager.sm().findPcbsForItem(item.getId()));
-        pcbHistoryModel.setItemList(pcbHistoryList);
+        pcbHistoryModel.setItemList(SearchManager.sm().findPcbsForItem(item.getId()));
+        pcbPane.setVisible(pcbHistoryModel.getRowCount() > 0);
+
+        // Labels
+        insertedByLbl.setText(item.getAud().getInsertedBy());
+        insertedWhenLbl.setText(DateUtils.formatDateTime(item.getAud().getInsertedDate()));
+        updatedByLbl.setText(item.getAud().getUpdatedBy());
+        updatedWhenLbl.setText(DateUtils.formatDateTime(item.getAud().getUpdatedDate()));
+    }
+
+    private JPanel createLabelPanel() {
+        JPanel panel = new JPanel();
+        JPanel left = new JPanel();
+        JPanel right = new JPanel();
+
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(left);
+        gbc.addLine("Inserted by: ", insertedByLbl);
+        gbc.addLine("Date: ", insertedWhenLbl);
+
+        gbc = new PanelUtils.GridBagHelper(right);
+        gbc.addLine("Updated by: ", updatedByLbl);
+        gbc.addLine("Date: ", updatedWhenLbl);
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(left);
+        panel.add(right);
+
+        return panel;
     }
 
     /*
@@ -73,11 +99,16 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
+        // Dialog
+        setTitleIcon(imageResource.readImage("History.Title"));
+        setTitleName(getTitle());
+
+        // This
         orderHistoryModel = new IOrderHistoryTableModel();
-        orderHistoryTable = new ITable<>(orderHistoryModel);
+        orderHistoryTable = new ITable<>(orderHistoryModel, true);
 
         pcbHistoryModel = new IPcbHistoryTableModel();
-        pcbHistoryTable = new ITable<>(pcbHistoryModel);
+        pcbHistoryTable = new ITable<>(pcbHistoryModel, true);
 
         insertedByLbl = new ILabel();
         insertedWhenLbl = new ILabel();
@@ -105,27 +136,32 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
 
     @Override
     public void initializeLayouts() {
-        JScrollPane orderPane = new JScrollPane(orderHistoryTable);
-        JScrollPane pcbPane = new JScrollPane(pcbHistoryTable);
+        JPanel labelPanel = createLabelPanel();
+        JPanel tablePanel = new JPanel();
+        orderPane = new JScrollPane(orderHistoryTable);
+        pcbPane = new JScrollPane(pcbHistoryTable);
 
+        labelPanel.setBorder(PanelUtils.createTitleBorder("AUD"));
         orderPane.setBorder(PanelUtils.createTitleBorder("Order history"));
         pcbPane.setBorder(PanelUtils.createTitleBorder("Pcb history"));
 
-        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
+        tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
+        tablePanel.add(orderPane);
+        tablePanel.add(pcbPane);
 
-        // TODO: aud fields
-
-        getContentPanel().add(orderPane);
-        getContentPanel().add(pcbPane);
+        getContentPanel().setLayout(new BorderLayout());
+        getContentPanel().add(labelPanel, BorderLayout.NORTH);
+        getContentPanel().add(tablePanel, BorderLayout.CENTER);
 
         pack();
+
     }
 
     @Override
     public void updateComponents(Object object) {
 
         if (object != null) {
-            historyItem = (Item) object;
+            Item historyItem = (Item) object;
 
             if (!historyItem.getIconPath().isEmpty()) {
                 try {

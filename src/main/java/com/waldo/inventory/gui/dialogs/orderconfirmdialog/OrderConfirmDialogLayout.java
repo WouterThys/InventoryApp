@@ -1,18 +1,21 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +26,6 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
 
     static final String TAB_ORDER_FILE = "Order file ";
     public static final String TAB_ORDER_DETAILS = "Order details";
-
-    private static final SimpleDateFormat dateFormatShort = new SimpleDateFormat("MMM d, yyyy");
-    private static final SimpleDateFormat dateFormatLong = new SimpleDateFormat("MMM d, yyyy HH:mm");
 
     /*
      *                  COMPONENTS
@@ -395,17 +395,17 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
             referenceTf.setText(order.getOrderReference());
             trackingNrTf.setText(order.getTrackingNumber());
             if (order.getDateModified() != null) {
-                dateModifiedTf.setText(dateFormatLong.format(order.getDateModified()));
+                dateModifiedTf.setText(DateUtils.formatDateTimeLong(order.getDateModified()));
             } else {
                 dateModifiedTf.setText("Not modified");
             }
             if (order.getDateOrdered() != null) {
-                dateOrderedTf.setText(dateFormatShort.format(order.getDateOrdered()));
+                dateOrderedTf.setText(DateUtils.formatDateLong(order.getDateOrdered()));
             } else {
                 dateOrderedTf.setText("Not ordered");
             }
             if (order.getDateReceived() != null) {
-                dateReceivedTf.setText(dateFormatShort.format(order.getDateReceived()));
+                dateReceivedTf.setText(DateUtils.formatDateLong(order.getDateReceived()));
             } else {
                 dateReceivedTf.setText("Not received");
             }

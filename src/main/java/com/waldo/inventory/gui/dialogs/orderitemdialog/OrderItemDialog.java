@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout {
@@ -89,10 +88,9 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        OrdersDialog dialog = new OrdersDialog(this, "New order", false);
+        OrdersDialog dialog = new OrdersDialog(this, "New order", new Order(), false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
-
             newOrder.save();
         }
     }

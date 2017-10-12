@@ -46,6 +46,7 @@ public class DbManager {
     private List<String> tableNames;
     private boolean initialized = false;
     private String loggedUser = "";
+    private long cacheOnlyFakedId = 2;
 
     private DbQueue<DbQueueObject> workList;
     private DbQueue<DbErrorObject> nonoList;
@@ -116,6 +117,7 @@ public class DbManager {
         initialized = false;
         DbSettings s = settings().getDbSettings();
         if (s != null) {
+            loggedUser = s.getDbUserName();
             if (!Main.CACHE_ONLY) {
                 dataSource = new MysqlDataSource();
                 dataSource.setUrl(s.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
@@ -127,8 +129,6 @@ public class DbManager {
                 // Test
                 initialized = testConnection(dataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
-
-                loggedUser = s.getDbUserName();
             } else {
                 Status().setDbConnectionText(false, "", "", "");
             }
@@ -513,8 +513,8 @@ public class DbManager {
     }
 
     public void insert(DbObject object) {
+        object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
-            object.getAud().setInserted(loggedUser);
             DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
             try {
                 workList.put(toInsert);
@@ -523,13 +523,15 @@ public class DbManager {
             }
         } else {
             // Just write it into cache
+            object.setId(cacheOnlyFakedId);
+            cacheOnlyFakedId++;
             object.tableChanged(OBJECT_INSERT);
         }
     }
 
     public void update(DbObject object) {
+        object.getAud().setUpdated(loggedUser);
         if (!Main.CACHE_ONLY) {
-            object.getAud().setUpdated(loggedUser);
             DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
             try {
                 workList.put(toUpdate);

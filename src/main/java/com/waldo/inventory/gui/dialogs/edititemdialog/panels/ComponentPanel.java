@@ -530,6 +530,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // SETS
         isSetCb.setSelected(newItem.isSet());
         setValuesBtn.setEnabled(newItem.isSet());
+
+        // Focus
+        nameTextField.requestFocus();
     }
 
     /*

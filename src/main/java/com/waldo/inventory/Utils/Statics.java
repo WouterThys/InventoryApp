@@ -86,7 +86,6 @@ public class Statics {
         public static final String Python = "Python";
 
         public static final String[] All = {Unknown, C, Cs, Cpp, Java, Python };
-
     }
 
     public static class ProjectTypes {
@@ -96,5 +95,13 @@ public class Statics {
         public static final String Other = "Other";
 
         public static final String[] All  = {Unknown, Code, Pcb, Other };
+    }
+
+    public static class DbTypes {
+        public static final String Unknown = "Unknown";
+        public static final String Online = "Online (MySQL)";
+        public static final String Local = "Local (SqLite)";
+
+        public static final String[] All = {Unknown, Online, Local};
     }
 }

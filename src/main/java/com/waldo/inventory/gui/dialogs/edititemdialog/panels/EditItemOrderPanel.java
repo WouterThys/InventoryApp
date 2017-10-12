@@ -116,38 +116,10 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        ILabel distributorLabel = new ILabel("Distributor: ", ILabel.LEFT);
-        ILabel itemRefLabel = new ILabel("Reference: ", ILabel.LEFT);
-
         JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        // Distributor
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(distributorLabel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(PanelUtils.createComboBoxWithButton(distributorCb, createDistributorListener()), gbc);
-
-        // Reference
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(itemRefLabel, gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.gridwidth = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(itemRefField, gbc);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(panel);
+        gbc.addLineVertical("Distributor: ", PanelUtils.createComboBoxWithButton(distributorCb, createDistributorListener()));
+        gbc.addLineVertical("Reference: ", itemRefField);
 
         // Add to panel
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));

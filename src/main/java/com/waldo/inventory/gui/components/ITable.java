@@ -14,11 +14,13 @@ import java.awt.event.MouseEvent;
 public class ITable<T> extends JTable {
 
     private IAbstractTableModel<T> model;
+    private boolean autoAdaptHeight;
 
     public ITable(IAbstractTableModel<T> model) {
         super(model);
 
         this.model = model;
+        this.autoAdaptHeight = false;
 
         setModel(model);
         setRowHeight(25);
@@ -27,6 +29,30 @@ public class ITable<T> extends JTable {
         setAutoCreateRowSorter(true);
 
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    }
+
+    public ITable(IAbstractTableModel<T> model, boolean autoSetHeight) {
+        super(model);
+
+        this.model = model;
+        this.autoAdaptHeight = autoSetHeight;
+
+        setModel(model);
+        setRowHeight(25);
+
+        setPreferredScrollableViewportSize(getPreferredSize());
+        setAutoCreateRowSorter(true);
+
+        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        if (autoAdaptHeight) {
+            return new Dimension(super.getPreferredSize().width, getRowHeight() * getRowCount());
+        } else {
+            return super.getPreferredScrollableViewportSize();
+        }
     }
 
     @Override
