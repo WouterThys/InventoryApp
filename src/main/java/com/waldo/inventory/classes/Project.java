@@ -134,14 +134,6 @@ public class Project extends DbObject {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-//    private boolean hasDirectory(String directory) {
-//        for (ProjectDirectory dir : getProjectDirectories()) {
-//            if (dir.getDirectory().equals(directory)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public void addProjectObject(ProjectObject object) {
         if (object instanceof ProjectCode) {
@@ -161,42 +153,6 @@ public class Project extends DbObject {
             }
         }
     }
-
-//    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
-//        if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
-//            updateProjectTypesToDirectory(projectDirectory, projectIDES);
-//            if (id > UNKNOWN_ID) {
-//                projectDirectory.setProjectId(id);
-//                projectDirectory.save();
-//                save();
-//            }
-//            getProjectDirectories().add(projectDirectory);
-//        }
-//    }
-
-//    public void addDirectory(String projectDirectory, List<ProjectIDE> projectIDES) {
-//        ProjectDirectory directory = new ProjectDirectory();
-//        directory.setDirectory(projectDirectory);
-//        addDirectory(directory, projectIDES);
-//    }
-
-//    public void updateDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
-//        if (projectDirectory != null && getProjectDirectories().contains(projectDirectory)) {
-//            updateProjectTypesToDirectory(projectDirectory, projectIDES);
-//            if (id > UNKNOWN_ID) {
-//                projectDirectory.setProjectId(id);
-//                projectDirectory.save();
-//                save();
-//            }
-//        }
-//    }
-//
-//    public void removeDirectory(ProjectDirectory projectDirectory) {
-//        if (getProjectDirectories().contains(projectDirectory)) {
-//            getProjectDirectories().remove(projectDirectory);
-//            projectDirectory.delete(); // Should also delete entry in link table
-//        }
-//    }
 
     public List<ProjectObject> findProjectsInDirectory(String projectDirectory, List<ProjectIDE> projectIDES) {
         List<ProjectObject> projects = new ArrayList<>();
@@ -252,75 +208,6 @@ public class Project extends DbObject {
         projectObject.setProjectIDEId(projectIDE.getId());
         return projectObject;
     }
-
-//    public void saveAll() throws SQLException {
-//        // Save project
-//        save();
-//        int cnt = 0;
-//        for (ProjectDirectory directory : getProjectDirectories()) {
-//            if (directory.getId() <= UNKNOWN_ID) {
-//                directory.setProject(this);
-//                directory.setName(getName() + "-dir" + String.valueOf(cnt));
-//                cnt++;
-//            }
-//            // Save directory
-//            directory.save();
-//            for (ProjectIDE type : directory.getProjectTypeMap().keySet())  {
-//                for (File file : directory.getProjectTypeMap().get(type)) {
-//                    // Save link between type and directory
-//                    ProjectTypeLink ptl = sm().findProjectTypeLink(directory.getId(), type.getId(), file.getAbsolutePath());
-//                    if (ptl == null) {
-//                        ptl = new ProjectTypeLink();
-//                    }
-//                    ptl.setProjectIDE(type);
-//                    ptl.setProjectDirectory(directory);
-//                    ptl.setFilePath(file.getAbsolutePath());
-//                    ptl.save();
-//                }
-//            }
-//        }
-//    }
-//
-//    public List<ProjectValidationError> validate() {
-//        List<ProjectValidationError> errors = new ArrayList<>();
-//        for (ProjectDirectory directory : getProjectDirectories()) {
-//            errors.addAll(directory.validate());
-//        }
-//        validated = true;
-//        return errors;
-//    }
-//
-//    public void recreateProjectStructure() {
-//        List<ProjectDirectory> newDirs = new ArrayList<>();
-//
-//        for (int i = getProjectDirectories().size() - 1; i >= 0; i--) {
-//            ProjectDirectory directory = getProjectDirectories().get(i);
-//            File dirFile = new File(directory.getDirectory());
-//            if (dirFile.exists()) {
-//                newDirs.add(directory);
-//            }
-//            removeDirectory(directory);
-//        }
-//
-//        for (ProjectDirectory directory : newDirs) {
-//            addDirectory(directory, DbManager.db().getProjectIDES());
-//        }
-//    }
-
-    /*
-     *                  GETTERS - SETTERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-//    public List<ProjectDirectory> getProjectDirectories() {
-//        if (projectDirectories == null) {
-//            projectDirectories = DbManager.db().getProjectDirectoryListForProject(id);
-//        }
-//        return projectDirectories;
-//    }
-//
-//    public void setProjectDirectories(List<ProjectDirectory> projectDirectories) {
-//        this.projectDirectories = projectDirectories;
-//    }
 
     @Override
     public void setName(String name) {

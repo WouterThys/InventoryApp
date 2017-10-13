@@ -193,7 +193,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IItemTableModel();
-        itemTable = new ITable(tableModel);
+        itemTable = new ITable<>(tableModel);
         itemTable.getSelectionModel().addListSelectionListener(this);
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.setOpaque(true);

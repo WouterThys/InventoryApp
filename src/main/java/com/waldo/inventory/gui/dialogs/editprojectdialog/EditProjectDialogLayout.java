@@ -2,9 +2,12 @@ package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.classes.ProjectObject;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IComboCheckBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITextField;
@@ -29,6 +32,7 @@ public abstract class EditProjectDialogLayout extends IDialog implements
     PanelUtils.IBrowseFilePanel directoryPnl;
     private JButton findProjectsBtn;
     ProjectGridPanel<ProjectObject> projectGridPanel;
+    IComboCheckBox<ProjectIDE> ideTypeCcb;
 
      /*
      *                  VARIABLES
@@ -76,6 +80,7 @@ public abstract class EditProjectDialogLayout extends IDialog implements
         findProjectsBtn.addActionListener(this);
 
         projectGridPanel = new ProjectGridPanel<>(this, 3,2);
+        ideTypeCcb = new IComboCheckBox<>(DbManager.db().getProjectIDES(), true);
 
     }
 
@@ -93,9 +98,11 @@ public abstract class EditProjectDialogLayout extends IDialog implements
         gbc.addLine("Directory: ", directoryPnl);
 
         // Grid
-        JPanel buttonPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        //buttonPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
-        buttonPanel.add(findProjectsBtn, BorderLayout.EAST);
+        buttonPanel.add(findProjectsBtn);
+        buttonPanel.add(ideTypeCcb);
         JScrollPane pane = new JScrollPane(projectGridPanel);
         pane.setPreferredSize(new Dimension(400, 200));
 

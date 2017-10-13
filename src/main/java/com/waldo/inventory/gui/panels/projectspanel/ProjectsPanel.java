@@ -7,14 +7,16 @@ import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.EditProjectDialog;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ProjectsPanel extends ProjectsPanelLayout {
 
@@ -44,18 +46,69 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         setProjectChangedListener();
     }
 
-    private void saveProjectObjects(Project project) {
+    private void updateProjectObjects(Project project) {
+        updateProjectCodes(project);
+        updateProjectPcbs(project);
+        updateProjectOthers(project);
+    }
+
+    private void updateProjectCodes(Project project) {
+        List<ProjectCode> knownCodes = new ArrayList<>(sm().findProjectCodesByProjectId(project.getId()));
+
         for (ProjectCode code : project.getProjectCodes()) {
             code.setProjectId(project.getId());
+            int ndx = knownCodes.indexOf(code);
+
+            if (ndx >= 0) {
+                code.setId(knownCodes.get(ndx).getId());
+                code.setRemarksFile(knownCodes.get(ndx).getRemarksFile());
+                knownCodes.remove(ndx);
+            }
             code.save();
         }
+
+        for (ProjectCode code : knownCodes) {
+            code.delete();
+        }
+    }
+
+    private void updateProjectPcbs(Project project) {
+        List<ProjectPcb> knownPcbs = new ArrayList<>(sm().findProjectPcbsByProjectId(project.getId()));
+
         for (ProjectPcb pcb : project.getProjectPcbs()) {
             pcb.setProjectId(project.getId());
+            int ndx = knownPcbs.indexOf(pcb);
+
+            if (ndx >= 0) {
+                pcb.setId(knownPcbs.get(ndx).getId());
+                pcb.setRemarksFile(knownPcbs.get(ndx).getRemarksFile());
+                knownPcbs.remove(ndx);
+            }
             pcb.save();
         }
+
+        for (ProjectPcb pcb : knownPcbs) {
+            pcb.delete();
+        }
+    }
+
+    private void updateProjectOthers(Project project) {
+        List<ProjectOther> knownOthers = new ArrayList<>(sm().findProjectOthersByProjectId(project.getId()));
+
         for (ProjectOther other : project.getProjectOthers()) {
             other.setProjectId(project.getId());
+            int ndx = knownOthers.indexOf(other);
+
+            if (ndx >= 0) {
+                other.setId(knownOthers.get(ndx).getId());
+                other.setRemarksFile(knownOthers.get(ndx).getRemarksFile());
+                knownOthers.remove(ndx);
+            }
             other.save();
+        }
+
+        for (ProjectOther other : knownOthers) {
+            other.delete();
         }
     }
 
@@ -64,14 +117,14 @@ public class ProjectsPanel extends ProjectsPanelLayout {
             @Override
             public void onInserted(Project project) {
                 selectedProject = project;
-                saveProjectObjects(project);
+                updateProjectObjects(project);
 
                 updatePanels(TAB_CODE, project);
                 treeRecreateNodes();
                 final long projectId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedProject = SearchManager.sm().findProjectById(projectId);
+                    selectedProject = sm().findProjectById(projectId);
                     treeSelectProject(selectedProject);
 
                     updateVisibleComponents();
@@ -83,13 +136,14 @@ public class ProjectsPanel extends ProjectsPanelLayout {
             @Override
             public void onUpdated(Project project) {
                 selectedProject = project;
+                updateProjectObjects(project);
 
                 updatePanels(getSelectedTab(), project);
                 treeRecreateNodes();
-                final long projectId = selectedProject.getId();
+                final long projectId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedProject = SearchManager.sm().findProjectById(projectId);
+                    selectedProject = sm().findProjectById(projectId);
                     treeSelectProject(selectedProject);
 
                     updateVisibleComponents();
@@ -163,7 +217,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
 
     //
     // Tree value changed
-    //g
+    //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!application.isUpdating()) {

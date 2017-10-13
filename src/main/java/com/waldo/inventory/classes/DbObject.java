@@ -203,6 +203,9 @@ public abstract class DbObject {
 
     public void setId(long id) {
         this.id = id;
+        if (id > UNKNOWN_ID) {
+            isInserted = true;
+        }
     }
 
     public String getName() {

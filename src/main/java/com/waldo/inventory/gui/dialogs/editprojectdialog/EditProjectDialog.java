@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.classes.ProjectObject;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
@@ -70,10 +71,15 @@ public class EditProjectDialog extends EditProjectDialogLayout {
         SwingUtilities.invokeLater(() -> {
             if (project != null && project.isValidDirectory()) {
                 application.beginWait();
+                List<ProjectIDE> ideList = ideTypeCcb.getSelectedElements();
                 try {
                     List<ProjectObject> projectObjectList = project.findProjectsInDirectory(
                             project.getMainDirectory(),
-                            DbManager.db().getProjectIDES());
+                            ideList);
+
+                    project.getProjectCodes().clear();
+                    project.getProjectPcbs().clear();
+                    project.getProjectOthers().clear();
 
                     for (ProjectObject obj : projectObjectList) {
                         project.addProjectObject(obj);
@@ -102,10 +108,6 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (fieldName.equals("MainDirectory")) {
-            updateProjectDirectories();
-        }
-
         updateEnabledComponents();
     }
 
