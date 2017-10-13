@@ -31,6 +31,11 @@ public class ITextField extends JTextField implements FocusListener {
         this("", 15);
     }
 
+    public ITextField(boolean enabled) {
+        this("", 15);
+        setEnabled(enabled);
+    }
+
     public ITextField(String hint) {
         this(hint, 15);
     }

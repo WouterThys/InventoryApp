@@ -36,24 +36,6 @@ public class FileUtils {
     public final static String shell = "sh";
 
 
-    public static ImageIcon loadImageIcon(final String name) {
-        try {
-            return new ImageIcon(FileUtils.class.getResource("/src/main/resources/icons/" + name + "/" + name + "16" + ".png"));
-        } catch (Exception e) {
-            Status().setError("Error loading image icon " + name, e);
-        }
-        return null;
-    }
-
-    public static ImageIcon loadImageIcon(final String name, final int size) {
-        try {
-            return new ImageIcon(FileUtils.class.getResource("/data/icons/" + name + "/" + name + String.valueOf(size) + ".png"));
-        } catch (Exception e) {
-            Status().setError("Error loading image icon " + name, e);
-        }
-        return null;
-    }
-
     public static String getExtension(File f) {
         String ext = null;
         String s = f.getName();

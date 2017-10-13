@@ -8,9 +8,7 @@ import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
-import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectCodePanel;
-import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectOtherPanel;
-import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectPcbPanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -27,7 +25,8 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ChangeListener {
+        ChangeListener,
+        ProjectObjectPanel.ProjectObjectListener {
 
     static final int TAB_CODE = 0;
     static final int TAB_PCBS = 1;
@@ -42,6 +41,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     IdBToolBar projectsToolBar;
+    private ProjectDetailsPanel detailsPanel;
 
     JTabbedPane tabbedPane;
     private ProjectCodePanel projectCodePanel;
@@ -49,7 +49,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     private ProjectOtherPanel projectOtherPanel;
 
     private ILabel tbProjectNameLbl;
-    private ILabel tbProjectDirLbl;
+    //private ILabel tbProjectDirLbl;
 
 
     /*
@@ -76,16 +76,17 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     void updateVisibleComponents() {
-
+        detailsPanel.updateComponents(selectedProject);
+        detailsPanel.updateObjectDetails(getSelectedProjectObject());
     }
 
     void updateToolBar() {
         if (selectedProject != null) {
             tbProjectNameLbl.setText(selectedProject.getName());
-            tbProjectDirLbl.setText(selectedProject.getMainDirectory());
+            //tbProjectDirLbl.setText(selectedProject.getMainDirectory());
         } else  {
             tbProjectNameLbl.setText("");
-            tbProjectDirLbl.setText("");
+            //tbProjectDirLbl.setText("");
         }
     }
 
@@ -175,6 +176,28 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         return projectId;
     }
 
+    void clearSelectedProjectObject() {
+        projectCodePanel.setSelectedProjectObject(null);
+        projectPcbPanel.setSelectedProjectObject(null);
+        projectOtherPanel.setSelectedProjectObject(null);
+    }
+
+    private ProjectObject getSelectedProjectObject() {
+        ProjectObject selected = null;
+        switch (getSelectedTab()) {
+            case TAB_CODE:
+                selected = projectCodePanel.getSelectedProjectObject();
+                break;
+            case TAB_PCBS:
+                selected = projectPcbPanel.getSelectedProjectObject();
+                break;
+            case TAB_OTHER:
+                selected = projectOtherPanel.getSelectedProjectObject();
+                break;
+        }
+        return selected;
+    }
+
     void treeSelectProject(Project project) {
         treeModel.setSelectedObject(project);
     }
@@ -213,13 +236,16 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         projectsTree.setCellRenderer(ITree.getProjectsRenderer());
         treeModel.setTree(projectsTree);
 
+        // Details
+        detailsPanel = new ProjectDetailsPanel(application);
+
         // Tabs
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
 
-        projectCodePanel = new ProjectCodePanel(application);
-        projectPcbPanel = new ProjectPcbPanel(application);
-        projectOtherPanel = new ProjectOtherPanel(application);
+        projectCodePanel = new ProjectCodePanel(application, this);
+        projectPcbPanel = new ProjectPcbPanel(application, this);
+        projectOtherPanel = new ProjectOtherPanel(application, this);
 
         tabbedPane.addTab("Code ", imageResource.readImage("Projects.Tab.Code"), projectCodePanel);
         tabbedPane.addTab("Pcbs ", imageResource.readImage("Projects.Tab.Pcb"), projectPcbPanel);
@@ -232,7 +258,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         topToolBar = new TopToolBar(application, null);
         topToolBar.setDbToolbarVisible(false);
 
-        tbProjectDirLbl = new ILabel("", ILabel.CENTER);
+        //tbProjectDirLbl = new ILabel("", ILabel.CENTER);
         tbProjectNameLbl = new ILabel("", ILabel.CENTER);
         Font f = tbProjectNameLbl.getFont();
         tbProjectNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
@@ -246,13 +272,17 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Tool bar
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tbProjectNameLbl, BorderLayout.CENTER);
-        tbPanel.add(tbProjectDirLbl, BorderLayout.SOUTH);
+        //tbPanel.add(tbProjectDirLbl, BorderLayout.SOUTH);
         topToolBar.getContentPane().setLayout(new BorderLayout());
         topToolBar.getContentPane().add(tbPanel);
 
         // Panels
         JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
+        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(2, 3, 2, 3),
+                BorderFactory.createLineBorder(Color.GRAY, 1)
+        ));
 
         projectsTree.setPreferredSize(new Dimension(200,200));
         JScrollPane pane = new JScrollPane(projectsTree);
@@ -262,6 +292,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
+        centerPanel.add(detailsPanel, BorderLayout.SOUTH);
         // centerPanel.add(details?? .. )
 
         // Add
@@ -284,14 +315,16 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             projectCodePanel.updateComponents(selectedProject);
 
             updateToolBar();
+
             updateEnabledComponents();
             updateVisibleComponents();
-
-            // Details?
-
         } finally {
             application.endWait();
         }
+    }
 
+    @Override
+    public void onSelected(ProjectObject selectedObject) {
+        detailsPanel.updateObjectDetails(selectedObject);
     }
 }

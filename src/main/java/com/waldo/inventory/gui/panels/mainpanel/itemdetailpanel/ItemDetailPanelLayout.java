@@ -18,28 +18,27 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ILabel iconLabel;
+    ILabel iconLbl;
 
-    ITextField nameTextField;
+    ITextField nameTf;
     ITextArea divisionTa;
-    ITextField manufacturerTextField;
-    ITextArea descriptionTextArea;
+    ITextField manufacturerTf;
+    ITextArea descriptionTa;
 
     IStarRater starRater;
-    ICheckBox  discourageOrder;
+    ICheckBox discourageOrderCb;
     ITextArea  remarksTa;
 
-    JButton dataSheetButton;
-    JButton orderButton;
-    JButton historyButton;
+    JButton dataSheetBtn;
+    JButton orderBtn;
+    JButton historyBtn;
 
-    JPanel remarksPanel;
+    JPanel remarksPnl;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Application application;
-    MouseAdapter mouseAdapter;
     Item selectedItem;
 
     /*
@@ -55,7 +54,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
     private JPanel createIconPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(iconLabel, BorderLayout.CENTER);
+        panel.add(iconLbl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         return panel;
     }
@@ -74,7 +73,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
         // Helping lists
         JComponent[] labels = new JComponent[] {nameLabel, divisionLabel, manufacturerLabel};
-        JComponent[] fields = new JComponent[] {nameTextField, new JScrollPane(divisionTa), manufacturerTextField};
+        JComponent[] fields = new JComponent[] {nameTf, new JScrollPane(divisionTa), manufacturerTf};
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -102,7 +101,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.BOTH;
-        componentPanel.add(new JScrollPane(descriptionTextArea), gbc);
+        componentPanel.add(new JScrollPane(descriptionTa), gbc);
 
         return componentPanel;
     }
@@ -117,29 +116,29 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        buttonsPanel.add(dataSheetButton, gbc);
+        buttonsPanel.add(dataSheetBtn, gbc);
 
         gbc.gridy++;
-        buttonsPanel.add(orderButton, gbc);
+        buttonsPanel.add(orderBtn, gbc);
 
         gbc.gridy++;
-        buttonsPanel.add(historyButton, gbc);
+        buttonsPanel.add(historyBtn, gbc);
 
         return buttonsPanel;
     }
 
     private JPanel createRemarksPanel() {
-        remarksPanel = new JPanel(new BorderLayout());
+        remarksPnl = new JPanel(new BorderLayout());
         JPanel northPanel = new JPanel(new BorderLayout());
 
         northPanel.add(starRater, BorderLayout.WEST);
-        northPanel.add(discourageOrder, BorderLayout.EAST);
+        northPanel.add(discourageOrderCb, BorderLayout.EAST);
 
-        remarksPanel.add(northPanel, BorderLayout.NORTH);
-        remarksPanel.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
-        remarksPanel.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
+        remarksPnl.add(northPanel, BorderLayout.NORTH);
+        remarksPnl.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
+        remarksPnl.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
 
-        return remarksPanel;
+        return remarksPnl;
 
     }
 
@@ -150,12 +149,12 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
     @Override
     public void initializeComponents() {
-        iconLabel = new ILabel();
-        iconLabel.setHorizontalAlignment(ILabel.CENTER);
-        iconLabel.setVerticalAlignment(ILabel.CENTER);
-        iconLabel.setPreferredSize(new Dimension(150,150));
+        iconLbl = new ILabel();
+        iconLbl.setHorizontalAlignment(ILabel.CENTER);
+        iconLbl.setVerticalAlignment(ILabel.CENTER);
+        iconLbl.setPreferredSize(new Dimension(150,150));
 
-        mouseAdapter = new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() >= 2) {
@@ -163,17 +162,17 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
                     Object source = e.getSource();
                     if (source.equals(remarksTa)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_REMARK);
-                    } else if (source.equals(descriptionTextArea)) {
+                    } else if (source.equals(descriptionTa)) {
                         dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DESCRIPTION);
-                    } else if (source.equals(nameTextField)) {
+                    } else if (source.equals(nameTf)) {
                         dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_NAME);
                     } else if (source.equals(divisionTa)) {
                         dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DIVISION);
-                    } else if (source.equals(manufacturerTextField)) {
+                    } else if (source.equals(manufacturerTf)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_MANUFACTURER);
                     } else if (source.equals(starRater)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_RATING);
-                    } else if (source.equals(discourageOrder)) {
+                    } else if (source.equals(discourageOrderCb)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_DISCOURAGE);
                     } else {
                         dialog.showDialog();
@@ -182,45 +181,40 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
             }
         };
 
-        nameTextField = new ITextField();
-        nameTextField.setEnabled(false);
-        nameTextField.addMouseListener(mouseAdapter);
-        divisionTa = new ITextArea();
+        nameTf = new ITextField(false);
+        nameTf.addMouseListener(mouseAdapter);
+        divisionTa = new ITextArea(false);
         divisionTa.setLineWrap(true);
         divisionTa.setWrapStyleWord(true);
-        divisionTa.setEnabled(false);
         divisionTa.addMouseListener(mouseAdapter);
-        manufacturerTextField = new ITextField();
-        manufacturerTextField.setEnabled(false);
-        manufacturerTextField.addMouseListener(mouseAdapter);
-        descriptionTextArea= new ITextArea();
-        descriptionTextArea.setEnabled(false);
-        descriptionTextArea.setLineWrap(true);
-        descriptionTextArea.setWrapStyleWord(true);
-        descriptionTextArea.addMouseListener(mouseAdapter);
+        manufacturerTf = new ITextField(false);
+        manufacturerTf.addMouseListener(mouseAdapter);
+        descriptionTa = new ITextArea(false);
+        descriptionTa.setLineWrap(true);
+        descriptionTa.setWrapStyleWord(true);
+        descriptionTa.addMouseListener(mouseAdapter);
 
         starRater = new IStarRater(5);
         starRater.setEnabled(false);
         starRater.addMouseListener(mouseAdapter);
-        discourageOrder = new ICheckBox("Discourage order ");
-        discourageOrder.setEnabled(false);
-        discourageOrder.setHorizontalAlignment(SwingConstants.RIGHT);
-        discourageOrder.addMouseListener(mouseAdapter);
-        remarksTa = new ITextArea();
-        remarksTa.setEnabled(false);
+        discourageOrderCb = new ICheckBox("Discourage order ");
+        discourageOrderCb.setEnabled(false);
+        discourageOrderCb.setHorizontalAlignment(SwingConstants.RIGHT);
+        discourageOrderCb.addMouseListener(mouseAdapter);
+        remarksTa = new ITextArea(false);
         remarksTa.setLineWrap(true);
         remarksTa.setWrapStyleWord(true);
         remarksTa.addMouseListener(mouseAdapter);
 
-        dataSheetButton = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
-        orderButton = new JButton(imageResource.readImage("Items.Buttons.Order"));
-        historyButton = new JButton(imageResource.readImage("Items.Buttons.History"));
+        dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
+        orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));
+        historyBtn = new JButton(imageResource.readImage("Items.Buttons.History"));
 
-        dataSheetButton.setToolTipText("Data sheets");
-        orderButton.setToolTipText("Order");
-        historyButton.setToolTipText("History");
+        dataSheetBtn.setToolTipText("Data sheets");
+        orderBtn.setToolTipText("Order");
+        historyBtn.setToolTipText("History");
 
-        remarksPanel = new JPanel(new BorderLayout());
+        remarksPnl = new JPanel(new BorderLayout());
     }
 
     @Override

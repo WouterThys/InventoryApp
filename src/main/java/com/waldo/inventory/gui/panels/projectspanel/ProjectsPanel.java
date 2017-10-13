@@ -253,6 +253,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                     case DbObject.TYPE_PROJECT:
                         tabToSelect = TAB_CODE;
                         selectedProject = (Project) object;
+                        clearSelectedProjectObject();
                         break;
                 }
 
@@ -283,6 +284,8 @@ public class ProjectsPanel extends ProjectsPanelLayout {
                         int tab = tabbedPane.getSelectedIndex();
                         updatePanels(tab, selectedProject);
                         selectTreeTab(tab, selectedProject);
+
+                        updateVisibleComponents();
                     }
                 } finally {
                     application.endWait();

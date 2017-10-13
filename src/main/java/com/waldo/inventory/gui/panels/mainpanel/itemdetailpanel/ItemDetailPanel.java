@@ -46,17 +46,17 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     public void setRemarksPanelVisible(boolean visible) {
-        remarksPanel.setVisible(visible);
+        remarksPnl.setVisible(visible);
     }
 
     public void setOrderButtonVisible(boolean visible) {
-        orderButton.setVisible(visible);
+        orderBtn.setVisible(visible);
     }
 
     private void initActions() {
-        dataSheetButton.addActionListener(e -> openDataSheet(selectedItem));
-        orderButton.addActionListener(e -> orderItem(selectedItem));
-        historyButton.addActionListener(e -> {
+        dataSheetBtn.addActionListener(e -> openDataSheet(selectedItem));
+        orderBtn.addActionListener(e -> orderItem(selectedItem));
+        historyBtn.addActionListener(e -> {
             HistoryDialog dialog = new HistoryDialog(application, selectedItem);
             dialog.showDialog();
         });
@@ -112,7 +112,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     private void updateIcon(Item item) {
         try {
             Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-            iconLabel.setIcon(path.toString());
+            iconLbl.setIcon(path.toString());
         } catch (Exception e) {
             Status().setError("Failed to set item icon");
         }
@@ -120,7 +120,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void updateTextFields(Item item) {
         if (item != null) {
-            nameTextField.setText(item.getName());
+            nameTf.setText(item.getName());
             StringBuilder builder = new StringBuilder();
 
             if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
@@ -135,22 +135,22 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
             divisionTa.setText(builder.toString());
 
             if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-                manufacturerTextField.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
+                manufacturerTf.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
             } else {
-                manufacturerTextField.setText("");
+                manufacturerTf.setText("");
             }
 
-            descriptionTextArea.setText(item.getDescription());
+            descriptionTa.setText(item.getDescription());
 
             starRater.setRating(item.getRating());
-            discourageOrder.setSelected(item.isDiscourageOrder());
+            discourageOrderCb.setSelected(item.isDiscourageOrder());
             remarksTa.setText(item.getRemarks());
         }
     }
 
     private void updateButtons(Item item) {
         if (item != null) {
-            dataSheetButton.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
+            dataSheetBtn.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
         }
     }
 

@@ -66,7 +66,7 @@ public class ITextEditor extends JPanel {
     public ITextEditor(ActionListener saveActionListener) {
         editor = new JTextPane();
         JScrollPane editorScrollPane = new JScrollPane(editor);
-        editorScrollPane.setPreferredSize(new Dimension(300, 200));
+        //editorScrollPane.setPreferredSize(new Dimension(200, 150));
 
         editor.setDocument(getNewDocument());
         editor.addKeyListener(new BulletParaKeyListener());
@@ -158,9 +158,9 @@ public class ITextEditor extends JPanel {
         add(toolBar, BorderLayout.NORTH);
         add(editorScrollPane, BorderLayout.CENTER);
 
-        Dimension dim = getMinimumSize();
-        dim.height = 300;
-        setPreferredSize(dim);
+//        Dimension dim = getMinimumSize();
+//        dim.height = 300;
+//        setPreferredSize(dim);
 
         editor.requestFocusInWindow();
     }

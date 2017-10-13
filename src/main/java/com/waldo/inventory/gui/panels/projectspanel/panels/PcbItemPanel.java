@@ -91,7 +91,6 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             tab.updateComponents(pcbItemMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
-        repaint();
     }
 
     private void setDetails() {

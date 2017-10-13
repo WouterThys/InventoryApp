@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.database.DbManager;
@@ -9,13 +8,8 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 
-import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 
 public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
@@ -32,8 +26,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectPcbPanel(Application application) {
-        super(application);
+    public ProjectPcbPanel(Application application, ProjectObjectListener listener) {
+        super(application, listener);
         DbManager.db().addOnProjectPcbChangedListener(this);
     }
 
@@ -65,19 +59,21 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         super.initializeLayouts();
         eastPanel.add(pcbItemPanel, BorderLayout.CENTER);
         menuPanel.add(pcbItemPanel.getToolbarPanel(), BorderLayout.WEST);
-        hideRemarks(true);
+        //hideRemarks(true);
     }
 
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            selectedProject = (Project) object;
-            gridPanel.drawTiles(selectedProject.getProjectPcbs());
+            Project project = (Project) object;
+            if (!project.equals(selectedProject)) {
+                selectedProject = project;
+                gridPanel.drawTiles(selectedProject.getProjectPcbs());
+            }
         } else {
             selectedProject = null;
         }
-        selectedProjectObject = null;
-        selectProjectObject(null);
+        selectProjectObject(selectedProjectObject);
     }
 
     //
@@ -114,25 +110,24 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     //
     // Text edit save action listener
     //
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        DefaultStyledDocument doc = remarksTe.getStyledDocument();
-        if (selectedProjectObject.getRemarksFileName().isEmpty()) {
-            try {
-                selectedProjectObject.setRemarksFile(FileUtils.createTempFile(selectedProjectObject.createRemarksFileName()));
-            } catch (Exception e1) {
-                e1.printStackTrace();
-                return;
-            }
-        }
-        try (OutputStream fos = new FileOutputStream(selectedProjectObject.getRemarksFile());
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
-            oos.writeObject(doc);
-            selectedProjectObject.save();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+//        DefaultStyledDocument doc = remarksTe.getStyledDocument();
+//        if (selectedProjectObject.getRemarksFileName().isEmpty()) {
+//            try {
+//                selectedProjectObject.setRemarksFile(FileUtils.createTempFile(selectedProjectObject.createRemarksFileName()));
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//                return;
+//            }
+//        }
+//        try (OutputStream fos = new FileOutputStream(selectedProjectObject.getRemarksFile());
+//             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+//
+//            oos.writeObject(doc);
+//            selectedProjectObject.save();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
     }
 }

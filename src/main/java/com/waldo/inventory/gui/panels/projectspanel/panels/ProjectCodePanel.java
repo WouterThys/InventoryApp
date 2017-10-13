@@ -30,8 +30,8 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectCodePanel(Application application) {
-        super(application);
+    public ProjectCodePanel(Application application, ProjectObjectListener listener) {
+        super(application, listener);
         DbManager.db().addOnProjectCodeChangedListener(this);
     }
 
@@ -74,12 +74,13 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            selectedProject = (Project) object;
-            gridPanel.drawTiles(selectedProject.getProjectCodes());
+            Project project = (Project) object;
+            if (!project.equals(selectedProject)) {
+                selectedProject = project;
+                gridPanel.drawTiles(selectedProject.getProjectCodes());
+            }
         }
-        // else selectedProject = null ??
-        selectedProjectObject = null;
-        selectProjectObject(null);
+        selectProjectObject(selectedProjectObject);
     }
 
     //

@@ -24,6 +24,11 @@ public class ITextArea extends JTextArea implements FocusListener {
         this("");
     }
 
+    public ITextArea(boolean enabled) {
+        this("");
+        setEnabled(enabled);
+    }
+
     public ITextArea(String hint) {
         this(hint, 2, 15);
     }

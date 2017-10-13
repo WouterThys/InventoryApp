@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Project;
 import com.waldo.inventory.classes.ProjectIDE;
@@ -9,17 +8,14 @@ import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextEditor;
 import com.waldo.inventory.gui.components.IdBToolBar;
 
 import javax.swing.*;
-import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -28,6 +24,10 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         ActionListener,
         IdBToolBar.IdbToolBarListener ,
         DbObjectChangedListener<T> {
+
+    public interface ProjectObjectListener {
+        void onSelected(ProjectObject selectedObject);
+    }
     
     /*
      *                  COMPONENTS
@@ -36,8 +36,6 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     private IdBToolBar objectToolBar;
     private JButton runIdeBtn;
     private ILabel projectObjectNameLbl;
-    ITextEditor remarksTe;
-    private ILabel hideRemarksLbl;
 
     JPanel eastPanel = new JPanel(new BorderLayout());
     private JPanel centerPanel = new JPanel(new BorderLayout());
@@ -49,15 +47,16 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected Application application;
+    private ProjectObjectListener objectListener;
     Project selectedProject;
     T selectedProjectObject;
-    private boolean hidingRemarks = false;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectObjectPanel(Application application) {
+    public ProjectObjectPanel(Application application, ProjectObjectListener objectListener) {
         this.application = application;
+        this.objectListener = objectListener;
 
         initializeComponents();
         initializeLayouts();
@@ -75,38 +74,47 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
             objectToolBar.setEnabled(true);
             objectToolBar.setDeleteActionEnabled(objectSelected);
             objectToolBar.setEditActionEnabled(objectSelected);
-            remarksTe.setEnabled(objectSelected);
             runIdeBtn.setEnabled(objectSelected);
         } else {
             objectToolBar.setEnabled(false);
-            remarksTe.setEnabled(false);
             runIdeBtn.setEnabled(false);
         }
     }
 
     protected void selectProjectObject(T projectObject) {
         if (projectObject != null) {
-            selectedProjectObject = projectObject;
-            remarksTe.setDocument(projectObject.getRemarksFile());
-            projectObjectNameLbl.setText(projectObject.getName());
+            if (!projectObject.equals(selectedProjectObject)) {
+                selectedProjectObject = projectObject;
+                projectObjectNameLbl.setText(projectObject.getName());
+            }
         } else {
             selectedProjectObject = null;
-            remarksTe.setDocument(null);
             projectObjectNameLbl.setText("");
+        }
+        if (objectListener != null) {
+            objectListener.onSelected(selectedProjectObject);
         }
         updateEnabledComponents();
     }
 
-    void hideRemarks(boolean hide) {
-        if (!hide) {
-            remarksTe.setVisible(true);
-            hideRemarksLbl.setText("Remarks");
-        } else {
-            remarksTe.setVisible(false);
-            hideRemarksLbl.setText("Remarks ...");
-        }
-        hidingRemarks = !hide;
+    public T getSelectedProjectObject() {
+        return selectedProjectObject;
     }
+
+    public void setSelectedProjectObject(T selectedProjectObject) {
+        this.selectedProjectObject = selectedProjectObject;
+    }
+
+//    void hideRemarks(boolean hide) {
+//        if (!hide) {
+//            remarksTe.setVisible(true);
+//            hideRemarksLbl.setText("Remarks");
+//        } else {
+//            remarksTe.setVisible(false);
+//            hideRemarksLbl.setText("Remarks ...");
+//        }
+//        hidingRemarks = !hide;
+//    }
 
     /*
      *                  LISTENERS
@@ -137,18 +145,18 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         });
 
         // Eas
-        remarksTe = new ITextEditor();
-        remarksTe.setEnabled(false);
-        hideRemarksLbl = new ILabel("Remarks", ILabel.CENTER);
-        hideRemarksLbl.setFont(Font.BOLD);
-        hideRemarksLbl.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) {
-                    hideRemarks(hidingRemarks);
-                }
-            }
-        });
+//        remarksTe = new ITextEditor();
+//        remarksTe.setEnabled(false);
+//        hideRemarksLbl = new ILabel("Remarks", ILabel.CENTER);
+//        hideRemarksLbl.setFont(Font.BOLD);
+//        hideRemarksLbl.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (e.getClickCount() == 1) {
+//                    hideRemarks(hidingRemarks);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -164,9 +172,6 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
 
         centerPanel.add(gridPanel, BorderLayout.CENTER);
         centerPanel.add(objectToolBar, BorderLayout.PAGE_START);
-
-        remarksPanel.add(hideRemarksLbl, BorderLayout.PAGE_START);
-        remarksPanel.add(remarksTe, BorderLayout.CENTER);
 
         eastPanel.add(menuPanel, BorderLayout.PAGE_START);
         eastPanel.add(remarksPanel, BorderLayout.SOUTH);
@@ -184,23 +189,23 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        DefaultStyledDocument doc = remarksTe.getStyledDocument();
-        if (selectedProjectObject.getRemarksFileName().isEmpty()) {
-            try {
-                selectedProjectObject.setRemarksFile(FileUtils.createTempFile(selectedProjectObject.createRemarksFileName()));
-            } catch (Exception e1) {
-                e1.printStackTrace();
-                return;
-            }
-        }
-        try (OutputStream fos = new FileOutputStream(selectedProjectObject.getRemarksFile());
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
-            oos.writeObject(doc);
-            selectedProjectObject.save();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+//        DefaultStyledDocument doc = remarksTe.getStyledDocument();
+//        if (selectedProjectObject.getRemarksFileName().isEmpty()) {
+//            try {
+//                selectedProjectObject.setRemarksFile(FileUtils.createTempFile(selectedProjectObject.createRemarksFileName()));
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//                return;
+//            }
+//        }
+//        try (OutputStream fos = new FileOutputStream(selectedProjectObject.getRemarksFile());
+//             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+//
+//            oos.writeObject(doc);
+//            selectedProjectObject.save();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     //

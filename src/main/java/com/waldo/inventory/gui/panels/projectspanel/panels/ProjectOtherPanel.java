@@ -27,8 +27,8 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectOtherPanel(Application application) {
-        super(application);
+    public ProjectOtherPanel(Application application, ProjectObjectListener listener) {
+        super(application, listener);
         DbManager.db().addOnProjectOtherChangedListener(this);
     }
 
@@ -71,12 +71,13 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     @Override
     public void updateComponents(Object object) {
         if (object != null) {
-            selectedProject = (Project) object;
-            gridPanel.drawTiles(selectedProject.getProjectOthers());
+            Project project = (Project) object;
+            if (!project.equals(selectedProject)) {
+                selectedProject = project;
+                gridPanel.drawTiles(selectedProject.getProjectOthers());
+            }
         }
-        // else ..
-        selectedProjectObject = null;
-        selectProjectObject(null);
+        selectProjectObject(selectedProjectObject);
     }
 
     //
