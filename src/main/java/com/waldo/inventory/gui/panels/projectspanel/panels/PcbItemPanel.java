@@ -94,6 +94,22 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         repaint();
     }
 
+    private void setDetails() {
+        if (projectPcb != null) {
+            parsedHowLbl.setText(projectPcb.hasParsed() ? "Items from file" : "Items from database");
+            lastParsedLbl.setText(DateUtils.formatDateTime(projectPcb.getLastParsedDate()));
+            int size = 0;
+            for (String sheet : projectPcb.getPcbItemMap().keySet()) {
+                size += projectPcb.getPcbItemMap().get(sheet).size();
+            }
+            itemAmountLbl.setText("Items: " + String.valueOf(size));
+        } else {
+            parsedHowLbl.setText("");
+            lastParsedLbl.setText("");
+            itemAmountLbl.setText("");
+        }
+    }
+
     private void clearComponentTable() {
         sheetTabs.removeAll();
     }
@@ -208,9 +224,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                 clearComponentTable();
                 updateComponentTable(projectPcb.getPcbItemMap());
 
-                parsedHowLbl.setText(projectPcb.hasParsed() ? "Items from file" : "Items from database");
-                lastParsedLbl.setText(DateUtils.formatDateTime(projectPcb.getLastParsedDate()));
-                itemAmountLbl.setText("45");
+                setDetails();
 
             } finally {
                 application.endWait();
@@ -287,6 +301,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             try {
                 if (projectPcb.parseAgain()) {
                     clearComponentTable();
+                    setDetails();
                     updateComponentTable(projectPcb.getPcbItemMap());
                 }
             } catch (Exception ex) {

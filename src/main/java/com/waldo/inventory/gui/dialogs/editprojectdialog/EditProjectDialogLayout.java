@@ -24,11 +24,11 @@ public abstract class EditProjectDialogLayout extends IDialog implements
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ITextField nameTf;
+    ITextField nameTf;
     private PanelUtils.IBrowseImagePanel iconPnl;
-    private PanelUtils.IBrowseFilePanel directoryPnl;
+    PanelUtils.IBrowseFilePanel directoryPnl;
     private JButton findProjectsBtn;
-    private ProjectGridPanel<ProjectObject> projectGridPanel;
+    ProjectGridPanel<ProjectObject> projectGridPanel;
 
      /*
      *                  VARIABLES

@@ -38,15 +38,15 @@ public abstract class ProjectsPanelLayout extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITree projectsTree;
-    IDbObjectTreeModel<Project> treeModel;
+    private IDbObjectTreeModel<Project> treeModel;
 
     TopToolBar topToolBar;
     IdBToolBar projectsToolBar;
 
     JTabbedPane tabbedPane;
-    ProjectCodePanel projectCodePanel;
-    ProjectPcbPanel projectPcbPanel;
-    ProjectOtherPanel projectOtherPanel;
+    private ProjectCodePanel projectCodePanel;
+    private ProjectPcbPanel projectPcbPanel;
+    private ProjectOtherPanel projectOtherPanel;
 
     private ILabel tbProjectNameLbl;
     private ILabel tbProjectDirLbl;
@@ -122,12 +122,8 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         treeModel.collapseNodes();
     }
 
-    ProjectPcb treeGetPcbTab(Project project) {
-        TreeNode node = treeModel.findNode(project);
-        if (node != null) {
-            return (ProjectPcb) ((DefaultMutableTreeNode) node.getChildAt(TAB_PCBS)).getUserObject();
-        }
-        return null;
+    int getSelectedTab() {
+        return tabbedPane.getSelectedIndex();
     }
 
     private void treeInitializeTree(DefaultMutableTreeNode rootNode) {

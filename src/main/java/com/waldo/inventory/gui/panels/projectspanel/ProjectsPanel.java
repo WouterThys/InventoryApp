@@ -1,13 +1,13 @@
 package com.waldo.inventory.gui.panels.projectspanel;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Project;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.EditProjectDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -44,21 +44,66 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         setProjectChangedListener();
     }
 
+    private void saveProjectObjects(Project project) {
+        for (ProjectCode code : project.getProjectCodes()) {
+            code.setProjectId(project.getId());
+            code.save();
+        }
+        for (ProjectPcb pcb : project.getProjectPcbs()) {
+            pcb.setProjectId(project.getId());
+            pcb.save();
+        }
+        for (ProjectOther other : project.getProjectOthers()) {
+            other.setProjectId(project.getId());
+            other.save();
+        }
+    }
+
     private void setProjectChangedListener() {
         projectChanged = new DbObjectChangedListener<Project>() {
             @Override
-            public void onInserted(Project object) {
+            public void onInserted(Project project) {
+                selectedProject = project;
+                saveProjectObjects(project);
+
+                updatePanels(TAB_CODE, project);
+                treeRecreateNodes();
+                final long projectId = treeUpdate();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedProject = SearchManager.sm().findProjectById(projectId);
+                    treeSelectProject(selectedProject);
+
+                    updateVisibleComponents();
+                    updateEnabledComponents();
+                });
 
             }
 
             @Override
-            public void onUpdated(Project object) {
+            public void onUpdated(Project project) {
+                selectedProject = project;
 
+                updatePanels(getSelectedTab(), project);
+                treeRecreateNodes();
+                final long projectId = selectedProject.getId();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedProject = SearchManager.sm().findProjectById(projectId);
+                    treeSelectProject(selectedProject);
+
+                    updateVisibleComponents();
+                    updateEnabledComponents();
+                });
             }
 
             @Override
-            public void onDeleted(Project object) {
+            public void onDeleted(Project project) {
+                selectedProject = null;
 
+                treeDeleteProject(project);
+                updateVisibleComponents();
+                updateEnabledComponents();
             }
 
             @Override
@@ -85,7 +130,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (source.equals(projectsToolBar)) {
-            EditProjectDialog dialog = new EditProjectDialog(application, "New Project", new Project());
+            EditProjectDialog dialog = new EditProjectDialog(application, "New Project");
             if (dialog.showDialog() == IDialog.OK) {
                 // Add Project
                 Project p = dialog.getProject();
@@ -99,13 +144,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         if (selectedProject != null) {
             int res = JOptionPane.showConfirmDialog(ProjectsPanel.this, "Are you sure you want to delete \"" + selectedProject.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
-                application.beginWait();
-                try {
-                    selectedProject.delete();
-                } finally {
-                    application.endWait();
-                }
-                selectedProject = null;
+                selectedProject.delete();
             }
         }
     }
@@ -115,7 +154,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         if (selectedProject != null) {
             EditProjectDialog dialog = new EditProjectDialog(application, "New Project", selectedProject);
             if (dialog.showDialog() == IDialog.OK) {
-                // Add project
+                // Edit project
                 Project p = dialog.getProject();
                 p.save();
             }

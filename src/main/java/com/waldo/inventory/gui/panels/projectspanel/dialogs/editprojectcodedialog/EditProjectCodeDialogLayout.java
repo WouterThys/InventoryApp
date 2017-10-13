@@ -6,23 +6,23 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.ProjectCode;
 import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IComboBox;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
-public abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedListener, ActionListener {
+public abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private IComboBox<String> languageCb;
-    ITextField directoryTf;
-    private JButton directoryBtn;
+    PanelUtils.IBrowseFilePanel directoryPnl;
     private IComboBox<ProjectIDE> projectIdeCb;
 
      /*
@@ -50,7 +50,7 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Common.Code", 48));
+        setTitleIcon(imageResource.readImage("Projects.Code.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -62,10 +62,7 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
         languageCb.addEditedListener(this, "language", String.class);
 
         // Directory
-        directoryTf = new ITextField();
-        directoryTf.addEditedListener(this, "directory");
-        directoryBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        directoryBtn.addActionListener(this);
+        directoryPnl = new PanelUtils.IBrowseFilePanel("", "home/",this, "directory");
 
         // IDE
         projectIdeCb = new IComboBox<>(
@@ -82,38 +79,10 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
 
         // Fields
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        //  -  Language
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(new ILabel("Language: ", ILabel.RIGHT), gbc);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(languageCb, gbc);
-
-        //  -  IDE
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(new ILabel("IDE: ", ILabel.RIGHT), gbc);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(projectIdeCb, gbc);
-
-        //  -  Directory
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(new ILabel("Directory: ", ILabel.RIGHT), gbc);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(PanelUtils.createFileOpenPanel(directoryTf, directoryBtn), gbc);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(fieldsPanel);
+        gbc.addLine("Language: ", languageCb);
+        gbc.addLine("IDE: ", projectIdeCb);
+        gbc.addLine("Directory: ", directoryPnl);
 
         // Add
         getContentPanel().add(fieldsPanel, BorderLayout.CENTER);
@@ -134,7 +103,7 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
             application.beginWait();
             try {
                 languageCb.setSelectedItem(projectCode.getLanguage());
-                directoryTf.setText(projectCode.getDirectory());
+                directoryPnl.setText(projectCode.getDirectory());
                 projectIdeCb.setSelectedItem(projectCode.getProjectIDE());
                 //remarksTa.setText(projectCode.getRemarks());
             } finally {

@@ -53,12 +53,12 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
     private boolean verify() {
         boolean ok = true;
         if (projectCode.getDirectory().isEmpty()) {
-            directoryTf.setError("Directory can not be empty..");
+            directoryPnl.setError("Directory can not be empty..");
             ok = false;
         } else {
             File dir = new File(projectCode.getDirectory());
             if (!dir.exists()) {
-                directoryTf.setError("Directory does not exist..");
+                directoryPnl.setError("Directory does not exist..");
                 ok = false;
             }
         }
@@ -68,12 +68,12 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
                 if (projectCode.getProjectIDE().isUseParentFolder()) {
                     File parent = new File(projectCode.getDirectory());
                     if (!(parent.exists() && parent.isDirectory() && FileUtils.contains(parent, projectCode.getProjectIDE().getExtension()))) {
-                        directoryTf.setWarning("Directory does not match with IDE");
+                        directoryPnl.setWarning("Directory does not match with IDE");
                     }
                 } else {
                     File file = new File(projectCode.getDirectory());
                     if (!(file.exists() && FileUtils.is(file, projectCode.getProjectIDE().getExtension()))) {
-                        directoryTf.setWarning("Directory does not match with IDE");
+                        directoryPnl.setWarning("Directory does not match with IDE");
                     }
                 }
             }
@@ -134,29 +134,29 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
         return null;
     }
 
-    //
-    // Browse button
-    //
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JFileChooser fileChooser = new JFileChooser();
-        String home = "";
-        if (projectCode.getProject() != null) {
-            home = projectCode.getProject().getMainDirectory();
-        }
-        if (home.isEmpty()) {
-            home = "/home/waldo/Documents/";
-        }
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setCurrentDirectory(new File(home));
-
-        if (fileChooser.showDialog(EditProjectCodeDialog.this, "Select") == JFileChooser.APPROVE_OPTION) {
-            String dir = fileChooser.getSelectedFile().getAbsolutePath();
-            directoryTf.setError(null);
-            directoryTf.setText(dir);
-            projectCode.setDirectory(dir);
-            verify();
-            onValueChanged(directoryTf, "", 0,0);
-        }
-    }
+//    //
+//    // Browse button
+//    //
+//    @Override
+//    public void actionPerformed(ActionEvent e) {
+//        JFileChooser fileChooser = new JFileChooser();
+//        String home = "";
+//        if (projectCode.getProject() != null) {
+//            home = projectCode.getProject().getMainDirectory();
+//        }
+//        if (home.isEmpty()) {
+//            home = "/home/waldo/Documents/";
+//        }
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//        fileChooser.setCurrentDirectory(new File(home));
+//
+//        if (fileChooser.showDialog(EditProjectCodeDialog.this, "Select") == JFileChooser.APPROVE_OPTION) {
+//            String dir = fileChooser.getSelectedFile().getAbsolutePath();
+//            directoryPnl.setError(null);
+//            directoryPnl.setText(dir);
+//            projectCode.setDirectory(dir);
+//            verify();
+//            onValueChanged(directoryPnl, "", 0,0);
+//        }
+//    }
 }

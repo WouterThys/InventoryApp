@@ -1,11 +1,14 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -139,8 +142,26 @@ public class Project extends DbObject {
 //        }
 //        return false;
 //    }
-//
-//
+
+    public void addProjectObject(ProjectObject object) {
+        if (object instanceof ProjectCode) {
+            ProjectCode code = (ProjectCode) object;
+            if (!getProjectCodes().contains(code)) {
+                projectCodes.add(code);
+            }
+        } else if (object instanceof ProjectPcb) {
+            ProjectPcb pcb = (ProjectPcb) object;
+            if (!getProjectPcbs().contains(pcb)) {
+                projectPcbs.add(pcb);
+            }
+        } else if (object instanceof ProjectOther) {
+            ProjectOther other = (ProjectOther) object;
+            if (!getProjectOthers().contains(other)) {
+                projectOthers.add(other);
+            }
+        }
+    }
+
 //    private void addDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
 //        if (projectDirectory != null && !hasDirectory(projectDirectory.getDirectory())) {
 //            updateProjectTypesToDirectory(projectDirectory, projectIDES);
@@ -177,40 +198,60 @@ public class Project extends DbObject {
 //        }
 //    }
 
-//    public void updateProjectTypesToDirectory(ProjectDirectory projectDirectory, List<ProjectIDE> projectIDES) {
-//        for (ProjectIDE type : projectIDES) {
-//
-//            if (type.isOpenAsFolder()) {
-//                if (type.isMatchExtension()) {
-//                    if(FileUtils.is(new File(projectDirectory.getDirectory()), type.getExtension())) {
-//                        projectDirectory.addProjectType(type, new File(projectDirectory.getDirectory()));
-//                    } else {
-//                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), false);
-//                        for (File f : foundFiles) {
-//                            projectDirectory.addProjectType(type, f);
-//                        }
-//                    }
-//                } else {
-//                    if (type.isUseParentFolder()) {
-//                        List<File> foundFiles = FileUtils.containsGetParents(new File(projectDirectory.getDirectory()), type.getExtension());
-//                        for(File f :foundFiles) {
-//                            projectDirectory.addProjectType(type, f);
-//                        }
-//                    } else {
-//                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), false);
-//                        for (File f : foundFiles) {
-//                            projectDirectory.addProjectType(type, f);
-//                        }
-//                    }
-//                }
-//            } else {
-//                List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory.getDirectory()), type.getExtension(), true);
-//                for (File f : foundFiles) {
-//                    projectDirectory.addProjectType(type, f);
-//                }
-//            }
-//        }
-//    }
+    public List<ProjectObject> findProjectsInDirectory(String projectDirectory, List<ProjectIDE> projectIDES) {
+        List<ProjectObject> projects = new ArrayList<>();
+        for (ProjectIDE ide : projectIDES) {
+            if (ide.isOpenAsFolder()) {
+                if (ide.isMatchExtension()) {
+                    if(FileUtils.is(new File(projectDirectory), ide.getExtension())) {
+                        projects.add(createProjectObject(projectDirectory, ide));
+                    } else {
+                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory), ide.getExtension(), false);
+                        for (File f : foundFiles) {
+                            projects.add(createProjectObject(f.getAbsolutePath(), ide));
+                        }
+                    }
+                } else {
+                    if (ide.isUseParentFolder()) {
+                        List<File> foundFiles = FileUtils.containsGetParents(new File(projectDirectory), ide.getExtension());
+                        for(File f :foundFiles) {
+                            projects.add(createProjectObject(f.getAbsolutePath(), ide));
+                        }
+                    } else {
+                        List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory), ide.getExtension(), false);
+                        for (File f : foundFiles) {
+                            projects.add(createProjectObject(f.getAbsolutePath(), ide));
+                        }
+                    }
+                }
+            } else {
+                List<File> foundFiles = FileUtils.findFileInFolder(new File(projectDirectory), ide.getExtension(), true);
+                for (File f : foundFiles) {
+                    projects.add(createProjectObject(f.getAbsolutePath(), ide));
+                }
+            }
+        }
+        return projects;
+    }
+
+    private ProjectObject createProjectObject(String projectDirectory, ProjectIDE projectIDE) {
+        ProjectObject projectObject;
+        switch (projectIDE.getProjectType()) {
+            case Statics.ProjectTypes.Code:
+                projectObject = new ProjectCode(getId());
+                break;
+            case Statics.ProjectTypes.Pcb:
+                projectObject = new ProjectPcb(getId());
+                break;
+            default:
+                projectObject = new ProjectOther(getId());
+                break;
+        }
+        projectObject.setDirectory(projectDirectory);
+        projectObject.setName(FileUtils.getLastPathPart(projectDirectory));
+        projectObject.setProjectIDEId(projectIDE.getId());
+        return projectObject;
+    }
 
 //    public void saveAll() throws SQLException {
 //        // Save project

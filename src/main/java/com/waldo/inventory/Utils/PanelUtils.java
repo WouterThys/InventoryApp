@@ -209,6 +209,14 @@ public class PanelUtils {
             }
         }
 
+        public void setError(String error) {
+            textField.setError(error);
+        }
+
+        public void setWarning(String warning) {
+            textField.setWarning(warning);
+        }
+
         public void setFileType(int fileType) {
             this.fileType = fileType;
         }
