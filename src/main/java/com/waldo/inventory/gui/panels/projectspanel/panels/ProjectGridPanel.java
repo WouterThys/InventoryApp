@@ -78,7 +78,7 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         redrawTiles();
     }
 
-    public void redrawTiles() {
+    private void redrawTiles() {
         removeAll();
         for (ITileView view : tileViews) {
             add(view);

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -40,9 +39,9 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
     private JPanel buttonPanel;
 
-    private ILabel lastParsedLbl;
-    private ILabel parsedHowLbl;
-    private ILabel itemAmountLbl;
+//    private ILabel lastParsedLbl;
+//    private ILabel parsedHowLbl;
+//    private ILabel itemAmountLbl;
 
     /*
      *                  VARIABLES
@@ -93,73 +92,73 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         }
     }
 
-    private void setDetails() {
-        if (projectPcb != null) {
-            parsedHowLbl.setText(projectPcb.hasParsed() ? "Items from file" : "Items from database");
-            lastParsedLbl.setText(DateUtils.formatDateTime(projectPcb.getLastParsedDate()));
-            int size = 0;
-            for (String sheet : projectPcb.getPcbItemMap().keySet()) {
-                size += projectPcb.getPcbItemMap().get(sheet).size();
-            }
-            itemAmountLbl.setText("Items: " + String.valueOf(size));
-        } else {
-            parsedHowLbl.setText("");
-            lastParsedLbl.setText("");
-            itemAmountLbl.setText("");
-        }
-    }
+//    private void setDetails() {
+//        if (projectPcb != null) {
+//            parsedHowLbl.setText(projectPcb.hasParsed() ? "Items from file" : "Items from database");
+//            lastParsedLbl.setText(DateUtils.formatDateTime(projectPcb.getLastParsedDate()));
+//            int size = 0;
+//            for (String sheet : projectPcb.getPcbItemMap().keySet()) {
+//                size += projectPcb.getPcbItemMap().get(sheet).size();
+//            }
+//            itemAmountLbl.setText("Items: " + String.valueOf(size));
+//        } else {
+//            parsedHowLbl.setText("");
+//            lastParsedLbl.setText("");
+//            itemAmountLbl.setText("");
+//        }
+//    }
 
     private void clearComponentTable() {
         sheetTabs.removeAll();
     }
 
-    private JPanel createDetailPanel() {
-        JPanel detailPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        // Labels
-        ILabel lp = new ILabel("Last parsed: ", ILabel.RIGHT);
-        lp.setForeground(Color.gray);
-        ILabel ni = new ILabel("# items: ", ILabel.RIGHT);
-        ni.setForeground(Color.gray);
-
-        // - Parsed how
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        detailPanel.add(parsedHowLbl, gbc);
-
-        // - Last parsed
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        detailPanel.add(lp, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        detailPanel.add(lastParsedLbl, gbc);
-
-        // - Amount
-        gbc.gridx = 3; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        detailPanel.add(ni, gbc);
-
-        gbc.gridx = 4; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        detailPanel.add(itemAmountLbl, gbc);
-
-        // - Border
-        detailPanel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-
-        return detailPanel;
-
-    }
+//    private JPanel createDetailPanel() {
+//        JPanel detailPanel = new JPanel(new GridBagLayout());
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(2,2,2,2);
+//
+//        // Labels
+//        ILabel lp = new ILabel("Last parsed: ", ILabel.RIGHT);
+//        lp.setForeground(Color.gray);
+//        ILabel ni = new ILabel("# items: ", ILabel.RIGHT);
+//        ni.setForeground(Color.gray);
+//
+//        // - Parsed how
+//        gbc.gridx = 0; gbc.weightx = 0;
+//        gbc.gridy = 0; gbc.weighty = 0;
+//        gbc.gridwidth = 2;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        detailPanel.add(parsedHowLbl, gbc);
+//
+//        // - Last parsed
+//        gbc.gridx = 0; gbc.weightx = 0;
+//        gbc.gridy = 1; gbc.weighty = 0;
+//        gbc.gridwidth = 1;
+//        gbc.fill = GridBagConstraints.NONE;
+//        detailPanel.add(lp, gbc);
+//
+//        gbc.gridx = 1; gbc.weightx = 1;
+//        gbc.gridy = 1; gbc.weighty = 0;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        detailPanel.add(lastParsedLbl, gbc);
+//
+//        // - Amount
+//        gbc.gridx = 3; gbc.weightx = 0;
+//        gbc.gridy = 0; gbc.weighty = 0;
+//        gbc.fill = GridBagConstraints.NONE;
+//        detailPanel.add(ni, gbc);
+//
+//        gbc.gridx = 4; gbc.weightx = 1;
+//        gbc.gridy = 0; gbc.weighty = 0;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        detailPanel.add(itemAmountLbl, gbc);
+//
+//        // - Border
+//        detailPanel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+//
+//        return detailPanel;
+//
+//    }
 
     /*
      *                  LISTENERS
@@ -189,13 +188,13 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
         buttonPanel = new JPanel();
 
-        // Labels
-        lastParsedLbl = new ILabel();
-        parsedHowLbl = new ILabel();
-        itemAmountLbl = new ILabel();
-        lastParsedLbl.setForeground(Color.gray);
-        parsedHowLbl.setForeground(Color.gray);
-        itemAmountLbl.setForeground(Color.gray);
+//        // Labels
+//        lastParsedLbl = new ILabel();
+//        parsedHowLbl = new ILabel();
+//        itemAmountLbl = new ILabel();
+//        lastParsedLbl.setForeground(Color.gray);
+//        parsedHowLbl.setForeground(Color.gray);
+//        itemAmountLbl.setForeground(Color.gray);
     }
 
     @Override
@@ -208,7 +207,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
-        add(createDetailPanel(), BorderLayout.SOUTH);
+        //add(createDetailPanel(), BorderLayout.SOUTH);
 
     }
 
@@ -223,7 +222,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                 clearComponentTable();
                 updateComponentTable(projectPcb.getPcbItemMap());
 
-                setDetails();
+                //setDetails();
 
             } finally {
                 application.endWait();
@@ -300,7 +299,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             try {
                 if (projectPcb.parseAgain()) {
                     clearComponentTable();
-                    setDetails();
+                    //setDetails();
                     updateComponentTable(projectPcb.getPcbItemMap());
                 }
             } catch (Exception ex) {

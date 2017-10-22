@@ -100,18 +100,4 @@
 
     </dependencies>
 
-
-    <!--<properties>-->
-        <!--&lt;!&ndash; Properties are prefixed with flyway. &ndash;&gt;-->
-        <!--<flyway.user>waldo</flyway.user>-->
-        <!--<flyway.password></flyway.password>-->
-
-        <!--&lt;!&ndash; List are defined as comma-separated values &ndash;&gt;-->
-        <!--<flyway.schemas>schema1,schema2,schema3</flyway.schemas>-->
-
-        <!--&lt;!&ndash; Individual placeholders are prefixed by flyway.placeholders. &ndash;&gt;-->
-        <!--<flyway.placeholders.keyABC>valueXYZ</flyway.placeholders.keyABC>-->
-        <!--<flyway.placeholders.otherplaceholder>value123</flyway.placeholders.otherplaceholder>-->
-    <!--</properties>-->
-
 </project>

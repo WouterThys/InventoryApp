@@ -17,11 +17,6 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class FileUtils {
 
-    public static final int ICON_SIZE_16 = 16;
-    public static final int ICON_SIZE_24 = 24;
-    public static final int ICON_SIZE_36 = 36;
-    public static final int ICON_SIZE_48 = 48;
-
     public final static String jpeg = "jpeg";
     public final static String jpg = "jpg";
     public final static String gif = "gif";

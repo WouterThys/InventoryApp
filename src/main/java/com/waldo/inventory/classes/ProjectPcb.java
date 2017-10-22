@@ -108,6 +108,14 @@ public class ProjectPcb extends ProjectObject {
         db().notifyListeners(changedHow, this, db().onProjectPcbChangedListenerList);
     }
 
+    public int numberOfComponents() {
+        int size = 0;
+        for (String sheet : getPcbItemMap().keySet()) {
+            size += getPcbItemMap().get(sheet).size();
+        }
+        return size;
+    }
+
     private HashMap<String, List<PcbItem>> getPcbItemsFromParser(File fileToParse) {
         hasParsed = false;
         HashMap<String, List<PcbItem>> pcbItems = new HashMap<>();

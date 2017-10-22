@@ -49,7 +49,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     private ProjectOtherPanel projectOtherPanel;
 
     private ILabel tbProjectNameLbl;
-    //private ILabel tbProjectDirLbl;
+    private ILabel tbProjectDirLbl;
 
 
     /*
@@ -76,17 +76,16 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     void updateVisibleComponents() {
-        detailsPanel.updateComponents(selectedProject);
-        detailsPanel.updateObjectDetails(getSelectedProjectObject());
+        detailsPanel.updateComponents(getSelectedProjectObject());
     }
 
     void updateToolBar() {
         if (selectedProject != null) {
             tbProjectNameLbl.setText(selectedProject.getName());
-            //tbProjectDirLbl.setText(selectedProject.getMainDirectory());
+            tbProjectDirLbl.setText(selectedProject.getMainDirectory());
         } else  {
             tbProjectNameLbl.setText("");
-            //tbProjectDirLbl.setText("");
+            tbProjectDirLbl.setText("");
         }
     }
 
@@ -258,7 +257,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         topToolBar = new TopToolBar(application, null);
         topToolBar.setDbToolbarVisible(false);
 
-        //tbProjectDirLbl = new ILabel("", ILabel.CENTER);
+        tbProjectDirLbl = new ILabel("", ILabel.CENTER);
         tbProjectNameLbl = new ILabel("", ILabel.CENTER);
         Font f = tbProjectNameLbl.getFont();
         tbProjectNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
@@ -272,7 +271,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Tool bar
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tbProjectNameLbl, BorderLayout.CENTER);
-        //tbPanel.add(tbProjectDirLbl, BorderLayout.SOUTH);
+        tbPanel.add(tbProjectDirLbl, BorderLayout.SOUTH);
         topToolBar.getContentPane().setLayout(new BorderLayout());
         topToolBar.getContentPane().add(tbPanel);
 
@@ -293,7 +292,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
         centerPanel.add(detailsPanel, BorderLayout.SOUTH);
-        // centerPanel.add(details?? .. )
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
@@ -325,6 +323,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     @Override
     public void onSelected(ProjectObject selectedObject) {
-        detailsPanel.updateObjectDetails(selectedObject);
+        detailsPanel.updateComponents(selectedObject);
     }
 }

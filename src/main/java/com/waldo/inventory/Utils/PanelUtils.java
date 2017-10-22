@@ -58,6 +58,19 @@ public class PanelUtils {
         return titledBorder;
     }
 
+    public static TitledBorder createTitleBorder(ImageIcon icon) {
+        return new TitledBorder("") {
+            @Override
+            public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
+            {
+                super.paintBorder(c, g, x, y, width, height);
+
+                // Now use the graphics context to draw whatever needed
+                g.drawImage(icon.getImage(), 0, 0, icon.getIconWidth(), icon.getIconHeight(), (img, infoflags, x1, y1, width1, height1) -> true);
+            }
+        };
+    }
+
 
 
     public static class GridBagHelper extends GridBagConstraints {
@@ -73,6 +86,8 @@ public class PanelUtils {
 
             gridx = 0;
             gridy = 0;
+
+            panel.setOpaque(false);
         }
 
         public void addLineVertical(String labelText, JComponent component) {
@@ -113,7 +128,6 @@ public class PanelUtils {
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             panel.add(new ILabel(labelText, ILabel.RIGHT), this);
-
 
             gridwidth = oldGw;
             gridheight = oldGh;
