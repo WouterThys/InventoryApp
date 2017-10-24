@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.managers.LogManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,7 +11,6 @@ import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Package extends DbObject {
 
-    private static final LogManager LOG = LogManager.LOG(Package.class);
     public static final String TABLE_NAME = "packages";
 
     private long packageTypeId;
@@ -60,11 +58,9 @@ public class Package extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onPackageChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onPackageChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -72,10 +68,10 @@ public class Package extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onPackageChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onPackageChangedListenerList);
     }
 
     @Override

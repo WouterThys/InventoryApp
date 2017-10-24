@@ -41,6 +41,7 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT_CODE = 19;
     public static final int TYPE_PROJECT_PCB = 20;
     public static final int TYPE_PROJECT_OTHER = 21;
+    public static final int TYPE_PARSER_ITEM_LINK = 22;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -101,6 +102,7 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectCode) return  TYPE_PROJECT_CODE;
         if (dbObject instanceof ProjectPcb) return  TYPE_PROJECT_PCB;
         if (dbObject instanceof ProjectOther) return TYPE_PROJECT_OTHER;
+        if (dbObject instanceof ParserItemLink) return TYPE_PARSER_ITEM_LINK;
 
         return TYPE_UNKNOWN;
     }

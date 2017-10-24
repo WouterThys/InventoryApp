@@ -54,6 +54,11 @@ public class ITextField extends JTextField implements FocusListener {
         originalBorder = getBorder();
     }
 
+    public ITextField(IEditedListener listener, String fieldName) {
+        this();
+        addEditedListener(listener, fieldName);
+    }
+
     @Override
     public void setText(String t) {
         if (documentListener != null) {

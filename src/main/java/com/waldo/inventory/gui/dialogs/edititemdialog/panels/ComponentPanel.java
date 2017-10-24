@@ -97,12 +97,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     public void updateProductCbValues(long categoryId) {
-        productComboBox.updateList(db().getProductListForCategory(categoryId));
+        productComboBox.updateList(sm().findProductListForCategory(categoryId));
         productComboBox.setSelectedItem(newItem.getProduct());
     }
 
     public void updateTypeCbValues(long productId) {
-        typeComboBox.updateList(db().getTypeListForProduct(productId));
+        typeComboBox.updateList(sm().findTypeListForProduct(productId));
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
@@ -118,7 +118,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private void createProductCb() {
         java.util.List<Product> productList;
         if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-            productList = db().getProductListForCategory(newItem.getCategoryId());
+            productList = sm().findProductListForCategory(newItem.getCategoryId());
         } else {
             productList = db().getProducts();
         }
@@ -132,7 +132,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private void createTypeCb() {
         java.util.List<Type> typeList;
         if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-            typeList = db().getTypeListForProduct(newItem.getProductId());
+            typeList = sm().findTypeListForProduct(newItem.getProductId());
         } else {
             typeList = db().getTypes();
         }

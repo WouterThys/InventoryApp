@@ -1,0 +1,57 @@
+package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
+
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.gui.Application;
+
+import java.awt.*;
+
+public class EditParserItemLinkDialog extends EditParserItemLinkDialogLayout {
+
+
+    public EditParserItemLinkDialog(Application application, String title, ParserItemLink link) {
+        super(application, title);
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents(link);
+    }
+
+    @Override
+    protected void onOK() {
+
+        Category c = (Category) categoryCb.getSelectedItem();
+        Product p = (Product) productCb.getSelectedItem();
+        com.waldo.inventory.classes.Type t = (com.waldo.inventory.classes.Type) typeCb.getSelectedItem();
+
+        if (c != null) {
+            parserItemLink.setCategoryId(c.getId());
+            if (p != null) {
+                parserItemLink.setProductId(p.getId());
+                if (t != null) {
+                    parserItemLink.setTypeId(t.getId());
+                } else {
+                    parserItemLink.setTypeId(DbObject.UNKNOWN_ID);
+                }
+            } else {
+                parserItemLink.setProductId(DbObject.UNKNOWN_ID);
+                parserItemLink.setTypeId(DbObject.UNKNOWN_ID);
+            }
+        } else {
+            parserItemLink.setCategoryId(DbObject.UNKNOWN_ID);
+            parserItemLink.setProductId(DbObject.UNKNOWN_ID);
+            parserItemLink.setTypeId(DbObject.UNKNOWN_ID);
+        }
+
+        super.onOK();
+    }
+
+    @Override
+    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
+        updateEnabledComponents();
+    }
+
+    @Override
+    public DbObject getGuiObject() {
+        return parserItemLink;
+    }
+}

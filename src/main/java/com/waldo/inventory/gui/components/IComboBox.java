@@ -56,7 +56,11 @@ public class IComboBox<E> extends JComboBox<E> {
 
             comboBoxModel.removeAllElements();
             for (E item : itemList) {
-                if (item instanceof DbObject && !((DbObject)item).isUnknown() || showUnknown) {
+                if (item instanceof DbObject) {
+                    if (!((DbObject)item).isUnknown() || showUnknown) {
+                        comboBoxModel.addElement(item);
+                    }
+                } else {
                     comboBoxModel.addElement(item);
                 }
             }

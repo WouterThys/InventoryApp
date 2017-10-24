@@ -14,9 +14,9 @@ import java.awt.event.ItemEvent;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
@@ -189,7 +189,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     productId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                for (com.waldo.inventory.classes.Type t : DbManager.db().getTypeListForProduct(productId)) {
+                for (com.waldo.inventory.classes.Type t : sm().findTypeListForProduct(productId)) {
                     if (!t.isUnknown()) {
                         detailListModel.addElement(t);
                     }
@@ -230,7 +230,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     categoryId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                for (Product p : DbManager.db().getProductListForCategory(categoryId)) {
+                for (Product p : sm().findProductListForCategory(categoryId)) {
                     if (!p.isUnknown()) {
                         detailListModel.addElement(p);
                     }

@@ -88,7 +88,7 @@ public class PcbItemParser {
                 }
             }
 
-            // Add
+            // Add // TODO dont do the whole search if item is already linked in db?
             PcbItemItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
             if (link != null) {
                 itemMatches.add(link);
@@ -252,6 +252,11 @@ public class PcbItemParser {
         }
 
         @Override
+        public String toString() {
+            return kiCadParser.getParserName();
+        }
+
+        @Override
         public HashMap<String, List<PcbItem>> parse(File fileToParse) {
             HashMap<String, List<PcbItem>> resultMap = new HashMap<>();
 
@@ -329,6 +334,11 @@ public class PcbItemParser {
 
         private MyEagleParser() {
             eagleParser = new EagleParser(EagleParser);
+        }
+
+        @Override
+        public String toString() {
+            return eagleParser.getParserName();
         }
 
         @Override

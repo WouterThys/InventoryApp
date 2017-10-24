@@ -22,7 +22,6 @@ import java.util.List;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
-import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class DbManager {
 
@@ -80,6 +79,7 @@ public class DbManager {
     public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectOther>> onProjectOtherChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<ParserItemLink>> onParserItemLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -110,6 +110,7 @@ public class DbManager {
     private List<ProjectCode> projectCodes;
     private List<ProjectPcb> projectPcbs;
     private List<ProjectOther> projectOthers;
+    private List<ParserItemLink> parserItemLinks;
 
     private DbManager() {}
 
@@ -462,6 +463,12 @@ public class DbManager {
     public void addOnProjectOtherChangedListener(DbObjectChangedListener<ProjectOther> dbObjectChangedListener) {
         if (!onProjectOtherChangedListenerList.contains(dbObjectChangedListener)) {
             onProjectOtherChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnParserItemLinkChangedListener(DbObjectChangedListener<ParserItemLink> dbObjectChangedListener) {
+        if (!onParserItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onParserItemLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -1489,6 +1496,52 @@ public class DbManager {
 
 
     /*
+    *                  PARSER ITEM LINK
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<ParserItemLink> getParserItemLinks()    {
+        if (parserItemLinks == null) {
+            updateParserItemLinks();
+        }
+        return parserItemLinks;
+    }
+
+    private void updateParserItemLinks()    {
+        parserItemLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return;
+        }
+        Status().setMessage("Fetching parser item links from DB");
+        ParserItemLink p = null;
+        String sql = scriptResource.readString(ParserItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ParserItemLink();
+                    p.setId(rs.getLong("id"));
+                    p.setParserName(rs.getString("parserName"));
+                    p.setPcbItemName(rs.getString("pcbItemName"));
+                    p.setCategoryId(rs.getLong("categoryId"));
+                    p.setProductId(rs.getLong("productId"));
+                    p.setTypeId(rs.getLong("typeId"));
+
+                    p.setInserted(true);
+                    parserItemLinks.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /*
     *                  ORDER FILES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<OrderFileFormat> getOrderFileFormats()    {
@@ -1833,57 +1886,6 @@ public class DbManager {
     /*
     *                  OTHER
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Product> getProductListForCategory(long categoryId)    {
-        List<Product> products = new ArrayList<>();
-        for (Product p : getProducts()) {
-            if (p.getCategoryId() == categoryId) {
-                products.add(p);
-            }
-        }
-        return products;
-    }
-
-    public List<Type> getTypeListForProduct(long productId)    {
-        List<com.waldo.inventory.classes.Type> types = new ArrayList<>();
-        for (Type t : getTypes()) {
-            if (t.getProductId() == productId) {
-                types.add(t);
-            }
-        }
-        return types;
-    }
-
-    public List<Item> getItemListForCategory(Category c)    {
-        List<Item> items = new ArrayList<>();
-        for (Item i : getItems()) {
-            if (i.getCategoryId() == c.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> getItemListForProduct(Product p)    {
-        List<Item> items = new ArrayList<>();
-        Category c = sm().findCategoryById(p.getCategoryId());
-        for (Item i : getItemListForCategory(c)) {
-            if (i.getProductId() == p.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> getItemListForType(Type t)    {
-        List<Item> items = new ArrayList<>();
-        Product p = sm().findProductById(t.getProductId());
-        for (Item i : getItemListForProduct(p)) {
-            if (i.getTypeId() == t.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
-    }
 
     public List<Order> getOrdersForManufacturer(long manufacturerId) {
         return null;

@@ -39,7 +39,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     ITextArea detailDescription;
 
     private IDimensionTypeTableModel tableModel;
-    private ITable detailTypeTable;
+    private ITable<DimensionType> detailTypeTable;
     private IdBToolBar detailToolBar;
 
 
@@ -223,7 +223,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         detailDescription.addEditedListener(this, "description");
 
         tableModel = new IDimensionTypeTableModel();
-        detailTypeTable = new ITable(tableModel);
+        detailTypeTable = new ITable<>(tableModel);
         detailTypeTable.getSelectionModel().addListSelectionListener(this);
         detailToolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
     }

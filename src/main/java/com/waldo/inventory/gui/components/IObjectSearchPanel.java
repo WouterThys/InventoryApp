@@ -19,6 +19,7 @@ import java.util.List;
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
@@ -180,13 +181,13 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void updateProductCb(Category category) {
-        advancedProductCb.updateList(db().getProductListForCategory(category.getId()));
+        advancedProductCb.updateList(sm().findProductListForCategory(category.getId()));
         advancedProductCb.insertItemAt(null, 0);
         advancedProductCb.setSelectedIndex(0);
     }
 
     private void updateTypeCb(Product product) {
-        advancedTypeCb.updateList(db().getTypeListForProduct(product.getId()));
+        advancedTypeCb.updateList(sm().findTypeListForProduct(product.getId()));
         advancedTypeCb.insertItemAt(null, 0);
         advancedTypeCb.setSelectedIndex(0);
     }

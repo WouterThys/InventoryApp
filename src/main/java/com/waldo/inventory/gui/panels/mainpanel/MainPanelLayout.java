@@ -85,15 +85,15 @@ public abstract class MainPanelLayout extends JPanel implements
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
-                    itemList = db().getItemListForCategory(c);
+                    itemList = sm().findItemListForCategory(c);
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Product p = (Product)selectedObject;
-                    itemList = db().getItemListForProduct(p);
+                    itemList = sm().findItemListForProduct(p);
                     break;
                 case DbObject.TYPE_TYPE:
                     Type t = (Type)selectedObject;
-                    itemList = db().getItemListForType(t);
+                    itemList = sm().findItemListForType(t);
                     break;
                 default:
                     break;
@@ -133,11 +133,11 @@ public abstract class MainPanelLayout extends JPanel implements
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
                 rootNode.add(cNode);
 
-                for (Product product : db().getProductListForCategory(category.getId())) {
+                for (Product product : sm().findProductListForCategory(category.getId())) {
                     DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(product, true);
                     cNode.add(pNode);
 
-                    for (Type type : db().getTypeListForProduct(product.getId())) {
+                    for (Type type : sm().findTypeListForProduct(product.getId())) {
                         DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(type, false);
                         pNode.add(tNode);
                     }

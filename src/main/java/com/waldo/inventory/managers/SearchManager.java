@@ -397,6 +397,58 @@ public class SearchManager {
         return null;
     }
 
+    public List<Product> findProductListForCategory(long categoryId)    {
+        List<Product> products = new ArrayList<>();
+        for (Product p : db().getProducts()) {
+            if (p.getCategoryId() == categoryId) {
+                products.add(p);
+            }
+        }
+        return products;
+    }
+
+    public List<Type> findTypeListForProduct(long productId)    {
+        List<com.waldo.inventory.classes.Type> types = new ArrayList<>();
+        for (Type t : db().getTypes()) {
+            if (t.getProductId() == productId) {
+                types.add(t);
+            }
+        }
+        return types;
+    }
+
+    public List<Item> findItemListForCategory(Category c)    {
+        List<Item> items = new ArrayList<>();
+        for (Item i : db().getItems()) {
+            if (i.getCategoryId() == c.getId()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemListForProduct(Product p)    {
+        List<Item> items = new ArrayList<>();
+        Category c = sm().findCategoryById(p.getCategoryId());
+        for (Item i : findItemListForCategory(c)) {
+            if (i.getProductId() == p.getId()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemListForType(Type t)    {
+        List<Item> items = new ArrayList<>();
+        Product p = sm().findProductById(t.getProductId());
+        for (Item i : findItemListForProduct(p)) {
+            if (i.getTypeId() == t.getId()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
     public Manufacturer findManufacturerById(long id) {
         for (Manufacturer m : db().getManufacturers()) {
             if (m.getId() == id) {
@@ -752,6 +804,18 @@ public class SearchManager {
             }
         }
         return null;
+    }
+
+    public List<ParserItemLink> findParserItemLinksByParserName(String parserName) {
+        List<ParserItemLink> parserItemLinks = new ArrayList<>();
+        if (parserName != null && !parserName.isEmpty()) {
+            for (ParserItemLink link : db().getParserItemLinks()) {
+                if (link.getParserName().equals(parserName)) {
+                    parserItemLinks.add(link);
+                }
+            }
+        }
+        return parserItemLinks;
     }
 
 }
