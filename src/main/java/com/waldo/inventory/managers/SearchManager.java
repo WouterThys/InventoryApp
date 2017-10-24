@@ -818,4 +818,15 @@ public class SearchManager {
         return parserItemLinks;
     }
 
+    public ParserItemLink findParserItemLinkByPcbItemName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (ParserItemLink link : db().getParserItemLinks()) {
+                if (link.getPcbItemName().equals(name)) {
+                    return link;
+                }
+            }
+        }
+        return null;
+    }
+
 }

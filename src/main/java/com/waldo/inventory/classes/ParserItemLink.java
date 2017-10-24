@@ -117,6 +117,18 @@ public class ParserItemLink extends DbObject {
         return u;
     }
 
+    public boolean hasCategory() {
+        return categoryId > UNKNOWN_ID;
+    }
+
+    public boolean hasProduct() {
+        return productId > UNKNOWN_ID;
+    }
+
+    public boolean hasType() {
+        return typeId > UNKNOWN_ID;
+    }
+
     // Getters and setters
 
     public String getParserName() {

@@ -111,14 +111,14 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
 
             @Override
             public void onUpdated(Item item) {
-                List<PcbItemItemLink> links;
-                if (item.isSet()) {
-                    links = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, item);
-                } else {
-                    links = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, item);
-                }
-
                 if (selectedItemLink != null) {
+                    List<PcbItemItemLink> links;
+                    if (item.isSet()) {
+                        links = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, item);
+                    } else {
+                        links = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, item);
+                    }
+
                     for (PcbItemItemLink link : links) {
                         if (link.getItemId() == selectedItemLink.getItemId()) {
                             link.createCopy(selectedItemLink);
