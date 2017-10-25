@@ -35,6 +35,17 @@ public class Value {
         return ValueUtils.convert(getRealValue(), 1) + unit;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Value) {
+            Value v = (Value) obj;
+            if (v.getValue() == getValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getValue() {
         return value;
     }

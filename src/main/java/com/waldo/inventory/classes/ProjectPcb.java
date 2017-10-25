@@ -192,7 +192,7 @@ public class ProjectPcb extends ProjectObject {
         return pcbItemMap;
     }
 
-    public void findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
+    private void findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
         for (String sheet : pcbItemMap.keySet()) {
             for (PcbItem item : pcbItemMap.get(sheet)) {
                 PcbItemItemLink link = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());

@@ -20,6 +20,7 @@ public class Item extends DbObject {
     private static final LogManager LOG = LogManager.LOG(Item.class);
     public static final String TABLE_NAME = "items";
 
+    private Value value;
     private String description = "";
     private double price = 0;
 
@@ -61,6 +62,12 @@ public class Item extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
         statement.setString(ndx++, name);
+
+        // Value
+        statement.setDouble(ndx++, getValue().getValue());
+        statement.setInt(ndx++, getValue().getMultiplier());
+        statement.setString(ndx++, getValue().getUnit());
+
         statement.setString(ndx++, description);
         statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
@@ -102,6 +109,7 @@ public class Item extends DbObject {
         }
         statement.setLong(ndx++, getDimensionTypeId());
 
+        // Aud
         statement.setString(ndx++, getAud().getInsertedBy());
         statement.setTimestamp(ndx++, new Timestamp(getAud().getInsertedDate().getTime()), Calendar.getInstance());
         statement.setString(ndx++, getAud().getUpdatedBy());
@@ -121,6 +129,10 @@ public class Item extends DbObject {
             } else if (getLocalDataSheet().toUpperCase().contains(searchTerm)) {
                 return true;
             } else if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) {
+                return true;
+            }
+
+            if (getValue().toString().equals(searchTerm)) {
                 return true;
             }
 
@@ -168,6 +180,7 @@ public class Item extends DbObject {
         Item item = (Item) copyInto;
         copyBaseFields(item);
 
+        item.setValue(getValue());
         item.setDescription(getDescription());
         item.setPrice(getPrice());
         item.setCategoryId(getCategoryId());
@@ -203,6 +216,7 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
+                if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
                 if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
@@ -623,5 +637,20 @@ public class Item extends DbObject {
             return setItems;
         }
         return null;
+    }
+
+    public Value getValue() {
+        if (value == null) {
+            value = new Value();
+        }
+        return value;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
+    }
+
+    public void setValue(double value, int multiplier, String unit) {
+        this.value = new Value(value, multiplier, unit);
     }
 }
