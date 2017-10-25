@@ -21,11 +21,11 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
         initializeLayouts();
         updateComponents(projectPcb);
 
-        addListeners(createKcListListener(), createItemListListener());
+        addListeners(createPcbItemListListener(), createItemListListener());
         addDbObjectListeners();
     }
 
-    private ListSelectionListener createKcListListener() {
+    private ListSelectionListener createPcbItemListListener() {
         return e -> {
             if (!e.getValueIsAdjusting()) {
                 selectedPcbItem = pcbPanel.getSelectedComponent();

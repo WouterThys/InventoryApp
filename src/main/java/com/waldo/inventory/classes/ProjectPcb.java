@@ -187,8 +187,20 @@ public class ProjectPcb extends ProjectObject {
                     pcbItemMap = getPcbItemsFromDb();
                 }
             }
+            findKnownLinks(pcbItemMap);
         }
         return pcbItemMap;
+    }
+
+    public void findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
+        for (String sheet : pcbItemMap.keySet()) {
+            for (PcbItem item : pcbItemMap.get(sheet)) {
+                PcbItemItemLink link = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
+                if (link != null) {
+                    item.setMatchedItem(link);
+                }
+            }
+        }
     }
 
     public List<Item> getLinkedItems() {

@@ -698,10 +698,21 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItemItemLink findKcItemLinkWithSetItemId(long setItemId, long kcComponentId) {
+    public PcbItemItemLink findPcbItemLinkWithSetItem(long setItemId, long pcbItemId) {
         for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
             if (pcbItemItemLink.isSetItem()) {
-                if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == kcComponentId) {
+                if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
+                    return pcbItemItemLink;
+                }
+            }
+        }
+        return null;
+    }
+
+    public PcbItemItemLink findPcbItemLinkForPcbItem(long pcbItemId) {
+        if (pcbItemId > 0) {
+            for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+                if (pcbItemItemLink.getPcbItemId() == pcbItemId) {
                     return pcbItemItemLink;
                 }
             }

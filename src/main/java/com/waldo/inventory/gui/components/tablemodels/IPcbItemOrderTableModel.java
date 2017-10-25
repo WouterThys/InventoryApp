@@ -2,12 +2,12 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.OrderItem;
 
-public class IKcOrderItemTableModel extends IAbstractTableModel<OrderItem> {
+public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderItem> {
 
     private static final String[] COLUMN_NAME = {"Name", "#"};
     private static final Class[] COLUMN_CLASSES = {String.class, Integer.class};
 
-    public IKcOrderItemTableModel() {
+    public IPcbItemOrderTableModel() {
         super(COLUMN_NAME, COLUMN_CLASSES);
     }
 

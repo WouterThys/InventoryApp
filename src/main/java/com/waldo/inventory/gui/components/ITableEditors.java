@@ -1,10 +1,9 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.parser.PcbItemParser;
-import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
@@ -12,9 +11,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.Component;
 import java.awt.event.*;
 import java.text.ParseException;
 import java.util.EventObject;
@@ -282,18 +283,19 @@ public class ITableEditors {
                 if (component.hasMatch()) {
                     lblIcon = new ILabel(imageResource.readImage("Ball.green"));
                 } else {
-                    if (component.matchCount() > 0) {
-                        int highest = component.highestMatch();
-                        if (PcbItemParser.getInstance().getMatchCount(highest) == 3) {
-                            lblIcon = new ILabel(imageResource.readImage("Ball.green"));
-                        } else if (PcbItemParser.getInstance().getMatchCount(highest) == 2) {
-                            lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
-                        } else {
-                            lblIcon = new ILabel(imageResource.readImage("Ball.orange"));
-                        }
-                    } else {
-                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
-                    }
+                    lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+//                    if (component.matchCount() > 0) {
+//                        int highest = component.highestMatch();
+//                        if (PcbItemParser.getInstance().getMatchCount(highest) == 3) {
+//                            lblIcon = new ILabel(imageResource.readImage("Ball.green"));
+//                        } else if (PcbItemParser.getInstance().getMatchCount(highest) == 2) {
+//                            lblIcon = new ILabel(imageResource.readImage("Ball.yellow"));
+//                        } else {
+//                            lblIcon = new ILabel(imageResource.readImage("Ball.orange"));
+//                        }
+//                    } else {
+//                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+//                    }
                 }
 
                 // Colors

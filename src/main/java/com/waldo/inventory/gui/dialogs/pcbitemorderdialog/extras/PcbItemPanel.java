@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.tablemodels.IKcOrderItemTableModel;
+import com.waldo.inventory.gui.components.tablemodels.IPcbItemOrderTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -27,7 +27,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IKcOrderItemTableModel tableModel;
+    private IPcbItemOrderTableModel tableModel;
     private ITable<OrderItem> itemTable;
 
     private ITextField descriptionTf;
@@ -153,7 +153,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        tableModel = new IKcOrderItemTableModel();
+        tableModel = new IPcbItemOrderTableModel();
         itemTable = new ITable<>(tableModel);
 
         TableColumn tableColumn = itemTable.getColumnModel().getColumn(1);

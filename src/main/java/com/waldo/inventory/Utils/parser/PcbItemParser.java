@@ -113,7 +113,7 @@ public class PcbItemParser {
             }
 
             // Add // TODO dont do the whole search if item is already linked in db?
-            PcbItemItemLink link = SearchManager.sm().findKcItemLinkWithSetItemId(setItem.getId(), component.getId());
+            PcbItemItemLink link = SearchManager.sm().findPcbItemLinkWithSetItem(setItem.getId(), component.getId());
             if (link != null) {
                 itemMatches.add(link);
                 component.setMatchedItem(link);
