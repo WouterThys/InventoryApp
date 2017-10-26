@@ -172,13 +172,13 @@ public abstract class LogsDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
 
             Log selectedLog;
-            if (object != null) {
-                selectedLog = (Log) object;
+            if (object.length != 0 && object[0] != null) {
+                selectedLog = (Log) object[0];
             } else {
                 selectedLog = null;
             }

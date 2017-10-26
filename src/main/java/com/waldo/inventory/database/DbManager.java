@@ -633,6 +633,7 @@ public class DbManager {
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
                     i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
+                    i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                     i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
                     i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
 
@@ -1612,7 +1613,7 @@ public class DbManager {
                     si.setName(rs.getString("name"));
                     si.setIconPath(rs.getString("iconPath"));
                     si.setAmount(rs.getInt("amount"));
-                    si.getValue().setValue(rs.getDouble("value"));
+                    si.getValue().setDoubleValue(rs.getDouble("value"));
                     si.getValue().setMultiplier(rs.getInt("multiplier"));
                     si.getValue().setUnit(rs.getString("unit"));
                     si.setItemId(rs.getLong("itemId"));

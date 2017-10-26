@@ -299,8 +299,8 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0) {
             return;
         }
         if (application.isUpdating()) {
@@ -308,7 +308,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         }
         application.beginWait();
         try {
-            selectedProject = (Project) object;
+            selectedProject = (Project) object[0];
             selectTreeTab(TAB_CODE, selectedProject);
             projectCodePanel.updateComponents(selectedProject);
 

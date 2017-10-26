@@ -77,7 +77,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         Vector<Order> orders = new Vector<>();
         for (Order o : DbManager.db().getOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
@@ -87,7 +87,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
         orders.sort(new Order.SortUnordered());
         DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>(orders);
         orderCb.setModel(orderCbModel);
-        if (object != null) {
+        if (object.length != 0 && object[0] != null) {
             orderCb.setSelectedItem(object);
         }
     }

@@ -123,5 +123,5 @@ public class IStatusStrip extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {}
+    public void updateComponents(Object... object) {}
 }

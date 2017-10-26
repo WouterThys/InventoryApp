@@ -129,9 +129,9 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            parserItemLink = (ParserItemLink) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            parserItemLink = (ParserItemLink) object[0];
 
             pcbItemNameTf.setText(parserItemLink.getPcbItemName());
 

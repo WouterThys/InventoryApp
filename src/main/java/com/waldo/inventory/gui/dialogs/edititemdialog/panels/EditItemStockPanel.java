@@ -227,7 +227,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             if (newItem != null) {

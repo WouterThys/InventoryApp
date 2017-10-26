@@ -78,7 +78,7 @@ public class IFormattedTextField extends JFormattedTextField {
     //    @Deprecated
 //    public void setValueBeforeEdit(Object valueBeforeEdit) {
 //        beforeEditValue = valueBeforeEdit;
-//        super.setValue(valueBeforeEdit);
+//        super.setDoubleValue(valueBeforeEdit);
 //    }
 
     public void setError(String errorText) {

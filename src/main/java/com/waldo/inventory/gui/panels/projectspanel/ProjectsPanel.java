@@ -38,7 +38,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         if (db().getProjects().size() > 0) {
             updateComponents(db().getProjects().get(0));
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 

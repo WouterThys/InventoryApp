@@ -44,7 +44,7 @@ public class OrderPanel extends OrderPanelLayout {
         db().addOnOrderItemsChangedListener(orderItemsChanged);
         db().addOnPartNumbersChangedListener(partNumbersChanged);
 
-        updateComponents(null);
+        updateComponents();
     }
 
     public OrderItem getSelectedOrderItem() {
@@ -208,7 +208,7 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onDeleted(Item item) {
-                itemDetailPanel.updateComponents(null);
+                itemDetailPanel.updateComponents();
             }
 
             @Override
@@ -404,15 +404,15 @@ public class OrderPanel extends OrderPanelLayout {
                     if (selectedOrder != null) {
                         if (selectedOrder.isOrdered() || selectedOrder.isReceived()) {
                             itemDetailPanel.setRemarksPanelVisible(true);
-                            orderItemDetailPanel.updateComponents(null);
+                            orderItemDetailPanel.updateComponents();
                         } else {
                             itemDetailPanel.setRemarksPanelVisible(false);
                             orderItemDetailPanel.updateComponents(selectedOrderItem);
                         }
                     }
                 } else {
-                    itemDetailPanel.updateComponents(null);
-                    orderItemDetailPanel.updateComponents(null);
+                    itemDetailPanel.updateComponents();
+                    orderItemDetailPanel.updateComponents();
                 }
                 updateToolBar(selectedOrder);
                 updateVisibleComponents();

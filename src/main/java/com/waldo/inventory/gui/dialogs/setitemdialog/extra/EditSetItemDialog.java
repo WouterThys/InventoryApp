@@ -72,7 +72,7 @@ public class EditSetItemDialog extends IDialog {
     protected void onOK() {
         if (verify()) {
             setItem.setName(nameTextField.getText());
-            setItem.getValue().setValue(Double.valueOf(valueTextField.getText()));
+            setItem.getValue().setDoubleValue(Double.valueOf(valueTextField.getText()));
             setItem.setAmount(spinnerModel.getNumber().intValue());
 
             super.onOK();
@@ -143,12 +143,12 @@ public class EditSetItemDialog extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            setItem = (SetItem) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            setItem = (SetItem) object[0];
 
             nameTextField.setText(setItem.getName());
-            valueTextField.setText(String.valueOf(setItem.getValue().getValue()));
+            valueTextField.setText(String.valueOf(setItem.getValue().getDoubleValue()));
             spinnerModel.setValue(setItem.getAmount());
             updateLocationFields(setItem.getLocation());
         }

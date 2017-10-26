@@ -212,10 +212,10 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof ProjectPcb) {
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof ProjectPcb) {
             setVisible(true);
-            projectPcb = (ProjectPcb) object;
+            projectPcb = (ProjectPcb) object[0];
 
             application.beginWait();
             try {

@@ -94,8 +94,8 @@ public abstract class EditProjectCodeDialogLayout extends IDialog implements IEd
     }
 
     @Override
-    public void updateComponents(Object object) {
-        projectCode = (ProjectCode) object;
+    public void updateComponents(Object... object) {
+        projectCode = (ProjectCode) object[0];
 
         if (projectCode != null) {
             originalProjectCode = projectCode.createCopy();

@@ -444,7 +444,7 @@ public class DbPanel extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             dbSettingsCbModel.removeAllElements();
@@ -452,7 +452,7 @@ public class DbPanel extends JPanel implements
                 dbSettingsCbModel.addElement(settings);
             }
 
-            selectedDbSettings = (DbSettings) object;
+            selectedDbSettings = (DbSettings) object[0];
 
             if (selectedDbSettings != null) {
                 dbSettingsComboBox.setSelectedItem(selectedDbSettings);

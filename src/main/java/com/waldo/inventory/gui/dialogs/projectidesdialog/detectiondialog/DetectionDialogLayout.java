@@ -176,7 +176,7 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         extensionTf.setText(extension);
 
         if (openAsFolder) {

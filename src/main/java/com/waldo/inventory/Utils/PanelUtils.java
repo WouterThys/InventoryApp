@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -341,6 +342,38 @@ public class PanelUtils {
 
         public void setEditable(boolean editable) {
             textField.setEditable(editable);
+        }
+    }
+
+    public static class IValuePanel extends JPanel implements GuiInterface {
+
+        private SpinnerNumberModel valueModel;
+        private JSpinner valueSp;
+
+        private JComboBox<String> multiplierCb;
+        private JComboBox<String> unitCb;
+
+        public IValuePanel() {
+            super();
+
+            initializeComponents();
+            initializeLayouts();
+            updateComponents();
+        }
+
+        @Override
+        public void initializeComponents() {
+
+        }
+
+        @Override
+        public void initializeLayouts() {
+
+        }
+
+        @Override
+        public void updateComponents(Object... object) {
+
         }
     }
 }

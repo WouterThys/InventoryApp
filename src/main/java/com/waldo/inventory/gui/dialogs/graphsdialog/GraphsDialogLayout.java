@@ -205,7 +205,7 @@ public abstract class GraphsDialogLayout extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

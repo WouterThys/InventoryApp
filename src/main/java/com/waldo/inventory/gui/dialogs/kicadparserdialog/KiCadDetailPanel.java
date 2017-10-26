@@ -130,13 +130,13 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0) {
             setVisible(false);
             selectedComponent = null;
         } else {
-            if (object instanceof PcbItem) {
-                selectedComponent = (PcbItem) object;
+            if (object[0] instanceof PcbItem) {
+                selectedComponent = (PcbItem) object[0];
 
                 setValues();
 

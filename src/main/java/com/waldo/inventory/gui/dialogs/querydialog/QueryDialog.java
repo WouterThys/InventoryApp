@@ -11,7 +11,7 @@ public class QueryDialog extends QueryDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
 }

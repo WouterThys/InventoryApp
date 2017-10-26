@@ -147,12 +147,12 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             PcbItem selectedComponent;
-            if (object != null) {
-                selectedComponent = (PcbItem) object;
+            if (object.length != 0 && object[0] != null) {
+                selectedComponent = (PcbItem) object[0];
             } else {
                 selectedComponent = null;
             }

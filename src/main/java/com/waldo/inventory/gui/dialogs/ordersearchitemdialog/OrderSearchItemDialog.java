@@ -18,7 +18,7 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     private boolean verify() {

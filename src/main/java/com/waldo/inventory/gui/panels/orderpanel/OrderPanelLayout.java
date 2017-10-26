@@ -481,16 +481,16 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) { // Has last selected order
+    public void updateComponents(Object... object) { // Has last selected order
         if (application.isUpdating()) {
             return;
         }
         application.beginWait();
         try {
             // Update table if needed
-            if (object != null) {
-                if (selectedOrder == null || !selectedOrder.equals(object)) {
-                    selectedOrder = (Order) object;
+            if (object.length != 0 && object[0] != null) {
+                if (selectedOrder == null || !selectedOrder.equals(object[0])) {
+                    selectedOrder = (Order) object[0];
                     tableInitialize(selectedOrder);
 
                     // Search list
@@ -512,8 +512,8 @@ public abstract class OrderPanelLayout extends JPanel implements
                     itemDetailPanel.setRemarksPanelVisible(true);
                 }
             } else {
-                itemDetailPanel.updateComponents(null);
-                orderItemDetailPanel.updateComponents(null);
+                itemDetailPanel.updateComponents();
+                orderItemDetailPanel.updateComponents();
             }
             updateVisibleComponents();
             updateEnabledComponents();

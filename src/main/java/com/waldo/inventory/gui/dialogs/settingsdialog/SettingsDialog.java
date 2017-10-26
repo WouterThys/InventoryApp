@@ -10,6 +10,6 @@ public class SettingsDialog extends SettingsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        updateComponents(null);
+        updateComponents();
     }
 }

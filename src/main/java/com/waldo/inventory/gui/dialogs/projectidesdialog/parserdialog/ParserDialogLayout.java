@@ -167,7 +167,7 @@ public abstract class ParserDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         parserCb.setSelectedItem(selectedParser);
         parserCb.setEnabled(useParser);
         useParserCb.setSelected(useParser);

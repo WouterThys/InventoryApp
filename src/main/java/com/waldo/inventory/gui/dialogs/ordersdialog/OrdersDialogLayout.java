@@ -120,9 +120,9 @@ public abstract class OrdersDialogLayout extends IDialog
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            order = (Order) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            order = (Order) object[0];
             nameField.setText(order.getName());
             distributorCb.setSelectedItem(order.getDistributor());
         }

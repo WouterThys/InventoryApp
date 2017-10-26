@@ -10,7 +10,7 @@ public class GraphsDialog extends GraphsDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
 
     }
 

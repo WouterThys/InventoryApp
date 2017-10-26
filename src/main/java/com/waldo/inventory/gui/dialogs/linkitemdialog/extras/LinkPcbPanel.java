@@ -38,7 +38,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -136,9 +136,9 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            ProjectPcb projectPcb = (ProjectPcb) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            ProjectPcb projectPcb = (ProjectPcb) object[0];
             updateTable(projectPcb.getPcbItemMap());
         } else {
             tableModel.clearItemList();

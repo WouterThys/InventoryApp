@@ -116,9 +116,9 @@ public abstract class EditProjectDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            project = (Project) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            project = (Project) object[0];
 
             nameTf.setText(project.getName());
             iconPnl.setText(project.getIconPath());

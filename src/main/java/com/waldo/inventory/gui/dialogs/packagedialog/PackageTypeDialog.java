@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.DimensionType;
 import com.waldo.inventory.classes.PackageType;
@@ -40,7 +39,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         if (db().getPackageTypes().size() > 0) {
             updateComponents(db().getPackageTypes().get(0));
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 
@@ -195,7 +194,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     // Gui update
     //
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
 
@@ -207,7 +206,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
                 }
             }
 
-            selectedPackageType = (PackageType) object;
+            selectedPackageType = (PackageType) object[0];
             dimensionTableUpdate();
             updateEnabledComponents();
 

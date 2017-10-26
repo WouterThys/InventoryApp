@@ -121,8 +121,8 @@ public abstract class LinkPcbItemDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
             pcbPanel.updateComponents(object);
         } else {
             //componentList.clear();

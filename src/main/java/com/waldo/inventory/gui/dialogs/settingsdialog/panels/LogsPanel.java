@@ -323,7 +323,7 @@ public class LogsPanel extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             logSettingsCbModel.removeAllElements();
@@ -331,7 +331,7 @@ public class LogsPanel extends JPanel implements
                 logSettingsCbModel.addElement(settings);
             }
 
-            selectedLogSettings = (LogSettings) object;
+            selectedLogSettings = (LogSettings) object[0];
 
             if (selectedLogSettings != null) {
                 logSettingsComboBox.setSelectedItem(selectedLogSettings);

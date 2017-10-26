@@ -25,7 +25,7 @@ public class ParserDialog extends ParserDialogLayout implements DbObjectChangedL
 
         DbManager.db().addOnParserItemLinkChangedListener(this);
 
-        updateComponents(null);
+        updateComponents();
     }
 
     public boolean useParser() {

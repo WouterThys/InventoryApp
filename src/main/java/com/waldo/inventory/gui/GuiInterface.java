@@ -4,6 +4,6 @@ public interface GuiInterface {
 
     void initializeComponents();
     void initializeLayouts();
-    void updateComponents(Object object);
+    void updateComponents(Object... args);
 
 }

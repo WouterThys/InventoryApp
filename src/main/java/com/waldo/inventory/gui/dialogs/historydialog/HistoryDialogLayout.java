@@ -154,10 +154,10 @@ public abstract class HistoryDialogLayout extends IDialog implements GuiInterfac
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
-        if (object != null) {
-            Item historyItem = (Item) object;
+        if (object.length != 0 && object[0] != null) {
+            Item historyItem = (Item) object[0];
 
             if (!historyItem.getIconPath().isEmpty()) {
                 try {

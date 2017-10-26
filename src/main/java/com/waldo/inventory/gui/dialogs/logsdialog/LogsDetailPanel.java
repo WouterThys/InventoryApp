@@ -136,13 +136,13 @@ public class LogsDetailPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0) {
             setVisible(false);
             selectedLog = null;
         } else {
-            if (object instanceof Log) {
-                selectedLog = (Log) object;
+            if (object[0] instanceof Log) {
+                selectedLog = (Log) object[0];
 
                 switch (selectedLog.getLogType()) {
                     case Statics.LogTypes.INFO:

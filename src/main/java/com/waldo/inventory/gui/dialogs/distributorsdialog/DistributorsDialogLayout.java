@@ -243,7 +243,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         if (application.isUpdating()) {
             return;
         }
@@ -257,7 +257,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
                 }
             }
 
-            selectedDistributor = (Distributor) object;
+            selectedDistributor = (Distributor) object[0];
             updateEnabledComponents();
 
             if (selectedDistributor != null) {

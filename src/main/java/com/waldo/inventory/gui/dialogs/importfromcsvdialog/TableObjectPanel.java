@@ -302,8 +302,8 @@ public class TableObjectPanel extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        tableObject = (TableObject) object;
+    public void updateComponents(Object... object) {
+        tableObject = (TableObject) object[0];
 
         if (tableObject != null) {
             searchPanel.clearSearch();

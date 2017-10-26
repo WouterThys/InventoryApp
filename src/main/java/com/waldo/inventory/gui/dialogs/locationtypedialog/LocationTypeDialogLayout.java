@@ -164,7 +164,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         if (application.isUpdating()) {
             return;
         }
@@ -179,7 +179,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
                 }
             }
 
-            selectedLocationType = (LocationType) object;
+            selectedLocationType = (LocationType) object[0];
             updateEnabledComponents();
 
             if (selectedLocationType != null) {

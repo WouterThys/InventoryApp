@@ -23,7 +23,7 @@ public class KiCadDialog extends KiCadDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        updateComponents(null);
+        updateComponents();
     }
 
     private void parseSelected() {
@@ -88,7 +88,7 @@ public class KiCadDialog extends KiCadDialogLayout {
         if (fileChooser.showDialog(KiCadDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
             fileToParse = fileChooser.getSelectedFile();
             fileLbl.setText(fileToParse.getAbsolutePath());
-            updateComponents(null);
+            updateComponents();
         }
     }
 
@@ -123,7 +123,7 @@ public class KiCadDialog extends KiCadDialogLayout {
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == sheetTabs) {
-            updateComponents(null);
+            updateComponents();
         }
     }
 }

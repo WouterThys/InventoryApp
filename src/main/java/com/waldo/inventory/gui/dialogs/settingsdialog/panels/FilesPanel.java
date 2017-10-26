@@ -340,7 +340,7 @@ public class FilesPanel extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             fileSettingsCbModel.removeAllElements();
@@ -348,7 +348,7 @@ public class FilesPanel extends JPanel implements
                 fileSettingsCbModel.addElement(settings);
             }
 
-            selectedFileSettings = (FileSettings) object;
+            selectedFileSettings = (FileSettings) object[0];
 
             if (selectedFileSettings != null) {
                 fileSettingsComboBox.setSelectedItem(selectedFileSettings);

@@ -127,7 +127,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         if (distributorCb.getModel().getSize() > 0) {
             distributorCb.setSelectedIndex(0);
         }

@@ -16,7 +16,7 @@ public class DetectionDialog extends DetectionDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
 

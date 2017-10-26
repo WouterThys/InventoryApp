@@ -49,7 +49,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -191,7 +191,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

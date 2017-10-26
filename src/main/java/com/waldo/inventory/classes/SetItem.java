@@ -36,7 +36,7 @@ public class SetItem extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
         statement.setInt(ndx++, amount);
-        statement.setDouble(ndx++, getValue().getValue());
+        statement.setDouble(ndx++, getValue().getDoubleValue());
         statement.setInt(ndx++, getValue().getMultiplier());
         statement.setString(ndx++, getValue().getDbUnit());
         statement.setLong(ndx++, getItemId());

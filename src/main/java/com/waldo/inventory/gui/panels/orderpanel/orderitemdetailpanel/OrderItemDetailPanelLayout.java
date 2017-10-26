@@ -126,12 +126,12 @@ public  class OrderItemDetailPanelLayout extends JPanel implements GuiInterface,
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0) {
             setVisible(false);
             orderItem = null;
         } else {
-            orderItem = (OrderItem) object;
+            orderItem = (OrderItem) object[0];
             setVisible(true);
             DistributorPart distributorPart = orderItem.getDistributorPart();
             if (distributorPart != null) {

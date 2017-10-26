@@ -37,7 +37,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             updateComponents(db().getManufacturers().get(1)); // 0 is unknown
             setDetails();
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 
@@ -142,7 +142,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
     //
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         try {
             application.beginWait();
             // Get all menus
@@ -153,7 +153,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
                 }
             }
 
-            selectedManufacturer = (Manufacturer) object;
+            selectedManufacturer = (Manufacturer) object[0];
             updateEnabledComponents();
 
             if (selectedManufacturer != null) {

@@ -120,10 +120,10 @@ public abstract class SetItemDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            if (object instanceof Item) {
-                item = (Item) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            if (object[0] instanceof Item) {
+                item = (Item) object[0];
 
                 updateTable();
                 updateEnabledComponents();

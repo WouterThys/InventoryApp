@@ -70,7 +70,7 @@ public abstract class OrderSearchItemDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

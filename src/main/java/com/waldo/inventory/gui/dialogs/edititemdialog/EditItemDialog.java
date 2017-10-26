@@ -39,7 +39,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         initializeLayouts();
         initListeners();
         initActions();
-        updateComponents(null);
+        updateComponents();
     }
 
     public EditItemDialog(Application application, String title) {
@@ -85,7 +85,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
             @Override
             public void onDeleted(Package p) {
-                componentPanel.updateComponents(null);
+                componentPanel.updateComponents();
             }
 
             @Override
@@ -203,7 +203,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
             currentTabIndex = tabbedPane.getSelectedIndex();
 
-            updateComponents(null);
+            updateComponents();
         });
     }
 

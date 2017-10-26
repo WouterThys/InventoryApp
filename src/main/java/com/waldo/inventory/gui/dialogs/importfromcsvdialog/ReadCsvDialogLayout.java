@@ -161,7 +161,7 @@ public abstract class ReadCsvDialogLayout extends IDialog implements GuiInterfac
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

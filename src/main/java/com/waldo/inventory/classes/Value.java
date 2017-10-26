@@ -7,26 +7,32 @@ import java.math.BigDecimal;
 
 public class Value {
 
-    private double value;
-    private int multiplier; // Real value is value *10^multiplier
+    // Double value
+    private double doubleValue;
+    private int multiplier; // Real doubleValue is doubleValue *10^multiplier
     private String unit;
 
-
     public Value() {
-        value = 0.0;
+        doubleValue = 0.0;
         multiplier = 0;
         unit = "";
     }
 
     public Value(BigDecimal bigDecimal) {
         multiplier = bigDecimal.precision() - bigDecimal.scale() - 1;
-        value = bigDecimal.scaleByPowerOfTen(-multiplier).doubleValue();
+        doubleValue = bigDecimal.scaleByPowerOfTen(-multiplier).doubleValue();
     }
 
-    public Value (double value, int multiplier, String unit) {
-        this.value = value;
+    public Value (double doubleValue, int multiplier, String unit) {
+        this.doubleValue = doubleValue;
         this.multiplier = multiplier;
         this.unit = unit;
+    }
+
+    public Value(String stringValue) {
+        this.doubleValue = 0;
+        this.multiplier = 0;
+        this.unit = "";
     }
 
 
@@ -37,21 +43,21 @@ public class Value {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Value) {
+        if (obj != null && obj instanceof Value) {
             Value v = (Value) obj;
-            if (v.getValue() == getValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
+            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
                 return true;
             }
         }
         return false;
     }
 
-    public double getValue() {
-        return value;
+    public double getDoubleValue() {
+        return doubleValue;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setDoubleValue(double doubleValue) {
+        this.doubleValue = doubleValue;
     }
 
     public int getMultiplier() {
@@ -63,11 +69,14 @@ public class Value {
     }
 
     public String getUnit() {
+        if (unit == null) {
+            unit = "";
+        }
         return unit;
     }
 
     public BigDecimal getRealValue() {
-        return new BigDecimal(String.valueOf(value * Math.pow(10, multiplier)));
+        return new BigDecimal(String.valueOf(doubleValue * Math.pow(10, multiplier)));
     }
 
     public String getDbUnit() {

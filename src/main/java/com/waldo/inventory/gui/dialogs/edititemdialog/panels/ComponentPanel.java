@@ -470,7 +470,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         idTextField.setText(String.valueOf(newItem.getId()));
         nameTextField.setText(newItem.getName().trim());
         descriptionTextArea.setText(newItem.getDescription().trim());

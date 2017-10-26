@@ -68,11 +68,11 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
-            if (object != null) {
-                location = (Location) object;
+            if (object.length != 0 && object[0] != null) {
+                location = (Location) object[0];
                 originalLocation = location.createCopy();
                 locationMapPanel.setLocations(location.getLocationType().getLocations());
                 locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);

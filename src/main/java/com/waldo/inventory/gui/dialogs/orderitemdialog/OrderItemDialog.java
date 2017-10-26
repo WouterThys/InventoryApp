@@ -31,7 +31,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public OrderItemDialog(Application application, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
@@ -45,7 +45,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public Order getSelectedOrder() {
@@ -108,6 +108,6 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
     @Override
     public void onCacheCleared() {
-        updateComponents(null);
+        updateComponents();
     }
 }

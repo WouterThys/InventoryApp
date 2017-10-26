@@ -217,12 +217,12 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0 || object[0] == null) {
             setVisible(false);
         } else {
             setVisible(true);
-            ProjectObject selectedProject = (ProjectObject) object;
+            ProjectObject selectedProject = (ProjectObject) object[0];
             updateIcon(selectedProject);
             updateDetails(selectedProject);
         }

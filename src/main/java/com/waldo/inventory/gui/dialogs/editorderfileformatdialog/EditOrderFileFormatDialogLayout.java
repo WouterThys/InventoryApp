@@ -59,9 +59,9 @@ public abstract class EditOrderFileFormatDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof OrderFileFormat) {
-            orderFileFormat = (OrderFileFormat) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof OrderFileFormat) {
+            orderFileFormat = (OrderFileFormat) object[0];
 
             nameTf.setText(orderFileFormat.getName());
             separatorTf.setText(String.valueOf(orderFileFormat.getSeparator()));

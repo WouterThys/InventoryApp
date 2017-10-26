@@ -109,8 +109,8 @@ public abstract class EditProjectObjectDialogLayout<P extends ProjectObject> ext
     }
 
     @Override
-    public void updateComponents(Object object) {
-        projectObject = (P) object;
+    public void updateComponents(Object... object) {
+        projectObject = (P) object[0];
 
         if (projectObject != null) {
             originalObject = (P) projectObject.createCopy();
