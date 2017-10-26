@@ -58,6 +58,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     // Basic info
     private ITextField idTextField;
     private ITextField nameTextField;
+    private PanelUtils.IValuePanel valuePnl;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
     private IComboBox<Category> categoryComboBox;
@@ -221,6 +222,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         nameTextField = new ITextField();
         nameTextField.addEditedListener(editedListener, "name");
         nameTextField.setName(EditItemDialogLayout.COMP_NAME);
+
+        valuePnl = new PanelUtils.IValuePanel(editedListener);
+
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
         descriptionTextArea.setWrapStyleWord(true); // Don't cut words in two
@@ -341,8 +345,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
-                new String[] {"Database ID: ", "Name: "},
-                new JComponent[] {idTextField, nameTextField}
+                new String[] {"Database ID: ", "Name: ", "Value: "},
+                new JComponent[] {idTextField, nameTextField, valuePnl}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -473,6 +477,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void updateComponents(Object... object) {
         idTextField.setText(String.valueOf(newItem.getId()));
         nameTextField.setText(newItem.getName().trim());
+        valuePnl.setValue(newItem.getValue());
         descriptionTextArea.setText(newItem.getDescription().trim());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 

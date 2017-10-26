@@ -221,12 +221,12 @@ public class DbManager {
 
     public void startBackgroundWorkers() {
         if (!Main.CACHE_ONLY) {
-            workList = new DbQueue<>(100);
+            workList = new DbQueue<>(1000);
             dbQueueWorker = new DbQueueWorker(QUEUE_WORKER);
             dbQueueWorker.execute();
             LOG.info("Database started thread: " + QUEUE_WORKER);
 
-            nonoList = new DbQueue<>(100);
+            nonoList = new DbQueue<>(1000);
             dbErrorWorker = new DbErrorWorker(ERROR_WORKER);
             dbErrorWorker.execute();
             LOG.info("Database started thread: " + ERROR_WORKER);
@@ -1613,9 +1613,7 @@ public class DbManager {
                     si.setName(rs.getString("name"));
                     si.setIconPath(rs.getString("iconPath"));
                     si.setAmount(rs.getInt("amount"));
-                    si.getValue().setDoubleValue(rs.getDouble("value"));
-                    si.getValue().setMultiplier(rs.getInt("multiplier"));
-                    si.getValue().setUnit(rs.getString("unit"));
+                    si.setValue(new Value(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit")));
                     si.setItemId(rs.getLong("itemId"));
                     si.setLocationId(rs.getLong("locationId"));
 

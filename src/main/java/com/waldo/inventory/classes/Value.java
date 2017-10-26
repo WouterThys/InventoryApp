@@ -24,9 +24,8 @@ public class Value {
     }
 
     public Value (double doubleValue, int multiplier, String unit) {
-        this.doubleValue = doubleValue;
-        this.multiplier = multiplier;
-        this.unit = unit;
+        setUnit(unit);
+        createValues(doubleValue, multiplier);
     }
 
     public Value(String stringValue) {
@@ -35,10 +34,41 @@ public class Value {
         this.unit = "";
     }
 
+    private void createValues(double doubleValue, int multiplier) {
+        if (multiplier != 0) {
+            boolean positive = multiplier >= 0;
+            int m = Math.abs(multiplier);
+
+            while ((m != 0) && !(m % 3 == 0)) {
+                if (positive) {
+                    m = m - 1;
+                } else {
+                    m = m + 1;
+                }
+                doubleValue = doubleValue * 10;
+            }
+
+            this.doubleValue = doubleValue;
+            if (positive) {
+                this.multiplier = m;
+            } else {
+                this.multiplier = -m;
+            }
+
+        } else {
+            this.doubleValue = doubleValue;
+            this.multiplier = multiplier;
+        }
+    }
+
+    public static Value copy(Value v) {
+        return new Value(v.getDoubleValue(), v.getMultiplier(), v.getUnit());
+    }
+
 
     @Override
     public String toString() {
-        return ValueUtils.convert(getRealValue(), 1) + unit;
+        return ValueUtils.convert(getRealValue(), 1) + getUnit();
     }
 
     @Override

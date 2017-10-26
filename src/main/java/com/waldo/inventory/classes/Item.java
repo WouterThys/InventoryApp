@@ -107,7 +107,7 @@ public class Item extends DbObject {
         // Value
         statement.setDouble(ndx++, getValue().getDoubleValue());
         statement.setInt(ndx++, getValue().getMultiplier());
-        statement.setString(ndx++, getValue().getUnit());
+        statement.setString(ndx++, getValue().getDbUnit());
 
         // Aud
         statement.setString(ndx++, getAud().getInsertedBy());
@@ -180,7 +180,7 @@ public class Item extends DbObject {
         Item item = (Item) copyInto;
         copyBaseFields(item);
 
-        item.setValue(getValue());
+        item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
         item.setPrice(getPrice());
         item.setCategoryId(getCategoryId());

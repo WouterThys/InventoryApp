@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
@@ -9,9 +10,13 @@ import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -345,7 +350,8 @@ public class PanelUtils {
         }
     }
 
-    public static class IValuePanel extends JPanel implements GuiInterface {
+    public static class IValuePanel extends JPanel implements
+            GuiInterface, ChangeListener, ItemListener {
 
         private SpinnerNumberModel valueModel;
         private JSpinner valueSp;
@@ -353,26 +359,132 @@ public class PanelUtils {
         private JComboBox<String> multiplierCb;
         private JComboBox<String> unitCb;
 
+        private Value value;
+        private IEditedListener listener;
+
         public IValuePanel() {
+            this(null);
+        }
+
+        public IValuePanel(IEditedListener listener) {
             super();
+
+            this.listener = listener;
 
             initializeComponents();
             initializeLayouts();
-            updateComponents();
+        }
+
+        public void setValue(Value v) {
+            this.value = v;
+            updateComponents(value);
+        }
+
+        public Value getValue() {
+            return value;
+        }
+
+        public void addEditedListener(IEditedListener listener) {
+            this.listener = listener;
         }
 
         @Override
         public void initializeComponents() {
+            valueModel = new SpinnerNumberModel(0.00, 0.00, 999.99, 0.01);
+            valueSp = new JSpinner(valueModel);
+            valueSp.addChangeListener(this);
 
+            DefaultComboBoxModel<String> multiplierModel = new DefaultComboBoxModel<>(Statics.UnitMultipliers.ALL);
+            multiplierCb = new JComboBox<>(multiplierModel);
+            multiplierCb.setSelectedIndex(5);
+            multiplierCb.addItemListener(this);
+
+            DefaultComboBoxModel<String> unitModel = new DefaultComboBoxModel<>(Statics.Units.ALL);
+            unitCb = new JComboBox<>(unitModel);
+            unitCb.insertItemAt("", 0);
+            unitCb.setSelectedIndex(0);
+            unitCb.addItemListener(this);
         }
 
         @Override
         public void initializeLayouts() {
+            setLayout(new BorderLayout());
 
+            JPanel cbPanel = new JPanel(new BorderLayout());
+            cbPanel.add(multiplierCb, BorderLayout.WEST);
+            cbPanel.add(unitCb, BorderLayout.EAST);
+
+            add(valueSp, BorderLayout.CENTER);
+            add(cbPanel, BorderLayout.EAST);
         }
 
         @Override
         public void updateComponents(Object... object) {
+            if (object.length != 0 && object[0] != null) {
+                Value v = (Value) object[0];
+
+                valueModel.setValue(v.getDoubleValue());
+                String m = Statics.UnitMultipliers.toMultiplier(v.getMultiplier());
+                multiplierCb.setSelectedItem(m);
+                unitCb.setSelectedItem(v.getUnit());
+            } else {
+                valueModel.setValue(0);
+                multiplierCb.setSelectedIndex(5);
+                unitCb.setSelectedIndex(0);
+            }
+        }
+
+        //
+        // Spinner value changed
+        //
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (value != null) {
+                SwingUtilities.invokeLater(() -> {
+                    double val = valueModel.getNumber().doubleValue();
+                    value.setDoubleValue(val);
+                    if (listener != null) {
+                        listener.onValueChanged(this, "value:doubleValue", 0, 0);
+                    }
+                });
+            }
+        }
+
+        //
+        // Combo box selection changed
+        //
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (value != null) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (e.getSource().equals(multiplierCb)) {
+                            multiplierCbChanged();
+                        } else {
+                            unitCbChanged();
+                        }
+                    });
+                }
+            }
+        }
+
+        private void multiplierCbChanged() {
+                String mTxt = (String) multiplierCb.getSelectedItem();
+
+                int mInt = Statics.UnitMultipliers.toMultiplier(mTxt);
+                value.setMultiplier(mInt);
+                if (listener != null) {
+                    listener.onValueChanged(this, "value:multiplier", 0, 0);
+                }
+
+        }
+
+        private void unitCbChanged() {
+                String uTxt = (String) unitCb.getSelectedItem();
+                value.setUnit(uTxt);
+                if (listener != null) {
+                    listener.onValueChanged(this, "value:unit", 0, 0);
+                }
 
         }
     }
