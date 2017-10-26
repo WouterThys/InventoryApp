@@ -58,13 +58,44 @@ public class PcbItemParser {
         return null;
     }
 
+    private int matchName(String pcbName, String itemName) {
+        if (itemName.contains(pcbName) || pcbName.contains(itemName)) {
+            return MATCH_NAME; // Set bit
+        } else {
+            return 0;
+        }
+    }
+
+    private int matchValue(String pcbValue, Value value) {
+        Value pcbVal = Value.tryFindValue(pcbValue);
+        if (pcbVal != null) {
+            if (pcbVal.equalsIgnoreUnits(value)) {
+                return MATCH_VALUE;
+            }
+        }
+        return 0;
+    }
+
+    private int matchValue(String pcbValue, Value value, String itemName) {
+        int res = matchValue(pcbValue, value);
+
+        if (res == 0) { // Try to match with name
+            if (pcbValue.contains(itemName) || itemName.contains(pcbValue)) {
+                res = MATCH_VALUE;
+            }
+        }
+
+        return res;
+    }
+
     public List<PcbItemItemLink> linkWithSetItem(PcbItem component, Item item) {
         List<PcbItemItemLink> itemMatches = new ArrayList<>();
-        String kcName = component.getPartName().toUpperCase();
-        String kcValue = component.getValue().toUpperCase();
-        String kcFp = component.getFootprint().toUpperCase();
 
-        ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(kcName);
+        String pcbName = component.getPartName().toUpperCase();
+        String pcbValue = component.getValue();
+        String pcbFp = component.getFootprint().toUpperCase();
+
+        ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
 
         if (parserLink != null) {
 
@@ -89,25 +120,21 @@ public class PcbItemParser {
 
         for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
             int match = 0;
-            String setItemName = setItem.getName().toUpperCase();
-            String setItemValue = setItem.getValue().toString().toUpperCase();
-            String setItemFp = "";
+            String itemName = setItem.getName().toUpperCase();
+            String itemFp = "";
 
             if (item.getDimensionType() != null) {
-                setItemFp = item.getDimensionType().getName();
+                itemFp = item.getDimensionType().getName();
             } else if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-                setItemFp = item.getPackage().getPackageType().getName();
+                itemFp = item.getPackage().getPackageType().getName();
             }
 
-            if (setItemName.equals(kcName)) {
-                match |= MATCH_NAME;
-            }
-            if (kcValue.contains(setItemValue) || setItemValue.contains(kcValue)) {
-                match |= MATCH_VALUE;
-            }
+            match |= matchName(pcbName, itemName); // Set bit
+            match |= matchValue(pcbValue, setItem.getValue()); // Set bit
+
             // Only check footprint match if there is already a match
             if (((match & MATCH_NAME) == MATCH_NAME) || ((match & MATCH_VALUE) == MATCH_VALUE)) {
-                if (!setItemFp.isEmpty() && kcFp.contains(setItemFp)) {
+                if (!itemFp.isEmpty() && pcbFp.contains(itemFp)) {
                     match |= MATCH_FOOTPRINT;
                 }
             }
@@ -127,13 +154,15 @@ public class PcbItemParser {
         return itemMatches;
     }
 
+
     public List<PcbItemItemLink> linkWithItem(PcbItem pcbItem, Item item) {
         List<PcbItemItemLink> itemMatches = new ArrayList<>();
         int match = 0;
 
         String itemName = item.getName().toUpperCase();
+
         String pcbName = pcbItem.getPartName().toUpperCase();
-        String pcbValue = pcbItem.getValue().toUpperCase();
+        String pcbValue = pcbItem.getValue();
         String pcbFp = pcbItem.getFootprint().toUpperCase();
 
         ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
@@ -159,12 +188,8 @@ public class PcbItemParser {
             }
         }
 
-        if (itemName.contains(pcbName) || pcbName.contains(itemName)) {
-            match |= MATCH_NAME; // Set bit
-        }
-        if (itemName.contains(pcbValue) || pcbValue.contains(itemName)) {
-            match |= MATCH_VALUE; // Set bit
-        }
+        match |= matchName(pcbName, itemName); // Set bit
+        match |= matchValue(pcbValue, item.getValue(), itemName);
 
         // Find footprint of item
         String itemFp = "";
@@ -198,15 +223,11 @@ public class PcbItemParser {
         List<PcbItemItemLink> itemLinkList = new ArrayList<>();
 
         for (Item item : DbManager.db().getItems()) {
-            // if (pcbItem.getLibrary().toUpperCase().equals("DEVICE")) {
             if (item.isSet()) {
                 itemLinkList.addAll(linkWithSetItem(pcbItem, item));
             } else {
                 itemLinkList.addAll(linkWithItem(pcbItem, item));
             }
-//            } else {
-//                itemLinkList.addAll(linkWithItem(pcbItem, item));
-//            }
         }
 
         itemLinkList.sort(new MatchComparator());

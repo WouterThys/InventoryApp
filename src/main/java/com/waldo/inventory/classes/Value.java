@@ -4,6 +4,8 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.ValueUtils;
 
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Value {
 
@@ -82,6 +84,16 @@ public class Value {
         return false;
     }
 
+    public boolean equalsIgnoreUnits(Object obj) {
+        if (obj != null && obj instanceof Value) {
+            Value v = (Value) obj;
+            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getDoubleValue() {
         return doubleValue;
     }
@@ -131,5 +143,31 @@ public class Value {
                 this.unit = unit;
             }
         }
+    }
+
+    public static Value tryFindValue(String valueTxt) {
+
+        double foundDouble = -1;
+        int foundMultiplier = 0;
+
+        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(valueTxt);
+        while (m.find()) {
+            foundDouble = Double.parseDouble(m.group(1));
+        }
+
+        if (foundDouble >= 0) {
+            if (valueTxt.contains("f")) foundMultiplier = -15;
+            else if (valueTxt.contains("p")) foundMultiplier = -12;
+            else if (valueTxt.contains("n")) foundMultiplier = -9;
+            else if (valueTxt.contains("µ") || valueTxt.contains("u")) foundMultiplier = -6;
+            else if (valueTxt.contains("m")) foundMultiplier = -3;
+            else if (valueTxt.contains("k") || valueTxt.contains("K")) foundMultiplier = 3;
+            else if (valueTxt.contains("M")) foundMultiplier = 6;
+            else if (valueTxt.contains("G")) foundMultiplier = 9;
+            else if (valueTxt.contains("T")) foundMultiplier = 12;
+
+            return new Value(foundDouble, foundMultiplier, "");
+        }
+        return null;
     }
 }
