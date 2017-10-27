@@ -429,6 +429,7 @@ public class PanelUtils {
             // Button
             toggleValuePnlBtn = new JButton(imageResource.readImage("Search.ArrowLeftBlue"));
             toggleValuePnlBtn.addActionListener(this);
+            toggleValuePnlBtn.setToolTipText("Value");
         }
 
         @Override

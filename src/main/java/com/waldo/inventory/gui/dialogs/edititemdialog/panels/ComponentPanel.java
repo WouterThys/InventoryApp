@@ -57,8 +57,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     // Basic info
     private ITextField idTextField;
-    //private ITextField nameTextField;
-    //private PanelUtils.IValuePanel valuePnl;
     private PanelUtils.INameValuePanel nameValuePnl;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
