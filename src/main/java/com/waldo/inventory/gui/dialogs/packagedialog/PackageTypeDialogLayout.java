@@ -200,7 +200,7 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title and neutral button
         setTitleIcon(imageResource.readImage("Packages.Title"));
-        setTitleName("Package Types");
+        setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);

@@ -43,6 +43,7 @@ public abstract class EditPackageTypeDialogLayout extends IDialog implements IEd
     public void initializeComponents() {
         // Dialog
         showTitlePanel(false);
+        setResizable(true);
 
         // Name
         nameTf = new ITextField(this, "name");

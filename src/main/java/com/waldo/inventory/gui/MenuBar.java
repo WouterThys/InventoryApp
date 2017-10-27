@@ -138,7 +138,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener packagesSelected() {
         return (e -> {
-            PackageTypeDialog dialog = new PackageTypeDialog(application, "Package Types");
+            PackageTypeDialog dialog = new PackageTypeDialog(application, "Packages");
             dialog.showDialog();
         });
     }
