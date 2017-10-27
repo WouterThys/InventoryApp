@@ -36,7 +36,7 @@ public abstract class QueryDialogLayout extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

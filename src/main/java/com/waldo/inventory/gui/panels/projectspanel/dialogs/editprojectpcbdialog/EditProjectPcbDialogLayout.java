@@ -109,8 +109,8 @@ public abstract class EditProjectPcbDialogLayout extends IDialog implements IEdi
     }
 
     @Override
-    public void updateComponents(Object object) {
-        projectPcb = (ProjectPcb) object;
+    public void updateComponents(Object... object) {
+        projectPcb = (ProjectPcb) object[0];
 
         if (projectPcb != null) {
             originalProjectPcb = projectPcb.createCopy();

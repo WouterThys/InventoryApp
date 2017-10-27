@@ -48,7 +48,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
             updateComponents(db().getDistributors().get(0));
             setDetails();
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 

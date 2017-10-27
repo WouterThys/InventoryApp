@@ -31,7 +31,7 @@ public class LogsDialog extends LogsDialogLayout {
         initializeLayouts();
         updateLogTable(true, true, true, true);
 
-        updateComponents(null);
+        updateComponents();
     }
 
     private void deleteAllLogs() {
@@ -51,7 +51,7 @@ public class LogsDialog extends LogsDialogLayout {
                 showDebugCb.isSelected(),
                 showWarnCb.isSelected(),
                 showErrorCb.isSelected());
-        updateComponents(null);
+        updateComponents();
     }
 
     //
@@ -65,7 +65,7 @@ public class LogsDialog extends LogsDialogLayout {
                     showDebugCb.isSelected(),
                     showWarnCb.isSelected(),
                     showErrorCb.isSelected());
-            updateComponents(null);
+            updateComponents();
         }
     }
 

@@ -39,7 +39,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public void addTileClickListener(TileClickListener<IT> listener) {
@@ -90,7 +90,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         ProjectIDE ide = projectObject.getProjectIDE();
         if (ide != null) {
             Path path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());

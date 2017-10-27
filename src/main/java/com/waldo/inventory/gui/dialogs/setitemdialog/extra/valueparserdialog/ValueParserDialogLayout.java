@@ -225,7 +225,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             updateTypeCb();

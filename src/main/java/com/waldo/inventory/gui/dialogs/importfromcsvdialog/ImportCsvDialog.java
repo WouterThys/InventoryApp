@@ -34,7 +34,7 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
             initializeComponents();
             initializeLayouts();
             initActions();
-            updateComponents(null);
+            updateComponents();
         } else {
 
             JOptionPane.showMessageDialog(application, "Error importing file: " + importError, "Error", JOptionPane.ERROR_MESSAGE);

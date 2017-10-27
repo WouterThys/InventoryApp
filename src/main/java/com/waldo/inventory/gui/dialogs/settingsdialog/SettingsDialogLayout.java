@@ -85,7 +85,7 @@ public abstract class SettingsDialogLayout extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
         dbPanel.updateComponents(settings().getDbSettings());
         filesPanel.updateComponents(settings().getFileSettings());

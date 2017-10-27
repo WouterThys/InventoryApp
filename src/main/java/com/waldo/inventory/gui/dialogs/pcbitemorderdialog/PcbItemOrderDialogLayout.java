@@ -162,9 +162,9 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof List) {
-            pcbItemList = (List<PcbItem>) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof List) {
+            pcbItemList = (List<PcbItem>) object[0];
             pcbPanel.setItemList(pcbItemList);
         }
     }

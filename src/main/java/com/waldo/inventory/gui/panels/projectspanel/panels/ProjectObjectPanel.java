@@ -61,7 +61,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         initializeComponents();
         initializeLayouts();
 
-        updateComponents(null);
+        updateComponents();
     }
 
     /*

@@ -1,7 +1,7 @@
 package com.waldo.inventory;
 
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;

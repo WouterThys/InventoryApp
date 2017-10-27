@@ -150,7 +150,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

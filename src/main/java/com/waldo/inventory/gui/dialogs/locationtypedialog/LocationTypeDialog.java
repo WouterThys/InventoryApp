@@ -37,7 +37,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
             updateComponents(db().getLocationTypes().get(1)); // 0 is Unknown
             setDetails();
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 

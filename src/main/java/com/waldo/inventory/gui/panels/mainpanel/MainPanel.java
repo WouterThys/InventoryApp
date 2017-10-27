@@ -39,7 +39,7 @@ public class MainPanel extends MainPanelLayout {
         db().addOnProductsChangedListener(productsChanged);
         db().addOnTypesChangedListener(typesChanged);
 
-        updateComponents(null);
+        updateComponents((Object)null);
     }
 
     public Item getSelectedItem() {

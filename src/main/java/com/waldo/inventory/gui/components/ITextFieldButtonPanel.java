@@ -39,7 +39,7 @@ public class ITextFieldButtonPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public ITextFieldButtonPanel(String hint, String fieldName, IEditedListener editedListener, ImageIcon buttonIcon) {
@@ -81,7 +81,7 @@ public class ITextFieldButtonPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 

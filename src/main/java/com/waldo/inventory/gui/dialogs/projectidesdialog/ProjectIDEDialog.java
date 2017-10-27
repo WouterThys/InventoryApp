@@ -40,7 +40,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
         if (db().getProjectIDES().size() > 0) {
             updateComponents(db().getProjectIDES().get(0));
         } else {
-            updateComponents(null);
+            updateComponents();
         }
     }
 
@@ -145,7 +145,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
     //
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         try {
             application.beginWait();
             // Get all menus
@@ -156,7 +156,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
                 }
             }
 
-            selectedProjectIDE = (ProjectIDE) object;
+            selectedProjectIDE = (ProjectIDE) object[0];
             updateEnabledComponents();
 
             if (selectedProjectIDE != null) {

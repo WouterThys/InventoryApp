@@ -46,7 +46,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         initializeComponents();
         initializeLayouts();
         createButtonsFromLocations(locations, showPopup);
-        updateComponents(null);
+        updateComponents();
     }
 
     public ILocationMapPanel(Application application, LocationClickListener locationClickListener, boolean showPopup) {
@@ -57,7 +57,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -226,7 +226,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         drawButtons();
     }
 }

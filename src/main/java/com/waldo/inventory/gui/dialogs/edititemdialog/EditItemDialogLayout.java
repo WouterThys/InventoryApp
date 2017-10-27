@@ -111,9 +111,9 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
 
-        componentPanel.updateComponents(null);
-        editItemStockPanel.updateComponents(null);
-        editItemOrderPanel.updateComponents(null);
+        componentPanel.updateComponents();
+        editItemStockPanel.updateComponents();
+        editItemOrderPanel.updateComponents();
 
         // Add tabs
         tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.Tab.Component"), componentPanel, "Component info");
@@ -132,7 +132,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         try {
             initialized = false;
             application.beginWait();
@@ -147,7 +147,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
             }
             setTitleName(newItem.getName().trim());
 
-            ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(null);
+            ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
             //componentPanel.updateComponents(null);
         } finally {
             application.endWait();

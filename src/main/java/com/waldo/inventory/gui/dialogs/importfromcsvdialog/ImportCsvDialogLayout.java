@@ -3,9 +3,7 @@ package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITableEditors;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -87,14 +85,14 @@ public abstract class ImportCsvDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         if (tableObjects != null) {
 
             if (!tableModel.hasData()) {
                 tableModel.setObjectList(tableObjects);
             }
 
-            selectedTableObject = (TableObject) object;
+            selectedTableObject = (TableObject) object[0];
             tableObjectPanel.updateComponents(selectedTableObject);
         }
 

@@ -1,4 +1,4 @@
-"id";"value";"footprint";"lib";"part"
+"id";"doubleValue";"footprint";"lib";"part"
 1;"UNKNOWN";"";"";""
 251;"BARREL_JACK";"Connectors:BARREL_JACK";"conn";"BARREL_JACK"
 252;"2.2µ **";"Capacitors_Tantalum_SMD:CP_Tantalum_Case-B_EIA-3528-21_Hand";"device";"C"

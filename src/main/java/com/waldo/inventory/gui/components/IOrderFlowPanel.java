@@ -41,7 +41,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -126,9 +126,9 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof Order) {
-            Order order = (Order) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof Order) {
+            Order order = (Order) object[0];
 
             switch (order.getOrderState()) {
                 case Statics.ItemOrderStates.PLANNED:

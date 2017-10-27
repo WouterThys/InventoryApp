@@ -134,9 +134,9 @@ public class EditDimensionDialog extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof DimensionType) {
-            dimensionType = (DimensionType) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof DimensionType) {
+            dimensionType = (DimensionType) object[0];
 
             nameTf.setText(dimensionType.getName());
             widthTf.setText(String.valueOf(dimensionType.getWidth()));

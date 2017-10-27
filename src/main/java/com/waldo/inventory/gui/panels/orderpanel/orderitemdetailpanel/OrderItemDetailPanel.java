@@ -12,7 +12,7 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
         initializeComponents();
         initializeLayouts();
         initActions();
-        updateComponents(null);
+        updateComponents();
     }
 
     private void initActions() {

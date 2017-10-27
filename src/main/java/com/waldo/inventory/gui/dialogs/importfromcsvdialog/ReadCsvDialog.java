@@ -13,7 +13,7 @@ public class ReadCsvDialog extends ReadCsvDialogLayout {
         initializeComponents();
         initializeLayouts();
         initActions();
-        updateComponents(null);
+        updateComponents();
     }
 
     private void initActions() {

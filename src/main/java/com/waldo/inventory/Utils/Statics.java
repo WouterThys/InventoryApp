@@ -52,6 +52,33 @@ public class Statics {
             return ALL[i];
         }
 
+        public static String toMultiplier(int mul) {
+            switch (mul) {
+                case -15:
+                    return "f";
+                case -12:
+                    return "p";
+                case -9:
+                    return "n";
+                case -6:
+                    return "µ";
+                case -3:
+                    return "m";
+                case 1:
+                    return " ";
+                case 3:
+                    return "k";
+                case 6:
+                    return "M";
+                case 9:
+                    return "G";
+                case 12:
+                    return "T";
+                default:
+                    return "";
+            }
+        }
+
         public static int toMultiplier(String mul) {
             switch (mul) {
                 case "f": return f;

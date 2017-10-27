@@ -70,9 +70,9 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            java.util.List<PcbItem> components = (java.util.List<PcbItem>) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            java.util.List<PcbItem> components = (java.util.List<PcbItem>) object[0];
             pcbItemTableModel.setItemList(components);
         }
     }

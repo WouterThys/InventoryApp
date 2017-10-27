@@ -10,7 +10,7 @@ public class LauncherDialog extends LauncherDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
 
     }
 

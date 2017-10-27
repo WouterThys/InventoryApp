@@ -44,7 +44,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -98,7 +98,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                         footprintTf.setText("");
                     }
                 }
-                setValueTf.setText("");
+                setValueTf.setText(item.getValue().toString());
             } else { // SetItem
                 Item item = match.getItem();
 
@@ -198,7 +198,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
 
     }
 }

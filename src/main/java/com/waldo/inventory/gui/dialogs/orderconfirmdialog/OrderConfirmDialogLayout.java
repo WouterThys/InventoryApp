@@ -381,9 +381,9 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            order = (Order) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            order = (Order) object[0];
             originalOrder = order.createCopy();
 
             // File

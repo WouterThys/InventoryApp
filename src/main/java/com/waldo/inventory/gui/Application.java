@@ -291,7 +291,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(null);
+        ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
     }
 
     //

@@ -47,7 +47,7 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public ProjectGridPanel(GridComponentClicked<P> gridComponentListener, int rows, int cols) {
@@ -58,7 +58,7 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     /*
@@ -127,8 +127,8 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
             redrawTiles();
         } else {
             tileViews.clear();

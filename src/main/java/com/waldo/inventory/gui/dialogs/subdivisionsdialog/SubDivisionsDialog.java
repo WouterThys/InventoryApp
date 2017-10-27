@@ -33,7 +33,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         super(application, title);
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
 
         initActions();
         setCategoriesChanged();
@@ -273,7 +273,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         try {
             application.beginWait();
             // Update
@@ -352,7 +352,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateComponents(null);
+        updateComponents();
     }
 
     @Override

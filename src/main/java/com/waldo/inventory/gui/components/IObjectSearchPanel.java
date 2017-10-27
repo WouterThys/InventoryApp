@@ -49,7 +49,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public IObjectSearchPanel(boolean hasAdvancedSearchOption, int... searchOptions) {
@@ -401,7 +401,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     @Override
-    public void updateComponents(Object object) {}
+    public void updateComponents(Object... object) {}
 
     @Override
     public void setEnabled(boolean enabled) {

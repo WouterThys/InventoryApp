@@ -165,9 +165,9 @@ public abstract class CustomLocationDialogLayout extends IDialog implements
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null && object instanceof LocationType) {
-            locationType = (LocationType) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null && object[0] instanceof LocationType) {
+            locationType = (LocationType) object[0];
             newLocationList = copyLocations(locationType.getLocations());
         } else {
             locationType = null;

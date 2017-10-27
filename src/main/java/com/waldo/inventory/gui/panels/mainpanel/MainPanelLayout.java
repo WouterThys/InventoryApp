@@ -227,14 +227,14 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         application.beginWait();
         try {
             // Update table if needed
-            if (object != null) {
-                if (lastSelectedDivision == null || !lastSelectedDivision.equals(object)) {
-                    lastSelectedDivision = (DbObject) object;
-                    updateTable((DbObject) object);
+            if (object.length != 0 && object[0] != null) {
+                if (lastSelectedDivision == null || !lastSelectedDivision.equals(object[0])) {
+                    lastSelectedDivision = (DbObject) object[0];
+                    updateTable((DbObject) object[0]);
                 }
             }
 

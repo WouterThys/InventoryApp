@@ -41,7 +41,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         if (projectPcb != null) {
             pcbItemPanel.updateComponents(selectedProjectObject);
         } else {
-            pcbItemPanel.updateComponents(null);
+            pcbItemPanel.updateComponents();
         }
     }
 
@@ -63,9 +63,9 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            Project project = (Project) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            Project project = (Project) object[0];
             if (!project.equals(selectedProject)) {
                 selectedProject = project;
                 gridPanel.drawTiles(selectedProject.getProjectPcbs());

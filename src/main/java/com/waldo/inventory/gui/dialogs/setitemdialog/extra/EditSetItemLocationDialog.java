@@ -32,7 +32,7 @@ public class EditSetItemLocationDialog extends IDialog implements ActionListener
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
     }
 
     public Location startLocation() {
@@ -86,7 +86,7 @@ public class EditSetItemLocationDialog extends IDialog implements ActionListener
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         startLocationTv.setText(startLocation.toString());
     }
 

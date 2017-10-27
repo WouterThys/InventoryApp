@@ -28,15 +28,15 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object == null) {
+    public void updateComponents(Object... object) {
+        if (object.length == 0 || object[0] == null) {
             setVisible(false);
             selectedItem = null;
         } else {
-            if (object instanceof Item) {
+            if (object[0] instanceof Item) {
                 setVisible(true);
 
-                selectedItem = (Item) object;
+                selectedItem = (Item) object[0];
 
                 updateIcon(selectedItem);
                 updateTextFields(selectedItem);

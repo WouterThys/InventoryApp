@@ -63,11 +63,6 @@ public class Item extends DbObject {
         int ndx = 1;
         statement.setString(ndx++, name);
 
-        // Value
-        statement.setDouble(ndx++, getValue().getValue());
-        statement.setInt(ndx++, getValue().getMultiplier());
-        statement.setString(ndx++, getValue().getUnit());
-
         statement.setString(ndx++, description);
         statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
@@ -108,6 +103,11 @@ public class Item extends DbObject {
             dimensionTypeId = UNKNOWN_ID;
         }
         statement.setLong(ndx++, getDimensionTypeId());
+
+        // Value
+        statement.setDouble(ndx++, getValue().getDoubleValue());
+        statement.setInt(ndx++, getValue().getMultiplier());
+        statement.setString(ndx++, getValue().getDbUnit());
 
         // Aud
         statement.setString(ndx++, getAud().getInsertedBy());
@@ -180,7 +180,7 @@ public class Item extends DbObject {
         Item item = (Item) copyInto;
         copyBaseFields(item);
 
-        item.setValue(getValue());
+        item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
         item.setPrice(getPrice());
         item.setCategoryId(getCategoryId());

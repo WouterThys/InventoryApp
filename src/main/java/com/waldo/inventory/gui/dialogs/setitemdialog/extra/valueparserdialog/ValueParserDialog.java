@@ -21,7 +21,7 @@ public class ValueParserDialog extends ValueParserDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(null);
+        updateComponents();
 
     }
 

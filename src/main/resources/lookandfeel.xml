@@ -3,7 +3,7 @@
     <!--Default style that all regions will use-->
     <style id = "inventoryStyle">
         <!--Make all regions opaque-->
-        <opaque value="TRUE" />
+        <opaque doubleValue="TRUE" />
         <font name="serif" size = "14" />
     </style>
 
@@ -12,8 +12,8 @@
         <insets top="2" left="2" bottom="2" right="2" />
         <state>
             <font name="serif" size="14" />
-            <color value="WHITE" dbAction="BACKGROUND"/>
-            <color value="BLACK" dbAction="TEXT_FOREGROUND" />
+            <color doubleValue="WHITE" dbAction="BACKGROUND"/>
+            <color doubleValue="BLACK" dbAction="TEXT_FOREGROUND" />
         </state>
     </style>
 

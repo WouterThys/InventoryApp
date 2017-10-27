@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.SetItem;
@@ -16,7 +17,7 @@ import java.awt.*;
 public class EditSetItemDialog extends IDialog {
 
     private ITextField nameTextField;
-    private ITextField valueTextField;
+    private PanelUtils.IValuePanel valuePnl;
     private SpinnerNumberModel spinnerModel;
     private ISpinner amountSpinner;
 
@@ -59,12 +60,6 @@ public class EditSetItemDialog extends IDialog {
             ok = false;
         }
 
-        String value = valueTextField.getText();
-        if (value == null || value.isEmpty()) {
-            nameTextField.setError("Value can not be empty");
-            ok = false;
-        }
-
         return ok;
     }
 
@@ -72,7 +67,7 @@ public class EditSetItemDialog extends IDialog {
     protected void onOK() {
         if (verify()) {
             setItem.setName(nameTextField.getText());
-            setItem.getValue().setValue(Double.valueOf(valueTextField.getText()));
+            setItem.setValue(valuePnl.getValue());
             setItem.setAmount(spinnerModel.getNumber().intValue());
 
             super.onOK();
@@ -82,7 +77,7 @@ public class EditSetItemDialog extends IDialog {
     @Override
     public void initializeComponents() {
         nameTextField = new ITextField("Name");
-        valueTextField = new ITextField("Value");
+        valuePnl = new PanelUtils.IValuePanel();
 
         spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(spinnerModel);
@@ -138,17 +133,17 @@ public class EditSetItemDialog extends IDialog {
         getContentPanel().add(new ITitledEditPanel(
                 "",
                 new String[] {"Name: ", "Value: ", "Amount: ", "Location: "},
-                new JComponent[] {nameTextField, valueTextField, amountSpinner, locationPanel()}
+                new JComponent[] {nameTextField, valuePnl, amountSpinner, locationPanel()}
         ));
     }
 
     @Override
-    public void updateComponents(Object object) {
-        if (object != null) {
-            setItem = (SetItem) object;
+    public void updateComponents(Object... object) {
+        if (object.length != 0 && object[0] != null) {
+            setItem = (SetItem) object[0];
 
             nameTextField.setText(setItem.getName());
-            valueTextField.setText(String.valueOf(setItem.getValue().getValue()));
+            valuePnl.setValue(setItem.getValue());
             spinnerModel.setValue(setItem.getAmount());
             updateLocationFields(setItem.getLocation());
         }

@@ -115,7 +115,7 @@ public abstract class LauncherDialogLayout extends IDialog {
     }
 
     @Override
-    public void updateComponents(Object object) {
+    public void updateComponents(Object... object) {
         useDefaultLauncherCb.setSelected(useDefaultLauncher);
         launcherPathTf.setText(launcherPath);
     }
