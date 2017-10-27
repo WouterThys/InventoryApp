@@ -351,7 +351,7 @@ public class PanelUtils {
         }
     }
 
-    public static class INameValuePanel extends JPanel implements GuiInterface {
+    public static class INameValuePanel extends JPanel implements GuiInterface, ActionListener {
 
         private ITextField nameTf;
         private IValuePanel valuePnl;
@@ -388,6 +388,7 @@ public class PanelUtils {
         // Value
         public void setValue(Value v) {
             valuePnl.setValue(v);
+            updateComponents();
         }
 
         public Value getValue() {
@@ -396,6 +397,24 @@ public class PanelUtils {
 
         public void addEditedListener(IEditedListener listener) {
             valuePnl.addEditedListener(listener);
+        }
+
+        public void setValuePanelVisible(boolean visible) {
+            if (valuePnl != null) {
+                valuePnl.setVisible(visible);
+
+                if (visible) {
+                    toggleValuePnlBtn.setText("");
+                    toggleValuePnlBtn.setIcon(imageResource.readImage("Search.ArrowRightBlue"));
+                } else {
+                    updateComponents();
+                }
+            }
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setValuePanelVisible(!valuePnl.isVisible());
         }
 
         @Override
@@ -408,7 +427,8 @@ public class PanelUtils {
             valuePnl = new IValuePanel();
 
             // Button
-            toggleValuePnlBtn = new JButton();
+            toggleValuePnlBtn = new JButton(imageResource.readImage("Search.ArrowLeftBlue"));
+            toggleValuePnlBtn.addActionListener(this);
         }
 
         @Override
@@ -425,11 +445,18 @@ public class PanelUtils {
             totalPanel.add(valuePanel, BorderLayout.EAST);
 
             add(totalPanel, BorderLayout.CENTER);
+            valuePnl.setVisible(false);
         }
 
         @Override
         public void updateComponents(Object... args) {
-
+            if (valuePnl.getValue().hasValue()) {
+                toggleValuePnlBtn.setText(valuePnl.getValue().toString());
+                toggleValuePnlBtn.setIcon(null);
+            } else {
+                toggleValuePnlBtn.setText("");
+                toggleValuePnlBtn.setIcon(imageResource.readImage("Search.ArrowLeftBlue"));
+            }
         }
     }
 
