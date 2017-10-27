@@ -343,4 +343,8 @@ public class PanelUtils {
             textField.setEditable(editable);
         }
     }
+
+    public static class IValuePanel {
+
+    }
 }
