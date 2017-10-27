@@ -6,6 +6,7 @@ import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITextFieldButtonPanel;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
@@ -350,6 +351,88 @@ public class PanelUtils {
         }
     }
 
+    public static class INameValuePanel extends JPanel implements GuiInterface {
+
+        private ITextField nameTf;
+        private IValuePanel valuePnl;
+        private JButton toggleValuePnlBtn;
+
+        public INameValuePanel(IEditedListener nameListener, String nameFieldName, IEditedListener valueListener) {
+            super();
+
+            initializeComponents();
+            initializeLayouts();
+
+            if (nameListener != null) {
+                nameTf.addEditedListener(nameListener, nameFieldName);
+            }
+
+            if (valueListener != null) {
+                valuePnl.addEditedListener(valueListener);
+            }
+        }
+
+        // Name
+        public String getNameText() {
+            return nameTf.getText();
+        }
+
+        public void setNameTxt(String name) {
+            nameTf.setText(name);
+        }
+
+        public void setError(String error) {
+            nameTf.setError(error);
+        }
+
+        // Value
+        public void setValue(Value v) {
+            valuePnl.setValue(v);
+        }
+
+        public Value getValue() {
+            return valuePnl.getValue();
+        }
+
+        public void addEditedListener(IEditedListener listener) {
+            valuePnl.addEditedListener(listener);
+        }
+
+        @Override
+        public void initializeComponents() {
+            // Name
+            nameTf = new ITextField("Name");
+            nameTf.setName(EditItemDialogLayout.COMP_NAME);
+
+            // Value
+            valuePnl = new IValuePanel();
+
+            // Button
+            toggleValuePnlBtn = new JButton();
+        }
+
+        @Override
+        public void initializeLayouts() {
+            setLayout(new BorderLayout());
+
+            JPanel totalPanel = new JPanel(new BorderLayout());
+            JPanel valuePanel = new JPanel(new BorderLayout());
+
+            valuePanel.add(valuePnl, BorderLayout.CENTER);
+            valuePanel.add(toggleValuePnlBtn, BorderLayout.EAST);
+
+            totalPanel.add(nameTf, BorderLayout.CENTER);
+            totalPanel.add(valuePanel, BorderLayout.EAST);
+
+            add(totalPanel, BorderLayout.CENTER);
+        }
+
+        @Override
+        public void updateComponents(Object... args) {
+
+        }
+    }
+
     public static class IValuePanel extends JPanel implements
             GuiInterface, ChangeListener, ItemListener {
 
@@ -393,6 +476,7 @@ public class PanelUtils {
             valueModel = new SpinnerNumberModel(0.00, 0.00, 999.99, 0.01);
             valueSp = new JSpinner(valueModel);
             valueSp.addChangeListener(this);
+            valueSp.setPreferredSize(new Dimension(80, 0));
 
             DefaultComboBoxModel<String> multiplierModel = new DefaultComboBoxModel<>(Statics.UnitMultipliers.ALL);
             multiplierCb = new JComboBox<>(multiplierModel);

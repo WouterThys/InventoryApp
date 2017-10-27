@@ -106,7 +106,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             String msg = selectedProjectIDE.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-//                    selectedManufacturer.setName(detailName.getText());
+//                    selectedManufacturer.setNameTxt(detailName.getText());
 //                    selectedManufacturer.setText(detailWebsite.getText());
                     selectedProjectIDE.save();
                     originalProjectIDE = selectedProjectIDE.createCopy();

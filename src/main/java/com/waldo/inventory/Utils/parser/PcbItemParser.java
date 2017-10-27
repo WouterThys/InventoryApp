@@ -59,7 +59,7 @@ public class PcbItemParser {
     }
 
     private int matchName(String pcbName, String itemName) {
-        if (itemName.contains(pcbName) || pcbName.contains(itemName)) {
+        if ((pcbName.length() > 2 && itemName.length() > 2) && (itemName.contains(pcbName) || pcbName.contains(itemName))) {
             return MATCH_NAME; // Set bit
         } else {
             return 0;
@@ -143,7 +143,7 @@ public class PcbItemParser {
             PcbItemItemLink link = SearchManager.sm().findPcbItemLinkWithSetItem(setItem.getId(), component.getId());
             if (link != null) {
                 itemMatches.add(link);
-                component.setMatchedItem(link);
+                //component.setMatchedItem(link);
             } else {
                 if (match > 0) {
                     itemMatches.add(new PcbItemItemLink(match, component, setItem));
@@ -209,7 +209,7 @@ public class PcbItemParser {
         PcbItemItemLink link = SearchManager.sm().findPcbItemLinkWithItem(item.getId(), pcbItem.getId());
         if (link != null) {
             itemMatches.add(link);
-            pcbItem.setMatchedItem(link);
+            //pcbItem.setMatchedItem(link);
         } else {
             if (match > 0) {
                 itemMatches.add(new PcbItemItemLink(match, pcbItem, item));
@@ -227,6 +227,10 @@ public class PcbItemParser {
                 itemLinkList.addAll(linkWithSetItem(pcbItem, item));
             } else {
                 itemLinkList.addAll(linkWithItem(pcbItem, item));
+            }
+
+            if (itemLinkList.size() > 15) {
+                break;
             }
         }
 

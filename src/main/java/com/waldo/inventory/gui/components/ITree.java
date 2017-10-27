@@ -66,7 +66,7 @@ public class ITree extends JTree {
 
                 if (value instanceof File) {
                     setText(((File)value).getName());
-                    //setName(());
+                    //setNameTxt(());
                 }
 
                 return c;

@@ -145,6 +145,10 @@ public class Value {
         }
     }
 
+    public boolean hasValue() {
+        return (getDoubleValue() != 0) || (getMultiplier() != 0) || !(getUnit().isEmpty());
+    }
+
     public static Value tryFindValue(String valueTxt) {
 
         double foundDouble = -1;

@@ -105,7 +105,7 @@ public class ProjectCode extends ProjectObject {
 
 //    public static ProjectCode getUnknownProjectCode() {
 //        ProjectCode u = new ProjectCode();
-//        u.setName(UNKNOWN_NAME);
+//        u.setNameTxt(UNKNOWN_NAME);
 //        u.setId(UNKNOWN_ID);
 //        u.setCanBeSaved(false);
 //        return u;

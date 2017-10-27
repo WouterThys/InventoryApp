@@ -140,7 +140,7 @@ public class SettingsManager {
             l.onSettingsChanged(newSettings);
         }
 //        System.out.println(
-//                "Log settings changed to: " + getLogSettings().getName() + "\r\n " +
+//                "Log settings changed to: " + getLogSettings().getNameText() + "\r\n " +
 //                        "\t log info: " + Boolean.toString(getLogSettings().isLogInfo())  + "\r\n " +
 //                        "\t log debug: " + Boolean.toString(getLogSettings().isLogDebug())  + "\r\n " +
 //                        "\t log warnings: " + Boolean.toString(getLogSettings().isLogWarn())  + "\r\n " +

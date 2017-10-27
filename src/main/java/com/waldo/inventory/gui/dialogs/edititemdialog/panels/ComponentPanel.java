@@ -57,8 +57,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     // Basic info
     private ITextField idTextField;
-    private ITextField nameTextField;
-    private PanelUtils.IValuePanel valuePnl;
+    //private ITextField nameTextField;
+    //private PanelUtils.IValuePanel valuePnl;
+    private PanelUtils.INameValuePanel nameValuePnl;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
     private IComboBox<Category> categoryComboBox;
@@ -219,11 +220,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         idTextField.setEditable(false);
         idTextField.setEnabled(false);
 
-        nameTextField = new ITextField();
-        nameTextField.addEditedListener(editedListener, "name");
-        nameTextField.setName(EditItemDialogLayout.COMP_NAME);
+//        nameTextField = new ITextField();
+//        nameTextField.addEditedListener(editedListener, "name");
+//        nameTextField.setNameTxt(EditItemDialogLayout.COMP_NAME);
+//
+//        valuePnl = new PanelUtils.IValuePanel(editedListener);
 
-        valuePnl = new PanelUtils.IValuePanel(editedListener);
+        nameValuePnl = new PanelUtils.INameValuePanel(editedListener, "name", editedListener);
 
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
@@ -345,8 +348,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
-                new String[] {"Database ID: ", "Name: ", "Value: "},
-                new JComponent[] {idTextField, nameTextField, valuePnl}
+                new String[] {"Database ID: ", "Name: "},
+                new JComponent[] {idTextField, nameValuePnl}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -476,8 +479,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     @Override
     public void updateComponents(Object... object) {
         idTextField.setText(String.valueOf(newItem.getId()));
-        nameTextField.setText(newItem.getName().trim());
-        valuePnl.setValue(newItem.getValue());
+        //nameTextField.setText(newItem.getNameText().trim());
+        //valuePnl.setValue(newItem.getValue());
+        nameValuePnl.setNameTxt(newItem.getName().trim());
+        nameValuePnl.setValue(newItem.getValue());
         descriptionTextArea.setText(newItem.getDescription().trim());
         priceTextField.setText(String.valueOf(newItem.getPrice()));
 
@@ -537,7 +542,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         setValuesBtn.setEnabled(newItem.isSet());
 
         // Focus
-        nameTextField.requestFocus();
+        //nameTextField.requestFocus();
     }
 
     /*
@@ -553,11 +558,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     public String getNameFieldValue() {
-        return nameTextField.getText();
+        return nameValuePnl.getNameText();
     }
 
     public void setNameFieldError(String error) {
-        nameTextField.setError(error);
+        nameValuePnl.setError(error);
     }
 
     public String getPriceFieldValue() {

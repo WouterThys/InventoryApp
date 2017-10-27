@@ -82,7 +82,7 @@ public class OrderPanel extends OrderPanelLayout {
 //                if (failedItems == null) {
 //                    failedItems = new HashMap<>();
 //                }
-//                failedItems.put("Item " + item.getName() + " was already in the list..", item);
+//                failedItems.put("Item " + item.getNameText() + " was already in the list..", item);
             }
         }
         return failedItems;
