@@ -19,18 +19,25 @@ public class Package extends DbObject {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        boolean result = super.equals(obj);
-        return result && obj instanceof Package && ((Package) obj).getDescription().equals(getDescription());
-    }
-
-    @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
 
         statement.setString(ndx++, getDescription());
 
         return ndx;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = super.equals(obj);
+        return result && obj instanceof Package && ((Package) obj).getDescription().equals(getDescription());
+    }
+
+    @Override
+    public boolean hasMatch(String searchTerm) {
+        String search = searchTerm.toUpperCase();
+        String name = getName().toUpperCase();
+        return name.contains(search) || search.contains(name);
     }
 
     @Override

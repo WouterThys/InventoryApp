@@ -25,6 +25,11 @@ public class PackageType extends DbObject {
         super(TABLE_NAME);
     }
 
+    public PackageType(long packageId) {
+        super(TABLE_NAME);
+        setPackageId(packageId);
+    }
+
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -162,5 +167,15 @@ public class PackageType extends DbObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
     }
 }

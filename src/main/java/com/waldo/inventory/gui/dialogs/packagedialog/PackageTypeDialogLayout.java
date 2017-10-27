@@ -2,15 +2,20 @@ package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.tablemodels.IPackageTypeTableModel;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
@@ -26,26 +31,25 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JList<PackageType> packageList;
-    DefaultListModel<PackageType> packageDefaultListModel;
+    JList<Package> packageList;
+    DefaultListModel<Package> packageModel;
     IdBToolBar listToolBar;
     private IObjectSearchPanel searchPanel;
 
-    ITextField detailName;
-    ITextArea detailDescription;
+    ITextField detailNameTf;
+    ITextArea detailDescriptionTa;
 
-    //private IDimensionTypeTableModel tableModel;
-    //private ITable<DimensionType> detailTypeTable;
+    private IPackageTypeTableModel detailTableModel;
+    private ITable<PackageType> detailTypeTable;
     private IdBToolBar detailToolBar;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    Package selectedPackage;
+    Package originalPackage;
     PackageType selectedPackageType;
-    PackageType originalPackageType;
-
-    //DimensionType selectedDimensionType;
 
 
     /*
@@ -59,64 +63,69 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        listToolBar.setDeleteActionEnabled(selectedPackageType != null && !selectedPackageType.isUnknown());
-        listToolBar.setEditActionEnabled(selectedPackageType != null && !selectedPackageType.isUnknown());
-        detailDescription.setEnabled(selectedPackageType != null && !selectedPackageType.isUnknown());
+        boolean packageSelected = selectedPackage != null && !selectedPackage.isUnknown();
+        listToolBar.setDeleteActionEnabled(packageSelected);
+        listToolBar.setEditActionEnabled(packageSelected);
+        detailDescriptionTa.setEnabled(packageSelected);
+        detailTypeTable.setEnabled(packageSelected);
 
-//        detailToolBar.setDeleteActionEnabled(selectedDimensionType != null);
-//        detailToolBar.setEditActionEnabled(selectedDimensionType != null);
-//
-//        detailTypeTable.setEnabled(selectedPackageType != null);
+        boolean typeSelected = packageSelected && selectedPackageType != null && !selectedPackageType.isUnknown();
+        detailToolBar.setDeleteActionEnabled(typeSelected);
+        detailToolBar.setEditActionEnabled(typeSelected);
+
+
     }
 
     void dimensionTableAddMouseAdapter(MouseAdapter mouseAdapter) {
-        //detailTypeTable.addMouseListener(mouseAdapter);
+        detailTypeTable.addMouseListener(mouseAdapter);
     }
 
-    void dimensionTableUpdate() {
-//        if (selectedPackageType != null) {
-//            tableModel.setItemList(SearchManager.sm().findDimensionTypesForPackageType(selectedPackageType.getId()));
-//        } else {
-//            tableModel.clearItemList();
-//        }
+    void typeTableInitialize(Package pack) {
+        if (pack != null) {
+            detailTableModel.setItemList(SearchManager.sm().findPackageTypesByPackageId(pack.getId()));
+        } else {
+            detailTableModel.clearItemList();
+        }
     }
 
-//    void dimensionTableDelete(DimensionType typeToDelete) {
-//        java.util.List<DimensionType> tmp = new ArrayList<>();
-//        tmp.add(typeToDelete);
-//        tableModel.removeItems(tmp);
-//    }
-//
-//    void dimensionTableDelete(java.util.List<DimensionType> typesToDelete) {
-//        tableModel.removeItems(typesToDelete);
-//    }
-//
-//    void dimensionTableAdd(DimensionType typeToAdd) {
-//        java.util.List<DimensionType> tmp = new ArrayList<>();
-//        tmp.add(typeToAdd);
-//        tableModel.addItems(tmp);
-//    }
-//
-//    DimensionType dimensionTableGetSelected() {
-//        int row = detailTypeTable.getSelectedRow();
-//        return (DimensionType) detailTypeTable.getValueAtRow(row);
-//    }
-//
-//    java.util.List<DimensionType> getSelectedDimensionTypes() {
-//        java.util.List<DimensionType> setItems = new ArrayList<>();
-//        int[] selectedRows = detailTypeTable.getSelectedRows();
-//        if (selectedRows.length > 0) {
-//            for (int row : selectedRows) {
-//                DimensionType si = (DimensionType) detailTypeTable.getValueAtRow(row);
-//                if (si != null) {
-//                    setItems.add(si);
-//                }
-//            }
-//        }
-//        return setItems;
-//    }
+    void typeTableUpdate() {
+        detailTableModel.updateTable();
+    }
 
+    void typeTableAdd(PackageType type) {
+        List<PackageType> typeList = new ArrayList<>();
+        typeList.add(type);
+        detailTableModel.addItems(typeList);
+    }
 
+    void typeTableDelete(PackageType type) {
+        List<PackageType> typeList = new ArrayList<>();
+        typeList.add(type);
+        detailTableModel.removeItems(typeList);
+    }
+
+    void typeTableDelete(List<PackageType> typeList) {
+        detailTableModel.removeItems(typeList);
+    }
+
+    PackageType typeTableGetSelected() {
+        int row = detailTypeTable.getSelectedRow();
+        return (PackageType) detailTypeTable.getValueAtRow(row);
+    }
+
+    List<PackageType> typeTableGetAllSelected() {
+        List<PackageType> typeList = new ArrayList<>();
+        int[] selectedRows = detailTypeTable.getSelectedRows();
+        if (selectedRows.length > 0) {
+            for (int row : selectedRows) {
+                PackageType type = (PackageType) detailTypeTable.getValueAtRow(row);
+                if (type != null) {
+                    typeList.add(type);
+                }
+            }
+        }
+        return typeList;
+    }
 
     private JPanel createWestPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Package Types");
@@ -161,24 +170,24 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
 
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel tablePanel = new JPanel(new BorderLayout());
-        JScrollPane pane = new JScrollPane(detailDescription);
+        JScrollPane pane = new JScrollPane(detailDescriptionTa);
 
         // Text fields
         JPanel textFieldPanel = new JPanel(new GridBagLayout());
 
         PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(textFieldPanel);
-        gbc.addLine("Name: ", detailName);
+        gbc.addLine("Name: ", detailNameTf);
         gbc.addLine("Description: ", null);
         gbc.gridwidth = 2;
         gbc.add(pane, 0, 2, 1, 1);
 
         // TABLE
-//        tablePanel.add(new JScrollPane(detailTypeTable), BorderLayout.CENTER);
-//        tablePanel.add(detailToolBar, BorderLayout.EAST);
+        tablePanel.add(new JScrollPane(detailTypeTable), BorderLayout.CENTER);
+        tablePanel.add(detailToolBar, BorderLayout.EAST);
 
         // Add all
-        panel.add(textFieldPanel, BorderLayout.CENTER);
-        panel.add(tablePanel, BorderLayout.SOUTH);
+        panel.add(textFieldPanel, BorderLayout.NORTH);
+        panel.add(tablePanel, BorderLayout.CENTER);
         panel.setBorder(titledBorder);
 
         return panel;
@@ -202,8 +211,8 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         searchPanel.addSearchBtnListener(this);
 
         // Packages list
-        packageDefaultListModel = new DefaultListModel<>();
-        packageList = new JList<>(packageDefaultListModel);
+        packageModel = new DefaultListModel<>();
+        packageList = new JList<>(packageModel);
         packageList.addListSelectionListener(this);
 
         // Tool bar
@@ -211,17 +220,17 @@ public abstract class PackageTypeDialogLayout extends IDialog implements
         listToolBar.setFloatable(false);
 
         // Details
-        detailName = new ITextField("Name");
-        detailName.setEnabled(false);
-        detailDescription = new ITextArea("Description", 20, 15);
-        detailDescription.setLineWrap(true); // Go to next line when area is full
-        detailDescription.setWrapStyleWord(true); // Don't cut words in two
-        detailDescription.addEditedListener(this, "description");
+        detailNameTf = new ITextField("Name");
+        detailNameTf.setEnabled(false);
+        detailDescriptionTa = new ITextArea("Description", 10, 15);
+        detailDescriptionTa.setLineWrap(true); // Go to next line when area is full
+        detailDescriptionTa.setWrapStyleWord(true); // Don't cut words in two
+        detailDescriptionTa.addEditedListener(this, "description");
 
-//        tableModel = new IDimensionTypeTableModel();
-//        detailTypeTable = new ITable<>(tableModel);
-//        detailTypeTable.getSelectionModel().addListSelectionListener(this);
-//        detailToolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
+        detailTableModel = new IPackageTypeTableModel();
+        detailTypeTable = new ITable<>(detailTableModel);
+        detailTypeTable.getSelectionModel().addListSelectionListener(this);
+        detailToolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
     }
 
     @Override

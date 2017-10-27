@@ -1,12 +1,15 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog.EditPackageTypeDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -26,15 +29,15 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
+        DbManager.db().addOnPackageChangedListener(createPackageListener());
         DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
-        //DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
         createNewMouseAdapter();
-        updateWithFirstPackageType();
+        updateWithFirstPackage();
     }
 
-    private void updateWithFirstPackageType() {
-        if (db().getPackageTypes().size() > 0) {
-            updateComponents(db().getPackageTypes().get(0));
+    private void updateWithFirstPackage() {
+        if (db().getPackages().size() > 1) {
+            updateComponents(db().getPackages().get(1)); // Don't select unknown
         } else {
             updateComponents();
         }
@@ -54,21 +57,25 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
     private void setDetails() {
-        if (selectedPackageType != null) {
-            detailName.setText(selectedPackageType.getName());
-            detailDescription.setText(selectedPackageType.getDescription());
+        if (selectedPackage != null) {
+            detailNameTf.setText(selectedPackage.getName());
+            detailDescriptionTa.setText(selectedPackage.getDescription());
+            typeTableInitialize(selectedPackage);
+        } else {
+            clearDetails();
         }
     }
 
     private void clearDetails() {
-        detailName.clearText();
-        detailDescription.clearText();
+        detailNameTf.clearText();
+        detailDescriptionTa.clearText();
+        typeTableInitialize(null);
     }
 
     private boolean verify() {
         boolean ok = true;
-        if (detailName.getText().isEmpty()) {
-            detailName.setError("Name can't be empty");
+        if (detailNameTf.getText().isEmpty()) {
+            detailNameTf.setError("Name can't be empty");
             ok = false;
         }
 
@@ -79,13 +86,12 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
 
     private void showSaveDialog(boolean closeAfter) {
-        if (selectedPackageType != null) {
-            String msg = selectedPackageType.getName() + " is edited, do you want to save?";
+        if (selectedPackage != null) {
+            String msg = selectedPackage.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-                    selectedPackageType.setDescription(detailDescription.getText());
-                    selectedPackageType.save();
-                    originalPackageType = selectedPackageType.createCopy();
+                    selectedPackage.save();
+                    originalPackage = selectedPackage.createCopy();
                     if (closeAfter) {
                         dialogResult = OK;
                         dispose();
@@ -102,25 +108,25 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
     private boolean checkChange() {
-        return (selectedPackageType != null) && !(selectedPackageType.equals(originalPackageType));
+        return (selectedPackage != null) && !(selectedPackage.equals(originalPackage));
     }
 
 
-    private DbObjectChangedListener<PackageType> createPackageTypeListener() {
-        return new DbObjectChangedListener<PackageType>() {
+    private DbObjectChangedListener<Package> createPackageListener() {
+        return new DbObjectChangedListener<Package>() {
             @Override
-            public void onInserted(PackageType object) {
+            public void onInserted(Package object) {
                 updateComponents(object);
             }
 
             @Override
-            public void onUpdated(PackageType newObject) {
+            public void onUpdated(Package newObject) {
                 updateComponents(newObject);
             }
 
             @Override
-            public void onDeleted(PackageType object) {
-                updateWithFirstPackageType();
+            public void onDeleted(Package object) {
+                updateWithFirstPackage();
             }
 
             @Override
@@ -128,31 +134,33 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         };
     }
 
+    private DbObjectChangedListener<PackageType> createPackageTypeListener() {
+        return new DbObjectChangedListener<PackageType>() {
+            @Override
+            public void onInserted(PackageType type) {
+                selectedPackageType = type;
+                typeTableAdd(selectedPackageType);
+            }
 
-//    private DbObjectChangedListener<DimensionType> createDimensionListener() {
-//        return new DbObjectChangedListener<DimensionType>() {
-//            @Override
-//            public void onInserted(DimensionType object) {
-//                dimensionTableAdd(object);
-//                updateEnabledComponents();
-//            }
-//
-//            @Override
-//            public void onUpdated(DimensionType object) {
-//                dimensionTableUpdate();
-//            }
-//
-//            @Override
-//            public void onDeleted(DimensionType object) {
-//                // Delete from table
-//                dimensionTableDelete(object);
-//                updateEnabledComponents();
-//            }
-//
-//            @Override
-//            public void onCacheCleared() {}
-//        };
-//    }
+            @Override
+            public void onUpdated(PackageType type) {
+                selectedPackageType = type;
+                typeTableUpdate();
+            }
+
+            @Override
+            public void onDeleted(PackageType type) {
+                typeTableDelete(type);
+                selectedPackageType = null;
+            }
+
+            @Override
+            public void onCacheCleared() {
+
+            }
+        };
+    }
+
 
     //
     // Dialog
@@ -172,17 +180,17 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
-            selectedPackageType.save();
-            originalPackageType = selectedPackageType.createCopy();
+            selectedPackage.save();
+            originalPackage = selectedPackage.createCopy();
             getButtonNeutral().setEnabled(false);
         }
     }
 
     @Override
     protected void onCancel() {
-        if (selectedPackageType != null && originalPackageType != null) {
-            originalPackageType.createCopy(selectedPackageType);
-            selectedPackageType.setCanBeSaved(true);
+        if (selectedPackage != null && originalPackage != null) {
+            originalPackage.createCopy(selectedPackage);
+            selectedPackage.setCanBeSaved(true);
         }
         super.onCancel();
     }
@@ -196,25 +204,26 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         try {
 
             // Get all packages
-            packageDefaultListModel.removeAllElements();
-            for (PackageType p : DbManager.db().getPackageTypes()) {
+            packageModel.removeAllElements();
+            for (Package p : DbManager.db().getPackages()) {
                 if (!p.isUnknown()) {
-                    packageDefaultListModel.addElement(p);
+                    packageModel.addElement(p);
                 }
             }
 
-            selectedPackageType = (PackageType) object[0];
-            dimensionTableUpdate();
-            updateEnabledComponents();
+            if (object.length > 0) {
+                selectedPackage = (Package) object[0];
+            }
 
-            if (selectedPackageType != null) {
-                originalPackageType = selectedPackageType.createCopy();
-                packageList.setSelectedValue(selectedPackageType, true);
+            if (selectedPackage != null) {
+                originalPackage = selectedPackage.createCopy();
+                packageList.setSelectedValue(selectedPackage, true);
                 setDetails();
             } else {
-                originalPackageType = null;
+                originalPackage = null;
                 clearDetails();
             }
+            updateEnabledComponents();
 
         } finally {
             application.endWait();
@@ -223,92 +232,87 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
 
     private void listTbAdd() {
-        DbObjectDialog<PackageType> dialog = new DbObjectDialog<>(application, "New Package", new PackageType());
+        DbObjectDialog<Package> dialog = new DbObjectDialog<>(application, "New Package", new Package());
         if (dialog.showDialog() == DbObjectDialog.OK) {
-            PackageType p = dialog.getDbObject();
+            Package p = dialog.getDbObject();
             p.save();
         }
     }
 
     private void listTbDelete() {
-        if (selectedPackageType != null) {
-            int res = JOptionPane.showConfirmDialog(PackageTypeDialog.this, "Are you sure you want to delete \"" + selectedPackageType.getName() + "\"?");
+        if (selectedPackage != null) {
+            int res = JOptionPane.showConfirmDialog(PackageTypeDialog.this, "Are you sure you want to delete \"" + selectedPackage.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
-                selectedPackageType.delete();
-                selectedPackageType = null;
-                originalPackageType = null;
+                selectedPackage.delete();
+                selectedPackage = null;
+                originalPackage = null;
             }
         }
     }
 
     private void listTbEdit() {
-        if (selectedPackageType != null) {
-            DbObjectDialog<PackageType> dialog = new DbObjectDialog<>(application, "Update " + selectedPackageType.getName(), selectedPackageType);
+        if (selectedPackage != null) {
+            DbObjectDialog<Package> dialog = new DbObjectDialog<>(application, "Update " + selectedPackage.getName(), selectedPackage);
             if (dialog.showDialog() == DbObjectDialog.OK) {
-                selectedPackageType.save();
-                originalPackageType = selectedPackageType.createCopy();
+                selectedPackage.save();
+                originalPackage = selectedPackage.createCopy();
             }
         }
     }
 
 
     private void detailTbAdd() {
-//        if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
-//            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Add dimension", new DimensionType());
-//            if (dimensionDialog.showDialog() == IDialog.OK) {
-//                DimensionType dt = dimensionDialog.getDimensionType();
-//                dt.setPackageTypeId(selectedPackageType.getId());
-//                dt.save();
-//            }
-//        }
+        if (selectedPackage != null && !selectedPackage.isUnknown()) {
+            PackageType type = new PackageType(selectedPackage.getId());
+            EditPackageTypeDialog dialog = new EditPackageTypeDialog(application, "Add type", type);
+            if (dialog.showDialog() == IDialog.OK) {
+                type.save();
+            }
+        }
     }
 
     private void detailTbDelete() {
-//        deleteSelectedDimensionTypes(getSelectedDimensionTypes());
+        deleteSelectedPackageTypes(typeTableGetAllSelected());
     }
 
     private void detailTbEdit() {
-//        if (selectedDimensionType != null) {
-//            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Edit " + selectedPackageType.getName(), selectedDimensionType);
-//            if (dimensionDialog.showDialog() == IDialog.OK) {
-//                DimensionType dt = dimensionDialog.getDimensionType();
-//                dt.setPackageTypeId(selectedPackageType.getId());
-//                dt.save();
-//            }
-//        }
+        if (selectedPackageType != null) {
+            EditPackageTypeDialog dialog = new EditPackageTypeDialog(application, "Edit " + selectedPackageType.getName(), selectedPackageType);
+            if (dialog.showDialog() == IDialog.OK) {
+                selectedPackageType.save();
+            }
+        }
     }
 
-//    private void deleteSelectedDimensionTypes(final List<DimensionType> itemsToDelete) {
-//        int result = JOptionPane.CANCEL_OPTION;
-//        if (itemsToDelete.size() == 1) {
-//            result = JOptionPane.showConfirmDialog(
-//                    PackageTypeDialog.this,
-//                    "Are you sure you want to delete " + itemsToDelete.get(0) + "?",
-//                    "Confirm delete",
-//                    JOptionPane.YES_NO_OPTION);
-//        } else if (itemsToDelete.size() > 1) {
-//            result = JOptionPane.showConfirmDialog(
-//                    PackageTypeDialog.this,
-//                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
-//                    "Confirm delete",
-//                    JOptionPane.YES_NO_OPTION);
-//        }
-//        if (result == JOptionPane.OK_OPTION) {
-//            // Delete from db
-//            for (DimensionType item : itemsToDelete) {
-//                item.delete();
-//            }
-//            selectedDimensionType = null;
-//        }
-//
-//    }
+    private void deleteSelectedPackageTypes(final List<PackageType> itemsToDelete) {
+        int result = JOptionPane.CANCEL_OPTION;
+        if (itemsToDelete.size() == 1) {
+            result = JOptionPane.showConfirmDialog(
+                    PackageTypeDialog.this,
+                    "Are you sure you want to delete " + itemsToDelete.get(0) + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        } else if (itemsToDelete.size() > 1) {
+            result = JOptionPane.showConfirmDialog(
+                    PackageTypeDialog.this,
+                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+        }
+        if (result == JOptionPane.OK_OPTION) {
+            // Delete from db
+            for (PackageType item : itemsToDelete) {
+                item.delete();
+            }
+        }
+    }
 
     //
     // Tool bar
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateWithFirstPackageType();
+        updateWithFirstPackage();
     }
 
     @Override
@@ -349,7 +353,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     @Override
     public void onSearchCleared() {
-        packageList.setSelectedValue(selectedPackageType, true);
+        packageList.setSelectedValue(selectedPackage, true);
     }
 
     @Override
@@ -376,16 +380,16 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
                 }
                 getButtonNeutral().setEnabled(false);
                 updateComponents(selected);
-//                if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
-//                    setDetails();
-//                } else {
-//                    clearDetails();
-//                }
-            } else {
-//                selectedDimensionType = dimensionTableGetSelected();
+                if (selectedPackage != null && !selectedPackage.isUnknown()) {
+                    setDetails();
+                } else {
+                    clearDetails();
+                }
             }
-            updateEnabledComponents();
+        } else {
+            selectedPackageType = typeTableGetSelected();
         }
+        updateEnabledComponents();
     }
 
     //
@@ -398,7 +402,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        return selectedPackageType;
+        return selectedPackage;
     }
 
 

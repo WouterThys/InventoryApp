@@ -560,6 +560,18 @@ public class SearchManager {
         return null;
     }
 
+    public List<PackageType> findPackageTypesByPackageId(long packageId) {
+        List<PackageType> types = new ArrayList<>();
+        if (packageId > 0) {
+            for (PackageType type : db().getPackageTypes()) {
+                if (type.getPackageId() == packageId) {
+                    types.add(type);
+                }
+            }
+        }
+        return types;
+    }
+
     public Project findProjectById(long id) {
         for (Project p : db().getProjects()) {
             if (p.getId() == id) {

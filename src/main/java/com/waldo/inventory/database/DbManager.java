@@ -1189,9 +1189,7 @@ public class DbManager {
                     pa.setDescription(rs.getString("description"));
 
                     pa.setInserted(true);
-                    if (pa.getId() != DbObject.UNKNOWN_ID) {
-                        packages.add(pa);
-                    }
+                    packages.add(pa);
                 }
             }
         } catch (SQLException e) {
@@ -1237,9 +1235,7 @@ public class DbManager {
                     pt.setDescription(rs.getString("description"));
 
                     pt.setInserted(true);
-                    if (pt.getId() != DbObject.UNKNOWN_ID) {
-                        packageTypes.add(pt);
-                    }
+                    packageTypes.add(pt);
                 }
             }
         } catch (SQLException e) {
