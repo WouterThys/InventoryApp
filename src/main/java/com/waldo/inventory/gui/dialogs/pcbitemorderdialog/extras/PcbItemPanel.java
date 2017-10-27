@@ -116,15 +116,15 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
         if (orderItem != null) {
             Item item = orderItem.getItem();
             descriptionTf.setText(item.getDescription());
-            if (item.getDimensionType() != null) {
-                footprintTf.setText(item.getDimensionType().getName());
-            } else {
-                if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-                    footprintTf.setText(item.getPackage().getPackageType().getName());
-                } else {
-                    footprintTf.setText("");
-                }
-            }
+//            if (item.getDimensionType() != null) {
+//                footprintTf.setText(item.getDimensionType().getName());
+//            } else {
+//                if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
+//                    footprintTf.setText(item.getPackage().getPackageType().getName());
+//                } else {
+//                    footprintTf.setText("");
+//                }
+//            }
         } else {
             descriptionTf.clearText();
             footprintTf.clearText();

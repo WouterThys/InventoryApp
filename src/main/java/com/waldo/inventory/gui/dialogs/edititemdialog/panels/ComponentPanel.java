@@ -53,7 +53,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextArea remarksTa;
     private ICheckBox isSetCb;
     private JButton setValuesBtn;
-    private IComboBox<DimensionType> dimensionCb;
 
     // Basic info
     private ITextField idTextField;
@@ -156,9 +155,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 //            dimensionTypes = db().getDimensionTypes();
 //        }
 
-        dimensionCb = new IComboBox<>(db().getDimensionTypes(), new DbObjectNameComparator<>(), true);
-        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
-        dimensionCb.setEnabled(false);
+//        dimensionCb = new IComboBox<>(db().getDimensionTypes(), new DbObjectNameComparator<>(), true);
+//        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
+//        dimensionCb.setEnabled(false);
     }
 
     private void createManufacturerCb() {
@@ -197,19 +196,19 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
     
     public void updateDimensionPanel() {
-        PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
-        if (packageType != null) {
-            java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
-            dimensionCb.updateList(dimensionTypeList);
-            dimensionCb.setEnabled(dimensionTypeList.size() > 0);
-        } else {
-            dimensionCb.setEnabled(false);
-        }
-
-        DimensionType d = sm().findDimensionTypeById(newItem.getDimensionTypeId());
-        if (d != null && !d.isUnknown()) {
-            dimensionCb.setSelectedItem(d);
-        }
+//        PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
+//        if (packageType != null) {
+//            java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
+//            dimensionCb.updateList(dimensionTypeList);
+//            dimensionCb.setEnabled(dimensionTypeList.size() > 0);
+//        } else {
+//            dimensionCb.setEnabled(false);
+//        }
+//
+//        DimensionType d = sm().findDimensionTypeById(newItem.getDimensionTypeId());
+//        if (d != null && !d.isUnknown()) {
+//            dimensionCb.setSelectedItem(d);
+//        }
     }
 
     private void initializeBasicComponents() {
@@ -401,7 +400,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(packageTypeComboBox, createPackageTypeListener()));
         gbc.addLine("Pins: ", packagePinsSp);
         gbc.addLine("Dimensions: ", dimPanel);
-        gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()));
+        //gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()));
 
         // MANUFACTURER
         gbc = new PanelUtils.GridBagHelper(manufacturerPanel);

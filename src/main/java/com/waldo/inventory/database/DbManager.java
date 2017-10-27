@@ -72,7 +72,6 @@ public class DbManager {
     public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<DimensionType>> onDimensionTypeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItem>> onPcbItemChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItemItemLink>> onPcbItemItemLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
@@ -101,7 +100,6 @@ public class DbManager {
     private List<OrderFileFormat> orderFileFormats;
     private List<Package> packages;
     private List<SetItem> setItems;
-    private List<DimensionType> dimensionTypes;
     private List<PcbItem> pcbItems;
     private List<PcbItemItemLink> pcbItemItemLinks;
     private List<PcbItemProjectLink> pcbItemProjectLinks;
@@ -255,7 +253,6 @@ public class DbManager {
         orderFileFormats = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderFileFormatChangedListenerList);
         packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
         setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
-        dimensionTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDimensionTypeChangedListenerList);
         pcbItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemChangedListenerList);
         pcbItemItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemItemLinkChangedListenerList);
         logs = null;
@@ -421,12 +418,6 @@ public class DbManager {
     public void addOnOrderFileFormatChangedListener(DbObjectChangedListener<OrderFileFormat> dbObjectChangedListener) {
         if (!onOrderFileFormatChangedListenerList.contains(dbObjectChangedListener)) {
             onOrderFileFormatChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnDimensionTypeChangedListener(DbObjectChangedListener<DimensionType> dbObjectChangedListener) {
-        if (!onDimensionTypeChangedListenerList.contains(dbObjectChangedListener)) {
-            onDimensionTypeChangedListenerList.add(dbObjectChangedListener);
         }
     }
 
@@ -632,7 +623,7 @@ public class DbManager {
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
-                    i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
+                    //i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
                     i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                     i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
                     i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
@@ -1631,51 +1622,6 @@ public class DbManager {
         }
     }
 
-
-    /*
-    *                  DIMENSION TYPES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<DimensionType> getDimensionTypes()    {
-        if (dimensionTypes == null) {
-            updateDimensionTypes();
-        }
-        return dimensionTypes;
-    }
-
-    private void updateDimensionTypes()    {
-        dimensionTypes = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return;
-        }
-        Status().setMessage("Fetching dimension types from DB");
-        DimensionType dt = null;
-        String sql = scriptResource.readString(DimensionType.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    dt = new DimensionType();
-                    dt.setId(rs.getLong("id"));
-                    dt.setName(rs.getString("name"));
-                    dt.setIconPath(rs.getString("iconPath"));
-                    dt.setWidth(rs.getDouble("width"));
-                    dt.setHeight(rs.getDouble("height"));
-                    dt.setPackageTypeId(rs.getLong("packageTypeId"));
-
-                    dt.setInserted(true);
-                    dimensionTypes.add(dt);
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(dt, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
 
     /*
     *                  PCB ITEMS

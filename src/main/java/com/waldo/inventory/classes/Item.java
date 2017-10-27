@@ -44,8 +44,6 @@ public class Item extends DbObject {
 
     private long packageId = UNKNOWN_ID;
     private Package itemPackage;
-    private long dimensionTypeId = -1;
-    private DimensionType dimensionType;
 
     private float rating;
     private boolean discourageOrder;
@@ -99,10 +97,6 @@ public class Item extends DbObject {
         statement.setBoolean(ndx++, discourageOrder);
         statement.setString(ndx++, getRemarks());
         statement.setBoolean(ndx++, isSet());
-        if (dimensionTypeId < UNKNOWN_ID) {
-            dimensionTypeId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, getDimensionTypeId());
 
         // Value
         statement.setDouble(ndx++, getValue().getDoubleValue());
@@ -167,10 +161,6 @@ public class Item extends DbObject {
                 return true;
             }
 
-            if (getDimensionType() != null && getDimensionType().hasMatch(searchTerm)) {
-                return true;
-            }
-
         }
         return false;
     }
@@ -198,7 +188,6 @@ public class Item extends DbObject {
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarks(getRemarks());
         item.setSet(isSet());
-        item.setDimensionTypeId(getDimensionTypeId());
 
         return item;
     }
@@ -235,10 +224,6 @@ public class Item extends DbObject {
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
                 if (!(ref.getRemarks().equals(getRemarks()))) { System.out.println("Remarks differs"); return false; }
                 if (!(ref.isSet() == isSet())) { System.out.println("Is set differs"); return false; }
-                if (!(ref.getDimensionTypeId() == getDimensionTypeId())) {
-                    System.out.println("Dimension differs: ref id:" + ref.getDimensionTypeId() + " this id: " + getDimensionTypeId());
-                    return false;
-                }
             }
         }
         return result;
@@ -606,27 +591,6 @@ public class Item extends DbObject {
 
     public void setSet(boolean set) {
         isSet = set;
-    }
-
-    public long getDimensionTypeId() {
-        if (dimensionTypeId < UNKNOWN_ID) {
-            dimensionTypeId = UNKNOWN_ID;
-        }
-        return dimensionTypeId;
-    }
-
-    public void setDimensionTypeId(long dimensionTypeId) {
-        dimensionType = null;
-        this.dimensionTypeId = dimensionTypeId;
-    }
-
-    public DimensionType getDimensionType() {
-        if (dimensionType == null) {
-            if (dimensionTypeId > DbObject.UNKNOWN_ID) {
-                dimensionType = sm().findDimensionTypeById(dimensionTypeId);
-            }
-        }
-        return dimensionType;
     }
 
     public List<SetItem> getSetItems() {

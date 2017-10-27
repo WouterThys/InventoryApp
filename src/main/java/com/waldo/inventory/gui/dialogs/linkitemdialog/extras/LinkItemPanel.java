@@ -89,29 +89,29 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                 Item item = match.getItem();
 
                 descriptionTf.setText(item.getDescription());
-                if (item.getDimensionType() != null) {
-                    footprintTf.setText(item.getDimensionType().getName());
-                } else {
-                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-                        footprintTf.setText(item.getPackage().getPackageType().getName());
-                    } else {
-                        footprintTf.setText("");
-                    }
-                }
+//                if (item.getDimensionType() != null) {
+//                    footprintTf.setText(item.getDimensionType().getName());
+//                } else {
+//                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
+//                        footprintTf.setText(item.getPackage().getPackageType().getName());
+//                    } else {
+//                        footprintTf.setText("");
+//                    }
+//                }
                 setValueTf.setText(item.getValue().toString());
             } else { // SetItem
                 Item item = match.getItem();
 
                 descriptionTf.setText(item.getDescription());
-                if (item.getDimensionType() != null) {
-                    footprintTf.setText(item.getDimensionType().getName());
-                } else {
-                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-                        footprintTf.setText(item.getPackage().getPackageType().getName());
-                    } else {
-                        footprintTf.setText("");
-                    }
-                }
+//                if (item.getDimensionType() != null) {
+//                    footprintTf.setText(item.getDimensionType().getName());
+//                } else {
+//                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
+//                        footprintTf.setText(item.getPackage().getPackageType().getName());
+//                    } else {
+//                        footprintTf.setText("");
+//                    }
+//                }
                 setValueTf.setText(match.getSetItem().getValue().toString());
             }
         } else {

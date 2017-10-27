@@ -1,15 +1,12 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.DimensionType;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
-import com.waldo.inventory.gui.dialogs.packagedialog.extras.EditDimensionDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -30,7 +27,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         initializeLayouts();
 
         DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
-        DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
+        //DbManager.db().addOnDimensionTypeChangedListener(createDimensionListener());
         createNewMouseAdapter();
         updateWithFirstPackageType();
     }
@@ -132,30 +129,30 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
 
-    private DbObjectChangedListener<DimensionType> createDimensionListener() {
-        return new DbObjectChangedListener<DimensionType>() {
-            @Override
-            public void onInserted(DimensionType object) {
-                dimensionTableAdd(object);
-                updateEnabledComponents();
-            }
-
-            @Override
-            public void onUpdated(DimensionType object) {
-                dimensionTableUpdate();
-            }
-
-            @Override
-            public void onDeleted(DimensionType object) {
-                // Delete from table
-                dimensionTableDelete(object);
-                updateEnabledComponents();
-            }
-
-            @Override
-            public void onCacheCleared() {}
-        };
-    }
+//    private DbObjectChangedListener<DimensionType> createDimensionListener() {
+//        return new DbObjectChangedListener<DimensionType>() {
+//            @Override
+//            public void onInserted(DimensionType object) {
+//                dimensionTableAdd(object);
+//                updateEnabledComponents();
+//            }
+//
+//            @Override
+//            public void onUpdated(DimensionType object) {
+//                dimensionTableUpdate();
+//            }
+//
+//            @Override
+//            public void onDeleted(DimensionType object) {
+//                // Delete from table
+//                dimensionTableDelete(object);
+//                updateEnabledComponents();
+//            }
+//
+//            @Override
+//            public void onCacheCleared() {}
+//        };
+//    }
 
     //
     // Dialog
@@ -256,55 +253,55 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
 
     private void detailTbAdd() {
-        if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
-            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Add dimension", new DimensionType());
-            if (dimensionDialog.showDialog() == IDialog.OK) {
-                DimensionType dt = dimensionDialog.getDimensionType();
-                dt.setPackageTypeId(selectedPackageType.getId());
-                dt.save();
-            }
-        }
+//        if (selectedPackageType != null && !selectedPackageType.isUnknown()) {
+//            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Add dimension", new DimensionType());
+//            if (dimensionDialog.showDialog() == IDialog.OK) {
+//                DimensionType dt = dimensionDialog.getDimensionType();
+//                dt.setPackageTypeId(selectedPackageType.getId());
+//                dt.save();
+//            }
+//        }
     }
 
     private void detailTbDelete() {
-        deleteSelectedDimensionTypes(getSelectedDimensionTypes());
+//        deleteSelectedDimensionTypes(getSelectedDimensionTypes());
     }
 
     private void detailTbEdit() {
-        if (selectedDimensionType != null) {
-            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Edit " + selectedPackageType.getName(), selectedDimensionType);
-            if (dimensionDialog.showDialog() == IDialog.OK) {
-                DimensionType dt = dimensionDialog.getDimensionType();
-                dt.setPackageTypeId(selectedPackageType.getId());
-                dt.save();
-            }
-        }
+//        if (selectedDimensionType != null) {
+//            EditDimensionDialog dimensionDialog = new EditDimensionDialog(application, "Edit " + selectedPackageType.getName(), selectedDimensionType);
+//            if (dimensionDialog.showDialog() == IDialog.OK) {
+//                DimensionType dt = dimensionDialog.getDimensionType();
+//                dt.setPackageTypeId(selectedPackageType.getId());
+//                dt.save();
+//            }
+//        }
     }
 
-    private void deleteSelectedDimensionTypes(final List<DimensionType> itemsToDelete) {
-        int result = JOptionPane.CANCEL_OPTION;
-        if (itemsToDelete.size() == 1) {
-            result = JOptionPane.showConfirmDialog(
-                    PackageTypeDialog.this,
-                    "Are you sure you want to delete " + itemsToDelete.get(0) + "?",
-                    "Confirm delete",
-                    JOptionPane.YES_NO_OPTION);
-        } else if (itemsToDelete.size() > 1) {
-            result = JOptionPane.showConfirmDialog(
-                    PackageTypeDialog.this,
-                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
-                    "Confirm delete",
-                    JOptionPane.YES_NO_OPTION);
-        }
-        if (result == JOptionPane.OK_OPTION) {
-            // Delete from db
-            for (DimensionType item : itemsToDelete) {
-                item.delete();
-            }
-            selectedDimensionType = null;
-        }
-
-    }
+//    private void deleteSelectedDimensionTypes(final List<DimensionType> itemsToDelete) {
+//        int result = JOptionPane.CANCEL_OPTION;
+//        if (itemsToDelete.size() == 1) {
+//            result = JOptionPane.showConfirmDialog(
+//                    PackageTypeDialog.this,
+//                    "Are you sure you want to delete " + itemsToDelete.get(0) + "?",
+//                    "Confirm delete",
+//                    JOptionPane.YES_NO_OPTION);
+//        } else if (itemsToDelete.size() > 1) {
+//            result = JOptionPane.showConfirmDialog(
+//                    PackageTypeDialog.this,
+//                    "Are you sure you want to delete " + itemsToDelete.size() + " items?",
+//                    "Confirm delete",
+//                    JOptionPane.YES_NO_OPTION);
+//        }
+//        if (result == JOptionPane.OK_OPTION) {
+//            // Delete from db
+//            for (DimensionType item : itemsToDelete) {
+//                item.delete();
+//            }
+//            selectedDimensionType = null;
+//        }
+//
+//    }
 
     //
     // Tool bar
@@ -385,7 +382,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 //                    clearDetails();
 //                }
             } else {
-                selectedDimensionType = dimensionTableGetSelected();
+//                selectedDimensionType = dimensionTableGetSelected();
             }
             updateEnabledComponents();
         }
