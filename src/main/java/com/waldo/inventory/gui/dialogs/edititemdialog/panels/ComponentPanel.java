@@ -494,13 +494,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // PACKAGE
         if (newItem.getPackage() != null) {
-            PackageType p = sm().findPackageTypeById(newItem.getPackage().getPackageTypeId());
-            if (p != null && !p.isUnknown()) {
-                packageTypeComboBox.setSelectedItem(p);
-            } else {
-                packageTypeComboBox.setSelectedIndex(0);
-            }
-            updateDimensionPanel();
+//            PackageType p = sm().findPackageTypeById(newItem.getPackage().getPackageTypeId());
+//            if (p != null && !p.isUnknown()) {
+//                packageTypeComboBox.setSelectedItem(p);
+//            } else {
+//                packageTypeComboBox.setSelectedIndex(0);
+//            }
+//            updateDimensionPanel();
 //            packagePinsSp.setValue(newItem.getPackage().getPins());
 //            packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
 //            packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));

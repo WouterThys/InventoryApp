@@ -1186,7 +1186,7 @@ public class DbManager {
                     pa.setId(rs.getLong("id"));
                     pa.setName(rs.getString("name"));
                     pa.setIconPath(rs.getString("iconPath"));
-                    pa.setPackageTypeId(rs.getLong("packageTypeId"));
+                    pa.setDescription(rs.getString("description"));
 
                     pa.setInserted(true);
                     if (pa.getId() != DbObject.UNKNOWN_ID) {
@@ -1230,6 +1230,10 @@ public class DbManager {
                     pt = new PackageType();
                     pt.setId(rs.getLong("id"));
                     pt.setName(rs.getString("name"));
+                    pt.setIconPath(rs.getString("iconPath"));
+                    pt.setPackageId(rs.getLong("packageId"));
+                    pt.setDefaultPins(rs.getInt("defaultPins"));
+                    pt.setAllowOtherPinNumbers(rs.getBoolean("allowOtherPinNumbers"));
                     pt.setDescription(rs.getString("description"));
 
                     pt.setInserted(true);

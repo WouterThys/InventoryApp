@@ -517,22 +517,6 @@ public class Item extends DbObject {
         return itemPackage;
     }
 
-    public long getPackageTypeId() {
-        if (getPackage() != null) {
-            return getPackage().getPackageTypeId();
-        }
-        return UNKNOWN_ID;
-    }
-
-    public void setPackageTypeId(long packageTypeId) {
-        if (getPackage() != null) {
-            getPackage().setPackageTypeId(packageTypeId);
-        } else {
-            itemPackage = new Package();
-            itemPackage.setPackageTypeId(packageTypeId);
-        }
-    }
-
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }

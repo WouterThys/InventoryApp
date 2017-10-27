@@ -7,14 +7,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Package extends DbObject {
 
     public static final String TABLE_NAME = "packages";
 
-    private long packageTypeId;
-    private PackageType packageType;
+    private String description;
 
     public Package() {
         super(TABLE_NAME);
@@ -22,22 +20,16 @@ public class Package extends DbObject {
 
     @Override
     public boolean equals(Object obj) {
-        boolean result =  super.equals(obj);
-        if (result) {
-            if (!(obj instanceof Package)) {
-                return false;
-            } else {
-                Package ref = (Package) obj;
-                if (!(ref.getPackageTypeId() == getPackageTypeId())) { return false; }
-            }
-        }
-        return result;
+        boolean result = super.equals(obj);
+        return result && obj instanceof Package && ((Package) obj).getDescription().equals(getDescription());
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
-        statement.setLong(ndx++, getPackageTypeId());
+
+        statement.setString(ndx++, getDescription());
+
         return ndx;
     }
 
@@ -74,23 +66,20 @@ public class Package extends DbObject {
     public Package createCopy(DbObject copyInto) {
         Package pack = (Package) copyInto;
         copyBaseFields(pack);
-        pack.setPackageTypeId(getPackageTypeId());
+
+        pack.setDescription(getDescription());
+
         return pack;
     }
 
-    public long getPackageTypeId() {
-        return packageTypeId;
-    }
-
-    public void setPackageTypeId(long packageTypeId) {
-        packageType = null;
-        this.packageTypeId = packageTypeId;
-    }
-
-    public PackageType getPackageType() {
-        if (packageType == null) {
-            packageType = sm().findPackageTypeById(packageTypeId);
+    public String getDescription() {
+        if (description == null) {
+            description = "";
         }
-        return packageType;
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

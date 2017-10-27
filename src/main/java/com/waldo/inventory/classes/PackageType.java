@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,6 +13,12 @@ public class PackageType extends DbObject {
 
     public static final String TABLE_NAME = "packagetypes";
 
+    private long packageId;
+    private Package aPackage;
+
+    private int defaultPins;
+    private boolean allowOtherPinNumbers;
+
     private String description;
 
     public PackageType() {
@@ -21,9 +28,14 @@ public class PackageType extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, description);
-        return 3;
+        int ndx = addBaseParameters(statement);
+
+        statement.setLong(ndx++, getPackageId());
+        statement.setInt(ndx++, getDefaultPins());
+        statement.setBoolean(ndx++, isAllowOtherPinNumbers());
+        statement.setString(ndx++, getDescription());
+
+        return ndx;
     }
 
     @Override
@@ -33,9 +45,12 @@ public class PackageType extends DbObject {
             if (!(obj instanceof PackageType)) {
                 return false;
             }
-            if (!(((PackageType)obj).getDescription().equals(getDescription()))) {
-                return false;
-            }
+            PackageType ref = (PackageType) obj;
+
+            if (!(ref.getPackageId() == getPackageId())) return false;
+            if (!(ref.getDefaultPins() == getDefaultPins())) return false;
+            if (!(ref.isAllowOtherPinNumbers() == isAllowOtherPinNumbers())) return false;
+            if (!(ref.getDescription().equals(getDescription()))) return false;
         }
         return result;
     }
@@ -48,10 +63,15 @@ public class PackageType extends DbObject {
 
     @Override
     public PackageType createCopy(DbObject copyInto) {
-        PackageType packageType = (PackageType) copyInto;
-        copyBaseFields(packageType);
-        packageType.setDescription(getDescription());
-        return packageType;
+        PackageType cpy = (PackageType) copyInto;
+        copyBaseFields(cpy);
+
+        cpy.setPackageId(getPackageId());
+        cpy.setDefaultPins(getDefaultPins());
+        cpy.setAllowOtherPinNumbers(isAllowOtherPinNumbers());
+        cpy.setDescription(getDescription());
+
+        return cpy;
     }
 
     @Override
@@ -70,11 +90,9 @@ public class PackageType extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onPackageTypesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onPackageTypesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -82,10 +100,10 @@ public class PackageType extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onPackageTypesChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onPackageTypesChangedListenerList);
     }
 
     public static PackageType createDummyPackageType() {
@@ -101,6 +119,38 @@ public class PackageType extends DbObject {
         p.setId(UNKNOWN_ID);
         p.setCanBeSaved(false);
         return p;
+    }
+
+    public long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(long packageId) {
+        aPackage = null;
+        this.packageId = packageId;
+    }
+
+    public Package getPackage() {
+        if (aPackage == null) {
+            aPackage = SearchManager.sm().findPackageById(packageId);
+        }
+        return aPackage;
+    }
+
+    public int getDefaultPins() {
+        return defaultPins;
+    }
+
+    public void setDefaultPins(int defaultPins) {
+        this.defaultPins = defaultPins;
+    }
+
+    public boolean isAllowOtherPinNumbers() {
+        return allowOtherPinNumbers;
+    }
+
+    public void setAllowOtherPinNumbers(boolean allowOtherPinNumbers) {
+        this.allowOtherPinNumbers = allowOtherPinNumbers;
     }
 
     public String getDescription() {
