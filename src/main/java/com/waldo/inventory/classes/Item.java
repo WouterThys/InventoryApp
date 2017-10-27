@@ -517,54 +517,6 @@ public class Item extends DbObject {
         return itemPackage;
     }
 
-    public double getWidth() {
-        if (getPackage() != null) {
-            return getPackage().getWidth();
-        }
-        return 0;
-    }
-
-    public void setWidth(double width) {
-        if (getPackage() != null) {
-            getPackage().setWidth(width);
-        } else {
-            itemPackage = new Package();
-            itemPackage.setWidth(width);
-        }
-    }
-
-    public double getHeight() {
-        if (getPackage() != null) {
-            return getPackage().getHeight();
-        }
-        return 0;
-    }
-
-    public void setHeight(double height) {
-        if (getPackage() != null) {
-            getPackage().setHeight(height);
-        } else {
-            itemPackage = new Package();
-            itemPackage.setHeight(height);
-        }
-    }
-
-    public int getPins() {
-        if (getPackage() != null) {
-            return getPackage().getPins();
-        }
-        return 0;
-    }
-
-    public void setPins(int pins) {
-        if (getPackage() != null) {
-            getPackage().setPins(pins);
-        } else {
-            itemPackage = new Package();
-            itemPackage.setPins(pins);
-        }
-    }
-
     public long getPackageTypeId() {
         if (getPackage() != null) {
             return getPackage().getPackageTypeId();

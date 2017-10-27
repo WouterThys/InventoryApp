@@ -501,9 +501,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 packageTypeComboBox.setSelectedIndex(0);
             }
             updateDimensionPanel();
-            packagePinsSp.setValue(newItem.getPackage().getPins());
-            packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
-            packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
+//            packagePinsSp.setValue(newItem.getPackage().getPins());
+//            packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
+//            packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
         }
 
         // MANUFACTURER

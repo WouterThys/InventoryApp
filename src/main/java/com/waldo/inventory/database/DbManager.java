@@ -1187,9 +1187,6 @@ public class DbManager {
                     pa.setName(rs.getString("name"));
                     pa.setIconPath(rs.getString("iconPath"));
                     pa.setPackageTypeId(rs.getLong("packageTypeId"));
-                    pa.setPins(rs.getInt("pins"));
-                    pa.setWidth(rs.getDouble("width"));
-                    pa.setHeight(rs.getDouble("height"));
 
                     pa.setInserted(true);
                     if (pa.getId() != DbObject.UNKNOWN_ID) {

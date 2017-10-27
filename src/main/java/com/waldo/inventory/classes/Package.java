@@ -15,9 +15,6 @@ public class Package extends DbObject {
 
     private long packageTypeId;
     private PackageType packageType;
-    private int pins;
-    private double width;
-    private double height;
 
     public Package() {
         super(TABLE_NAME);
@@ -32,9 +29,6 @@ public class Package extends DbObject {
             } else {
                 Package ref = (Package) obj;
                 if (!(ref.getPackageTypeId() == getPackageTypeId())) { return false; }
-                if (!(ref.getPins() == getPins())) return false;
-                if (!(ref.getWidth() == getWidth())) return false;
-                if (!(ref.getHeight() == getHeight())) return false;
             }
         }
         return result;
@@ -44,9 +38,6 @@ public class Package extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
         statement.setLong(ndx++, getPackageTypeId());
-        statement.setInt(ndx++, getPins());
-        statement.setDouble(ndx++, getWidth());
-        statement.setDouble(ndx++, getHeight());
         return ndx;
     }
 
@@ -84,9 +75,6 @@ public class Package extends DbObject {
         Package pack = (Package) copyInto;
         copyBaseFields(pack);
         pack.setPackageTypeId(getPackageTypeId());
-        pack.setPins(getPins());
-        pack.setHeight(getHeight());
-        pack.setWidth(getWidth());
         return pack;
     }
 
@@ -104,29 +92,5 @@ public class Package extends DbObject {
             packageType = sm().findPackageTypeById(packageTypeId);
         }
         return packageType;
-    }
-
-    public int getPins() {
-        return pins;
-    }
-
-    public void setPins(int pins) {
-        this.pins = pins;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public void setWidth(double width) {
-        this.width = width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
     }
 }
