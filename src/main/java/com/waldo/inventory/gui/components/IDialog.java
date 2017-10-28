@@ -190,7 +190,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     private JPanel createButtonPanel() {
         buttonOK = new JButton("OK");
         buttonCancel = new JButton("Cancel");
-        buttonNeutral = new JButton("");
+        buttonNeutral = new JButton("Save");
         buttonNeutral.setVisible(false);
 
         buttonOK.addActionListener( e -> onOK());

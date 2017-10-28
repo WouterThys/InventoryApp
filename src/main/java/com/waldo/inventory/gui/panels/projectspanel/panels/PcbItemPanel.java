@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.PcbItemOrderDialog;
+import com.waldo.inventory.gui.dialogs.usedpcbitemsdialog.UsedPcbItemsDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -36,6 +37,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
     private JButton linkBtn;
     private JButton orderBtn;
     private JButton parseBtn;
+    private JButton usedBtn;
 
     private JPanel buttonPanel;
 
@@ -78,6 +80,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         linkBtn.setEnabled(enable);
         parseBtn.setEnabled(enable);
         orderBtn.setEnabled(enable);
+        usedBtn.setEnabled(enable);
     }
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
@@ -110,14 +113,17 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         linkBtn = new JButton(imageResource.readImage("Projects.Pcb.LinkBtn"));
         orderBtn = new JButton(imageResource.readImage("Projects.Pcb.OrderBtn"));
         parseBtn = new JButton(imageResource.readImage("Projects.Pcb.ParseBtn"));
+        usedBtn = new JButton(imageResource.readImage("Projects.Pcb.UsedBtn"));
 
         linkBtn.addActionListener(this);
         orderBtn.addActionListener(this);
         parseBtn.addActionListener(this);
+        usedBtn.addActionListener(this);
 
         linkBtn.setToolTipText("Link to known items");
         orderBtn.setToolTipText("Order linked");
         parseBtn.setToolTipText("Parse again");
+        usedBtn.setToolTipText("Used items");
 
         buttonPanel = new JPanel();
     }
@@ -129,6 +135,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         buttonPanel.add(linkBtn);
         buttonPanel.add(orderBtn);
         buttonPanel.add(parseBtn);
+        buttonPanel.add(usedBtn);
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
@@ -232,6 +239,21 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
                         PcbItemPanel.this,
                         "Error parsing: " + ex,
                         "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else if (source.equals(usedBtn)) {
+            // Set used items
+            List<PcbItem> linkedItems = getLinkedPcbItems(projectPcb.getPcbItemMap().get(getSelectedSheet()));
+            if (linkedItems.size() > 0) {
+                // Used dialog
+                UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Used items", linkedItems);
+                dialog.showDialog();
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Items need to be linked with known item..",
+                        "No linked items",
                         JOptionPane.ERROR_MESSAGE
                 );
             }

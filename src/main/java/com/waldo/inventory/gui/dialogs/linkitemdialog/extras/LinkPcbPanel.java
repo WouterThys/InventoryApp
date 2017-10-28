@@ -49,7 +49,9 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     }
 
     public void setItemList(java.util.List<PcbItem> componentList) {
-        tableModel.setItemList(componentList);
+        if (componentList != null) {
+            tableModel.setItemList(componentList);
+        }
     }
 
     public void updateSelectedValueData(PcbItem component) {
