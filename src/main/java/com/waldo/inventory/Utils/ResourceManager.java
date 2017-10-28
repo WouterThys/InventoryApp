@@ -185,4 +185,15 @@ public class ResourceManager {
         }
         return file;
     }
+
+    public Color readColor(String key) {
+        Color color;
+        try {
+            String cTxt = readString(key);
+            color = Color.decode(cTxt);
+        } catch (Exception e) {
+            color = Color.DARK_GRAY;
+        }
+        return color;
+    }
 }

@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -24,7 +23,11 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITableEditors {
 
-    public abstract static class SpinnerEditor extends DefaultCellEditor implements ChangeListener {
+    public interface SpinnerChangedListener {
+        void onValueSet(int value);
+    }
+
+    public abstract static class SpinnerEditor extends DefaultCellEditor implements SpinnerChangedListener {
 
         JSpinner spinner;
         JSpinner.DefaultEditor editor;
@@ -35,7 +38,6 @@ public class ITableEditors {
             super(new JTextField());
             SpinnerModel model = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
             spinner = new JSpinner(model);
-            spinner.addChangeListener(this);
             editor = ((JSpinner.DefaultEditor) spinner.getEditor());
             textField = editor.getTextField();
             textField.addFocusListener(new FocusListener() {
@@ -78,7 +80,11 @@ public class ITableEditors {
 
         @Override
         public Object getCellEditorValue() {
-            return spinner.getValue();
+            int value = (int) spinner.getValue();
+
+            onValueSet(value);
+
+            return value;
         }
 
         @Override
@@ -92,8 +98,6 @@ public class ITableEditors {
             return super.stopCellEditing();
         }
     }
-
-
 
 
     public static class AmountRenderer extends DefaultTableCellRenderer {
@@ -536,6 +540,7 @@ public class ITableEditors {
         public void mouseExited(MouseEvent e) {
         }
     }
+
 
 
 

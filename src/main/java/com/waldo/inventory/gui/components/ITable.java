@@ -1,8 +1,6 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
-import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
@@ -10,6 +8,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ITable<T> extends JTable {
 
@@ -57,7 +57,6 @@ public class ITable<T> extends JTable {
 
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-
         // Width
         Component component = super.prepareRenderer(renderer, row, column);
         int rendererWidth = component.getPreferredSize().width;
@@ -68,28 +67,13 @@ public class ITable<T> extends JTable {
             tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
         }
 
-        if (model instanceof IOrderItemTableModel) {
-            Object o = getValueAtRow(row);
-
-            if (o instanceof OrderItem) {
-                OrderItem orderItem = (OrderItem) o;
-                if (!isRowSelected(row)) {
-                    component.setBackground(getBackground());
-                    if (orderItem.getItem().isDiscourageOrder()) {
-                        component.setBackground(Color.orange);
-                    } else {
-                        component.setBackground(getBackground());
-                    }
-                }
-            }
-        }
-
         return component;
     }
 
-    public Object getValueAtRow(int row) {
+    @SuppressWarnings("unchecked")
+    public T getValueAtRow(int row) {
         if (row >= 0) {
-            return model.getValueAt(convertRowIndexToModel(row), -1);
+            return (T) model.getValueAt(convertRowIndexToModel(row), -1);
         }
         return null;
     }
@@ -102,6 +86,25 @@ public class ITable<T> extends JTable {
         } else {
             clearSelection();
         }
+    }
+
+    public T getSelectedItem() {
+        int row = getSelectedRow();
+        return getValueAtRow(row);
+    }
+
+    public List<T> getSelectedItems() {
+        List<T> list = new ArrayList<>();
+        int[] selectedRows = getSelectedRows();
+        if (selectedRows.length > 0) {
+            for (int row : selectedRows) {
+                T t = getValueAtRow(row);
+                if (t != null) {
+                    list.add(t);
+                }
+            }
+        }
+        return list;
     }
 
     @Override

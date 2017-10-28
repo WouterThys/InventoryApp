@@ -9,8 +9,7 @@ import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
-import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.PcbItemOrderDialog;
-import com.waldo.inventory.gui.dialogs.usedpcbitemsdialog.UsedPcbItemsDialog;
+import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -182,6 +181,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         return linkedItems;
     }
 
+
     //
     // One of the list values in the sheet tabs selected
     //
@@ -211,12 +211,11 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             dialog.showDialog();
         } else if (source.equals(orderBtn)) {
             // Order known items
-            List<PcbItem> linkedItems = getLinkedPcbItems(projectPcb.getPcbItemMap().get(getSelectedSheet()));
-            if (linkedItems.size() > 0) {
-                PcbItemOrderDialog orderDialog = new PcbItemOrderDialog(
+            if (projectPcb.hasLinkedItems()) {
+                OrderPcbItemDialog orderDialog = new OrderPcbItemDialog(
                         application,
                         "Order items",
-                        linkedItems);
+                        projectPcb);
                 orderDialog.showDialog();
             } else {
                 JOptionPane.showMessageDialog(
@@ -244,11 +243,10 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             }
         } else if (source.equals(usedBtn)) {
             // Set used items
-            List<PcbItem> linkedItems = getLinkedPcbItems(projectPcb.getPcbItemMap().get(getSelectedSheet()));
-            if (linkedItems.size() > 0) {
+            if (projectPcb.hasLinkedItems()) {
                 // Used dialog
-                UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Used items", linkedItems);
-                dialog.showDialog();
+                //UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Used items", linkedItems);
+                //dialog.showDialog();
             } else {
                 JOptionPane.showMessageDialog(
                         this,

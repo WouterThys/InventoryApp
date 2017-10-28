@@ -28,6 +28,9 @@ public class ProjectPcb extends ProjectObject {
     private HashMap<String, List<PcbItem>> pcbItemMap;
     private boolean hasParsed;
 
+    // Extra
+    private boolean hasLinkedItems;
+
     public ProjectPcb() {
         super(TABLE_NAME);
     }
@@ -198,6 +201,7 @@ public class ProjectPcb extends ProjectObject {
                 PcbItemItemLink link = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
                 if (link != null) {
                     item.setMatchedItem(link);
+                    hasLinkedItems = true;
                 }
             }
         }
@@ -234,6 +238,10 @@ public class ProjectPcb extends ProjectObject {
             return getProjectIDE().getPcbItemParser();
         }
         return null;
+    }
+
+    public boolean hasLinkedItems() {
+        return hasLinkedItems;
     }
 
     public boolean hasParsed() {

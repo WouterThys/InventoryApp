@@ -20,6 +20,7 @@ import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemD
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderPanelLayout extends JPanel implements
@@ -207,7 +209,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             if (order.getDistributor() != null) {
                 tbDistributorCb.setSelectedItem(order.getDistributor());
             }
-        } else  {
+        } else {
             tbTotalItemsLbl.setText("");
             tbTotalPriceLbl.setText("");
             tbOrderNameLbl.setText("");
@@ -252,13 +254,17 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Total items
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 0;
         amountPanel.add(tbTotalItemsLbl, gbc);
 
         // Total price
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 0;
         amountPanel.add(tbTotalPriceLbl, gbc);
 
         // Add to toolbar
@@ -274,22 +280,28 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.insets = new Insets(-10, 2, 0, 20);
 
         // Order name
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
+        gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.gridy = 0;
+        gbc.weighty = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         makeOrderPanel.add(tbOrderNameLbl, gbc);
 
         // Distributor
         ILabel distributorLabel = new ILabel("Order by: ");
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 0;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         makeOrderPanel.add(distributorLabel, gbc);
 
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         makeOrderPanel.add(tbDistributorCb, gbc);
 
@@ -314,7 +326,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRootOrder, true);
         treeInitializeTree(rootNode);
         treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
-            if(child.isOrdered()) {
+            if (child.isOrdered()) {
                 return (DefaultMutableTreeNode) rootNode.getChildAt(0); // Ordered
             } else {
                 return (DefaultMutableTreeNode) rootNode.getChildAt(1); // Not ordered
@@ -328,7 +340,24 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IOrderItemTableModel();
-        orderItemTable = new ITable<>(tableModel);
+        orderItemTable = new ITable<OrderItem>(tableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                OrderItem o = (OrderItem) getValueAtRow(row);
+
+                if (!isRowSelected(row)) {
+                    component.setBackground(getBackground());
+                    if (o.getItem().isDiscourageOrder()) {
+                        component.setBackground(colorResource.readColor("Red.Light"));
+                    } else {
+                        component.setBackground(getBackground());
+                    }
+                }
+
+                return component;
+            }
+        };
 
         orderItemTable.getSelectionModel().addListSelectionListener(this);
         orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
@@ -351,7 +380,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderNameLbl = new ILabel();
         Font f = tbOrderNameLbl.getFont();
         tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
-        tbDistributorCb = new IComboBox<>( DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), true);
+        tbDistributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), true);
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (selectedOrder != null) {
@@ -391,7 +420,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
             @Override
             public void onToolBarAdd(IdBToolBar source) {
-                OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(),true);
+                OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(), true);
                 if (dialog.showDialog() == IDialog.OK) {
                     Order o = dialog.getOrder();
                     o.save();

@@ -33,6 +33,7 @@ public class PcbItem extends DbObject {
 
     // Order
     private OrderItem orderItem = null;
+    private int orderAmount  = 0;
 
     public PcbItem() {
         super(TABLE_NAME);
@@ -273,6 +274,10 @@ public class PcbItem extends DbObject {
         this.matchedItem = matchedItem;
     }
 
+    //
+    // Extra's for ordering
+    //
+
     public boolean isOrdered() {
         return orderItem != null;
     }
@@ -283,5 +288,13 @@ public class PcbItem extends DbObject {
 
     public void setOrderItem(OrderItem orderItem) {
         this.orderItem = orderItem;
+    }
+
+    public int getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(int orderAmount) {
+        this.orderAmount = orderAmount;
     }
 }

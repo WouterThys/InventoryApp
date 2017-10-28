@@ -122,6 +122,8 @@ public abstract class PcbItemOrderDialogLayout extends IDialog implements Action
             this.listener = listener;
             this.toolTip = toolTip;
             setEnabled(enabled);
+
+
         }
 
         @Override

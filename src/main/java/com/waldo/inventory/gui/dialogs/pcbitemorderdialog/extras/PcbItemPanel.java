@@ -6,12 +6,10 @@ import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemOrderTableModel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -157,15 +155,15 @@ public class PcbItemPanel extends JPanel implements GuiInterface {
         itemTable = new ITable<>(tableModel);
 
         TableColumn tableColumn = itemTable.getColumnModel().getColumn(1);
-        tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (amountChangeListener != null) {
-                    JSpinner spinner = (JSpinner) e.getSource();
-                    amountChangeListener.onAmountChanged((int) spinner.getValue());
-                }
-            }
-        });
+//        tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                if (amountChangeListener != null) {
+//                    JSpinner spinner = (JSpinner) e.getSource();
+//                    amountChangeListener.onAmountChanged((int) spinner.getValue());
+//                }
+//            }
+//        });
         itemTable.getColumnModel().getColumn(1).setMinWidth(60);
         itemTable.getColumnModel().getColumn(1).setMaxWidth(60);
 

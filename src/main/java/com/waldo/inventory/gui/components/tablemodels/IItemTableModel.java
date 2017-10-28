@@ -40,7 +40,7 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 case 3: // Manufacturer
                     Manufacturer m = SearchManager.sm().findManufacturerById(item.getManufacturerId());
                     if (m != null && !m.isUnknown()) {
-                        return m.getName();
+                        return m.toString();
                     }
                     return "";
                 case 4: // Location

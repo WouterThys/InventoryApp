@@ -53,6 +53,7 @@ public class IdBToolBar extends JToolBar {
                 toolBarListener.onToolBarRefresh(IdBToolBar.this);
             }
         };
+        refreshAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Refresh");
 
         addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.AddIcon")) {
             @Override
@@ -60,6 +61,7 @@ public class IdBToolBar extends JToolBar {
                 toolBarListener.onToolBarAdd(IdBToolBar.this);
             }
         };
+        addAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Add");
 
         deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.DeleteIcon")) {
             @Override
@@ -67,6 +69,7 @@ public class IdBToolBar extends JToolBar {
                 toolBarListener.onToolBarDelete(IdBToolBar.this);
             }
         };
+        deleteAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Delete");
 
         editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.EditIcon")) {
             @Override
@@ -74,6 +77,7 @@ public class IdBToolBar extends JToolBar {
                 toolBarListener.onToolBarEdit(IdBToolBar.this);
             }
         };
+        editAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit");
 
         add(refreshAction);
         addSeparator();

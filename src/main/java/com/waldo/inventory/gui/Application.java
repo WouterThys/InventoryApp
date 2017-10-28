@@ -38,6 +38,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     public static ResourceManager imageResource;
     public static ResourceManager stringResource;
     public static ResourceManager scriptResource;
+    public static ResourceManager colorResource;
 
     private JTabbedPane tabbedPane;
 
@@ -58,6 +59,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             imageResource = new ResourceManager("settings/", "IconSettings.properties");
             stringResource = new ResourceManager("settings/", "Strings.properties");
             scriptResource = new ResourceManager("db/scripts/", "scripts.properties");
+            colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
             LOG.error("Error initializing resources.", e);
         }
