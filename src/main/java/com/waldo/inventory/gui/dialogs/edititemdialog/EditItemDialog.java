@@ -50,13 +50,6 @@ public class EditItemDialog extends EditItemDialogLayout {
     private void setValues(Item item) {
         newItem = item;
         originalItem = newItem.createCopy();
-
-        newPackage = item.getPackage();
-        if (newPackage != null)  {
-            originalPackage = newPackage.createCopy();
-        } else {
-            originalPackage = null;
-        }
     }
 
     private void initActions() {
@@ -73,7 +66,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         DbManager.db().addOnPackageChangedListener(new DbObjectChangedListener<Package>() {
             @Override
             public void onInserted(Package p) {
-                newItem.setPackageId(p.getId());
+                newItem.setPackageTypeId(p.getId());
                 newItem.save();
                 originalItem = newItem.createCopy();
             }
@@ -114,13 +107,6 @@ public class EditItemDialog extends EditItemDialogLayout {
                 editItemOrderPanel.setPartNumber();
                 partNumberChanged = false;
             }
-            // Package
-            if (newPackage != null) {
-                if (!newPackage.equals(originalPackage)) {
-                    newPackage.save();
-                    originalPackage = newPackage.createCopy();
-                }
-            }
 
             newItem.save();
             originalItem = newItem.createCopy();
@@ -139,9 +125,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
     private boolean checkChange() {
-        boolean itemChange = (newItem != null) && !(newItem.equals(originalItem));
-        boolean packageChange = (newPackage != null) && !(newPackage.equals(originalPackage));
-        return itemChange || packageChange;
+        return (newItem != null) && !(newItem.equals(originalItem));
     }
 
     private void showSaveDialog(boolean closeAfter) {
@@ -264,22 +248,13 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (fieldName.equals("Name")) {
             getTitleNameLabel().setText(String.valueOf(newValue));
         }
-        // Package
-        if (newPackage == null &&
-                (fieldName.equals("PackageTypeId") || fieldName.equals("Pins") || fieldName.equals("Height") || fieldName.equals("Width"))) {
-            newPackage = newItem.getPackage();
-        }
+
         // Distributor part
         if (editItemOrderPanel.getItemRefField().equals(component)) {
             partNumberChanged = editItemOrderPanel.checkChange();
             getButtonNeutral().setEnabled(partNumberChanged);
         } else {
             getButtonNeutral().setEnabled(checkChange());
-        }
-
-        // Dimensions
-        if (componentPanel.getPackageTypeCb().equals(component)) {
-            componentPanel.updateDimensionPanel();
         }
 
     }

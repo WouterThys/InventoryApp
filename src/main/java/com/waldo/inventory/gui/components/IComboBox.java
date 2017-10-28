@@ -21,6 +21,8 @@ public class IComboBox<E> extends JComboBox<E> {
     private String fieldName = "";
     private Class fieldClass;
 
+    private boolean selecting = false;
+
     public IComboBox() {
         super();
     }
@@ -81,6 +83,12 @@ public class IComboBox<E> extends JComboBox<E> {
         setItemListener();
     }
 
+    public void selectItem(E item) {
+        selecting = true;
+        super.setSelectedItem(item);
+        selecting = false;
+    }
+
     private void setFieldName(String fieldName) {
         if (!fieldName.isEmpty()) {
             String firstChar = String.valueOf(fieldName.charAt(0));
@@ -99,7 +107,7 @@ public class IComboBox<E> extends JComboBox<E> {
 
     private void setItemListener() {
         ItemListener itemListener = e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED && !selecting) {
 
                 SwingUtilities.invokeLater(() -> {
                     try {

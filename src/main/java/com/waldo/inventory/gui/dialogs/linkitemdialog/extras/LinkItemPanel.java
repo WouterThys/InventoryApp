@@ -92,8 +92,8 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
 //                if (item.getDimensionType() != null) {
 //                    footprintTf.setText(item.getDimensionType().getName());
 //                } else {
-//                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-//                        footprintTf.setText(item.getPackage().getPackageType().getName());
+//                    if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
+//                        footprintTf.setText(item.getPackageType().getPackageType().getName());
 //                    } else {
 //                        footprintTf.setText("");
 //                    }
@@ -106,8 +106,8 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
 //                if (item.getDimensionType() != null) {
 //                    footprintTf.setText(item.getDimensionType().getName());
 //                } else {
-//                    if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-//                        footprintTf.setText(item.getPackage().getPackageType().getName());
+//                    if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
+//                        footprintTf.setText(item.getPackageType().getPackageType().getName());
 //                    } else {
 //                        footprintTf.setText("");
 //                    }

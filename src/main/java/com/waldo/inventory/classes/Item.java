@@ -42,8 +42,9 @@ public class Item extends DbObject {
     private int amountType = Statics.ItemAmountTypes.NONE;
     private int orderState = Statics.ItemOrderStates.NONE;
 
-    private long packageId = UNKNOWN_ID;
-    private Package itemPackage;
+    private long packageTypeId = UNKNOWN_ID;
+    private PackageType packageType;
+    private int pins;
 
     private float rating;
     private boolean discourageOrder;
@@ -89,10 +90,11 @@ public class Item extends DbObject {
         statement.setInt( ndx++, amount);
         statement.setInt( ndx++, amountType);
         statement.setInt( ndx++, orderState);
-        if (packageId < UNKNOWN_ID) {
-            packageId = UNKNOWN_ID;
+        if (packageTypeId < UNKNOWN_ID) {
+            packageTypeId = UNKNOWN_ID;
         }
-        statement.setLong(ndx++, packageId); // PackageId
+        statement.setLong(ndx++, packageTypeId); // PackageId
+        statement.setInt(ndx++, getPins());
         statement.setFloat(ndx++, rating);
         statement.setBoolean(ndx++, discourageOrder);
         statement.setString(ndx++, getRemarks());
@@ -156,7 +158,7 @@ public class Item extends DbObject {
                 return true;
             }
 
-            Package pa = sm().findPackageById(packageId);
+            PackageType pa = sm().findPackageTypeById(packageTypeId);
             if (pa != null && pa.hasMatch(searchTerm)) {
                 return true;
             }
@@ -183,7 +185,8 @@ public class Item extends DbObject {
         item.setAmount(getAmount());
         item.setAmountType(getAmountType());
         item.setOrderState(getOrderState());
-        item.setPackageId(getPackageId());
+        item.setPackageTypeId(getPackageTypeId());
+        item.setPins(getPins());
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarks(getRemarks());
@@ -219,7 +222,10 @@ public class Item extends DbObject {
                 if (!(ref.getAmount() == getAmount())) { System.out.println("Amount differs"); return false; }
                 if (!(ref.getAmountType() == getAmountType())) { System.out.println("Amount type differs"); return false; }
                 if (!(ref.getOrderState() == getOrderState())) { System.out.println("Order state differs"); return false; }
-                if (!(ref.getPackageId() == getPackageId())) { System.out.println("Package differs"); return false; }
+                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
+                    System.out.println("Package type differs: " + ref.getPackageTypeId() + "<->" + getPackageTypeId());
+                    return false; }
+                if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
                 if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
                 if (!(ref.getRemarks().equals(getRemarks()))) { System.out.println("Remarks differs"); return false; }
@@ -501,20 +507,39 @@ public class Item extends DbObject {
     }
 
 
-    public long getPackageId() {
-        return packageId;
+    public long getPackageTypeId() {
+        return packageTypeId;
     }
 
-    public void setPackageId(long packageId) {
-        itemPackage = null;
-        this.packageId = packageId;
+    public void setPackageTypeId(long packageTypeId) {
+        packageType = null;
+        this.packageTypeId = packageTypeId;
     }
 
-    public Package getPackage() {
-        if (itemPackage == null) {
-            itemPackage = sm().findPackageById(packageId);
+    public int getPins() {
+        if (getPackageType() != null) {
+            if (!packageType.isAllowOtherPinNumbers()) {
+                pins = packageType.getDefaultPins();
+            }
         }
-        return itemPackage;
+        return pins;
+    }
+
+    public void setPins(int pins) {
+        if (getPackageType() != null) {
+            if (packageType.isAllowOtherPinNumbers()) {
+                this.pins = pins;
+            }
+        } else {
+            this.pins = pins;
+        }
+    }
+
+    public PackageType getPackageType() {
+        if (packageType == null) {
+            packageType = sm().findPackageTypeById(packageTypeId);
+        }
+        return packageType;
     }
 
     public void setRemarks(String remarks) {

@@ -618,12 +618,12 @@ public class DbManager {
                     i.setAmount(rs.getInt("amount"));
                     i.setAmountType(rs.getInt("amountType"));
                     i.setOrderState(rs.getInt("orderState"));
-                    i.setPackageId(rs.getLong("packageId"));
+                    i.setPackageTypeId(rs.getLong("packageTypeId"));
+                    i.setPins(rs.getInt("pins"));
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
-                    //i.setDimensionTypeId(rs.getLong("dimensionTypeId"));
                     i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                     i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
                     i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));

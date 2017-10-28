@@ -1,13 +1,17 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITextFieldButtonPanel;
+import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,6 +24,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static java.awt.GridBagConstraints.BOTH;
@@ -598,6 +603,157 @@ public class PanelUtils {
                     listener.onValueChanged(this, "value:unit", 0, 0);
                 }
 
+        }
+    }
+
+    public static class IPackagePanel extends JPanel implements GuiInterface, ActionListener, ItemListener {
+
+        private Application application;
+
+        private IComboBox<Package> packageCb;
+        private IComboBox<PackageType> typeCb;
+        private ISpinner pinsSp;
+
+        private PackageType packageType;
+
+        public IPackagePanel(Application application, IEditedListener listener, String typeField, String pinsField) {
+            super();
+
+            this.application = application;
+
+            initializeComponents();
+            initializeLayouts();
+
+            typeCb.addEditedListener(listener, typeField);
+            pinsSp.addEditedListener(listener, pinsField);
+        }
+
+        public void setPackageType(PackageType packageType, int pins) {
+            updateComponents(packageType, pins);
+        }
+
+        private void packageCbChanged() {
+
+                Package p = (Package) packageCb.getSelectedItem();
+                if (p != null) {
+                    typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                    typeCb.setEnabled(true);
+                    pinsSp.setEnabled(false);
+                }
+
+        }
+
+        private void typeCbChanged() {
+
+                packageType = (PackageType) typeCb.getSelectedItem();
+                if (packageType != null && !packageType.isUnknown()) {
+                    pinsSp.setEnabled(packageType.isAllowOtherPinNumbers());
+                    pinsSp.setTheValue(packageType.getDefaultPins());
+                } else {
+                    pinsSp.setEnabled(false);
+                }
+
+        }
+
+        @Override
+        public void initializeComponents() {
+            // Package
+            packageCb = new IComboBox<>(DbManager.db().getPackages(), new DbObject.DbObjectNameComparator<>(), true);
+            packageCb.addItemListener(this);
+
+            // Package type
+            typeCb = new IComboBox<>(new ArrayList<>(), new DbObject.DbObjectNameComparator<>(), true);
+            typeCb.setEnabled(false);
+            typeCb.addItemListener(this);
+
+            // Pins
+            SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+            pinsSp = new ISpinner(spinnerModel);
+            pinsSp.setEnabled(false);
+        }
+
+        @Override
+        public void initializeLayouts() {
+            setLayout(new BorderLayout());
+            JPanel panel = new JPanel();
+
+            GridBagHelper gbc = new GridBagHelper(panel);
+            gbc.addLine("Package: ", PanelUtils.createComboBoxWithButton(packageCb, this));
+            gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(typeCb, this));
+            gbc.addLine("Pins: ", pinsSp);
+
+            add(panel, BorderLayout.CENTER);
+        }
+
+        @Override
+        public void updateComponents(Object... args) {
+            if (args.length > 0 && args[0] != null) {
+                packageType = (PackageType) args[0];
+            } else {
+                packageType = null;
+            }
+
+            if (packageType != null && !packageType.isUnknown()) {
+                Package p = packageType.getPackage();
+                if (p != null) {
+                    application.beginWait();
+                    try {
+                        packageCb.selectItem(p);
+                        typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                        if (packageType.isAllowOtherPinNumbers()) {
+                            pinsSp.setEnabled(true);
+                            int itemPins = (int) args[1];
+                            if (itemPins > 0) {
+                                pinsSp.setTheValue(itemPins);
+                            } else {
+                                pinsSp.setTheValue(packageType.getDefaultPins());
+                            }
+                        } else {
+                            pinsSp.setTheValue(packageType.getDefaultPins());
+                            pinsSp.setEnabled(false);
+                        }
+                        typeCb.selectItem(packageType);
+                        typeCb.setEnabled(true);
+                    } finally {
+                        application.endWait();
+                    }
+                } else {
+                    typeCb.setEnabled(false);
+                    pinsSp.setEnabled(false);
+                }
+            } else {
+                typeCb.setEnabled(false);
+                pinsSp.setEnabled(false);
+            }
+        }
+
+        //
+        // Combo box value changed
+        //
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (!application.isUpdating()) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (e.getSource().equals(packageCb)) {
+                            packageCbChanged();
+                        } else {
+                            typeCbChanged();
+                        }
+                    });
+                }
+            }
+        }
+
+        //
+        // Edit package
+        //
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PackageTypeDialog dialog = new PackageTypeDialog(application, "Packages");
+            dialog.showDialog();
+
+            // TODO update comboboxes
         }
     }
 }

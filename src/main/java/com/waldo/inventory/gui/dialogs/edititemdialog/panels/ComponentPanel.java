@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
@@ -28,8 +27,8 @@ import java.text.NumberFormat;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
 import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
 
@@ -43,9 +42,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private JTabbedPane tabbedPane;
 
     // Details
-    private IComboBox<PackageType> packageTypeComboBox;
-    private ISpinner packagePinsSp;
-    private IFormattedTextField packageWidthTf, packageHeightTf;
+    private PanelUtils.IPackagePanel packagePnl;
     private IComboBox<Manufacturer> manufacturerComboBox;
     private ILabel iconLabel;
     private IStarRater starRater;
@@ -142,24 +139,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
-    private void createPackageTypeCb() {
-        packageTypeComboBox = new IComboBox<>(db().getPackageTypes(), new DbObjectNameComparator<>(), true);
-        packageTypeComboBox.addEditedListener(editedListener, "packageTypeId");
-    }
-
-    private void createDimensionTypeCb() {
-//        java.util.List<DimensionType> dimensionTypes;
-//        if (newItem.getPackageId() > DbObject.UNKNOWN_ID) {
-//            dimensionTypes = sm().findDimensionTypesForPackageType(newItem.getPackage().getPackageTypeId());
-//        } else {
-//            dimensionTypes = db().getDimensionTypes();
-//        }
-
-//        dimensionCb = new IComboBox<>(db().getDimensionTypes(), new DbObjectNameComparator<>(), true);
-//        dimensionCb.addEditedListener(editedListener, "dimensionTypeId", long.class);
-//        dimensionCb.setEnabled(false);
-    }
-
     private void createManufacturerCb() {
         manufacturerComboBox = new IComboBox<>(db().getManufacturers(), new DbObjectNameComparator<>(), true);
         manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
@@ -177,15 +156,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         };
     }
 
-    private ActionListener createPackageTypeListener() {
-        return e -> {
-            PackageTypeDialog packageTypeDialog = new PackageTypeDialog(application, "Packages");
-            if (packageTypeDialog.showDialog() == IDialog.OK) {
-                updateDimensionPanel();
-            }
-        };
-    }
-
     private ActionListener createManufacturerAddListener() {
         return e -> {
             ManufacturersDialog manufacturersDialog = new ManufacturersDialog(application, "Manufacturers");
@@ -194,34 +164,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
         };
     }
-    
-    public void updateDimensionPanel() {
-//        PackageType packageType = (PackageType) packageTypeComboBox.getSelectedItem();
-//        if (packageType != null) {
-//            java.util.List<DimensionType> dimensionTypeList = sm().findDimensionTypesForPackageType(packageType.getId());
-//            dimensionCb.updateList(dimensionTypeList);
-//            dimensionCb.setEnabled(dimensionTypeList.size() > 0);
-//        } else {
-//            dimensionCb.setEnabled(false);
-//        }
-//
-//        DimensionType d = sm().findDimensionTypeById(newItem.getDimensionTypeId());
-//        if (d != null && !d.isUnknown()) {
-//            dimensionCb.setSelectedItem(d);
-//        }
-    }
 
     private void initializeBasicComponents() {
         // Identification
         idTextField = new ITextField();
         idTextField.setEditable(false);
         idTextField.setEnabled(false);
-
-//        nameTextField = new ITextField();
-//        nameTextField.addEditedListener(editedListener, "name");
-//        nameTextField.setNameTxt(EditItemDialogLayout.COMP_NAME);
-//
-//        valuePnl = new PanelUtils.IValuePanel(editedListener);
 
         nameValuePnl = new PanelUtils.INameValuePanel(editedListener, "name", editedListener);
 
@@ -270,15 +218,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private void initializeDetailsComponents() {
         // Package
-        createPackageTypeCb();
-        SpinnerModel spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        packagePinsSp = new ISpinner(spinnerModel);
-        packagePinsSp.addEditedListener(editedListener, "pins");
-        packageWidthTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        packageWidthTf.addEditedListener(editedListener, "width", double.class);
-        packageHeightTf = new IFormattedTextField(NumberFormat.getNumberInstance());
-        packageHeightTf.addEditedListener(editedListener, "height", double.class);
-        createDimensionTypeCb();
+        packagePnl = new PanelUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
 
         // Manufacturer
         createManufacturerCb();
@@ -373,7 +313,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private JPanel createDetailsPanel() {
-        JPanel packagePanel = new JPanel(new GridBagLayout());
+        JPanel packagePanel = new JPanel(new BorderLayout());
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
         JPanel remarksPanel = new JPanel(new GridBagLayout());
         JPanel setPanel = new JPanel(new BorderLayout());
@@ -390,17 +330,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         setPanel.setBorder(setBorder);
 
         // PACKAGE
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(packagePanel);
+        packagePanel.add(packagePnl, BorderLayout.CENTER);
 
-        // - extra
-        JPanel dimPanel = new JPanel();
-        dimPanel.add(packageWidthTf);
-        dimPanel.add(packageHeightTf);
-
-        gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(packageTypeComboBox, createPackageTypeListener()));
-        gbc.addLine("Pins: ", packagePinsSp);
-        gbc.addLine("Dimensions: ", dimPanel);
-        //gbc.addLine("Type: ", PanelUtils.createComboBoxWithButton(dimensionCb, createPackageTypeListener()));
+        PanelUtils.GridBagHelper gbc;
 
         // MANUFACTURER
         gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
@@ -466,18 +398,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     @Override
     public void initializeLayouts() {
+        setLayout(new BorderLayout());
         // Add tabs
         tabbedPane.addTab("Basic", createBasicPanel());
         tabbedPane.addTab("Details", createDetailsPanel());
 
-        add(tabbedPane);
+        add(tabbedPane, BorderLayout.CENTER);
     }
 
     @Override
     public void updateComponents(Object... object) {
         idTextField.setText(String.valueOf(newItem.getId()));
-        //nameTextField.setText(newItem.getNameText().trim());
-        //valuePnl.setValue(newItem.getValue());
         nameValuePnl.setNameTxt(newItem.getName().trim());
         nameValuePnl.setValue(newItem.getValue());
         descriptionTextArea.setText(newItem.getDescription().trim());
@@ -493,18 +424,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
 
         // PACKAGE
-        if (newItem.getPackage() != null) {
-//            PackageType p = sm().findPackageTypeById(newItem.getPackage().getPackageTypeId());
-//            if (p != null && !p.isUnknown()) {
-//                packageTypeComboBox.setSelectedItem(p);
-//            } else {
-//                packageTypeComboBox.setSelectedIndex(0);
-//            }
-//            updateDimensionPanel();
-//            packagePinsSp.setValue(newItem.getPackage().getPins());
-//            packageHeightTf.setText(String.valueOf(newItem.getPackage().getHeight()));
-//            packageWidthTf.setText(String.valueOf(newItem.getPackage().getWidth()));
-        }
+        packagePnl.setPackageType(newItem.getPackageType(), newItem.getPins());
 
         // MANUFACTURER
         if (newItem.getManufacturerId() >= 0) {
@@ -585,9 +505,5 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void updateRating(float rating) {
         starRater.setRating(rating);
         starRater.setSelection(0);
-    }
-
-    public IComboBox<PackageType> getPackageTypeCb() {
-        return packageTypeComboBox;
     }
 }

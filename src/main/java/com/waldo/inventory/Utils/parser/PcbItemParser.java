@@ -125,8 +125,8 @@ public class PcbItemParser {
 
 //            if (item.getDimensionType() != null) {
 //                itemFp = item.getDimensionType().getName();
-//            } else if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-//                itemFp = item.getPackage().getPackageType().getName();
+//            } else if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
+//                itemFp = item.getPackageType().getPackageType().getName();
 //            }
 
             match |= matchName(pcbName, itemName); // Set bit
@@ -195,8 +195,8 @@ public class PcbItemParser {
         String itemFp = "";
 //        if (item.getDimensionType() != null) {
 //            itemFp = item.getDimensionType().getName();
-//        } else if (item.getPackage() != null && item.getPackage().getPackageType() != null) {
-//            itemFp = item.getPackage().getPackageType().getName();
+//        } else if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
+//            itemFp = item.getPackageType().getPackageType().getName();
 //        }
         // Only check footprint match if there is already a match
         if (((match & MATCH_NAME) == MATCH_NAME) || ((match & MATCH_VALUE) == MATCH_VALUE)) {

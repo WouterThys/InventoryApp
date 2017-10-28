@@ -15,6 +15,8 @@ public class ISpinner extends JSpinner {
     private String fieldName;
     private Class fieldClass;
 
+    private boolean selecting = false;
+
     public ISpinner() {
         super();
     }
@@ -37,6 +39,12 @@ public class ISpinner extends JSpinner {
         setChangeListener();
     }
 
+    public void setTheValue(Object value) {
+        selecting = true;
+        super.setValue(value);
+        selecting = false;
+    }
+
     private void setFieldName(String fieldName) {
         String firstChar = String.valueOf(fieldName.charAt(0));
         if (firstChar.equals(firstChar.toLowerCase())) {
@@ -53,38 +61,40 @@ public class ISpinner extends JSpinner {
 
     private void setChangeListener() {
         changeListener = e -> {
-            try {
-                DbObject guiObject = editedListener.getGuiObject();
-                if (guiObject != null) {
-                    ISpinner spinner = (ISpinner) e.getSource();
-                    String newVal = String.valueOf(spinner.getValue());
+            if (!selecting) {
+                try {
+                    DbObject guiObject = editedListener.getGuiObject();
+                    if (guiObject != null) {
+                        ISpinner spinner = (ISpinner) e.getSource();
+                        String newVal = String.valueOf(spinner.getValue());
 
-                    Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
-                    Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
+                        Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
+                        Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                    String oldVal = String.valueOf(getMethod.invoke(guiObject));
-                    switch (fieldClass.getTypeName()) {
-                        case "int":
-                            setMethod.invoke(guiObject, Integer.valueOf(newVal));
-                            break;
-                        case "double":
-                            setMethod.invoke(guiObject, Double.valueOf(newVal));
-                            break;
-                        case "float":
-                            setMethod.invoke(guiObject, Float.valueOf(newVal));
-                            break;
-                        case "long":
-                            setMethod.invoke(guiObject, Long.valueOf(newVal));
-                            break;
-                        default:
-                            setMethod.invoke(guiObject, newVal);
-                            break;
+                        String oldVal = String.valueOf(getMethod.invoke(guiObject));
+                        switch (fieldClass.getTypeName()) {
+                            case "int":
+                                setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                                break;
+                            case "double":
+                                setMethod.invoke(guiObject, Double.valueOf(newVal));
+                                break;
+                            case "float":
+                                setMethod.invoke(guiObject, Float.valueOf(newVal));
+                                break;
+                            case "long":
+                                setMethod.invoke(guiObject, Long.valueOf(newVal));
+                                break;
+                            default:
+                                setMethod.invoke(guiObject, newVal);
+                                break;
+                        }
+
+                        editedListener.onValueChanged(ISpinner.this, fieldName, oldVal, newVal);
                     }
-
-                    editedListener.onValueChanged(ISpinner.this, fieldName, oldVal, newVal);
+                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-                e1.printStackTrace();
             }
         };
         addChangeListener(changeListener);
