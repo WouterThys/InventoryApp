@@ -7,10 +7,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.*;
+import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -35,6 +34,8 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     protected Application application;
     protected boolean updating;
+
+    protected boolean isShown = false;
 
     protected int dialogResult = -1;
 
@@ -298,7 +299,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     @Override
     public void windowActivated(WindowEvent e) {
-
+        isShown = true;
     }
 
     @Override

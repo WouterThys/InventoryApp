@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.classes.PcbItemItemLink;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.GuiInterface;
@@ -89,30 +91,34 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                 Item item = match.getItem();
 
                 descriptionTf.setText(item.getDescription());
-//                if (item.getDimensionType() != null) {
-//                    footprintTf.setText(item.getDimensionType().getName());
-//                } else {
-//                    if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
-//                        footprintTf.setText(item.getPackageType().getPackageType().getName());
-//                    } else {
-//                        footprintTf.setText("");
-//                    }
-//                }
-                setValueTf.setText(item.getValue().toString());
+                if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+                    PackageType pt = item.getPackageType();
+                    String footprint = pt.getPackage() + "/" + pt;
+                    footprintTf.setText(footprint);
+                } else {
+                    footprintTf.setText("");
+                }
+                if (item.getValue().hasValue()) {
+                    setValueTf.setText(item.getValue().toString());
+                } else {
+                    setValueTf.setText("");
+                }
             } else { // SetItem
                 Item item = match.getItem();
 
                 descriptionTf.setText(item.getDescription());
-//                if (item.getDimensionType() != null) {
-//                    footprintTf.setText(item.getDimensionType().getName());
-//                } else {
-//                    if (item.getPackageType() != null && item.getPackageType().getPackageType() != null) {
-//                        footprintTf.setText(item.getPackageType().getPackageType().getName());
-//                    } else {
-//                        footprintTf.setText("");
-//                    }
-//                }
-                setValueTf.setText(match.getSetItem().getValue().toString());
+                if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+                    PackageType pt = item.getPackageType();
+                    String footprint = pt.getPackage() + "/" + pt;
+                    footprintTf.setText(footprint);
+                } else {
+                    footprintTf.setText("");
+                }
+                if (match.getSetItem().getValue().hasValue()) {
+                    setValueTf.setText(match.getSetItem().getValue().toString());
+                } else {
+                    setValueTf.setText("");
+                }
             }
         } else {
             descriptionTf.clearText();

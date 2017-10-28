@@ -261,7 +261,7 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        if (initialized) {
+        if (isShown) {
             return newItem;
         } else {
             return null;

@@ -26,7 +26,7 @@ public class IOrderHistoryTableModel extends IAbstractTableModel<Order> {
                 case -1:
                     return component;
                 case 0: // Name
-                    return component.getName();
+                    return component.toString();
                 case 1: // Date
                     if (component.isOrdered()) {
                         return DateUtils.formatDateTime(component.getDateOrdered());

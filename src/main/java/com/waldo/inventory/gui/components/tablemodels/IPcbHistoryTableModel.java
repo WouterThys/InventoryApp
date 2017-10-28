@@ -19,9 +19,9 @@ public class IPcbHistoryTableModel extends IAbstractTableModel<ProjectPcb> {
                 case -1:
                     return component;
                 case 0: // Name
-                    return component.getName();
+                    return component.toString();
                 case 1: // Project
-                    return component.getProject().getName();
+                    return component.getProject().toString();
                 case 2: // Open
                     return "";
             }

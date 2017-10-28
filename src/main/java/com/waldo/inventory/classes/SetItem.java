@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -49,7 +50,11 @@ public class SetItem extends DbObject {
 
     @Override
     public String toString() {
-        return getName() + " - " + getValue();
+        String s = getName() + " - " + getValue();
+        if (Main.DEBUG_MODE) {
+            s += " (" + getId() + ")";
+        }
+        return s;
     }
 
     @Override

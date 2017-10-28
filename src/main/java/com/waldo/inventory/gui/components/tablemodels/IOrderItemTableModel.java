@@ -24,13 +24,13 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                 case -1: // Reference to object itself
                     return orderItem;
                 case 0: // Name
-                    return orderItem.getItem().getName();
+                    return orderItem.getItem().toString();
                 case 1: // Description
                     return orderItem.getItem().getDescription();
                 case 2: // Manufacturer
                     Manufacturer m = SearchManager.sm().findManufacturerById(orderItem.getItem().getManufacturerId());
                     if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
-                        return m.getName();
+                        return m.toString();
                     }
                     return "";
                 case 3: // Reference

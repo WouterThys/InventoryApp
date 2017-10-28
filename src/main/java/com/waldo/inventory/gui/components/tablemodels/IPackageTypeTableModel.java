@@ -18,7 +18,7 @@ public class IPackageTypeTableModel extends IAbstractTableModel<PackageType> {
                 case -1:
                     return type;
                 case 0: // Name
-                    return type.getName();
+                    return type.toString();
                 case 1: // Pins
                     return type.getDefaultPins();
                 case 2: // Description

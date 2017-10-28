@@ -34,7 +34,7 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 case 0: // Amount label
                     return item;
                 case 1: // Name
-                    return item.getName();
+                    return item.toString();
                 case 2: // Description
                     return item.getDescription();
                 case 3: // Manufacturer

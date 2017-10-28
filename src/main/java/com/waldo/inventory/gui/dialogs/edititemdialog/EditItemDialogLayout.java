@@ -56,7 +56,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     Item originalItem;
 
     boolean isNew = false;
-    boolean initialized = false;
 
     EditItemDialogLayout(Application application, String title) {
         super(application, title);
@@ -107,9 +106,9 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
 
-        componentPanel.updateComponents();
-        editItemStockPanel.updateComponents();
-        editItemOrderPanel.updateComponents();
+        //componentPanel.updateComponents();
+        //editItemStockPanel.updateComponents();
+        //editItemOrderPanel.updateComponents();
 
         // Add tabs
         tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.Tab.Component"), componentPanel, "Component info");
@@ -130,7 +129,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     @Override
     public void updateComponents(Object... object) {
         try {
-            initialized = false;
             application.beginWait();
             if (!newItem.getIconPath().isEmpty()) {
                 try {
@@ -147,7 +145,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
             //componentPanel.updateComponents(null);
         } finally {
             application.endWait();
-            initialized = true;
         }
     }
 

@@ -1,8 +1,10 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.managers.LogManager;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Comparator;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -142,6 +144,9 @@ public abstract class DbObject {
         if (id == UNKNOWN_ID) {
             return "";
         }
+        if (Main.DEBUG_MODE) {
+           return name + " (" + id + ")";
+        }
         return name;
     }
 
@@ -214,6 +219,7 @@ public abstract class DbObject {
         if (name == null) {
             name = "";
         }
+
         return name;
     }
 

@@ -129,4 +129,5 @@ public class DbSettings extends DbSettingsObject {
     public void setDbType(String dbType) {
         this.dbType = dbType;
     }
+
 }

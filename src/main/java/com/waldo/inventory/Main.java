@@ -12,7 +12,12 @@ import java.sql.SQLException;
 public class Main {
 
     private static final LogManager LOG = LogManager.LOG(Main.class);
+
+    private static final String CO = "CACHE_ONLY";
+    private static final String DM = "DEBUG_MODE";
+
     public static boolean CACHE_ONLY = false;
+    public static boolean DEBUG_MODE = false;
 
     public static void main(String[] args) throws SQLException {
         String startUpPath = new File("").getAbsolutePath() + File.separator;
@@ -42,8 +47,11 @@ public class Main {
                     String value = split[1];
 
                     switch (param) {
-                        case "CACHE_ONLY":
+                        case CO:
                             CACHE_ONLY = Boolean.valueOf(value);
+                            break;
+                        case DM:
+                            DEBUG_MODE = Boolean.valueOf(value);
                             break;
                     }
                 }

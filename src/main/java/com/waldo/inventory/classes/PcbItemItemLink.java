@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -70,6 +71,15 @@ public class PcbItemItemLink extends DbObject {
 
         isSetItem = true;
         itemId = -1;
+    }
+
+    @Override
+    public String toString() {
+        String s = getName();
+        if (Main.DEBUG_MODE) {
+            s += " (" + getId() + ")";
+        }
+        return s;
     }
 
     @Override

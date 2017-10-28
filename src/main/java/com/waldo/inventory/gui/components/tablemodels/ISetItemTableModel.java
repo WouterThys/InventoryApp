@@ -4,7 +4,6 @@ import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.gui.components.ILabel;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
 
@@ -27,7 +26,7 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
                 case 0: // Amount label
                     return setItem;
                 case 1: // Name
-                    return setItem.getName();
+                    return setItem.toString();
                 case 2: // Value
                     return setItem.getValue();
                 case 3: // Locations

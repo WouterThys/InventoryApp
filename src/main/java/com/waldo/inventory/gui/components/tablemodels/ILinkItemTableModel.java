@@ -28,7 +28,7 @@ public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
                         return match.getItem();
                     }
                 case 1: // Name
-                    return match.getName();
+                    return match.toString();
                 case 2: // Match name
                     return match.hasNameMatch();
                 case 3: // Value match

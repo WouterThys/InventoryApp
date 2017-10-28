@@ -23,19 +23,19 @@ public class IParserItemLinkTableModel extends IAbstractTableModel<ParserItemLin
                     return link.getPcbItemName();
                 case 1: // Category
                     if (link.getCategoryId() > DbObject.UNKNOWN_ID) {
-                        return link.getCategory().getName();
+                        return link.getCategory().toString();
                     } else {
                         return "";
                     }
                 case 2: // Product
                     if (link.getProductId() > DbObject.UNKNOWN_ID) {
-                        return link.getProduct().getName();
+                        return link.getProduct().toString();
                     } else {
                         return "";
                     }
                 case 3: // Type
                     if (link.getTypeId() > DbObject.UNKNOWN_ID) {
-                        return link.getType().getName();
+                        return link.getType().toString();
                     } else {
                         return "";
                     }

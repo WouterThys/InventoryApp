@@ -687,17 +687,23 @@ public class PanelUtils {
 
         @Override
         public void updateComponents(Object... args) {
+            PackageType pt = null;
             if (args.length > 0 && args[0] != null) {
-                packageType = (PackageType) args[0];
+                pt = (PackageType) args[0];
             } else {
                 packageType = null;
+            }
+
+            if (packageType != null && packageType.getId() == pt.getId()) {
+                return;
+            } else {
+                packageType = pt;
             }
 
             if (packageType != null && !packageType.isUnknown()) {
                 Package p = packageType.getPackage();
                 if (p != null) {
-                    application.beginWait();
-                    try {
+
                         packageCb.selectItem(p);
                         typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
                         if (packageType.isAllowOtherPinNumbers()) {
@@ -714,9 +720,7 @@ public class PanelUtils {
                         }
                         typeCb.selectItem(packageType);
                         typeCb.setEnabled(true);
-                    } finally {
-                        application.endWait();
-                    }
+
                 } else {
                     typeCb.setEnabled(false);
                     pinsSp.setEnabled(false);
