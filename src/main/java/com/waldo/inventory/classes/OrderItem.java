@@ -32,9 +32,10 @@ public class OrderItem extends DbObject {
         super(TABLE_NAME);
 
         setOrderId(orderId);
-
         setItemId(itemId);
         setAmount(amount);
+
+        setName(getOrder().toString() + " - " + getItem().toString());
     }
 
     @Override

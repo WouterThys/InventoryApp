@@ -2,7 +2,6 @@ package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.PcbItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -516,6 +515,16 @@ public class SearchManager {
         for (OrderItem oi : db().getOrderItems()) {
             if (oi.getItemId() == itemId) {
                 orders.add(oi.getOrder());
+            }
+        }
+        return orders;
+    }
+
+    public List<Order> findPlannedOrders() {
+        List<Order> orders = new ArrayList<>();
+        for (Order o : db().getOrders()) {
+            if (!o.isUnknown() && !o.isOrdered()) {
+                orders.add(o);
             }
         }
         return orders;

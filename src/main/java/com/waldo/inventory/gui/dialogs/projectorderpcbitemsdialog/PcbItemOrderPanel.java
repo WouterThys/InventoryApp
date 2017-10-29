@@ -171,10 +171,17 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
         List<OrderItem> orderItems = new ArrayList<>();
         if (order != null)  {
             for (PcbItem item : getPcbItemsToOrder()) {
-                OrderItem orderItem = new OrderItem(order.getId(), item.getId(), item.getOrderAmount());
+                OrderItem orderItem = new OrderItem(order.getId(), item.getMatchedItemLink().getItemId(), item.getOrderAmount());
                 order.addItemToList(orderItem);
+
+                item.setOrderItem(orderItem);
+                //item.setOrderAmount(0);
+
+                orderItems.add(orderItem);
             }
         }
+        pcbTableUpdate();
+        updateEnabledComponents();
         return orderItems;
     }
 
@@ -222,7 +229,7 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component component = super.prepareRenderer(renderer, row, column);
-                PcbItem p = (PcbItem) getValueAtRow(row);
+                PcbItem p = getValueAtRow(row);
 
                 if (!isRowSelected(row)) {
                     component.setBackground(getBackground());
@@ -233,6 +240,12 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
                             component.setBackground(colorResource.readColor("Blue.Light"));
                         }
                     }
+                }
+
+                if (p.isOrdered()) {
+                    component.setForeground(Color.gray);
+                } else {
+                    component.setForeground(Color.black);
                 }
 
                 return component;
@@ -330,7 +343,7 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
         JPanel addToOrderPnl = new JPanel(new BorderLayout());
         JPanel sizePanel = new JPanel(new BorderLayout());
 
-        sizePanel.add(new ILabel("# items to order: ", ILabel.RIGHT), BorderLayout.WEST);
+        sizePanel.add(new ILabel("# items to selectedOrder: ", ILabel.RIGHT), BorderLayout.WEST);
         sizePanel.add(orderSizeLbl, BorderLayout.CENTER);
 
         addToOrderPnl.add(addToOrderBtn, BorderLayout.EAST);

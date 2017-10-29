@@ -40,6 +40,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return (columnIndex == 0); // Amount is editable
+        PcbItem item = (PcbItem) getValueAt(rowIndex, -1);
+        return !item.isOrdered() && (columnIndex == 0);
     }
 }
