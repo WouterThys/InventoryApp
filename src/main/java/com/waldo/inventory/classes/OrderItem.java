@@ -28,6 +28,15 @@ public class OrderItem extends DbObject {
         super(TABLE_NAME);
     }
 
+    public OrderItem(long orderId, long itemId, int amount) {
+        super(TABLE_NAME);
+
+        setOrderId(orderId);
+
+        setItemId(itemId);
+        setAmount(amount);
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         statement.setString(1, name);

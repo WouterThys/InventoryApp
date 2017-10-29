@@ -1,11 +1,15 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
-import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
-
 
     public OrderPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
@@ -16,49 +20,30 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
 
     }
 
+
     //
-    // Actions
+    // Dialog
     //
     @Override
-    void onAddAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
-            if (item.getMatchedItemLink().isSetItem()) {
-                item.setOrderAmount(1);
-            } else {
-                item.setOrderAmount(item.getReferences().size());
-            }
-        }
-        pcbTableUpdate();
+    protected void onOK() {
+        super.onOK();
     }
 
     @Override
-    void onRemAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
-            item.setOrderAmount(0);
-        }
-        pcbTableUpdate();
+    public void windowActivated(WindowEvent e) {
+        super.windowActivated(e);
+
+        OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item, true);
+        dialog.showDialog();
     }
 
+    //
+    // Button clicked
+    //
     @Override
-    void onAddOne(PcbItem pcbItem) {
-        if (pcbItem != null) {
-            pcbItem.setOrderAmount(pcbItem.getOrderAmount() + 1);
-            pcbTableUpdate();
-        }
+    public void actionPerformed(ActionEvent e) {
+        List<OrderItem> orderItems = pcbItemPnl.createOrderItems(order);
     }
 
-    @Override
-    void onRemOne(PcbItem pcbItem) {
-        if (pcbItem != null) {
-            if (pcbItem.getOrderAmount() > 0) {
-                pcbItem.setOrderAmount(pcbItem.getOrderAmount() - 1);
-                pcbTableUpdate();
-            }
-        }
-    }
 
-    @Override
-    void onCalculate() {
-
-    }
 }

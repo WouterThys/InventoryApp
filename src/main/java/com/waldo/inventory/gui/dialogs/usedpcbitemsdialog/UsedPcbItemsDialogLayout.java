@@ -7,7 +7,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
-import com.waldo.inventory.gui.dialogs.pcbitemorderdialog.extras.PcbItemPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -24,7 +23,7 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements Action
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     LinkPcbPanel pcbPanel;
-    PcbItemPanel usedPanel;
+    //PcbItemOrderPanel usedPanel;
 
     UsedAction addToUsed;
     UsedAction removeFromUsed;
@@ -56,12 +55,12 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements Action
         addToUsed.setEnabled(enable);
         removeFromUsed.setEnabled(enable);
 
-        getButtonOK().setEnabled(usedPanel.hasOrderItems());
+        //getButtonOK().setEnabled(usedPanel.hasOrderItems());
     }
 
     void addTableListeners(ListSelectionListener kcListListener, ListSelectionListener orderListListener) {
         pcbPanel.addListSelectionListener(kcListListener);
-        usedPanel.addListSelectionListener(orderListListener);
+        //usedPanel.addListSelectionListener(orderListListener);
     }
 
     /*
@@ -77,7 +76,7 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements Action
 
         // Panels
         pcbPanel = new LinkPcbPanel(application, ILinkKiCadTableModel.ORDER_COMPONENTS);
-        usedPanel = new PcbItemPanel(application);
+        //usedPanel = new PcbItemOrderPanel(application);
         //usedPanel.addOnAmountChangedListener(this);
 
         // Actions
@@ -116,7 +115,7 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements Action
 
         mainPanel.add(pcbPanel);
         mainPanel.add(buttonPanel);
-        mainPanel.add(usedPanel);
+        //mainPanel.add(usedPanel);
 
         getContentPanel().add(mainPanel, BorderLayout.CENTER);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
