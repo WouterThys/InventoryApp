@@ -257,10 +257,10 @@ public class Order extends DbObject {
     public void updateItemReferences() {
         if (getDistributor() != null && getOrderItems().size() > 0) {
             for (OrderItem oi : orderItems) {
-                DistributorPart distributorPart = sm().findPartNumber(getDistributor().getId(), oi.getItemId());
-                if (distributorPart != null) {
-                    if (oi.getDistributorPartId() != distributorPart.getId()) {
-                        oi.setDistributorPartId(distributorPart.getId());
+                DistributorPartLink distributorPartLink = sm().findPartNumber(getDistributor().getId(), oi.getItemId());
+                if (distributorPartLink != null) {
+                    if (oi.getDistributorPartId() != distributorPartLink.getId()) {
+                        oi.setDistributorPartId(distributorPartLink.getId());
                         oi.save();
                     }
                 } else {

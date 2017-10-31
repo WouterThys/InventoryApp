@@ -22,7 +22,7 @@ public class OrderItem extends DbObject {
     private Item item;
     private int amount;
     private long distributorPartId;
-    private DistributorPart distributorPart;
+    private DistributorPartLink distributorPartLink;
 
     public OrderItem() {
         super(TABLE_NAME);
@@ -156,24 +156,24 @@ public class OrderItem extends DbObject {
     }
 
     public void setDistributorPartId(long distributorPartId) {
-        distributorPart = null;
+        distributorPartLink = null;
         this.distributorPartId = distributorPartId;
     }
 
     public void setDistributorPartId(String ref) {
-        DistributorPart number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
+        DistributorPartLink number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
         if (number == null) {
-            number = new DistributorPart(getOrder().getDistributorId(), getItemId());
+            number = new DistributorPartLink(getOrder().getDistributorId(), getItemId());
         }
         number.setItemRef(ref);
         distributorPartId = number.getId();
     }
 
-    public DistributorPart getDistributorPart() {
-        if (distributorPart == null) {
-            distributorPart = sm().findPartNumberById(distributorPartId);
+    public DistributorPartLink getDistributorPartLink() {
+        if (distributorPartLink == null) {
+            distributorPartLink = sm().findPartNumberById(distributorPartId);
         }
-        return distributorPart;
+        return distributorPartLink;
     }
 
     public Order getOrder() {

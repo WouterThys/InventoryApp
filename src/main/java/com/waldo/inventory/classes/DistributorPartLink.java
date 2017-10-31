@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,19 +9,23 @@ import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 
-public class DistributorPart extends DbObject {
+public class DistributorPartLink extends DbObject {
 
     public static final String TABLE_NAME = "distributorParts";
 
     private long distributorId;
+    private Distributor distributor;
+
     private long itemId;
+    private Item item;
+
     private String itemRef;
 
-    public DistributorPart() {
+    public DistributorPartLink() {
         super(TABLE_NAME);
     }
 
-    public DistributorPart(long distributorId, long itemId) {
+    public DistributorPartLink(long distributorId, long itemId) {
         super(TABLE_NAME);
         this.distributorId = distributorId;
         this.itemId = itemId;
@@ -28,12 +33,11 @@ public class DistributorPart extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, name);
-        statement.setString(2, iconPath);
-        statement.setLong(3, distributorId);
-        statement.setLong(4, itemId);
-        statement.setString(5, itemRef);
-        return 6;
+        int ndx = addBaseParameters(statement);
+        statement.setLong(ndx++, distributorId);
+        statement.setLong(ndx++, itemId);
+        statement.setString(ndx++, itemRef);
+        return ndx;
     }
 
     @Override
@@ -48,18 +52,18 @@ public class DistributorPart extends DbObject {
     }
 
     @Override
-    public DistributorPart createCopy(DbObject copyInto) {
-        DistributorPart distributorPart = (DistributorPart) copyInto;
-        copyBaseFields(distributorPart);
-        distributorPart.setDistributorId(getDistributorId());
-        distributorPart.setItemId(getItemId());
-        distributorPart.setItemRef(getItemRef());
-        return distributorPart;
+    public DistributorPartLink createCopy(DbObject copyInto) {
+        DistributorPartLink distributorPartLink = (DistributorPartLink) copyInto;
+        copyBaseFields(distributorPartLink);
+        distributorPartLink.setDistributorId(getDistributorId());
+        distributorPartLink.setItemId(getItemId());
+        distributorPartLink.setItemRef(getItemRef());
+        return distributorPartLink;
     }
 
     @Override
-    public DistributorPart createCopy() {
-        return createCopy(new DistributorPart());
+    public DistributorPartLink createCopy() {
+        return createCopy(new DistributorPartLink());
     }
 
     //
@@ -69,26 +73,24 @@ public class DistributorPart extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<DistributorPart> list = db().getDistributorParts();
+                List<DistributorPartLink> list = db().getDistributorPartLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                // TODO db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onDistr);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                // TODO db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onDistributorsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<DistributorPart> list = db().getDistributorParts();
+                List<DistributorPartLink> list = db().getDistributorPartLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                // TODO db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onDistributorsChangedListenerList);
                 break;
             }
         }
+        // No listeners..
     }
 
 
@@ -97,7 +99,15 @@ public class DistributorPart extends DbObject {
     }
 
     public void setDistributorId(long distributorId) {
+        distributor = null;
         this.distributorId = distributorId;
+    }
+
+    public Distributor getDistributor() {
+        if (distributor == null) {
+            distributor = SearchManager.sm().findDistributorById(distributorId);
+        }
+        return distributor;
     }
 
     public long getItemId() {
@@ -105,7 +115,15 @@ public class DistributorPart extends DbObject {
     }
 
     public void setItemId(long itemId) {
+        item = null;
         this.itemId = itemId;
+    }
+
+    public Item getItem() {
+        if (item == null) {
+            item = SearchManager.sm().findItemById(itemId);
+        }
+        return item;
     }
 
     public String getItemRef() {

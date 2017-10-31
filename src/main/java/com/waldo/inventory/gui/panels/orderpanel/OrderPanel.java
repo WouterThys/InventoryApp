@@ -29,7 +29,7 @@ public class OrderPanel extends OrderPanelLayout {
     private DbObjectChangedListener<Item> itemsChanged;
     private DbObjectChangedListener<Order> ordersChanged;
     private DbObjectChangedListener<OrderItem> orderItemsChanged;
-    private DbObjectChangedListener<DistributorPart> partNumbersChanged;
+    private DbObjectChangedListener<DistributorPartLink> partNumbersChanged;
 
     public OrderPanel(Application application) {
         super(application);
@@ -69,9 +69,9 @@ public class OrderPanel extends OrderPanelLayout {
                 orderItem.setName(item.toString() + " - " + order.toString());
 
                 // Part number
-                DistributorPart distributorPart = sm().findPartNumber(order.getDistributorId(), item.getId());
-                if (distributorPart != null) {
-                    orderItem.setDistributorPartId(distributorPart.getId());
+                DistributorPartLink distributorPartLink = sm().findPartNumber(order.getDistributorId(), item.getId());
+                if (distributorPartLink != null) {
+                    orderItem.setDistributorPartId(distributorPartLink.getId());
                 }
 
                 orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
@@ -94,9 +94,9 @@ public class OrderPanel extends OrderPanelLayout {
             if (!order.containsItemId(oi.getItemId())) {
 
                 // Part number
-                DistributorPart distributorPart = sm().findPartNumber(order.getDistributorId(), oi.getId());
-                if (distributorPart != null) {
-                    oi.setDistributorPartId(distributorPart.getId());
+                DistributorPartLink distributorPartLink = sm().findPartNumber(order.getDistributorId(), oi.getId());
+                if (distributorPartLink != null) {
+                    oi.setDistributorPartId(distributorPartLink.getId());
                 }
 
                 oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
@@ -337,27 +337,27 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setPartNumbersChangedListener() {
-        partNumbersChanged = new DbObjectChangedListener<DistributorPart>() {
+        partNumbersChanged = new DbObjectChangedListener<DistributorPartLink>() {
             @Override
-            public void onInserted(DistributorPart distributorPart) {
+            public void onInserted(DistributorPartLink distributorPartLink) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(distributorPart.getItemId())) {
+                    if (selectedOrder.containsItemId(distributorPartLink.getItemId())) {
                         tableUpdate();
                     }
                 }
             }
 
             @Override
-            public void onUpdated(DistributorPart newDistributorPart) {
+            public void onUpdated(DistributorPartLink newDistributorPartLink) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(newDistributorPart.getItemId())) {
+                    if (selectedOrder.containsItemId(newDistributorPartLink.getItemId())) {
                         tableUpdate();
                     }
                 }
             }
 
             @Override
-            public void onDeleted(DistributorPart distributorPart) {
+            public void onDeleted(DistributorPartLink distributorPartLink) {
                 // Should not happen
             }
 

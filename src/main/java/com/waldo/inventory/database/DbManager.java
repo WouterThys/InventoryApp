@@ -65,7 +65,7 @@ public class DbManager {
     public List<DbObjectChangedListener<LocationType>> onLocationTYpeChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<DistributorPart>> onPartNumbersChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<DistributorPartLink>> onPartNumbersChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ProjectIDE>> onProjectIDEChangedListenerList = new ArrayList<>();
@@ -93,7 +93,7 @@ public class DbManager {
     private List<Order> orders;
     private List<OrderItem> orderItems;
     private List<Distributor> distributors;
-    private List<DistributorPart> distributorParts;
+    private List<DistributorPartLink> distributorPartLinks;
     private List<PackageType> packageTypes;
     private List<Project> projects;
     private List<ProjectIDE> projectIDES;
@@ -246,7 +246,7 @@ public class DbManager {
         orders = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrdersChangedListenerList);
         orderItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderItemsChangedListenerList);
         distributors = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDistributorsChangedListenerList);
-        distributorParts = null;
+        distributorPartLinks = null;
         packageTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageTypesChangedListenerList);
         projects = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectChangedListenerList);
         projectIDES = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectIDEChangedListenerList);
@@ -385,7 +385,7 @@ public class DbManager {
         }
     }
 
-    public void addOnPartNumbersChangedListener(DbObjectChangedListener<DistributorPart> dbObjectChangedListener) {
+    public void addOnPartNumbersChangedListener(DbObjectChangedListener<DistributorPartLink> dbObjectChangedListener) {
         if (!onPartNumbersChangedListenerList.contains(dbObjectChangedListener)) {
             onPartNumbersChangedListenerList.add(dbObjectChangedListener);
         }
@@ -1115,27 +1115,27 @@ public class DbManager {
     /*
     *                  PART NUMBERS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<DistributorPart> getDistributorParts()    {
-        if (distributorParts == null) {
+    public List<DistributorPartLink> getDistributorPartLinks()    {
+        if (distributorPartLinks == null) {
             updateDistributorParts();
         }
-        return distributorParts;
+        return distributorPartLinks;
     }
 
     private void updateDistributorParts()    {
-        distributorParts = new ArrayList<>();
+        distributorPartLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return;
         }
         Status().setMessage("Fetching distributor parts from DB");
-        DistributorPart pn = null;
-        String sql = scriptResource.readString(DistributorPart.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        DistributorPartLink pn = null;
+        String sql = scriptResource.readString(DistributorPartLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    pn = new DistributorPart();
+                    pn = new DistributorPartLink();
                     pn.setId(rs.getLong("id"));
                     pn.setName(rs.getString("name"));
                     pn.setIconPath(rs.getString("iconPath"));
@@ -1145,7 +1145,7 @@ public class DbManager {
 
                     pn.setInserted(true);
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
-                        distributorParts.add(pn);
+                        distributorPartLinks.add(pn);
                     }
                 }
             }

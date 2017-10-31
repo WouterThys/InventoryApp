@@ -492,8 +492,8 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPart findPartNumber(long distributorId, long itemId) {
-        for (DistributorPart pn : db().getDistributorParts()) {
+    public DistributorPartLink findPartNumber(long distributorId, long itemId) {
+        for (DistributorPartLink pn : db().getDistributorPartLinks()) {
             if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
                 return pn;
             }
@@ -501,8 +501,8 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPart findPartNumberById(long id) {
-        for (DistributorPart pn : db().getDistributorParts()) {
+    public DistributorPartLink findPartNumberById(long id) {
+        for (DistributorPartLink pn : db().getDistributorPartLinks()) {
             if (pn.getId() == id) {
                 return  pn;
             }

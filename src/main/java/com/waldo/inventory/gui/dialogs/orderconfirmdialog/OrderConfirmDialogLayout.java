@@ -116,7 +116,7 @@ public abstract class OrderConfirmDialogLayout extends IDialog implements Action
             String[] amounts = new String[orderItemList.size()];
             for (int i = 0; i < references.length; i++) {
                 OrderItem orderItem = orderItemList.get(i);
-                references[i] = orderItem.getDistributorPart().getItemRef();
+                references[i] = orderItem.getDistributorPartLink().getItemRef();
                 amounts[i] = String.valueOf(orderItem.getAmount());
             }
             orderFileTableModel = new DefaultTableModel();

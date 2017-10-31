@@ -152,7 +152,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
     private String createOrderText(Order order) {
         StringBuilder builder = new StringBuilder();
         for (OrderItem orderItem : order.getOrderItems()) {
-            builder.append(orderItem.getDistributorPart().getItemRef());
+            builder.append(orderItem.getDistributorPartLink().getItemRef());
             builder.append(order.getDistributor().getOrderFileFormat().getSeparator());
             builder.append(orderItem.getAmount());
             builder.append("\n");
