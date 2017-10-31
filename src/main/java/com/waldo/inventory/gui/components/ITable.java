@@ -81,8 +81,10 @@ public class ITable<T> extends JTable {
     public void selectItem(T item) {
         if (item != null) {
             int row = model.getModelIndex(item);
-            int real = convertRowIndexToView(row);
-            setRowSelectionInterval(real, real);
+            if (row >= 0) {
+                int real = convertRowIndexToView(row);
+                setRowSelectionInterval(real, real);
+            }
         } else {
             clearSelection();
         }
