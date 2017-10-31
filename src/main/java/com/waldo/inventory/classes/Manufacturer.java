@@ -87,11 +87,9 @@ public class Manufacturer extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onManufacturerChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onManufacturerChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -99,10 +97,10 @@ public class Manufacturer extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onManufacturerChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onManufacturerChangedListenerList);
     }
 
     public void setWebsite(String website) {

@@ -1,31 +1,32 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
-import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.DistributorPartLink;
 import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ITable;
+import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.tablemodels.IDistributorPartTableModel;
+import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
+import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
-import static com.waldo.inventory.managers.SearchManager.sm;
+public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, DbObjectChangedListener<DistributorPartLink> {
 
-public class EditItemOrderPanel extends JPanel implements GuiInterface {
+    private IDistributorPartTableModel tableModel;
+    private ITable<DistributorPartLink> linkTable;
+    private IdBToolBar toolBar;
 
     private Item newItem;
-    private DistributorPartLink distributorPartLink;
-
-    private IComboBox<Distributor> distributorCb;
-    private ITextField itemRefField;
+    private boolean first = true;
 
     // Listener
     private Application application;
@@ -35,105 +36,131 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface {
         this.application = application;
         this.newItem = newItem;
         this.editedListener = listener;
+
+        DbManager.db().addOnDistributorPartLinkChangedListener(this);
     }
 
-    public void setPartNumber() {
-        String ref = itemRefField.getText();
-        if (ref != null && !ref.isEmpty()) {
-            ref = ref.trim();
-            try {
-                Distributor d = (Distributor) distributorCb.getSelectedItem();
-                if (newItem.getId() < 0) {
-                    JOptionPane.showMessageDialog(
-                            EditItemOrderPanel.this,
-                            "Save item first..",
-                            "Error saving",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                } else {
-                    distributorPartLink = sm().findPartNumber(d.getId(), newItem.getId());
-                    if (distributorPartLink == null) {
-                        distributorPartLink = new DistributorPartLink();
-                    }
-                    distributorPartLink.setItemId(newItem.getId());
-                    distributorPartLink.setDistributorId(d.getId());
-                    distributorPartLink.setItemRef(ref);
-                    distributorPartLink.save();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            itemRefField.setError("No reference");
-        }
+    private void updateEnabledComponents() {
+        boolean enable = linkTable.getSelectedItem() != null;
+
+        toolBar.setEditActionEnabled(enable);
+        toolBar.setDeleteActionEnabled(enable);
     }
 
-    public boolean checkChange() {
-        boolean result = false;
-        String ref = itemRefField.getText();
-        Distributor d = (Distributor) distributorCb.getSelectedItem();
-        if (d != null && !d.isUnknown() && newItem.getId() > DbObject.UNKNOWN_ID) {
-            DistributorPartLink dp = sm().findPartNumber(d.getId(), newItem.getId());
-            result = !ref.isEmpty() && ((dp == null) || (!dp.getItemRef().equals(ref)));
-        }
-
-        return result;
-    }
-
-    private ActionListener createDistributorListener() {
-        return e -> {
-            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(application, "Manufacturers");
-            if (manufacturersDialog.showDialog() == IDialog.OK) {
-                updateManufacturerCombobox();
-            }
-        };
-    }
-
-    private void updateManufacturerCombobox() {
-        distributorCb.updateList();
-        distributorCb.setSelectedItem(newItem.getManufacturer());
+    //
+    // Toolbar
+    //
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+        first = true;
+        updateComponents();
     }
 
     @Override
-    public void initializeComponents() {
-        distributorCb = new IComboBox<>(db().getDistributors(), new DbObjectNameComparator<>(), true);
-        distributorCb.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                distributorPartLink = sm().findPartNumber(((Distributor)e.getItem()).getId(), newItem.getId());
-                if (distributorPartLink != null) {
-                    itemRefField.setText(distributorPartLink.getItemRef());
-                } else {
-                    itemRefField.setText("");
-                }
-            }
-        });
+    public void onToolBarAdd(IdBToolBar source) {
+        DistributorPartLink link = new DistributorPartLink(newItem.getId());
+        EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, "Add link", link);
+        if (dialog.showDialog() == IDialog.OK) {
+            link.save();
+        }
+    }
 
-        itemRefField = new ITextField("Distributor reference");
-        itemRefField.addEditedListener(editedListener, "");
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+        DistributorPartLink link = linkTable.getSelectedItem();
+        if (link != null) {
+            int res = JOptionPane.showConfirmDialog(EditItemOrderPanel.this,
+                    "Do you realy want to delete this link?",
+                    "Delete link",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (res == JOptionPane.YES_OPTION) {
+                link.delete();
+            }
+        }
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+        DistributorPartLink link = linkTable.getSelectedItem();
+        if (link != null) {
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, "Edit link", link);
+            if (dialog.showDialog() == IDialog.OK) {
+                link.save();
+            }
+        }
+    }
+
+    //
+    // Db listener
+    //
+    @Override
+    public void onInserted(DistributorPartLink link) {
+        tableModel.addItem(link);
+        linkTable.selectItem(link);
+        updateEnabledComponents();
+    }
+
+    @Override
+    public void onUpdated(DistributorPartLink link) {
+        tableModel.updateTable();
+        linkTable.selectItem(link);
+        updateEnabledComponents();
+    }
+
+    @Override
+    public void onDeleted(DistributorPartLink link) {
+        linkTable.selectItem(null);
+        tableModel.removeItem(link);
+        updateEnabledComponents();
+    }
+
+    @Override
+    public void onCacheCleared() {
+
+    }
+
+    //
+    // Gui
+    //
+    @Override
+    public void initializeComponents() {
+        // Table
+        tableModel = new IDistributorPartTableModel();
+        linkTable = new ITable<>(tableModel);
+        linkTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
+
+        // Toolbar
+        toolBar  = new IdBToolBar(this, IdBToolBar.VERTICAL);
     }
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(panel);
-        gbc.addLineVertical("Distributor: ", PanelUtils.createComboBoxWithButton(distributorCb, createDistributorListener()));
-        gbc.addLineVertical("Reference: ", itemRefField);
+        JPanel distributorPanel = new JPanel(new BorderLayout());
+
+        JScrollPane pane = new JScrollPane(linkTable);
+        pane.setPreferredSize(new Dimension(300, 300));
+
+        distributorPanel.add(pane, BorderLayout.CENTER);
+        distributorPanel.add(toolBar, BorderLayout.EAST);
+        distributorPanel.setBorder(PanelUtils.createTitleBorder("Distributor reference"));
 
         // Add to panel
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        add(panel, BorderLayout.NORTH);
+        add(distributorPanel);
     }
 
     @Override
     public void updateComponents(Object... object) {
-        if (distributorCb.getModel().getSize() > 0) {
-            distributorCb.setSelectedIndex(0);
+        if (newItem != null) {
+            if (first) {
+                List<DistributorPartLink> linkList = SearchManager.sm().findDistributorPartLinksForItem(newItem.getId());
+                tableModel.setItemList(linkList);
+                first = false;
+            }
         }
-    }
-
-    public ITextField getItemRefField() {
-        return itemRefField;
+        updateEnabledComponents();
     }
 }

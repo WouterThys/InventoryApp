@@ -492,7 +492,7 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPartLink findPartNumber(long distributorId, long itemId) {
+    public DistributorPartLink findDistributorPartLink(long distributorId, long itemId) {
         for (DistributorPartLink pn : db().getDistributorPartLinks()) {
             if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
                 return pn;
@@ -501,13 +501,25 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPartLink findPartNumberById(long id) {
+    public DistributorPartLink findDistributorPartLinkById(long id) {
         for (DistributorPartLink pn : db().getDistributorPartLinks()) {
             if (pn.getId() == id) {
                 return  pn;
             }
         }
         return null;
+    }
+
+    public List<DistributorPartLink> findDistributorPartLinksForItem(long itemId) {
+        List<DistributorPartLink> linkList = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (DistributorPartLink link : db().getDistributorPartLinks()) {
+                if (link.getItemId() == itemId) {
+                    linkList.add(link);
+                }
+            }
+        }
+        return linkList;
     }
 
     public List<Order> findOrdersForItem(long itemId) {

@@ -89,11 +89,9 @@ public class OrderItem extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onOrderItemsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onOrderItemsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
@@ -101,10 +99,10 @@ public class OrderItem extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onOrderItemsChangedListenerList);
                 break;
             }
         }
+        db().notifyListeners(changedHow, this, db().onOrderItemsChangedListenerList);
     }
 
     public static OrderItem createDummyOrderItem(Order order, Item item) {
@@ -161,7 +159,7 @@ public class OrderItem extends DbObject {
     }
 
     public void setDistributorPartId(String ref) {
-        DistributorPartLink number = SearchManager.sm().findPartNumber(getOrder().getId(), getItemId());
+        DistributorPartLink number = SearchManager.sm().findDistributorPartLink(getOrder().getId(), getItemId());
         if (number == null) {
             number = new DistributorPartLink(getOrder().getDistributorId(), getItemId());
         }
@@ -171,7 +169,7 @@ public class OrderItem extends DbObject {
 
     public DistributorPartLink getDistributorPartLink() {
         if (distributorPartLink == null) {
-            distributorPartLink = sm().findPartNumberById(distributorPartId);
+            distributorPartLink = sm().findDistributorPartLinkById(distributorPartId);
         }
         return distributorPartLink;
     }

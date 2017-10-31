@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.gui.dialogs.graphsdialog.GraphsDialog;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
+import com.waldo.inventory.gui.dialogs.graphsdialog.GraphsDialog;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
 import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
@@ -143,7 +143,13 @@ public class MenuBar extends JMenuBar {
         });
     }
 
-    private ActionListener distributorsSelected() { return  e -> DistributorsDialog.showDialog(application); }
+    private ActionListener distributorsSelected() {
+        //return  e -> DistributorsDialog.showDialog(application);
+        return (e -> {
+            DistributorsDialog dialog = new DistributorsDialog(application, "Distributors");
+            dialog.showDialog();
+        });
+    }
 
     private ActionListener importFromCsvSelected() {
         return (e -> {

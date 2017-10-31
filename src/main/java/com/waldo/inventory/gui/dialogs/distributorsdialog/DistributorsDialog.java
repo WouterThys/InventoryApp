@@ -20,19 +20,19 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class DistributorsDialog extends DistributorsDialogLayout {
 
 
-    public static int showDialog(Application application) {
-        DistributorsDialog dd = new DistributorsDialog(application, "Distributors");
-        dd.setLocationRelativeTo(application);
-        dd.pack();
-        dd.setMinimumSize(dd.getSize());
-        dd.setVisible(true);
-        return dd.dialogResult;
-    }
+//    public static int showDialog(Application application) {
+//        DistributorsDialog dd = new DistributorsDialog(application, "Distributors");
+//        dd.setLocationRelativeTo(application);
+//        dd.pack();
+//        dd.setMinimumSize(dd.getSize());
+//        dd.setVisible(true);
+//        return dd.dialogResult;
+//    }
 
     private boolean canClose = true;
 
 
-    private DistributorsDialog(Application application, String title) {
+    public DistributorsDialog(Application application, String title) {
         super(application, title);
 
         initializeComponents();

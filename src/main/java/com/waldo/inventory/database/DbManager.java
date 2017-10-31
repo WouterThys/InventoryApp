@@ -79,6 +79,7 @@ public class DbManager {
     public List<DbObjectChangedListener<ProjectOther>> onProjectOtherChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
     public List<DbObjectChangedListener<ParserItemLink>> onParserItemLinkChangedListenerList = new ArrayList<>();
+    public List<DbObjectChangedListener<DistributorPartLink>> onDistributorPartLinkChangedListenerList = new ArrayList<>();
 
     // Part numbers...
 
@@ -460,6 +461,12 @@ public class DbManager {
     public void addOnParserItemLinkChangedListener(DbObjectChangedListener<ParserItemLink> dbObjectChangedListener) {
         if (!onParserItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
             onParserItemLinkChangedListenerList.add(dbObjectChangedListener);
+        }
+    }
+
+    public void addOnDistributorPartLinkChangedListener(DbObjectChangedListener<DistributorPartLink> dbObjectChangedListener) {
+        if (!onDistributorPartLinkChangedListenerList.contains(dbObjectChangedListener)) {
+            onDistributorPartLinkChangedListenerList.add(dbObjectChangedListener);
         }
     }
 

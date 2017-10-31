@@ -102,12 +102,6 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
-            // Part number
-            if (partNumberChanged) {
-                editItemOrderPanel.setPartNumber();
-                partNumberChanged = false;
-            }
-
             newItem.save();
             originalItem = newItem.createCopy();
 
@@ -248,15 +242,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         if (fieldName.equals("Name")) {
             getTitleNameLabel().setText(String.valueOf(newValue));
         }
-
-        // Distributor part
-        if (editItemOrderPanel.getItemRefField().equals(component)) {
-            partNumberChanged = editItemOrderPanel.checkChange();
-            getButtonNeutral().setEnabled(partNumberChanged);
-        } else {
-            getButtonNeutral().setEnabled(checkChange());
-        }
-
+        getButtonNeutral().setEnabled(checkChange());
     }
 
     @Override

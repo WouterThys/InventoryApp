@@ -25,18 +25,24 @@ public class DistributorPartLink extends DbObject {
         super(TABLE_NAME);
     }
 
+    public DistributorPartLink(long itemId) {
+        super(TABLE_NAME);
+
+        setItemId(itemId);
+    }
+
     public DistributorPartLink(long distributorId, long itemId) {
         super(TABLE_NAME);
-        this.distributorId = distributorId;
-        this.itemId = itemId;
+        setDistributorId(distributorId);
+        setItemId(itemId);
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
-        statement.setLong(ndx++, distributorId);
-        statement.setLong(ndx++, itemId);
-        statement.setString(ndx++, itemRef);
+        statement.setLong(ndx++, getDistributorId());
+        statement.setLong(ndx++, getItemId());
+        statement.setString(ndx++, getItemRef());
         return ndx;
     }
 
@@ -90,7 +96,7 @@ public class DistributorPartLink extends DbObject {
                 break;
             }
         }
-        // No listeners..
+        db().notifyListeners(changedHow, this, db().onDistributorPartLinkChangedListenerList);
     }
 
 

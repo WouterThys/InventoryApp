@@ -69,7 +69,7 @@ public class OrderPanel extends OrderPanelLayout {
                 orderItem.setName(item.toString() + " - " + order.toString());
 
                 // Part number
-                DistributorPartLink distributorPartLink = sm().findPartNumber(order.getDistributorId(), item.getId());
+                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), item.getId());
                 if (distributorPartLink != null) {
                     orderItem.setDistributorPartId(distributorPartLink.getId());
                 }
@@ -94,7 +94,7 @@ public class OrderPanel extends OrderPanelLayout {
             if (!order.containsItemId(oi.getItemId())) {
 
                 // Part number
-                DistributorPartLink distributorPartLink = sm().findPartNumber(order.getDistributorId(), oi.getId());
+                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), oi.getId());
                 if (distributorPartLink != null) {
                     oi.setDistributorPartId(distributorPartLink.getId());
                 }

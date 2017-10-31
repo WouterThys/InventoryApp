@@ -65,6 +65,14 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public void removeItem(T itemToDelete) {
+        if (itemToDelete != null) {
+            List<T> itemList = new ArrayList<>();
+            itemList.add(itemToDelete);
+            removeItems(itemList);
+        }
+    }
+
     public void removeItems(List<T> itemsToDelete) {
         for(T t : itemsToDelete) {
             int ndx = itemList.indexOf(t);
@@ -74,6 +82,14 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         }
         if (comparator != null) {
             this.itemList.sort(comparator);
+        }
+    }
+
+    public void addItem(T itemToAdd) {
+        if (itemToAdd != null) {
+            List<T> itemList = new ArrayList<>();
+            itemList.add(itemToAdd);
+            addItems(itemList);
         }
     }
 

@@ -41,7 +41,7 @@ public class OrderItemDetailPanel extends OrderItemDetailPanelLayout {
             int amount = ((Number)amountTf.getValue()).intValue();
             orderItem.setAmount(amount);
             // Reference table
-            DistributorPartLink number = SearchManager.sm().findPartNumber(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
+            DistributorPartLink number = SearchManager.sm().findDistributorPartLink(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
             if (number == null) {
                 if (!itemRef.isEmpty()) {
                     number = new DistributorPartLink(orderItem.getOrder().getDistributor().getId(), orderItem.getItemId());
