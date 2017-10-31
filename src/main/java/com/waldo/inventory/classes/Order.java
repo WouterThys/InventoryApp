@@ -35,6 +35,8 @@ public class Order extends DbObject {
     private String orderReference;
     private String trackingNumber;
 
+    private List<OrderItem> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         dateModified = DateUtils.now();
@@ -218,6 +220,14 @@ public class Order extends DbObject {
         }
     }
 
+    public void addItemToTempList(OrderItem item) {
+        if (item != null) {
+            if (!tempOrderItems.contains(item)) {
+                tempOrderItems.add(item);
+            }
+        }
+    }
+
     public void removeItemFromList(OrderItem item) {
         if (item != null) {
             if (orderItems.contains(item)) {
@@ -232,6 +242,14 @@ public class Order extends DbObject {
                     item.getItem().setOrderState(Statics.ItemOrderStates.NONE);
                     item.getItem().save();
                 });
+            }
+        }
+    }
+
+    public void removeItemFromTempList(OrderItem item) {
+        if (item != null) {
+            if (orderItems.contains(item)) {
+                orderItems.remove(item);
             }
         }
     }
@@ -431,6 +449,14 @@ public class Order extends DbObject {
 
     public void setTrackingNumber(String trackingNumber) {
         this.trackingNumber = trackingNumber;
+    }
+
+    public List<OrderItem> getTempOrderItems() {
+        return tempOrderItems;
+    }
+
+    public void clearTempOrderList() {
+        tempOrderItems.clear();
     }
 
     //

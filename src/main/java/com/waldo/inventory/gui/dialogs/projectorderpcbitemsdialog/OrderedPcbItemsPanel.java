@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemOrderTableModel;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,14 +19,18 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {    
-    
+
+    interface OrderListener {
+        void onDoOrder();
+    }
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private IPcbItemOrderTableModel orderTableModel;
     private ITable<OrderItem> orderTable;
 
-    private JButton removeFromOrderBtn;
+    private JButton doOrderBtn;
 
     private AbstractAction addOneAa;
     private AbstractAction remOneAa;
@@ -35,13 +40,17 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private List<Order> orderList = new ArrayList<>();
+    List<Order> orderList = new ArrayList<>();
     private Order selectedOrder;
+
+    private OrderListener orderListener;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public OrderedPcbItemsPanel() {
+    public OrderedPcbItemsPanel(OrderListener orderListener) {
+
+        this.orderListener = orderListener;
 
         initializeComponents();
         initializeLayouts();
@@ -53,13 +62,16 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
         boolean hasOrder = selectedOrder != null;
-        boolean selected = hasOrder && orderTableGetSelectedItem() != null ;
+        OrderItem selectedOrderItem = orderTableGetSelectedItem();
+        boolean selected = hasOrder &&  selectedOrderItem!= null && selectedOrderItem.getId() < DbObject.UNKNOWN_ID;
 
         addOneAa.setEnabled(selected);
         remOneAa.setEnabled(selected);
 
         refreshAa.setEnabled(hasOrder);
         remAllAa.setEnabled(hasOrder);
+
+        doOrderBtn.setEnabled(hasOrder);
     }
 
     void orderTableUpdate() {
@@ -74,13 +86,13 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
     // Actions
     //
     private void onAddOne(OrderItem orderItem) {
-        if (orderItem != null) {
+        if (orderItem != null && orderItem.getId() < DbObject.UNKNOWN_ID) {
             orderItem.setAmount(orderItem.getAmount() + 1);
         }
     }
 
     private void onRemOne(OrderItem orderItem) {
-        if (orderItem != null) {
+        if (orderItem != null && orderItem.getId() < DbObject.UNKNOWN_ID) {
             if (orderItem.getAmount() > 0) {
                 orderItem.setAmount(orderItem.getAmount() - 1);
             }
@@ -88,7 +100,7 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
     }
 
     private void onRemAll() {
-        for (OrderItem orderItem : selectedOrder.getOrderItems()) {
+        for (OrderItem orderItem : selectedOrder.getTempOrderItems()) {
             onRemOne(orderItem);
         }
     }
@@ -97,7 +109,7 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
         List<Order> orders = new ArrayList<>(orderList);
         for (Order order : orders) {
             // Check items
-            List<OrderItem> itemList = new ArrayList<>(order.getOrderItems());
+            List<OrderItem> itemList = new ArrayList<>(order.getTempOrderItems());
             for (OrderItem item : itemList ) {
                 if (item.getId() < DbObject.UNKNOWN_ID && item.getAmount() == 0) {
                     order.removeItemFromList(item);
@@ -105,7 +117,7 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
             }
 
             // Check order
-            if (order.getOrderItems().size() == 0) {
+            if (order.getTempOrderItems().size() == 0) {
                 orderList.remove(order);
             }
         }
@@ -119,6 +131,7 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
             List<OrderItem> orderItems = new ArrayList<>();
             for (Order order : orderList) {
                 orderItems.addAll(order.getOrderItems());
+                orderItems.addAll(order.getTempOrderItems());
             }
             orderTableModel.setItemList(orderItems);
         } else {
@@ -140,6 +153,12 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
         pcbToolBar.add(refreshAa);
 
         return pcbToolBar;
+    }
+
+    private void onDoOrder() {
+        if (orderListener != null) {
+            orderListener.onDoOrder();
+        }
     }
 
     /*
@@ -184,7 +203,21 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
 
         // Table
         orderTableModel = new IPcbItemOrderTableModel();
-        orderTable = new ITable<>(orderTableModel);
+        orderTable = new ITable<OrderItem>(orderTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                OrderItem oi = getValueAtRow(row);
+
+                if (oi.getId() > DbObject.UNKNOWN_ID) {
+                    component.setForeground(Color.gray);
+                } else {
+                    component.setForeground(Color.black);
+                }
+
+                return component;
+            }
+        };
         orderTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
 
         TableColumn tableColumn = orderTable.getColumnModel().getColumn(2);
@@ -202,7 +235,8 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
         orderTable.getColumnModel().getColumn(2).setMaxWidth(60);
 
         // Button
-        removeFromOrderBtn = new JButton(imageResource.readImage("Projects.Order.RemoveFromBtn"));
+        doOrderBtn = new JButton(imageResource.readImage("Projects.Order.DoOrder"));
+        doOrderBtn.addActionListener(e -> onDoOrder());
     }
 
     @Override
@@ -213,7 +247,7 @@ public class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
         JScrollPane pane = new JScrollPane(orderTable);
         pane.setPreferredSize(new Dimension(600, 300));
         JPanel removeOrderPnl = new JPanel(new BorderLayout());
-        removeOrderPnl.add(removeFromOrderBtn, BorderLayout.WEST);
+        removeOrderPnl.add(doOrderBtn, BorderLayout.WEST);
 
         add(createOrderToolBar(), BorderLayout.PAGE_START);
         add(pane, BorderLayout.CENTER);

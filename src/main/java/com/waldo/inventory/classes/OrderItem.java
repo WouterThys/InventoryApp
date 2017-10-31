@@ -40,6 +40,12 @@ public class OrderItem extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
+        String name = "";
+        try {
+            name = getOrder().getName() + " - " + getItem().getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         statement.setString(1, name);
         statement.setLong(2, orderId);
         statement.setLong(3, itemId);

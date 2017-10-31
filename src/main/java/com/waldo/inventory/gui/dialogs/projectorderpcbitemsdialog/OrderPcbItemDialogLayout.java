@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -17,7 +15,9 @@ import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class OrderPcbItemDialogLayout extends IDialog implements ActionListener {
+public abstract class OrderPcbItemDialogLayout extends IDialog implements
+        PcbItemOrderPanel.PcbItemListener,
+        OrderedPcbItemsPanel.OrderListener {
 
     /*
     *                  COMPONENTS
@@ -47,10 +47,7 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements Action
     abstract ActionListener onChangeOrder();
 
     private void updateOrder(Order order) {
-
-
-        // TODO: find items in order
-
+        // Combo box
         application.beginWait();
         try {
             selectedOrder = order;
@@ -65,6 +62,21 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements Action
         } finally {
             application.endWait();
         }
+
+        // Find items already in order
+        if (selectedOrder != null && selectedPcb != null) {
+            for (OrderItem oi : selectedOrder.getOrderItems()) {
+                for (PcbItem pcb : pcbItemPnl.pcbTableGetItemList()) {
+                    if (oi.getItemId() == pcb.getMatchedItemLink().getItemId()) {
+                        pcb.setOrderItem(oi);
+                        pcb.setOrderAmount(oi.getAmount());
+                        break;
+                    }
+                }
+            }
+            pcbItemPnl.pcbTableUpdate();
+        }
+        orderPnl.updateComponents(selectedOrder);
     }
 
     /*
@@ -76,8 +88,6 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements Action
         setResizable(true);
         setTitleIcon(imageResource.readImage("Projects.Order.Title"));
         setTitleName(getTitle());
-        getButtonOK().setToolTipText("Order");
-        getButtonOK().setEnabled(false);
 
         // Order
         orderCb = new IComboBox<>(new ArrayList<>(), new DbObject.DbObjectNameComparator<>(), true);
@@ -89,7 +99,7 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements Action
 
         // Panels
         pcbItemPnl = new PcbItemOrderPanel(this);
-        orderPnl = new OrderedPcbItemsPanel();
+        orderPnl = new OrderedPcbItemsPanel(this);
 
     }
 

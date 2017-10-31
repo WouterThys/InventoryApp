@@ -1,17 +1,18 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.*;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
-import java.awt.event.ActionEvent;
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
+public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements DbObjectChangedListener<Order> {
 
     public OrderPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
@@ -20,6 +21,8 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
 
         initializeComponents();
         initializeLayouts();
+
+        DbManager.db().addOnOrdersChangedListener(this);
     }
 
 
@@ -32,12 +35,34 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
         }
     }
 
+    private void removeUnorderedItems() {
+        for (PcbItem pcbItem : pcbItemPnl.pcbTableGetItemList()) {
+            if (pcbItem.isOrdered()) {
+                OrderItem orderItem = pcbItem.getOrderItem();
+                if (orderItem.getId() < DbObject.UNKNOWN_ID) {
+                    // Remove it from order
+                    orderItem.getOrder().removeItemFromList(orderItem);
+                    // Remove from pcb item
+                    pcbItem.setOrderAmount(0);
+                    pcbItem.setOrderItem(null);
+                }
+            }
+        }
+    }
+
     //
     // Dialog
     //
     @Override
     protected void onOK() {
+        removeUnorderedItems();
         super.onOK();
+    }
+
+    @Override
+    protected void onCancel() {
+        removeUnorderedItems();
+        super.onCancel();
     }
 
     @Override
@@ -47,10 +72,53 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout {
     }
 
     //
-    // Button clicked
+    // Left panel listeners
     //
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void onDoOrder() {
+        if (selectedOrder != null) {
+            application.addOrderItemsToOrder(selectedOrder.getTempOrderItems(), selectedOrder);
+
+            selectedOrder.clearTempOrderList();
+
+            selectedOrder.save();
+        }
+    }
+
+    //
+    // Order changed
+    //
+    @Override
+    public void onInserted(Order order) {
+//        for (OrderItem orderItem : order.getOrderItems()) {
+//            orderItem.save();
+//        }
+        SwingUtilities.invokeLater(() -> orderPnl.orderTableUpdate());
+    }
+
+    @Override
+    public void onUpdated(Order order) {
+//        for (OrderItem orderItem : order.getOrderItems()) {
+//            orderItem.save();
+//        }
+        SwingUtilities.invokeLater(() -> orderPnl.orderTableUpdate());
+    }
+
+    @Override
+    public void onDeleted(Order order) {
+        // Should not happen
+    }
+
+    @Override
+    public void onCacheCleared() {
+        // Ignore
+    }
+
+    //
+    // Right panel listeners
+    //
+    @Override
+    public void onAddToOrder() {
         if (selectedOrder == null || selectedOrder.isUnknown()) {
             selectOrder();
         } else {
