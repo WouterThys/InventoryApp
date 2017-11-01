@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.classes.Category;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -23,8 +23,6 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     private int currentTabIndex = 0;
     private boolean canClose = true;
-    private boolean partNumberChanged = false;
-    private boolean locationChanged = false;
 
     public EditItemDialog(Application application, String title, Item item)  {
         super(application, title);
@@ -34,18 +32,16 @@ public class EditItemDialog extends EditItemDialogLayout {
             setLocationByPlatform(true);
         }
         setValues(item);
-        isNew = false;
         initializeComponents();
         initializeLayouts();
-        initListeners();
         initActions();
         updateComponents();
     }
 
-    public EditItemDialog(Application application, String title) {
-        this(application, title, new Item());
-        isNew = true;
-    }
+//    public EditItemDialog(Application application, String title) {
+//        this(application, title, new Item());
+//        isNew = true;
+//    }
 
     private void setValues(Item item) {
         newItem = item;
@@ -60,30 +56,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         // Component panel actions
         initCategoryChangedAction();
         initProductChangedAction();
-    }
-
-    private void initListeners() {
-        DbManager.db().addOnPackageChangedListener(new DbObjectChangedListener<Package>() {
-            @Override
-            public void onInserted(Package p) {
-                newItem.setPackageTypeId(p.getId());
-                newItem.save();
-                originalItem = newItem.createCopy();
-            }
-
-            @Override
-            public void onUpdated(Package p) {
-                //componentPanel.updateComponents(null);
-            }
-
-            @Override
-            public void onDeleted(Package p) {
-                componentPanel.updateComponents();
-            }
-
-            @Override
-            public void onCacheCleared() {}
-        });
     }
 
     @Override
@@ -214,7 +186,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             componentPanel.setNameFieldError("Name can not be empty");
             ok = false;
         } else {
-            if (isNew) {
+            if (newItem.getId() < DbObject.UNKNOWN_ID) {
                 Item check = sm().findItemByName(name);
                 if (check != null) {
                     componentPanel.setNameFieldError("Name already exists in items");

@@ -4,6 +4,7 @@ import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
+import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -19,6 +20,7 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.nio.file.Path;
@@ -43,7 +45,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     // Details
     private PanelUtils.IPackagePanel packagePnl;
-    private IComboBox<Manufacturer> manufacturerComboBox;
+    private IComboBox<Manufacturer> manufacturerCb;
     private ILabel iconLabel;
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
@@ -81,9 +83,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private void updateManufacturerCbValues() {
-        if (manufacturerComboBox != null) {
-            manufacturerComboBox.updateList();
-            manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
+        if (manufacturerCb != null) {
+            manufacturerCb.updateList(DbManager.db().getManufacturers());
+            manufacturerCb.setSelectedItem(newItem.getManufacturer());
         }
     }
 
@@ -140,9 +142,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private void createManufacturerCb() {
-        manufacturerComboBox = new IComboBox<>(db().getManufacturers(), new DbObjectNameComparator<>(), true);
-        manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
-        manufacturerComboBox.addEditedListener(editedListener, "manufacturerId");
+        manufacturerCb = new IComboBox<>(db().getManufacturers(), new DbObjectNameComparator<>(), true);
+        manufacturerCb.setSelectedItem(newItem.getManufacturer());
+        manufacturerCb.addEditedListener(editedListener, "manufacturerId");
     }
 
     private ActionListener createDivisionListener() {
@@ -222,14 +224,15 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // Manufacturer
         createManufacturerCb();
-        manufacturerComboBox.addEditedListener(editedListener, "manufacturerId");
-        manufacturerComboBox.setName(EditItemDialogLayout.COMP_MANUFACTURER);
-        manufacturerComboBox.addItemListener(e -> {
-            Manufacturer m = (Manufacturer) e.getItem();
-            if (m != null) {
-                if (!m.getIconPath().isEmpty()) {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                    iconLabel.setIcon(path.toString(), 100, 100);
+        manufacturerCb.setName(EditItemDialogLayout.COMP_MANUFACTURER);
+        manufacturerCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                Manufacturer m = (Manufacturer) manufacturerCb.getSelectedItem();
+                if (m != null) {
+                    if (!m.getIconPath().isEmpty()) {
+                        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
+                        iconLabel.setIcon(path.toString(), 100, 100);
+                    }
                 }
             }
         });
@@ -336,7 +339,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // MANUFACTURER
         gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
-        gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerComboBox, createManufacturerAddListener()));
+        gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
         gbc.add(iconLabel, 2,0,1,1);
 
         // REMARKS
@@ -428,7 +431,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // MANUFACTURER
         if (newItem.getManufacturerId() >= 0) {
-            manufacturerComboBox.setSelectedItem(newItem.getManufacturer());
+            manufacturerCb.setSelectedItem(newItem.getManufacturer());
 
             // Set icon
             try {
@@ -443,8 +446,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 e1.printStackTrace();
             }
         } else {
-            if (manufacturerComboBox.getModel().getSize() > 0) {
-                manufacturerComboBox.setSelectedIndex(0);
+            if (manufacturerCb.getModel().getSize() > 0) {
+                manufacturerCb.setSelectedIndex(0);
             }
         }
 

@@ -300,14 +300,9 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        EditItemDialog dialog = new EditItemDialog(application, "Add item");
+        Item newItem = new Item();
+        EditItemDialog dialog = new EditItemDialog(application, "Add item", newItem);
         dialog.showDialog();
-//        if (dialog.showDialog() == EditItemDialog.OK) {
-//            Item newItem = dialog.getOrderItem();
-//            if (newItem != null) {
-//                newItem.save();
-//            }
-//        }
     }
 
     @Override

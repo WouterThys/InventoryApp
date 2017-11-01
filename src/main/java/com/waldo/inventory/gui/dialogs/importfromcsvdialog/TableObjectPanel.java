@@ -220,7 +220,8 @@ public class TableObjectPanel extends JPanel implements
 
             @Override
             public void onToolBarAdd(IdBToolBar source) {
-                EditItemDialog dialog = new EditItemDialog(application, "Add item");
+                Item newItem = new Item();
+                EditItemDialog dialog = new EditItemDialog(application, "Add item", newItem);
                 if (dialog.showDialog() == IDialog.OK) {
                     foundItem = dialog.getItem();
                     searchPanel.search(foundItem.getName());

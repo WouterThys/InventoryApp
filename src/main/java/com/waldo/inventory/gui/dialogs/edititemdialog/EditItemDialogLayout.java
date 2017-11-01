@@ -45,8 +45,8 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     ITabbedPane tabbedPane;
 
     ComponentPanel componentPanel;
-    EditItemStockPanel editItemStockPanel;
-    EditItemOrderPanel editItemOrderPanel;
+    private EditItemStockPanel editItemStockPanel;
+    private EditItemOrderPanel editItemOrderPanel;
 
 
     /*
@@ -55,7 +55,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     Item newItem;
     Item originalItem;
 
-    boolean isNew = false;
+//    boolean isNew = false;
 
     EditItemDialogLayout(Application application, String title) {
         super(application, title);
