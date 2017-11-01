@@ -15,13 +15,16 @@ public class Main {
 
     private static final String CO = "CACHE_ONLY";
     private static final String DM = "DEBUG_MODE";
+    private static final String FS = "FULL_SCREEN";
 
     public static boolean CACHE_ONLY = false;
     public static boolean DEBUG_MODE = false;
+    public static boolean FULL_SCREEN = false;
 
     public static void main(String[] args) throws SQLException {
         String startUpPath = new File("").getAbsolutePath() + File.separator;
         LOG.startup(startUpPath);
+
         readArguments(args);
 
         SwingUtilities.invokeLater(() -> {
@@ -29,9 +32,11 @@ public class Main {
 
             Application app = new Application(startUpPath);
             app.setTitle("Inventory");
-            app.setMinimumSize(new Dimension(1500,800));
             app.setLocationByPlatform(true);
-            //app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            app.setMinimumSize(new Dimension(1500, 800));
+            if (FULL_SCREEN) {
+                app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            }
             app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             app.setVisible(true);
         });
@@ -39,8 +44,8 @@ public class Main {
 
     private static void readArguments(String[] args) {
         if (args.length > 0) {
-            try {
-                for (String arg : args) {
+            for (String arg : args) {
+                try {
                     System.out.println("Reading main input parameter: " + arg);
                     String[] split = arg.split("=");
                     String param = split[0];
@@ -53,10 +58,13 @@ public class Main {
                         case DM:
                             DEBUG_MODE = Boolean.valueOf(value);
                             break;
+                        case FS:
+                            FULL_SCREEN = Boolean.valueOf(value);
+                            break;
                     }
+                } catch (Exception e) {
+                    System.err.println("Failed to read input params: " + e);
                 }
-            } catch (Exception e) {
-                System.err.println("Failed to read input params: " + e);
             }
         }
     }
@@ -114,9 +122,9 @@ public class Main {
         java.util.Enumeration keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
-            Object value = UIManager.get (key);
+            Object value = UIManager.get(key);
             if (value != null && value instanceof javax.swing.plaf.FontUIResource)
-                UIManager.put (key, f);
+                UIManager.put(key, f);
         }
     }
 
