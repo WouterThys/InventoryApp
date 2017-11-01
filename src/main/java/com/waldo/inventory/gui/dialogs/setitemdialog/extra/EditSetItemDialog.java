@@ -9,7 +9,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ISpinner;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
-import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocationDialog;
+import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,7 +88,7 @@ public class EditSetItemDialog extends IDialog {
         rowTf.setEnabled(false);
         setLocationBtn = new JButton("Set");
         setLocationBtn.addActionListener(e -> {
-            EditItemLocationDialog dialog = new EditItemLocationDialog(application, "Location", setItem.getLocation());
+            EditItemLocation dialog = new EditItemLocation(application, "Location", setItem.getLocation());
             if (dialog.showDialog() == IDialog.OK) {
                 Location newLoc = dialog.getItemLocation();
                 if (newLoc != null) {

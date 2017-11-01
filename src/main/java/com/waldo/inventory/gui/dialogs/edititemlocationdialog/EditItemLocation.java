@@ -7,10 +7,10 @@ import com.waldo.inventory.gui.Application;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
-public class EditItemLocationDialog extends EditItemLocationDialogLayout {
+public class EditItemLocation extends EditItemLocationLayout {
 
 
-    public EditItemLocationDialog(Application application, String title, Location location) {
+    public EditItemLocation(Application application, String title, Location location) {
         super(application, title);
 
         initializeComponents();

@@ -119,7 +119,6 @@ public class OrderPanel extends OrderPanelLayout {
             dialog.showDialog();
         });
         tbOrderFlowPanel.addReceivedClickListener(e -> {
-            // TODO open on second tab
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
             dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
         });

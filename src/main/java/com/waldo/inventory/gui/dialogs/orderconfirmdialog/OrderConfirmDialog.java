@@ -3,9 +3,13 @@ package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +18,13 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class OrderConfirmDialog extends OrderConfirmDialogLayout {
+public class OrderConfirmDialog extends OrderConfirmDialogLayout implements DbObjectChangedListener<Order> {
 
     public OrderConfirmDialog(Application application, String title, Order order) {
         super(application, title);
@@ -28,9 +33,14 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         initializeLayouts();
         updateComponents(order);
 
+        DbManager.db().addOnOrdersChangedListener(this);
+
         checkAndUpdate();
     }
 
+    //
+    // Dialog
+    //
     @Override
     protected void onOK() {
         if (currentPanel.equals(TAB_ORDER_DETAILS)) {
@@ -70,6 +80,9 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         }
     }
 
+    //
+    // Methods
+    //
     private void doOrder() {
         // Do order
         order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -99,6 +112,34 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
         }
         order.save();
         originalOrder = order.createCopy();
+    }
+
+    private void checkOrderedItemsLocations(Order order) {
+        if (order.isReceived()) {
+            // Find items without location
+            List<Item> itemsWithoutLocation = new ArrayList<>();
+            for (OrderItem oi : order.getOrderItems()) {
+                if (oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID) {
+                    itemsWithoutLocation.add(oi.getItem());
+                }
+            }
+
+            // There are items without location -> ask to set them
+            if (itemsWithoutLocation.size() > 0) {
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        "Some items do not have a location yet, do you want to set it now?",
+                        "New item locations",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (res == JOptionPane.YES_OPTION) {
+                    EditReceivedItemsLocationDialog dialog = new EditReceivedItemsLocationDialog(application, "Set location", itemsWithoutLocation);
+                    dialog.showDialog();
+                }
+            }
+        }
     }
 
     private void selectNext() {
@@ -192,6 +233,33 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
     }
 
     //
+    // Db edited listener
+    //
+    @Override
+    public void onInserted(Order order) {
+        if (order.isReceived()) {
+            checkOrderedItemsLocations(order);
+        }
+    }
+
+    @Override
+    public void onUpdated(Order order) {
+        if (order.isReceived()) {
+            checkOrderedItemsLocations(order);
+        }
+    }
+
+    @Override
+    public void onDeleted(Order order) {
+        // Should not happen
+    }
+
+    @Override
+    public void onCacheCleared() {
+        // Don't care at all
+    }
+
+    //
     // Buttons
     //
     @Override
@@ -244,6 +312,9 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        return order;
+        if (isShown) {
+            return order;
+        }
+        return null;
     }
 }

@@ -12,7 +12,7 @@ import com.waldo.inventory.gui.components.ILocationMapPanel;
 import java.awt.*;
 import java.awt.event.ItemListener;
 
-public abstract class EditItemLocationDialogLayout extends IDialog implements ItemListener {
+public abstract class EditItemLocationLayout extends IDialog implements ItemListener {
 
     /*
     *                  COMPONENTS
@@ -29,12 +29,13 @@ public abstract class EditItemLocationDialogLayout extends IDialog implements It
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditItemLocationDialogLayout(Application application, String title) {
+    EditItemLocationLayout(Application application, String title) {
         super(application, title);
 
         showTitlePanel(false);
-
     }
+
+
 
     /*
      *                   METHODS

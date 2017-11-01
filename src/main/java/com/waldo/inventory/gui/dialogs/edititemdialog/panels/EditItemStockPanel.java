@@ -8,7 +8,7 @@ import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocationDialog;
+import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -199,8 +199,8 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
         setLocationBtn = new JButton("Set");
         setLocationBtn.addActionListener(e -> {
-                EditItemLocationDialog dialog;
-                dialog = new EditItemLocationDialog(application,
+                EditItemLocation dialog;
+                dialog = new EditItemLocation(application,
                         "Select",
                         newItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {

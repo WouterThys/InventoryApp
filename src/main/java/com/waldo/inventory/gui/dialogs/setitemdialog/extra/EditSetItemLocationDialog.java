@@ -92,7 +92,7 @@ public class EditSetItemLocationDialog extends IDialog implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        EditItemLocationDialog dialog = new EditItemLocationDialog(application, "Locations", locationType, 0,0);
+//        EditItemLocation dialog = new EditItemLocation(application, "Locations", locationType, 0,0);
 //        if (dialog.showDialog() == IDialog.OK) {
 //            startLocation = SearchManager.sm().findLocation(
 //                    locationType.getId(),
