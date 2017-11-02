@@ -21,6 +21,8 @@ public class PcbItemProjectLink extends DbObject {
     private PcbItem pcbItem;
     private ProjectPcb projectPcb;
 
+    private int usedCount; // Amount used = amount not available anymore in stock
+
     // Needed because multiple links can point to same pcbItem
     private String sheetName;
 
@@ -61,6 +63,7 @@ public class PcbItemProjectLink extends DbObject {
 
         statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getProjectPcbId());
+        statement.setInt(ndx++, getUsedCount());
 
         // Pcb item variables relevant for project
         statement.setString(ndx++, references);
@@ -82,6 +85,7 @@ public class PcbItemProjectLink extends DbObject {
         // Add variables
         cpy.setPcbItemId(getPcbItemId());
         cpy.setProjectPcbId(getProjectPcbId());
+        cpy.setUsedCount(getUsedCount());
 
         return cpy;
     }
@@ -94,7 +98,6 @@ public class PcbItemProjectLink extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
@@ -172,5 +175,13 @@ public class PcbItemProjectLink extends DbObject {
             sheetName = "";
         }
         return sheetName;
+    }
+
+    public int getUsedCount() {
+        return usedCount;
+    }
+
+    public void setUsedCount(int usedCount) {
+        this.usedCount = usedCount;
     }
 }

@@ -1421,6 +1421,7 @@ public class DbManager {
                     p.setId(rs.getLong("id"));
                     p.setPcbItemId(rs.getLong("pcbItemId"));
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    p.setUsedCount(rs.getInt("usedCount"));
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
                     p.setSheetName(rs.getString("sheetName"));
 

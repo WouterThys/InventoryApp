@@ -90,17 +90,11 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements DbOb
     //
     @Override
     public void onInserted(Order order) {
-//        for (OrderItem orderItem : order.getOrderItems()) {
-//            orderItem.save();
-//        }
         SwingUtilities.invokeLater(() -> orderPnl.orderTableUpdate());
     }
 
     @Override
     public void onUpdated(Order order) {
-//        for (OrderItem orderItem : order.getOrderItems()) {
-//            orderItem.save();
-//        }
         SwingUtilities.invokeLater(() -> orderPnl.orderTableUpdate());
     }
 
@@ -118,7 +112,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements DbOb
     // Right panel listeners
     //
     @Override
-    public void onAddToOrder() {
+    public void onAdd() {
         if (selectedOrder == null || selectedOrder.isUnknown()) {
             selectOrder();
         } else {

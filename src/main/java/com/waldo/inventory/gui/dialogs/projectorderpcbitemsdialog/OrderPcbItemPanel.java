@@ -22,10 +22,10 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-class PcbItemOrderPanel extends JPanel implements GuiInterface {
+class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
     interface PcbItemListener {
-        void onAddToOrder();
+        void onAdd();
     }
 
     /*
@@ -54,7 +54,7 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public PcbItemOrderPanel(PcbItemListener pcbItemListener) {
+    public OrderPcbItemPanel(PcbItemListener pcbItemListener) {
 
         this.pcbItemListener = pcbItemListener;
 
@@ -152,7 +152,7 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
 
     private void onAddToOrder() {
         if (pcbItemListener != null) {
-            pcbItemListener.onAddToOrder();
+            pcbItemListener.onAdd();
         }
     }
 
@@ -355,7 +355,7 @@ class PcbItemOrderPanel extends JPanel implements GuiInterface {
         JPanel addToOrderPnl = new JPanel(new BorderLayout());
         JPanel sizePanel = new JPanel(new BorderLayout());
 
-        sizePanel.add(new ILabel("# items to selectedOrder: ", ILabel.RIGHT), BorderLayout.WEST);
+        sizePanel.add(new ILabel("# items to order: ", ILabel.RIGHT), BorderLayout.WEST);
         sizePanel.add(orderSizeLbl, BorderLayout.CENTER);
 
         addToOrderPnl.add(addToOrderBtn, BorderLayout.EAST);

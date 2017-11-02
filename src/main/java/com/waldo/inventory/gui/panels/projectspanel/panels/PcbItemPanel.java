@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
+import com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog.UsedPcbItemsDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -245,8 +246,8 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
             // Set used items
             if (projectPcb.hasLinkedItems()) {
                 // Used dialog
-                //UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Used items", linkedItems);
-                //dialog.showDialog();
+                UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Set used", projectPcb);
+                dialog.showDialog();
             } else {
                 JOptionPane.showMessageDialog(
                         this,

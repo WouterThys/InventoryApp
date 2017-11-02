@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class OrderPcbItemDialogLayout extends IDialog implements
-        PcbItemOrderPanel.PcbItemListener,
+        OrderPcbItemPanel.PcbItemListener,
         OrderedPcbItemsPanel.OrderListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-   PcbItemOrderPanel pcbItemPnl;
+   OrderPcbItemPanel pcbItemPnl;
    OrderedPcbItemsPanel orderPnl;
 
    private IComboBox<Order> orderCb;
@@ -98,7 +98,7 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements
         });
 
         // Panels
-        pcbItemPnl = new PcbItemOrderPanel(this);
+        pcbItemPnl = new OrderPcbItemPanel(this);
         orderPnl = new OrderedPcbItemsPanel(this);
 
     }
