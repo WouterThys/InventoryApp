@@ -808,6 +808,17 @@ public class SearchManager {
         return links;
     }
 
+    public PcbItemProjectLink findPcbItemProjectLink(long projectPcbId, long pcbItemId) {
+        if (projectPcbId > 0 && pcbItemId > 0) {
+            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
+                if (link.getProjectPcbId() == projectPcbId && link.getPcbItemId() == pcbItemId) {
+                    return link;
+                }
+            }
+        }
+        return null;
+    }
+
     public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId, String sheet) {
         if (pcbItemId > 0 && projectPcbId > 0) {
             for (PcbItemProjectLink pil : db().getPcbItemProjectLinks()) {

@@ -101,7 +101,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
 
     private void onRemAll() {
         for (OrderItem orderItem : selectedOrder.getTempOrderItems()) {
-            onRemOne(orderItem);
+            orderItem.setAmount(0);
         }
     }
 
@@ -247,7 +247,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
         JScrollPane pane = new JScrollPane(orderTable);
         pane.setPreferredSize(new Dimension(600, 300));
         JPanel removeOrderPnl = new JPanel(new BorderLayout());
-        removeOrderPnl.add(doOrderBtn, BorderLayout.WEST);
+        removeOrderPnl.add(doOrderBtn, BorderLayout.EAST);
 
         add(createOrderToolBar(), BorderLayout.PAGE_START);
         add(pane, BorderLayout.CENTER);

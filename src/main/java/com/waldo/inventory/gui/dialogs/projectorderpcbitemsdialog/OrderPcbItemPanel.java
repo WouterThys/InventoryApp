@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.AmountType;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -41,7 +42,6 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     private AbstractAction calculateAa;
 
     private JButton addToOrderBtn;
-
     private ILabel orderSizeLbl;
 
 
@@ -54,7 +54,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public OrderPcbItemPanel(PcbItemListener pcbItemListener) {
+    OrderPcbItemPanel(PcbItemListener pcbItemListener) {
 
         this.pcbItemListener = pcbItemListener;
 
@@ -68,9 +68,10 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
     public void updateEnabledComponents() {
         PcbItem selectedItem = pcbTableGetSelected();
+
         boolean selected = selectedItem != null && !selectedItem.isOrdered();
         int orderSize = orderSize();
-        boolean hasOrder = orderSize > 0;
+        boolean hasOrder = orderSize() > 0;
 
         addOneAa.setEnabled(selected);
         remOneAa.setEnabled(selected);
@@ -181,20 +182,17 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         return toOrder;
     }
 
-    public List<OrderItem> createOrderItems(Order order) {
-        List<OrderItem> orderItems = new ArrayList<>();
+    void createOrderItems(Order order) {
         if (order != null)  {
             for (PcbItem item : getPcbItemsToOrder()) {
                 OrderItem orderItem = new OrderItem(order.getId(), item.getMatchedItemLink().getItemId(), item.getOrderAmount());
                 order.addItemToTempList(orderItem);
 
                 item.setOrderItem(orderItem);
-                orderItems.add(orderItem);
             }
         }
         pcbTableUpdate();
         updateEnabledComponents();
-        return orderItems;
     }
 
     private List<PcbItem> getLinkedPcbItems(ProjectPcb pcb) {
@@ -236,7 +234,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        linkedPcbItemModel = new ILinkedPcbItemTableModel();
+        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.OrderAmount);
         linkedPcbItemTable = new ITable<PcbItem>(linkedPcbItemModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {

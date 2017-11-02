@@ -22,6 +22,7 @@ public class PcbItemProjectLink extends DbObject {
     private ProjectPcb projectPcb;
 
     private int usedCount; // Amount used = amount not available anymore in stock
+    private boolean used;
 
     // Needed because multiple links can point to same pcbItem
     private String sheetName;
@@ -64,6 +65,10 @@ public class PcbItemProjectLink extends DbObject {
         statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getProjectPcbId());
         statement.setInt(ndx++, getUsedCount());
+
+        if (getUsedCount() > 0) {
+            setUsed(true);
+        }
 
         // Pcb item variables relevant for project
         statement.setString(ndx++, references);
@@ -183,5 +188,13 @@ public class PcbItemProjectLink extends DbObject {
 
     public void setUsedCount(int usedCount) {
         this.usedCount = usedCount;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 }

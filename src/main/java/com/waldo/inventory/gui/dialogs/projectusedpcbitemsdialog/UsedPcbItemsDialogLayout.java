@@ -10,7 +10,9 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class UsedPcbItemsDialogLayout extends IDialog  {
+public abstract class UsedPcbItemsDialogLayout extends IDialog implements
+        UsedPcbItemPanel.PcbItemListener,
+        UsedConfirmedPanel.UsedListener {
 
     /*
     *                  COMPONENTS
@@ -49,8 +51,8 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog  {
         setTitleName(getTitle());
 
         // Panels
-        pcbItemPnl = new UsedPcbItemPanel();
-        usedPnl = new UsedConfirmedPanel();
+        pcbItemPnl = new UsedPcbItemPanel(this);
+        usedPnl = new UsedConfirmedPanel(this);
 
 
     }
@@ -77,15 +79,8 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog  {
 
     @Override
     public void updateComponents(Object... args) {
-        if (args.length > 0 && args[0] != null) {
-            ProjectPcb pcb = (ProjectPcb) args[0];
-
-            pcbItemPnl.updateComponents(pcb);
-        }
-
-        if (args.length > 1) {
-            //usedPnl((Order) args[1]);
-        }
+        pcbItemPnl.updateComponents(selectedPcb);
+        usedPnl.usedTableInit(pcbItemPnl.getAllLinks());
     }
 
 
