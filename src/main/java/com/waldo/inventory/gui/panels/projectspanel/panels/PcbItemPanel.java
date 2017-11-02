@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.PcbItemProjectLink;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -11,6 +12,7 @@ import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog.UsedPcbItemsDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -27,7 +29,8 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionListener, ChangeListener, ActionListener {
+public class PcbItemPanel extends JPanel implements
+        GuiInterface, ListSelectionListener, ChangeListener, ActionListener, IPcbItemModel.PcbItemListener {
 
     /*
      *                  COMPONENTS
@@ -85,7 +88,7 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
         for (String sheet : pcbItemMap.keySet()) {
-            PcbItemSheetTab tab = new PcbItemSheetTab(application, this);
+            PcbItemSheetTab tab = new PcbItemSheetTab(this, this);
             tab.updateComponents(pcbItemMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
@@ -260,4 +263,15 @@ public class PcbItemPanel extends JPanel implements GuiInterface, ListSelectionL
         updateEnabledComponents();
     }
 
+    //
+    // Table model listener
+    //
+
+    @Override
+    public PcbItemProjectLink onGetProjectLink(PcbItem pcbItem) {
+        if (projectPcb != null && pcbItem != null) {
+            return SearchManager.sm().findPcbItemProjectLink(projectPcb.getId(), pcbItem.getId());
+        }
+        return null;
+    }
 }

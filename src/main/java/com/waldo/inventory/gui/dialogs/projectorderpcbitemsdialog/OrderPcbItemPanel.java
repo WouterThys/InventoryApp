@@ -286,9 +286,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-
-        linkedPcbItemTable.getColumnModel().getColumn(0).setMinWidth(60);
-        linkedPcbItemTable.getColumnModel().getColumn(0).setMaxWidth(60);
+        linkedPcbItemTable.setExactColumnWidth(0, 60);
 
         // Actions
         addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {

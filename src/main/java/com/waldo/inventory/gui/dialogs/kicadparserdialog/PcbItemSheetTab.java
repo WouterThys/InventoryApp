@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.classes.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
@@ -23,14 +22,14 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
     private ListSelectionListener listSelectionListener;
+    private IPcbItemModel.PcbItemListener pcbItemListener;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public PcbItemSheetTab(Application application, ListSelectionListener listSelectionListener) {
-        this.application = application;
+    public PcbItemSheetTab(ListSelectionListener listSelectionListener, IPcbItemModel.PcbItemListener pcbItemListener) {
+        this.pcbItemListener = pcbItemListener;
         this.listSelectionListener = listSelectionListener;
         initializeComponents();
         initializeLayouts();
@@ -53,11 +52,14 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        pcbItemTableModel = new IPcbItemModel();
+        pcbItemTableModel = new IPcbItemModel(pcbItemListener);
         pcbItemTable = new ITable<>(pcbItemTableModel);
         pcbItemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
         pcbItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
-        pcbItemTable.getColumnModel().getColumn(0).setMaxWidth(30);
+        pcbItemTable.setExactColumnWidth(0, 30);
+        pcbItemTable.setExactColumnWidth(3, 18);
+        pcbItemTable.setExactColumnWidth(4, 18);
+        pcbItemTable.setExactColumnWidth(5, 18);
     }
 
     @Override

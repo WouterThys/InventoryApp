@@ -219,7 +219,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
             }
         };
         orderTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
-
+        orderTable.setExactColumnWidth(2, 60);
         TableColumn tableColumn = orderTable.getColumnModel().getColumn(2);
         tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
             @Override
@@ -230,9 +230,6 @@ class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-
-        orderTable.getColumnModel().getColumn(2).setMinWidth(60);
-        orderTable.getColumnModel().getColumn(2).setMaxWidth(60);
 
         // Button
         doOrderBtn = new JButton(imageResource.readImage("Projects.Order.DoOrder"));

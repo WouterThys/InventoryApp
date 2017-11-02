@@ -127,4 +127,12 @@ public class ITable<T> extends JTable {
         }
         return super.createDefaultTableHeader();
     }
+
+    public void setExactColumnWidth(int column, int width) {
+        TableColumn tableColumn = getColumnModel().getColumn(column);
+        if (tableColumn != null) {
+            tableColumn.setMaxWidth(width);
+            tableColumn.setMinWidth(width);
+        }
+    }
 }

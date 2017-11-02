@@ -72,7 +72,7 @@ public abstract class KiCadDialogLayout extends IDialog implements ActionListene
 
     void updateComponentTable(HashMap<String, List<PcbItem>> componentMap) {
         for (String sheet : componentMap.keySet()) {
-            PcbItemSheetTab tab = new PcbItemSheetTab(application, this);
+            PcbItemSheetTab tab = new PcbItemSheetTab(this, null);
             tab.updateComponents(componentMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }

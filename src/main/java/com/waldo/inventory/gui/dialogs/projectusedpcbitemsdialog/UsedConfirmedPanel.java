@@ -200,9 +200,7 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-
-        usedTable.getColumnModel().getColumn(2).setMinWidth(60);
-        usedTable.getColumnModel().getColumn(2).setMaxWidth(60);
+        usedTable.setExactColumnWidth(0, 60);
 
         // Button
         doSetUsedBtn = new JButton(imageResource.readImage("Projects.Used.DoSetUsed"));
