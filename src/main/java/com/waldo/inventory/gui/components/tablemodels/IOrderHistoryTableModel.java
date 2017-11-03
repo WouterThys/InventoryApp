@@ -29,7 +29,7 @@ public class IOrderHistoryTableModel extends IAbstractTableModel<Order> {
                     return component.toString();
                 case 1: // Date
                     if (component.isOrdered()) {
-                        return DateUtils.formatDateTime(component.getDateOrdered());
+                        return DateUtils.formatDate(component.getDateOrdered());
                     } else {
                         return "";
                     }
