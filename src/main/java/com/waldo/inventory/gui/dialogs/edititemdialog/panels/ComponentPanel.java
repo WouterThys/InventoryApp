@@ -65,7 +65,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     // Data sheet
     private ITextField localDataSheetTextField;
     private JButton localDataSheetButton;
-    private ITextField onlineDataSheetTextField;
+    private PanelUtils.IBrowseWebPanel onlineDataSheetTextField;
 
     public ComponentPanel(Application application, Item newItem, @NotNull IEditedListener listener) {
         this.application = application;
@@ -214,8 +214,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         });
 
         // Online data sheet
-        onlineDataSheetTextField = new ITextField();
-        onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
+        onlineDataSheetTextField = new PanelUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
+        //onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
     }
 
     private void initializeDetailsComponents() {
