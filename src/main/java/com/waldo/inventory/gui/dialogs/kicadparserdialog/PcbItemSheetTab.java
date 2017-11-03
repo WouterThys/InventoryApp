@@ -57,9 +57,9 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
         pcbItemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
         pcbItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
         pcbItemTable.setExactColumnWidth(0, 30);
-        pcbItemTable.setExactColumnWidth(3, 18);
-        pcbItemTable.setExactColumnWidth(4, 18);
-        pcbItemTable.setExactColumnWidth(5, 18);
+        pcbItemTable.setExactColumnWidth(3, 20);
+        pcbItemTable.setExactColumnWidth(4, 20);
+        pcbItemTable.setExactColumnWidth(5, 20);
     }
 
     @Override

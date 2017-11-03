@@ -1,10 +1,11 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.ProjectPcb;
 
 public class IPcbHistoryTableModel extends IAbstractTableModel<ProjectPcb> {
 
-    private static final String[] COLUMN_NAMES = {"Name", "Project", "Open"};
+    private static final String[] COLUMN_NAMES = {"Project", "Pcb", "Open"};
     private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class};
 
     public IPcbHistoryTableModel() {
@@ -18,10 +19,10 @@ public class IPcbHistoryTableModel extends IAbstractTableModel<ProjectPcb> {
             switch (columnIndex) {
                 case -1:
                     return component;
-                case 0: // Name
-                    return component.toString();
-                case 1: // Project
+                case 0: // Project
                     return component.getProject().toString();
+                case 1: // Pcb
+                    return FileUtils.getLastPathPart(component.getDirectory());
                 case 2: // Open
                     return "";
             }

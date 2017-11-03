@@ -36,13 +36,11 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Override
-    protected void selectProjectObject(ProjectPcb projectPcb) {
-        super.selectProjectObject(projectPcb);
-        if (projectPcb != null) {
+    protected boolean selectProjectObject(ProjectPcb projectPcb) {
+        if (super.selectProjectObject(projectPcb)) {
             pcbItemPanel.updateComponents(selectedProjectObject);
-        } else {
-            pcbItemPanel.updateComponents();
         }
+        return false;
     }
 
     /*

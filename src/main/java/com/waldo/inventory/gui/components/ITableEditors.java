@@ -270,24 +270,10 @@ public class ITableEditors {
         }
     }
 
-    public static class PcbItemMatchRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if (column == 0) {
-
-                PcbItem component = (PcbItem) value;
-                ILabel lblText = new ILabel();
-                lblText.setForeground(Color.WHITE);
-                Font f = lblText.getFont();
-                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
-                lblText.setText(String.valueOf(component.getReferences().size()));
-
-                ILabel lblIcon;
-                if (component.hasMatch()) {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.green"));
-                } else {
-                    lblIcon = new ILabel(imageResource.readImage("Ball.red"));
+    //                if (component.hasMatch()) {
+//                    lblIcon = new ILabel(imageResource.readImage("Ball.green"));
+//                } else {
+//                    lblIcon = new ILabel(imageResource.readImage("Ball.red"));
 //                    if (component.matchCount() > 0) {
 //                        int highest = component.highestMatch();
 //                        if (PcbItemParser.getInstance().getMatchCount(highest) == 3) {
@@ -300,11 +286,25 @@ public class ITableEditors {
 //                    } else {
 //                        lblIcon = new ILabel(imageResource.readImage("Ball.red"));
 //                    }
-                }
+//}
+
+    public static class PcbItemMatchRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == 0) {
+                PcbItem component = (PcbItem) value;
+                ILabel lblText = new ILabel();
+                lblText.setForeground(Color.WHITE);
+                Font f = lblText.getFont();
+                lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
+                lblText.setText(String.valueOf(component.getReferences().size()));
 
                 // Colors
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 Color cbg =  c.getBackground();
+
+                ILabel lblIcon = new ILabel(imageResource.readImage("Ball.green"));
 
                 if (row %2 == 1 || isSelected) {
                     lblIcon.setBackground(cbg);

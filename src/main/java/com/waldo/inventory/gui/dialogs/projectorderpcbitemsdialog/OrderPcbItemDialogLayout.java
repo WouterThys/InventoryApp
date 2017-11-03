@@ -63,19 +63,20 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements
             application.endWait();
         }
 
-        // Find items already in order
-        if (selectedOrder != null && selectedPcb != null) {
-            for (OrderItem oi : selectedOrder.getOrderItems()) {
-                for (PcbItem pcb : pcbItemPnl.pcbTableGetItemList()) {
-                    if (oi.getItemId() == pcb.getMatchedItemLink().getItemId()) {
-                        pcb.setOrderItem(oi);
-                        pcb.setOrderAmount(oi.getAmount());
-                        break;
-                    }
-                }
-            }
-            pcbItemPnl.pcbTableUpdate();
-        }
+//        // Find items already in order
+//        if (selectedOrder != null && selectedPcb != null) {
+//            for (OrderItem oi : selectedOrder.getOrderItems()) {
+//                for (PcbItem pcb : pcbItemPnl.pcbTableGetItemList()) {
+//                    if (oi.getItemId() == pcb.getMatchedItemLink().getItemId()) {
+//                        pcb.setOrderItem(oi);
+//                        pcb.setOrderAmount(oi.getAmount());
+//                        break;
+//                    }
+//                }
+//            }
+//            pcbItemPnl.pcbTableUpdate();
+//        }
+        pcbItemPnl.pcbTableUpdate();
         orderPnl.updateComponents(selectedOrder);
     }
 

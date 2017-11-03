@@ -37,7 +37,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Override
-    protected void selectProjectObject(ProjectOther projectCode) {
+    protected boolean selectProjectObject(ProjectOther projectCode) {
         super.selectProjectObject(projectCode);
         IFileTreeModel fileTreeModel;
         if (projectCode != null) {
@@ -46,6 +46,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
             fileTreeModel = new IFileTreeModel();
         }
         otherFilesTree.setModel(fileTreeModel);
+        return false;
     }
 
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class IOrderHistoryTableModel extends IAbstractTableModel<Order> {
 
-    private static final String[] COLUMN_NAMES = {"Name", "Date", "Open"};
+    private static final String[] COLUMN_NAMES = {"Name", "Date ordered", "Open"};
     private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class};
 
     public IOrderHistoryTableModel() {

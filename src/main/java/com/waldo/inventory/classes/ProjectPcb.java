@@ -39,6 +39,7 @@ public class ProjectPcb extends ProjectObject {
         super(TABLE_NAME);
         setName(name);
     }
+
     public ProjectPcb(long projectId) {
         super(TABLE_NAME);
         setProjectId(projectId);
@@ -190,22 +191,44 @@ public class ProjectPcb extends ProjectObject {
                     pcbItemMap = getPcbItemsFromDb();
                 }
             }
-            findKnownLinks(pcbItemMap);
+            List<PcbItem> linkedItems = findKnownLinks(pcbItemMap);
+            findKnownOrders(linkedItems);
         }
         return pcbItemMap;
     }
 
-    private void findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
+    private List<PcbItem> findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
+        List<PcbItem> linkedItems = new ArrayList<>();
         for (String sheet : pcbItemMap.keySet()) {
             for (PcbItem item : pcbItemMap.get(sheet)) {
                 PcbItemItemLink link = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
                 if (link != null) {
                     item.setMatchedItem(link);
                     hasLinkedItems = true;
+                    linkedItems.add(item);
                 }
             }
         }
+        return linkedItems;
     }
+
+    private void findKnownOrders(List<PcbItem> linkedItems) {
+        java.util.List<Order> planned = SearchManager.sm().findPlannedOrders();
+        if (planned.size() > 0) {
+                for (Order order : planned) {
+                    for (OrderItem oi : order.getOrderItems()) {
+                        for (PcbItem item : linkedItems) {
+                            if (oi.getItemId() == item.getMatchedItemLink().getItemId()) {
+                                item.setOrderItem(oi);
+                                item.setOrderAmount(oi.getAmount());
+                                break;
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
 
     public List<Item> getLinkedItems() {
         List<Item> items = new ArrayList<>();

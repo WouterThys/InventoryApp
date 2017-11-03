@@ -81,20 +81,26 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         }
     }
 
-    protected void selectProjectObject(T projectObject) {
+    protected boolean selectProjectObject(T projectObject) {
+        boolean newObjSelected = false;
         if (projectObject != null) {
             if (!projectObject.equals(selectedProjectObject)) {
                 selectedProjectObject = projectObject;
                 projectObjectNameLbl.setText(projectObject.getName());
+
+                if (objectListener != null) {
+                    objectListener.onSelected(selectedProjectObject);
+                }
+                newObjSelected = true;
             }
         } else {
+            newObjSelected = true;
             selectedProjectObject = null;
             projectObjectNameLbl.setText("");
         }
-        if (objectListener != null) {
-            objectListener.onSelected(selectedProjectObject);
-        }
+
         updateEnabledComponents();
+        return newObjSelected;
     }
 
     public T getSelectedProjectObject() {

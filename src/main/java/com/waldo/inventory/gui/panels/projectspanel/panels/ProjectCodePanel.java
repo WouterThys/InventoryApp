@@ -40,15 +40,18 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Override
-    protected void selectProjectObject(ProjectCode projectCode) {
-        super.selectProjectObject(projectCode);
+    protected boolean selectProjectObject(ProjectCode projectCode) {
         IFileTreeModel fileTreeModel;
-        if (projectCode != null) {
-            fileTreeModel = new IFileTreeModel(new File(selectedProjectObject.getDirectory()));
-        } else {
-            fileTreeModel = new IFileTreeModel();
+        if (super.selectProjectObject(projectCode)) {
+           if (selectedProjectObject != null) {
+               fileTreeModel = new IFileTreeModel(new File(selectedProjectObject.getDirectory()));
+           } else {
+               fileTreeModel = new IFileTreeModel();
+           }
+            codeFilesTree.setModel(fileTreeModel);
         }
-        codeFilesTree.setModel(fileTreeModel);
+
+        return false;
     }
 
     /*

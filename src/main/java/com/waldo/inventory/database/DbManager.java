@@ -1425,6 +1425,7 @@ public class DbManager {
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
                     p.setSheetName(rs.getString("sheetName"));
 
+                    // Used
                     p.setUsed(p.getUsedCount() > 0);
 
                     p.setInserted(true);
