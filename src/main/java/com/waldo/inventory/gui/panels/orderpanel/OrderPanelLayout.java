@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -18,17 +19,20 @@ import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.colorResource;
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class OrderPanelLayout extends JPanel implements
@@ -57,6 +61,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbTotalPriceLbl;
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
+    private AbstractAction tbOrderDetailsAa;
     private JPanel tbOrderFilePanel;
     /*
      *                  VARIABLES
@@ -232,6 +237,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             tableToolBar.setEnabled(false);
         }
 
+        tbOrderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
         tbDistributorCb.setEnabled(orderSelected && selectedOrder.isPlanned());
 
         tbOrderFlowPanel.updateComponents(selectedOrder);
@@ -254,17 +260,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Total items
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         amountPanel.add(tbTotalItemsLbl, gbc);
 
         // Total price
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 0;
         amountPanel.add(tbTotalPriceLbl, gbc);
 
         // Add to toolbar
@@ -274,42 +276,29 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     private JPanel createOrderToolbar() {
-        JPanel makeOrderPanel = new JPanel(new GridBagLayout());
         tbOrderFilePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(-10, 2, 0, 20);
-
-        // Order name
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        makeOrderPanel.add(tbOrderNameLbl, gbc);
 
         // Distributor
-        ILabel distributorLabel = new ILabel("Order by: ");
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        makeOrderPanel.add(distributorLabel, gbc);
+        ILabel distributorLabel = new ILabel("Order by: ", ILabel.RIGHT);
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setOpaque(false); toolBar.setFloatable(false);
+        toolBar.setBorder(new EmptyBorder(2,2,2,2));
+        toolBar.add(tbOrderDetailsAa);
 
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        makeOrderPanel.add(tbDistributorCb, gbc);
+        JPanel makeOrderPanel = new JPanel(new BorderLayout());
+        JPanel distributorPanel = new JPanel(new BorderLayout());
+
+        distributorPanel.add(distributorLabel, BorderLayout.WEST);
+        distributorPanel.add(tbDistributorCb, BorderLayout.CENTER);
+
+        makeOrderPanel.add(tbOrderNameLbl, BorderLayout.CENTER);
+        makeOrderPanel.add(toolBar, BorderLayout.EAST);
+        makeOrderPanel.add(distributorPanel, BorderLayout.SOUTH);
 
         // Create panel
         orderTbPanel = new JPanel(new BorderLayout());
         orderTbPanel.add(makeOrderPanel, BorderLayout.WEST);
         orderTbPanel.add(tbOrderFlowPanel, BorderLayout.EAST);
-        //orderTbPanel.add(tbOrderFilePanel, BorderLayout.EAST);
         orderTbPanel.setVisible(false);
 
         return orderTbPanel;
@@ -398,6 +387,18 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
         });
+
+        tbOrderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
+                if (selectedOrder.isReceived()) {
+                    dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
+                } else {
+                    dialog.showDialog();
+                }
+            }
+        };
 
         tbOrderFlowPanel = new IOrderFlowPanel(application);
 

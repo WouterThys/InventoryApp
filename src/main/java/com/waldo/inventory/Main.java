@@ -33,11 +33,12 @@ public class Main {
             Application app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setMinimumSize(new Dimension(1500, 800));
+            app.setPreferredSize(new Dimension(1500, 800));
             if (FULL_SCREEN) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
             app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            app.pack();
             app.setVisible(true);
         });
     }

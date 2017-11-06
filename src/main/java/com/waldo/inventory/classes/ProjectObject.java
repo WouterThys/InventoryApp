@@ -83,7 +83,7 @@ public abstract class ProjectObject extends DbObject {
         return result;
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         boolean result = true;
         if (!getDirectory().isEmpty()) {
             File check = new File(getDirectory());

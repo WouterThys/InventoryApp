@@ -74,6 +74,7 @@ public class BindingListener implements DocumentListener {
                             d.getStartPosition().getOffset(),
                             d.getEndPosition().getOffset() - 1
                     );
+                    newVal = newVal.trim();
 
                     String oldVal = "";
                     if (!fieldName.isEmpty()) {

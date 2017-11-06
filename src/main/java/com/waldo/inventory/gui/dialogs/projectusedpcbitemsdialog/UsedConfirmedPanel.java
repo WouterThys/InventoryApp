@@ -175,7 +175,6 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
                 updateEnabledComponents();
             }
         };
-
         refreshAa = new AbstractAction("Refresh", imageResource.readImage("Projects.Order.Refresh")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -200,7 +199,7 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
                 }
             }
         });
-        usedTable.setExactColumnWidth(0, 60);
+        usedTable.setExactColumnWidth(2, 60);
 
         // Button
         doSetUsedBtn = new JButton(imageResource.readImage("Projects.Used.DoSetUsed"));

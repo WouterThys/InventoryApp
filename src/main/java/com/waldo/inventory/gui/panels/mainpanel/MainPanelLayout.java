@@ -188,9 +188,6 @@ public abstract class MainPanelLayout extends JPanel implements
         subDivisionTree.setScrollsOnExpand(true);
         treeModel.setTree(subDivisionTree);
 
-        // Tool bar
-        topToolBar = new TopToolBar(application, this);
-
         // Item table
         tableModel = new IItemTableModel();
         itemTable = new ITable<>(tableModel);
@@ -198,6 +195,9 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
         itemTable.setOpaque(true);
         updateTable(null);
+
+        // Tool bar
+        topToolBar = new TopToolBar(application, this, itemTable);
 
         // Details
         detailPanel = new ItemDetailPanel(application);

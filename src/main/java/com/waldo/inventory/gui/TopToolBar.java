@@ -4,6 +4,8 @@ import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
+import com.waldo.inventory.gui.components.ITable;
+import com.waldo.inventory.gui.components.ITableToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
 
 import javax.swing.*;
@@ -18,7 +20,8 @@ public class TopToolBar extends JPanel implements
 
     private Application application;
 
-    private IdBToolBar mainViewToolBar;
+    private IdBToolBar dbToolBar;
+    private ITableToolBar tableToolBar;
     private IObjectSearchPanel searchPanel;
     private JPanel contentPane;
 
@@ -26,8 +29,8 @@ public class TopToolBar extends JPanel implements
         this.application = application;
 
         // Tool bars
-        mainViewToolBar = new IdBToolBar(toolBarListener);
-        mainViewToolBar.setFloatable(false);
+        dbToolBar = new IdBToolBar(toolBarListener);
+
         contentPane = new JPanel();
         contentPane.setOpaque(false);
 
@@ -36,23 +39,49 @@ public class TopToolBar extends JPanel implements
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 
-        //createLayout();
         setLayout(new BorderLayout());
-        add(mainViewToolBar, BorderLayout.WEST);
+        add(dbToolBar, BorderLayout.WEST);
         add(contentPane, BorderLayout.CENTER);
         add(searchPanel, BorderLayout.EAST);
     }
 
+    public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener, ITable table) {
+        this.application = application;
+
+        // Tool bars
+        dbToolBar = new IdBToolBar(toolBarListener);
+        tableToolBar = new ITableToolBar(table);
+
+        contentPane = new JPanel();
+        contentPane.setOpaque(false);
+
+        JPanel toolbarPanel = new JPanel();
+        toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.Y_AXIS));
+        toolbarPanel.add(dbToolBar);
+        toolbarPanel.add(tableToolBar);
+
+        setLayout(new BorderLayout());
+        add(dbToolBar, BorderLayout.WEST);
+        add(contentPane, BorderLayout.CENTER);
+        add(tableToolBar, BorderLayout.EAST);
+    }
+
     public void setDbToolbarVisible(boolean visible) {
-        mainViewToolBar.setVisible(visible);
+        dbToolBar.setVisible(visible);
     }
 
     public void setAdvancedSearchVisible(boolean visible) {
 
     }
 
+    private void applyTableFilter(ITable table) {
+
+    }
+
     public void clearSearch() {
-        searchPanel.clearSearch();
+        if (searchPanel != null) {
+            searchPanel.clearSearch();
+        }
     }
 
     public JPanel getContentPane() {
@@ -63,9 +92,9 @@ public class TopToolBar extends JPanel implements
         SpringLayout layout = new SpringLayout();
 
         // Tool bar
-        layout.putConstraint(SpringLayout.NORTH, mainViewToolBar, 5, SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.SOUTH, mainViewToolBar, -5, SpringLayout.SOUTH, this);
-        layout.putConstraint(SpringLayout.WEST, mainViewToolBar, -5, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, dbToolBar, 5, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.SOUTH, dbToolBar, -5, SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.WEST, dbToolBar, -5, SpringLayout.WEST, this);
 
         // Search panel
         layout.putConstraint(SpringLayout.NORTH, searchPanel, 5, SpringLayout.NORTH, this);
@@ -75,10 +104,10 @@ public class TopToolBar extends JPanel implements
         // Content
         layout.putConstraint(SpringLayout.NORTH, contentPane, 5, SpringLayout.NORTH, this);
         layout.putConstraint(SpringLayout.SOUTH, contentPane, -5, SpringLayout.SOUTH, this);
-        layout.putConstraint(SpringLayout.WEST, contentPane, 5, SpringLayout.EAST, mainViewToolBar);
+        layout.putConstraint(SpringLayout.WEST, contentPane, 5, SpringLayout.EAST, dbToolBar);
         layout.putConstraint(SpringLayout.EAST, contentPane, 5, SpringLayout.WEST, searchPanel);
 
-        add(mainViewToolBar);
+        add(dbToolBar);
         add(contentPane);
         add(searchPanel);
         setPreferredSize(new Dimension(600,  60));
@@ -149,19 +178,19 @@ public class TopToolBar extends JPanel implements
     }
 
     public void setRefreshActionEnabled(boolean enabled) {
-        mainViewToolBar.setRefreshActionEnabled(enabled);
+        dbToolBar.setRefreshActionEnabled(enabled);
     }
 
     public void setAddActionEnabled(boolean enabled) {
-        mainViewToolBar.setAddActionEnabled(enabled);
+        dbToolBar.setAddActionEnabled(enabled);
     }
 
     public void setDeleteActionEnabled(boolean enabled) {
-        mainViewToolBar.setDeleteActionEnabled(enabled);
+        dbToolBar.setDeleteActionEnabled(enabled);
     }
 
     public void setEditActionEnabled(boolean enabled) {
-        mainViewToolBar.setEditActionEnabled(enabled);
+        dbToolBar.setEditActionEnabled(enabled);
     }
 
     public void setSearchEnabled(boolean enabled) {
@@ -178,6 +207,6 @@ public class TopToolBar extends JPanel implements
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         setSearchEnabled(enabled);
-        mainViewToolBar.setEnabled(enabled);
+        dbToolBar.setEnabled(enabled);
     }
 }

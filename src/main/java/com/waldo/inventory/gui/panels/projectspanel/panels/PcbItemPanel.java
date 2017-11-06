@@ -15,13 +15,13 @@ import com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog.UsedPcbItemsDia
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,19 +30,20 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class PcbItemPanel extends JPanel implements
-        GuiInterface, ListSelectionListener, ChangeListener, ActionListener, IPcbItemModel.PcbItemListener {
+        GuiInterface, ListSelectionListener, ChangeListener, IPcbItemModel.PcbItemListener {
+
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private JTabbedPane sheetTabs;
 
-    private JButton linkBtn;
-    private JButton orderBtn;
-    private JButton parseBtn;
-    private JButton usedBtn;
+    private AbstractAction linkAa;
+    private AbstractAction orderAa;
+    private AbstractAction usedAa;
+    private AbstractAction parseAa;
 
-    private JPanel buttonPanel;
+    private JToolBar buttonPanel;
 
     /*
      *                  VARIABLES
@@ -74,16 +75,16 @@ public class PcbItemPanel extends JPanel implements
         return panel.getTable();
     }
 
-    JPanel getToolbarPanel() {
+    JToolBar getToolbarPanel() {
         return buttonPanel;
     }
 
     private void updateEnabledComponents() {
         boolean enable = projectPcb != null;
-        linkBtn.setEnabled(enable);
-        parseBtn.setEnabled(enable);
-        orderBtn.setEnabled(enable);
-        usedBtn.setEnabled(enable);
+        linkAa.setEnabled(enable);
+        parseAa.setEnabled(enable);
+        orderAa.setEnabled(enable);
+        usedAa.setEnabled(enable && projectPcb.isValid());
     }
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
@@ -112,33 +113,53 @@ public class PcbItemPanel extends JPanel implements
         ILabel titleLbl = new ILabel("Items");
         titleLbl.setFont(20, Font.BOLD);
 
-        // Buttons
-        linkBtn = new JButton(imageResource.readImage("Projects.Pcb.LinkBtn"));
-        orderBtn = new JButton(imageResource.readImage("Projects.Pcb.OrderBtn"));
-        parseBtn = new JButton(imageResource.readImage("Projects.Pcb.ParseBtn"));
-        usedBtn = new JButton(imageResource.readImage("Projects.Pcb.UsedBtn"));
+        // Actions
+        linkAa = new AbstractAction("Link", imageResource.readImage("Projects.Pcb.LinkBtn")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onLink());
+            }
+        };
+        linkAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Link to known items");
 
-        linkBtn.addActionListener(this);
-        orderBtn.addActionListener(this);
-        parseBtn.addActionListener(this);
-        usedBtn.addActionListener(this);
+        orderAa = new AbstractAction("Order", imageResource.readImage("Projects.Pcb.OrderBtn")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onOrder());
+            }
+        };
+        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order linked items");
 
-        linkBtn.setToolTipText("Link to known items");
-        orderBtn.setToolTipText("Order linked");
-        parseBtn.setToolTipText("Parse again");
-        usedBtn.setToolTipText("Used items");
+        usedAa = new AbstractAction("Used", imageResource.readImage("Projects.Pcb.UsedBtn")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onUsed());
+            }
+        };
+        usedAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Used items");
 
-        buttonPanel = new JPanel();
+        parseAa = new AbstractAction("Parse", imageResource.readImage("Projects.Pcb.ParseBtn")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onParse());
+            }
+        };
+        parseAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Parse again");
+
+        buttonPanel = new JToolBar(JToolBar.HORIZONTAL);
+        buttonPanel.setOpaque(false); buttonPanel.setFloatable(false);
+        buttonPanel.setBorder(new EmptyBorder(2,2,2,2));
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        buttonPanel.add(linkBtn);
-        buttonPanel.add(orderBtn);
-        buttonPanel.add(parseBtn);
-        buttonPanel.add(usedBtn);
+        buttonPanel.add(linkAa);
+        buttonPanel.add(orderAa);
+        buttonPanel.add(usedAa);
+        buttonPanel.addSeparator();
+        buttonPanel.add(parseAa);
 
         // Add
         add(sheetTabs, BorderLayout.CENTER);
@@ -202,65 +223,59 @@ public class PcbItemPanel extends JPanel implements
         // change amount
     }
 
-    //
-    // Buttons pressed
-    //
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
+    private void onLink() {
+        LinkPcbItemDialog dialog = new LinkPcbItemDialog(application, "Link items", projectPcb);
+        dialog.showDialog();
+    }
 
-        if (source.equals(linkBtn)) {
-            // Show dialog to link items
-            LinkPcbItemDialog dialog = new LinkPcbItemDialog(application, "Link items", projectPcb);
-            dialog.showDialog();
-        } else if (source.equals(orderBtn)) {
-            // Order known items
-            if (projectPcb.hasLinkedItems()) {
-                OrderPcbItemDialog orderDialog = new OrderPcbItemDialog(
-                        application,
-                        "Order items",
-                        projectPcb);
-                orderDialog.showDialog();
-            } else {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Items need to be linked with known item..",
-                        "No linked items",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        } else if (source.equals(parseBtn)) {
-            try {
-                if (projectPcb.parseAgain()) {
-                    clearComponentTable();
-                    //setDetails();
-                    updateComponentTable(projectPcb.getPcbItemMap());
-                }
-            } catch (Exception ex) {
-                Status().setError("Error parsing", ex);
-                JOptionPane.showMessageDialog(
-                        PcbItemPanel.this,
-                        "Error parsing: " + ex,
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        } else if (source.equals(usedBtn)) {
-            // Set used items
-            if (projectPcb.hasLinkedItems()) {
-                // Used dialog
-                UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Set used", projectPcb);
-                dialog.showDialog();
-            } else {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Items need to be linked with known item..",
-                        "No linked items",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+    private void onOrder() {
+        if (projectPcb.hasLinkedItems()) {
+            OrderPcbItemDialog orderDialog = new OrderPcbItemDialog(
+                    application,
+                    "Order items",
+                    projectPcb);
+            orderDialog.showDialog();
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Items need to be linked with known item..",
+                    "No linked items",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
-        updateEnabledComponents();
+    }
+
+    private void onUsed() {
+        if (projectPcb.hasLinkedItems()) {
+            // Used dialog
+            UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Set used", projectPcb);
+            dialog.showDialog();
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Items need to be linked with known item..",
+                    "No linked items",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void onParse() {
+        try {
+            if (projectPcb.parseAgain()) {
+                clearComponentTable();
+                //setDetails();
+                updateComponentTable(projectPcb.getPcbItemMap());
+            }
+        } catch (Exception ex) {
+            Status().setError("Error parsing", ex);
+            JOptionPane.showMessageDialog(
+                    PcbItemPanel.this,
+                    "Error parsing: " + ex,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     //

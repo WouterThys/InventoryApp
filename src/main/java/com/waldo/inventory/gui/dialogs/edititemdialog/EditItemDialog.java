@@ -21,7 +21,6 @@ import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class EditItemDialog extends EditItemDialogLayout {
 
-    private int currentTabIndex = 0;
     private boolean canClose = true;
 
     public EditItemDialog(Application application, String title, Item item)  {
@@ -37,11 +36,6 @@ public class EditItemDialog extends EditItemDialogLayout {
         initActions();
         updateComponents();
     }
-
-//    public EditItemDialog(Application application, String title) {
-//        this(application, title, new Item());
-//        isNew = true;
-//    }
 
     private void setValues(Item item) {
         newItem = item;
@@ -60,14 +54,16 @@ public class EditItemDialog extends EditItemDialogLayout {
 
     @Override
     protected void onOK() {
-        if (checkChange()) {
-            canClose = false;
-            showSaveDialog(true);
-        }
+        if (verify()) {
+            if (checkChange()) {
+                canClose = false;
+                showSaveDialog(true);
+            }
 
-        if (canClose) {
-            dialogResult = OK;
-            dispose();
+            if (canClose) {
+                dialogResult = OK;
+                dispose();
+            }
         }
     }
 
@@ -149,12 +145,7 @@ public class EditItemDialog extends EditItemDialogLayout {
         });
     }
     private void initTabChangedAction() {
-        tabbedPane.addChangeListener(e -> {
-
-            currentTabIndex = tabbedPane.getSelectedIndex();
-
-            updateComponents();
-        });
+        tabbedPane.addChangeListener(this::updateComponents);
     }
 
     private void initCategoryChangedAction() {

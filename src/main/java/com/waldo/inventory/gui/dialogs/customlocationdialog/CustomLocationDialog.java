@@ -187,9 +187,9 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
                 selectedLocationButton.getTheLocation().setName(namePanel.getText());
                 locationMapPanel.updateButtons();
             }
-        } else if (e.getSource().equals(namePanel.getButton())) {
+        } else if (e.getSource().equals(aliasPanel.getButton())) {
             if (selectedLocationButton != null) {
-                selectedLocationButton.getTheLocation().setAlias(namePanel.getText());
+                selectedLocationButton.getTheLocation().setAlias(aliasPanel.getText());
                 locationMapPanel.updateButtons();
             }
         }

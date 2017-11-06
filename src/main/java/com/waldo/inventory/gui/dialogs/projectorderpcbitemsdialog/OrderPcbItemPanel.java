@@ -234,7 +234,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.OrderAmount);
+        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.OrderAmount, false);
         linkedPcbItemTable = new ITable<PcbItem>(linkedPcbItemModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {

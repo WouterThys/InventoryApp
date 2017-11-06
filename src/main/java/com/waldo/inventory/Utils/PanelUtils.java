@@ -56,7 +56,7 @@ public class PanelUtils {
 
     public static JPanel createComboBoxWithButton(JComboBox comboBox, ActionListener listener) {
         JPanel boxPanel = new JPanel(new BorderLayout());
-        JButton button = new JButton(imageResource.readImage("Toolbar.AddIcon", 16));
+        JButton button = new JButton(imageResource.readImage("Toolbar.Db.AddIcon", 16));
         button.addActionListener(listener);
         boxPanel.add(comboBox, BorderLayout.CENTER);
         boxPanel.add(button, BorderLayout.EAST);

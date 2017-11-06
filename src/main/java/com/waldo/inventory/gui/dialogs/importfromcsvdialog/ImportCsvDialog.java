@@ -149,7 +149,7 @@ public class ImportCsvDialog extends ImportCsvDialogLayout {
 
     private JPopupMenu createDeletePopup() {
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem deleteItem = new JMenuItem("Delete", imageResource.readImage("Toolbar.DeleteIcon"));
+        JMenuItem deleteItem = new JMenuItem("Delete", imageResource.readImage("Toolbar.Db.DeleteIcon"));
         deleteItem.addActionListener(e -> {
             // Get selected values
             int[] selectedRows = objectTable.getSelectedRows();

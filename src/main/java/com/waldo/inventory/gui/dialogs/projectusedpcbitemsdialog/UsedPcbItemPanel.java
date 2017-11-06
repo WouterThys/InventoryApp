@@ -171,15 +171,11 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     //
     private List<PcbItem> getLinkedPcbItems(ProjectPcb pcb) {
         List<PcbItem> linkedItems = new ArrayList<>();
-        List<Long> containedItems = new ArrayList<>();
 
         for (String sheet : pcb.getPcbItemMap().keySet()) {
             for (PcbItem pcbItem : pcb.getPcbItemMap().get(sheet)) {
                 if (pcbItem.hasMatch()) {
-                    if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
-                        linkedItems.add(pcbItem);
-                        containedItems.add(pcbItem.getMatchedItemLink().getItemId());
-                    }
+                    linkedItems.add(pcbItem);
                 }
             }
         }
@@ -242,7 +238,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     @Override
     public void initializeComponents() {
         // Table
-        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.UsedAmount, this);
+        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.UsedAmount, true, this);
         linkedPcbItemTable = new ITable<PcbItem>(linkedPcbItemModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {

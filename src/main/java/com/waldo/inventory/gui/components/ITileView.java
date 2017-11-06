@@ -94,9 +94,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
         ProjectIDE ide = projectObject.getProjectIDE();
         if (ide != null) {
             Path path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
-            setIcon(path.toString(), projectObject.validate());
+            setIcon(path.toString(), projectObject.isValid());
         } else {
-            setIcon("", projectObject.validate());
+            setIcon("", projectObject.isValid());
         }
 
 
