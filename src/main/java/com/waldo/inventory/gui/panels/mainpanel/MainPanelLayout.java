@@ -3,8 +3,10 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.TopToolBar;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.ITableEditors;
+import com.waldo.inventory.gui.components.ITablePanel;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
@@ -15,7 +17,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -29,13 +30,13 @@ public abstract class MainPanelLayout extends JPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ITable itemTable;
+    ITablePanel<Item> itemTable;
     IItemTableModel tableModel;
 
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
     ItemDetailPanel detailPanel;
-    TopToolBar topToolBar;
+    //TopToolBar topToolBar;
 
 
     /*
@@ -57,18 +58,8 @@ public abstract class MainPanelLayout extends JPanel implements
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        if (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved()) {
-            topToolBar.setDeleteActionEnabled(false);
-            topToolBar.setEditActionEnabled(false);
-        } else {
-            topToolBar.setDeleteActionEnabled(true);
-            topToolBar.setEditActionEnabled(true);
-        }
-    }
-
-    Item getItemAt(int row)  {
-        return (Item) itemTable.getModel().getValueAt(itemTable.convertRowIndexToModel(row), 0);
-        //return tableModel.getItem(row);
+        boolean enabled =  (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
+        itemTable.setDbToolBarEditDeleteEnabled(enabled);
     }
 
     public void updateTable(DbObject selectedObject) {
@@ -103,29 +94,8 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     public void selectItem(Item selectedItem) {
-        if (selectedItem != null) {
-            List<Item> itemList = tableModel.getItemList();
-            if (itemList != null) {
-                int ndx = itemList.indexOf(selectedItem);
-                if (ndx >= 0 && ndx < itemList.size()) {
-                    itemTable.setRowSelectionInterval(ndx, ndx);
-                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
-                }
-            }
-        }
+        itemTable.selectItem(selectedItem);
     }
-
-//    public void scrollToVisible() {
-//        if (selectedItem != null) {
-//            List<Item> itemList = tableModel.getItemList();
-//            if (itemList != null) {
-//                int ndx = itemList.indexOf(selectedItem);
-//                if (ndx >= 0 && ndx < itemList.size()) {
-//                    itemTable.scrollRectToVisible(new Rectangle(itemTable.getCellRect(ndx, 0, true)));
-//                }
-//            }
-//        }
-//    }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
         for (Category category : db().getCategories()) {
@@ -190,14 +160,9 @@ public abstract class MainPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IItemTableModel();
-        itemTable = new ITable<>(tableModel);
-        itemTable.getSelectionModel().addListSelectionListener(this);
-        itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
-        itemTable.setOpaque(true);
+        itemTable = new ITablePanel<>(tableModel, this, new ITableEditors.AmountRenderer());
+        itemTable.setDbToolBar(this);
         updateTable(null);
-
-        // Tool bar
-        topToolBar = new TopToolBar(application, this, itemTable);
 
         // Details
         detailPanel = new ItemDetailPanel(application);
@@ -217,7 +182,7 @@ public abstract class MainPanelLayout extends JPanel implements
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         panel.add(detailPanel, BorderLayout.SOUTH);
-        panel.add(topToolBar, BorderLayout.PAGE_START);
+        //panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);

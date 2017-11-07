@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.classes.*;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
@@ -54,11 +53,6 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
-    public TopToolBar getToolBar() {
-        return topToolBar;
-    }
-
-
     private void initActions() {
         initMouseClicked();
     }
@@ -68,8 +62,8 @@ public class MainPanel extends MainPanelLayout {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
-                    int row = itemTable.rowAtPoint(e.getPoint());
-                    int col = itemTable.columnAtPoint(e.getPoint());
+                    int row = itemTable.getRowAtPoint(e.getPoint());
+                    int col = itemTable.getColumnAtPoint(e.getPoint());
                     if (row >= 0 && col == 4) {
                         Item selectedItem = application.getSelectedItem();
                         if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
@@ -269,11 +263,8 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
-            int row = itemTable.getSelectedRow();
-            if (row >= 0) {
-                selectedItem = getItemAt(row);
-                updateComponents(lastSelectedDivision);
-            }
+            selectedItem = itemTable.getSelectedItem();
+            updateComponents(lastSelectedDivision);
         }
     }
 

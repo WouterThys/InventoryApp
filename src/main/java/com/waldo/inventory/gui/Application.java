@@ -216,7 +216,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     public void clearSearch() {
         switch (tabbedPane.getSelectedIndex()) {
             case TAB_ITEMS:
-                mainPanel.getToolBar().clearSearch();
+                //mainPanel.getToolBar().clearSearch();
                 break;
             case TAB_ORDERS:
                 orderPanel.getToolBar().clearSearch();

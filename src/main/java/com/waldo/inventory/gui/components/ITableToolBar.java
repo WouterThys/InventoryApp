@@ -47,6 +47,10 @@ public class ITableToolBar extends JToolBar implements GuiInterface {
         sorter.setRowFilter(filter);
     }
 
+    public String getFilterText() {
+        return  filterTf.getText();
+    }
+
     @Override
     public void initializeComponents() {
         // JToolBar
