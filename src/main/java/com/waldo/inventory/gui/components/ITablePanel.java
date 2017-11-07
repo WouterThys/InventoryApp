@@ -9,6 +9,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterface {
     
@@ -92,6 +95,10 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     public int getColumnAtPoint(Point point) {
         return table.columnAtPoint(point);
+    }
+
+    public void setExactColumnWidth(int column, int width) {
+        table.setExactColumnWidth(column, width);
     }
 
     // Tool bars
@@ -181,7 +188,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     private class HighlightRenderer extends DefaultTableCellRenderer {
 
-        private static final String HTML = "%s<span style='color:#000000; background-color:#FFFF00'>%s</span>";
+        private static final String HTML = "%s<span style='color:#000000; background-color:#FFFF00'><nobr>%s</nobr></span>";
         private TableCellRenderer originalRenderer;
 
         public HighlightRenderer(TableCellRenderer originalRenderer) {
@@ -190,47 +197,45 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            Component component = null;
-//            Class c = table.getColumnClass(column);
-//
-//            if (c == String.class) {
-//                String txt = Objects.toString(value, "").toLowerCase();
-//                String pattern = tableToolBar.getFilterText().toLowerCase();
-//
-//                if (!pattern.isEmpty()) {
-//                    Matcher matcher = Pattern.compile(pattern).matcher(txt);
-//                    int pos = 0;
-//                    StringBuilder buf = new StringBuilder("<html>");
-//                    while (matcher.find(pos)) {
-//                        int start = matcher.start();
-//                        int end = matcher.end();
-//                        buf.append(String.format(HTML, txt.substring(pos, start), txt.substring(start, end)));
-//                        pos = end;
-//                    }
-//                    buf.append(txt.substring(pos));
-//                    txt = buf.toString();
-//
-//                    if (originalRenderer == null) {
-//                        component = super.getTableCellRendererComponent(table, txt, isSelected, hasFocus, row, column);
-//                    } else {
-//                        component = originalRenderer.getTableCellRendererComponent(table, txt, isSelected, hasFocus, row, column);
-//                    }
-//                }
-//            } else {
-//                if (originalRenderer == null) {
-//                    component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//                } else {
-//                    component = originalRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//                }
-//            }
-//
-//
-//            return component;
-            if (originalRenderer != null) {
-                return originalRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            Component component = null;
+            Class c = table.getColumnClass(column);
+
+            if (c == String.class) {
+                String txt = Objects.toString(value, "");
+                String pattern = tableToolBar.getFilterText();
+
+                if (!pattern.isEmpty()) {
+                    Matcher matcher = Pattern.compile(pattern.toLowerCase()).matcher(txt.toLowerCase());
+                    int pos = 0;
+                    StringBuilder buf = new StringBuilder("<html>");
+                    while (matcher.find(pos)) {
+                        int start = matcher.start();
+                        int end = matcher.end();
+                        buf.append(String.format(HTML, txt.substring(pos, start), txt.substring(start, end)));
+                        pos = end;
+                    }
+                    buf.append(txt.substring(pos));
+                    txt = buf.toString();
+                    if (originalRenderer == null) {
+                        component = super.getTableCellRendererComponent(table, txt, isSelected, hasFocus, row, column);
+                    } else {
+                        component = originalRenderer.getTableCellRendererComponent(table, txt, isSelected, hasFocus, row, column);
+                    }
+                } else {
+                    if (originalRenderer == null) {
+                        component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    } else {
+                        component = originalRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    }
+                }
             } else {
-                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (originalRenderer == null) {
+                    component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                } else {
+                    component = originalRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                }
             }
+            return component;
         }
     }
 }

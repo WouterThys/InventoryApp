@@ -161,6 +161,7 @@ public abstract class MainPanelLayout extends JPanel implements
         // Item table
         tableModel = new IItemTableModel();
         itemTable = new ITablePanel<>(tableModel, this, new ITableEditors.AmountRenderer());
+        itemTable.setExactColumnWidth(0, 36);
         itemTable.setDbToolBar(this);
         updateTable(null);
 
@@ -172,7 +173,6 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        //subDivisionTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(subDivisionTree);
         pane.setMinimumSize(new Dimension(200, 200));
         JPanel treePanel = new JPanel(new BorderLayout());
@@ -182,7 +182,6 @@ public abstract class MainPanelLayout extends JPanel implements
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         panel.add(detailPanel, BorderLayout.SOUTH);
-        //panel.add(topToolBar, BorderLayout.PAGE_START);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);

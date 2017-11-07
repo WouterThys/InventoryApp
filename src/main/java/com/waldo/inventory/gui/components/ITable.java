@@ -62,11 +62,7 @@ public class ITable<T> extends JXTable {
         Component component = super.prepareRenderer(renderer, row, column);
         int rendererWidth = component.getPreferredSize().width;
         TableColumn tableColumn = getColumnModel().getColumn(column);
-        if (renderer instanceof ITableEditors.AmountRenderer) {
-            tableColumn.setMaxWidth(36);
-        } else {
-            tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
-        }
+        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
 
         return component;
     }
