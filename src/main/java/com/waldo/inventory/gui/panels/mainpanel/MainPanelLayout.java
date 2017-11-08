@@ -36,8 +36,7 @@ public abstract class MainPanelLayout extends JPanel implements
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
     ItemDetailPanel detailPanel;
-    //TopToolBar topToolBar;
-
+    //ItemPreviewPanel previewPanel;
 
     /*
      *                  VARIABLES
@@ -167,6 +166,9 @@ public abstract class MainPanelLayout extends JPanel implements
 
         // Details
         detailPanel = new ItemDetailPanel(application);
+
+        // Preview
+        //previewPanel = new ItemPreviewPanel(application);
     }
 
     @Override
@@ -178,10 +180,12 @@ public abstract class MainPanelLayout extends JPanel implements
         JPanel treePanel = new JPanel(new BorderLayout());
         treePanel.add(pane);
 
+//
         // Panel them together
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         panel.add(detailPanel, BorderLayout.SOUTH);
+        //panel.add(previewPanel, BorderLayout.EAST);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
@@ -207,6 +211,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
             // Update detail panel
             detailPanel.updateComponents(selectedItem);
+            //previewPanel.updateComponents(selectedItem);
         } finally {
             application.endWait();
         }

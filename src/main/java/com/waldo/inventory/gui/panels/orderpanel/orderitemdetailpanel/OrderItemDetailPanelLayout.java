@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.classes.DistributorPartLink;
+import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IEditedListener;

@@ -153,6 +153,31 @@ public class PanelUtils {
             gridx = 0; gridy++;
         }
 
+        public void addLine(ImageIcon labelIcon, JComponent component) {
+            addLine(labelIcon, component, GridBagConstraints.HORIZONTAL);
+        }
+
+        public void addLine(ImageIcon labelIcon, JComponent component, int fill) {
+            int oldGw = gridwidth;
+            int oldGh = gridheight;
+
+            weightx = 0; weighty = 0;
+            gridwidth = 1;
+            this.fill = GridBagConstraints.NONE;
+            panel.add(new ILabel(labelIcon, ILabel.RIGHT), this);
+
+            gridwidth = oldGw;
+            gridheight = oldGh;
+            gridx = 1; weightx = 1;
+            this.fill = fill;
+            if (component != null) {
+                panel.add(component, this);
+            }
+
+
+            gridx = 0; gridy++;
+        }
+
         public void add(JComponent component, int x, int y) {
             add(component, x, y, 1, weighty);
         }

@@ -2,11 +2,11 @@ package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
 import com.waldo.inventory.classes.Location;
 import com.waldo.inventory.classes.LocationType;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

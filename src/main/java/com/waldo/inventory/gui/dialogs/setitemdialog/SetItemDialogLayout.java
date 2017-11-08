@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.SetItem;
 import com.waldo.inventory.managers.SearchManager;
@@ -60,7 +61,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
 
     void updateTable() {
         java.util.List<SetItem> list = SearchManager.sm().findSetItemsByItemId(item.getId());
-        list.sort(new SetItem.SetItemComparator());
+        list.sort(new ComparatorUtils.SetItemComparator());
         tableModel.setItemList(list);
     }
 
@@ -81,7 +82,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Table
-        tableModel = new ISetItemTableModel(new SetItem.SetItemComparator());
+        tableModel = new ISetItemTableModel(new ComparatorUtils.SetItemComparator());
         setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);

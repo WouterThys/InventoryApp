@@ -147,6 +147,7 @@ public class MainPanel extends MainPanelLayout {
                 selectItem(addedItem);
                 // Update detail panel
                 detailPanel.updateComponents(addedItem);
+                //previewPanel.updateComponents(addedItem);
             } finally {
                 application.endWait();
             }
@@ -287,6 +288,7 @@ public class MainPanel extends MainPanelLayout {
         updateEnabledComponents();
 
         detailPanel.updateComponents(selectedItem);
+        //previewPanel.updateComponents(selectedItem);
     }
 
     @Override

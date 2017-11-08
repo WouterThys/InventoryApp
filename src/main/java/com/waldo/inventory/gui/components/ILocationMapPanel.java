@@ -219,10 +219,11 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
 
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.gray, 1),
-                BorderFactory.createEmptyBorder(5,20,5,20)
-        ));
+//        setBorder(BorderFactory.createCompoundBorder(
+//                BorderFactory.createLineBorder(Color.gray, 1),
+//                BorderFactory.createEmptyBorder(5,20,5,20)
+//        ));
+        setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
     }
 
     @Override

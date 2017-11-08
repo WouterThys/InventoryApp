@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,6 +77,10 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     public void addTableRenderer(TableCellRenderer cellRenderer) {
         HighlightRenderer renderer = new HighlightRenderer(cellRenderer);
         table.setDefaultRenderer(Object.class, renderer);
+    }
+
+    public void addMouseListener(MouseListener listener) {
+        table.addMouseListener(listener);
     }
 
     public T getItemAtRow(int row) {
