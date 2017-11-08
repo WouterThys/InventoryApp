@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel2.ItemDetailPanel2;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -35,7 +36,7 @@ public abstract class MainPanelLayout extends JPanel implements
 
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
-    ItemDetailPanel detailPanel;
+    ItemDetailPanel2 detailPanel;
     //ItemPreviewPanel previewPanel;
 
     /*
@@ -165,7 +166,7 @@ public abstract class MainPanelLayout extends JPanel implements
         updateTable(null);
 
         // Details
-        detailPanel = new ItemDetailPanel(application);
+        detailPanel = new ItemDetailPanel2(application);
 
         // Preview
         //previewPanel = new ItemPreviewPanel(application);

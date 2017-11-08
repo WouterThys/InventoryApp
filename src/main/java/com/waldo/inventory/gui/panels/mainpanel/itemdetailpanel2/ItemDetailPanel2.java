@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
+package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel2;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
@@ -6,8 +6,10 @@ import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.tablemodels.ISetItemTableModel;
+import com.waldo.inventory.gui.components.ICheckBox;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.IStarRater;
+import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
@@ -26,37 +28,30 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ItemPreviewPanel extends JPanel implements GuiInterface {
+public class ItemDetailPanel2 extends JPanel implements GuiInterface {
 
     /*
-    *                  COMPONENTS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+     *                  COMPONENTS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILabel iconLbl;
-
-    // TODO value
 
     private ILabel nameLbl;
     private JTree divisionTr;
-
-    private ITextArea descriptionTa;
     private ILabel manufacturerLbl;
+    private ILabel descriptionLbl;
     private ILabel footprintLbl;
     private ILabel priceLbl;
     private ILabel locationLbl;
 
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
-    private ITextArea remarksTa;
-
-    private ISetItemTableModel setItemModel;
-    private ITable<SetItem> setItemITable;
-    //private ILocationMapPanel locationMapPnl;
+    private ITextArea  remarksTa;
 
     private AbstractAction dataSheetAa;
     private AbstractAction orderAa;
     private AbstractAction historyAa;
 
-    private JPanel setItemPanel;
+    private JPanel remarksPnl;
 
     /*
      *                  VARIABLES
@@ -67,8 +62,9 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ItemPreviewPanel(Application application) {
+    public ItemDetailPanel2(Application application) {
         this.application = application;
+
         initializeComponents();
         initializeLayouts();
     }
@@ -76,6 +72,14 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    private JPanel createIconPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(iconLbl, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        return panel;
+    }
+
     private void updateHeader(Item item) {
         // Icon
         try {
@@ -92,7 +96,8 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     }
 
     private void updateData(Item item) {
-        descriptionTa.setText(item.getDescription());
+        String description = "<html>" + item.getDescription() + "</html>";
+        descriptionLbl.setText(description);
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
             manufacturerLbl.setText(item.getManufacturer().toString());
@@ -130,19 +135,12 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
             locationLbl.setText("");
         }
 
-        if (item.isSet()) {
-            setItemModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
-            setItemPanel.setVisible(true);
-        } else {
-            setItemPanel.setVisible(false);
-        }
-    }
-
-    private JPanel createIconPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        return panel;
+//        if (item.isSet()) {
+//            setItemModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
+//            setItemPanel.setVisible(true);
+//        } else {
+//            setItemPanel.setVisible(false);
+//        }
     }
 
     private void updateTree(Item item) {
@@ -220,9 +218,31 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         dialog.showDialog();
     }
 
+    private JPanel createComponentInfoPanel() {
+        JPanel componentPanel = new JPanel();
+        JPanel leftDataRowsPnl = new JPanel();
+        JPanel rightDataRowsPnl = new JPanel();
+
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(leftDataRowsPnl);
+        gbc.addLine("", nameLbl);
+        gbc.addLine("", descriptionLbl);
+        gbc.addLine(imageResource.readImage(""), divisionTr);
+
+        gbc = new PanelUtils.GridBagHelper(rightDataRowsPnl);
+        gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
+        gbc.addLine(imageResource.readImage("Items.Preview.Footprint"), footprintLbl);
+        gbc.addLine(imageResource.readImage("Items.Preview.Price"), priceLbl);
+        gbc.addLine(imageResource.readImage("Items.Preview.Location"), locationLbl);
+
+        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.X_AXIS));
+        componentPanel.add(leftDataRowsPnl);
+        componentPanel.add(rightDataRowsPnl);
+
+        return componentPanel;
+    }
 
     private JToolBar createToolbar() {
-        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
         toolBar.setFloatable(false);
 
         toolBar.add(dataSheetAa);
@@ -235,62 +255,21 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         return toolBar;
     }
 
-    private JPanel createHeaderPanel() {
-        JPanel headerPnl = new JPanel(new BorderLayout());
-        JPanel iconPnl = createIconPanel();
-        JPanel centerPnl = new JPanel(new BorderLayout());
+    private JPanel createRemarksPanel() {
+        remarksPnl = new JPanel(new BorderLayout());
+        JPanel northPanel = new JPanel(new BorderLayout());
 
-        //centerPnl.add(nameLbl, BorderLayout.PAGE_START);
-        centerPnl.add(divisionTr, BorderLayout.CENTER);
-        centerPnl.add(createToolbar(), BorderLayout.SOUTH);
+        northPanel.add(starRater, BorderLayout.WEST);
+        northPanel.add(discourageOrderCb, BorderLayout.EAST);
 
-        headerPnl.add(nameLbl, BorderLayout.NORTH);
-        headerPnl.add(iconPnl, BorderLayout.WEST);
-        headerPnl.add(centerPnl, BorderLayout.CENTER);
+        remarksPnl.add(northPanel, BorderLayout.NORTH);
+        remarksPnl.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
+        remarksPnl.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
 
-        return headerPnl;
+        return remarksPnl;
+
     }
 
-    //Items.Preview.Manufacturer
-    //Items.Preview.Location
-    //Items.Preview.Footprint
-    //Items.Preview.Price
-
-    private JPanel createDataPanel() {
-        JPanel dataPnl = new JPanel(new BorderLayout());
-        JPanel dataRows = new JPanel();
-        JPanel remarkPnl = new JPanel(new BorderLayout());
-        JPanel remarkTopPnl = new JPanel();
-
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(dataRows);
-        gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Footprint"), footprintLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Price"), priceLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Location"), locationLbl);
-
-        remarkTopPnl.add(starRater);
-        remarkTopPnl.add(discourageOrderCb);
-        remarkPnl.add(remarkTopPnl, BorderLayout.NORTH);
-        remarkPnl.add(new JScrollPane(remarksTa));
-
-        dataPnl.add(new JScrollPane(descriptionTa), BorderLayout.NORTH);
-        dataPnl.add(dataRows, BorderLayout.CENTER);
-        dataPnl.add(remarkPnl, BorderLayout.SOUTH);
-        dataPnl.setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
-
-        return dataPnl;
-    }
-
-    private JPanel createSetItemPanel() {
-        setItemPanel = new JPanel(new BorderLayout());
-
-        JScrollPane pane = new JScrollPane(setItemITable);
-        pane.setPreferredSize(new Dimension(50, 300));
-
-        setItemPanel.add(pane, BorderLayout.CENTER);
-
-        return setItemPanel;
-    }
 
      /*
      *                  LISTENERS
@@ -302,7 +281,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         iconLbl = new ILabel();
         iconLbl.setHorizontalAlignment(ILabel.CENTER);
         iconLbl.setVerticalAlignment(ILabel.CENTER);
-        //iconLbl.setPreferredSize(new Dimension(150,150));
+        iconLbl.setPreferredSize(new Dimension(150,150));
 
         // Data
         nameLbl = new ILabel("", ILabel.CENTER);
@@ -312,10 +291,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         divisionTr.setEnabled(false);
         divisionTr.setOpaque(false);
 
-        descriptionTa = new ITextArea(false);
-        descriptionTa.setLineWrap(true);
-        descriptionTa.setWrapStyleWord(true);
-        descriptionTa.setOpaque(false);
+        descriptionLbl = new ILabel();
         manufacturerLbl = new ILabel();
         footprintLbl = new ILabel();
         priceLbl = new ILabel();
@@ -328,11 +304,6 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         remarksTa.setLineWrap(true);
         remarksTa.setWrapStyleWord(true);
         remarksTa.setOpaque(false);
-
-        setItemModel = new ISetItemTableModel(null);
-        setItemITable = new ITable<>(setItemModel);
-        setItemITable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
-        setItemITable.setExactColumnWidth(0, 36);
 
         // Actions
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {
@@ -362,38 +333,35 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
             }
         };
         historyAa.putValue(AbstractAction.SHORT_DESCRIPTION, "History");
-
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JPanel headerPanel = createHeaderPanel();
-        JPanel dataPanel = createDataPanel();
-        JPanel setItemPnl = createSetItemPanel();
+        JPanel dataPanel = new JPanel(new BorderLayout());
+        dataPanel.add(createComponentInfoPanel(), BorderLayout.CENTER);
+        //dataPanel.add(createRemarksPanel(), BorderLayout.EAST);
 
-        panel.add(headerPanel);
-        panel.add(dataPanel);
-        panel.add(setItemPnl);
-
-        add(panel);
-        //setBorder(BorderFactory.createEmptyBorder(5,5,20,5));
+        add(createIconPanel(), BorderLayout.WEST);
+        add(dataPanel, BorderLayout.CENTER);
+        add(createToolbar(), BorderLayout.EAST);
     }
 
     @Override
-    public void updateComponents(Object... args) {
-        if (args.length > 0 && args[0] != null) {
-            selectedItem = (Item) args[0];
-
-            updateHeader(selectedItem);
-            updateData(selectedItem);
-
-            setVisible(true);
-        } else {
+    public void updateComponents(Object... object) {
+        if (object.length == 0 || object[0] == null) {
             setVisible(false);
+            selectedItem = null;
+        } else {
+
+                setVisible(true);
+
+                selectedItem = (Item) object[0];
+
+                updateHeader(selectedItem);
+                updateData(selectedItem);
+
         }
     }
 }
