@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
@@ -108,7 +108,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void createCategoryCb() {
-        categoryComboBox = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), true);
+        categoryComboBox = new IComboBox<>(db().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         categoryComboBox.addEditedListener(editedListener, "categoryId");
         categoryComboBox.setSelectedItem(newItem.getCategory());
     }
@@ -121,7 +121,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             productList = db().getProducts();
         }
 
-        productComboBox = new IComboBox<>(productList, new DbObjectNameComparator<>(), true);
+        productComboBox = new IComboBox<>(productList, new ComparatorUtils.DbObjectNameComparator<>(), true);
         productComboBox.addEditedListener(editedListener, "productId");
         productComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getCategoryId() > DbObject.UNKNOWN_ID));
         productComboBox.setSelectedItem(newItem.getProduct());
@@ -135,14 +135,14 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             typeList = db().getTypes();
         }
 
-        typeComboBox = new IComboBox<>(typeList, new DbObjectNameComparator<>(), true);
+        typeComboBox = new IComboBox<>(typeList, new ComparatorUtils.DbObjectNameComparator<>(), true);
         typeComboBox.addEditedListener(editedListener, "typeId");
         typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
         typeComboBox.setSelectedItem(newItem.getType());
     }
 
     private void createManufacturerCb() {
-        manufacturerCb = new IComboBox<>(db().getManufacturers(), new DbObjectNameComparator<>(), true);
+        manufacturerCb = new IComboBox<>(db().getManufacturers(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         manufacturerCb.setSelectedItem(newItem.getManufacturer());
         manufacturerCb.addEditedListener(editedListener, "manufacturerId");
     }

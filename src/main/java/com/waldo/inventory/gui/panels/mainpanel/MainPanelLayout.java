@@ -58,7 +58,7 @@ public abstract class MainPanelLayout extends JPanel implements
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        boolean enabled =  (selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
+        boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
     }
 

@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.Package;
 import com.waldo.inventory.classes.PackageType;
 import com.waldo.inventory.classes.Value;
@@ -658,11 +658,11 @@ public class PanelUtils {
         @Override
         public void initializeComponents() {
             // Package
-            packageCb = new IComboBox<>(DbManager.db().getPackages(), new DbObject.DbObjectNameComparator<>(), true);
+            packageCb = new IComboBox<>(DbManager.db().getPackages(), new DbObjectNameComparator<>(), true);
             packageCb.addItemListener(this);
 
             // Package type
-            typeCb = new IComboBox<>(new ArrayList<>(), new DbObject.DbObjectNameComparator<>(), true);
+            typeCb = new IComboBox<>(new ArrayList<>(), new DbObjectNameComparator<>(), true);
             typeCb.setEnabled(false);
             typeCb.addItemListener(this);
 

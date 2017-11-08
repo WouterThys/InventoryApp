@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
@@ -22,7 +23,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     private ITable<T> table;
 
     // Tool bars
-    private ITableToolBar tableToolBar;
+    private ITableToolBar<T> tableToolBar;
     private IdBToolBar dBToolBar;
     private boolean dbToolBarAdded;
 
@@ -159,9 +160,15 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     public void initializeComponents() {
         // Table
         table = new ITable<>(tableModel);
+        table.setRowSorter(null);
+        table.getTableHeader().setReorderingAllowed(false);
 
         // Toolbar
-        tableToolBar = new ITableToolBar(table);
+        tableToolBar = new ITableToolBar<>(table);
+        tableToolBar.addSortComparator(new ComparatorUtils.ItemDivisionComparator());
+        tableToolBar.addSortComparator(new ComparatorUtils.DbObjectNameComparator());
+        tableToolBar.addSortComparator(new ComparatorUtils.ItemManufacturerComparator());
+        tableToolBar.addSortComparator(new ComparatorUtils.ItemLocationComparator());
 
         // Panels
         centerPanel = new JPanel(new BorderLayout());

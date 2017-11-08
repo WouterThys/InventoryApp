@@ -5,7 +5,6 @@ import com.waldo.inventory.managers.LogManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Comparator;
 
 import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.scriptResource;
@@ -181,19 +180,6 @@ public abstract class DbObject {
 
         newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
-    }
-
-    public static class DbObjectNameComparator<T extends DbObject> implements Comparator<T> {
-        @Override
-        public int compare(T dbo1, T dbo2) {
-            if (dbo1.isUnknown() && !dbo2.isUnknown()) {
-                return -1;
-            }
-            if (!dbo1.isUnknown() && dbo2.isUnknown()) {
-                return 1;
-            }
-            return dbo1.getName().compareTo(dbo2.getName());
-        }
     }
 
     public boolean isUnknown() {

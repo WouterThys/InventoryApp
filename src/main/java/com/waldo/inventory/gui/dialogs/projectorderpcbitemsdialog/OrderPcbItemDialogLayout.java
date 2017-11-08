@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -91,7 +93,7 @@ public abstract class OrderPcbItemDialogLayout extends IDialog implements
         setTitleName(getTitle());
 
         // Order
-        orderCb = new IComboBox<>(new ArrayList<>(), new DbObject.DbObjectNameComparator<>(), true);
+        orderCb = new IComboBox<>(new ArrayList<>(), new DbObjectNameComparator<>(), true);
         orderCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED && !application.isUpdating()) {
                 updateOrder((Order) orderCb.getSelectedItem());

@@ -53,10 +53,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void setItemList(List<T> itemList) {
         this.itemList = itemList;
 
-        if (comparator != null) {
-            this.itemList.sort(comparator);
-        }
-
+        sort();
         fireTableDataChanged();
     }
 
@@ -80,9 +77,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
             fireTableRowsDeleted(ndx, ndx);
         }
-        if (comparator != null) {
-            this.itemList.sort(comparator);
-        }
+        sort();
     }
 
     public void addItem(T itemToAdd) {
@@ -97,11 +92,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         for (T t : itemsToAdd) {
             if (!itemList.contains(t)) {
                 itemList.add(t);
-
-                if (comparator != null) {
-                    this.itemList.sort(comparator);
-                }
-
+                sort();
                 fireTableDataChanged();
             }
         }
@@ -109,9 +100,6 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
 
     public void updateTable() {
         if (itemList != null) {
-            if (comparator != null) {
-                this.itemList.sort(comparator);
-            }
             if (itemList.size() == 1) {
                 fireTableRowsUpdated(0, 0);
             } else if (itemList.size() > 1){
@@ -145,6 +133,17 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
             return itemList.get(index);
         }
         return null;
+    }
+
+    public void setSortOrder(Comparator<? super T> comparator) {
+        this.comparator = comparator;
+    }
+
+    public void sort() {
+        if (comparator != null) {
+            itemList.sort(comparator);
+            updateTable();
+        }
     }
 
     public String[] getColumnHeaderToolTips() {

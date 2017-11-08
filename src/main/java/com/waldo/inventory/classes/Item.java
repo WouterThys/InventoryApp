@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.database.DbManager.db;
@@ -233,37 +232,6 @@ public class Item extends DbObject {
             }
         }
         return result;
-    }
-
-    public static class ItemComparator implements Comparator<Item> {
-        @Override
-        public int compare(Item i1, Item i2) {
-            if (i1.getCategoryId() == i2.getCategoryId()) {
-
-                if (i1.getProductId() == i2.getProductId()) {
-
-                    if (i1.getTypeId() == i2.getTypeId()) {
-
-                        return i1.getName().compareTo(i2.getName());
-
-                    } else if (i1.getTypeId() > i2.getTypeId()) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-
-                } else if (i1.getProductId() > i2.getProductId()) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-
-            } else if (i1.getCategoryId() > i2.getCategoryId()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
     }
 
     public static Item getUnknownItem() {

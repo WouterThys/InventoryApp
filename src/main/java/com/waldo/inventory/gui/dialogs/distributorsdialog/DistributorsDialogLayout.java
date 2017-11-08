@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.OrderFileFormat;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;

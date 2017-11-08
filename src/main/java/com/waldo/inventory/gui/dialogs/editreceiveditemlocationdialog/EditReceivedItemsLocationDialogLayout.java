@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.classes.LocationType;
 import com.waldo.inventory.database.DbManager;
@@ -75,7 +75,7 @@ public abstract class EditReceivedItemsLocationDialogLayout extends IDialog impl
             }
         }, true);
 
-        locationTypeCb = new IComboBox<>(DbManager.db().getLocationTypes(), new DbObject.DbObjectNameComparator<>(), true);
+        locationTypeCb = new IComboBox<>(DbManager.db().getLocationTypes(), new DbObjectNameComparator<>(), true);
         locationTypeCb.addItemListener(this);
     }
 

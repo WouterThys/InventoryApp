@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.classes.ProjectObject;
 import com.waldo.inventory.gui.Application;
@@ -64,7 +64,7 @@ public abstract class EditProjectObjectDialogLayout<P extends ProjectObject> ext
         // IDE
         projectIdeCb = new IComboBox<>(
                 sm().findProjectIDEsByType(Statics.ProjectTypes.Pcb),
-                new DbObject.DbObjectNameComparator<>(),
+                new ComparatorUtils.DbObjectNameComparator<>(),
                 true);
         projectIdeCb.addEditedListener(this, "projectIDEId");
     }

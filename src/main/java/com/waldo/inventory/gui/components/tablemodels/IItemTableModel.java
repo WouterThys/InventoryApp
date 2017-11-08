@@ -19,7 +19,7 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
     }
 
     public void setItemList(List<Item> itemList) {
-        itemList.sort(new Item.ItemComparator());
+        //itemList.sort(new Item.ItemDivisionComparator());
         super.setItemList(itemList);
     }
 

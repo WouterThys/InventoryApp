@@ -1,6 +1,8 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,22 +11,26 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.util.Comparator;
 import java.util.regex.PatternSyntaxException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITableToolBar extends JToolBar implements GuiInterface {
+public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiInterface {
 
     private ILabel sortLbl;
-    private JComboBox<String> sortCb;
+
+    private DefaultComboBoxModel<Comparator> sortCbModel;
+    private JComboBox<Comparator> sortCb;
 
     private AbstractAction filterAa;
     private ITextField filterTf;
     private boolean hasFilter;
 
-    private ITable table;
+    private ITable<T> table;
 
-    public ITableToolBar(ITable table) {
+    public ITableToolBar(ITable<T> table) {
         super(JToolBar.HORIZONTAL);
 
         this.table = table;
@@ -51,6 +57,10 @@ public class ITableToolBar extends JToolBar implements GuiInterface {
         return  filterTf.getText();
     }
 
+    public void addSortComparator(Comparator comparable) {
+        sortCbModel.addElement(comparable);
+    }
+
     @Override
     public void initializeComponents() {
         // JToolBar
@@ -60,7 +70,17 @@ public class ITableToolBar extends JToolBar implements GuiInterface {
 
         // Sort
         sortLbl = new ILabel(imageResource.readImage("Toolbar.Table.ApplySort"));
-        sortCb = new JComboBox<>(new String[] {"Filter one", "Filter other"});
+        sortCbModel = new DefaultComboBoxModel<>();
+        sortCb = new JComboBox<>(sortCbModel);
+        sortCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (table.getModel() instanceof IAbstractTableModel) {
+                    IAbstractTableModel tm = (IAbstractTableModel) table.getModel();
+                    tm.setSortOrder((Comparator) sortCb.getSelectedItem());
+                    tm.sort();
+                }
+            }
+        });
 
         // Filter
         filterAa = new AbstractAction("Filter", imageResource.readImage("Toolbar.Table.ApplyFilter")) {

@@ -1,12 +1,12 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.Category;
 import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.DbObject.DbObjectNameComparator;
 import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.classes.Type;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -143,7 +143,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createCategoryCb() {
-        advancedCategoryCb = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), false);
+        advancedCategoryCb = new IComboBox<>(db().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         advancedCategoryCb.insertItemAt(null, 0);
         advancedCategoryCb.setSelectedIndex(0);
         advancedCategoryCb.addActionListener(e -> {
@@ -160,7 +160,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createProductCb() {
-        advancedProductCb = new IComboBox<>(db().getProducts(), new DbObjectNameComparator<>(), false);
+        advancedProductCb = new IComboBox<>(db().getProducts(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         advancedProductCb.insertItemAt(null, 0);
         advancedProductCb.setEnabled(false);
         advancedProductCb.addActionListener(e -> {
@@ -176,7 +176,7 @@ public class IObjectSearchPanel extends JPanel implements GuiInterface {
     }
 
     private void createTypeCb() {
-        advancedTypeCb = new IComboBox<>(db().getTypes(), new DbObjectNameComparator<>(), false);
+        advancedTypeCb = new IComboBox<>(db().getTypes(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         advancedTypeCb.setEnabled(false);
     }
 

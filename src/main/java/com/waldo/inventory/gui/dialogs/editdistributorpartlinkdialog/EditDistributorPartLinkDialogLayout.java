@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
@@ -71,7 +72,7 @@ public abstract class EditDistributorPartLinkDialogLayout extends IDialog implem
         showTitlePanel(false);
 
         // Combo box
-        distributorCb = new IComboBox<>(new ArrayList<>(), new DbObject.DbObjectNameComparator<>(), false);
+        distributorCb = new IComboBox<>(new ArrayList<>(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
         // Reference

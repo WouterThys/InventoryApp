@@ -1,22 +1,22 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.classes.OrderItem;
 import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
+import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -369,7 +369,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderNameLbl = new ILabel();
         Font f = tbOrderNameLbl.getFont();
         tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
-        tbDistributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), true);
+        tbDistributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObjectNameComparator<>(), true);
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (selectedOrder != null) {

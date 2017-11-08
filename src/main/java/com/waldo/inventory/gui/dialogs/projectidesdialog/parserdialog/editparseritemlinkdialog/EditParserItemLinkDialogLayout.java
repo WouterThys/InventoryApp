@@ -1,7 +1,10 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Category;
+import com.waldo.inventory.classes.ParserItemLink;
+import com.waldo.inventory.classes.Product;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -45,7 +48,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createCategoryCb() {
-        categoryCb = new IComboBox<>(db().getCategories(), new DbObject.DbObjectNameComparator<>(), false);
+        categoryCb = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), false);
         categoryCb.insertItemAt(null, 0);
         categoryCb.addActionListener(e -> {
             if (!application.isUpdating()) {
@@ -63,7 +66,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createProductCb() {
-        productCb = new IComboBox<>(db().getProducts(), new DbObject.DbObjectNameComparator<>(), false);
+        productCb = new IComboBox<>(db().getProducts(), new DbObjectNameComparator<>(), false);
         productCb.insertItemAt(null, 0);
         productCb.setEnabled(false);
         productCb.addActionListener(e -> {
@@ -81,7 +84,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createTypeCb() {
-        typeCb = new IComboBox<>(db().getTypes(), new DbObject.DbObjectNameComparator<>(), false);
+        typeCb = new IComboBox<>(db().getTypes(), new DbObjectNameComparator<>(), false);
         typeCb.insertItemAt(null, 0);
         typeCb.setEnabled(false);
     }

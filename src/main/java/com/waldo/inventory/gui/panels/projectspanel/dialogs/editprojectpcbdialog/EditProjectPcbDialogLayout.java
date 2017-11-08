@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.ProjectIDE;
 import com.waldo.inventory.classes.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -12,8 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedListener, ActionListener {
 
@@ -64,7 +64,7 @@ public abstract class EditProjectPcbDialogLayout extends IDialog implements IEdi
         // IDE
         projectIdeCb = new IComboBox<>(
                 sm().findProjectIDEsByType(Statics.ProjectTypes.Pcb),
-                new DbObject.DbObjectNameComparator<>(),
+                new DbObjectNameComparator<>(),
                 true);
         projectIdeCb.addEditedListener(this, "projectIDEId");
     }

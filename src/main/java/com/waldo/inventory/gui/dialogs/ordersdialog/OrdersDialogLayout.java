@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DbObject;
 import com.waldo.inventory.classes.Distributor;
 import com.waldo.inventory.classes.Order;
 import com.waldo.inventory.database.DbManager;
@@ -73,7 +73,7 @@ public abstract class OrdersDialogLayout extends IDialog
     public void initializeComponents() {
         nameField = new ITextField("Order name");
         nameField.addEditedListener(this, "name");
-        distributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObject.DbObjectNameComparator<>(), false);
+        distributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
         isOrderedCb = new JCheckBox("Is ordered");
