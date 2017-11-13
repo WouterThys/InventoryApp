@@ -1,169 +1,67 @@
 package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel2;
 
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.Item;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ICheckBox;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.IStarRater;
-import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class ItemDetailPanel2 extends JPanel implements GuiInterface {
+public class ItemDetailPanel2 extends ItemDetailPanelLayout2 {
 
-    /*
-     *                  COMPONENTS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel iconLbl;
-
-    private ILabel nameLbl;
-    private JTree divisionTr;
-    private ILabel manufacturerLbl;
-    private ILabel descriptionLbl;
-    private ILabel footprintLbl;
-    private ILabel priceLbl;
-    private ILabel locationLbl;
-
-    private IStarRater starRater;
-    private ICheckBox discourageOrderCb;
-    private ITextArea  remarksTa;
-
-    private AbstractAction dataSheetAa;
-    private AbstractAction orderAa;
-    private AbstractAction historyAa;
-
-    private JPanel remarksPnl;
-
-    /*
-     *                  VARIABLES
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
-    Item selectedItem;
-
-    /*
-     *                  CONSTRUCTORS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ItemDetailPanel2(Application application) {
-        this.application = application;
-
+        super(application);
         initializeComponents();
         initializeLayouts();
+        initActions();
+
     }
 
-    /*
-     *                  PRIVATE METHODS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    private JPanel createIconPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        return panel;
-    }
-
-    private void updateHeader(Item item) {
-        // Icon
-        try {
-            Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-            iconLbl.setIcon(path.toString());
-        } catch (Exception e) {
-            Status().setError("Failed to set item icon");
-        }
-
-        nameLbl.setText(item.getName());
-        updateTree(item);
-
-        dataSheetAa.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
-    }
-
-    private void updateData(Item item) {
-        String description = "<html>" + item.getDescription() + "</html>";
-        descriptionLbl.setText(description);
-
-        if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-            manufacturerLbl.setText(item.getManufacturer().toString());
+    @Override
+    public void updateComponents(Object... object) {
+        if (object.length == 0 || object[0] == null) {
+            setVisible(false);
+            selectedItem = null;
         } else {
-            manufacturerLbl.setText("");
-        }
+            if (object[0] instanceof Item) {
+                setVisible(true);
 
-        if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
-            PackageType packageType = item.getPackageType();
-            Package itemPackage = packageType.getPackage();
-            if (itemPackage != null) {
-                footprintLbl.setText(packageType.toString() + " - " + itemPackage.toString());
-            } else {
-                footprintLbl.setText(packageType.toString());
+                selectedItem = (Item) object[0];
+
+                updateIcon(selectedItem);
+                updateTextFields(selectedItem);
+                updateButtons(selectedItem);
             }
-        } else {
-            footprintLbl.setText("");
         }
-
-        priceLbl.setText(String.valueOf(item.getPrice()));
-        starRater.setRating(item.getRating());
-        discourageOrderCb.setSelected(item.isDiscourageOrder());
-        remarksTa.setText(item.getRemarks());
-
-        if (item.getLocationId() > DbObject.UNKNOWN_ID) {
-            Location l = SearchManager.sm().findLocationById(item.getLocationId());
-            if (l != null && !l.isUnknown()) {
-                if (item.isSet()) {
-                    locationLbl.setText(l.getLocationType().getName().substring(0,3));
-                } else {
-                    locationLbl.setText(l.getPrettyString());
-                }
-            }
-        } else {
-            locationLbl.setText("");
-        }
-
-//        if (item.isSet()) {
-//            setItemModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
-//            setItemPanel.setVisible(true);
-//        } else {
-//            setItemPanel.setVisible(false);
-//        }
     }
 
-    private void updateTree(Item item) {
-        DefaultMutableTreeNode root;
-        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            root = new DefaultMutableTreeNode(item.getCategory(), true);
-            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(item.getProduct(), true);
-                if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                    DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(item.getType(), false);
-                    pNode.add(tNode);
-                }
-                root.add(pNode);
-            }
-        } else {
-            root = new DefaultMutableTreeNode();
-        }
-        DefaultTreeModel model = new DefaultTreeModel(root);
-        divisionTr.setModel(model);
+    public void setRemarksPanelVisible(boolean visible) {
+        remarksPnl.setVisible(visible);
+    }
 
-        for(int i=0;i<divisionTr.getRowCount();++i){
-            divisionTr.expandRow(i);
-        }
+    public void setOrderButtonVisible(boolean visible) {
+        orderBtn.setVisible(visible);
+    }
+
+    private void initActions() {
+        dataSheetBtn.addActionListener(e -> openDataSheet(selectedItem));
+        orderBtn.addActionListener(e -> orderItem(selectedItem));
+        historyBtn.addActionListener(e -> {
+            HistoryDialog dialog = new HistoryDialog(application, selectedItem);
+            dialog.showDialog();
+        });
     }
 
     private void openDataSheet(Item item) {
@@ -213,155 +111,61 @@ public class ItemDetailPanel2 extends JPanel implements GuiInterface {
         }
     }
 
-    private void showHistory(Item item) {
-        HistoryDialog dialog = new HistoryDialog(application, item);
-        dialog.showDialog();
-    }
-
-    private JPanel createComponentInfoPanel() {
-        JPanel componentPanel = new JPanel();
-        JPanel leftDataRowsPnl = new JPanel();
-        JPanel rightDataRowsPnl = new JPanel();
-
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(leftDataRowsPnl);
-        gbc.addLine("", nameLbl);
-        gbc.addLine("", descriptionLbl);
-        gbc.addLine(imageResource.readImage(""), divisionTr);
-
-        gbc = new PanelUtils.GridBagHelper(rightDataRowsPnl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Footprint"), footprintLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Price"), priceLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Location"), locationLbl);
-
-        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.X_AXIS));
-        componentPanel.add(leftDataRowsPnl);
-        componentPanel.add(rightDataRowsPnl);
-
-        return componentPanel;
-    }
-
-    private JToolBar createToolbar() {
-        JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
-        toolBar.setFloatable(false);
-
-        toolBar.add(dataSheetAa);
-        toolBar.add(orderAa);
-        toolBar.add(historyAa);
-
-        toolBar.setBorderPainted(false);
-        toolBar.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-
-        return toolBar;
-    }
-
-    private JPanel createRemarksPanel() {
-        remarksPnl = new JPanel(new BorderLayout());
-        JPanel northPanel = new JPanel(new BorderLayout());
-
-        northPanel.add(starRater, BorderLayout.WEST);
-        northPanel.add(discourageOrderCb, BorderLayout.EAST);
-
-        remarksPnl.add(northPanel, BorderLayout.NORTH);
-        remarksPnl.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
-        remarksPnl.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
-
-        return remarksPnl;
-
-    }
-
-
-     /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    @Override
-    public void initializeComponents() {
-        // Label
-        iconLbl = new ILabel();
-        iconLbl.setHorizontalAlignment(ILabel.CENTER);
-        iconLbl.setVerticalAlignment(ILabel.CENTER);
-        iconLbl.setPreferredSize(new Dimension(150,150));
-
-        // Data
-        nameLbl = new ILabel("", ILabel.CENTER);
-        nameLbl.setFont(20, Font.BOLD);
-
-        divisionTr = new JTree();
-        divisionTr.setEnabled(false);
-        divisionTr.setOpaque(false);
-
-        descriptionLbl = new ILabel();
-        manufacturerLbl = new ILabel();
-        footprintLbl = new ILabel();
-        priceLbl = new ILabel();
-        locationLbl = new ILabel();
-        starRater = new IStarRater();
-        starRater.setEnabled(false);
-        discourageOrderCb = new ICheckBox("Discourage order ");
-        discourageOrderCb.setEnabled(false);
-        remarksTa = new ITextArea(false);
-        remarksTa.setLineWrap(true);
-        remarksTa.setWrapStyleWord(true);
-        remarksTa.setOpaque(false);
-
-        // Actions
-        dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    openDataSheet(selectedItem);
-                }
+    private void updateIcon(Item item) {
+            try {
+                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+                iconLbl.setIcon(path.toString());
+            } catch (Exception e) {
+                Status().setError("Failed to set item icon");
             }
-        };
-        dataSheetAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Data sheet");
-        orderAa = new AbstractAction("Order", imageResource.readImage("Items.Buttons.Order")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    orderItem(selectedItem);
-                }
-            }
-        };
-        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order");
-        historyAa = new AbstractAction("History", imageResource.readImage("Items.Buttons.History")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    showHistory(selectedItem);
-                }
-            }
-        };
-        historyAa.putValue(AbstractAction.SHORT_DESCRIPTION, "History");
     }
 
-    @Override
-    public void initializeLayouts() {
-        setLayout(new BorderLayout());
+    private void updateTextFields(Item item) {
+        if (item != null) {
+            nameTf.setText(item.getName());
+           updateTree(item);
 
-        JPanel dataPanel = new JPanel(new BorderLayout());
-        dataPanel.add(createComponentInfoPanel(), BorderLayout.CENTER);
-        //dataPanel.add(createRemarksPanel(), BorderLayout.EAST);
+            if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
+                manufacturerTf.setText(sm().findManufacturerById(item.getManufacturerId()).getName());
+            } else {
+                manufacturerTf.setText("");
+            }
 
-        add(createIconPanel(), BorderLayout.WEST);
-        add(dataPanel, BorderLayout.CENTER);
-        add(createToolbar(), BorderLayout.EAST);
-    }
+            descriptionTa.setText("<html>" + item.getDescription() + "</html>");
 
-    @Override
-    public void updateComponents(Object... object) {
-        if (object.length == 0 || object[0] == null) {
-            setVisible(false);
-            selectedItem = null;
-        } else {
-
-                setVisible(true);
-
-                selectedItem = (Item) object[0];
-
-                updateHeader(selectedItem);
-                updateData(selectedItem);
-
+            starRater.setRating(item.getRating());
+            discourageOrderCb.setSelected(item.isDiscourageOrder());
+            remarksTa.setText(item.getRemarks());
         }
     }
+
+    private void updateTree(Item item) {
+        DefaultMutableTreeNode root;
+        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+            root = new DefaultMutableTreeNode(item.getCategory(), true);
+            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+                DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(item.getProduct(), true);
+                if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+                    DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(item.getType(), false);
+                    pNode.add(tNode);
+                }
+                root.add(pNode);
+            }
+        } else {
+            root = new DefaultMutableTreeNode();
+        }
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        divisionTr.setModel(model);
+
+        for(int i=0;i<divisionTr.getRowCount();++i){
+            divisionTr.expandRow(i);
+        }
+    }
+
+    private void updateButtons(Item item) {
+        if (item != null) {
+            dataSheetBtn.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
+        }
+    }
+
 }

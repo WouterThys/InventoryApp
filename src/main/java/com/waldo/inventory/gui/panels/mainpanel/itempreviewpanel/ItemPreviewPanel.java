@@ -77,12 +77,16 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateHeader(Item item) {
-        // Icon
-        try {
-            Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-            iconLbl.setIcon(path.toString());
-        } catch (Exception e) {
-            Status().setError("Failed to set item icon");
+        if (!item.getIconPath().isEmpty()) {
+            try {
+                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+                iconLbl.setIcon(path.toString());
+            } catch (Exception e) {
+                Status().setError("Failed to set item icon");
+            }
+            iconLbl.setVisible(true);
+        } else {
+            iconLbl.setVisible(false);
         }
 
         nameLbl.setText(item.getName());
@@ -237,7 +241,6 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
 
     private JPanel createHeaderPanel() {
         JPanel headerPnl = new JPanel(new BorderLayout());
-        JPanel iconPnl = createIconPanel();
         JPanel centerPnl = new JPanel(new BorderLayout());
 
         //centerPnl.add(nameLbl, BorderLayout.PAGE_START);
@@ -245,7 +248,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         centerPnl.add(createToolbar(), BorderLayout.SOUTH);
 
         headerPnl.add(nameLbl, BorderLayout.NORTH);
-        headerPnl.add(iconPnl, BorderLayout.WEST);
+        //headerPnl.add(iconPnl, BorderLayout.WEST);
         headerPnl.add(centerPnl, BorderLayout.CENTER);
 
         return headerPnl;
@@ -261,6 +264,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         JPanel dataRows = new JPanel();
         JPanel remarkPnl = new JPanel(new BorderLayout());
         JPanel remarkTopPnl = new JPanel();
+        JPanel iconPnl = createIconPanel();
 
         PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(dataRows);
         gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
@@ -273,8 +277,13 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         remarkPnl.add(remarkTopPnl, BorderLayout.NORTH);
         remarkPnl.add(new JScrollPane(remarksTa));
 
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
+        centerPanel.add(iconPnl);
+        centerPanel.add(dataRows);
+
         dataPnl.add(new JScrollPane(descriptionTa), BorderLayout.NORTH);
-        dataPnl.add(dataRows, BorderLayout.CENTER);
+        dataPnl.add(centerPanel, BorderLayout.CENTER);
         dataPnl.add(remarkPnl, BorderLayout.SOUTH);
         dataPnl.setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
 
@@ -302,7 +311,9 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         iconLbl = new ILabel();
         iconLbl.setHorizontalAlignment(ILabel.CENTER);
         iconLbl.setVerticalAlignment(ILabel.CENTER);
-        //iconLbl.setPreferredSize(new Dimension(150,150));
+        iconLbl.setPreferredSize(new Dimension(150,150));
+        iconLbl.setMaximumSize(new Dimension(150,150));
+        iconLbl.setMinimumSize(new Dimension(150,150));
 
         // Data
         nameLbl = new ILabel("", ILabel.CENTER);
