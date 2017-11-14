@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 

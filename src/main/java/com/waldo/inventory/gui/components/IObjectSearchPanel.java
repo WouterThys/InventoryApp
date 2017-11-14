@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Product;
-import com.waldo.inventory.classes.Type;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Product;
+import com.waldo.inventory.classes.dbclasses.Type;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.managers.SearchManager;
 

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.classes.ProjectObject;
+import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITileView;
 

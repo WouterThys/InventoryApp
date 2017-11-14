@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
-import com.waldo.inventory.classes.Location;
-import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;

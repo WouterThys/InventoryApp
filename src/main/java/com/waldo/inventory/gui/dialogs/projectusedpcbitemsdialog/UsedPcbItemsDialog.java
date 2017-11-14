@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 
 import java.util.List;

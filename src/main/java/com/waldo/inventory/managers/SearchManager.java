@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.Package;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -395,7 +395,7 @@ public class SearchManager {
     }
 
     public List<Type> findTypeListForProduct(long productId)    {
-        List<com.waldo.inventory.classes.Type> types = new ArrayList<>();
+        List<Type> types = new ArrayList<>();
         for (Type t : db().getTypes()) {
             if (t.getProductId() == productId) {
                 types.add(t);

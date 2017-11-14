@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 
 public class HistoryDialog extends HistoryDialogLayout {

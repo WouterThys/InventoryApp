@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DistributorPartLink;
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;

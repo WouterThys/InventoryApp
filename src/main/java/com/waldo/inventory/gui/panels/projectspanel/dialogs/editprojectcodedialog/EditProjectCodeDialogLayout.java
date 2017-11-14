@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedial
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.ProjectCode;
-import com.waldo.inventory.classes.ProjectIDE;
+import com.waldo.inventory.classes.dbclasses.ProjectCode;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;

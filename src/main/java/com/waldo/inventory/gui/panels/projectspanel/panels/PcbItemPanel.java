@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.PcbItemProjectLink;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;

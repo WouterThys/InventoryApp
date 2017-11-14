@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.gui.components.ILabel;
 
 public class ILogTableModel extends IAbstractTableModel<Log> {

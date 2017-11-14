@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.PackageType;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.managers.SearchManager;
 

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;

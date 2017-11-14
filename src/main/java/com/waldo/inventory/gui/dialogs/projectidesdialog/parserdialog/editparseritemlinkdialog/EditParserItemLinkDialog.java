@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ public class EditParserItemLinkDialog extends EditParserItemLinkDialogLayout {
 
         Category c = (Category) categoryCb.getSelectedItem();
         Product p = (Product) productCb.getSelectedItem();
-        com.waldo.inventory.classes.Type t = (com.waldo.inventory.classes.Type) typeCb.getSelectedItem();
+        com.waldo.inventory.classes.dbclasses.Type t = (com.waldo.inventory.classes.dbclasses.Type) typeCb.getSelectedItem();
 
         if (c != null) {
             parserItemLink.setCategoryId(c.getId());

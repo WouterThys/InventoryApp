@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Product;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -143,7 +143,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
             }
             case DbObject.TYPE_TYPE: {
                 subDivisionList.setSelectedIndex(2);
-                Product p = sm().findProductById(((com.waldo.inventory.classes.Type)object).getProductId());
+                Product p = sm().findProductById(((com.waldo.inventory.classes.dbclasses.Type)object).getProductId());
                 selectionComboBox.setSelectedItem(p);
                 break;
             }
@@ -189,7 +189,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                     productId = 1; // Unknown
                 }
                 detailListModel.removeAllElements();
-                for (com.waldo.inventory.classes.Type t : sm().findTypeListForProduct(productId)) {
+                for (com.waldo.inventory.classes.dbclasses.Type t : sm().findTypeListForProduct(productId)) {
                     if (!t.isUnknown()) {
                         detailListModel.addElement(t);
                     }
@@ -240,19 +240,19 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void setTypesChanged() {
-        typesChanged = new DbObjectChangedListener<com.waldo.inventory.classes.Type>() {
+        typesChanged = new DbObjectChangedListener<com.waldo.inventory.classes.dbclasses.Type>() {
             @Override
-            public void onInserted(com.waldo.inventory.classes.Type object) {
+            public void onInserted(com.waldo.inventory.classes.dbclasses.Type object) {
                 updateTypeList();
             }
 
             @Override
-            public void onUpdated(com.waldo.inventory.classes.Type newType) {
+            public void onUpdated(com.waldo.inventory.classes.dbclasses.Type newType) {
                 updateTypeList();
             }
 
             @Override
-            public void onDeleted(com.waldo.inventory.classes.Type object) {
+            public void onDeleted(com.waldo.inventory.classes.dbclasses.Type object) {
                 updateTypeList();
             }
 
@@ -374,10 +374,10 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 }
                 break;
             case TYPES:
-                dialog = new DbObjectDialog<>(application, "New product", new com.waldo.inventory.classes.Type());
+                dialog = new DbObjectDialog<>(application, "New product", new com.waldo.inventory.classes.dbclasses.Type());
                 if (dialog.showDialog() == DbObjectDialog.OK) {
                     Product p = (Product) selectionCbModel.getSelectedItem();
-                    ((com.waldo.inventory.classes.Type)dialog.getDbObject()).setProductId(p.getId());
+                    ((com.waldo.inventory.classes.dbclasses.Type)dialog.getDbObject()).setProductId(p.getId());
                     dialog.getDbObject().save();
                 }
                 break;

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Distributor;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;

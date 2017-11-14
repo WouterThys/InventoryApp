@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Distributor;
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.dbclasses.Distributor;
+import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;

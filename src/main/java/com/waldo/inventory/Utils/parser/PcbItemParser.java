@@ -3,6 +3,7 @@ package com.waldo.inventory.Utils.parser;
 import com.waldo.eagleparser.EagleParser;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
@@ -15,7 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.waldo.inventory.classes.PcbItemItemLink.*;
+import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.*;
 
 public class PcbItemParser {
 

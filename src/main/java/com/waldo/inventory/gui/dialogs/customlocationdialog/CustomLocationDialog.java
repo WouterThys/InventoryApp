@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Location;
-import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 

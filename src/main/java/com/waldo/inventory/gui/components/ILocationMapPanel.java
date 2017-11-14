@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.Location;
+import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 

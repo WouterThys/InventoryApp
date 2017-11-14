@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 
 import javax.swing.*;
 import java.awt.*;

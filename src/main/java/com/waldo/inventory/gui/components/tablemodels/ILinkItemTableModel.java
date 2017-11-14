@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.gui.components.ILabel;
 
 public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {

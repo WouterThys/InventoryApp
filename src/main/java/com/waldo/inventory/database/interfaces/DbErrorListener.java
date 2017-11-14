@@ -1,6 +1,6 @@
 package com.waldo.inventory.database.interfaces;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 
 public interface DbErrorListener {
     void onSelectError(final DbObject object, final Throwable throwable, final String sql);

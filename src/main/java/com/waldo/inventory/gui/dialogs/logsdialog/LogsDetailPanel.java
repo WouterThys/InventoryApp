@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;

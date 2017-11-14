@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.components.ILabel;
 
 import java.util.Comparator;

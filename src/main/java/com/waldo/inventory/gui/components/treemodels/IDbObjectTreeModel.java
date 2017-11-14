@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.treemodels;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.ITree;
 
 import javax.swing.*;

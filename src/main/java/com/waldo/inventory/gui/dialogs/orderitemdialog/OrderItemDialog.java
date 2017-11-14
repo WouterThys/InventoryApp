@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;

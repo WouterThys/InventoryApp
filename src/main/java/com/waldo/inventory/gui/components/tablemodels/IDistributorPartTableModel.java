@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.DistributorPartLink;
+import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 
 public class IDistributorPartTableModel extends IAbstractTableModel<DistributorPartLink> {
     private static final String[] COLUMN_NAMES = {"Distributor", "Reference"};

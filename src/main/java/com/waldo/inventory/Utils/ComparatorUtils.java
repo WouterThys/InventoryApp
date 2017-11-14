@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 
 import java.util.Comparator;
 

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;

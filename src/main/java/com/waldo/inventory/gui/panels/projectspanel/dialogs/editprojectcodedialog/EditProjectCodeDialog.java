@@ -1,13 +1,12 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.ProjectCode;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {

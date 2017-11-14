@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Location;
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ISpinner;

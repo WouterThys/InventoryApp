@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.LocationType;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;

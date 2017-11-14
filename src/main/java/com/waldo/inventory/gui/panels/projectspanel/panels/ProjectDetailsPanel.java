@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;

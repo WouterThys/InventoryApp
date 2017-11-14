@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 
 import com.waldo.inventory.Utils.parser.PcbParser;
-import com.waldo.inventory.classes.ParserItemLink;
+import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;

@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils.parser;
 
-import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Product;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -52,7 +52,7 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
 
     DbObjectChangedListener<Category> categoriesChanged;
     DbObjectChangedListener<Product> productsChanged;
-    DbObjectChangedListener<com.waldo.inventory.classes.Type> typesChanged;
+    DbObjectChangedListener<com.waldo.inventory.classes.dbclasses.Type> typesChanged;
 
     public SubDivisionsDialogLayout(Application application, String title) {
         super(application, title);

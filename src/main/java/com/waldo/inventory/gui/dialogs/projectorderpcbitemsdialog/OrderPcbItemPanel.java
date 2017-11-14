@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderItem;
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;

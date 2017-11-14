@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.PackageType;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Package;
+import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IPackageTypeTableModel;

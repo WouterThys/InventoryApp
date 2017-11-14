@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.PackageType;
-import com.waldo.inventory.classes.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.PackageType;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;

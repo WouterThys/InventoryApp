@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;

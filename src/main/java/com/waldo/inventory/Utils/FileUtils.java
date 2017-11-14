@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.classes.ProjectIDE;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import org.apache.commons.io.IOUtils;
 
 import javax.sql.rowset.serial.SerialBlob;

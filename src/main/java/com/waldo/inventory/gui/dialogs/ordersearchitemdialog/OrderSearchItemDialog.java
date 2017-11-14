@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;

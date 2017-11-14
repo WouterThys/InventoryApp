@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;

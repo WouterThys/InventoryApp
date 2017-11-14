@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Log;
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.SetItem;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Log;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;

@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;

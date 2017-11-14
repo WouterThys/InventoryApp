@@ -1,6 +1,6 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.classes.Log;
+import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;

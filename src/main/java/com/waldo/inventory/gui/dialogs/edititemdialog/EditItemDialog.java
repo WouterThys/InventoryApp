@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Product;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;

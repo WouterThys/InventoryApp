@@ -2,10 +2,10 @@ package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Order;
-import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 
 public class IPcbItemUsedTableModel extends IAbstractTableModel<PcbItemProjectLink> {
 

@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;

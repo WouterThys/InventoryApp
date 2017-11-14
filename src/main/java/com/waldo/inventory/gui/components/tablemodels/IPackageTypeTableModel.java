@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.PackageType;
+import com.waldo.inventory.classes.dbclasses.PackageType;
 
 public class IPackageTypeTableModel extends IAbstractTableModel<PackageType> {
     private static final String[] COLUMN_NAMES = {"Name", "Pins", "Description"};

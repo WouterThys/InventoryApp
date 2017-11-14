@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;

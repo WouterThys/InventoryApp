@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
-import com.waldo.inventory.classes.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;

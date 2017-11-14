@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 
 public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderItem> {
 

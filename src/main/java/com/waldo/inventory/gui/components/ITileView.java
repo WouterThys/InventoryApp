@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.ProjectIDE;
-import com.waldo.inventory.classes.ProjectObject;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
+import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;

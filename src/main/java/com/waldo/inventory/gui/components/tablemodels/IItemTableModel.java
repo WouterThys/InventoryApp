@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.Item;
-import com.waldo.inventory.classes.Location;
-import com.waldo.inventory.classes.Manufacturer;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.components.ILabel;
 

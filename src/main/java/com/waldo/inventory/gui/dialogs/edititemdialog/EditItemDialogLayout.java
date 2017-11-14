@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
-import com.waldo.inventory.classes.Item;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;

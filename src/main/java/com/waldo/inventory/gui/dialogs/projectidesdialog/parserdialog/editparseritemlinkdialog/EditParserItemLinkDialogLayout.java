@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparse
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.Category;
-import com.waldo.inventory.classes.ParserItemLink;
-import com.waldo.inventory.classes.Product;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.ParserItemLink;
+import com.waldo.inventory.classes.dbclasses.Product;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -24,7 +24,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     private ITextField pcbItemNameTf;
     IComboBox<Category> categoryCb;
     IComboBox<Product> productCb;
-    IComboBox<com.waldo.inventory.classes.Type> typeCb;
+    IComboBox<com.waldo.inventory.classes.dbclasses.Type> typeCb;
 
      /*
      *                  VARIABLES
@@ -150,7 +150,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
                         productCb.setSelectedItem(p);
                         updateTypeCb(p);
                         typeCb.setEnabled(true);
-                        com.waldo.inventory.classes.Type t = parserItemLink.getType();
+                        com.waldo.inventory.classes.dbclasses.Type t = parserItemLink.getType();
                         if (t != null && !t.isUnknown()) {
                             typeCb.setSelectedItem(t);
                         } else {

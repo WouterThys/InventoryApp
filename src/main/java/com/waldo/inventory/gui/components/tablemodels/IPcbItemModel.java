@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.*;

@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;

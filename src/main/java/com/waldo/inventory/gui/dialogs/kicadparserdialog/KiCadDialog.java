@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
-import com.waldo.inventory.classes.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;

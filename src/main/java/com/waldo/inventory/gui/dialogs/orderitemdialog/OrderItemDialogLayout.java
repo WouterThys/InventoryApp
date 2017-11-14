@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
-import com.waldo.inventory.classes.Order;
+import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;

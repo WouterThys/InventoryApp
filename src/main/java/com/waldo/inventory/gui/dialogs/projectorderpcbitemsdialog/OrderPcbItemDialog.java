@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel;
 
-import com.waldo.inventory.classes.DistributorPartLink;
+import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 

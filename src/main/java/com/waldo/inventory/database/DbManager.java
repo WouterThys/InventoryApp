@@ -5,13 +5,15 @@ import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
-import com.waldo.inventory.classes.Package;
+import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.managers.DbTableManager;
 import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -33,6 +35,8 @@ public class DbManager {
     public static final int OBJECT_DELETE = 2;
     public static final int OBJECT_SELECT = 3;
     public static final int OBJECT_CACHE_CLEAR = 4;
+
+    public static final int MYSQL_DELETE_FK_ERROR = 1451;
 
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
@@ -133,6 +137,7 @@ public class DbManager {
                 initialized = testConnection(dataSource);
                 switch (s.getDbType()) {
                     case Statics.DbTypes.Online:
+                        DbTableManager.dbTm().init(dataSource, s);
                         Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                         break;
                     case Statics.DbTypes.Local:

@@ -1,8 +1,8 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.classes.Package;
-import com.waldo.inventory.classes.PackageType;
+import com.waldo.inventory.classes.dbclasses.Package;
+import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;

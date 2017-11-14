@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.editorderfileformatdialog;
 
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.OrderFileFormat;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.Application;
 

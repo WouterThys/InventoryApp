@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
+import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.managers.SearchManager;
 
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {

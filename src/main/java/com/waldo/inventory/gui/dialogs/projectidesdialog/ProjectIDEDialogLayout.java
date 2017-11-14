@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.DbObject;
-import com.waldo.inventory.classes.Project;
-import com.waldo.inventory.classes.ProjectIDE;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;

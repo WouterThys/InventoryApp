@@ -1,6 +1,6 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
-import com.waldo.inventory.classes.DbObject;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 
 public class FileSettings extends DbSettingsObject {
 

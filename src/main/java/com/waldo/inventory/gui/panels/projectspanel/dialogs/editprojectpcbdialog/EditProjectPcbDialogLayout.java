@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialo
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.ProjectIDE;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 

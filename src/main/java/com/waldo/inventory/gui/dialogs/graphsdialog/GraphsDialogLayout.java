@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.graphsdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.classes.DbHistory;
+import com.waldo.inventory.classes.dbclasses.DbHistory;
 import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
