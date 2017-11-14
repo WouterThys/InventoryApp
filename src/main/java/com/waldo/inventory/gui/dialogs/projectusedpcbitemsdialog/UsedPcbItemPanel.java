@@ -195,7 +195,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
 
     void createUsedLinks() {
         for (PcbItemProjectLink link : linkMap.values()) {
-            if (link.getUsedCount() > 0 && !link.isUsed()) {
+            if (link.getUsedCount() > 0 && !link.isProcessed()) {
                 link.setUsed(true);
             }
         }
@@ -249,7 +249,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
                 if (link != null) {
                     if (!isRowSelected(row)) {
                         component.setBackground(getBackground());
-                        if (link.isUsed()) {
+                        if (link.isProcessed()) {
                             component.setBackground(colorResource.readColor("Green.Light"));
                         } else {
                             if (link.getUsedCount() > 0) {

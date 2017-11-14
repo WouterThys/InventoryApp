@@ -142,7 +142,7 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void sort() {
         if (comparator != null) {
             itemList.sort(comparator);
-            updateTable();
+            //updateTable();
         }
     }
 

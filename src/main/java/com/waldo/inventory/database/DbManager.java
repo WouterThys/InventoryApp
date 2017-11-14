@@ -1425,8 +1425,9 @@ public class DbManager {
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
                     p.setSheetName(rs.getString("sheetName"));
 
-                    // Used
+                    // Used and processed
                     p.setUsed(p.getUsedCount() > 0);
+                    p.setProcessed(p.isUsed());
 
                     p.setInserted(true);
                     pcbItemProjectLinks.add(p);

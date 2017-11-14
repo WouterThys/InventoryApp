@@ -32,7 +32,11 @@ public class IPcbItemUsedTableModel extends IAbstractTableModel<PcbItemProjectLi
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return (columnIndex == 2); // Amount is editable
+        if (columnIndex == 2) {
+            PcbItemProjectLink link = getItemAt(rowIndex);
+            return !link.isProcessed();
+        }
+        return false;
     }
 }
 

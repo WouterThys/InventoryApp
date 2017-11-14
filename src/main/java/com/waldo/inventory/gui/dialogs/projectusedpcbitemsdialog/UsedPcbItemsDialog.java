@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
-import com.waldo.inventory.classes.PcbItem;
-import com.waldo.inventory.classes.PcbItemProjectLink;
-import com.waldo.inventory.classes.ProjectPcb;
+import com.waldo.inventory.classes.*;
 import com.waldo.inventory.gui.Application;
+
+import java.util.List;
 
 public class UsedPcbItemsDialog extends UsedPcbItemsDialogLayout {
 
@@ -43,7 +43,7 @@ public class UsedPcbItemsDialog extends UsedPcbItemsDialogLayout {
     }
 
     //
-    // Panels
+    // Move to used panel
     //
     @Override
     public void onAdd() {
@@ -51,8 +51,36 @@ public class UsedPcbItemsDialog extends UsedPcbItemsDialogLayout {
         usedPnl.usedTableInit(pcbItemPnl.getAllLinks());
     }
 
+    //
+    // Confirm used components
+    //
     @Override
     public void onSetUsed() {
-
+        List<PcbItemProjectLink> usedItems = usedPnl.getItemsToProcess();
+        for (PcbItemProjectLink link : usedItems) {
+            PcbItemItemLink itemLink = link.getPcbItem().getMatchedItemLink();
+            if (itemLink.isSetItem()) {
+                SetItem setItem = itemLink.getSetItem();
+                int newAmount = setItem.getAmount() - link.getUsedCount();
+                if (newAmount < 0) {
+                    // todo: Warning?
+                    newAmount = 0;
+                }
+                setItem.setAmount(newAmount);
+                setItem.save();
+            } else {
+                Item item = itemLink.getItem();
+                int newAmount = item.getAmount() - link.getUsedCount();
+                if (newAmount < 0) {
+                    // todo: Warning?
+                    newAmount = 0;
+                }
+                item.setAmount(newAmount);
+                item.save();
+            }
+            link.setUsed(true);
+            link.setProcessed(true);
+            link.save();
+        }
     }
 }

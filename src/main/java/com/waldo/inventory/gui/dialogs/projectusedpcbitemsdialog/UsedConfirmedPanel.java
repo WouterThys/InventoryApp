@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemUsedTableModel;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -55,10 +56,16 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        boolean selected = usedTableGetSelectedItem() != null;
+        PcbItemProjectLink link = usedTableGetSelectedItem();
+        boolean selected = link != null;
+        boolean hasItemsToProcess = getItemsToProcess().size() > 0;
 
-        addOneAa.setEnabled(selected);
-        remOneAa.setEnabled(selected);
+        addOneAa.setEnabled(selected && !link.isProcessed());
+        remOneAa.setEnabled(selected && !link.isProcessed());
+
+        refreshAa.setEnabled(hasItemsToProcess);
+        remAllAa.setEnabled(hasItemsToProcess);
+        doSetUsedBtn.setEnabled(hasItemsToProcess);
     }
 
     void usedTableUpdate() {
@@ -73,14 +80,14 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
     // Actions
     //
     private void onAddOne(PcbItemProjectLink link) {
-        if (link != null) {
+        if (link != null && !link.isProcessed()) {
             link.setUsedCount(link.getUsedCount() + 1);
         }
     }
 
     private void onRemOne(PcbItemProjectLink link) {
         if (link != null) {
-            if (link.getUsedCount() > 0) {
+            if (link.getUsedCount() > 0 && !link.isProcessed()) {
                 link.setUsedCount(link.getUsedCount() - 1);
             }
         }
@@ -88,26 +95,33 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
 
     private void onRemAll() {
         for (PcbItemProjectLink link : usedTableModel.getItemList()) {
-            link.setUsedCount(0);
+            if (!link.isProcessed()) {
+                link.setUsedCount(0);
+            }
         }
     }
 
     private void onRefresh() {
-//        List<PcbItemProjectLink> orders = new ArrayList<>(orderList);
-//        for (PcbItemProjectLink order : orders) {
-//            // Check items
-//            List<PcbItemProjectLink> itemList = new ArrayList<>(order.getTempOrderItems());
-//            for (PcbItemProjectLink item : itemList ) {
-//                if (item.getId() < DbObject.UNKNOWN_ID && item.getAmount() == 0) {
-//                    order.removeItemFromList(item);
-//                }
-//            }
-//
-//            // Check order
-//            if (order.getTempOrderItems().size() == 0) {
-//                orderList.remove(order);
-//            }
-//        }
+        List<PcbItemProjectLink> linkList = new ArrayList<>(usedTableGetItemList());
+        for (PcbItemProjectLink link : linkList) {
+            if (!link.isProcessed()) {
+                if (link.isUsed() && link.getUsedCount() == 0) {
+                    link.setUsed(false);
+                    link.setUsedCount(0);
+                    usedTableModel.removeItem(link);
+                }
+            }
+        }
+    }
+
+    List<PcbItemProjectLink> getItemsToProcess() {
+        List<PcbItemProjectLink> toProcess = new ArrayList<>();
+        for (PcbItemProjectLink link : usedTableGetItemList()) {
+            if (!link.isProcessed() && link.getUsedCount() > 0) {
+                toProcess.add(link);
+            }
+        }
+        return toProcess;
     }
 
     //
@@ -121,6 +135,11 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
             }
         }
         usedTableModel.setItemList(filtered);
+        updateEnabledComponents();
+    }
+
+    List<PcbItemProjectLink> usedTableGetItemList() {
+        return usedTableModel.getItemList();
     }
 
     //
@@ -150,7 +169,7 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-// Actions
+        // Actions
         addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,7 +205,23 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
 
         // Table
         usedTableModel = new IPcbItemUsedTableModel();
-        usedTable = new ITable<>(usedTableModel);
+        usedTable = new ITable<PcbItemProjectLink>(usedTableModel){
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component =  super.prepareRenderer(renderer, row, column);
+                PcbItemProjectLink link = getValueAtRow(row);
+
+                if (link != null) {
+                    if (link.isProcessed()) {
+                        component.setForeground(Color.gray);
+                    } else {
+                        component.setForeground(Color.black);
+                    }
+                }
+
+                return component;
+            }
+        };
         usedTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
 
         TableColumn tableColumn = usedTable.getColumnModel().getColumn(2);

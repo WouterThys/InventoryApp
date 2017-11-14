@@ -23,6 +23,7 @@ public class PcbItemProjectLink extends DbObject {
 
     private int usedCount; // Amount used = amount not available anymore in stock
     private boolean used;
+    private boolean processed; // Helper variable for used dialog
 
     // Needed because multiple links can point to same pcbItem
     private String sheetName;
@@ -196,5 +197,13 @@ public class PcbItemProjectLink extends DbObject {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processedUsed) {
+        this.processed = processedUsed;
     }
 }

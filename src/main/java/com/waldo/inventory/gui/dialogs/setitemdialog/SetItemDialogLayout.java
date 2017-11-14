@@ -61,7 +61,6 @@ public abstract class SetItemDialogLayout extends IDialog implements
 
     void updateTable() {
         java.util.List<SetItem> list = SearchManager.sm().findSetItemsByItemId(item.getId());
-        list.sort(new ComparatorUtils.SetItemComparator());
         tableModel.setItemList(list);
     }
 
@@ -86,6 +85,7 @@ public abstract class SetItemDialogLayout extends IDialog implements
         setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        setItemTable.setExactColumnWidth(0, 36);
         setItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
 
         // Tool bar

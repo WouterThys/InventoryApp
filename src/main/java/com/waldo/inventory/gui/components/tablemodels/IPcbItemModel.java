@@ -45,23 +45,24 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
                     } else {
                         return part + " - " + value;
                     }
-//                case 2: // Value
-//                    return component.getValue();
                 case 2: // Reference
                     return component.getReferenceString();
                 case 3: // Linked
                     if (component.hasMatch()) {
                         return linked;
                     }
+                    break;
                 case 4: // Ordered
                     if (component.isOrdered()) {
                         return ordered;
                     }
+                    break;
                 case 5: // Used
                     PcbItemProjectLink link = pcbItemListener.onGetProjectLink(component);
                     if (link != null && link.isUsed()) {
                         return used;
                     }
+                    break;
             }
         }
         return null;
