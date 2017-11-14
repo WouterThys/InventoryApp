@@ -25,6 +25,11 @@ public class AddUpdateDelete {
         }
     }
 
+    public void setUpdated(String updatedBy, Date date) {
+        this.updatedBy = updatedBy;
+        this.updatedDate = date;
+    }
+
     public void setInserted(String insertedBy) {
         this.insertedBy = insertedBy;
         insertedDate = DateUtils.now();
@@ -35,6 +40,11 @@ public class AddUpdateDelete {
         if (timestamp != null) {
             this.insertedDate = new Date(timestamp.getTime());
         }
+    }
+
+    public void setInserted(String insertedBy, Date date) {
+        this.insertedBy = insertedBy;
+        this.insertedDate = date;
     }
 
     public String getInsertedBy() {
