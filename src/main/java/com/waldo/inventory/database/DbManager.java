@@ -1,6 +1,7 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.*;
@@ -130,7 +131,14 @@ public class DbManager {
 
                 // Test
                 initialized = testConnection(dataSource);
-                Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+                switch (s.getDbType()) {
+                    case Statics.DbTypes.Online:
+                        Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
+                        break;
+                    case Statics.DbTypes.Local:
+                        Status().setDbConnectionText(initialized, "DB BACKUP", s.getDbName(), s.getDbUserName());
+                        break;
+                }
             } else {
                 Status().setDbConnectionText(false, "", "", "");
             }
@@ -632,9 +640,14 @@ public class DbManager {
                     i.setRemarks(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
                     i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
-                    i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
-                    i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
 
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                        i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                    } else {
+                        i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
+                        i.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                    }
                     i.setInserted(true);
                     items.add(i);
                 }
@@ -968,9 +981,15 @@ public class DbManager {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconPath"));
-                    o.setDateOrdered(rs.getTimestamp("dateOrdered"));
-                    o.setDateModified(rs.getTimestamp("dateModified"));
-                    o.setDateReceived(rs.getTimestamp("dateReceived"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        o.setDateOrdered(rs.getTimestamp("dateOrdered"));
+                        o.setDateModified(rs.getTimestamp("dateModified"));
+                        o.setDateReceived(rs.getTimestamp("dateReceived"));
+                    } else {
+                        o.setDateOrdered(DateUtils.sqLiteToDate(rs.getString("dateOrdered")));
+                        o.setDateModified(DateUtils.sqLiteToDate(rs.getString("dateModified")));
+                        o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
+                    }
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
@@ -1331,7 +1350,12 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+                    } else {
+                        p.setRemarksFile(null);
+                    }
 
                     p.setInserted(true);
                     projectCodes.add(p);
@@ -1377,8 +1401,14 @@ public class DbManager {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
-                    p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
-                    p.setLastParsedDate(rs.getTimestamp("lastParsedDate"));
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setLastParsedDate(rs.getTimestamp("lastParsedDate"));
+                        p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+                    } else {
+                        p.setLastParsedDate(DateUtils.sqLiteToDate(rs.getString("lastParsedDate")));
+                        p.setRemarksFile(null);
+                    }
 
                     p.setInserted(true);
                     projectPcbs.add(p);
@@ -1771,7 +1801,11 @@ public class DbManager {
                     l = new Log();
                     l.setId(rs.getLong("id"));
                     l.setLogType(rs.getInt("logtype"));
-                    l.setLogTime(rs.getTimestamp("logtime"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        l.setLogTime(rs.getTimestamp("logtime"));
+                    } else {
+                        l.setLogTime(DateUtils.sqLiteToDate(rs.getString("logtime")));
+                    }
                     l.setLogClass(rs.getString("logclass"));
                     l.setLogMessage(rs.getString("logmessage"));
                     l.setLogException(rs.getString("logexception"));
@@ -1815,7 +1849,11 @@ public class DbManager {
                 while (rs.next()) {
                     dbh = new DbHistory();
                     dbh.setId(rs.getLong("id"));
-                    dbh.setDate(rs.getTimestamp("date"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        dbh.setDate(rs.getTimestamp("date"));
+                    } else {
+                        dbh.setDate(DateUtils.sqLiteToDate(rs.getString("date")));
+                    }
                     dbh.setDbAction(rs.getInt("dbAction"));
                     dbh.setDbObjectType(rs.getInt("dbObjectType"));
                     dbh.setDbObjectId(rs.getLong("dbObjectId"));

@@ -346,7 +346,7 @@ public class Order extends DbObject {
         return dateModified;
     }
 
-    private void setDateModified(Date dateModified) {
+    public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
     }
 

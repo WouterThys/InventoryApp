@@ -13,6 +13,7 @@ public class DateUtils {
     private static final String longDateStr = "--- ---, ----";
 
     private static final SimpleDateFormat shortDateAndTime = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+    private static final SimpleDateFormat sqlDateAndTime = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
     private static final SimpleDateFormat shortDate = new SimpleDateFormat("dd/MM/YYYY");
     private static final SimpleDateFormat shortTime = new SimpleDateFormat("HH:mm:ss");
 
@@ -66,6 +67,19 @@ public class DateUtils {
 
     public static Date minDate() {
         return new Date(0);
+    }
+
+    public static Date sqLiteToDate(String dateTxt) {
+        Date date = minDate();
+        if (dateTxt != null && !dateTxt.isEmpty()) {
+            try {
+                java.util.Date d = sqlDateAndTime.parse(dateTxt);
+                date = new Date(d.getTime());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return date;
     }
 
     public static Date stripTime(Date date) {

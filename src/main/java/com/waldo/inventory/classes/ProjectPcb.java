@@ -246,7 +246,7 @@ public class ProjectPcb extends ProjectObject {
         return lastParsedDate;
     }
 
-    private void setLastParsedDate(Date lastParsedDate) {
+    public void setLastParsedDate(Date lastParsedDate) {
         this.lastParsedDate = lastParsedDate;
     }
 
