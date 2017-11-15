@@ -2,12 +2,16 @@ package com.waldo.inventory.classes.database;
 
 public class ForeignKey {
 
-    private String fromColumn;
     private String constraintName;
+
+    private DbTable fromTable;
+    private String fromColumn;
+
     private DbTable referenceTable;
     private String referenceColumn;
 
-    public ForeignKey(String fromColumn, String constraintName, DbTable referenceTable, String referenceColumn) {
+    public ForeignKey(DbTable fromTable, String fromColumn, String constraintName, DbTable referenceTable, String referenceColumn) {
+        this.fromTable = fromTable;
         this.fromColumn = fromColumn;
         this.constraintName = constraintName;
         this.referenceTable = referenceTable;
@@ -57,5 +61,9 @@ public class ForeignKey {
             referenceColumn = "";
         }
         return referenceColumn;
+    }
+
+    public DbTable getFromTable() {
+        return fromTable;
     }
 }

@@ -109,6 +109,36 @@ public abstract class DbObject {
         return TYPE_UNKNOWN;
     }
 
+    public static DbObject createDummy(String tableName, String objectName, long objectId) {
+        DbObject obj = new DbObject(tableName) {
+            @Override
+            public int addParameters(PreparedStatement statement) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public void tableChanged(int changedHow) {
+
+            }
+
+            @Override
+            public DbObject createCopy() {
+                return null;
+            }
+
+            @Override
+            public DbObject createCopy(DbObject copyInto) {
+                return null;
+            }
+        };
+        obj.setName(objectName);
+        obj.setId(objectId);
+        obj.setCanBeSaved(false);
+        obj.setInserted(true);
+
+        return obj;
+    }
+
     public void save() {
         if (canBeSaved) {
             if (id < 0 && !isInserted) {

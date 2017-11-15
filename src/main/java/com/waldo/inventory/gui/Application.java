@@ -5,13 +5,13 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
+import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
@@ -316,13 +316,11 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
-        if (throwable instanceof SQLException) {
-            // Can not delete: object
-            if (((SQLException) throwable).getErrorCode() == DbManager.MYSQL_DELETE_FK_ERROR) {
+        if (ErrorManager.em().handle(object, throwable, sql)) {
 
-            }
+        } else {
+            showErrorMessage(object, throwable, "Delete");
         }
-        showErrorMessage(object, throwable, "Delete");
     }
 
     private void showErrorMessage(DbObject object, Throwable throwable, String error) {

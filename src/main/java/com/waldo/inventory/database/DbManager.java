@@ -36,8 +36,6 @@ public class DbManager {
     public static final int OBJECT_SELECT = 3;
     public static final int OBJECT_CACHE_CLEAR = 4;
 
-    public static final int MYSQL_DELETE_FK_ERROR = 1451;
-
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 

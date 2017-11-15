@@ -2,6 +2,7 @@ package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.database.DbTable;
 import com.waldo.inventory.classes.database.ForeignKey;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -14,13 +15,11 @@ import java.util.List;
 
 public class DbTableManager {
 
-
     private static final DbTableManager INSTANCE = new DbTableManager();
 
     public static DbTableManager dbTm() {
         return INSTANCE;
     }
-
 
     private static final String sqlLoadTables = "SELECT table_name FROM information_schema.tables where table_schema='%s';";
     private static final String sqlLoadTableData = "SELECT COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s';";
@@ -96,7 +95,7 @@ public class DbTableManager {
                         String constraintName = rs.getString("CONSTRAINT_NAME");
                         String refColumn = rs.getString("REFERENCED_COLUMN_NAME");
 
-                        ForeignKey fk = new ForeignKey(columnName, constraintName, refTable, refColumn);
+                        ForeignKey fk = new ForeignKey(table, columnName, constraintName, refTable, refColumn);
                         table.addForeignKey(fk);
                     }
                 }
@@ -106,5 +105,24 @@ public class DbTableManager {
         }
     }
 
+    public List<DbObject> getForeignKeyReferences(DbObject object, ForeignKey fk) {
+        List<DbObject> objectList = new ArrayList<>();
+        String sql = "select name, id from " + fk.getFromTable().getTableName() + " where " + fk.getFromColumn() + " = " + object.getId() + ";";
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    DbObject obj = DbObject.createDummy(fk.getFromTable().getTableName(), rs.getString("name"), rs.getLong("id"));
+                    objectList.add(obj);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return objectList;
+    }
 
 }
