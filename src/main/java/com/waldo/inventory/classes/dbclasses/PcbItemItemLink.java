@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -105,7 +105,7 @@ public class PcbItemItemLink extends DbObject {
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<PcbItemItemLink> list = cache().getPcbItemItemLinks();
                 if (!list.contains(this)) {
                     list.add(this);
@@ -113,10 +113,10 @@ public class PcbItemItemLink extends DbObject {
 
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
+            case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<PcbItemItemLink> list = cache().getPcbItemItemLinks();
                 if (list.contains(this)) {
                     list.remove(this);

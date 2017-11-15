@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.CacheManager;
 
 import java.sql.PreparedStatement;
@@ -46,29 +46,29 @@ public class Category extends DbObject {
     }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Category> categories = CacheManager.cache().getCategories();
                 if (!categories.contains(this)) {
                     categories.add(this);
                 }
-                CacheManager.cache().notifyListeners(DbManager.OBJECT_INSERT, this, CacheManager.cache().onCategoriesChangedListenerList);
+                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
-                CacheManager.cache().notifyListeners(DbManager.OBJECT_UPDATE, this, CacheManager.cache().onCategoriesChangedListenerList);
+            case DatabaseAccess.OBJECT_UPDATE: {
+                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Category> categories = CacheManager.cache().getCategories();
                 if (categories.contains(this)) {
                     categories.remove(this);
                 }
-                CacheManager.cache().notifyListeners(DbManager.OBJECT_DELETE, this, CacheManager.cache().onCategoriesChangedListenerList);
+                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
         }

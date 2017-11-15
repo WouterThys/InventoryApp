@@ -67,7 +67,7 @@ public class ErrorManager {
                 String tableName = dummy[1].replace("`", "");
 
                 // do stuff with tableName
-                DbTable table = DbTableManager.dbTm().getDbTable(tableName);
+                DbTable table = TableManager.dbTm().getDbTable(tableName);
                 if (table != null) {
                     dummy = StringUtils.substringsBetween(constraintData, "`", "`");
                     if (dummy.length > 3) {
@@ -104,7 +104,7 @@ public class ErrorManager {
         );
 
         if (res == JOptionPane.YES_OPTION) {
-            List<DbObject> references = DbTableManager.dbTm().getForeignKeyReferences(object, foreignKey);
+            List<DbObject> references = TableManager.dbTm().getForeignKeyReferences(object, foreignKey);
 
             StringBuilder m = new StringBuilder();
             for (DbObject obj : references) {

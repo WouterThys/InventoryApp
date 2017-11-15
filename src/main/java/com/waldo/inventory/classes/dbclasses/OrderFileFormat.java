@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -29,24 +29,24 @@ public class OrderFileFormat extends DbObject {
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<OrderFileFormat> offs = cache().getOrderFileFormats();
                 if (!offs.contains(this)) {
                     offs.add(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onOrderFileFormatChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
-                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onOrderFileFormatChangedListenerList);
+            case DatabaseAccess.OBJECT_UPDATE: {
+                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<OrderFileFormat> offs = cache().getOrderFileFormats();
                 if (offs.contains(this)) {
                     offs.remove(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onOrderFileFormatChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
         }

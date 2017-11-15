@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -99,17 +99,17 @@ public class PcbItemProjectLink extends DbObject {
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<PcbItemProjectLink> list = cache().getPcbItemProjectLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
+            case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<PcbItemProjectLink> list = cache().getPcbItemProjectLinks();
                 if (list.contains(this)) {
                     list.remove(this);

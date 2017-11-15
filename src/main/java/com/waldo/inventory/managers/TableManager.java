@@ -13,11 +13,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbTableManager {
+public class TableManager {
 
-    private static final DbTableManager INSTANCE = new DbTableManager();
+    private static final TableManager INSTANCE = new TableManager();
 
-    public static DbTableManager dbTm() {
+    public static TableManager dbTm() {
         return INSTANCE;
     }
 
@@ -29,7 +29,7 @@ public class DbTableManager {
     private BasicDataSource dataSource;
     private List<DbTable> dbTableList = new ArrayList<>();
 
-    private DbTableManager() {
+    private TableManager() {
 
     }
 

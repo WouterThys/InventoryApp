@@ -5,7 +5,7 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
@@ -97,12 +97,12 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         try {
             if (settings().init()) {
                 LOG.info("Reading settings successful!!");
-                DbManager.db().init();
+                DatabaseAccess.db().init();
 
                 settings().registerShutDownHook();
-                DbManager.db().startBackgroundWorkers();
-                DbManager.db().registerShutDownHook();
-                DbManager.db().addErrorListener(this);
+                DatabaseAccess.db().startBackgroundWorkers();
+                DatabaseAccess.db().registerShutDownHook();
+                DatabaseAccess.db().addErrorListener(this);
 
                 result = true;
             } else {

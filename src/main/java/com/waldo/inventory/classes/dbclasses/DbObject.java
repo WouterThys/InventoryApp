@@ -7,7 +7,7 @@ import com.waldo.inventory.managers.LogManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.DatabaseAccess.db;
 import static com.waldo.inventory.gui.Application.scriptResource;
 
 public abstract class DbObject {

@@ -11,9 +11,8 @@ import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.managers.DbTableManager;
+import com.waldo.inventory.managers.TableManager;
 import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -27,9 +26,9 @@ import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class DbManager {
+public class DatabaseAccess {
 
-    private static final LogManager LOG = LogManager.LOG(DbManager.class);
+    private static final LogManager LOG = LogManager.LOG(DatabaseAccess.class);
 
     public static final int OBJECT_INSERT = 0;
     public static final int OBJECT_UPDATE = 1;
@@ -41,8 +40,8 @@ public class DbManager {
     private static final String ERROR_WORKER = "Error worker";
 
     // Db
-    private static final DbManager INSTANCE = new DbManager();
-    public static DbManager db() {
+    private static final DatabaseAccess INSTANCE = new DatabaseAccess();
+    public static DatabaseAccess db() {
         return INSTANCE;
     }
     private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
@@ -59,7 +58,7 @@ public class DbManager {
     // Events
     private DbErrorListener errorListener;
 
-    private DbManager() {}
+    private DatabaseAccess() {}
 
     public void init() throws SQLException{
         initialized = false;
@@ -80,7 +79,7 @@ public class DbManager {
                 initialized = testConnection(dataSource);
                 switch (s.getDbType()) {
                     case Statics.DbTypes.Online:
-                        DbTableManager.dbTm().init(dataSource, s);
+                        TableManager.dbTm().init(dataSource, s);
                         Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                         break;
                     case Statics.DbTypes.Local:
@@ -220,6 +219,219 @@ public class DbManager {
 
     public void registerShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    /*
+    *                  Workers
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private class DbQueueWorker extends SwingWorker<Integer, String> {
+
+        volatile boolean keepRunning = true;
+        private String name;
+
+        DbQueueWorker(String name) {
+            this.name = name;
+        }
+
+        private void insert(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            dbo.addParameters(stmt);
+            stmt.execute();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                rs.next();
+                dbo.setId(rs.getLong(1));
+            }
+
+            // Listeners
+            dbo.tableChanged(OBJECT_INSERT);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_INSERT, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            int ndx = dbo.addParameters(stmt);
+            if (ndx > 0) {
+                stmt.setLong(ndx, dbo.getId());
+                stmt.execute();
+            }
+
+            // Listeners
+            dbo.tableChanged(OBJECT_UPDATE);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_UPDATE, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
+            stmt.setLong(1, dbo.getId());
+            stmt.execute();
+            dbo.setId(-1);// Not in database anymore
+
+            // Listeners
+            dbo.tableChanged(OBJECT_DELETE);
+
+            // Log to db history
+            if (!(dbo instanceof DbHistory)) {
+                try {
+                    DbHistory dbHistory = new DbHistory(OBJECT_DELETE, dbo);
+                    dbHistory.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception {
+            while (keepRunning) {
+
+                DbQueueObject queueObject = workList.take();
+                if (queueObject != null) {
+                    try (Connection connection = DatabaseAccess.getConnection()) {
+                        // Open db
+                        try (PreparedStatement stmt = connection.prepareStatement("BEGIN;")) {
+                            stmt.execute();
+                        }
+
+                        try {
+                            boolean hasMoreWork;
+                            do {
+                                DbObject dbo = queueObject.getObject();
+                                switch (queueObject.getHow()) {
+                                    case OBJECT_INSERT: {
+                                        String sql = dbo.getScript(DbObject.SQL_INSERT);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                                            insert(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
+                                                nonoList.put(object);
+                                            }
+                                        }
+                                    }
+                                    break;
+                                    case OBJECT_UPDATE: {
+                                        String sql = dbo.getScript(DbObject.SQL_UPDATE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            update(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                                nonoList.put(object);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case OBJECT_DELETE:
+                                        String sql = dbo.getScript(DbObject.SQL_DELETE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            delete(stmt, dbo);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
+                                                nonoList.put(object);
+                                            }
+                                        }
+                                        break;
+                                }
+
+                                if (workList.size() > 0) {
+                                    queueObject = workList.take();
+                                    hasMoreWork = true;
+                                } else {
+                                    hasMoreWork = false;
+                                }
+                            } while (hasMoreWork && keepRunning);
+                            // Close db
+                            try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
+                                stmt.execute();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.print("ROLLING BACK DB");
+                            try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
+                                stmt.execute();
+                            }
+                            // TODO: efficient error handling
+                            throw e;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        protected void process(List<String> chunks) {
+            System.out.println(chunks);
+        }
+
+        @Override
+        protected void done() {
+            workerDone(name);
+        }
+    }
+
+    private class DbErrorWorker extends  SwingWorker<Integer, String> {
+
+        volatile boolean keepRunning = true;
+        private String name;
+
+        public DbErrorWorker(String name) {
+            this.name = name;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception {
+            while (keepRunning) {
+                DbErrorObject error = nonoList.take();
+                if (error != null) {
+                    switch (error.getHow()) {
+                        case OBJECT_SELECT:
+                            if (errorListener != null) {
+                                errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_INSERT:
+                            if (errorListener != null) {
+                                errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_UPDATE:
+                            if (errorListener != null) {
+                                errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                        case OBJECT_DELETE:
+                            if (errorListener != null) {
+                                errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
+                            }
+                            break;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        protected void done() {
+            workerDone(name);
+        }
     }
 
     /*
@@ -550,23 +762,6 @@ public class DbManager {
             }
         }
         return locations;
-    }
-
-    public void deleteLocationsByType(long typeId) {
-        String sql = scriptResource.readString("locations.sqlDeleteByType");
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setLong(1, typeId);
-                stmt.execute();
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(null, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
     }
 
     public List<LocationType> updateLocationTypes() {
@@ -1211,29 +1406,6 @@ public class DbManager {
         return pcbItems;
     }
 
-    public long findKcComponentId(String value, String footprint, String lib, String part) {
-        long id = -1;
-        String sql = scriptResource.readString(PcbItem.TABLE_NAME + DbObject.SQL_SELECT_ONE);
-
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, value);
-                stmt.setString(2, footprint);
-                stmt.setString(3, lib);
-                stmt.setString(4, part);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        id = rs.getLong("id");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return id;
-    }
-
     public List<PcbItemItemLink> updateKcItemLinks()    {
         List<PcbItemItemLink> pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
@@ -1351,216 +1523,5 @@ public class DbManager {
         return dbHistoryList;
     }
 
-    /*
-    *                  CLASSES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private class DbQueueWorker extends SwingWorker<Integer, String> {
 
-        volatile boolean keepRunning = true;
-        private String name;
-
-        DbQueueWorker(String name) {
-            this.name = name;
-        }
-
-        private void insert(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            dbo.addParameters(stmt);
-            stmt.execute();
-
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                rs.next();
-                dbo.setId(rs.getLong(1));
-            }
-
-            // Listeners
-            dbo.tableChanged(OBJECT_INSERT);
-
-            // Log to db history
-            if (!(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_INSERT, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            int ndx = dbo.addParameters(stmt);
-            if (ndx > 0) {
-                stmt.setLong(ndx, dbo.getId());
-                stmt.execute();
-            }
-
-            // Listeners
-            dbo.tableChanged(OBJECT_UPDATE);
-
-            // Log to db history
-            if (!(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_UPDATE, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        private void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            stmt.setLong(1, dbo.getId());
-            stmt.execute();
-            dbo.setId(-1);// Not in database anymore
-
-            // Listeners
-            dbo.tableChanged(OBJECT_DELETE);
-
-            // Log to db history
-            if (!(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_DELETE, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        protected Integer doInBackground() throws Exception {
-            while (keepRunning) {
-
-                DbQueueObject queueObject = workList.take();
-                if (queueObject != null) {
-                    try (Connection connection = DbManager.getConnection()) {
-                        // Open db
-                        try (PreparedStatement stmt = connection.prepareStatement("BEGIN;")) {
-                            stmt.execute();
-                        }
-
-                        try {
-                            boolean hasMoreWork;
-                            do {
-                                DbObject dbo = queueObject.getObject();
-                                switch (queueObject.getHow()) {
-                                    case OBJECT_INSERT: {
-                                        String sql = dbo.getScript(DbObject.SQL_INSERT);
-                                        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                                            insert(stmt, dbo);
-                                        } catch (SQLException e) {
-                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
-                                                nonoList.put(object);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                    case OBJECT_UPDATE: {
-                                        String sql = dbo.getScript(DbObject.SQL_UPDATE);
-                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                                            update(stmt, dbo);
-                                        } catch (SQLException e) {
-                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
-                                                nonoList.put(object);
-                                            }
-                                        }
-                                        break;
-                                    }
-                                    case OBJECT_DELETE:
-                                        String sql = dbo.getScript(DbObject.SQL_DELETE);
-                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                                            delete(stmt, dbo);
-                                        } catch (SQLException e) {
-                                            if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
-                                                nonoList.put(object);
-                                            }
-                                        }
-                                        break;
-                                }
-
-                                if (workList.size() > 0) {
-                                    queueObject = workList.take();
-                                    hasMoreWork = true;
-                                } else {
-                                    hasMoreWork = false;
-                                }
-                            } while (hasMoreWork && keepRunning);
-                            // Close db
-                            try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
-                                stmt.execute();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            System.out.print("ROLLING BACK DB");
-                            try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
-                                stmt.execute();
-                            }
-                            // TODO: efficient error handling
-                            throw e;
-                        }
-                    }
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        protected void process(List<String> chunks) {
-            System.out.println(chunks);
-        }
-
-        @Override
-        protected void done() {
-            workerDone(name);
-        }
-    }
-
-    private class DbErrorWorker extends  SwingWorker<Integer, String> {
-
-        volatile boolean keepRunning = true;
-        private String name;
-
-        public DbErrorWorker(String name) {
-            this.name = name;
-        }
-
-        @Override
-        protected Integer doInBackground() throws Exception {
-            while (keepRunning) {
-                DbErrorObject error = nonoList.take();
-                if (error != null) {
-                    switch (error.getHow()) {
-                        case OBJECT_SELECT:
-                            if (errorListener != null) {
-                                errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
-                            }
-                            break;
-                        case OBJECT_INSERT:
-                            if (errorListener != null) {
-                                errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
-                            }
-                            break;
-                        case OBJECT_UPDATE:
-                            if (errorListener != null) {
-                                errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
-                            }
-                            break;
-                        case OBJECT_DELETE:
-                            if (errorListener != null) {
-                                errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
-                            }
-                            break;
-                    }
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        protected void done() {
-            workerDone(name);
-        }
-    }
 }

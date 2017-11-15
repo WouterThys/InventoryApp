@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.graphsdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.dbclasses.DbHistory;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import org.jfree.chart.ChartFactory;
@@ -76,9 +76,9 @@ public abstract class GraphsDialogLayout extends IDialog {
 
             for (DbHistory history : historyList) {
                 switch (history.getDbAction()) {
-                    case DbManager.OBJECT_INSERT: inserts++; break;
-                    case DbManager.OBJECT_UPDATE: updates++; break;
-                    case DbManager.OBJECT_DELETE: deletes++; break;
+                    case DatabaseAccess.OBJECT_INSERT: inserts++; break;
+                    case DatabaseAccess.OBJECT_UPDATE: updates++; break;
+                    case DatabaseAccess.OBJECT_DELETE: deletes++; break;
                 }
             }
 

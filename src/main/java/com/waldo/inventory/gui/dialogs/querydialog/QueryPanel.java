@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.querydialog;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.statics.SqlKeyWords;
 
@@ -87,7 +87,7 @@ public class QueryPanel extends JPanel {
         List<String> tableNames;
         String tableNamesString = "";
         try {
-            tableNames = DbManager.db().getTableNames();
+            tableNames = DatabaseAccess.db().getTableNames();
             for(String name : tableNames) {
                 tableNamesString += name.toUpperCase() + "|";
             }
@@ -197,7 +197,7 @@ public class QueryPanel extends JPanel {
 
     private void executeQuery(String query) {
         try {
-            try (Connection connection = DbManager.getConnection();
+            try (Connection connection = DatabaseAccess.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query);
                  ResultSet resultSet = statement.executeQuery()) {
 

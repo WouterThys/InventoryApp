@@ -3,14 +3,14 @@ package com.waldo.inventory.managers;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.database.DatabaseAccess.db;
 
 public class CacheManager {
 
@@ -231,31 +231,6 @@ public class CacheManager {
         }
     }
 
-
-    public void removeOnCategoriesChangedListener(CacheChangedListener<Category> cacheChangedListener) {
-        if (onCategoriesChangedListenerList != null) {
-            if (onCategoriesChangedListenerList.contains(cacheChangedListener)) {
-                onCategoriesChangedListenerList.remove(cacheChangedListener);
-            }
-        }
-    }
-
-    public void removeOnProductsChangedListener(CacheChangedListener<Product> cacheChangedListener) {
-        if (onProductsChangedListenerList != null) {
-            if (onProductsChangedListenerList.contains(cacheChangedListener)) {
-                onProductsChangedListenerList.remove(cacheChangedListener);
-            }
-        }
-    }
-
-    public void removeOnTypesChangedListener(CacheChangedListener<Type> cacheChangedListener) {
-        if (onTypesChangedListenerList != null) {
-            if (onTypesChangedListenerList.contains(cacheChangedListener)) {
-                onTypesChangedListenerList.remove(cacheChangedListener);
-            }
-        }
-    }
-
     public void removeOnOrdersChangedListener(CacheChangedListener<Order> cacheChangedListener) {
         if (onOrdersChangedListenerList != null) {
             if (onOrdersChangedListenerList.contains(cacheChangedListener)) {
@@ -267,28 +242,28 @@ public class CacheManager {
     public <T extends DbObject> void notifyListeners(int changedHow, T object, List<CacheChangedListener<T>> listeners) {
         for (CacheChangedListener<T> l : listeners) {
             switch (changedHow) {
-                case DbManager.OBJECT_INSERT:
+                case DatabaseAccess.OBJECT_INSERT:
                     try {
                         SwingUtilities.invokeLater(() -> l.onInserted(object));
                     } catch (Exception e) {
                         LOG.error("Error after insert of " + object.getName(), e);
                     }
                     break;
-                case DbManager.OBJECT_UPDATE:
+                case DatabaseAccess.OBJECT_UPDATE:
                     try {
                         SwingUtilities.invokeLater(() -> l.onUpdated(object));
                     } catch (Exception e) {
                         LOG.error("Error after update of " + object.getName(), e);
                     }
                     break;
-                case DbManager.OBJECT_DELETE:
+                case DatabaseAccess.OBJECT_DELETE:
                     try {
                         SwingUtilities.invokeLater(() -> l.onDeleted(object));
                     } catch (Exception e) {
                         LOG.error("Error after delete of " + object.getName(), e);
                     }
                     break;
-                case DbManager.OBJECT_CACHE_CLEAR:
+                case DatabaseAccess.OBJECT_CACHE_CLEAR:
                     try {
                         SwingUtilities.invokeLater(l::onCacheCleared);
                     } catch (Exception e) {
@@ -527,41 +502,6 @@ public class CacheManager {
             dbHistoryList = db().updateDbHistoryList();
         }
         return dbHistoryList;
-    }
-
-    public List<Order> getOrdersForManufacturer(long manufacturerId) {
-        return null;
-    }
-
-    public List<Item> getItemsForManufacturer(long manufacturerId)    {
-        List<Item> items = new ArrayList<>();
-        for (Item item : getItems()) {
-            if (item.getManufacturerId() == manufacturerId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> getItemsForCategory(long categoryId)    {
-        List<Item> items = new ArrayList<>();
-        for (Item item : getItems()) {
-            if (item.getCategoryId() == categoryId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public boolean isItemInCurrentOrders(long itemId) {
-        for (OrderItem oi : getOrderItems()) {
-            if (!oi.getOrder().isOrdered()) {
-                if (oi.getItemId() == itemId) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }

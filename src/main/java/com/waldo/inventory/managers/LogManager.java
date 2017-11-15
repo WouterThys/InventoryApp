@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import org.slf4j.Logger;
@@ -94,7 +94,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logInfo) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(INFO, logClass.getSimpleName(), info);
                     log.save();
                 }
@@ -111,7 +111,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logDebug) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(DEBUG, logClass.getSimpleName(), debug);
                     log.save();
                 }
@@ -128,7 +128,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logDebug) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(DEBUG, logClass.getSimpleName(), debug, throwable);
                     log.save();
                 }
@@ -145,7 +145,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logWarn) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(WARN, logClass.getSimpleName(), warning);
                     log.save();
                 }
@@ -162,7 +162,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logWarn) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(WARN, logClass.getSimpleName(), warning, throwable);
                     log.save();
                 }
@@ -179,7 +179,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logErrors) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(ERROR, logClass.getSimpleName(), error);
                     log.save();
                 }
@@ -196,7 +196,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         if (logErrors) {
             try {
                 // Database
-                if (DbManager.db().isInitialized()) {
+                if (DatabaseAccess.db().isInitialized()) {
                     Log log = new Log(ERROR, logClass.getSimpleName(), error, throwable);
                     log.save();
                 }

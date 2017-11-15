@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,17 +43,17 @@ public class Package extends DbObject {
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Package> list = cache().getPackages();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
+            case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Package> list = cache().getPackages();
                 if (list.contains(this)) {
                     list.remove(this);

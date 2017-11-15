@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 
 import java.awt.*;
@@ -128,29 +128,29 @@ public class ProjectIDE extends DbObject {
     }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 java.util.List<ProjectIDE> list = cache().getProjectIDES();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onProjectIDEChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
-                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onProjectIDEChangedListenerList);
+            case DatabaseAccess.OBJECT_UPDATE: {
+                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 java.util.List<ProjectIDE> list = cache().getProjectIDES();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onProjectIDEChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
         }

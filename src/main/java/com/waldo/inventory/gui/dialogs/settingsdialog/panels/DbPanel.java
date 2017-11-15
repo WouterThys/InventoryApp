@@ -4,7 +4,7 @@ import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.Application;
@@ -178,7 +178,7 @@ public class DbPanel extends JPanel implements
                 application.beginWait();
                 try {
                     settings().selectNewSettings(toUse);
-                    DbManager.db().init();
+                    DatabaseAccess.db().init();
                 } finally {
                     application.endWait();
                 }
@@ -273,9 +273,9 @@ public class DbPanel extends JPanel implements
             // TODO: on new thread with timeout
 
             try {
-                if (DbManager.testConnection(dataSource)) {
+                if (DatabaseAccess.testConnection(dataSource)) {
                     try {
-                        java.util.List<String> missingTables = (DbManager.testDatabase(dataSource));
+                        java.util.List<String> missingTables = (DatabaseAccess.testDatabase(dataSource));
                         if (missingTables.size() == 0) {
                             JOptionPane.showMessageDialog(this,
                                     "Success!!",

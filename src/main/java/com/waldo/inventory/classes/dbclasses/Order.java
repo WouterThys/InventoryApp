@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -119,22 +119,22 @@ public class Order extends DbObject {
     }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Order> list = cache().getOrders();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
+            case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Order> list = cache().getOrders();
                 if (list.contains(this)) {
                     list.remove(this);
@@ -232,7 +232,7 @@ public class Order extends DbObject {
         if (item != null) {
             if (orderItems.contains(item)) {
                 // Remove OrderItem from db
-                DbManager.db().removeItemFromOrder(item);
+                DatabaseAccess.db().removeItemFromOrder(item);
                 // Remove from list
                 orderItems.remove(item);
                 // Update modification date

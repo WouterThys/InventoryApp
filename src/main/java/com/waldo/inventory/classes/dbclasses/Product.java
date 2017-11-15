@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -39,29 +39,29 @@ public class Product extends DbObject {
     }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Product> list = cache().getProducts();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onProductsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onProductsChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
-                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onProductsChangedListenerList);
+            case DatabaseAccess.OBJECT_UPDATE: {
+                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onProductsChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Product> list = cache().getProducts();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onProductsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onProductsChangedListenerList);
                 break;
             }
         }

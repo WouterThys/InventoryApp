@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -255,29 +255,29 @@ public class Item extends DbObject {
     }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Item> list = cache().getItems();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onItemsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onItemsChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
-                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onItemsChangedListenerList);
+            case DatabaseAccess.OBJECT_UPDATE: {
+                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onItemsChangedListenerList);
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Item> list = cache().getItems();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onItemsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onItemsChangedListenerList);
                 break;
             }
         }

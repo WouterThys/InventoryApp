@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.database;
 
-import com.waldo.inventory.managers.DbTableManager;
+import com.waldo.inventory.managers.TableManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class DbTable {
 
     private List<ForeignKey> getForeignKeys() {
         if (foreignKeys == null) {
-            DbTableManager.dbTm().loadTableData(this);
+            TableManager.dbTm().loadTableData(this);
         }
         return foreignKeys;
     }

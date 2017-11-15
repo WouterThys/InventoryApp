@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.database.DatabaseAccess;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.sql.Date;
@@ -97,9 +97,9 @@ public class Log extends DbObject {
 //    @Override
 //    protected void doSave() throws SQLException {
 //        // TODO
-////        setOnDbTableChangedListener(DbManager.db());
+////        setOnDbTableChangedListener(DatabaseAccess.db());
 ////
-////        try (Connection connection = DbManager.getConnection()) {
+////        try (Connection connection = DatabaseAccess.getConnection()) {
 ////            if (!connection.isValid(5)) {
 ////                throw new SQLException("Conenction invalid, timed out after 5s...");
 ////            }
@@ -151,7 +151,7 @@ public class Log extends DbObject {
 //    @Override
 //    protected void doDelete() throws SQLException {
 ////        if (id != -1) {
-////            try (Connection connection = DbManager.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
+////            try (Connection connection = DatabaseAccess.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
 ////                statement.setLong(1, id);
 ////                statement.execute();
 ////                id = -1; // Not in database anymore
@@ -187,22 +187,22 @@ public class Log extends DbObject {
 //    }
 
     //
-    // DbManager tells the object is updated
+    // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(int changedHow) {
         switch (changedHow) {
-            case DbManager.OBJECT_INSERT: {
+            case DatabaseAccess.OBJECT_INSERT: {
                 List<Log> list = cache().getLogs();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DbManager.OBJECT_UPDATE: {
+            case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
-            case DbManager.OBJECT_DELETE: {
+            case DatabaseAccess.OBJECT_DELETE: {
                 List<Log> list = cache().getLogs();
                 if (list.contains(this)) {
                     list.remove(this);
