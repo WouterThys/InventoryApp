@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
@@ -23,7 +23,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         GuiInterface,
         ActionListener,
         IdBToolBar.IdbToolBarListener ,
-        DbObjectChangedListener<T> {
+        CacheChangedListener<T> {
 
     public interface ProjectObjectListener {
         void onSelected(ProjectObject selectedObject);

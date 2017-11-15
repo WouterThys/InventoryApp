@@ -13,7 +13,7 @@ import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public abstract class EditParserItemLinkDialogLayout extends IDialog implements IEditedListener {
@@ -48,7 +48,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createCategoryCb() {
-        categoryCb = new IComboBox<>(db().getCategories(), new DbObjectNameComparator<>(), false);
+        categoryCb = new IComboBox<>(cache().getCategories(), new DbObjectNameComparator<>(), false);
         categoryCb.insertItemAt(null, 0);
         categoryCb.addActionListener(e -> {
             if (!application.isUpdating()) {
@@ -66,7 +66,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createProductCb() {
-        productCb = new IComboBox<>(db().getProducts(), new DbObjectNameComparator<>(), false);
+        productCb = new IComboBox<>(cache().getProducts(), new DbObjectNameComparator<>(), false);
         productCb.insertItemAt(null, 0);
         productCb.setEnabled(false);
         productCb.addActionListener(e -> {
@@ -84,7 +84,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     }
 
     private void createTypeCb() {
-        typeCb = new IComboBox<>(db().getTypes(), new DbObjectNameComparator<>(), false);
+        typeCb = new IComboBox<>(cache().getTypes(), new DbObjectNameComparator<>(), false);
         typeCb.insertItemAt(null, 0);
         typeCb.setEnabled(false);
     }

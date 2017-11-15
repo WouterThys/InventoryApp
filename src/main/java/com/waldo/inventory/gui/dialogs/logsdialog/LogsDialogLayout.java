@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class LogsDialogLayout extends IDialog implements
         ItemListener,
@@ -51,8 +51,7 @@ public abstract class LogsDialogLayout extends IDialog implements
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateLogTable(boolean showInfo, boolean showDebug, boolean showWarn, boolean showError) {
-        DbManager.db().updateLogs();
-        List<Log> logList = DbManager.db().getLogsByType(showInfo, showDebug, showWarn, showError);
+        List<Log> logList = cache().getLogsByType(showInfo, showDebug, showWarn, showError);
         logList.sort(new Log.LogComparator());
 
         logTableModel.setItemList(logList);

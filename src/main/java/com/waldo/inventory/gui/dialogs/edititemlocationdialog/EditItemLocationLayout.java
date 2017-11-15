@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.edititemlocationdialog;
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -11,6 +10,8 @@ import com.waldo.inventory.gui.components.ILocationMapPanel;
 
 import java.awt.*;
 import java.awt.event.ItemListener;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class EditItemLocationLayout extends IDialog implements ItemListener {
 
@@ -55,7 +56,7 @@ public abstract class EditItemLocationLayout extends IDialog implements ItemList
             locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
         }, true);
 
-        locationTypeCb = new IComboBox<>(DbManager.db().getLocationTypes(), new DbObjectNameComparator<>(), true);
+        locationTypeCb = new IComboBox<>(cache().getLocationTypes(), new DbObjectNameComparator<>(), true);
         locationTypeCb.addItemListener(this);
     }
 

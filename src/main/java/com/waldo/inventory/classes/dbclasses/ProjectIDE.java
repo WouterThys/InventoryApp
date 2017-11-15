@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectIDE extends DbObject {
 
@@ -134,23 +134,23 @@ public class ProjectIDE extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                java.util.List<ProjectIDE> list = db().getProjectIDES();
+                java.util.List<ProjectIDE> list = cache().getProjectIDES();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProjectIDEChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProjectIDEChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                java.util.List<ProjectIDE> list = db().getProjectIDES();
+                java.util.List<ProjectIDE> list = cache().getProjectIDES();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProjectIDEChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onProjectIDEChangedListenerList);
                 break;
             }
         }

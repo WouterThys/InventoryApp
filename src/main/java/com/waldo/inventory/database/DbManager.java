@@ -11,7 +11,7 @@ import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.managers.DbTableManager;
 import com.waldo.inventory.managers.LogManager;
@@ -25,6 +25,7 @@ import java.util.List;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DbManager {
 
@@ -57,62 +58,6 @@ public class DbManager {
 
     // Events
     private DbErrorListener errorListener;
-
-    public List<DbObjectChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Type>> onTypesChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Manufacturer>> onManufacturerChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<LocationType>> onLocationTYpeChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<DistributorPartLink>> onPartNumbersChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Project>> onProjectChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectIDE>> onProjectIDEChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<OrderFileFormat>> onOrderFileFormatChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<Package>> onPackageChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<SetItem>> onSetItemChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PcbItem>> onPcbItemChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PcbItemItemLink>> onPcbItemItemLinkChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectCode>> onProjectCodeChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectPcb>> onProjectPcbChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ProjectOther>> onProjectOtherChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<PcbItemProjectLink>> onPcbItemProjectLinkChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<ParserItemLink>> onParserItemLinkChangedListenerList = new ArrayList<>();
-    public List<DbObjectChangedListener<DistributorPartLink>> onDistributorPartLinkChangedListenerList = new ArrayList<>();
-
-    // Part numbers...
-
-    // Cached lists
-    private List<Item> items;
-    private List<Category> categories;
-    private List<Product> products;
-    private List<Type> types;
-    private List<Manufacturer> manufacturers;
-    private List<Location> locations;
-    private List<LocationType> locationTypes;
-    private List<Order> orders;
-    private List<OrderItem> orderItems;
-    private List<Distributor> distributors;
-    private List<DistributorPartLink> distributorPartLinks;
-    private List<PackageType> packageTypes;
-    private List<Project> projects;
-    private List<ProjectIDE> projectIDES;
-    private List<OrderFileFormat> orderFileFormats;
-    private List<Package> packages;
-    private List<SetItem> setItems;
-    private List<PcbItem> pcbItems;
-    private List<PcbItemItemLink> pcbItemItemLinks;
-    private List<PcbItemProjectLink> pcbItemProjectLinks;
-    private List<Log> logs;
-    private List<DbHistory> dbHistoryList;
-    private List<ProjectCode> projectCodes;
-    private List<ProjectPcb> projectPcbs;
-    private List<ProjectOther> projectOthers;
-    private List<ParserItemLink> parserItemLinks;
 
     private DbManager() {}
 
@@ -189,7 +134,7 @@ public class DbManager {
                 initialized = testConnection(dataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                 if (initialized) {
-                    clearCache();
+                    cache().clearCache();
                 }
             }
         }
@@ -247,28 +192,6 @@ public class DbManager {
         this.errorListener = errorListener;
     }
 
-    private void clearCache() {
-        items = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onItemsChangedListenerList);
-        categories = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onCategoriesChangedListenerList);
-        products = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProductsChangedListenerList);
-        types = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onTypesChangedListenerList);
-        manufacturers = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onManufacturerChangedListenerList);
-        locations = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onLocationsChangedListenerList);
-        locationTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onLocationTYpeChangedListenerList);
-        orders = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrdersChangedListenerList);
-        orderItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderItemsChangedListenerList);
-        distributors = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onDistributorsChangedListenerList);
-        distributorPartLinks = null;
-        packageTypes = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageTypesChangedListenerList);
-        projects = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectChangedListenerList);
-        projectIDES = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onProjectIDEChangedListenerList);
-        orderFileFormats = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onOrderFileFormatChangedListenerList);
-        packages = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPackageChangedListenerList);
-        setItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onSetItemChangedListenerList);
-        pcbItems = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemChangedListenerList);
-        pcbItemItemLinks = null;notifyListeners(OBJECT_CACHE_CLEAR, null, onPcbItemItemLinkChangedListenerList);
-        logs = null;
-    }
 
     public void close() {
         if(dataSource != null) {
@@ -333,222 +256,6 @@ public class DbManager {
         return initialized;
     }
 
-    /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    public void addOnItemsChangedListener(DbObjectChangedListener<Item> dbObjectChangedListener) {
-        if (!onItemsChangedListenerList.contains(dbObjectChangedListener)) {
-            onItemsChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {
-        if (!onCategoriesChangedListenerList.contains(dbObjectChangedListener)) {
-            onCategoriesChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProductsChangedListener(DbObjectChangedListener<Product> dbObjectChangedListener) {
-        if (!onProductsChangedListenerList.contains(dbObjectChangedListener)) {
-            onProductsChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnTypesChangedListener(DbObjectChangedListener<Type> dbObjectChangedListener) {
-        if (!onTypesChangedListenerList.contains(dbObjectChangedListener)) {
-            onTypesChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnManufacturerChangedListener(DbObjectChangedListener<Manufacturer> dbObjectChangedListener) {
-        if (!onManufacturerChangedListenerList.contains(dbObjectChangedListener)) {
-            onManufacturerChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnLocationsChangedListener(DbObjectChangedListener<Location> dbObjectChangedListener) {
-        if (!onLocationsChangedListenerList.contains(dbObjectChangedListener)) {
-            onLocationsChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnLocationTypeChangedListener(DbObjectChangedListener<LocationType> dbObjectChangedListener) {
-        if (!onLocationTYpeChangedListenerList.contains(dbObjectChangedListener)) {
-            onLocationTYpeChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
-        if (!onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
-            onOrdersChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnOrderItemsChangedListener(DbObjectChangedListener<OrderItem> dbObjectChangedListener) {
-        if (!onOrderItemsChangedListenerList.contains(dbObjectChangedListener)) {
-            onOrderItemsChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnDistributorChangedListener(DbObjectChangedListener<Distributor> dbObjectChangedListener) {
-        if (!onDistributorsChangedListenerList.contains(dbObjectChangedListener)) {
-            onDistributorsChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnPartNumbersChangedListener(DbObjectChangedListener<DistributorPartLink> dbObjectChangedListener) {
-        if (!onPartNumbersChangedListenerList.contains(dbObjectChangedListener)) {
-            onPartNumbersChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProjectChangedListener(DbObjectChangedListener<Project> dbObjectChangedListener) {
-        if (!onProjectChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnPackageChangedListener(DbObjectChangedListener<Package> dbObjectChangedListener) {
-        if (!onPackageChangedListenerList.contains(dbObjectChangedListener)) {
-            onPackageChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnPackageTypeChangedListener(DbObjectChangedListener<PackageType> dbObjectChangedListener) {
-        if (!onPackageTypesChangedListenerList.contains(dbObjectChangedListener)) {
-            onPackageTypesChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProjectTypeChangedListener(DbObjectChangedListener<ProjectIDE> dbObjectChangedListener) {
-        if (!onProjectIDEChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectIDEChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnOrderFileFormatChangedListener(DbObjectChangedListener<OrderFileFormat> dbObjectChangedListener) {
-        if (!onOrderFileFormatChangedListenerList.contains(dbObjectChangedListener)) {
-            onOrderFileFormatChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnKcComponentChangedListener(DbObjectChangedListener<PcbItem> dbObjectChangedListener) {
-        if (!onPcbItemChangedListenerList.contains(dbObjectChangedListener)) {
-            onPcbItemChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnPcbItemItemLinkChangedListener(DbObjectChangedListener<PcbItemItemLink> dbObjectChangedListener) {
-        if (!onPcbItemItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onPcbItemItemLinkChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProjectCodeChangedListener(DbObjectChangedListener<ProjectCode> dbObjectChangedListener) {
-        if (!onProjectCodeChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectCodeChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProjectPcbChangedListener(DbObjectChangedListener<ProjectPcb> dbObjectChangedListener) {
-        if (!onProjectPcbChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectPcbChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnPcbItemLinkChangedListener(DbObjectChangedListener<PcbItemProjectLink> dbObjectChangedListener) {
-        if (!onPcbItemProjectLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onPcbItemProjectLinkChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnProjectOtherChangedListener(DbObjectChangedListener<ProjectOther> dbObjectChangedListener) {
-        if (!onProjectOtherChangedListenerList.contains(dbObjectChangedListener)) {
-            onProjectOtherChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnParserItemLinkChangedListener(DbObjectChangedListener<ParserItemLink> dbObjectChangedListener) {
-        if (!onParserItemLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onParserItemLinkChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-    public void addOnDistributorPartLinkChangedListener(DbObjectChangedListener<DistributorPartLink> dbObjectChangedListener) {
-        if (!onDistributorPartLinkChangedListenerList.contains(dbObjectChangedListener)) {
-            onDistributorPartLinkChangedListenerList.add(dbObjectChangedListener);
-        }
-    }
-
-
-    public void removeOnCategoriesChangedListener(DbObjectChangedListener<Category> dbObjectChangedListener) {
-        if (onCategoriesChangedListenerList != null) {
-            if (onCategoriesChangedListenerList.contains(dbObjectChangedListener)) {
-                onCategoriesChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnProductsChangedListener(DbObjectChangedListener<Product> dbObjectChangedListener) {
-        if (onProductsChangedListenerList != null) {
-            if (onProductsChangedListenerList.contains(dbObjectChangedListener)) {
-                onProductsChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnTypesChangedListener(DbObjectChangedListener<Type> dbObjectChangedListener) {
-        if (onTypesChangedListenerList != null) {
-            if (onTypesChangedListenerList.contains(dbObjectChangedListener)) {
-                onTypesChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-    public void removeOnOrdersChangedListener(DbObjectChangedListener<Order> dbObjectChangedListener) {
-        if (onOrdersChangedListenerList != null) {
-            if (onOrdersChangedListenerList.contains(dbObjectChangedListener)) {
-                onOrdersChangedListenerList.remove(dbObjectChangedListener);
-            }
-        }
-    }
-
-
-
-    public <T extends DbObject> void notifyListeners(int changedHow, T object, List<DbObjectChangedListener<T>> listeners) {
-        for (DbObjectChangedListener<T> l : listeners) {
-            switch (changedHow) {
-                case OBJECT_INSERT:
-                    try {
-                        SwingUtilities.invokeLater(() -> l.onInserted(object));
-                    } catch (Exception e) {
-                        LOG.error("Error after insert of " + object.getName(), e);
-                    }
-                    break;
-                case OBJECT_UPDATE:
-                    try {
-                        SwingUtilities.invokeLater(() -> l.onUpdated(object));
-                    } catch (Exception e) {
-                        LOG.error("Error after update of " + object.getName(), e);
-                    }
-                    break;
-                case OBJECT_DELETE:
-                    try {
-                        SwingUtilities.invokeLater(() -> l.onDeleted(object));
-                    } catch (Exception e) {
-                        LOG.error("Error after delete of " + object.getName(), e);
-                    }
-                    break;
-                case OBJECT_CACHE_CLEAR:
-                    try {
-                        SwingUtilities.invokeLater(l::onCacheCleared);
-                    } catch (Exception e) {
-                        LOG.error("Error after clearing cache", e);
-                    }
-            }
-        }
-    }
 
     public void insert(DbObject object) {
         object.getAud().setInserted(loggedUser);
@@ -597,20 +304,11 @@ public class DbManager {
     }
 
 
-    /*
-    *                  ITEMS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Item> getItems() {
-        if (items == null) {
-            updateItems();
-        }
-        return items;
-    }
 
-    private void updateItems() {
-        items = new ArrayList<>();
+    public List<Item> updateItems() {
+        List<Item> items = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return items;
         }
         Status().setMessage("Fetching items from DB");
         Item i = null;
@@ -663,22 +361,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return items;
     }
 
-    /*
-    *                  CATEGORIES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Category> getCategories() {
-        if (categories == null) {
-            updateCategories();
-        }
-        return categories;
-    }
-
-    private void updateCategories() {
-        categories = new ArrayList<>();
+    public List<Category> updateCategories() {
+        List<Category> categories = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return categories;
         }
         Status().setMessage("Fetching categories from DB");
         Category c = null;
@@ -708,22 +397,13 @@ public class DbManager {
             }
         }
         categories.add(0, Category.getUnknownCategory());
+        return categories;
     }
 
-    /*
-    *                  PRODUCTS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Product> getProducts() {
-        if (products == null) {
-            updateProducts();
-        }
-        return products;
-    }
-
-    private void updateProducts() {
-        products = new ArrayList<>();
+    public List<Product> updateProducts() {
+        List<Product> products = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return products;
         }
         Status().setMessage("Fetching products from DB");
         Product p = null;
@@ -755,22 +435,13 @@ public class DbManager {
         }
 
         products.add(0, Product.getUnknownProduct());
+        return products;
     }
 
-    /*
-    *                  TYPES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Type> getTypes() {
-        if (types == null) {
-            updateTypes();
-        }
-        return types;
-    }
-
-    private void updateTypes() {
-        types = new ArrayList<>();
+    public List<Type> updateTypes() {
+        List<Type> types = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return types;
         }
         Status().setMessage("Fetching types from DB");
         Type t = null;
@@ -801,22 +472,14 @@ public class DbManager {
             }
         }
         types.add(0, Type.getUnknownType());
+
+        return types;
     }
 
-    /*
-    *                  MANUFACTURERS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Manufacturer> getManufacturers() {
-        if (manufacturers == null) {
-            updateManufacturers();
-        }
-        return manufacturers;
-    }
-
-    private void updateManufacturers() {
-        manufacturers = new ArrayList<>();
+    public List<Manufacturer> updateManufacturers() {
+        List<Manufacturer> manufacturers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return manufacturers;
         }
         Status().setMessage("Fetching manufacturers from DB");
         Manufacturer m = null;
@@ -847,22 +510,13 @@ public class DbManager {
             }
         }
         manufacturers.add(0, Manufacturer.getUnknownManufacturer());
+        return manufacturers;
     }
 
-    /*
-    *                  LOCATIONS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public synchronized List<Location> getLocations()   {
-        if (locations == null) {
-            updateLocations();
-        }
-        return locations;
-    }
-
-    private void updateLocations() {
-        locations = new ArrayList<>();
+    public List<Location> updateLocations() {
+        List<Location> locations = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return locations;
         }
         Status().setMessage("Fetching locations from DB");
         Location l = null;
@@ -895,6 +549,7 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return locations;
     }
 
     public void deleteLocationsByType(long typeId) {
@@ -904,7 +559,6 @@ public class DbManager {
                 stmt.setLong(1, typeId);
                 stmt.execute();
             }
-            locations = null;
         } catch (SQLException e) {
             DbErrorObject object = new DbErrorObject(null, e, OBJECT_SELECT, sql);
             try {
@@ -915,20 +569,10 @@ public class DbManager {
         }
     }
 
-    /*
-    *                  LOCATION TYPES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<LocationType> getLocationTypes()   {
-        if (locationTypes == null) {
-            updateLocationTypes();
-        }
-        return locationTypes;
-    }
-
-    private void updateLocationTypes() {
-        locationTypes = new ArrayList<>();
+    public List<LocationType> updateLocationTypes() {
+        List<LocationType> locationTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return locationTypes;
         }
         Status().setMessage("Fetching location types from DB");
         LocationType l = null;
@@ -955,22 +599,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return locationTypes;
     }
 
-    /*
-    *                  ORDERS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Order> getOrders()    {
-        if (orders == null) {
-            updateOrders();
-        }
-        return orders;
-    }
-
-    private void updateOrders()    {
-        orders = new ArrayList<>();
+    public List<Order> updateOrders()    {
+        List<Order> orders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return orders;
         }
         Status().setMessage("Fetching orders from DB");
         Order o = null;
@@ -1013,22 +649,14 @@ public class DbManager {
         }
         orders.add(0, Order.getUnknownOrder());
         orders.sort(new Order.SortAllOrders());
+
+        return orders;
     }
 
-    /*
-    *                  ORDER ITEMS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<OrderItem> getOrderItems()    {
-        if (orderItems == null) {
-            updateOrderItems();
-        }
-        return orderItems;
-    }
-
-    private void updateOrderItems()    {
-        orderItems = new ArrayList<>();
+    public List<OrderItem> updateOrderItems()    {
+        List<OrderItem> orderItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return orderItems;
         }
         Status().setMessage("Fetching order items from DB");
         OrderItem o = null;
@@ -1060,16 +688,7 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
-    }
-
-    public List<OrderItem> getOrderedItems(long orderId) {
-        List<OrderItem> items = new ArrayList<>();
-        for (OrderItem i : getOrderItems()) {
-            if (i.getOrderId() == orderId || orderId == -1) {
-                items.add(i);
-            }
-        }
-        return items;
+        return orderItems;
     }
 
     public void removeItemFromOrder(OrderItem orderItem) {
@@ -1093,20 +712,10 @@ public class DbManager {
         }
     }
 
-    /*
-    *                  DISTRIBUTORS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Distributor> getDistributors()    {
-        if (distributors == null) {
-            updateDistributors();
-        }
-        return distributors;
-    }
-
-    private void updateDistributors()    {
-        distributors = new ArrayList<>();
+    public List<Distributor> updateDistributors()    {
+        List<Distributor> distributors = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return distributors;
         }
         Status().setMessage("Fetching distributors from DB");
         Distributor d = null;
@@ -1138,23 +747,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return distributors;
     }
 
-
-    /*
-    *                  PART NUMBERS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<DistributorPartLink> getDistributorPartLinks()    {
-        if (distributorPartLinks == null) {
-            updateDistributorParts();
-        }
-        return distributorPartLinks;
-    }
-
-    private void updateDistributorParts()    {
-        distributorPartLinks = new ArrayList<>();
+    public List<DistributorPartLink> updateDistributorParts()    {
+        List<DistributorPartLink> distributorPartLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return distributorPartLinks;
         }
         Status().setMessage("Fetching distributor parts from DB");
         DistributorPartLink pn = null;
@@ -1186,22 +786,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return distributorPartLinks;
     }
 
-    /*
-    *                  PACKAGES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Package> getPackages()    {
-        if (packages == null) {
-            updatePackages();
-        }
-        return packages;
-    }
-
-    private void updatePackages()    {
-        packages = new ArrayList<>();
+    public List<Package> updatePackages()    {
+        List<Package> packages = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return packages;
         }
         Status().setMessage("Fetching packages from DB");
         Package pa = null;
@@ -1229,22 +821,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return packages;
     }
 
-    /*
-    *                  PACKAGE TYPES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PackageType> getPackageTypes()    {
-        if (packageTypes == null) {
-            updatePackageTypes();
-        }
-        return packageTypes;
-    }
-
-    private void updatePackageTypes()    {
-        packageTypes = new ArrayList<>();
+    public List<PackageType> updatePackageTypes()    {
+        List<PackageType> packageTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return packageTypes;
         }
         Status().setMessage("Fetching package types from DB");
         PackageType pt = null;
@@ -1275,22 +858,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return  packageTypes;
     }
 
-    /*
-    *                  PROJECTS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Project> getProjects()    {
-        if (projects == null) {
-            updateProjects();
-        }
-        return projects;
-    }
-
-    private void updateProjects()    {
-        projects = new ArrayList<>();
+    public List<Project> updateProjects()    {
+        List<Project> projects = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return projects;
         }
         Status().setMessage("Fetching projects from DB");
         Project p = null;
@@ -1320,22 +894,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return projects;
     }
 
-    /*
-    *                  PROJECT CODEs
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectCode> getProjectCodes()    {
-        if (projectCodes == null) {
-            updateProjectCodes();
-        }
-        return projectCodes;
-    }
-
-    private void updateProjectCodes()    {
-        projectCodes = new ArrayList<>();
+    public List<ProjectCode> updateProjectCodes()    {
+        List<ProjectCode> projectCodes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return projectCodes;
         }
         Status().setMessage("Fetching ProjectCode from DB");
         ProjectCode p = null;
@@ -1372,22 +938,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return projectCodes;
     }
 
-    /*
-    *                  PROJECT PCBs
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectPcb> getProjectPcbs()    {
-        if (projectPcbs == null) {
-            updateProjectPcbs();
-        }
-        return projectPcbs;
-    }
-
-    private void updateProjectPcbs()    {
-        projectPcbs = new ArrayList<>();
+    public List<ProjectPcb> updateProjectPcbs()    {
+        List<ProjectPcb> projectPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return projectPcbs;
         }
         Status().setMessage("Fetching ProjectPcb from DB");
         ProjectPcb p = null;
@@ -1425,22 +982,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return projectPcbs;
     }
 
-    /*
-    *                  PROJECT PCB ITEMS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PcbItemProjectLink> getPcbItemProjectLinks()    {
-        if (pcbItemProjectLinks == null) {
-            updatePcbItemLinks();
-        }
-        return pcbItemProjectLinks;
-    }
-
-    private void updatePcbItemLinks()    {
-        pcbItemProjectLinks = new ArrayList<>();
+    public List<PcbItemProjectLink> updatePcbItemLinks()    {
+        List<PcbItemProjectLink> pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return pcbItemProjectLinks;
         }
         Status().setMessage("Fetching PcbItemProjectLink from DB");
         PcbItemProjectLink p = null;
@@ -1474,22 +1022,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return pcbItemProjectLinks;
     }
 
-    /*
-    *                  PROJECT IDES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ProjectIDE> getProjectIDES()    {
-        if (projectIDES == null) {
-            updateProjectIDEs();
-        }
-        return projectIDES;
-    }
-
-    private void updateProjectIDEs()    {
-        projectIDES = new ArrayList<>();
+    public List<ProjectIDE> updateProjectIDEs()    {
+        List<ProjectIDE> projectIDES = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return projectIDES;
         }
         Status().setMessage("Fetching ProjectIDE from DB");
         ProjectIDE p = null;
@@ -1526,23 +1066,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return projectIDES;
     }
 
-
-    /*
-    *                  PARSER ITEM LINK
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<ParserItemLink> getParserItemLinks()    {
-        if (parserItemLinks == null) {
-            updateParserItemLinks();
-        }
-        return parserItemLinks;
-    }
-
-    private void updateParserItemLinks()    {
-        parserItemLinks = new ArrayList<>();
+    public List<ParserItemLink> updateParserItemLinks()    {
+        List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return parserItemLinks;
         }
         Status().setMessage("Fetching parser item links from DB");
         ParserItemLink p = null;
@@ -1572,23 +1103,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return parserItemLinks;
     }
 
-
-    /*
-    *                  ORDER FILES
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<OrderFileFormat> getOrderFileFormats()    {
-        if (orderFileFormats == null) {
-            updateOrderFileFormats();
-        }
-        return orderFileFormats;
-    }
-
-    private void updateOrderFileFormats()    {
-        orderFileFormats = new ArrayList<>();
+    public List<OrderFileFormat> updateOrderFileFormats()    {
+        List<OrderFileFormat> orderFileFormats = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return orderFileFormats;
         }
         Status().setMessage("Fetching order file formats from DB");
         OrderFileFormat off = null;
@@ -1615,23 +1136,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return orderFileFormats;
     }
 
-
-    /*
-    *                  SET ITEMS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<SetItem> getSetItems()    {
-        if (setItems == null) {
-            updateSetItems();
-        }
-        return setItems;
-    }
-
-    private void updateSetItems()    {
-        setItems = new ArrayList<>();
+    public List<SetItem> updateSetItems()    {
+        List<SetItem> setItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return setItems;
         }
         Status().setMessage("Fetching set items from DB");
         SetItem si = null;
@@ -1662,23 +1173,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return setItems;
     }
 
-
-    /*
-    *                  PCB ITEMS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PcbItem> getPcbItems()    {
-        if (pcbItems == null) {
-            updatePcbItems();
-        }
-        return pcbItems;
-    }
-
-    private void updatePcbItems()    {
-        pcbItems = new ArrayList<>();
+    public List<PcbItem> updatePcbItems()    {
+        List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return pcbItems;
         }
         Status().setMessage("Fetching pcb items from DB");
         PcbItem kc = null;
@@ -1707,6 +1208,7 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return pcbItems;
     }
 
     public long findKcComponentId(String value, String footprint, String lib, String part) {
@@ -1732,21 +1234,10 @@ public class DbManager {
         return id;
     }
 
-
-    /*
-    *                  PCB ITEM LINKS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<PcbItemItemLink> getPcbItemItemLinks()    {
-        if (pcbItemItemLinks == null) {
-            updateKcItemLinks();
-        }
-        return pcbItemItemLinks;
-    }
-
-    private void updateKcItemLinks()    {
-        pcbItemItemLinks = new ArrayList<>();
+    public List<PcbItemItemLink> updateKcItemLinks()    {
+        List<PcbItemItemLink> pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return pcbItemItemLinks;
         }
         Status().setMessage("Fetching KcItemLinks from DB");
         PcbItemItemLink kil = null;
@@ -1776,23 +1267,14 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return pcbItemItemLinks;
     }
 
-
-    /*
-    *                  LOGS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<Log> getLogs()    {
-        if (logs == null) {
-            updateLogs();
-        }
-        return logs;
-    }
-
-    public void updateLogs()    {
-        logs = new ArrayList<>();
+    public List<Log> updateLogs()    {
+        List<Log> logs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return logs;
         }
         Status().setMessage("Fetching logs from DB");
         Log l = null;
@@ -1826,22 +1308,13 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+        return logs;
     }
 
-    /*
-    *                  DB HISTORY
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public List<DbHistory> getDbHistory() {
-        if (dbHistoryList == null) {
-            updateDbHistoryList();
-        }
-        return dbHistoryList;
-    }
-
-    private void updateDbHistoryList() {
-        dbHistoryList = new ArrayList<>();
+    public List<DbHistory> updateDbHistoryList() {
+        List<DbHistory>  dbHistoryList = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return;
+            return dbHistoryList;
         }
         Status().setMessage("Fetching db history from DB");
         DbHistory dbh = null;
@@ -1874,112 +1347,9 @@ public class DbManager {
                 e1.printStackTrace();
             }
         }
+
+        return dbHistoryList;
     }
-
-
-
-    /*
-    *                  OTHER
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    public List<Order> getOrdersForManufacturer(long manufacturerId) {
-        return null;
-    }
-
-    public List<Item> getItemsForManufacturer(long manufacturerId)    {
-        List<Item> items = new ArrayList<>();
-        for (Item item : getItems()) {
-            if (item.getManufacturerId() == manufacturerId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> getItemsForCategory(long categoryId)    {
-        List<Item> items = new ArrayList<>();
-        for (Item item : getItems()) {
-            if (item.getCategoryId() == categoryId) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    public boolean isItemInCurrentOrders(long itemId) {
-        for (OrderItem oi : getOrderItems()) {
-            if (!oi.getOrder().isOrdered()) {
-                if (oi.getItemId() == itemId) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-//    public List<ProjectDirectory> getProjectDirectoryListForProject(long projectId) {
-//        List<ProjectDirectory> directories = new ArrayList<>();
-//        for (ProjectDirectory directory : getProjectDirectories()) {
-//            if (directory.getProjectId() == projectId) {
-//                directories.add(directory);
-//            }
-//        }
-//        return directories;
-//    }
-
-//    public HashMap<ProjectIDE, List<File>> getProjectTypesForProjectDirectory(long directoryId) {
-//        HashMap<ProjectIDE, List<File>> projectTypes = new HashMap<>();
-//        for (ProjectTypeLink ptl : getProjectTypeLinks()) {
-//            if(ptl.getProjectDirectoryId() == directoryId) {
-//                if (projectTypes.containsKey(ptl.getProjectIDE())) {
-//                    projectTypes.computeIfAbsent(ptl.getProjectIDE(), k -> new ArrayList<>());
-//                } else {
-//                    projectTypes.put(ptl.getProjectIDE(), new ArrayList<>());
-//                }
-//                projectTypes.get(ptl.getProjectIDE()).add(ptl.getFile());
-//            }
-//        }
-//        return projectTypes;
-//    }
-
-//    public List<Project> getProjectForProjectType(long id) {
-//        List<Project> projects = new ArrayList<>();
-//        for(Project project : getProjects()) {
-//            for (ProjectDirectory pd : project.getProjectDirectories()) {
-//                for (ProjectIDE pt : pd.getProjectTypeMap().keySet()) {
-//                    if (pt.getId() == id) {
-//                        if (!projects.contains(project)) {
-//                            projects.add(project);
-//                        }
-//                    }
-//                }
-//            }
-//
-//        }
-//        return projects;
-//    }
-
-    public List<Log> getLogsByType(boolean info, boolean debug, boolean warn, boolean error) {
-        List<Log> logList = new ArrayList<>();
-        for (Log log : getLogs()) {
-            switch (log.getLogType()) {
-                case Statics.LogTypes.INFO:
-                    if (info) logList.add(log);
-                    break;
-                case Statics.LogTypes.DEBUG:
-                    if (debug) logList.add(log);
-                    break;
-                case Statics.LogTypes.WARN:
-                    if (warn) logList.add(log);
-                    break;
-                case Statics.LogTypes.ERROR:
-                    if (error) logList.add(log);
-                    break;
-            }
-        }
-        return logList;
-    }
-
 
     /*
     *                  CLASSES

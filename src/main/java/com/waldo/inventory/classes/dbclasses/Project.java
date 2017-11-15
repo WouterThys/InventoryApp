@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Project extends DbObject {
 
@@ -111,7 +111,7 @@ public class Project extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Project> list = db().getProjects();
+                List<Project> list = cache().getProjects();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -121,14 +121,14 @@ public class Project extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Project> list = db().getProjects();
+                List<Project> list = cache().getProjects();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onProjectChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onProjectChangedListenerList);
     }
 
     /*

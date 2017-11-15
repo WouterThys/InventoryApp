@@ -18,7 +18,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public abstract class MainPanelLayout extends JPanel implements
@@ -64,7 +64,7 @@ public abstract class MainPanelLayout extends JPanel implements
     public void updateTable(DbObject selectedObject) {
         java.util.List<Item> itemList = new ArrayList<>();
         if (selectedObject == null || selectedObject.getName().equals("All")) {
-            itemList = db().getItems();
+            itemList = cache().getItems();
             for (Item item : itemList) {
                 if (item.getId() == DbObject.UNKNOWN_ID) {
                     itemList.remove(item);
@@ -97,7 +97,7 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
-        for (Category category : db().getCategories()) {
+        for (Category category : cache().getCategories()) {
             if (!category.isUnknown()) {
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
                 rootNode.add(cNode);

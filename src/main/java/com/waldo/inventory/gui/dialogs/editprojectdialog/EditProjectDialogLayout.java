@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboCheckBox;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class EditProjectDialogLayout extends IDialog implements
         IEditedListener, ProjectGridPanel.GridComponentClicked<ProjectObject>, ActionListener {
@@ -80,7 +80,7 @@ public abstract class EditProjectDialogLayout extends IDialog implements
         findProjectsBtn.addActionListener(this);
 
         projectGridPanel = new ProjectGridPanel<>(this, 3,2);
-        ideTypeCcb = new IComboCheckBox<>(DbManager.db().getProjectIDES(), true);
+        ideTypeCcb = new IComboCheckBox<>(cache().getProjectIDES(), true);
 
     }
 

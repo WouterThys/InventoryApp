@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class OrderItem extends DbObject {
@@ -85,7 +85,7 @@ public class OrderItem extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<OrderItem> list = db().getOrderItems();
+                List<OrderItem> list = cache().getOrderItems();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -95,14 +95,14 @@ public class OrderItem extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<OrderItem> list = db().getOrderItems();
+                List<OrderItem> list = cache().getOrderItems();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onOrderItemsChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onOrderItemsChangedListenerList);
     }
 
     public static OrderItem createDummyOrderItem(Order order, Item item) {

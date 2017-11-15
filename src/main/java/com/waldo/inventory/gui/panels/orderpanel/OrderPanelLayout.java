@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
@@ -30,10 +29,10 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
@@ -106,7 +105,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         rootNode.add(orderedNode);
         rootNode.add(plannedNode);
 
-        for (Order o : db().getOrders()) {
+        for (Order o : cache().getOrders()) {
             if (!o.isUnknown()) {
                 DefaultMutableTreeNode oNode = new DefaultMutableTreeNode(o, false);
 
@@ -369,7 +368,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderNameLbl = new ILabel();
         Font f = tbOrderNameLbl.getFont();
         tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
-        tbDistributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObjectNameComparator<>(), true);
+        tbDistributorCb = new IComboBox<>(cache().getDistributors(), new DbObjectNameComparator<>(), true);
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (selectedOrder != null) {

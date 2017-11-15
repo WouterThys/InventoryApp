@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -50,9 +50,9 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
     int selectedSubType; // Selection between categories, products or types
     DbObject selectedObject;
 
-    DbObjectChangedListener<Category> categoriesChanged;
-    DbObjectChangedListener<Product> productsChanged;
-    DbObjectChangedListener<com.waldo.inventory.classes.dbclasses.Type> typesChanged;
+    CacheChangedListener<Category> categoriesChanged;
+    CacheChangedListener<Product> productsChanged;
+    CacheChangedListener<com.waldo.inventory.classes.dbclasses.Type> typesChanged;
 
     public SubDivisionsDialogLayout(Application application, String title) {
         super(application, title);

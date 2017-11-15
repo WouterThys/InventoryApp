@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.Statics.LogTypes.*;
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Log extends DbObject {
 
@@ -193,7 +193,7 @@ public class Log extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Log> list = db().getLogs();
+                List<Log> list = cache().getLogs();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -203,7 +203,7 @@ public class Log extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Log> list = db().getLogs();
+                List<Log> list = cache().getLogs();
                 if (list.contains(this)) {
                     list.remove(this);
                 }

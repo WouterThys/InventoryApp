@@ -93,59 +93,59 @@ public class SearchManager {
 
         // Categories
         Status().setMessage("Searching for: Categories");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getCategories()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getCategories()), searchWord));
 
         // Products
         Status().setMessage("Searching for: Products");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getProducts()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProducts()), searchWord));
 
         // Types
         Status().setMessage("Searching for: Types");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getTypes()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getTypes()), searchWord));
 
         // Orders
         Status().setMessage("Searching for: Orders");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getOrders()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getOrders()), searchWord));
 
         // Locations
         Status().setMessage("Searching for: Locations");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getLocations()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getLocations()), searchWord));
 
         // Manufacturers
         Status().setMessage("Searching for: Manufacturers");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getManufacturers()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getManufacturers()), searchWord));
 
         // Distributors
         Status().setMessage("Searching for: Distributors");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getDistributors()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getDistributors()), searchWord));
 
         // Items
         Status().setMessage("Searching for: Items");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getItems()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getItems()), searchWord));
 
         // Package types
         Status().setMessage("Searching for: Package types");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getPackageTypes()), searchWord));
 
         // Projects
         Status().setMessage("Searching for: Projects");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjects()), searchWord));
 
         // Project directories
         //Status().setMessage("Searching for: Project directories");
-        //foundList.addAll(searchForObject(new ArrayList<>(db().getProjectDirectories()), searchWord));
+        //foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjectDirectories()), searchWord));
 
         // Project types
         Status().setMessage("Searching for: Project types");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getProjectIDES()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjectIDES()), searchWord));
 
         // Package types
         Status().setMessage("Searching for: Package types");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getPackageTypes()), searchWord));
 
         // Logs
         Status().setMessage("Searching for: Logs");
-        foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
+        foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getLogs()), searchWord));
 
         return foundList;
     }
@@ -156,59 +156,59 @@ public class SearchManager {
             switch (type) {
                 case DbObject.TYPE_CATEGORY:
                     Status().setMessage("Searching for: Categories");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getCategories()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getCategories()), searchWord));
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Status().setMessage("Searching for: Products");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getProducts()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProducts()), searchWord));
                     break;
                 case DbObject.TYPE_TYPE:
                     Status().setMessage("Searching for: Types");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getTypes()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getTypes()), searchWord));
                     break;
                 case DbObject.TYPE_ORDER:
                     Status().setMessage("Searching for: Orders");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getOrders()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getOrders()), searchWord));
                     break;
                 case DbObject.TYPE_LOCATION:
                     Status().setMessage("Searching for: Locations");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getLocations()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getLocations()), searchWord));
                     break;
                 case DbObject.TYPE_LOCATION_TYPE:
                     Status().setMessage("Searching for: Location types");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getLocationTypes()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getLocationTypes()), searchWord));
                     break;
                 case DbObject.TYPE_MANUFACTURER:
                     Status().setMessage("Searching for: Manufacturers");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getManufacturers()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getManufacturers()), searchWord));
                     break;
                 case DbObject.TYPE_DISTRIBUTOR:
                     Status().setMessage("Searching for: Distributors");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getDistributors()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getDistributors()), searchWord));
                     break;
                 case DbObject.TYPE_ITEM:
                     Status().setMessage("Searching for: Items");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getItems()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getItems()), searchWord));
                     break;
                 case DbObject.TYPE_PACKAGE_TYPE:
                     Status().setMessage("Searching for: PackageType");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getPackageTypes()), searchWord));
                     break;
                 case DbObject.TYPE_PROJECT:
                     Status().setMessage("Searching for: Projects");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjects()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjects()), searchWord));
                     break;
                 case DbObject.TYPE_PROJECT_TYPE:
                     Status().setMessage("Searching for: Project types");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getProjectIDES()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjectIDES()), searchWord));
                     break;
                 case DbObject.TYPE_PACKAGE:
                     Status().setMessage("Searching for: Package types");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getPackageTypes()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getPackageTypes()), searchWord));
                     break;
                 case DbObject.TYPE_LOG:
                     Status().setMessage("Searching for: Logs");
-                    foundList.addAll(searchForObject(new ArrayList<>(db().getLogs()), searchWord));
+                    foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getLogs()), searchWord));
                 default:
                     break;
             }
@@ -340,7 +340,7 @@ public class SearchManager {
         *                  FINDERS
         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public Item findItemById(long id) {
-        for (Item i : db().getItems()) {
+        for (Item i : CacheManager.cache().getItems()) {
             if (i.getId() == id) {
                 return i;
             }
@@ -349,7 +349,7 @@ public class SearchManager {
     }
 
     public Item findItemByName(String name) {
-        for (Item i : db().getItems()) {
+        for (Item i : CacheManager.cache().getItems()) {
             if (i.getName().toUpperCase().equals(name.toUpperCase())) {
                 return i;
             }
@@ -358,7 +358,7 @@ public class SearchManager {
     }
 
     public Category findCategoryById(long id) {
-        for (Category c : db().getCategories()) {
+        for (Category c : CacheManager.cache().getCategories()) {
             if (c.getId() == id) {
                 return c;
             }
@@ -367,7 +367,7 @@ public class SearchManager {
     }
 
     public Product findProductById(long id) {
-        for (Product p : db().getProducts()) {
+        for (Product p : CacheManager.cache().getProducts()) {
             if (p.getId() == id) {
                 return p;
             }
@@ -376,7 +376,7 @@ public class SearchManager {
     }
 
     public Type findTypeById(long id) {
-        for (Type t : db().getTypes()) {
+        for (Type t : CacheManager.cache().getTypes()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -386,7 +386,7 @@ public class SearchManager {
 
     public List<Product> findProductListForCategory(long categoryId)    {
         List<Product> products = new ArrayList<>();
-        for (Product p : db().getProducts()) {
+        for (Product p : CacheManager.cache().getProducts()) {
             if (p.getCategoryId() == categoryId) {
                 products.add(p);
             }
@@ -396,7 +396,7 @@ public class SearchManager {
 
     public List<Type> findTypeListForProduct(long productId)    {
         List<Type> types = new ArrayList<>();
-        for (Type t : db().getTypes()) {
+        for (Type t : CacheManager.cache().getTypes()) {
             if (t.getProductId() == productId) {
                 types.add(t);
             }
@@ -406,7 +406,7 @@ public class SearchManager {
 
     public List<Item> findItemListForCategory(Category c)    {
         List<Item> items = new ArrayList<>();
-        for (Item i : db().getItems()) {
+        for (Item i : CacheManager.cache().getItems()) {
             if (i.getCategoryId() == c.getId()) {
                 items.add(i);
             }
@@ -437,7 +437,7 @@ public class SearchManager {
     }
 
     public Manufacturer findManufacturerById(long id) {
-        for (Manufacturer m : db().getManufacturers()) {
+        for (Manufacturer m : CacheManager.cache().getManufacturers()) {
             if (m.getId() == id) {
                 return m;
             }
@@ -447,7 +447,7 @@ public class SearchManager {
 
     public Location findLocationById(long id) {
         if (id >= DbObject.UNKNOWN_ID) {
-            for (Location t : db().getLocations()) {
+            for (Location t : CacheManager.cache().getLocations()) {
                 if (t.getId() == id) {
                     return t;
                 }
@@ -457,7 +457,7 @@ public class SearchManager {
     }
 
     synchronized public Location findLocation(long locationTypeId, int row, int column) {
-        for (Location l : db().getLocations()) {
+        for (Location l : CacheManager.cache().getLocations()) {
             if (l.getLocationTypeId() == locationTypeId && l.getRow() == row && l.getCol() == column) {
                 return l;
             }
@@ -466,7 +466,7 @@ public class SearchManager {
     }
 
     public Order findOrderById(long id) {
-        for (Order t : db().getOrders()) {
+        for (Order t : CacheManager.cache().getOrders()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -475,7 +475,7 @@ public class SearchManager {
     }
 
     public OrderItem findOrderItemById(long id) {
-        for (OrderItem t : db().getOrderItems()) {
+        for (OrderItem t : CacheManager.cache().getOrderItems()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -484,7 +484,7 @@ public class SearchManager {
     }
 
     public Distributor findDistributorById(long distributorId) {
-        for (Distributor d : db().getDistributors()) {
+        for (Distributor d : CacheManager.cache().getDistributors()) {
             if (d.getId() == distributorId) {
                 return d;
             }
@@ -493,7 +493,7 @@ public class SearchManager {
     }
 
     public DistributorPartLink findDistributorPartLink(long distributorId, long itemId) {
-        for (DistributorPartLink pn : db().getDistributorPartLinks()) {
+        for (DistributorPartLink pn : CacheManager.cache().getDistributorPartLinks()) {
             if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
                 return pn;
             }
@@ -502,7 +502,7 @@ public class SearchManager {
     }
 
     public DistributorPartLink findDistributorPartLinkById(long id) {
-        for (DistributorPartLink pn : db().getDistributorPartLinks()) {
+        for (DistributorPartLink pn : CacheManager.cache().getDistributorPartLinks()) {
             if (pn.getId() == id) {
                 return  pn;
             }
@@ -513,7 +513,7 @@ public class SearchManager {
     public List<DistributorPartLink> findDistributorPartLinksForItem(long itemId) {
         List<DistributorPartLink> linkList = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
-            for (DistributorPartLink link : db().getDistributorPartLinks()) {
+            for (DistributorPartLink link : CacheManager.cache().getDistributorPartLinks()) {
                 if (link.getItemId() == itemId) {
                     linkList.add(link);
                 }
@@ -524,7 +524,7 @@ public class SearchManager {
 
     public List<Order> findOrdersForItem(long itemId) {
         List<Order> orders = new ArrayList<>();
-        for (OrderItem oi : db().getOrderItems()) {
+        for (OrderItem oi : CacheManager.cache().getOrderItems()) {
             if (oi.getItemId() == itemId) {
                 orders.add(oi.getOrder());
             }
@@ -534,7 +534,7 @@ public class SearchManager {
 
     public List<Order> findPlannedOrders() {
         List<Order> orders = new ArrayList<>();
-        for (Order o : db().getOrders()) {
+        for (Order o : CacheManager.cache().getOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
                 orders.add(o);
             }
@@ -545,7 +545,7 @@ public class SearchManager {
     public List<ProjectPcb> findPcbsForItem(long itemId) {
         List<ProjectPcb> projects = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
-            for (ProjectPcb pcb : db().getProjectPcbs()) {
+            for (ProjectPcb pcb : CacheManager.cache().getProjectPcbs()) {
                 for (Item item : pcb.getLinkedItems()) {
                     if (item.getId() == itemId) {
                         projects.add(pcb);
@@ -573,7 +573,7 @@ public class SearchManager {
     }
 
     public PackageType findPackageTypeById(long id) {
-        for (PackageType pt : db().getPackageTypes()) {
+        for (PackageType pt : CacheManager.cache().getPackageTypes()) {
             if (pt.getId() == id) {
                 return pt;
             }
@@ -584,7 +584,7 @@ public class SearchManager {
     public List<PackageType> findPackageTypesByPackageId(long packageId) {
         List<PackageType> types = new ArrayList<>();
         if (packageId > 0) {
-            for (PackageType type : db().getPackageTypes()) {
+            for (PackageType type : CacheManager.cache().getPackageTypes()) {
                 if (type.getPackageId() == packageId) {
                     types.add(type);
                 }
@@ -594,7 +594,7 @@ public class SearchManager {
     }
 
     public Project findProjectById(long id) {
-        for (Project p : db().getProjects()) {
+        for (Project p : CacheManager.cache().getProjects()) {
             if (p.getId() == id) {
                 return p;
             }
@@ -603,7 +603,7 @@ public class SearchManager {
     }
 
     public ProjectIDE findProjectIDEById(long id) {
-        for (ProjectIDE p : db().getProjectIDES()) {
+        for (ProjectIDE p : CacheManager.cache().getProjectIDES()) {
             if (p.getId() == id) {
                 return p;
             }
@@ -613,7 +613,7 @@ public class SearchManager {
 
     public List<ProjectIDE> findProjectIDEsByType(String type) {
         List<ProjectIDE> projectIDES = new ArrayList<>();
-        for (ProjectIDE pi : db().getProjectIDES()) {
+        for (ProjectIDE pi : CacheManager.cache().getProjectIDES()) {
             if (pi.getProjectType().isEmpty() || pi.getProjectType().equals(type)) {
                 projectIDES.add(pi);
             }
@@ -622,7 +622,7 @@ public class SearchManager {
     }
 
     public OrderFileFormat findOrderFileFormatById(long id) {
-        for (OrderFileFormat of : db().getOrderFileFormats()) {
+        for (OrderFileFormat of : CacheManager.cache().getOrderFileFormats()) {
             if (of.getId() == id) {
                 return of;
             }
@@ -631,7 +631,7 @@ public class SearchManager {
     }
 
     public OrderFileFormat findOrderFileFormatByName(String name) {
-        for (OrderFileFormat of : db().getOrderFileFormats()) {
+        for (OrderFileFormat of : CacheManager.cache().getOrderFileFormats()) {
             if (of.getName().equals(name)) {
                 return of;
             }
@@ -640,7 +640,7 @@ public class SearchManager {
     }
 
     public Package findPackageById(long id) {
-        for (Package pa : db().getPackages()) {
+        for (Package pa : CacheManager.cache().getPackages()) {
             if (pa.getId() == id) {
                 return  pa;
             }
@@ -649,7 +649,7 @@ public class SearchManager {
     }
 
     public SetItem findSetItemById(long id) {
-        for (SetItem si : db().getSetItems()) {
+        for (SetItem si : CacheManager.cache().getSetItems()) {
             if (si.getId() == id) {
                 return si;
             }
@@ -659,7 +659,7 @@ public class SearchManager {
 
     public List<SetItem> findSetItemsByItemId(long id) {
         List<SetItem> setItems = new ArrayList<>();
-        for (SetItem si : db().getSetItems()) {
+        for (SetItem si : CacheManager.cache().getSetItems()) {
             if (si.getItemId() == id) {
                 setItems.add(si);
             }
@@ -668,7 +668,7 @@ public class SearchManager {
     }
 
     public PcbItem findPcbItemById(long id) {
-        for (PcbItem component : db().getPcbItems()) {
+        for (PcbItem component : CacheManager.cache().getPcbItems()) {
             if (component.getId() == id) {
                 return component;
             }
@@ -677,7 +677,7 @@ public class SearchManager {
     }
 
     public PcbItem findPcbItem(String value, String footprint, String lib, String part) {
-        for (PcbItem component : db().getPcbItems()) {
+        for (PcbItem component : CacheManager.cache().getPcbItems()) {
             if (component.getValue().equals(value) &&
                     component.getFootprint().equals(footprint) &&
                     component.getLibrary().equals(lib) &&
@@ -690,7 +690,7 @@ public class SearchManager {
     }
 
     public PcbItemItemLink findPcbItemLinkWithItem(long itemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+        for (PcbItemItemLink pcbItemItemLink : CacheManager.cache().getPcbItemItemLinks()) {
             if (!pcbItemItemLink.isSetItem()) {
                 if(pcbItemItemLink.getItemId() == itemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
                     return pcbItemItemLink;
@@ -701,7 +701,7 @@ public class SearchManager {
     }
 
     public PcbItemItemLink findPcbItemLinkWithSetItem(long setItemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+        for (PcbItemItemLink pcbItemItemLink : CacheManager.cache().getPcbItemItemLinks()) {
             if (pcbItemItemLink.isSetItem()) {
                 if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
                     return pcbItemItemLink;
@@ -713,7 +713,7 @@ public class SearchManager {
 
     public PcbItemItemLink findPcbItemLinkForPcbItem(long pcbItemId) {
         if (pcbItemId > 0) {
-            for (PcbItemItemLink pcbItemItemLink : db().getPcbItemItemLinks()) {
+            for (PcbItemItemLink pcbItemItemLink : CacheManager.cache().getPcbItemItemLinks()) {
                 if (pcbItemItemLink.getPcbItemId() == pcbItemId) {
                     return pcbItemItemLink;
                 }
@@ -723,7 +723,7 @@ public class SearchManager {
     }
 
     public LocationType findLocationTypeById(long locationTypeId) {
-        for (LocationType lt : db().getLocationTypes()) {
+        for (LocationType lt : CacheManager.cache().getLocationTypes()) {
             if (lt.getId() == locationTypeId) {
                 return lt;
             }
@@ -733,7 +733,7 @@ public class SearchManager {
 
     public List<Location> findLocationsByTypeId(long locationTypeId) {
         List<Location> locations = new ArrayList<>();
-        for (Location location : db().getLocations()) {
+        for (Location location : CacheManager.cache().getLocations()) {
             if (location.getLocationTypeId() == locationTypeId) {
                 locations.add(location);
             }
@@ -743,7 +743,7 @@ public class SearchManager {
 
     public List<ProjectCode> findProjectCodesByProjectId(long projectId) {
         List<ProjectCode> projectCodes = new ArrayList<>();
-        for (ProjectCode pc : db().getProjectCodes()) {
+        for (ProjectCode pc : CacheManager.cache().getProjectCodes()) {
             if (pc.getProjectId() == projectId) {
                 projectCodes.add(pc);
             }
@@ -754,7 +754,7 @@ public class SearchManager {
     public List<ProjectPcb> findProjectPcbsByProjectId(long projectId) {
         List<ProjectPcb> projectPcbs = new ArrayList<>();
         if (projectId > 0) {
-            for (ProjectPcb pp : db().getProjectPcbs()) {
+            for (ProjectPcb pp : CacheManager.cache().getProjectPcbs()) {
                 if (pp.getProjectId() == projectId) {
                     projectPcbs.add(pp);
                 }
@@ -765,7 +765,7 @@ public class SearchManager {
 
     public ProjectPcb findProjectPcbById(long id) {
         if (id > 0) {
-            for (ProjectPcb pp : db().getProjectPcbs()) {
+            for (ProjectPcb pp : CacheManager.cache().getProjectPcbs()) {
                 if (pp.getId() == id) {
                     return pp;
                 }
@@ -776,7 +776,7 @@ public class SearchManager {
 
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();
-//        for (ProjectOther po : db().getProjectOthers()) {
+//        for (ProjectOther po : CacheManager.cache().getProjectOthers()) {
 //            if (po.getProjectId() == projectId) {
 //                projectOthers.add(pc);
 //            }
@@ -787,7 +787,7 @@ public class SearchManager {
     public List<PcbItem> findPcbItemsForProjectPcb(long projectPcbId) {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (projectPcbId > 0) {
-            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
+            for (PcbItemProjectLink link : CacheManager.cache().getPcbItemProjectLinks()) {
                 if (link.getProjectPcbId() == projectPcbId) {
                     pcbItems.add(link.getPcbItem());
                 }
@@ -799,7 +799,7 @@ public class SearchManager {
     public List<PcbItemProjectLink> findPcbItemLinksWithProjectPcb(long projectPcbId) {
         List<PcbItemProjectLink> links = new ArrayList<>();
         if (projectPcbId > 0) {
-            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
+            for (PcbItemProjectLink link : CacheManager.cache().getPcbItemProjectLinks()) {
                 if (link.getProjectPcbId() == projectPcbId) {
                     links.add(link);
                 }
@@ -810,7 +810,7 @@ public class SearchManager {
 
     public PcbItemProjectLink findPcbItemProjectLink(long projectPcbId, long pcbItemId) {
         if (projectPcbId > 0 && pcbItemId > 0) {
-            for (PcbItemProjectLink link : db().getPcbItemProjectLinks()) {
+            for (PcbItemProjectLink link : CacheManager.cache().getPcbItemProjectLinks()) {
                 if (link.getProjectPcbId() == projectPcbId && link.getPcbItemId() == pcbItemId) {
                     return link;
                 }
@@ -821,7 +821,7 @@ public class SearchManager {
 
     public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId, String sheet) {
         if (pcbItemId > 0 && projectPcbId > 0) {
-            for (PcbItemProjectLink pil : db().getPcbItemProjectLinks()) {
+            for (PcbItemProjectLink pil : CacheManager.cache().getPcbItemProjectLinks()) {
                 if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId && pil.getSheetName().equals(sheet)) {
                     return pil;
                 }
@@ -833,7 +833,7 @@ public class SearchManager {
     public List<ParserItemLink> findParserItemLinksByParserName(String parserName) {
         List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (parserName != null && !parserName.isEmpty()) {
-            for (ParserItemLink link : db().getParserItemLinks()) {
+            for (ParserItemLink link : CacheManager.cache().getParserItemLinks()) {
                 if (link.getParserName().equals(parserName)) {
                     parserItemLinks.add(link);
                 }
@@ -844,7 +844,7 @@ public class SearchManager {
 
     public ParserItemLink findParserItemLinkByPcbItemName(String name) {
         if (name != null && !name.isEmpty()) {
-            for (ParserItemLink link : db().getParserItemLinks()) {
+            for (ParserItemLink link : CacheManager.cache().getParserItemLinks()) {
                 if (link.getPcbItemName().equals(name)) {
                     return link;
                 }

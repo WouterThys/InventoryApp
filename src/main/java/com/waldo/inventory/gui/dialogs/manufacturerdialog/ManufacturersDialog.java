@@ -15,8 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ManufacturersDialog extends ManufacturersDialogLayout {
 
@@ -27,14 +27,14 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        db().addOnManufacturerChangedListener(this);
+        cache().addOnManufacturerChangedListener(this);
 
         updateWithFirstManufacturer();
     }
 
     private void updateWithFirstManufacturer() {
-        if (db().getManufacturers().size() > 1) {
-            updateComponents(db().getManufacturers().get(1)); // 0 is unknown
+        if (cache().getManufacturers().size() > 1) {
+            updateComponents(cache().getManufacturers().get(1)); // 0 is unknown
             setDetails();
         } else {
             updateComponents();
@@ -86,7 +86,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             }
 
             detailItemDefaultListModel.removeAllElements();
-            for (Item item : db().getItemsForManufacturer(selectedManufacturer.getId())) {
+            for (Item item : cache().getItemsForManufacturer(selectedManufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
             }
         }
@@ -147,7 +147,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             application.beginWait();
             // Get all menus
             manufacturerDefaultListModel.removeAllElements();
-            for (Manufacturer m : db().getManufacturers()) {
+            for (Manufacturer m : cache().getManufacturers()) {
                 if (!m.isUnknown()) {
                     manufacturerDefaultListModel.addElement(m);
                 }

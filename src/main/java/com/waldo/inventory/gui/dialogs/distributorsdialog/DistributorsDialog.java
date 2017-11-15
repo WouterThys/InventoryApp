@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorsDialog extends DistributorsDialogLayout {
 
@@ -38,14 +38,14 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        db().addOnDistributorChangedListener(this);
+        cache().addOnDistributorChangedListener(this);
 
         updateWithFirstDistributor();
     }
 
     private void updateWithFirstDistributor() {
-        if (db().getDistributors().size() > 0) {
-            updateComponents(db().getDistributors().get(0));
+        if (cache().getDistributors().size() > 0) {
+            updateComponents(cache().getDistributors().get(0));
             setDetails();
         } else {
             updateComponents();

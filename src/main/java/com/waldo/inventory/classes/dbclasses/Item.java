@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Item extends DbObject {
@@ -261,23 +261,23 @@ public class Item extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Item> list = db().getItems();
+                List<Item> list = cache().getItems();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onItemsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onItemsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onItemsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onItemsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Item> list = db().getItems();
+                List<Item> list = cache().getItems();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onItemsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onItemsChangedListenerList);
                 break;
             }
         }

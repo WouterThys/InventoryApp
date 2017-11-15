@@ -1,10 +1,9 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static java.awt.GridBagConstraints.BOTH;
 
 public class PanelUtils {
@@ -683,7 +683,7 @@ public class PanelUtils {
         @Override
         public void initializeComponents() {
             // Package
-            packageCb = new IComboBox<>(DbManager.db().getPackages(), new DbObjectNameComparator<>(), true);
+            packageCb = new IComboBox<>(cache().getPackages(), new DbObjectNameComparator<>(), true);
             packageCb.addItemListener(this);
 
             // Package type

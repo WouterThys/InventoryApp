@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectCode extends ProjectObject {
 
@@ -83,7 +83,7 @@ public class ProjectCode extends ProjectObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<ProjectCode> list = db().getProjectCodes();
+                List<ProjectCode> list = cache().getProjectCodes();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -93,14 +93,14 @@ public class ProjectCode extends ProjectObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<ProjectCode> list = db().getProjectCodes();
+                List<ProjectCode> list = cache().getProjectCodes();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onProjectCodeChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onProjectCodeChangedListenerList);
     }
 
 //    public static ProjectCode getUnknownProjectCode() {

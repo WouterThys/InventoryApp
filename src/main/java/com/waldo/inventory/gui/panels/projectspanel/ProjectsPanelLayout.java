@@ -17,9 +17,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.awt.*;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class ProjectsPanelLayout extends JPanel implements
         GuiInterface,
@@ -127,7 +127,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     private void treeInitializeTree(DefaultMutableTreeNode rootNode) {
-        for (Project p : db().getProjects()) {
+        for (Project p : cache().getProjects()) {
             if (!p.isUnknown()) {
                 ProjectCode code = new ProjectCode("Code  ");
                 ProjectPcb pcb = new ProjectPcb("Pcbs  ");

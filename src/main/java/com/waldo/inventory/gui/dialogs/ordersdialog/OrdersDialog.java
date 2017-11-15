@@ -3,13 +3,14 @@ package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class OrdersDialog extends OrdersDialogLayout {
 
@@ -49,7 +50,7 @@ public class OrdersDialog extends OrdersDialogLayout {
             ok = false;
         }
 
-        for (Order o : DbManager.db().getOrders()) {
+        for (Order o : cache().getOrders()) {
             if (o.getName().equals(order.getName())) {
                 nameField.setError("Name already exists in orders, select an other name..");
                 ok = false;

@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Package extends DbObject {
 
@@ -44,7 +44,7 @@ public class Package extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Package> list = db().getPackages();
+                List<Package> list = cache().getPackages();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -54,14 +54,14 @@ public class Package extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Package> list = db().getPackages();
+                List<Package> list = cache().getPackages();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onPackageChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onPackageChangedListenerList);
     }
 
     @Override

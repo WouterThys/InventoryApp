@@ -4,7 +4,7 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -18,7 +18,7 @@ import static javax.swing.SpringLayout.*;
 
 public abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectChangedListener<Manufacturer>,
+        CacheChangedListener<Manufacturer>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,

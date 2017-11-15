@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LocationTypeDialog extends LocationTypeDialogLayout {
 
@@ -26,15 +26,15 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        db().addOnLocationTypeChangedListener(this);
+        cache().addOnLocationTypeChangedListener(this);
 
         updateWithFirstLocationType();
     }
 
 
     private void updateWithFirstLocationType() {
-        if (db().getLocationTypes().size() > 1) {
-            updateComponents(db().getLocationTypes().get(1)); // 0 is Unknown
+        if (cache().getLocationTypes().size() > 1) {
+            updateComponents(cache().getLocationTypes().get(1)); // 0 is Unknown
             setDetails();
         } else {
             updateComponents();

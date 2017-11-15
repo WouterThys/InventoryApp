@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LocationType extends DbObject {
 
@@ -56,7 +56,7 @@ public class LocationType extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<LocationType> list = db().getLocationTypes();
+                List<LocationType> list = cache().getLocationTypes();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -66,14 +66,14 @@ public class LocationType extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<LocationType> list = db().getLocationTypes();
+                List<LocationType> list = cache().getLocationTypes();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onLocationTYpeChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onLocationTYpeChangedListenerList);
     }
 
     public static LocationType getUnknownLocationType() {

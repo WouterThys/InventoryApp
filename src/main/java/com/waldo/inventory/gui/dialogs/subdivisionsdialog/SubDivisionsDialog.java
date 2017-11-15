@@ -3,8 +3,7 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -13,9 +12,9 @@ import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
@@ -40,9 +39,9 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         setProductsChanged();
         setTypesChanged();
 
-        db().addOnCategoriesChangedListener(categoriesChanged);
-        db().addOnProductsChangedListener(productsChanged);
-        db().addOnTypesChangedListener(typesChanged);
+        cache().addOnCategoriesChangedListener(categoriesChanged);
+        cache().addOnProductsChangedListener(productsChanged);
+        cache().addOnTypesChangedListener(typesChanged);
     }
 
     private void initActions() {
@@ -93,7 +92,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 break;
             case PRODUCTS:
                 selectionCbModel.removeAllElements();
-                for (Category c : db().getCategories()) {
+                for (Category c : cache().getCategories()) {
                     if (!c.isUnknown()) {
                         selectionCbModel.addElement(c);
                     }
@@ -101,7 +100,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 break;
             case TYPES:
                 selectionCbModel.removeAllElements();
-                for (Product p : db().getProducts()) {
+                for (Product p : cache().getProducts()) {
                     if (!p.isUnknown()) {
                         selectionCbModel.addElement(p);
                     }
@@ -153,7 +152,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void setCategoriesChanged() {
-        categoriesChanged = new DbObjectChangedListener<Category>() {
+        categoriesChanged = new CacheChangedListener<Category>() {
             @Override
             public void onInserted(Category object) {
                 updateCategoryList();
@@ -199,7 +198,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void setProductsChanged() {
-        productsChanged = new DbObjectChangedListener<Product>() {
+        productsChanged = new CacheChangedListener<Product>() {
             @Override
             public void onInserted(Product object) {
                 updateProductList();
@@ -240,7 +239,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     private void setTypesChanged() {
-        typesChanged = new DbObjectChangedListener<com.waldo.inventory.classes.dbclasses.Type>() {
+        typesChanged = new CacheChangedListener<com.waldo.inventory.classes.dbclasses.Type>() {
             @Override
             public void onInserted(com.waldo.inventory.classes.dbclasses.Type object) {
                 updateTypeList();
@@ -264,7 +263,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private void updateCategoryList() {
         if (selectedSubType == CATEGORIES) {
             detailListModel.removeAllElements();
-            for (Category c : DbManager.db().getCategories()) {
+            for (Category c : cache().getCategories()) {
                 if (!c.isUnknown()) {
                     detailListModel.addElement(c);
                 }
@@ -303,25 +302,6 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
         } finally {
             application.endWait();
         }
-    }
-
-    //
-    // Dialog Listeners
-    //
-    @Override
-    protected void onOK() {
-        db().removeOnCategoriesChangedListener(categoriesChanged);
-        db().removeOnProductsChangedListener(productsChanged);
-        db().removeOnTypesChangedListener(typesChanged);
-        super.onOK();
-    }
-
-    @Override
-    protected void onCancel() {
-        db().removeOnCategoriesChangedListener(categoriesChanged);
-        db().removeOnProductsChangedListener(productsChanged);
-        db().removeOnTypesChangedListener(typesChanged);
-        super.onCancel();
     }
 
     //

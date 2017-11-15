@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorPartLink extends DbObject {
 
@@ -79,7 +79,7 @@ public class DistributorPartLink extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<DistributorPartLink> list = db().getDistributorPartLinks();
+                List<DistributorPartLink> list = cache().getDistributorPartLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -89,14 +89,14 @@ public class DistributorPartLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<DistributorPartLink> list = db().getDistributorPartLinks();
+                List<DistributorPartLink> list = cache().getDistributorPartLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onDistributorPartLinkChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onDistributorPartLinkChangedListenerList);
     }
 
 

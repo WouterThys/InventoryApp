@@ -2,8 +2,7 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -14,7 +13,9 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-public class ParserDialog extends ParserDialogLayout implements DbObjectChangedListener<ParserItemLink> {
+import static com.waldo.inventory.managers.CacheManager.cache;
+
+public class ParserDialog extends ParserDialogLayout implements CacheChangedListener<ParserItemLink> {
 
 
     public ParserDialog(Application application, String title, boolean useParser, PcbParser parser) {
@@ -23,7 +24,7 @@ public class ParserDialog extends ParserDialogLayout implements DbObjectChangedL
         initializeComponents();
         initializeLayouts();
 
-        DbManager.db().addOnParserItemLinkChangedListener(this);
+        cache().addOnParserItemLinkChangedListener(this);
 
         updateComponents();
     }

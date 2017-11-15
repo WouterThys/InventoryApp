@@ -1,8 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
@@ -12,7 +11,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements DbObjectChangedListener<Order> {
+import static com.waldo.inventory.managers.CacheManager.cache;
+
+public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements CacheChangedListener<Order> {
 
     public OrderPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
@@ -22,7 +23,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements DbOb
         initializeComponents();
         initializeLayouts();
 
-        DbManager.db().addOnOrdersChangedListener(this);
+        cache().addOnOrdersChangedListener(this);
     }
 
 

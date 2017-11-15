@@ -3,8 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
@@ -19,7 +18,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, DbObjectChangedListener<DistributorPartLink> {
+import static com.waldo.inventory.managers.CacheManager.cache;
+
+public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, CacheChangedListener<DistributorPartLink> {
 
     private IDistributorPartTableModel tableModel;
     private ITable<DistributorPartLink> linkTable;
@@ -37,7 +38,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolB
         this.newItem = newItem;
         this.editedListener = listener;
 
-        DbManager.db().addOnDistributorPartLinkChangedListener(this);
+        cache().addOnDistributorPartLinkChangedListener(this);
     }
 
     private void updateEnabledComponents() {

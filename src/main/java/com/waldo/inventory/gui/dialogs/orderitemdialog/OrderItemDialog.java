@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
@@ -12,6 +11,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class OrderItemDialog extends OrderItemDialogLayout {
 
@@ -27,7 +28,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
 
-        DbManager.db().addOnOrdersChangedListener(this);
+        cache().addOnOrdersChangedListener(this);
 
         initializeComponents();
         initializeLayouts();
@@ -41,7 +42,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;
 
-        DbManager.db().addOnOrdersChangedListener(this);
+        cache().addOnOrdersChangedListener(this);
 
         initializeComponents();
         initializeLayouts();
@@ -74,7 +75,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
                 }
 
                 // Close
-                DbManager.db().removeOnOrdersChangedListener(this);
+                cache().removeOnOrdersChangedListener(this);
             }
             super.onOK();
         }
@@ -82,7 +83,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
 
     @Override
     protected void onCancel() {
-        DbManager.db().removeOnOrdersChangedListener(this);
+        cache().removeOnOrdersChangedListener(this);
         super.onCancel();
     }
 

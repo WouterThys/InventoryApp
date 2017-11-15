@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
@@ -19,6 +18,8 @@ import net.sourceforge.jdatepicker.impl.SqlDateModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class OrdersDialogLayout extends IDialog
         implements GuiInterface, ActionListener, IEditedListener {
@@ -73,7 +74,7 @@ public abstract class OrdersDialogLayout extends IDialog
     public void initializeComponents() {
         nameField = new ITextField("Order name");
         nameField.addEditedListener(this, "name");
-        distributorCb = new IComboBox<>(DbManager.db().getDistributors(), new DbObjectNameComparator<>(), false);
+        distributorCb = new IComboBox<>(cache().getDistributors(), new DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
         isOrderedCb = new JCheckBox("Is ordered");

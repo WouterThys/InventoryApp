@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Order extends DbObject {
@@ -125,7 +125,7 @@ public class Order extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Order> list = db().getOrders();
+                List<Order> list = cache().getOrders();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -135,14 +135,14 @@ public class Order extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Order> list = db().getOrders();
+                List<Order> list = cache().getOrders();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onOrdersChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onOrdersChangedListenerList);
     }
 
     public static class SortAllOrders implements Comparator<Order> {
@@ -333,7 +333,7 @@ public class Order extends DbObject {
 
     public List<OrderItem> getOrderItems() {
         if (orderItems == null) {
-            orderItems = DbManager.db().getOrderedItems(id);
+            orderItems = cache().getOrderedItems(id);
         }
         return orderItems;
     }

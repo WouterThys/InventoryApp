@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Manufacturer extends DbObject {
 
@@ -83,7 +83,7 @@ public class Manufacturer extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Manufacturer> list = db().getManufacturers();
+                List<Manufacturer> list = cache().getManufacturers();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -93,14 +93,14 @@ public class Manufacturer extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Manufacturer> list = db().getManufacturers();
+                List<Manufacturer> list = cache().getManufacturers();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onManufacturerChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onManufacturerChangedListenerList);
     }
 
     public void setWebsite(String website) {

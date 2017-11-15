@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PcbItem extends DbObject {
 
@@ -75,7 +75,7 @@ public class PcbItem extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<PcbItem> list = db().getPcbItems();
+                List<PcbItem> list = cache().getPcbItems();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -85,14 +85,14 @@ public class PcbItem extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<PcbItem> list = db().getPcbItems();
+                List<PcbItem> list = cache().getPcbItems();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onPcbItemChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onPcbItemChangedListenerList);
     }
 
     @Override

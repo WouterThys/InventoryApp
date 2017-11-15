@@ -4,13 +4,14 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class EditProjectDialog extends EditProjectDialogLayout {
 
@@ -49,7 +50,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
             ok = false;
         } else {
             if (isNew) {
-                for (Project project : DbManager.db().getProjects()) {
+                for (Project project : cache().getProjects()) {
                     if (project.getName().toUpperCase().equals(this.project.getName().toUpperCase())) {
                         nameTf.setError("Name already exists..");
                         ok = false;

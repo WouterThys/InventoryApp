@@ -2,9 +2,8 @@ package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.*;
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
 import com.waldo.kicadparser.classes.Component;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.*;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PcbItemParser {
 
@@ -213,7 +213,7 @@ public class PcbItemParser {
     public List<PcbItemItemLink> findLinkWithItem(PcbItem pcbItem) {
         List<PcbItemItemLink> itemLinkList = new ArrayList<>();
 
-        for (Item item : DbManager.db().getItems()) {
+        for (Item item : cache().getItems()) {
             if (item.isSet()) {
                 itemLinkList.addAll(linkWithSetItem(pcbItem, item));
             } else {

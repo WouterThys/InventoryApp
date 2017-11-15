@@ -2,8 +2,7 @@ package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -11,6 +10,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
 
@@ -88,7 +89,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     }
 
     private void addDbObjectListeners() {
-        DbManager.db().addOnPcbItemItemLinkChangedListener(new DbObjectChangedListener<PcbItemItemLink>() {
+        cache().addOnPcbItemItemLinkChangedListener(new CacheChangedListener<PcbItemItemLink>() {
             @Override
             public void onInserted(PcbItemItemLink link) {}
 
@@ -105,7 +106,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
             public void onCacheCleared() {}
         });
 
-        DbManager.db().addOnItemsChangedListener(new DbObjectChangedListener<Item>() {
+        cache().addOnItemsChangedListener(new CacheChangedListener<Item>() {
             @Override
             public void onInserted(Item item) {}
 

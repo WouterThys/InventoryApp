@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
@@ -11,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LogsDialog extends LogsDialogLayout {
 
@@ -37,7 +38,7 @@ public class LogsDialog extends LogsDialogLayout {
     private void deleteAllLogs() {
         application.beginWait();
         try {
-            List<Log> allLogs = DbManager.db().getLogs();
+            List<Log> allLogs = cache().getLogs();
 
             for (int i = allLogs.size()-1; i >=0; i--) {
                 allLogs.get(i).delete();

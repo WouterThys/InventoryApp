@@ -5,8 +5,7 @@ import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.managers.SearchManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
@@ -15,6 +14,7 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -22,17 +22,20 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class OrderPanel extends OrderPanelLayout {
 
-    private DbObjectChangedListener<Item> itemsChanged;
-    private DbObjectChangedListener<Order> ordersChanged;
-    private DbObjectChangedListener<OrderItem> orderItemsChanged;
-    private DbObjectChangedListener<DistributorPartLink> partNumbersChanged;
+    private CacheChangedListener<Item> itemsChanged;
+    private CacheChangedListener<Order> ordersChanged;
+    private CacheChangedListener<OrderItem> orderItemsChanged;
+    private CacheChangedListener<DistributorPartLink> partNumbersChanged;
 
     public OrderPanel(Application application) {
         super(application);
@@ -42,10 +45,10 @@ public class OrderPanel extends OrderPanelLayout {
         initActions();
         initializeListeners();
 
-        db().addOnItemsChangedListener(itemsChanged);
-        db().addOnOrdersChangedListener(ordersChanged);
-        db().addOnOrderItemsChangedListener(orderItemsChanged);
-        db().addOnPartNumbersChangedListener(partNumbersChanged);
+        cache().addOnItemsChangedListener(itemsChanged);
+        cache().addOnOrdersChangedListener(ordersChanged);
+        cache().addOnOrderItemsChangedListener(orderItemsChanged);
+        cache().addOnPartNumbersChangedListener(partNumbersChanged);
 
         updateComponents();
     }
@@ -190,7 +193,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setItemsChangedListener() {
-        itemsChanged = new DbObjectChangedListener<Item>() {
+        itemsChanged = new CacheChangedListener<Item>() {
             @Override
             public void onInserted(Item item) {
                 // No effect here
@@ -219,7 +222,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setOrdersChangedListener() {
-        ordersChanged = new DbObjectChangedListener<Order>() {
+        ordersChanged = new CacheChangedListener<Order>() {
             @Override
             public void onInserted(Order order) {
                 selectedOrder = order;
@@ -289,7 +292,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setOrderItemsChangedListener() {
-        orderItemsChanged = new DbObjectChangedListener<OrderItem>() {
+        orderItemsChanged = new CacheChangedListener<OrderItem>() {
             @Override
             public void onInserted(OrderItem orderItem) {
                 Order order = sm().findOrderById(orderItem.getOrderId());
@@ -339,7 +342,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setPartNumbersChangedListener() {
-        partNumbersChanged = new DbObjectChangedListener<DistributorPartLink>() {
+        partNumbersChanged = new CacheChangedListener<DistributorPartLink>() {
             @Override
             public void onInserted(DistributorPartLink distributorPartLink) {
                 if (selectedOrder != null) {

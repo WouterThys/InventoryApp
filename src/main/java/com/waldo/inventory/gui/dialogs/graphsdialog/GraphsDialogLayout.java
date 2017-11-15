@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class GraphsDialogLayout extends IDialog {
 
@@ -153,7 +154,7 @@ public abstract class GraphsDialogLayout extends IDialog {
 
     private TreeMap<Date, List<DbHistory>> createHistoryMap() {
         TreeMap<Date, List<DbHistory>> historyMap = new TreeMap<>();
-        List<DbHistory> historyList = DbManager.db().getDbHistory();
+        List<DbHistory> historyList = cache().getDbHistory();
 
         for (DbHistory dbh : historyList) {
             Date date = DateUtils.stripTime(dbh.getDate());

@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITree;
@@ -13,6 +12,8 @@ import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialo
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     
@@ -32,7 +33,7 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectCodePanel(Application application, ProjectObjectListener listener) {
         super(application, listener);
-        DbManager.db().addOnProjectCodeChangedListener(this);
+        cache().addOnProjectCodeChangedListener(this);
     }
 
     /*

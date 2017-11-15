@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ParserItemLink extends DbObject {
 
@@ -89,7 +89,7 @@ public class ParserItemLink extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<ParserItemLink> list = db().getParserItemLinks();
+                List<ParserItemLink> list = cache().getParserItemLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -99,14 +99,14 @@ public class ParserItemLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<ParserItemLink> list = db().getParserItemLinks();
+                List<ParserItemLink> list = cache().getParserItemLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onParserItemLinkChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onParserItemLinkChangedListenerList);
     }
 
     public static ParserItemLink getUnknownParserItemLink() {

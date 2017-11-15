@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PcbItemItemLink extends DbObject {
 
@@ -106,7 +106,7 @@ public class PcbItemItemLink extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<PcbItemItemLink> list = db().getPcbItemItemLinks();
+                List<PcbItemItemLink> list = cache().getPcbItemItemLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -117,14 +117,14 @@ public class PcbItemItemLink extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<PcbItemItemLink> list = db().getPcbItemItemLinks();
+                List<PcbItemItemLink> list = cache().getPcbItemItemLinks();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onPcbItemItemLinkChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onPcbItemItemLinkChangedListenerList);
     }
 
     @Override

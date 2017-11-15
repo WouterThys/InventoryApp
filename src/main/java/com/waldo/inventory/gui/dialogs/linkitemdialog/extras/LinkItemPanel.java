@@ -5,9 +5,8 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.ILinkItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -19,6 +18,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LinkItemPanel extends JPanel implements GuiInterface {
     
@@ -150,7 +151,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         // Search panel
         searchPanel = new IObjectSearchPanel(false);
-        searchPanel.setSearchList(new ArrayList<>(DbManager.db().getItems()));
+        searchPanel.setSearchList(new ArrayList<>(cache().getItems()));
 
         // Table
         tableModel = new ILinkItemTableModel();

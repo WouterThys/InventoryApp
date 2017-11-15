@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -15,15 +15,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class MainPanel extends MainPanelLayout {
 
-    private DbObjectChangedListener<Item> itemsChanged;
-    private DbObjectChangedListener<Category> categoriesChanged;
-    private DbObjectChangedListener<Product> productsChanged;
-    private DbObjectChangedListener<Type> typesChanged;
+    private CacheChangedListener<Item> itemsChanged;
+    private CacheChangedListener<Category> categoriesChanged;
+    private CacheChangedListener<Product> productsChanged;
+    private CacheChangedListener<Type> typesChanged;
 
     public MainPanel(Application application) {
         super(application);
@@ -33,10 +33,10 @@ public class MainPanel extends MainPanelLayout {
         initActions();
         initListeners();
 
-        db().addOnItemsChangedListener(itemsChanged);
-        db().addOnCategoriesChangedListener(categoriesChanged);
-        db().addOnProductsChangedListener(productsChanged);
-        db().addOnTypesChangedListener(typesChanged);
+        cache().addOnItemsChangedListener(itemsChanged);
+        cache().addOnCategoriesChangedListener(categoriesChanged);
+        cache().addOnProductsChangedListener(productsChanged);
+        cache().addOnTypesChangedListener(typesChanged);
 
         updateComponents((Object)null);
     }
@@ -107,7 +107,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void setItemsChangedListener() {
-        itemsChanged = new DbObjectChangedListener<Item>() {
+        itemsChanged = new CacheChangedListener<Item>() {
             @Override
             public void onInserted(Item item) {
                 itemChanged(item);
@@ -171,7 +171,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void setCategoriesChangedListener() {
-        categoriesChanged = new DbObjectChangedListener<Category>() {
+        categoriesChanged = new CacheChangedListener<Category>() {
             @Override
             public void onInserted(Category category) {
                 treeModel.addObject(category);
@@ -193,7 +193,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void setProductsChangedListener() {
-        productsChanged = new DbObjectChangedListener<Product>() {
+        productsChanged = new CacheChangedListener<Product>() {
             @Override
             public void onInserted(Product product) {
                 treeModel.addObject(product);
@@ -215,7 +215,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void setTypesChangedListener() {
-        typesChanged = new DbObjectChangedListener<Type>() {
+        typesChanged = new CacheChangedListener<Type>() {
             @Override
             public void onInserted(Type type) {
                 treeModel.addObject(type);

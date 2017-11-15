@@ -2,6 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.managers.CacheManager;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -71,7 +72,7 @@ public class DbHistory extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<DbHistory> list = DbManager.db().getDbHistory();
+                List<DbHistory> list = CacheManager.cache().getDbHistory();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -82,7 +83,7 @@ public class DbHistory extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<DbHistory> list = DbManager.db().getDbHistory();
+                List<DbHistory> list = CacheManager.cache().getDbHistory();
                 if (list.contains(this)) {
                     list.remove(this);
                 }

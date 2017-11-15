@@ -3,8 +3,7 @@ package com.waldo.inventory.gui.dialogs.locationtypedialog;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -15,12 +14,12 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
-import static javax.swing.SpringLayout.WEST;
 
 public abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectChangedListener<LocationType>,
+        CacheChangedListener<LocationType>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
@@ -173,7 +172,7 @@ public abstract class LocationTypeDialogLayout extends IDialog implements
         try {
             // Get all
             locationTypeModel.removeAllElements();
-            for (LocationType lt : DbManager.db().getLocationTypes()) {
+            for (LocationType lt : cache().getLocationTypes()) {
                 if (!lt.isUnknown()) {
                     locationTypeModel.addElement(lt);
                 }

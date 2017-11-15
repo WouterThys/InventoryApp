@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectOther;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -12,6 +11,8 @@ import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdia
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     
@@ -29,7 +30,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectOtherPanel(Application application, ProjectObjectListener listener) {
         super(application, listener);
-        DbManager.db().addOnProjectOtherChangedListener(this);
+        cache().addOnProjectOtherChangedListener(this);
     }
 
     /*

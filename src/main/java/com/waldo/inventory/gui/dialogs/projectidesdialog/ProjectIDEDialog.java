@@ -19,8 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectIDEDialog extends ProjectIDEDialogLayout {
 
@@ -31,14 +31,14 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        db().addOnProjectTypeChangedListener(this);
+        cache().addOnProjectTypeChangedListener(this);
 
         updateWithFirstProjectType();
     }
 
     private void updateWithFirstProjectType() {
-        if (db().getProjectIDES().size() > 0) {
-            updateComponents(db().getProjectIDES().get(0));
+        if (cache().getProjectIDES().size() > 0) {
+            updateComponents(cache().getProjectIDES().get(0));
         } else {
             updateComponents();
         }
@@ -88,7 +88,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             }
 
             detailProjectModel.removeAllElements();
-//            for (Project p : db().getProjectForProjectType(selectedProjectIDE.getId())) {
+//            for (Project p : CacheManager.cache().getProjectForProjectType(selectedProjectIDE.getId())) {
 //                detailProjectModel.addElement(p);
 //            }
         }
@@ -150,7 +150,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             application.beginWait();
             // Get all menus
             projectTypeModel.removeAllElements();
-            for (ProjectIDE pt : db().getProjectIDES()) {
+            for (ProjectIDE pt : cache().getProjectIDES()) {
                 if (!pt.isUnknown()) {
                     projectTypeModel.addElement(pt);
                 }

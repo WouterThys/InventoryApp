@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel;
 
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
@@ -15,12 +15,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ProjectsPanel extends ProjectsPanelLayout {
 
-    private DbObjectChangedListener<Project> projectChanged;
+    private CacheChangedListener<Project> projectChanged;
 
     public ProjectsPanel(Application application) {
         super(application);
@@ -29,14 +29,14 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         initializeLayouts();
         initializeListeners();
 
-        db().addOnProjectChangedListener(projectChanged);
+        cache().addOnProjectChangedListener(projectChanged);
 
         updateWithFirstProject();
     }
 
     private void updateWithFirstProject() {
-        if (db().getProjects().size() > 0) {
-            updateComponents(db().getProjects().get(0));
+        if (cache().getProjects().size() > 0) {
+            updateComponents(cache().getProjects().get(0));
         } else {
             updateComponents();
         }
@@ -113,7 +113,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     }
 
     private void setProjectChangedListener() {
-        projectChanged = new DbObjectChangedListener<Project>() {
+        projectChanged = new CacheChangedListener<Project>() {
             @Override
             public void onInserted(Project project) {
                 selectedProject = project;

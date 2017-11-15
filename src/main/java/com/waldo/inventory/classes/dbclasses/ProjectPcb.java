@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectPcb extends ProjectObject {
 
@@ -92,7 +92,7 @@ public class ProjectPcb extends ProjectObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<ProjectPcb> list = db().getProjectPcbs();
+                List<ProjectPcb> list = cache().getProjectPcbs();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -102,14 +102,14 @@ public class ProjectPcb extends ProjectObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<ProjectPcb> list = db().getProjectPcbs();
+                List<ProjectPcb> list = cache().getProjectPcbs();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(changedHow, this, db().onProjectPcbChangedListenerList);
+        cache().notifyListeners(changedHow, this, cache().onProjectPcbChangedListenerList);
     }
 
     public int numberOfComponents() {

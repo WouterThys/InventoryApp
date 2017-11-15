@@ -1,12 +1,11 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DbManager;
+import com.waldo.inventory.managers.CacheManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-
-import static com.waldo.inventory.database.DbManager.db;
 
 public class Category extends DbObject {
 
@@ -53,23 +52,23 @@ public class Category extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Category> categories = db().getCategories();
+                List<Category> categories = CacheManager.cache().getCategories();
                 if (!categories.contains(this)) {
                     categories.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onCategoriesChangedListenerList);
+                CacheManager.cache().notifyListeners(DbManager.OBJECT_INSERT, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onCategoriesChangedListenerList);
+                CacheManager.cache().notifyListeners(DbManager.OBJECT_UPDATE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Category> categories = db().getCategories();
+                List<Category> categories = CacheManager.cache().getCategories();
                 if (categories.contains(this)) {
                     categories.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onCategoriesChangedListenerList);
+                CacheManager.cache().notifyListeners(DbManager.OBJECT_DELETE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
         }

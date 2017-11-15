@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -18,6 +17,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IEditedListener, ActionListener {
 
@@ -46,7 +47,7 @@ public abstract class EditDistributorPartLinkDialogLayout extends IDialog implem
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateComboBox(DistributorPartLink link) {
         if (link != null && link.getItemId() > DbObject.UNKNOWN_ID) {
-            List<Distributor> distributors = new ArrayList<>(DbManager.db().getDistributors());
+            List<Distributor> distributors = new ArrayList<>(cache().getDistributors());
 
             if (link.getDistributorId() < DbObject.UNKNOWN_ID) {
                 List<DistributorPartLink> knownLinks = SearchManager.sm().findDistributorPartLinksForItem(distributorPartLink.getItemId());

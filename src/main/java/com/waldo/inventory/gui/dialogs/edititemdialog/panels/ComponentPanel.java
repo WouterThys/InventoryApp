@@ -4,7 +4,6 @@ import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.DbManager;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -28,8 +27,8 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 
 import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
@@ -84,7 +83,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private void updateManufacturerCbValues() {
         if (manufacturerCb != null) {
-            manufacturerCb.updateList(DbManager.db().getManufacturers());
+            manufacturerCb.updateList(cache().getManufacturers());
             manufacturerCb.setSelectedItem(newItem.getManufacturer());
         }
     }
@@ -108,7 +107,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void createCategoryCb() {
-        categoryComboBox = new IComboBox<>(db().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        categoryComboBox = new IComboBox<>(cache().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         categoryComboBox.addEditedListener(editedListener, "categoryId");
         categoryComboBox.setSelectedItem(newItem.getCategory());
     }
@@ -118,7 +117,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
             productList = sm().findProductListForCategory(newItem.getCategoryId());
         } else {
-            productList = db().getProducts();
+            productList = cache().getProducts();
         }
 
         productComboBox = new IComboBox<>(productList, new ComparatorUtils.DbObjectNameComparator<>(), true);
@@ -132,7 +131,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
             typeList = sm().findTypeListForProduct(newItem.getProductId());
         } else {
-            typeList = db().getTypes();
+            typeList = cache().getTypes();
         }
 
         typeComboBox = new IComboBox<>(typeList, new ComparatorUtils.DbObjectNameComparator<>(), true);
@@ -142,7 +141,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     }
 
     private void createManufacturerCb() {
-        manufacturerCb = new IComboBox<>(db().getManufacturers(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        manufacturerCb = new IComboBox<>(cache().getManufacturers(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         manufacturerCb.setSelectedItem(newItem.getManufacturer());
         manufacturerCb.addEditedListener(editedListener, "manufacturerId");
     }

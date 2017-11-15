@@ -1,8 +1,7 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -13,9 +12,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import static com.waldo.inventory.managers.CacheManager.cache;
+
 public abstract class OrderItemDialogLayout extends IDialog implements
         ActionListener,
-        DbObjectChangedListener<Order> {
+        CacheChangedListener<Order> {
 
     /*
     *                  COMPONENTS
@@ -79,7 +80,7 @@ public abstract class OrderItemDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object... object) {
         Vector<Order> orders = new Vector<>();
-        for (Order o : DbManager.db().getOrders()) {
+        for (Order o : cache().getOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
                 orders.addElement(o);
             }

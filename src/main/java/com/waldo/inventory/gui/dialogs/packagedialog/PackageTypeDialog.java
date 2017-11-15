@@ -3,8 +3,7 @@ package com.waldo.inventory.gui.dialogs.packagedialog;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.database.DbManager;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -18,7 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PackageTypeDialog extends PackageTypeDialogLayout {
 
@@ -29,15 +28,15 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        DbManager.db().addOnPackageChangedListener(createPackageListener());
-        DbManager.db().addOnPackageTypeChangedListener(createPackageTypeListener());
+        cache().addOnPackageChangedListener(createPackageListener());
+        cache().addOnPackageTypeChangedListener(createPackageTypeListener());
         createNewMouseAdapter();
         updateWithFirstPackage();
     }
 
     private void updateWithFirstPackage() {
-        if (db().getPackages().size() > 1) {
-            updateComponents(db().getPackages().get(1)); // Don't select unknown
+        if (cache().getPackages().size() > 1) {
+            updateComponents(cache().getPackages().get(1)); // Don't select unknown
         } else {
             updateComponents();
         }
@@ -112,8 +111,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
 
-    private DbObjectChangedListener<Package> createPackageListener() {
-        return new DbObjectChangedListener<Package>() {
+    private CacheChangedListener<Package> createPackageListener() {
+        return new CacheChangedListener<Package>() {
             @Override
             public void onInserted(Package object) {
                 updateComponents(object);
@@ -134,8 +133,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         };
     }
 
-    private DbObjectChangedListener<PackageType> createPackageTypeListener() {
-        return new DbObjectChangedListener<PackageType>() {
+    private CacheChangedListener<PackageType> createPackageTypeListener() {
+        return new CacheChangedListener<PackageType>() {
             @Override
             public void onInserted(PackageType type) {
                 selectedPackageType = type;
@@ -205,7 +204,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
             // Get all packages
             packageModel.removeAllElements();
-            for (Package p : DbManager.db().getPackages()) {
+            for (Package p : cache().getPackages()) {
                 if (!p.isUnknown()) {
                     packageModel.addElement(p);
                 }

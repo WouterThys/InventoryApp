@@ -5,7 +5,7 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.database.interfaces.DbObjectChangedListener;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
@@ -15,13 +15,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
-import static com.waldo.inventory.database.DbManager.db;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 public abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectChangedListener<Distributor>,
+        CacheChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
@@ -184,7 +184,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         browseDistributorPanel = new PanelUtils.IBrowseWebPanel("Web site", "website", this);
         browseOrderLinkPanel = new PanelUtils.IBrowseWebPanel("Order link", "orderLink", this);
 
-        detailOrderFileFormatCb = new IComboBox<>(db().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
+        detailOrderFileFormatCb = new IComboBox<>(cache().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
         detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
             @Override
@@ -251,7 +251,7 @@ public abstract class DistributorsDialogLayout extends IDialog implements
         try {
             // Get all
             distributorDefaultListModel.removeAllElements();
-            for (Distributor d : db().getDistributors()) {
+            for (Distributor d : cache().getDistributors()) {
                 if (!d.isUnknown()) {
                     distributorDefaultListModel.addElement(d);
                 }

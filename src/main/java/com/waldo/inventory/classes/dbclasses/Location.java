@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Location extends DbObject {
 
@@ -142,7 +142,7 @@ public class Location extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Location> list = db().getLocations();
+                List<Location> list = cache().getLocations();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
@@ -153,14 +153,14 @@ public class Location extends DbObject {
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Location> list = db().getLocations();
+                List<Location> list = cache().getLocations();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
                 break;
             }
         }
-        db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onLocationsChangedListenerList);
+        cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onLocationsChangedListenerList);
     }
 
     public boolean hasItems() {
@@ -170,7 +170,7 @@ public class Location extends DbObject {
     public List<DbObject> getItems() {
         if (items == null) {
             items = new ArrayList<>();
-            List<Item> itemList = DbManager.db().getItems();
+            List<Item> itemList = cache().getItems();
             for (Item item : itemList) {
                 // If locationId < UNKNOWN_ID, the item has no location or the location is derived from the SetItems
                 if (item.getLocationId() == getId()) {

@@ -5,7 +5,7 @@ import com.waldo.inventory.database.DbManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Type extends DbObject {
 
@@ -43,23 +43,23 @@ public class Type extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                java.util.List<Type> list = db().getTypes();
+                java.util.List<Type> list = cache().getTypes();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onTypesChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onTypesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onTypesChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onTypesChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                java.util.List<Type> list = db().getTypes();
+                java.util.List<Type> list = cache().getTypes();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onTypesChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onTypesChangedListenerList);
                 break;
             }
         }

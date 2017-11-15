@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.database.DbManager.db;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Product extends DbObject {
 
@@ -45,23 +45,23 @@ public class Product extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DbManager.OBJECT_INSERT: {
-                List<Product> list = db().getProducts();
+                List<Product> list = cache().getProducts();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_INSERT, this, db().onProductsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_INSERT, this, cache().onProductsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_UPDATE: {
-                db().notifyListeners(DbManager.OBJECT_UPDATE, this, db().onProductsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_UPDATE, this, cache().onProductsChangedListenerList);
                 break;
             }
             case DbManager.OBJECT_DELETE: {
-                List<Product> list = db().getProducts();
+                List<Product> list = cache().getProducts();
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                db().notifyListeners(DbManager.OBJECT_DELETE, this, db().onProductsChangedListenerList);
+                cache().notifyListeners(DbManager.OBJECT_DELETE, this, cache().onProductsChangedListenerList);
                 break;
             }
         }
