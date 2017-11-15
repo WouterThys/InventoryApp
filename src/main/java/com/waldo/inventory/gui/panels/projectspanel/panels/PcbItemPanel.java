@@ -82,9 +82,9 @@ public class PcbItemPanel extends JPanel implements
     private void updateEnabledComponents() {
         boolean enable = projectPcb != null;
         linkAa.setEnabled(enable);
-        parseAa.setEnabled(enable);
+        parseAa.setEnabled(enable && projectPcb.isValid());
         orderAa.setEnabled(enable);
-        usedAa.setEnabled(enable && projectPcb.isValid());
+        usedAa.setEnabled(enable);
     }
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {

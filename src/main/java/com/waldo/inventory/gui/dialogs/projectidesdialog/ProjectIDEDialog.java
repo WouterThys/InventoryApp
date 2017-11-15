@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
@@ -10,6 +11,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog.DetectionDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog.LauncherDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.ParserDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -88,9 +90,9 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
             }
 
             detailProjectModel.removeAllElements();
-//            for (Project p : CacheManager.cache().getProjectForProjectType(selectedProjectIDE.getId())) {
-//                detailProjectModel.addElement(p);
-//            }
+            for (Project project : SearchManager.sm().findProjectsWithIde(selectedProjectIDE.getId())) {
+                detailProjectModel.addElement(project);
+            }
         }
     }
 

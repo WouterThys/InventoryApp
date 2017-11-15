@@ -272,4 +272,14 @@ public class Project extends DbObject {
     public void setMainDirectory(String mainDirectory) {
         this.mainDirectory = mainDirectory;
     }
+
+    public List<ProjectObject> getAllProjectObjects() {
+        List<ProjectObject> projectObjects = new ArrayList<>();
+
+        if (hasCodes()) projectObjects.addAll(getProjectCodes());
+        if (hasPcbs()) projectObjects.addAll(getProjectPcbs());
+        if (hasOthers()) projectObjects.addAll(getProjectOthers());
+
+        return projectObjects;
+    }
 }

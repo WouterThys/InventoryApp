@@ -7,6 +7,7 @@ import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -86,7 +87,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
             }
 
             detailItemDefaultListModel.removeAllElements();
-            for (Item item : cache().getItemsForManufacturer(selectedManufacturer.getId())) {
+            for (Item item : SearchManager.sm().getItemsForManufacturer(selectedManufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
             }
         }

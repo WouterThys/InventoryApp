@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
-import static com.waldo.inventory.managers.CacheManager.*;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class SearchManager {
 
@@ -337,8 +337,8 @@ public class SearchManager {
     }
 
     /*
-        *                  FINDERS
-        * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+     *                  FINDERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public Item findItemById(long id) {
         for (Item i : cache().getItems()) {
             if (i.getId() == id) {
@@ -629,6 +629,21 @@ public class SearchManager {
             }
         }
         return projectIDES;
+    }
+
+    public List<Project> findProjectsWithIde(long ideId) {
+        List<Project> projects = new ArrayList<>();
+        if (ideId > DbObject.UNKNOWN_ID) {
+            for (Project project : cache().getProjects()) {
+                for (ProjectObject object : project.getAllProjectObjects()) {
+                    if (object.getProjectIDEId() == ideId) {
+                        projects.add(project);
+                        break;
+                    }
+                }
+            }
+        }
+        return projects;
     }
 
     public OrderFileFormat findOrderFileFormatById(long id) {

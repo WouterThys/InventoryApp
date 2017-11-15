@@ -66,21 +66,15 @@ public abstract class ProjectIDEDialogLayout extends IDialog implements
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        if (selectedProjectIDE == null || selectedProjectIDE.isUnknown()) {
-            toolBar.setDeleteActionEnabled(false);
-            toolBar.setEditActionEnabled(false);
-            detailLauncherBtn.setEnabled(false);
-            detailDetectionBtn.setEnabled(false);
-            detailParserBtn.setEnabled(false);
-            projectTypeCb.setEnabled(false);
-        } else {
-            toolBar.setDeleteActionEnabled(true);
-            toolBar.setEditActionEnabled(true);
-            detailLauncherBtn.setEnabled(true);
-            detailDetectionBtn.setEnabled(true);
-            detailParserBtn.setEnabled(true);
-            projectTypeCb.setEnabled(true);
-        }
+        boolean enabled = !(selectedProjectIDE == null || selectedProjectIDE.isUnknown());
+
+            toolBar.setDeleteActionEnabled(enabled);
+            toolBar.setEditActionEnabled(enabled);
+            detailLauncherBtn.setEnabled(enabled);
+            detailDetectionBtn.setEnabled(enabled);
+            detailParserBtn.setEnabled(enabled);
+            projectTypeCb.setEnabled(enabled);
+
     }
 
 
@@ -147,7 +141,7 @@ public abstract class ProjectIDEDialogLayout extends IDialog implements
         // Item list
         JPanel listPanel = new JPanel(new GridBagLayout());
         gbc = new PanelUtils.GridBagHelper(listPanel);
-        gbc.addLineVertical("Projects: ", new JScrollPane(detailProjectList));
+        gbc.addLineVertical("Projects: ", new JScrollPane(detailProjectList), GridBagConstraints.BOTH);
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.NORTH);
