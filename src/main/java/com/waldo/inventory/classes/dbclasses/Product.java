@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,9 +13,15 @@ public class Product extends DbObject {
 
     public static final String TABLE_NAME = "products";
     private long categoryId;
+    private Category category;
 
     public Product() {
         super(TABLE_NAME);
+    }
+
+    public Product(long categoryId) {
+        super(TABLE_NAME);
+        this.categoryId = categoryId;
     }
 
 
@@ -81,6 +88,24 @@ public class Product extends DbObject {
     }
 
     public void setCategoryId(long categoryId) {
+        category = null;
         this.categoryId = categoryId;
+    }
+
+    public Category getCategory() {
+        if (category == null) {
+            category = SearchManager.sm().findCategoryById(categoryId);
+        }
+        return category;
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
     }
 }

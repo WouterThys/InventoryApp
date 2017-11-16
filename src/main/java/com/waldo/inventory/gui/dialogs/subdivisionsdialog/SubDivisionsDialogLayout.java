@@ -1,61 +1,56 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
+import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IComboBox;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.waldo.inventory.gui.Application.imageResource;
-import static javax.swing.SpringLayout.*;
+public abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListener {
 
-public abstract class SubDivisionsDialogLayout extends IDialog implements
-        GuiInterface,
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
-        IdBToolBar.IdbToolBarListener {
-
-    static final int CATEGORIES = 0;
-    static final int PRODUCTS = 1;
-    static final int TYPES = 2;
+    enum SubDivisionType {
+        Unknown,
+        Category,
+        Product,
+        Type
+    }
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JList<String> subDivisionList;
+    IComboBox<Category> categoryCb;
+    IComboBox<Product> productCb;
 
-    DefaultListModel<DbObject> detailListModel;
-    JList<DbObject> detailList;
-
-    private IdBToolBar toolBar;
-    private IObjectSearchPanel searchPanel;
-    ITitledPanel detailsPanel;
-
-    DefaultComboBoxModel<DbObject> selectionCbModel;
-    IComboBox<DbObject> selectionComboBox;
-
-    JLabel selectionLabel;
-    ILabel iconLabel;
+    ITextField nameTf;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    int selectedSubType; // Selection between categories, products or types
-    DbObject selectedObject;
+    Category category;
+    Product product;
+    com.waldo.inventory.classes.dbclasses.Type type;
 
-    CacheChangedListener<Category> categoriesChanged;
-    CacheChangedListener<Product> productsChanged;
-    CacheChangedListener<com.waldo.inventory.classes.dbclasses.Type> typesChanged;
+    SubDivisionType divisionType;
 
-    public SubDivisionsDialogLayout(Application application, String title) {
+
+    SubDivisionsDialogLayout(Application application, String title, DbObject division, SubDivisionType type) {
         super(application, title);
+
+        this.divisionType = type;
+        switch (type) {
+            case Unknown: break;
+            case Category: this.category = (Category) division; break;
+            case Product: this.product = (Product) division; break;
+            case Type: this.type = (com.waldo.inventory.classes.dbclasses.Type) division; break;
+        }
     }
 
     /*
@@ -63,84 +58,51 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     void updateEnabledComponents() {
-        if (selectedObject == null) {
-            toolBar.setDeleteActionEnabled(false);
-            toolBar.setEditActionEnabled(false);
-        } else {
-            toolBar.setDeleteActionEnabled(true);
-            toolBar.setEditActionEnabled(true);
+
+    }
+
+    private void createCategoryCb() {
+        List<Category> categories = new ArrayList<>();
+        switch (divisionType) {
+            case Unknown:
+                // TODO
+                break;
+            case Product:
+                categories.add(product.getCategory());
+                categoryCb = new IComboBox<>(categories , null, false);
+                categoryCb.setSelectedIndex(0);
+                categoryCb.setEnabled(false);
+                break;
+            case Type:
+                categories.add(type.getProduct().getCategory());
+                categoryCb = new IComboBox<>(categories, null, false);
+                categoryCb.setSelectedIndex(0);
+                categoryCb.setEnabled(false);
+                break;
+            default:
+                categoryCb = new IComboBox<>();
+                categoryCb.setVisible(false);
+                break;
         }
     }
 
-    private JPanel createDetailsPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane list = new JScrollPane(detailList);
-
-        SpringLayout layout = new SpringLayout();
-
-        // Label
-        layout.putConstraint(WEST, selectionLabel, 5, WEST, panel);
-        layout.putConstraint(NORTH, selectionLabel, 5, NORTH, panel);
-
-        // Combo box
-        layout.putConstraint(WEST, selectionComboBox, 5, WEST, panel);
-        layout.putConstraint(NORTH, selectionComboBox, 2, SOUTH, selectionLabel);
-        layout.putConstraint(EAST, selectionComboBox, -5, EAST, panel);
-
-        // List
-        layout.putConstraint(WEST, list, 5, WEST, panel);
-        layout.putConstraint(NORTH, list, 5, SOUTH, selectionComboBox);
-        layout.putConstraint(SOUTH, list, -5, SOUTH, panel);
-        layout.putConstraint(EAST, list, 0, WEST, toolBar);
-
-        // Toolbar
-        layout.putConstraint(EAST, toolBar, -5, EAST, panel);
-        layout.putConstraint(NORTH, toolBar, 5, SOUTH, selectionComboBox);
-
-        // Icon
-        layout.putConstraint(EAST, iconLabel, -5, EAST, panel);
-        layout.putConstraint(SOUTH, iconLabel, -5, SOUTH, panel);
-
-        // Add stuff
-        panel.add(selectionLabel);
-        panel.add(selectionComboBox);
-        panel.add(list);
-        panel.add(toolBar);
-        panel.add(iconLabel);
-        panel.setPreferredSize(new Dimension(400, 500));
-        panel.setLayout(layout);
-
-        return panel;
-    }
-
-    private JPanel createWestPanel() {
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Sub divisions");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
-        JPanel westPanel = new JPanel();
-        JScrollPane list = new JScrollPane(subDivisionList);
-
-        SpringLayout layout = new SpringLayout();
-        // Search panel
-        layout.putConstraint(NORTH, searchPanel, 5, NORTH, westPanel);
-        layout.putConstraint(EAST, searchPanel, -5, EAST, westPanel);
-        layout.putConstraint(WEST, searchPanel, 5, WEST, westPanel);
-
-        // Sub division list
-        layout.putConstraint(EAST, list, -5, EAST, westPanel);
-        layout.putConstraint(WEST, list, 5, WEST, westPanel);
-        layout.putConstraint(SOUTH, list, 5, SOUTH, westPanel);
-        layout.putConstraint(NORTH, list, 2, SOUTH, searchPanel);
-
-        // Add stuff
-        westPanel.add(searchPanel);
-        westPanel.add(list);
-        westPanel.setLayout(layout);
-        westPanel.setPreferredSize(new Dimension(300, 500));
-        westPanel.setBorder(titledBorder);
-
-        return westPanel;
+    private void createProductCb() {
+        List<Product> products = new ArrayList<>();
+        switch (divisionType) {
+            case Unknown:
+                // TODO
+                break;
+            case Type:
+                products.add(type.getProduct());
+                productCb = new IComboBox<>(products, null, false);
+                productCb.setSelectedIndex(0);
+                productCb.setEnabled(false);
+                break;
+            default:
+                productCb = new IComboBox<>();
+                productCb.setVisible(false);
+                break;
+        }
     }
 
     /*
@@ -149,54 +111,60 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements
 
     @Override
     public void initializeComponents() {
-        // Title
-        setTitleName("Sub Divisions");
-        setTitleIcon(imageResource.readImage("SubDivisions.Title"));
+        showTitlePanel(false);
 
-        // Sub divisions list
-        String[] subDivisions = new String[]{"Categories", "Products", "Types"};
-        subDivisionList = new JList<>(subDivisions);
+        // Combo boxes
+        createCategoryCb();
+        createProductCb();
 
-        // Search field
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_CATEGORY, DbObject.TYPE_PRODUCT, DbObject.TYPE_TYPE);
-        searchPanel.addSearchListener(this);
-        searchPanel.addSearchBtnListener(this);
-
-        // Combo box
-        selectedSubType = 0;
-        selectionCbModel = new DefaultComboBoxModel<>();
-        selectionComboBox = new IComboBox<>(selectionCbModel);
-
-        // Icon
-        iconLabel = new ILabel(imageResource.readImage("SubDivisions.Edit"));
-
-        // Toolbar
-        toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
-        toolBar.setFloatable(false);
-
-        // Details
-        detailListModel = new DefaultListModel<>();
-        detailList = new JList<>(detailListModel);
-
-        selectionLabel = new JLabel("Categories");
-        detailsPanel = new ITitledPanel("Categories",
-                new JComponent[]{createDetailsPanel()});
-
-        subDivisionList.setSelectedIndex(0);
+        // Name
+        nameTf = new ITextField(this, "name");
     }
 
     @Override
     public void initializeLayouts() {
-        getContentPanel().setLayout(new BorderLayout());
 
-        // Left part
-        getContentPanel().add(createWestPanel(), BorderLayout.WEST);
+        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(getContentPanel());
 
-        // Center
-        getContentPanel().add(detailsPanel, BorderLayout.CENTER);
+        switch (divisionType) {
+            case Unknown:
+                // TODO
+                break;
+            case Category:
+                break;
+            case Product:
+                gbc.addLine("Category: ", categoryCb);
+                break;
+            case Type:
+                gbc.addLine("Category: ", categoryCb);
+                gbc.addLine("Product:" , productCb);
+                break;
+        }
+
+        gbc.addLine("Name: ", nameTf);
+
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
 
         // Pack
         pack();
+    }
+
+    @Override
+    public void updateComponents(Object... object) {
+        switch (divisionType) {
+            case Unknown:
+                // TODO
+                break;
+            case Category:
+                nameTf.setText(category.getName());
+                break;
+            case Product:
+                nameTf.setText(product.getName());
+                break;
+            case Type:
+                nameTf.setText(type.getName());
+                break;
+        }
     }
 }
 

@@ -3,10 +3,12 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -318,17 +320,61 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     void onAddDivision() {
-
+        DbObject newDivision = null;
+        SubDivisionsDialog divisionsDialog = null;
+        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+            switch (DbObject.getType(selectedDivision)) {
+                case DbObject.TYPE_CATEGORY:
+                    newDivision = new Product(selectedDivision.getId());
+                    divisionsDialog = new SubDivisionsDialog(application, "Add product", (Product) newDivision);
+                    break;
+                case DbObject.TYPE_PRODUCT:
+                    newDivision = new Type(selectedDivision.getId());
+                    divisionsDialog = new SubDivisionsDialog(application, "Add type", (Type) newDivision);
+                    break;
+            }
+        } else {
+            newDivision = new Category();
+            divisionsDialog = new SubDivisionsDialog(application, "Add category", (Category) newDivision);
+        }
+        if (divisionsDialog != null) {
+            if (divisionsDialog.showDialog() == IDialog.OK) {
+                newDivision.save();
+            }
+        }
     }
 
     @Override
     void onEditDivision() {
-
+        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+            SubDivisionsDialog divisionsDialog = null;
+            switch (DbObject.getType(selectedDivision)) {
+                case DbObject.TYPE_CATEGORY:
+                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Category) selectedDivision);
+                    break;
+                case DbObject.TYPE_PRODUCT:
+                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Product) selectedDivision);
+                    break;
+                case DbObject.TYPE_TYPE:
+                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Type) selectedDivision);
+                    break;
+            }
+            if (divisionsDialog != null) {
+                if (divisionsDialog.showDialog() == IDialog.OK) {
+                    selectedDivision.save();
+                }
+            }
+        }
     }
 
     @Override
     void onDeleteDivision() {
-
+        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+            int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + selectedDivision);
+            if (res == JOptionPane.YES_OPTION) {
+                selectedDivision.delete();
+            }
+        }
     }
 
     //
