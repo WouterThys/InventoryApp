@@ -70,8 +70,8 @@ public class MenuBar extends JMenuBar {
         JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("Locations.Menu"));
         locationTypes.addActionListener(locationTypesSelected());
 
-        dbMenu.add(subDivisions);
-        dbMenu.addSeparator();
+        //dbMenu.add(subDivisions);
+        //dbMenu.addSeparator();
         dbMenu.add(locationTypes);
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);

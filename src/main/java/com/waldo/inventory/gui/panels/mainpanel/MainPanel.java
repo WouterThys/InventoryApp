@@ -15,6 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -219,7 +220,6 @@ public class MainPanel extends MainPanelLayout {
     //
     // Tree selection interface
     //
-
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!application.isUpdating()) {
@@ -237,10 +237,103 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
+    @Override
+    void onTreeRightClick(MouseEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
+        if (node != null) {
+            selectedDivision = (DbObject) node.getUserObject();
+            JPopupMenu popupMenu = null;
+            switch (DbObject.getType(selectedDivision)) {
+                case DbObject.TYPE_CATEGORY:
+                    popupMenu = createCategoryPopup(node.isRoot());
+                    break;
+                case DbObject.TYPE_PRODUCT:
+                    popupMenu = createProductPopup();
+                    break;
+                case DbObject.TYPE_TYPE:
+                    popupMenu = createTypePopup();
+                    break;
+            }
+            if (popupMenu != null) {
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    }
+
+    private JPopupMenu createCategoryPopup(boolean isRoot) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
+        nameItem.setEnabled(false);
+        popupMenu.add(nameItem);
+        popupMenu.addSeparator();
+
+        if (!isRoot) {
+            treeAddDivision.putValue(AbstractAction.NAME, "Add product");
+            treeEditDivision.putValue(AbstractAction.NAME, "Edit category");
+            treeDeleteDivision.putValue(AbstractAction.NAME, "Delete category");
+            popupMenu.add(treeAddDivision);
+            popupMenu.add(treeEditDivision);
+            popupMenu.add(treeDeleteDivision);
+        } else {
+            treeAddDivision.putValue(AbstractAction.NAME, "Add category");
+            popupMenu.add(treeAddDivision);
+        }
+        return popupMenu;
+    }
+
+    private JPopupMenu createProductPopup() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
+        nameItem.setEnabled(false);
+
+        treeAddDivision.putValue(AbstractAction.NAME, "Add type");
+        treeEditDivision.putValue(AbstractAction.NAME, "Edit product");
+        treeDeleteDivision.putValue(AbstractAction.NAME, "Delete product");
+
+        popupMenu.add(nameItem);
+        popupMenu.addSeparator();
+        popupMenu.add(treeAddDivision);
+        popupMenu.add(treeEditDivision);
+        popupMenu.add(treeDeleteDivision);
+        return popupMenu;
+    }
+
+    private JPopupMenu createTypePopup() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
+        nameItem.setEnabled(false);
+
+        treeEditDivision.putValue(AbstractAction.NAME, "Edit type");
+        treeDeleteDivision.putValue(AbstractAction.NAME, "Delete type");
+
+        popupMenu.add(nameItem);
+        popupMenu.addSeparator();
+        popupMenu.add(treeEditDivision);
+        popupMenu.add(treeDeleteDivision);
+        return popupMenu;
+    }
+
+    //
+    // Divisions
+    //
+    @Override
+    void onAddDivision() {
+
+    }
+
+    @Override
+    void onEditDivision() {
+
+    }
+
+    @Override
+    void onDeleteDivision() {
+
+    }
+
     //
     // Table selection changed
     //
-
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
@@ -252,7 +345,6 @@ public class MainPanel extends MainPanelLayout {
     //
     //  Tool bar listener
     //
-
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
         application.beginWait();

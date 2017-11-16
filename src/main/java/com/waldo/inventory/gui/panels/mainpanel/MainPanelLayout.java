@@ -16,8 +16,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -36,6 +40,10 @@ public abstract class MainPanelLayout extends JPanel implements
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
     ItemDetailPanel detailPanel;
+
+    AbstractAction treeAddDivision;
+    AbstractAction treeEditDivision;
+    AbstractAction treeDeleteDivision;
 
     /*
      *                  VARIABLES
@@ -59,6 +67,12 @@ public abstract class MainPanelLayout extends JPanel implements
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
     }
+
+    abstract void onTreeRightClick(MouseEvent e);
+
+    abstract void onAddDivision();
+    abstract void onEditDivision();
+    abstract void onDeleteDivision();
 
     //
     // Table stuff
@@ -94,7 +108,7 @@ public abstract class MainPanelLayout extends JPanel implements
         tableModel.setItemList(itemList);
     }
 
-    public long tableUpdate() {
+    long tableUpdate() {
         long itemId = -1;
         if (selectedItem != null) {
             itemId = selectedItem.getId();
@@ -103,11 +117,11 @@ public abstract class MainPanelLayout extends JPanel implements
         return itemId;
     }
 
-    public void tableRemoveItem(Item item) {
+    void tableRemoveItem(Item item) {
         tableModel.removeItem(item);
     }
 
-    public void tableAddItem(Item item) {
+    void tableAddItem(Item item) {
         tableModel.addItem(item);
     }
 
@@ -118,7 +132,7 @@ public abstract class MainPanelLayout extends JPanel implements
     //
     // Tree stuff
     //
-    public void treeSelectDivisionForItem(Item item) {
+    void treeSelectDivisionForItem(Item item) {
         if (item.getTypeId() > DbObject.UNKNOWN_ID) {
             selectedDivision = sm().findTypeById(item.getTypeId());
         } else {
@@ -194,7 +208,37 @@ public abstract class MainPanelLayout extends JPanel implements
         subDivisionTree.addTreeSelectionListener(this);
         subDivisionTree.setExpandsSelectedPaths(true);
         subDivisionTree.setScrollsOnExpand(true);
+        subDivisionTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = subDivisionTree.getClosestRowForLocation(e.getX(), e.getY());
+                    subDivisionTree.setSelectionRow(row);
+                    onTreeRightClick(e);
+                }
+            }
+        });
         treeModel.setTree(subDivisionTree);
+
+        // Tree actions
+        treeAddDivision = new AbstractAction("Add", imageResource.readImage("Items.Tree.Add")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAddDivision();
+            }
+        };
+        treeEditDivision = new AbstractAction("Edit", imageResource.readImage("Items.Tree.Edit")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditDivision();
+            }
+        };
+        treeDeleteDivision = new AbstractAction("Delete", imageResource.readImage("Items.Tree.Delete")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDeleteDivision();
+            }
+        };
 
         // Item table
         tableModel = new IItemTableModel();
