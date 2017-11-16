@@ -14,6 +14,7 @@ import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
 import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -38,7 +39,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        ItemDetailPanelLayout.OnItemDetailListener {
 
     /*
      *                  COMPONENTS
@@ -351,7 +353,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details
-        itemDetailPanel = new ItemDetailPanel(application);
+        itemDetailPanel = new ItemDetailPanel(application, this);
         orderItemDetailPanel = new OrderItemDetailPanel(application);
 
         // Tool bar

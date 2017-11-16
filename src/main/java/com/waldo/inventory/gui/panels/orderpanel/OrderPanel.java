@@ -480,4 +480,36 @@ public class OrderPanel extends OrderPanelLayout {
             dialog.showDialog();
         }
     }
+
+    //
+    // Detail panel
+    //
+    @Override
+    public void onShowDataSheet(Item item) {
+        if (item != null) {
+            application.openDataSheet(item);
+        }
+    }
+
+    @Override
+    public void onShowDataSheet(Item item, boolean online) {
+        if (item != null) {
+            application.openDataSheet(item, online);
+        }
+    }
+
+    @Override
+    public void onOrderItem(Item item) {
+        if (item != null) {
+            application.orderItem(item);
+        }
+    }
+
+    @Override
+    public void onShowHistory(Item item) {
+        if (item != null) {
+            application.showHistory(item);
+        }
+    }
+
 }

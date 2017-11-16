@@ -283,11 +283,11 @@ public abstract class ProjectsPanelLayout extends JPanel implements
                 BorderFactory.createLineBorder(Color.GRAY, 1)
         ));
 
-        projectsTree.setPreferredSize(new Dimension(200,200));
+        projectsTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectsTree);
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(projectsToolBar, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(250, 200));
+        westPanel.setMinimumSize(new Dimension(200, 200));
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
@@ -295,6 +295,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        splitPane.setOneTouchExpandable(true);
         add(splitPane, BorderLayout.CENTER);
     }
 

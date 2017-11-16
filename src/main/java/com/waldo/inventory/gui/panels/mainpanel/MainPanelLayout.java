@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -10,6 +11,7 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -20,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -29,7 +32,8 @@ public abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener {
+        IdBToolBar.IdbToolBarListener,
+        ItemDetailPanelLayout.OnItemDetailListener {
 
     /*
      *                  COMPONENTS
@@ -39,11 +43,21 @@ public abstract class MainPanelLayout extends JPanel implements
 
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
+    IdBToolBar divisionTb;
+
     ItemDetailPanel detailPanel;
 
-    AbstractAction treeAddDivision;
-    AbstractAction treeEditDivision;
-    AbstractAction treeDeleteDivision;
+    AbstractAction treeAddDivisionAa;
+    AbstractAction treeEditDivisionAa;
+    AbstractAction treeDeleteDivisionAa;
+
+    private AbstractAction editItemAa;
+    private AbstractAction deleteItemAa;
+    AbstractAction openDatasheetOnlineAa;
+    AbstractAction openDatasheetLocalAa;
+    private AbstractAction orderItemAa;
+    private AbstractAction showHistoryAa;
+    JPopupMenu itemPopupMenu;
 
     /*
      *                  VARIABLES
@@ -52,6 +66,8 @@ public abstract class MainPanelLayout extends JPanel implements
 
     Item selectedItem;
     DbObject selectedDivision;
+
+    Category virtualRoot;
 
     /*
      *                  CONSTRUCTOR
@@ -66,9 +82,21 @@ public abstract class MainPanelLayout extends JPanel implements
     void updateEnabledComponents() {
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
+
+        enabled = selectedDivision != null && selectedDivision.canBeSaved();
+        divisionTb.setEditActionEnabled(enabled);
+        divisionTb.setDeleteActionEnabled(enabled);
+        if (enabled) {
+            if (DbObject.getType(selectedDivision) == DbObject.TYPE_TYPE) {
+                divisionTb.setAddActionEnabled(false);
+            } else {
+                divisionTb.setAddActionEnabled(true);
+            }
+        }
     }
 
     abstract void onTreeRightClick(MouseEvent e);
+    abstract void onTableRowClicked(MouseEvent e);
 
     abstract void onAddDivision();
     abstract void onEditDivision();
@@ -129,6 +157,14 @@ public abstract class MainPanelLayout extends JPanel implements
         this.selectedItem = item;
         itemTable.selectItem(item);
     }
+
+    void tableSelectItem(int row) {
+        if (row >= 0) {
+            this.selectedItem = (Item) tableModel.getValueAt(row, -1);
+            itemTable.selectItem(selectedItem);
+        }
+    }
+
     //
     // Tree stuff
     //
@@ -150,16 +186,21 @@ public abstract class MainPanelLayout extends JPanel implements
     }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
+        cache().getCategories().sort(new ComparatorUtils.DbObjectNameComparator<>());
         for (Category category : cache().getCategories()) {
             if (!category.isUnknown()) {
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
                 rootNode.add(cNode);
 
-                for (Product product : sm().findProductListForCategory(category.getId())) {
+                List<Product> productList = sm().findProductListForCategory(category.getId());
+                productList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+                for (Product product : productList) {
                     DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(product, true);
                     cNode.add(pNode);
 
-                    for (Type type : sm().findTypeListForProduct(product.getId())) {
+                    List<Type> typeList = sm().findTypeListForProduct(product.getId());
+                    typeList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+                    for (Type type : typeList) {
                         DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(type, false);
                         pNode.add(tNode);
                     }
@@ -168,7 +209,7 @@ public abstract class MainPanelLayout extends JPanel implements
         }
     }
 
-    void recreateNodes() {
+    void treeRecreateNodes() {
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
         rootNode.removeAllChildren();
         createNodes(rootNode);
@@ -180,8 +221,9 @@ public abstract class MainPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Sub division tree
-        Category virtualRoot = new Category("All");
+        virtualRoot = new Category("All");
         virtualRoot.setCanBeSaved(false);
+
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
         createNodes(rootNode);
         treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
@@ -220,35 +262,95 @@ public abstract class MainPanelLayout extends JPanel implements
         });
         treeModel.setTree(subDivisionTree);
 
+        // Division tool bar
+        divisionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
+
         // Tree actions
-        treeAddDivision = new AbstractAction("Add", imageResource.readImage("Items.Tree.Add")) {
+        treeAddDivisionAa = new AbstractAction("Add", imageResource.readImage("Items.Tree.Add")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onAddDivision();
             }
         };
-        treeEditDivision = new AbstractAction("Edit", imageResource.readImage("Items.Tree.Edit")) {
+        treeEditDivisionAa = new AbstractAction("Edit", imageResource.readImage("Items.Tree.Edit")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onEditDivision();
             }
         };
-        treeDeleteDivision = new AbstractAction("Delete", imageResource.readImage("Items.Tree.Delete")) {
+        treeDeleteDivisionAa = new AbstractAction("Delete", imageResource.readImage("Items.Tree.Delete")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onDeleteDivision();
             }
         };
 
+        // Table actions
+        editItemAa = new AbstractAction("Edit item", imageResource.readImage("Items.Table.Edit")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onToolBarEdit(null);
+            }
+        };
+        deleteItemAa = new AbstractAction("Delete item", imageResource.readImage("Items.Table.Delete")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onToolBarDelete(null);
+            }
+        };
+        openDatasheetOnlineAa = new AbstractAction("Online data sheet", imageResource.readImage("Items.Table.DataSheetOnline")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onShowDataSheet(selectedItem, true);
+            }
+        };
+        openDatasheetLocalAa = new AbstractAction("Local data sheet", imageResource.readImage("Items.Table.DataSheetLocal")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onShowDataSheet(selectedItem, false);
+            }
+        };
+        orderItemAa = new AbstractAction("Order item", imageResource.readImage("Items.Table.Order")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onOrderItem(selectedItem);
+            }
+        };
+        showHistoryAa = new AbstractAction("Show history", imageResource.readImage("Items.Table.History")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainPanelLayout.this.onShowHistory(selectedItem);
+            }
+        };
+
+        itemPopupMenu = new JPopupMenu();
+
+        JMenu dsMenu = new JMenu("Open datasheet");
+        dsMenu.add(new JMenuItem(openDatasheetOnlineAa));
+        dsMenu.add(new JMenuItem(openDatasheetLocalAa));
+
+        itemPopupMenu.add(editItemAa);
+        itemPopupMenu.add(deleteItemAa);
+        itemPopupMenu.addSeparator();
+        itemPopupMenu.add(orderItemAa);
+        itemPopupMenu.add(showHistoryAa);
+        itemPopupMenu.add(dsMenu);
+
         // Item table
         tableModel = new IItemTableModel();
         itemTable = new ITablePanel<>(tableModel, this, new ITableEditors.AmountRenderer());
         itemTable.setExactColumnWidth(0, 36);
         itemTable.setDbToolBar(this);
+        itemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onTableRowClicked(e);
+            }
+        });
         tableInitialize(null);
 
         // Details
-        detailPanel = new ItemDetailPanel(application);
+        detailPanel = new ItemDetailPanel(application, this);
 
         // Preview
         //previewPanel = new ItemPreviewPanel(application);
@@ -258,22 +360,23 @@ public abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JScrollPane pane = new JScrollPane(subDivisionTree);
-        pane.setMinimumSize(new Dimension(200, 200));
-        JPanel treePanel = new JPanel(new BorderLayout());
-        treePanel.add(pane);
+        JPanel westPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new BorderLayout());
 
-//
         // Panel them together
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
-        panel.add(detailPanel, BorderLayout.SOUTH);
+        centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
+        centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-        // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, panel);
-        splitPane.setOneTouchExpandable(true);
+        subDivisionTree.setPreferredSize(new Dimension(300, 200));
+        JScrollPane pane = new JScrollPane(subDivisionTree);
+        westPanel.add(pane, BorderLayout.CENTER);
+        westPanel.add(divisionTb, BorderLayout.PAGE_END);
+        westPanel.setMinimumSize(new Dimension(200,200));
 
+        // Add
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
+        splitPane.setOneTouchExpandable(true);
         add(splitPane, BorderLayout.CENTER);
     }
 

@@ -15,6 +15,13 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
+    public interface OnItemDetailListener {
+        void onShowDataSheet(Item item);
+        void onShowDataSheet(Item item, boolean online);
+        void onOrderItem(Item item);
+        void onShowHistory(Item item);
+    }
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -30,22 +37,29 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     ITextArea  remarksTa;
 
     JButton dataSheetBtn;
-    JButton orderBtn;
-    JButton historyBtn;
+    private JButton orderBtn;
+    private JButton historyBtn;
 
     JPanel remarksPnl;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    private Application application;
     Item selectedItem;
+    private OnItemDetailListener detailListener;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ItemDetailPanelLayout(Application application) {
+    ItemDetailPanelLayout(Application application, OnItemDetailListener detailListener) {
         this.application = application;
+        this.detailListener = detailListener;
+
+        initializeComponents();
+        initializeLayouts();
+
+
     }
 
     /*
@@ -209,6 +223,10 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));
         historyBtn = new JButton(imageResource.readImage("Items.Buttons.History"));
+
+        dataSheetBtn.addActionListener(e -> detailListener.onShowDataSheet(selectedItem));
+        orderBtn.addActionListener(e -> detailListener.onOrderItem(selectedItem));
+        historyBtn.addActionListener(e -> detailListener.onShowHistory(selectedItem));
 
         dataSheetBtn.setToolTipText("Data sheets");
         orderBtn.setToolTipText("Order");

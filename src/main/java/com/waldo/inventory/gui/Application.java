@@ -2,12 +2,16 @@ package com.waldo.inventory.gui;
 
 import com.mysql.jdbc.MysqlErrorNumbers;
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.ResourceManager;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
+import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
+import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -19,6 +23,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -363,5 +368,92 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 }
 
         });
+    }
+
+    //
+    // Shared functions
+    //
+    public void openDataSheet(Item item) {
+        if (item != null) {
+            String local = item.getLocalDataSheet();
+            String online = item.getOnlineDataSheet();
+            if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
+                SelectDataSheetDialog.showDialog(this, online, local);
+            } else if (local != null && !local.isEmpty()) {
+                try {
+                    OpenUtils.openPdf(local);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Error opening the file: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else if (online != null && !online.isEmpty()) {
+                try {
+                    OpenUtils.browseLink(online);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(this,
+                            "Error opening the file: " + e1.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void openDataSheet(Item item, boolean online) {
+        if (item != null) {
+            if (online) {
+                String onlineDs = item.getOnlineDataSheet();
+                if (!onlineDs.isEmpty()) {
+                    try {
+                        OpenUtils.browseLink(onlineDs);
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(this,
+                                "Error opening the file: " + e1.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        e1.printStackTrace();
+                    }
+                }
+            } else {
+                String local = item.getLocalDataSheet();
+                if (local != null && !local.isEmpty()) {
+                    try {
+                        OpenUtils.openPdf(local);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this,
+                                "Error opening the file: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public void orderItem(Item item) {
+        int result = JOptionPane.YES_OPTION;
+        if (item.isDiscourageOrder()) {
+            result = JOptionPane.showConfirmDialog(
+                    this,
+                    "This item is marked to discourage new orders, \n do you really want to order it?",
+                    "Discouraged to order",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+        if (result == JOptionPane.YES_OPTION) {
+            OrderItemDialog dialog = new OrderItemDialog(this, "Order " + item.getName(), item, true);
+            dialog.showDialog();
+        }
+    }
+
+    public void showHistory(Item item) {
+        HistoryDialog dialog = new HistoryDialog(this, item);
+        dialog.showDialog();
     }
 }

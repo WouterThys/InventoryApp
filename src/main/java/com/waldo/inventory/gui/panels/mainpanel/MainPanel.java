@@ -14,7 +14,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -33,7 +32,6 @@ public class MainPanel extends MainPanelLayout {
 
         initializeComponents();
         initializeLayouts();
-        initActions();
         initListeners();
 
         cache().addOnItemsChangedListener(itemsChanged);
@@ -56,33 +54,32 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
-    private void initActions() {
-        initMouseClicked();
-    }
+    @Override
+    void onTableRowClicked(MouseEvent e) {
 
-    private void initMouseClicked() {
-        itemTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) {
+            if (e.getClickCount() == 1) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
+                    openDatasheetOnlineAa.setEnabled(!selectedItem.getOnlineDataSheet().isEmpty());
+                    openDatasheetLocalAa.setEnabled(!selectedItem.getLocalDataSheet().isEmpty());
+                    itemPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                } else {
                     int row = itemTable.getRowAtPoint(e.getPoint());
                     int col = itemTable.getColumnAtPoint(e.getPoint());
                     if (row >= 0 && col == 4) {
-                        Item selectedItem = application.getSelectedItem();
                         if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
                                 && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
                             showLocationPopup(selectedItem, e.getX(), e.getY());
                         }
                     }
-                } else if (e.getClickCount() == 2) {
-                    Item selectedItem = application.getSelectedItem();
-                    if (selectedItem != null && !selectedItem.isUnknown()) {
-                        EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-                        dialog.showDialog();
-                    }
+                }
+            } else if (e.getClickCount() == 2) {
+                if (selectedItem != null && !selectedItem.isUnknown()) {
+                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                    dialog.showDialog();
                 }
             }
-        });
+
     }
 
     private void showLocationPopup(Item item, int x, int y) {
@@ -147,7 +144,7 @@ public class MainPanel extends MainPanelLayout {
 
             @Override
             public void onCacheCleared() {
-                recreateNodes();
+                treeRecreateNodes();
                 updateComponents(selectedDivision);
             }
         };
@@ -270,15 +267,15 @@ public class MainPanel extends MainPanelLayout {
         popupMenu.addSeparator();
 
         if (!isRoot) {
-            treeAddDivision.putValue(AbstractAction.NAME, "Add product");
-            treeEditDivision.putValue(AbstractAction.NAME, "Edit category");
-            treeDeleteDivision.putValue(AbstractAction.NAME, "Delete category");
-            popupMenu.add(treeAddDivision);
-            popupMenu.add(treeEditDivision);
-            popupMenu.add(treeDeleteDivision);
+            treeAddDivisionAa.putValue(AbstractAction.NAME, "Add product");
+            treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit category");
+            treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete category");
+            popupMenu.add(treeAddDivisionAa);
+            popupMenu.add(treeEditDivisionAa);
+            popupMenu.add(treeDeleteDivisionAa);
         } else {
-            treeAddDivision.putValue(AbstractAction.NAME, "Add category");
-            popupMenu.add(treeAddDivision);
+            treeAddDivisionAa.putValue(AbstractAction.NAME, "Add category");
+            popupMenu.add(treeAddDivisionAa);
         }
         return popupMenu;
     }
@@ -288,15 +285,15 @@ public class MainPanel extends MainPanelLayout {
         JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
         nameItem.setEnabled(false);
 
-        treeAddDivision.putValue(AbstractAction.NAME, "Add type");
-        treeEditDivision.putValue(AbstractAction.NAME, "Edit product");
-        treeDeleteDivision.putValue(AbstractAction.NAME, "Delete product");
+        treeAddDivisionAa.putValue(AbstractAction.NAME, "Add type");
+        treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit product");
+        treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete product");
 
         popupMenu.add(nameItem);
         popupMenu.addSeparator();
-        popupMenu.add(treeAddDivision);
-        popupMenu.add(treeEditDivision);
-        popupMenu.add(treeDeleteDivision);
+        popupMenu.add(treeAddDivisionAa);
+        popupMenu.add(treeEditDivisionAa);
+        popupMenu.add(treeDeleteDivisionAa);
         return popupMenu;
     }
 
@@ -305,13 +302,13 @@ public class MainPanel extends MainPanelLayout {
         JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
         nameItem.setEnabled(false);
 
-        treeEditDivision.putValue(AbstractAction.NAME, "Edit type");
-        treeDeleteDivision.putValue(AbstractAction.NAME, "Delete type");
+        treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit type");
+        treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete type");
 
         popupMenu.add(nameItem);
         popupMenu.addSeparator();
-        popupMenu.add(treeEditDivision);
-        popupMenu.add(treeDeleteDivision);
+        popupMenu.add(treeEditDivisionAa);
+        popupMenu.add(treeDeleteDivisionAa);
         return popupMenu;
     }
 
@@ -393,52 +390,104 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        application.beginWait();
-        try {
-            for (Item item : getTableModel().getItemList()) {
-                item.updateOrderState();
+        if (source.equals(divisionTb)) {
+            treeRecreateNodes();
+        } else {
+            application.beginWait();
+            try {
+                for (Item item : getTableModel().getItemList()) {
+                    item.updateOrderState();
+                }
+            } finally {
+                application.endWait();
             }
-        } finally {
-            application.endWait();
+
+            tableInitialize(selectedDivision);
+            updateEnabledComponents();
+
+            detailPanel.updateComponents(selectedItem);
+            //previewPanel.updateComponents(selectedItem);
         }
-
-        tableInitialize(selectedDivision);
-        updateEnabledComponents();
-
-        detailPanel.updateComponents(selectedItem);
-        //previewPanel.updateComponents(selectedItem);
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        Item newItem = new Item();
-        EditItemDialog dialog = new EditItemDialog(application, "Add item", newItem);
-        dialog.showDialog();
+        if (source.equals(divisionTb)) {
+            if (selectedDivision == null) {
+                selectedDivision = virtualRoot;
+            }
+            onAddDivision();
+        } else {
+            Item newItem = new Item();
+            EditItemDialog dialog = new EditItemDialog(application, "Add item", newItem);
+            dialog.showDialog();
+        }
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        Item selectedItem = application.getSelectedItem();
-        if (selectedItem != null) {
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                selectedItem.delete();
+        if (source != null && source.equals(divisionTb)) {
+            onDeleteDivision();
+        } else {
+            Item selectedItem = application.getSelectedItem();
+            if (selectedItem != null) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
+                    selectedItem.delete();
+                }
             }
         }
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        Item selected = application.getSelectedItem();
-        if (selected != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selected);
-            if (dialog.showDialog() == EditItemDialog.OK) {
-                Item newItem = dialog.getItem();
-                if (newItem != null) {
-                    newItem.save();
+        if (source != null && source.equals(divisionTb)) {
+            onEditDivision();
+        } else {
+            Item selected = application.getSelectedItem();
+            if (selected != null) {
+                EditItemDialog dialog = new EditItemDialog(application, "Edit item", selected);
+                if (dialog.showDialog() == EditItemDialog.OK) {
+                    Item newItem = dialog.getItem();
+                    if (newItem != null) {
+                        newItem.save();
+                    }
                 }
             }
         }
     }
+
+    //
+    // Detail panel
+    //
+    @Override
+    public void onShowDataSheet(Item item) {
+        if (item != null) {
+            application.openDataSheet(item);
+        }
+    }
+
+    @Override
+    public void onShowDataSheet(Item item, boolean online) {
+        if (item != null) {
+            application.openDataSheet(item, online);
+        }
+    }
+
+    @Override
+    public void onOrderItem(Item item) {
+        if (item != null) {
+            application.orderItem(item);
+        }
+    }
+
+    @Override
+    public void onShowHistory(Item item) {
+        if (item != null) {
+            application.showHistory(item);
+        }
+    }
+
+
 
 }
 

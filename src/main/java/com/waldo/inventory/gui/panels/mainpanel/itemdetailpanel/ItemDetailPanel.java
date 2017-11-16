@@ -1,30 +1,20 @@
 package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
-import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
-import javax.swing.*;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.waldo.inventory.managers.SearchManager.sm;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
-    public ItemDetailPanel(Application application) {
-        super(application);
-        initializeComponents();
-        initializeLayouts();
-        initActions();
-
+    public ItemDetailPanel(Application application, OnItemDetailListener detailListener) {
+        super(application, detailListener);
     }
 
     @Override
@@ -47,66 +37,6 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     public void setRemarksPanelVisible(boolean visible) {
         remarksPnl.setVisible(visible);
-    }
-
-    public void setOrderButtonVisible(boolean visible) {
-        orderBtn.setVisible(visible);
-    }
-
-    private void initActions() {
-        dataSheetBtn.addActionListener(e -> openDataSheet(selectedItem));
-        orderBtn.addActionListener(e -> orderItem(selectedItem));
-        historyBtn.addActionListener(e -> {
-            HistoryDialog dialog = new HistoryDialog(application, selectedItem);
-            dialog.showDialog();
-        });
-    }
-
-    private void openDataSheet(Item item) {
-        if (item != null) {
-            String local = item.getLocalDataSheet();
-            String online = item.getOnlineDataSheet();
-            if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
-                SelectDataSheetDialog.showDialog(application, online, local);
-            } else if (local != null && !local.isEmpty()) {
-                try {
-                    OpenUtils.openPdf(local);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(application,
-                            "Error opening the file: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-            } else if (online != null && !online.isEmpty()) {
-                try {
-                    OpenUtils.browseLink(online);
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(application,
-                            "Error opening the file: " + e1.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void orderItem(Item item) {
-        int result = JOptionPane.YES_OPTION;
-        if (item.isDiscourageOrder()) {
-            result = JOptionPane.showConfirmDialog(
-                    application,
-                    "This item is marked to discourage new orders, \n do you really want to order it?",
-                    "Discouraged to order",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
-        }
-        if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item, true);
-            dialog.showDialog();
-        }
     }
 
     private void updateIcon(Item item) {

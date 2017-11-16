@@ -146,13 +146,63 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         manufacturerCb.addEditedListener(editedListener, "manufacturerId");
     }
 
-    private ActionListener createDivisionListener() {
+    private ActionListener createAddCategoryListener() {
         return e -> {
-            SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Sub divisions");
+            Category newCategory = new Category();
+            SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add category", newCategory);
             if (subDivisionsDialog.showDialog() == IDialog.OK) {
-                updateCategoryCbValues();
-                updateProductCbValues(((Category)categoryComboBox.getSelectedItem()).getId());
-                updateTypeCbValues(((Product)productComboBox.getSelectedItem()).getId());
+                newCategory.save();
+                SwingUtilities.invokeLater(() -> {
+                    updateCategoryCbValues();
+                    updateProductCbValues(((Category)categoryComboBox.getSelectedItem()).getId());
+                    updateTypeCbValues(((Product)productComboBox.getSelectedItem()).getId());
+                });
+            }
+        };
+    }
+
+    private ActionListener createAddProductListener() {
+        return e -> {
+            if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+                Product newProduct = new Product(newItem.getCategoryId());
+                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add product", newProduct);
+                if (subDivisionsDialog.showDialog() == IDialog.OK) {
+                    newProduct.save();
+                    SwingUtilities.invokeLater(() -> {
+                        updateCategoryCbValues();
+                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                    });
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        ComponentPanel.this,
+                        "Select a category first..",
+                        "No category",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        };
+    }
+
+    private ActionListener createAddTypeListener() {
+        return e -> {
+            if (newItem.getCategoryId() > DbObject.UNKNOWN_ID && newItem.getProductId() > DbObject.UNKNOWN_ID) {
+                Type newType = new Type(newItem.getProductId());
+                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add type", newType);
+                if (subDivisionsDialog.showDialog() == IDialog.OK) {
+                    newType.save();
+                    SwingUtilities.invokeLater(() -> {
+                        updateCategoryCbValues();
+                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                    });
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        ComponentPanel.this,
+                        "Select category and product first..",
+                        "No category and/or product",
+                        JOptionPane.ERROR_MESSAGE);
             }
         };
     }
@@ -295,9 +345,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {
-                        PanelUtils.createComboBoxWithButton(categoryComboBox, createDivisionListener()),
-                        PanelUtils.createComboBoxWithButton(productComboBox, createDivisionListener()),
-                        PanelUtils.createComboBoxWithButton(typeComboBox, createDivisionListener())}
+                        PanelUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
+                        PanelUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
+                        PanelUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
