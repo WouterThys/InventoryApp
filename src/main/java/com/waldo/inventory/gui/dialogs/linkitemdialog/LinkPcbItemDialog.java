@@ -95,8 +95,8 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
 
             @Override
             public void onUpdated(PcbItemItemLink link) {
-//                itemPanel.updateTable();
-//                pcbPanel.updateTable();
+//                itemPanel.tableInitialize();
+//                pcbPanel.tableInitialize();
             }
 
             @Override

@@ -164,7 +164,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     }
 
     public void setSelectedItem(Item selectedItem) {
-        mainPanel.selectItem(selectedItem);
+        mainPanel.tableSelectItem(selectedItem);
     }
 
     void setSelectedOrderItem(OrderItem selectedOrderItem) {
@@ -175,7 +175,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         switch (tabbedPane.getSelectedIndex()) {
             case TAB_ITEMS:
                 if (foundObject == null) {
-                    mainPanel.updateTable(mainPanel.getLastSelectedDivision());
+                    mainPanel.tableInitialize(mainPanel.getLastSelectedDivision());
                 } else {
                     java.util.List<Item> foundItems = new ArrayList<>(foundObject.size());
                     for (DbObject object : foundObject) {

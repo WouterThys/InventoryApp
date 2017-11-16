@@ -109,7 +109,7 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
                     removeNodeFromParent(childNode);
                 }
                 reload();
-                expandNodes(0, tree.getRowCount());
+                //expandNodes(0, tree.getRowCount());
             });
         } catch (Exception e) {
             Status().setError("Error removing object " + child.getName(), e);
@@ -119,25 +119,24 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
     public void updateObject(E newChild) {
         try {
             SwingUtilities.invokeLater(() -> {
-                // TODO this was done with oldChild
                 DefaultMutableTreeNode node = findNode(newChild);
                 if (node != null) {
-                    node.setUserObject(newChild);
+                    //node.setUserObject(newChild);
                     nodeChanged(node);
                 }
                 reload();
-                expandNodes(0, tree.getRowCount());
+                //expandNodes(0, tree.getRowCount());
+                setSelectedObject(newChild);
             });
         } catch (Exception e) {
             Status().setError("Error updating object " + newChild.getName(), e);
         }
     }
 
-    public void addObject(E child) {
+    public void addObject(E child, boolean hasChildren) {
         try {
             SwingUtilities.invokeLater(() -> {
-                addDbObject(findParent(child), child);
-                expandNodes(0, tree.getRowCount());
+                addDbObject(findParent(child), child, hasChildren);
                 setSelectedObject(child);
             });
         } catch (Exception e) {
@@ -145,12 +144,8 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
         }
     }
 
-    private void addDbObject(DefaultMutableTreeNode parent, E child) {
-        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-
-//        if (type == TYPE_ORDERS) {
-//            childNode.setAllowsChildren(false);
-//        } TODO check if this can be in comments..
+    private void addDbObject(DefaultMutableTreeNode parent, E child, boolean hasChildren) {
+        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child, hasChildren);
 
         if (parent == null) {
             parent = rootNode;

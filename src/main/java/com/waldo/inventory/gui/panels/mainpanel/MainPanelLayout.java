@@ -36,7 +36,6 @@ public abstract class MainPanelLayout extends JPanel implements
     ITree subDivisionTree;
     IDbObjectTreeModel<DbObject> treeModel;
     ItemDetailPanel detailPanel;
-    //ItemPreviewPanel previewPanel;
 
     /*
      *                  VARIABLES
@@ -44,7 +43,7 @@ public abstract class MainPanelLayout extends JPanel implements
     Application application;
 
     Item selectedItem;
-    DbObject lastSelectedDivision;
+    DbObject selectedDivision;
 
     /*
      *                  CONSTRUCTOR
@@ -61,10 +60,13 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
     }
 
-    public void updateTable(DbObject selectedObject) {
+    //
+    // Table stuff
+    //
+    public void tableInitialize(DbObject selectedObject) {
         java.util.List<Item> itemList = new ArrayList<>();
         if (selectedObject == null || selectedObject.getName().equals("All")) {
-            itemList = cache().getItems();
+            itemList = new ArrayList<>(cache().getItems());
             for (Item item : itemList) {
                 if (item.getId() == DbObject.UNKNOWN_ID) {
                     itemList.remove(item);
@@ -92,8 +94,45 @@ public abstract class MainPanelLayout extends JPanel implements
         tableModel.setItemList(itemList);
     }
 
-    public void selectItem(Item selectedItem) {
-        itemTable.selectItem(selectedItem);
+    public long tableUpdate() {
+        long itemId = -1;
+        if (selectedItem != null) {
+            itemId = selectedItem.getId();
+        }
+        tableModel.updateTable();
+        return itemId;
+    }
+
+    public void tableRemoveItem(Item item) {
+        tableModel.removeItem(item);
+    }
+
+    public void tableAddItem(Item item) {
+        tableModel.addItem(item);
+    }
+
+    public void tableSelectItem(Item item) {
+        this.selectedItem = item;
+        itemTable.selectItem(item);
+    }
+    //
+    // Tree stuff
+    //
+    public void treeSelectDivisionForItem(Item item) {
+        if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+            selectedDivision = sm().findTypeById(item.getTypeId());
+        } else {
+            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+                selectedDivision = sm().findProductById(item.getProductId());
+            } else {
+                if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+                    selectedDivision = sm().findCategoryById(item.getCategoryId());
+                } else {
+                    selectedDivision = null;
+                }
+            }
+        }
+        treeModel.setSelectedObject(selectedDivision);
     }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
@@ -162,7 +201,7 @@ public abstract class MainPanelLayout extends JPanel implements
         itemTable = new ITablePanel<>(tableModel, this, new ITableEditors.AmountRenderer());
         itemTable.setExactColumnWidth(0, 36);
         itemTable.setDbToolBar(this);
-        updateTable(null);
+        tableInitialize(null);
 
         // Details
         detailPanel = new ItemDetailPanel(application);
@@ -200,9 +239,9 @@ public abstract class MainPanelLayout extends JPanel implements
         try {
             // Update table if needed
             if (object.length != 0 && object[0] != null) {
-                if (lastSelectedDivision == null || !lastSelectedDivision.equals(object[0])) {
-                    lastSelectedDivision = (DbObject) object[0];
-                    updateTable((DbObject) object[0]);
+                if (selectedDivision == null || !selectedDivision.equals(object[0])) {
+                    selectedDivision = (DbObject) object[0];
+                    tableInitialize((DbObject) object[0]);
                 }
             }
 

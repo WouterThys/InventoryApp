@@ -46,7 +46,7 @@ public class MainPanel extends MainPanelLayout {
     }
 
     public DbObject getLastSelectedDivision() {
-        return lastSelectedDivision;
+        return selectedDivision;
     }
 
     public IItemTableModel getTableModel() {
@@ -110,71 +110,51 @@ public class MainPanel extends MainPanelLayout {
         itemsChanged = new CacheChangedListener<Item>() {
             @Override
             public void onInserted(Item item) {
-                itemChanged(item);
-                //updateComponents(lastSelectedDivision); // Give it non-null value
+                selectedItem = item;
+                // Select the division in the tree
+                treeSelectDivisionForItem(item);
+                // Set the table
+                tableInitialize(selectedDivision);
+                // Add to table
+                tableAddItem(item);
+                // Select in table
+                tableSelectItem(item);
+                detailPanel.updateComponents(selectedItem);
+                updateEnabledComponents();
             }
 
             @Override
-            public void onUpdated(Item newItem) {
-                itemChanged(newItem);
-                //selectedItem = newItem;
-                //updateComponents(lastSelectedDivision);
+            public void onUpdated(Item item) {
+                selectedItem = item;
+                final long itemId = tableUpdate();
+
+                SwingUtilities.invokeLater(() -> {
+                    selectedItem = sm().findItemById(itemId);
+                    tableSelectItem(selectedItem);
+                    updateEnabledComponents();
+                });
+
             }
 
             @Override
             public void onDeleted(Item item) {
+                tableRemoveItem(item);
                 selectedItem = null;
-                updateComponents(lastSelectedDivision);
             }
 
             @Override
             public void onCacheCleared() {
                 recreateNodes();
-                updateComponents(lastSelectedDivision);
+                updateComponents(selectedDivision);
             }
         };
-    }
-
-    private void itemChanged(Item addedItem) {
-            application.beginWait();
-            try {
-                selectedItem = addedItem;
-                // Find and select in tree
-                selectDivision(addedItem);
-                // Update table items
-                updateTable(lastSelectedDivision);
-                // Select in items
-                selectItem(addedItem);
-                // Update detail panel
-                detailPanel.updateComponents(addedItem);
-                //previewPanel.updateComponents(addedItem);
-            } finally {
-                application.endWait();
-            }
-    }
-
-    private void selectDivision(Item selectedItem) {
-        if (selectedItem.getTypeId() > DbObject.UNKNOWN_ID) {
-            lastSelectedDivision = sm().findTypeById(selectedItem.getTypeId());
-        } else {
-            if (selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
-                lastSelectedDivision = sm().findProductById(selectedItem.getProductId());
-            } else {
-                if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-                    lastSelectedDivision = sm().findCategoryById(selectedItem.getCategoryId());
-                } else {
-                    lastSelectedDivision = null; //??
-                }
-            }
-        }
-        SwingUtilities.invokeLater(() -> treeModel.setSelectedObject(lastSelectedDivision));
     }
 
     private void setCategoriesChangedListener() {
         categoriesChanged = new CacheChangedListener<Category>() {
             @Override
             public void onInserted(Category category) {
-                treeModel.addObject(category);
+                treeModel.addObject(category, true);
             }
 
             @Override
@@ -196,7 +176,7 @@ public class MainPanel extends MainPanelLayout {
         productsChanged = new CacheChangedListener<Product>() {
             @Override
             public void onInserted(Product product) {
-                treeModel.addObject(product);
+                treeModel.addObject(product, true);
             }
 
             @Override
@@ -218,7 +198,7 @@ public class MainPanel extends MainPanelLayout {
         typesChanged = new CacheChangedListener<Type>() {
             @Override
             public void onInserted(Type type) {
-                treeModel.addObject(type);
+                treeModel.addObject(type, false);
             }
 
             @Override
@@ -246,7 +226,7 @@ public class MainPanel extends MainPanelLayout {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
 
             if (node == null) {
-                lastSelectedDivision = null;
+                selectedDivision = null;
                 return; // Nothing selected
             }
 
@@ -265,7 +245,7 @@ public class MainPanel extends MainPanelLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             selectedItem = itemTable.getSelectedItem();
-            updateComponents(lastSelectedDivision);
+            updateComponents(selectedDivision);
         }
     }
 
@@ -284,7 +264,7 @@ public class MainPanel extends MainPanelLayout {
             application.endWait();
         }
 
-        updateTable(lastSelectedDivision);
+        tableInitialize(selectedDivision);
         updateEnabledComponents();
 
         detailPanel.updateComponents(selectedItem);
