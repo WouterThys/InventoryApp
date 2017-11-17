@@ -7,7 +7,6 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
@@ -22,7 +21,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +28,6 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -45,7 +42,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ITable orderItemTable;
+    ITablePanel<OrderItem> orderItemTable;
     IOrderItemTableModel tableModel;
 
     ITree ordersTree;
@@ -54,7 +51,6 @@ public abstract class OrderPanelLayout extends JPanel implements
     OrderItemDetailPanel orderItemDetailPanel;
 
     private IdBToolBar treeToolBar;
-    TopToolBar tableToolBar;
     private JToolBar bottomToolBar;
     private JPanel orderTbPanel;
     IOrderFlowPanel tbOrderFlowPanel;
@@ -190,16 +186,15 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     public void tableSelectOrderItem(OrderItem orderItem) {
-        if (orderItem != null) {
-            int modelNdx = tableModel.getItemList().indexOf(orderItem);
-            if (modelNdx >= 0) {
-                int tableNdx = orderItemTable.convertRowIndexToView(modelNdx);
-                orderItemTable.setRowSelectionInterval(tableNdx, tableNdx);
-                orderItemTable.scrollRectToVisible(new Rectangle(orderItemTable.getCellRect(tableNdx, 0, true)));
-            }
-        } else {
-            orderItemTable.clearSelection();
-        }
+        orderItemTable.selectItem(orderItem);
+    }
+
+    OrderItem tableGetSelectedItem() {
+        return orderItemTable.getSelectedItem();
+    }
+
+    List<OrderItem> tableGetAllSelectedOrderItems() {
+        return orderItemTable.getAllSelectedItems();
     }
 
 
@@ -231,11 +226,10 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeToolBar.setDeleteActionEnabled(orderSelected);
 
         if (orderSelected) {
-            tableToolBar.setEnabled(true);
-            tableToolBar.setEditActionEnabled(itemSelected);
-            tableToolBar.setDeleteActionEnabled(itemSelected);
+            orderItemTable.setDbToolBarEnabled(true);
+            orderItemTable.setDbToolBarEditDeleteEnabled(itemSelected);
         } else {
-            tableToolBar.setEnabled(false);
+            orderItemTable.setDbToolBarEnabled(true);
         }
 
         orderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
@@ -284,7 +278,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setOpaque(false); toolBar.setFloatable(false);
         toolBar.setBorder(new EmptyBorder(2,2,2,2));
-//        toolBar.add(orderDetailsAa);
 
         JPanel makeOrderPanel = new JPanel(new BorderLayout());
         JPanel distributorPanel = new JPanel(new BorderLayout());
@@ -297,9 +290,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         makeOrderPanel.add(distributorPanel, BorderLayout.SOUTH);
 
         // Create panel
-        orderTbPanel = new JPanel(new BorderLayout());
-        orderTbPanel.add(makeOrderPanel, BorderLayout.WEST);
-        orderTbPanel.add(tbOrderFlowPanel, BorderLayout.EAST);
+        orderTbPanel = new JPanel();
+        orderTbPanel.add(makeOrderPanel);
         orderTbPanel.setVisible(false);
 
         return orderTbPanel;
@@ -330,27 +322,28 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IOrderItemTableModel();
-        orderItemTable = new ITable<OrderItem>(tableModel) {
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component component = super.prepareRenderer(renderer, row, column);
-                OrderItem o = (OrderItem) getValueAtRow(row);
-
-                if (!isRowSelected(row)) {
-                    component.setBackground(getBackground());
-                    if (o.getItem().isDiscourageOrder()) {
-                        component.setBackground(colorResource.readColor("Red.Light"));
-                    } else {
-                        component.setBackground(getBackground());
-                    }
-                }
-
-                return component;
-            }
-        };
-
-        orderItemTable.getSelectionModel().addListSelectionListener(this);
-        orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        orderItemTable = new ITablePanel<>(tableModel, this);
+        orderItemTable.setExactColumnWidth(0, 36);
+        orderItemTable.setDbToolBar(this);
+        orderItemTable.setDbToolBarEnabled(false);
+//        { TODO: in new ITablePanel something to override the prepareRenderer method
+//            @Override
+//            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+//                Component component = super.prepareRenderer(renderer, row, column);
+//                OrderItem o = (OrderItem) getValueAtRow(row);
+//
+//                if (!isRowSelected(row)) {
+//                    component.setBackground(getBackground());
+//                    if (o.getItem().isDiscourageOrder()) {
+//                        component.setBackground(colorResource.readColor("Red.Light"));
+//                    } else {
+//                        component.setBackground(getBackground());
+//                    }
+//                }
+//
+//                return component;
+//            }
+//        };
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application, this);
@@ -463,9 +456,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         });
         treeToolBar.addSeparateAction(orderDetailsAa);
 
-        tableToolBar = new TopToolBar(application, this);
-        tableToolBar.getContentPane().add(createOrderToolbar());
-
         // Create bottom toolbar
         bottomToolBar = new JToolBar(JToolBar.HORIZONTAL);
         bottomToolBar.setFloatable(false);
@@ -498,13 +488,14 @@ public abstract class OrderPanelLayout extends JPanel implements
         ));
 
         centerPanel.add(detailPanels, BorderLayout.SOUTH);
-        centerPanel.add(tableToolBar, BorderLayout.PAGE_START);
+        orderItemTable.getTitlePanel().add(createOrderToolbar(), BorderLayout.CENTER);
 
         ordersTree.setPreferredSize(new Dimension(300, 200));
         JScrollPane pane = new JScrollPane(ordersTree);
+        westPanel.add(tbOrderFlowPanel, BorderLayout.PAGE_START);
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(200, 200));
+        westPanel.setMinimumSize(new Dimension(280, 200));
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
@@ -524,9 +515,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (selectedOrder == null || !selectedOrder.equals(object[0])) {
                     selectedOrder = (Order) object[0];
                     tableInitialize(selectedOrder);
-
-                    // Search list
-                    tableToolBar.setSearchList(new ArrayList<>(selectedOrder.getOrderItems()));
                 }
             }
 

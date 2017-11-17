@@ -7,7 +7,6 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
@@ -22,7 +21,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +57,6 @@ public class OrderPanel extends OrderPanelLayout {
 
     public IOrderItemTableModel getTableModel() {
         return tableModel;
-    }
-
-    public TopToolBar getToolBar() {
-        return tableToolBar;
     }
 
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
@@ -128,20 +122,6 @@ public class OrderPanel extends OrderPanelLayout {
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
             dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
         });
-    }
-
-    private List<OrderItem> getSelectedOrderItems() {
-        List<OrderItem> selectedOrderItems = new ArrayList<>();
-        int[] selectedRows = orderItemTable.getSelectedRows();
-        if (selectedRows.length > 0) {
-            for (int row : selectedRows) {
-                OrderItem oi = (OrderItem) orderItemTable.getValueAtRow(row);
-                if (oi != null) {
-                    selectedOrderItems.add(oi);
-                }
-            }
-        }
-        return selectedOrderItems;
     }
 
     private void deleteSelectedOrderItems(final List<OrderItem> itemsToDelete) {
@@ -403,7 +383,7 @@ public class OrderPanel extends OrderPanelLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             SwingUtilities.invokeLater(() -> {
-                selectedOrderItem = (OrderItem) orderItemTable.getValueAtRow(orderItemTable.getSelectedRow());
+                selectedOrderItem = tableGetSelectedItem();
                 if (selectedOrderItem != null) {
                     itemDetailPanel.updateComponents(selectedOrderItem.getItem());
                     if (selectedOrder != null) {
@@ -470,7 +450,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        deleteSelectedOrderItems(getSelectedOrderItems());
+        deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
     }
 
     @Override

@@ -224,7 +224,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 //mainPanel.getToolBar().clearSearch();
                 break;
             case TAB_ORDERS:
-                orderPanel.getToolBar().clearSearch();
+                //orderPanel.getToolBar().clearSearch();
                 break;
             case TAB_PROJECTS:
                 projectPanel.getToolBar().clearSearch();

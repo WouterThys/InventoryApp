@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
@@ -11,6 +10,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,6 +93,20 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         return table.getSelectedItem();
     }
 
+    public List<T> getAllSelectedItems() {
+        List<T> selectedItems = new ArrayList<>();
+        int[] selectedRows = table.getSelectedRows();
+        if (selectedRows.length > 0) {
+            for (int row : selectedRows) {
+                T t = (T) table.getValueAtRow(row);
+                if (t != null) {
+                    selectedItems.add(t);
+                }
+            }
+        }
+        return selectedItems;
+    }
+
     public void selectItem(T item) {
         table.selectItem(item);
     }
@@ -158,6 +174,14 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         }
     }
 
+    public void addSortOption(Comparator comparator) {
+        tableToolBar.addSortComparator(comparator);
+    }
+
+    public JPanel getTitlePanel() {
+        return centerPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -170,10 +194,6 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
         // Toolbar
         tableToolBar = new ITableToolBar<>(table);
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemDivisionComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.DbObjectNameComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemManufacturerComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemLocationComparator());
 
         // Panels
         centerPanel = new JPanel(new BorderLayout());
