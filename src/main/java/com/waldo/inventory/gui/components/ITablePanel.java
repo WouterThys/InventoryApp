@@ -7,7 +7,9 @@ import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -79,6 +81,11 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     public void addTableRenderer(TableCellRenderer cellRenderer) {
         HighlightRenderer renderer = new HighlightRenderer(cellRenderer);
         table.setDefaultRenderer(Object.class, renderer);
+    }
+
+    public void addColumnCellEditor(int columnIndex, TableCellEditor editor) {
+        TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
+        tableColumn.setCellEditor(editor);
     }
 
     public void addMouseListener(MouseListener listener) {

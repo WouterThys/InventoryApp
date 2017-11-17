@@ -53,8 +53,6 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements
         // Panels
         pcbItemPnl = new UsedPcbItemPanel(this);
         usedPnl = new UsedConfirmedPanel(this);
-
-
     }
 
     @Override

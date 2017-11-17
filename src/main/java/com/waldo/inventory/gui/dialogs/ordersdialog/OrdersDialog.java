@@ -50,10 +50,12 @@ public class OrdersDialog extends OrdersDialogLayout {
             ok = false;
         }
 
-        for (Order o : cache().getOrders()) {
-            if (o.getName().equals(order.getName())) {
-                nameField.setError("Name already exists in orders, select an other name..");
-                ok = false;
+        if (order.getId() <= DbObject.UNKNOWN_ID) {
+            for (Order o : cache().getOrders()) {
+                if (o.getName().equals(order.getName())) {
+                    nameField.setError("Name already exists in orders, select an other name..");
+                    ok = false;
+                }
             }
         }
 

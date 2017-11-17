@@ -39,7 +39,7 @@ public class MainPanel extends MainPanelLayout {
         cache().addOnProductsChangedListener(productsChanged);
         cache().addOnTypesChangedListener(typesChanged);
 
-        updateComponents((Object)null);
+        updateComponents((Object) null);
     }
 
     public Item getSelectedItem() {
@@ -56,38 +56,37 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     void onTableRowClicked(MouseEvent e) {
-
-            if (e.getClickCount() == 1) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
-                    openDatasheetOnlineAa.setEnabled(!selectedItem.getOnlineDataSheet().isEmpty());
-                    openDatasheetLocalAa.setEnabled(!selectedItem.getLocalDataSheet().isEmpty());
-                    itemPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                } else {
-                    int row = itemTable.getRowAtPoint(e.getPoint());
-                    int col = itemTable.getColumnAtPoint(e.getPoint());
-                    if (row >= 0 && col == 4) {
-                        if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
-                                && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
-                            showLocationPopup(selectedItem, e.getX(), e.getY());
-                        }
+        if (e.getClickCount() == 1) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
+                openDatasheetOnlineAa.setEnabled(!selectedItem.getOnlineDataSheet().isEmpty());
+                openDatasheetLocalAa.setEnabled(!selectedItem.getLocalDataSheet().isEmpty());
+                itemPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            } else {
+                int row = itemTable.getRowAtPoint(e.getPoint());
+                int col = itemTable.getColumnAtPoint(e.getPoint());
+                if (row >= 0 && col == 4) {
+                    if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
+                            && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
+                        showLocationPopup(selectedItem, e.getX(), e.getY());
                     }
                 }
-            } else if (e.getClickCount() == 2) {
-                if (selectedItem != null && !selectedItem.isUnknown()) {
-                    EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-                    dialog.showDialog();
-                }
             }
-
+        } else if (e.getClickCount() == 2) {
+            if (selectedItem != null && !selectedItem.isUnknown()) {
+                EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
+                dialog.showDialog();
+            }
+        }
     }
 
     private void showLocationPopup(Item item, int x, int y) {
-        JPopupMenu menu = new JPopupMenu ();
+        JPopupMenu menu = new JPopupMenu();
 
         LocationType type = item.getLocation().getLocationType();
 
-        ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(),null, false);;
+        ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(), null, false);
+        ;
         panel.setHighlighted(item.getLocation(), ILocationMapPanel.GREEN);
 
         JMenuItem name = new JMenuItem(type.getName());
@@ -168,7 +167,8 @@ public class MainPanel extends MainPanelLayout {
             }
 
             @Override
-            public void onCacheCleared() {}
+            public void onCacheCleared() {
+            }
         };
     }
 
@@ -190,7 +190,8 @@ public class MainPanel extends MainPanelLayout {
             }
 
             @Override
-            public void onCacheCleared() {}
+            public void onCacheCleared() {
+            }
         };
     }
 
@@ -212,7 +213,8 @@ public class MainPanel extends MainPanelLayout {
             }
 
             @Override
-            public void onCacheCleared() {}
+            public void onCacheCleared() {
+            }
         };
     }
 
@@ -486,7 +488,6 @@ public class MainPanel extends MainPanelLayout {
             application.showHistory(item);
         }
     }
-
 
 
 }

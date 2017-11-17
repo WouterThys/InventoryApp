@@ -1,12 +1,17 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
@@ -184,6 +189,36 @@ public class Order extends DbObject {
         }
     }
 
+    public void copyOrderLinesToClipboard() {
+        String orderText = createOrderText();
+        StringSelection selection = new StringSelection(orderText);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+    }
+
+    private String createOrderText() {
+        StringBuilder builder = new StringBuilder();
+        for (OrderItem orderItem : getOrderItems()) {
+            builder.append(orderItem.getDistributorPartLink().getItemRef());
+            builder.append(getDistributor().getOrderFileFormat().getSeparator());
+            builder.append(orderItem.getAmount());
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
+    public void browseDistributor() throws IOException {
+        if (getDistributorId() > UNKNOWN_ID) {
+            OpenUtils.browseLink(getDistributor().getWebsite());
+        }
+    }
+
+    public void browseOrderPage() throws IOException {
+        if (getDistributorId() > UNKNOWN_ID) {
+            OpenUtils.browseLink(getDistributor().getOrderLink());
+        }
+    }
+
     public static Order getUnknownOrder() {
         Order o = new Order();
         o.setName(UNKNOWN_NAME);
@@ -282,25 +317,26 @@ public class Order extends DbObject {
         return bd.doubleValue();
     }
 
-//    public void setItemStates(int state) {
-//        for (OrderItem oi : getOrderItems()) {
-//            oi.getItem().setOrderState(state);
-//            oi.getItem().save();
-//        }
-//    }
-
     public void updateItemStates() {
         for (OrderItem oi : getOrderItems()) {
             oi.getItem().updateOrderState();
         }
     }
 
-    public void updateItemAmounts() {
+    public void updateItemAmounts(boolean increment) {
         for (OrderItem oi : getOrderItems()) {
-            int current = oi.getItem().getAmount();
-            oi.getItem().setAmountType(Statics.ItemAmountTypes.EXACT);
-            oi.getItem().setAmount(current + oi.getAmount());
-            oi.getItem().save();
+            Item item = oi.getItem();
+            int current = item.getAmount();
+            item.setAmountType(Statics.ItemAmountTypes.EXACT);
+            if (increment) {
+                item.setAmount(current + oi.getAmount());
+            } else {
+                item.setAmount(current - oi.getAmount());
+                if (item.getAmount() < 0) {
+                    item.setAmount(0);
+                }
+            }
+            item.save();
         }
     }
 
