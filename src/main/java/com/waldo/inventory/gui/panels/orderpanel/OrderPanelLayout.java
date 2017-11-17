@@ -62,7 +62,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbTotalPriceLbl;
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
-    private AbstractAction tbOrderDetailsAa;
+    private AbstractAction orderDetailsAa;
     private JPanel tbOrderFilePanel;
     /*
      *                  VARIABLES
@@ -238,7 +238,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             tableToolBar.setEnabled(false);
         }
 
-        tbOrderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
+        orderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
         tbDistributorCb.setEnabled(orderSelected && selectedOrder.isPlanned());
 
         tbOrderFlowPanel.updateComponents(selectedOrder);
@@ -284,7 +284,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setOpaque(false); toolBar.setFloatable(false);
         toolBar.setBorder(new EmptyBorder(2,2,2,2));
-        toolBar.add(tbOrderDetailsAa);
+//        toolBar.add(orderDetailsAa);
 
         JPanel makeOrderPanel = new JPanel(new BorderLayout());
         JPanel distributorPanel = new JPanel(new BorderLayout());
@@ -389,7 +389,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
         });
 
-        tbOrderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
+        orderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
@@ -400,7 +400,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
         };
-
         tbOrderFlowPanel = new IOrderFlowPanel(application);
 
         // Tool bars
@@ -462,6 +461,8 @@ public abstract class OrderPanelLayout extends JPanel implements
                 }
             }
         });
+        treeToolBar.addSeparateAction(orderDetailsAa);
+
         tableToolBar = new TopToolBar(application, this);
         tableToolBar.getContentPane().add(createOrderToolbar());
 

@@ -114,6 +114,15 @@ public class IdBToolBar extends JToolBar {
         editAction.setEnabled(enabled);
     }
 
+    public void addSeparateAction(Action action) {
+        addSeparator();
+        addAction(action);
+    }
+
+    public void addAction(Action action) {
+        add(action);
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
