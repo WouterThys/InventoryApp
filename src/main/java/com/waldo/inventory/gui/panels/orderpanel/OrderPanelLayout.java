@@ -333,6 +333,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onTableRowClicked(e);
             }
         });
+        orderItemTable.addColumnRenderer(0, new ITableEditors.OrderItemTooltipRenderer());
         orderItemTable.addColumnCellEditor(1, new ITableEditors.SpinnerEditor() {
             @Override
             public void onValueSet(int value) {

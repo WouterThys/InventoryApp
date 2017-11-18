@@ -88,6 +88,11 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         tableColumn.setCellEditor(editor);
     }
 
+    public void addColumnRenderer(int columnIndex, TableCellRenderer cellRenderer) {
+        TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
+        tableColumn.setCellRenderer(cellRenderer);
+    }
+
     public void addMouseListener(MouseListener listener) {
         table.addMouseListener(listener);
     }
