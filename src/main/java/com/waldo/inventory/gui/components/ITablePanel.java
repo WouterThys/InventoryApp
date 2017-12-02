@@ -29,7 +29,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     // Tool bars
     private ITableToolBar<T> tableToolBar;
-    private IdBToolBar dBToolBar;
+    private JToolBar toolBar;
     private boolean dbToolBarAdded;
 
     // Title
@@ -137,27 +137,27 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     // Tool bars
     public void setDbToolBar(IdBToolBar.IdbToolBarListener listener) {
-        addDbToolBar(new IdBToolBar(listener, IdBToolBar.HORIZONTAL));
+        addToolBar(new IdBToolBar(listener, IdBToolBar.HORIZONTAL));
     }
 
-    public void addDbToolBar(IdBToolBar dBToolBar) {
-        this.dBToolBar = dBToolBar;
+    public void addToolBar(JToolBar toolBar) {
+        this.toolBar = toolBar;
         if (!dbToolBarAdded) {
-            westPanel.add(dBToolBar);
+            westPanel.add(this.toolBar);
             dbToolBarAdded = true;
         }
     }
 
     public void setDbToolBarEnabled(boolean enabled) {
-        if (dBToolBar != null) {
-            dBToolBar.setEnabled(enabled);
+        if (toolBar != null) {
+            toolBar.setEnabled(enabled);
         }
     }
 
     public void setDbToolBarEditDeleteEnabled(boolean enabled) {
-        if (dBToolBar != null) {
-            dBToolBar.setDeleteActionEnabled(enabled);
-            dBToolBar.setEditActionEnabled(enabled);
+        if (toolBar != null && toolBar instanceof IdBToolBar) {
+            ((IdBToolBar)toolBar).setDeleteActionEnabled(enabled);
+            ((IdBToolBar)toolBar).setEditActionEnabled(enabled);
         }
     }
 

@@ -56,14 +56,18 @@ public abstract class OrderPanelLayout extends JPanel implements
     private AbstractAction orderDetailsAa;
     private JPanel tbOrderFilePanel;
 
-    AbstractAction treeAddOrderAa;
-    AbstractAction treeEditOrderAa;
-    AbstractAction treeDeleteOrderAa;
-    AbstractAction treeOrderDetailsAa;
-    AbstractAction treeMoveToOrderedAa;
-    AbstractAction treeMoveToReceivedAa;
-    AbstractAction treeBackToOrderedAa;
-    AbstractAction treeBackToPlannedAa;
+    private AbstractAction treeAddOrderAa;
+    private AbstractAction treeEditOrderAa;
+    private AbstractAction treeDeleteOrderAa;
+    private AbstractAction treeOrderDetailsAa;
+    private AbstractAction treeMoveToOrderedAa;
+    private AbstractAction treeMoveToReceivedAa;
+    private AbstractAction treeBackToOrderedAa;
+    private AbstractAction treeBackToPlannedAa;
+
+    private AbstractAction tableDeleteOderItemAa;
+    private AbstractAction tableEditItemAa;
+    private AbstractAction tableEditReferenceAa;
 
 
     /*
@@ -90,14 +94,18 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     abstract void onSetOrderItemAmount(OrderItem orderItem, int amount);
 
-    abstract void onAddOrderAa();
-    abstract void onEditOrderAa(Order order);
-    abstract void onDeleteOrderAa(Order order);
-    abstract void onOrderDetailsAa(Order order);
-    abstract void onMoveToOrderedAa(Order order);
-    abstract void onMoveToReceivedAa(Order order);
-    abstract void onBackToOrderedAa(Order order);
-    abstract void onBackToPlannedAa(Order order);
+    abstract void onAddOrder();
+    abstract void onEditOrder(Order order);
+    abstract void onDeleteOrder(Order order);
+    abstract void onOrderDetails(Order order);
+    abstract void onMoveToOrdered(Order order);
+    abstract void onMoveToReceived(Order order);
+    abstract void onBackToOrdered(Order order);
+    abstract void onBackToPlanned(Order order);
+
+    abstract void onDeleteOrderItem(OrderItem orderItem);
+    abstract void onEditItem(OrderItem orderItem);
+    abstract void onEditReference(OrderItem orderItem);
 
 
     public Order getSelectedOrder() {
@@ -287,6 +295,62 @@ public abstract class OrderPanelLayout extends JPanel implements
         return orderTbPanel;
     }
 
+    //
+    // Methods
+    //
+    JPopupMenu createOrderPopup(Order order) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem orderHeader = new JMenuItem("Orders", imageResource.readImage("Orders.Tree.Header"));
+        orderHeader.setEnabled(false);
+
+        // Header
+        popupMenu.add(orderHeader);
+        popupMenu.addSeparator();
+
+        // Add update delete
+        popupMenu.add(treeEditOrderAa);
+        popupMenu.add(treeDeleteOrderAa);
+        popupMenu.addSeparator();
+
+        // Details
+        popupMenu.add(treeOrderDetailsAa);
+        popupMenu.addSeparator();
+
+        // State
+        JMenu stateMenu = new JMenu("Order state");
+        if (order.isPlanned()) {
+            stateMenu.add(treeMoveToOrderedAa);
+        } else if (order.isReceived()) {
+            stateMenu.add(treeBackToOrderedAa);
+        } else if (order.isOrdered()) {
+            stateMenu.add(treeMoveToReceivedAa);
+            stateMenu.add(treeBackToPlannedAa);
+        }
+        popupMenu.add(stateMenu);
+
+        return popupMenu;
+    }
+
+    JPopupMenu createOrderItemPopup(OrderItem orderItem) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem header = new JMenuItem("Order item");
+        header.setEnabled(false);
+
+        // Header
+        popupMenu.add(header);
+        popupMenu.addSeparator();
+
+        // Actions
+        popupMenu.add(tableDeleteOderItemAa);
+        popupMenu.addSeparator();
+        popupMenu.add(tableEditItemAa);
+        popupMenu.add(tableEditReferenceAa);
+
+        return popupMenu;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -361,7 +425,6 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application, this);
-        //orderItemDetailPanel = new OrderItemDetailPanel(application);
 
         // Tool bar
         tbOrderNameLbl = new ILabel();
@@ -389,7 +452,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         orderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onOrderDetailsAa(selectedOrder);
+                onOrderDetails(selectedOrder);
             }
         };
         tbOrderFlowPanel = new IOrderFlowPanel(application);
@@ -398,49 +461,68 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeAddOrderAa = new AbstractAction("Add order", imageResource.readImage("Orders.Tree.AddOrder")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onAddOrderAa();
+                onAddOrder();
             }
         };
         treeEditOrderAa = new AbstractAction("Edit order", imageResource.readImage("Orders.Tree.EditOrder")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onEditOrderAa(getSelectedOrder());
+                onEditOrder(getSelectedOrder());
             }
         };
         treeDeleteOrderAa = new AbstractAction("Delete order", imageResource.readImage("Orders.Tree.DeleteOrder")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onDeleteOrderAa(getSelectedOrder());
+                onDeleteOrder(getSelectedOrder());
             }
         };
         treeOrderDetailsAa = new AbstractAction("Order details", imageResource.readImage("Orders.Tree.OrderDetails")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onOrderDetailsAa(getSelectedOrder());
+                onOrderDetails(getSelectedOrder());
             }
         };
         treeMoveToOrderedAa = new AbstractAction("Order ordered", imageResource.readImage("Orders.Tree.MoveToOrdered")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onMoveToOrderedAa(getSelectedOrder());
+                onMoveToOrdered(getSelectedOrder());
             }
         };
         treeMoveToReceivedAa = new AbstractAction("Order received", imageResource.readImage("Orders.Tree.MoveToReceived")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onMoveToReceivedAa(getSelectedOrder());
+                onMoveToReceived(getSelectedOrder());
             }
         };
         treeBackToOrderedAa = new AbstractAction("Back to ordered", imageResource.readImage("Orders.Tree.BackToOrdered")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onBackToOrderedAa(getSelectedOrder());
+                onBackToOrdered(getSelectedOrder());
             }
         };
         treeBackToPlannedAa = new AbstractAction("Back to planned", imageResource.readImage("Orders.Tree.BackToPlanned")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onBackToPlannedAa(getSelectedOrder());
+                onBackToPlanned(getSelectedOrder());
+            }
+        };
+
+        tableDeleteOderItemAa = new AbstractAction("Delete order item", imageResource.readImage("Orders.Table.Delete")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDeleteOrderItem(orderItemTable.getSelectedItem());
+            }
+        };
+        tableEditItemAa = new AbstractAction("Edit item", imageResource.readImage("Orders.Table.EditItem")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditItem(orderItemTable.getSelectedItem());
+            }
+        };
+        tableEditReferenceAa = new AbstractAction("Edit reference", imageResource.readImage("Orders.Table.Reference")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditReference(orderItemTable.getSelectedItem());
             }
         };
 

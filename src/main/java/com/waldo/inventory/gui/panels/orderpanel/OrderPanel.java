@@ -58,6 +58,7 @@ public class OrderPanel extends OrderPanelLayout {
         return tableModel;
     }
 
+
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         for (Item item : itemsToOrder) {
@@ -343,40 +344,6 @@ public class OrderPanel extends OrderPanelLayout {
         };
     }
 
-    private JPopupMenu createOrderPopup(Order order) {
-        JPopupMenu popupMenu = new JPopupMenu();
-
-        JMenuItem orderHeader = new JMenuItem("Orders", imageResource.readImage("Orders.Tree.Header"));
-        orderHeader.setEnabled(false);
-
-        // Header
-        popupMenu.add(orderHeader);
-        popupMenu.addSeparator();
-
-        // Add update delete
-        popupMenu.add(treeEditOrderAa);
-        popupMenu.add(treeDeleteOrderAa);
-        popupMenu.addSeparator();
-
-        // Details
-        popupMenu.add(treeOrderDetailsAa);
-        popupMenu.addSeparator();
-
-        // State
-        JMenu stateMenu = new JMenu("Order state");
-        if (order.isPlanned()) {
-            stateMenu.add(treeMoveToOrderedAa);
-        } else if (order.isReceived()) {
-            stateMenu.add(treeBackToOrderedAa);
-        } else if (order.isOrdered()) {
-            stateMenu.add(treeMoveToReceivedAa);
-            stateMenu.add(treeBackToPlannedAa);
-        }
-        popupMenu.add(stateMenu);
-
-        return popupMenu;
-    }
-
     private void checkOrderedItemsLocations(Order order) {
         if (order.isReceived()) {
             // Find items without location
@@ -405,6 +372,57 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
+    private boolean validateOrderlines(Order order) {
+        List<String> errors = checkOrder(order);
+        if (errors.size() > 0) {
+            showErrors(errors);
+            return false;
+        }
+        return true;
+    }
+
+    private List<String> checkOrder(Order order) {
+        List<String> errorList = new ArrayList<>();
+
+        if (order == null) {
+            errorList.add(" - No order selected..");
+        } else {
+            if (order.getDistributor() == null) {
+                errorList.add(" - Order had no distributor..");
+            } else {
+                if (order.getDistributor().getOrderFileFormat() == null || order.getDistributor().getOrderFileFormat().isUnknown()) {
+                    errorList.add(" - Order's distributor had no selected file format");
+                } else {
+                    if (order.getOrderItems().size() < 1) {
+                        errorList.add(" - Order has no items..");
+                    } else {
+                        List<OrderItem> errorItems = order.missingOrderReferences();
+                        if (errorItems.size() > 0) {
+                            errorList.add(" - Next order items have no reference: ");
+                            for (OrderItem oi : errorItems) {
+                                errorList.add(" \t * " + oi.getItem().getName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return errorList;
+    }
+
+    private void showErrors(List<String> errorList) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Creation of order file failed with next ").append(errorList.size()).append("error(s): ").append("\n");
+        for (String error : errorList) {
+            builder.append(error).append("\n");
+        }
+
+        JOptionPane.showMessageDialog(this,
+                builder.toString(),
+                "Order file errors",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
 
     //
     // Actions
@@ -421,7 +439,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onAddOrderAa() {
+    void onAddOrder() {
         OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(), true);
         if (dialog.showDialog() == IDialog.OK) {
             Order o = dialog.getOrder();
@@ -430,7 +448,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onEditOrderAa(Order order) {
+    void onEditOrder(Order order) {
         if (order != null && order.canBeSaved()) {
             OrdersDialog dialog = new OrdersDialog(application, "Edit order", order);
             if (dialog.showDialog() == IDialog.OK) {
@@ -441,7 +459,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onDeleteOrderAa(Order order) {
+    void onDeleteOrder(Order order) {
         if (order != null && order.canBeSaved()) {
             int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + order.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
@@ -463,7 +481,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onOrderDetailsAa(Order order) {
+    void onOrderDetails(Order order) {
         if (order != null && order.canBeSaved()) {
             OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", order);
             if (order.isReceived()) {
@@ -475,41 +493,43 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onMoveToOrderedAa(Order order) {
+    void onMoveToOrdered(Order order) {
         if (order != null && order.canBeSaved() && !order.isOrdered()) {
-            // Do order
-            order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-            application.beginWait();
-            try {
-                order.updateItemStates();
-            } finally {
-                application.endWait();
-            }
-            order.save();
-
-            int res = JOptionPane.showConfirmDialog(
-                    this,
-                    "Browse order page?",
-                    "Browse",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    imageResource.readImage("Common.WebBrowseBig")
-            );
-            if (res == JOptionPane.YES_OPTION) {
-                // Go to website
-                order.copyOrderLinesToClipboard();
+            // Check
+            if (validateOrderlines(order)) {
+                // Do order
+                order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
+                application.beginWait();
                 try {
-                    order.browseOrderPage();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    order.updateItemStates();
+                } finally {
+                    application.endWait();
+                }
+                order.save();
+
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        "Browse order page?",
+                        "Browse",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        imageResource.readImage("Common.WebBrowseBig")
+                );
+                if (res == JOptionPane.YES_OPTION) {
+                    // Go to website
+                    order.copyOrderLinesToClipboard();
+                    try {
+                        order.browseOrderPage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
         }
     }
 
     @Override
-    void onMoveToReceivedAa(Order order) {
+    void onMoveToReceived(Order order) {
         if (order != null && order.canBeSaved() && !order.isReceived()) {
             // Do receive
             order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -525,7 +545,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onBackToOrderedAa(Order order) {
+    void onBackToOrdered(Order order) {
         if (order != null && order.canBeSaved() && order.isReceived()) {
             int res = JOptionPane.showConfirmDialog(
                     OrderPanel.this,
@@ -549,7 +569,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onBackToPlannedAa(Order order) {
+    void onBackToPlanned(Order order) {
         if (order != null && order.canBeSaved() && order.isOrdered()) {
             int res = JOptionPane.showConfirmDialog(
                     OrderPanel.this,
@@ -570,6 +590,36 @@ public class OrderPanel extends OrderPanelLayout {
                 order.save();
             }
         }
+    }
+
+    @Override
+    void onDeleteOrderItem(OrderItem orderItem) {
+        if (orderItem != null && selectedOrder != null) {
+
+            int res = JOptionPane.showConfirmDialog(
+                    OrderPanel.this,
+                    "Are you sure you want to delete " + orderItem.getName() + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+            if (res == JOptionPane.YES_OPTION) {
+                selectedOrder.removeItemFromList(orderItem);
+                selectedOrderItem = null;
+                selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
+            }
+        }
+    }
+
+    @Override
+    void onEditItem(OrderItem orderItem) {
+        if (orderItem != null) {
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
+            dialog.showDialog();
+        }
+    }
+
+    @Override
+    void onEditReference(OrderItem orderItem) {
+
     }
 
     //
@@ -600,7 +650,8 @@ public class OrderPanel extends OrderPanelLayout {
     void onTableRowClicked(MouseEvent e) {
         if (e.getClickCount() == 1) {
             if (SwingUtilities.isRightMouseButton(e)) {
-
+                JPopupMenu popupMenu = createOrderItemPopup(selectedOrderItem);
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
         if (e.getClickCount() == 2) {
@@ -698,7 +749,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (source.equals(treeToolBar)) {
-            onAddOrderAa();
+            onAddOrder();
         } else {
             if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
                 OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
@@ -721,7 +772,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onToolBarDelete(IdBToolBar source) {
         if (source.equals(treeToolBar)) {
-            onDeleteOrderAa(selectedOrder);
+            onDeleteOrder(selectedOrder);
         } else {
             deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
         }
@@ -730,12 +781,9 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (source.equals(treeToolBar)) {
-            onEditOrderAa(selectedOrder);
+            onEditOrder(selectedOrder);
         } else {
-            if (selectedOrderItem != null) {
-                EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
-                dialog.showDialog();
-            }
+            onEditItem(selectedOrderItem);
         }
     }
 
