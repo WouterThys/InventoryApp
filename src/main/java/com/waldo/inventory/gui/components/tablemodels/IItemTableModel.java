@@ -1,12 +1,18 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.inventory.gui.components.ILabel;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IItemTableModel extends IAbstractTableModel<Item> {
 
@@ -57,6 +63,8 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
         }
         return null;
     }
+
+
 
 
 }

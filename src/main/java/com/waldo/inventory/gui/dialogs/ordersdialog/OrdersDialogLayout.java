@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class OrdersDialogLayout extends IDialog
+abstract class OrdersDialogLayout extends IDialog
         implements GuiInterface, ActionListener, IEditedListener {
 
     /*

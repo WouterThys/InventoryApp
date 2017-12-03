@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class CustomLocationDialogLayout extends IDialog implements
+abstract class CustomLocationDialogLayout extends IDialog implements
         ILocationMapPanel.LocationClickListener,
         ActionListener {
 

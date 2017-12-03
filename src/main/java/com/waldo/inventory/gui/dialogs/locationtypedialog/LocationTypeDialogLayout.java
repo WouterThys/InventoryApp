@@ -17,7 +17,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
-public abstract class LocationTypeDialogLayout extends IDialog implements
+abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
         CacheChangedListener<LocationType>,
         IObjectSearchPanel.IObjectSearchListener,

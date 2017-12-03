@@ -14,7 +14,7 @@ import static com.waldo.inventory.database.settings.SettingsManager.*;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
-public abstract class SettingsDialogLayout extends IDialog {
+abstract class SettingsDialogLayout extends IDialog {
 
     /*
      *                  COMPONENTS

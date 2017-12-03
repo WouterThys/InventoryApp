@@ -19,7 +19,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
-public abstract class DistributorsDialogLayout extends IDialog implements
+abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
         CacheChangedListener<Distributor>,
         IObjectSearchPanel.IObjectSearchListener,

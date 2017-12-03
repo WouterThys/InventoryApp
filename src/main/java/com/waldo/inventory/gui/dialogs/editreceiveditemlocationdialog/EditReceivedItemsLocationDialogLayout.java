@@ -15,7 +15,7 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.List;
 
-public abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements ItemListener, ListSelectionListener {
+abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements ItemListener, ListSelectionListener {
 
     /*
     *                  COMPONENTS

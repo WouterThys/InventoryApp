@@ -9,7 +9,7 @@ import com.waldo.inventory.gui.components.ITextField;
 
 import java.awt.*;
 
-public abstract class EditOrderFileFormatDialogLayout extends IDialog implements IEditedListener {
+abstract class EditOrderFileFormatDialogLayout extends IDialog implements IEditedListener {
 
     /*
     *                  COMPONENTS

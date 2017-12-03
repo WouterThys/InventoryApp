@@ -18,7 +18,7 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class LogsDialogLayout extends IDialog implements
+abstract class LogsDialogLayout extends IDialog implements
         ItemListener,
         ListSelectionListener,
         ActionListener {

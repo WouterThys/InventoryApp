@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class OrderPcbItemDialogLayout extends IDialog implements
+abstract class OrderPcbItemDialogLayout extends IDialog implements
         OrderPcbItemPanel.PcbItemListener,
         OrderedPcbItemsPanel.OrderListener {
 

@@ -13,7 +13,7 @@ import java.awt.event.ItemListener;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class EditItemLocationLayout extends IDialog implements ItemListener {
+abstract class EditItemLocationLayout extends IDialog implements ItemListener {
 
     /*
     *                  COMPONENTS
