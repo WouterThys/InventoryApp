@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListener {
+abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListener {
 
     enum SubDivisionType {
         Unknown,
@@ -26,10 +26,10 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements IEdite
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    IComboBox<Category> categoryCb;
-    IComboBox<Product> productCb;
+    private IComboBox<Category> categoryCb;
+    private IComboBox<Product> productCb;
 
-    ITextField nameTf;
+    private ITextField nameTf;
 
     /*
      *                  VARIABLES
@@ -56,10 +56,6 @@ public abstract class SubDivisionsDialogLayout extends IDialog implements IEdite
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    void updateEnabledComponents() {
-
-    }
 
     private void createCategoryCb() {
         List<Category> categories = new ArrayList<>();

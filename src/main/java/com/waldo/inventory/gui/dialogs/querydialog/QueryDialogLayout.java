@@ -7,7 +7,7 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class QueryDialogLayout extends IDialog {
+abstract class QueryDialogLayout extends IDialog {
 
     private QueryPanel queryPanel;
 

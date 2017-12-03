@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class KiCadDialogLayout extends IDialog implements ActionListener, ListSelectionListener, ChangeListener {
+abstract class KiCadDialogLayout extends IDialog implements ActionListener, ListSelectionListener, ChangeListener {
 
     /*
     *                  COMPONENTS

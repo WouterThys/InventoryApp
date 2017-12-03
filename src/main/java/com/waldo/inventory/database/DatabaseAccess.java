@@ -472,12 +472,14 @@ public class DatabaseAccess {
     public void insert(DbObject object) {
         object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
-            DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
-            try {
-                workList.put(toInsert);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
+                try {
+                    workList.put(toInsert);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             // Just write it into cache
             object.setId(cacheOnlyFakedId);
@@ -489,12 +491,14 @@ public class DatabaseAccess {
     public void update(DbObject object) {
         object.getAud().setUpdated(loggedUser);
         if (!Main.CACHE_ONLY) {
-            DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
-            try {
-                workList.put(toUpdate);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
+                try {
+                    workList.put(toUpdate);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             // Just update into cache
             object.tableChanged(OBJECT_UPDATE);
@@ -503,12 +507,14 @@ public class DatabaseAccess {
 
     public void delete(DbObject object) {
         if (!Main.CACHE_ONLY) {
-            DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
-            try {
-                workList.put(toDelete);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
+                try {
+                    workList.put(toDelete);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             // Just delete
             object.tableChanged(OBJECT_DELETE);

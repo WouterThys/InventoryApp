@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
-public abstract class OrderSearchItemDialogLayout extends IDialog implements
+abstract class OrderSearchItemDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener,
         ListSelectionListener {
 

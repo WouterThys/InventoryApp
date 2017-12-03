@@ -14,7 +14,7 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class ReadCsvDialogLayout extends IDialog implements GuiInterface {
+abstract class ReadCsvDialogLayout extends IDialog implements GuiInterface {
 
 
 

@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
+abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
 
     private JScrollPane orderPane;
     private JScrollPane pcbPane;
