@@ -1,0 +1,17 @@
+#if (${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import com.waldo.inventory.gui.Application;
+
+public class ${NAME} extends ${NAME}Layout {
+
+
+    public ${NAME}(Application application, String title) {
+        super(application, title);
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents(null);
+
+    }
+
+}
