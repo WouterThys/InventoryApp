@@ -1,0 +1,77 @@
+#if (${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import com.waldo.inventory.database.DbManager;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+
+import static com.waldo.inventory.database.DbManager.db;
+
+public class ${NAME} extends DbObject {
+
+    public static final String TABLE_NAME = "TODO";
+
+    // Variables
+    
+
+    public ${NAME}() {
+        super(TABLE_NAME);
+    }
+
+
+    @Override
+    public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = 1;
+        
+        // Add paramaters
+        
+        return ndx;
+    }
+
+    @Override
+    public ${NAME} createCopy(DbObject copyInto) {
+        ${NAME} cpy = (${NAME}) copyInto;
+        copyBaseFields(cpy);
+       
+        // Add variables
+       
+        return cpy;
+    }
+
+    @Override
+    public ${NAME} createCopy() {
+        return createCopy(new ${NAME}());
+    }
+
+    //
+    // DbManager tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DbManager.OBJECT_INSERT: {
+
+                break;
+            }
+            case DbManager.OBJECT_UPDATE: {
+            
+                break;
+            }
+            case DbManager.OBJECT_DELETE: {
+               
+                break;
+            }
+        }
+    }
+
+    public static ${NAME} getUnknown${NAME}() {
+        ${NAME} u = new ${NAME}();
+        u.setName(UNKNOWN_NAME);
+        u.setId(UNKNOWN_ID);
+        u.setCanBeSaved(false);
+        return u;
+    }
+
+    // Getters and setters
+}

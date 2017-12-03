@@ -7,30 +7,25 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
-import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
-import com.waldo.inventory.gui.panels.orderpanel.orderitemdetailpanel.OrderItemDetailPanel;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -45,25 +40,36 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ITable orderItemTable;
+    private ITablePanel<OrderItem> orderItemTable;
     IOrderItemTableModel tableModel;
 
     ITree ordersTree;
     private IDbObjectTreeModel<Order> treeModel;
     ItemDetailPanel itemDetailPanel;
-    OrderItemDetailPanel orderItemDetailPanel;
+    //OrderItemDetailPanel orderItemDetailPanel;
 
-    private IdBToolBar treeToolBar;
-    TopToolBar tableToolBar;
-    private JToolBar bottomToolBar;
+    IdBToolBar treeToolBar;
     private JPanel orderTbPanel;
     IOrderFlowPanel tbOrderFlowPanel;
-    private ILabel tbTotalItemsLbl;
-    private ILabel tbTotalPriceLbl;
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
-    private AbstractAction tbOrderDetailsAa;
+    private AbstractAction orderDetailsAa;
     private JPanel tbOrderFilePanel;
+
+    private AbstractAction treeAddOrderAa;
+    private AbstractAction treeEditOrderAa;
+    private AbstractAction treeDeleteOrderAa;
+    private AbstractAction treeOrderDetailsAa;
+    private AbstractAction treeMoveToOrderedAa;
+    private AbstractAction treeMoveToReceivedAa;
+    private AbstractAction treeBackToOrderedAa;
+    private AbstractAction treeBackToPlannedAa;
+
+    private AbstractAction tableDeleteOderItemAa;
+    private AbstractAction tableEditItemAa;
+    private AbstractAction tableEditReferenceAa;
+
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -82,6 +88,25 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    abstract void onTreeRightClick(MouseEvent e);
+    abstract void onTableRowClicked(MouseEvent e);
+
+    abstract void onSetOrderItemAmount(OrderItem orderItem, int amount);
+
+    abstract void onAddOrder();
+    abstract void onEditOrder(Order order);
+    abstract void onDeleteOrder(Order order);
+    abstract void onOrderDetails(Order order);
+    abstract void onMoveToOrdered(Order order);
+    abstract void onMoveToReceived(Order order);
+    abstract void onBackToOrdered(Order order);
+    abstract void onBackToPlanned(Order order);
+
+    abstract void onDeleteOrderItem(OrderItem orderItem);
+    abstract void onEditItem(OrderItem orderItem);
+    abstract void onEditReference(OrderItem orderItem);
+
 
     public Order getSelectedOrder() {
         return selectedOrder;
@@ -190,16 +215,15 @@ public abstract class OrderPanelLayout extends JPanel implements
     }
 
     public void tableSelectOrderItem(OrderItem orderItem) {
-        if (orderItem != null) {
-            int modelNdx = tableModel.getItemList().indexOf(orderItem);
-            if (modelNdx >= 0) {
-                int tableNdx = orderItemTable.convertRowIndexToView(modelNdx);
-                orderItemTable.setRowSelectionInterval(tableNdx, tableNdx);
-                orderItemTable.scrollRectToVisible(new Rectangle(orderItemTable.getCellRect(tableNdx, 0, true)));
-            }
-        } else {
-            orderItemTable.clearSelection();
-        }
+        orderItemTable.selectItem(orderItem);
+    }
+
+    OrderItem tableGetSelectedItem() {
+        return orderItemTable.getSelectedItem();
+    }
+
+    List<OrderItem> tableGetAllSelectedOrderItems() {
+        return orderItemTable.getAllSelectedItems();
     }
 
 
@@ -208,16 +232,12 @@ public abstract class OrderPanelLayout extends JPanel implements
     //
     void updateToolBar(Order order) {
         if (order != null) {
-            tbTotalItemsLbl.setText(String.valueOf(order.getOrderItems().size()));
-            tbTotalPriceLbl.setText(String.valueOf(order.getTotalPrice()));
             tbOrderNameLbl.setText(order.getName());
 
             if (order.getDistributor() != null) {
                 tbDistributorCb.setSelectedItem(order.getDistributor());
             }
         } else {
-            tbTotalItemsLbl.setText("");
-            tbTotalPriceLbl.setText("");
             tbOrderNameLbl.setText("");
             tbDistributorCb.setSelectedItem(null);
         }
@@ -231,14 +251,13 @@ public abstract class OrderPanelLayout extends JPanel implements
         treeToolBar.setDeleteActionEnabled(orderSelected);
 
         if (orderSelected) {
-            tableToolBar.setEnabled(true);
-            tableToolBar.setEditActionEnabled(itemSelected);
-            tableToolBar.setDeleteActionEnabled(itemSelected);
+            orderItemTable.setDbToolBarEnabled(true);
+            orderItemTable.setDbToolBarEditDeleteEnabled(itemSelected);
         } else {
-            tableToolBar.setEnabled(false);
+            orderItemTable.setDbToolBarEnabled(true);
         }
 
-        tbOrderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
+        orderDetailsAa.setEnabled(orderSelected && !selectedOrder.isPlanned());
         tbDistributorCb.setEnabled(orderSelected && selectedOrder.isPlanned());
 
         tbOrderFlowPanel.updateComponents(selectedOrder);
@@ -249,33 +268,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbOrderFilePanel.setVisible(true);
     }
 
-    private void createInfoToolBar() {
-        JPanel amountPanel = new JPanel(new GridBagLayout());
-        JPanel datesPanel = new JPanel(new GridBagLayout());
-
-        amountPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        datesPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 20);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Total items
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        amountPanel.add(tbTotalItemsLbl, gbc);
-
-        // Total price
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        amountPanel.add(tbTotalPriceLbl, gbc);
-
-        // Add to toolbar
-        bottomToolBar.add(datesPanel);
-        bottomToolBar.add(Box.createHorizontalGlue());
-        bottomToolBar.add(amountPanel);
-    }
-
     private JPanel createOrderToolbar() {
         tbOrderFilePanel = new JPanel(new GridBagLayout());
 
@@ -284,7 +276,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setOpaque(false); toolBar.setFloatable(false);
         toolBar.setBorder(new EmptyBorder(2,2,2,2));
-        toolBar.add(tbOrderDetailsAa);
 
         JPanel makeOrderPanel = new JPanel(new BorderLayout());
         JPanel distributorPanel = new JPanel(new BorderLayout());
@@ -297,12 +288,67 @@ public abstract class OrderPanelLayout extends JPanel implements
         makeOrderPanel.add(distributorPanel, BorderLayout.SOUTH);
 
         // Create panel
-        orderTbPanel = new JPanel(new BorderLayout());
-        orderTbPanel.add(makeOrderPanel, BorderLayout.WEST);
-        orderTbPanel.add(tbOrderFlowPanel, BorderLayout.EAST);
+        orderTbPanel = new JPanel();
+        orderTbPanel.add(makeOrderPanel);
         orderTbPanel.setVisible(false);
 
         return orderTbPanel;
+    }
+
+    //
+    // Methods
+    //
+    JPopupMenu createOrderPopup(Order order) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem orderHeader = new JMenuItem("Orders", imageResource.readImage("Orders.Tree.Header"));
+        orderHeader.setEnabled(false);
+
+        // Header
+        popupMenu.add(orderHeader);
+        popupMenu.addSeparator();
+
+        // Add update delete
+        popupMenu.add(treeEditOrderAa);
+        popupMenu.add(treeDeleteOrderAa);
+        popupMenu.addSeparator();
+
+        // Details
+        popupMenu.add(treeOrderDetailsAa);
+        popupMenu.addSeparator();
+
+        // State
+        JMenu stateMenu = new JMenu("Order state");
+        if (order.isPlanned()) {
+            stateMenu.add(treeMoveToOrderedAa);
+        } else if (order.isReceived()) {
+            stateMenu.add(treeBackToOrderedAa);
+        } else if (order.isOrdered()) {
+            stateMenu.add(treeMoveToReceivedAa);
+            stateMenu.add(treeBackToPlannedAa);
+        }
+        popupMenu.add(stateMenu);
+
+        return popupMenu;
+    }
+
+    JPopupMenu createOrderItemPopup(OrderItem orderItem) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem header = new JMenuItem("Order item");
+        header.setEnabled(false);
+
+        // Header
+        popupMenu.add(header);
+        popupMenu.addSeparator();
+
+        // Actions
+        popupMenu.add(tableDeleteOderItemAa);
+        popupMenu.addSeparator();
+        popupMenu.add(tableEditItemAa);
+        popupMenu.add(tableEditReferenceAa);
+
+        return popupMenu;
     }
 
     /*
@@ -326,47 +372,61 @@ public abstract class OrderPanelLayout extends JPanel implements
         ordersTree = new ITree(treeModel);
         ordersTree.addTreeSelectionListener(this);
         ordersTree.setCellRenderer(ITree.getOrdersRenderer());
+        ordersTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = ordersTree.getClosestRowForLocation(e.getX(), e.getY());
+                    ordersTree.setSelectionRow(row);
+                    onTreeRightClick(e);
+                }
+            }
+        });
         treeModel.setTree(ordersTree);
 
         // Item table
         tableModel = new IOrderItemTableModel();
-        orderItemTable = new ITable<OrderItem>(tableModel) {
+        orderItemTable = new ITablePanel<>(tableModel, this);
+        orderItemTable.setExactColumnWidth(0, 25); // Icon
+        orderItemTable.setExactColumnWidth(1, 50); // Amount spinner
+        orderItemTable.setDbToolBar(this);
+        orderItemTable.setDbToolBarEnabled(false);
+        orderItemTable.addMouseListener(new MouseAdapter() {
             @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component component = super.prepareRenderer(renderer, row, column);
-                OrderItem o = (OrderItem) getValueAtRow(row);
-
-                if (!isRowSelected(row)) {
-                    component.setBackground(getBackground());
-                    if (o.getItem().isDiscourageOrder()) {
-                        component.setBackground(colorResource.readColor("Red.Light"));
-                    } else {
-                        component.setBackground(getBackground());
-                    }
-                }
-
-                return component;
+            public void mouseClicked(MouseEvent e) {
+                onTableRowClicked(e);
             }
-        };
-
-        orderItemTable.getSelectionModel().addListSelectionListener(this);
-        orderItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
+        });
+        orderItemTable.addColumnRenderer(0, new ITableEditors.OrderItemTooltipRenderer());
+        orderItemTable.addColumnCellEditor(1, new ITableEditors.SpinnerEditor() {
+            @Override
+            public void onValueSet(int value) {
+                onSetOrderItemAmount(orderItemTable.getSelectedItem(), value);
+            }
+        });
+//        { TODO: in new ITablePanel something to override the prepareRenderer method
+//            @Override
+//            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+//                Component component = super.prepareRenderer(renderer, row, column);
+//                OrderItem o = (OrderItem) getValueAtRow(row);
+//
+//                if (!isRowSelected(row)) {
+//                    component.setBackground(getBackground());
+//                    if (o.getItem().isDiscourageOrder()) {
+//                        component.setBackground(colorResource.readColor("Red.Light"));
+//                    } else {
+//                        component.setBackground(getBackground());
+//                    }
+//                }
+//
+//                return component;
+//            }
+//        };
 
         // Details
         itemDetailPanel = new ItemDetailPanel(application, this);
-        orderItemDetailPanel = new OrderItemDetailPanel(application);
 
         // Tool bar
-        tbTotalPriceLbl = new ILabel();
-        tbTotalPriceLbl.setEnabled(false);
-        tbTotalPriceLbl.setHorizontalAlignment(ILabel.RIGHT);
-        tbTotalPriceLbl.setVerticalAlignment(ILabel.CENTER);
-
-        tbTotalItemsLbl = new ILabel();
-        tbTotalItemsLbl.setEnabled(false);
-        tbTotalItemsLbl.setHorizontalAlignment(ILabel.LEFT);
-        tbTotalItemsLbl.setVerticalAlignment(ILabel.CENTER);
-
         tbOrderNameLbl = new ILabel();
         Font f = tbOrderNameLbl.getFont();
         tbOrderNameLbl.setFont(new Font(f.getName(), Font.BOLD, 20));
@@ -389,89 +449,87 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
         });
 
-        tbOrderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
+        orderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
-                if (selectedOrder.isReceived()) {
-                    dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
-                } else {
-                    dialog.showDialog();
-                }
+                onOrderDetails(selectedOrder);
+            }
+        };
+        tbOrderFlowPanel = new IOrderFlowPanel(application);
+
+        // Actions
+        treeAddOrderAa = new AbstractAction("Add order", imageResource.readImage("Orders.Tree.AddOrder")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAddOrder();
+            }
+        };
+        treeEditOrderAa = new AbstractAction("Edit order", imageResource.readImage("Orders.Tree.EditOrder")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditOrder(getSelectedOrder());
+            }
+        };
+        treeDeleteOrderAa = new AbstractAction("Delete order", imageResource.readImage("Orders.Tree.DeleteOrder")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDeleteOrder(getSelectedOrder());
+            }
+        };
+        treeOrderDetailsAa = new AbstractAction("Order details", imageResource.readImage("Orders.Tree.OrderDetails")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOrderDetails(getSelectedOrder());
+            }
+        };
+        treeMoveToOrderedAa = new AbstractAction("Order ordered", imageResource.readImage("Orders.Tree.MoveToOrdered")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onMoveToOrdered(getSelectedOrder());
+            }
+        };
+        treeMoveToReceivedAa = new AbstractAction("Order received", imageResource.readImage("Orders.Tree.MoveToReceived")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onMoveToReceived(getSelectedOrder());
+            }
+        };
+        treeBackToOrderedAa = new AbstractAction("Back to ordered", imageResource.readImage("Orders.Tree.BackToOrdered")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onBackToOrdered(getSelectedOrder());
+            }
+        };
+        treeBackToPlannedAa = new AbstractAction("Back to planned", imageResource.readImage("Orders.Tree.BackToPlanned")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onBackToPlanned(getSelectedOrder());
             }
         };
 
-        tbOrderFlowPanel = new IOrderFlowPanel(application);
+        tableDeleteOderItemAa = new AbstractAction("Delete order item", imageResource.readImage("Orders.Table.Delete")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDeleteOrderItem(orderItemTable.getSelectedItem());
+            }
+        };
+        tableEditItemAa = new AbstractAction("Edit item", imageResource.readImage("Orders.Table.EditItem")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditItem(orderItemTable.getSelectedItem());
+            }
+        };
+        tableEditReferenceAa = new AbstractAction("Edit reference", imageResource.readImage("Orders.Table.Reference")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditReference(orderItemTable.getSelectedItem());
+            }
+        };
 
         // Tool bars
-        treeToolBar = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
-            @Override
-            public void onToolBarRefresh(IdBToolBar source) {
+        treeToolBar = new IdBToolBar(this);
+        treeToolBar.addSeparateAction(orderDetailsAa);
 
-                treeRecreateNodes();
-                final long orderId = treeUpdate();
-                final long orderItemId = tableUpdate();
-
-                SwingUtilities.invokeLater(() -> {
-                    selectedOrder = SearchManager.sm().findOrderById(orderId);
-                    treeSelectOrder(selectedOrder);
-                    selectedOrderItem = SearchManager.sm().findOrderItemById(orderItemId);
-                    tableSelectOrderItem(selectedOrderItem);
-                });
-            }
-
-            @Override
-            public void onToolBarAdd(IdBToolBar source) {
-                OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(), true);
-                if (dialog.showDialog() == IDialog.OK) {
-                    Order o = dialog.getOrder();
-                    o.save();
-                }
-            }
-
-            @Override
-            public void onToolBarDelete(IdBToolBar source) {
-                if (selectedOrder != null) {
-                    int res = JOptionPane.showConfirmDialog(OrderPanelLayout.this, "Are you sure you want to delete \"" + selectedOrder.getName() + "\"?");
-                    if (res == JOptionPane.OK_OPTION) {
-                        SwingUtilities.invokeLater(() -> {
-                            List<OrderItem> orderItems = selectedOrder.getOrderItems();
-
-                            selectedOrder.delete(); // Cascaded delete will delete order items too
-                            selectedOrder = null;
-                            selectedOrderItem = null;
-
-                            // Do this after delete: items will not be updated in change listener for orders
-                            for (OrderItem orderItem : orderItems) {
-                                orderItem.getItem().setOrderState(Statics.ItemOrderStates.NONE);
-                                orderItem.getItem().save();
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onToolBarEdit(IdBToolBar source) {
-                if (selectedOrder != null) {
-                    OrdersDialog dialog = new OrdersDialog(application, "Edit order", selectedOrder);
-                    if (dialog.showDialog() == IDialog.OK) {
-                        Order o = dialog.getOrder();
-                        o.save();
-                    }
-                }
-            }
-        });
-        tableToolBar = new TopToolBar(application, this);
-        tableToolBar.getContentPane().add(createOrderToolbar());
-
-        // Create bottom toolbar
-        bottomToolBar = new JToolBar(JToolBar.HORIZONTAL);
-        bottomToolBar.setFloatable(false);
-        bottomToolBar.setOpaque(false);
-        bottomToolBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-
-        createInfoToolBar();
     }
 
     @Override
@@ -485,25 +543,25 @@ public abstract class OrderPanelLayout extends JPanel implements
         JPanel westPanel = new JPanel(new BorderLayout());
 
         tablePanel.add(new JScrollPane(orderItemTable), BorderLayout.CENTER);
-        tablePanel.add(bottomToolBar, BorderLayout.PAGE_END);
 
         centerPanel.add(tablePanel, BorderLayout.CENTER);
 
         detailPanels.add(itemDetailPanel, BorderLayout.CENTER);
-        detailPanels.add(orderItemDetailPanel, BorderLayout.EAST);
+        //detailPanels.add(orderItemDetailPanel, BorderLayout.EAST);
         detailPanels.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(2, 3, 2, 3),
                 BorderFactory.createLineBorder(Color.GRAY, 1)
         ));
 
         centerPanel.add(detailPanels, BorderLayout.SOUTH);
-        centerPanel.add(tableToolBar, BorderLayout.PAGE_START);
+        orderItemTable.getTitlePanel().add(createOrderToolbar(), BorderLayout.CENTER);
 
         ordersTree.setPreferredSize(new Dimension(300, 200));
         JScrollPane pane = new JScrollPane(ordersTree);
+        westPanel.add(tbOrderFlowPanel, BorderLayout.PAGE_START);
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(treeToolBar, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(200, 200));
+        westPanel.setMinimumSize(new Dimension(280, 200));
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
@@ -523,9 +581,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 if (selectedOrder == null || !selectedOrder.equals(object[0])) {
                     selectedOrder = (Order) object[0];
                     tableInitialize(selectedOrder);
-
-                    // Search list
-                    tableToolBar.setSearchList(new ArrayList<>(selectedOrder.getOrderItems()));
                 }
             }
 
@@ -536,15 +591,8 @@ public abstract class OrderPanelLayout extends JPanel implements
             // Update detail panel
             if (selectedOrderItem != null) {
                 itemDetailPanel.updateComponents(selectedOrderItem.getItem());
-                if (selectedOrder != null && !selectedOrder.isOrdered()) {
-                    orderItemDetailPanel.updateComponents(selectedOrderItem);
-                    itemDetailPanel.setRemarksPanelVisible(false);
-                } else {
-                    itemDetailPanel.setRemarksPanelVisible(true);
-                }
             } else {
                 itemDetailPanel.updateComponents();
-                orderItemDetailPanel.updateComponents();
             }
             updateVisibleComponents();
             updateEnabledComponents();

@@ -1,5 +1,7 @@
 package com.waldo.inventory.database.classes;
 
+import com.waldo.inventory.Main;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -15,21 +17,27 @@ public class DbQueue<T extends DbQueueObject> {
 
     public synchronized void put(T element) throws InterruptedException {
         while (queue.size() >= capacity) {
+            if (Main.DEBUG_MODE) System.out.println("DB QUEUE -> MAX CAPACITY");
             wait();
         }
+
         if (!stopped) {
+            if (Main.DEBUG_MODE) System.out.println("DB QUEUE -> ADD ELEMENT ID=" + element.getObject().getId());
             queue.add(element);
-            notify(); // notifyAll??
+            notifyAll();
         }
     }
 
     public synchronized T take() throws InterruptedException {
         while (queue.isEmpty()) {
-            wait(2000);
+            if (Main.DEBUG_MODE) System.out.println("DB QUEUE -> EMPTY");
+            wait();
         }
+
         if (!stopped) {
             T item = queue.remove();
-            notify();
+            if (Main.DEBUG_MODE) System.out.println("DB QUEUE -> REMOVE ELEMENT ID=" + item.getObject().getId());
+            notifyAll();
             return item;
         }
         return null;
@@ -37,7 +45,7 @@ public class DbQueue<T extends DbQueueObject> {
 
     public synchronized void stop() {
         stopped = true;
-        notify();
+        notifyAll();
     }
 
     public synchronized int size() {

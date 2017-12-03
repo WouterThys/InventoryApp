@@ -82,18 +82,18 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     //
     // Pcb item table
     //
-    void pcbTableInit(List<PcbItem> pcbItemList) {
+    private void pcbTableInit(List<PcbItem> pcbItemList) {
         if (pcbItemList != null) {
             linkedPcbItemModel.setItemList(pcbItemList);
             linkedPcbItemTable.setRowSelectionInterval(0,0);
         }
     }
 
-    void pcbTableUpdate() {
+    private void pcbTableUpdate() {
         linkedPcbItemModel.updateTable();
     }
 
-    PcbItem pcbTableGetSelected() {
+    private PcbItem pcbTableGetSelected() {
         return linkedPcbItemTable.getSelectedItem();
     }
 
@@ -233,8 +233,8 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     }
 
     /*
-         *                  LISTENERS
-         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Table

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
@@ -8,9 +7,14 @@ import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +29,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     // Tool bars
     private ITableToolBar<T> tableToolBar;
-    private IdBToolBar dBToolBar;
+    private JToolBar toolBar;
     private boolean dbToolBarAdded;
 
     // Title
@@ -79,6 +83,16 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         table.setDefaultRenderer(Object.class, renderer);
     }
 
+    public void addColumnCellEditor(int columnIndex, TableCellEditor editor) {
+        TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
+        tableColumn.setCellEditor(editor);
+    }
+
+    public void addColumnRenderer(int columnIndex, TableCellRenderer cellRenderer) {
+        TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
+        tableColumn.setCellRenderer(cellRenderer);
+    }
+
     public void addMouseListener(MouseListener listener) {
         table.addMouseListener(listener);
     }
@@ -89,6 +103,20 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     public T getSelectedItem() {
         return table.getSelectedItem();
+    }
+
+    public List<T> getAllSelectedItems() {
+        List<T> selectedItems = new ArrayList<>();
+        int[] selectedRows = table.getSelectedRows();
+        if (selectedRows.length > 0) {
+            for (int row : selectedRows) {
+                T t = (T) table.getValueAtRow(row);
+                if (t != null) {
+                    selectedItems.add(t);
+                }
+            }
+        }
+        return selectedItems;
     }
 
     public void selectItem(T item) {
@@ -109,27 +137,27 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     // Tool bars
     public void setDbToolBar(IdBToolBar.IdbToolBarListener listener) {
-        addDbToolBar(new IdBToolBar(listener, IdBToolBar.HORIZONTAL));
+        addToolBar(new IdBToolBar(listener, IdBToolBar.HORIZONTAL));
     }
 
-    public void addDbToolBar(IdBToolBar dBToolBar) {
-        this.dBToolBar = dBToolBar;
+    public void addToolBar(JToolBar toolBar) {
+        this.toolBar = toolBar;
         if (!dbToolBarAdded) {
-            westPanel.add(dBToolBar);
+            westPanel.add(this.toolBar);
             dbToolBarAdded = true;
         }
     }
 
     public void setDbToolBarEnabled(boolean enabled) {
-        if (dBToolBar != null) {
-            dBToolBar.setEnabled(enabled);
+        if (toolBar != null) {
+            toolBar.setEnabled(enabled);
         }
     }
 
     public void setDbToolBarEditDeleteEnabled(boolean enabled) {
-        if (dBToolBar != null) {
-            dBToolBar.setDeleteActionEnabled(enabled);
-            dBToolBar.setEditActionEnabled(enabled);
+        if (toolBar != null && toolBar instanceof IdBToolBar) {
+            ((IdBToolBar)toolBar).setDeleteActionEnabled(enabled);
+            ((IdBToolBar)toolBar).setEditActionEnabled(enabled);
         }
     }
 
@@ -158,6 +186,14 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         }
     }
 
+    public void addSortOption(Comparator comparator) {
+        tableToolBar.addSortComparator(comparator);
+    }
+
+    public JPanel getTitlePanel() {
+        return centerPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -170,10 +206,6 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
         // Toolbar
         tableToolBar = new ITableToolBar<>(table);
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemDivisionComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.DbObjectNameComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemManufacturerComparator());
-        tableToolBar.addSortComparator(new ComparatorUtils.ItemLocationComparator());
 
         // Panels
         centerPanel = new JPanel(new BorderLayout());

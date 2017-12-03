@@ -16,7 +16,7 @@ import java.awt.*;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
-public abstract class ManufacturersDialogLayout extends IDialog implements
+abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
         CacheChangedListener<Manufacturer>,
         IObjectSearchPanel.IObjectSearchListener,

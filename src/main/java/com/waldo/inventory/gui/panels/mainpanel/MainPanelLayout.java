@@ -51,12 +51,8 @@ public abstract class MainPanelLayout extends JPanel implements
     AbstractAction treeEditDivisionAa;
     AbstractAction treeDeleteDivisionAa;
 
-    private AbstractAction editItemAa;
-    private AbstractAction deleteItemAa;
     AbstractAction openDatasheetOnlineAa;
     AbstractAction openDatasheetLocalAa;
-    private AbstractAction orderItemAa;
-    private AbstractAction showHistoryAa;
     JPopupMenu itemPopupMenu;
 
     /*
@@ -286,13 +282,13 @@ public abstract class MainPanelLayout extends JPanel implements
         };
 
         // Table actions
-        editItemAa = new AbstractAction("Edit item", imageResource.readImage("Items.Table.Edit")) {
+        AbstractAction editItemAa = new AbstractAction("Edit item", imageResource.readImage("Items.Table.Edit")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainPanelLayout.this.onToolBarEdit(null);
             }
         };
-        deleteItemAa = new AbstractAction("Delete item", imageResource.readImage("Items.Table.Delete")) {
+        AbstractAction deleteItemAa = new AbstractAction("Delete item", imageResource.readImage("Items.Table.Delete")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainPanelLayout.this.onToolBarDelete(null);
@@ -310,13 +306,13 @@ public abstract class MainPanelLayout extends JPanel implements
                 MainPanelLayout.this.onShowDataSheet(selectedItem, false);
             }
         };
-        orderItemAa = new AbstractAction("Order item", imageResource.readImage("Items.Table.Order")) {
+        AbstractAction orderItemAa = new AbstractAction("Order item", imageResource.readImage("Items.Table.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainPanelLayout.this.onOrderItem(selectedItem);
             }
         };
-        showHistoryAa = new AbstractAction("Show history", imageResource.readImage("Items.Table.History")) {
+        AbstractAction showHistoryAa = new AbstractAction("Show history", imageResource.readImage("Items.Table.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainPanelLayout.this.onShowHistory(selectedItem);
@@ -347,6 +343,10 @@ public abstract class MainPanelLayout extends JPanel implements
                 onTableRowClicked(e);
             }
         });
+        itemTable.addSortOption(new ComparatorUtils.ItemDivisionComparator());
+        itemTable.addSortOption(new ComparatorUtils.DbObjectNameComparator());
+        itemTable.addSortOption(new ComparatorUtils.ItemManufacturerComparator());
+        itemTable.addSortOption(new ComparatorUtils.ItemLocationComparator());
         tableInitialize(null);
 
         // Details

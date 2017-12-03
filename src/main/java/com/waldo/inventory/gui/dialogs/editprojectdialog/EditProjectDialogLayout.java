@@ -21,7 +21,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class EditProjectDialogLayout extends IDialog implements
+abstract class EditProjectDialogLayout extends IDialog implements
         IEditedListener, ProjectGridPanel.GridComponentClicked<ProjectObject>, ActionListener {
 
     /*

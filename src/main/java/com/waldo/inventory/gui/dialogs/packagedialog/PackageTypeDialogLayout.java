@@ -20,7 +20,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static javax.swing.SpringLayout.*;
 
-public abstract class PackageTypeDialogLayout extends IDialog implements
+abstract class PackageTypeDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         ListSelectionListener,

@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class SetItemDialogLayout extends IDialog implements
+abstract class SetItemDialogLayout extends IDialog implements
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
         ActionListener {

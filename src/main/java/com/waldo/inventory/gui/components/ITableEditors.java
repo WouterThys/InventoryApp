@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.dialogs.importfromcsvdialog.TableObject;
 
 import javax.swing.*;
@@ -267,6 +264,44 @@ public class ITableEditors {
             } else {
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
+        }
+    }
+
+    public static class OrderItemTooltipRenderer extends DefaultTableCellRenderer {
+
+        private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
+        private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
+        private static final ImageIcon imageError = imageResource.readImage("Orders.Table.Error");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == 0 && value != null && value instanceof OrderItem) {
+                OrderItem orderItem = (OrderItem) value;
+                ILabel label = new ILabel("", ILabel.CENTER);
+                boolean amountOk = orderItem.getAmount() > 0;
+                    boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;
+                    if (amountOk && referenceOk) {
+                        label.setIcon(imageOk);
+                        label.setToolTipText(null);
+                    } else if (!referenceOk) {
+                        label.setIcon(imageError);
+                        label.setToolTipText("Reference is not set..");
+                    } else {
+                        label.setIcon(imageWarn);
+                        label.setToolTipText("Amount is 0..");
+                    }
+
+                Color cbg = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column).getBackground();
+
+                if (row % 2 == 1 || isSelected) {
+                    label.setBackground(cbg);
+                } else {
+                    label.setBackground(Color.WHITE);
+                }
+                label.setOpaque(true);
+                return label;
+            }
+            return this;
         }
     }
 

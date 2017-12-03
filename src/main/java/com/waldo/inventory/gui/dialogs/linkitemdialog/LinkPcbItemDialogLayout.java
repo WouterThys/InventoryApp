@@ -18,7 +18,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
-public abstract class LinkPcbItemDialogLayout extends IDialog implements
+abstract class LinkPcbItemDialogLayout extends IDialog implements
         IObjectSearchPanel.IObjectSearchListener, ActionListener {
 
     /*

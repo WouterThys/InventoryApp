@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IEditedListener, ActionListener {
+abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IEditedListener, ActionListener {
 
     /*
     *                  COMPONENTS

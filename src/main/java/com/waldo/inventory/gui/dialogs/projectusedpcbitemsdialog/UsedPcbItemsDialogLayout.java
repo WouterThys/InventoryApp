@@ -10,7 +10,7 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class UsedPcbItemsDialogLayout extends IDialog implements
+abstract class UsedPcbItemsDialogLayout extends IDialog implements
         UsedPcbItemPanel.PcbItemListener,
         UsedConfirmedPanel.UsedListener {
 
@@ -53,8 +53,6 @@ public abstract class UsedPcbItemsDialogLayout extends IDialog implements
         // Panels
         pcbItemPnl = new UsedPcbItemPanel(this);
         usedPnl = new UsedConfirmedPanel(this);
-
-
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
+abstract class OrderConfirmDialogLayout extends IDialog implements ActionListener, IEditedListener {
 
     static final String TAB_ORDER_FILE = "Order file ";
     public static final String TAB_ORDER_DETAILS = "Order details";

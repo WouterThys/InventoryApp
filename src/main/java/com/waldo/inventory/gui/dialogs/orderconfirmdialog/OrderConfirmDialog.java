@@ -106,7 +106,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         application.beginWait();
         try {
             order.updateItemStates();
-            order.updateItemAmounts();
+            order.updateItemAmounts(true);
         } finally {
             application.endWait();
         }

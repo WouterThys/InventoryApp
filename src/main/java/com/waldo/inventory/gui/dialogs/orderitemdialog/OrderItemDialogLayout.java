@@ -14,7 +14,7 @@ import java.util.Vector;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class OrderItemDialogLayout extends IDialog implements
+abstract class OrderItemDialogLayout extends IDialog implements
         ActionListener,
         CacheChangedListener<Order> {
 

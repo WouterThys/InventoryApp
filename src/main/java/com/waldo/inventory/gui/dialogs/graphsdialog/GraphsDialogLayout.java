@@ -31,7 +31,7 @@ import java.util.TreeMap;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class GraphsDialogLayout extends IDialog {
+abstract class GraphsDialogLayout extends IDialog {
 
     private static final String[] CHARTS = {"Db history"};
 
