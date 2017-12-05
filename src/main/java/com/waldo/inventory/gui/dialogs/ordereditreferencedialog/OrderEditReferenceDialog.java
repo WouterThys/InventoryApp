@@ -38,6 +38,8 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout
                 saveLink();
                 dialogResult = OK;
                 dispose();
+            } else {
+                onCancel();
             }
         } else {
             dialogResult = OK;
@@ -48,7 +50,7 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout
 
     private boolean checkChange() {
         return selectedDistributorPartLink != null &&
-                (selectedDistributorPartLink.getItemRef().equals(
+                (!selectedDistributorPartLink.getItemRef().equals(
                         originalDistributorPartLink.getItemRef()));
     }
 

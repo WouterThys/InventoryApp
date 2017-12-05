@@ -63,7 +63,7 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                 case 4: // Reference
                     DistributorPartLink pn = orderItem.getDistributorPartLink();
                     if (pn != null) {
-                        return pn.getItemRef();
+                        return pn.toString();
                     } else {
                         return "";
                     }

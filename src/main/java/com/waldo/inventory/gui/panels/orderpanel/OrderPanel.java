@@ -622,7 +622,9 @@ public class OrderPanel extends OrderPanelLayout {
     void onEditReference(OrderItem orderItem) {
         if (orderItem != null) {
             OrderEditReferenceDialog dialog = new OrderEditReferenceDialog(application, "Reference", orderItem);
-            dialog.showDialog();
+            if (dialog.showDialog() == IDialog.OK) {
+                tableUpdate();
+            }
         }
     }
 

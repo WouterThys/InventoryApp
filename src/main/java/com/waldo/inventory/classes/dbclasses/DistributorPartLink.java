@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -44,6 +45,22 @@ public class DistributorPartLink extends DbObject {
         statement.setLong(ndx++, getItemId());
         statement.setString(ndx++, getItemRef());
         return ndx;
+    }
+
+    @Override
+    public String toString() {
+        if (id == -1) {
+            if (canBeSaved) {
+                return getItemRef() + "*";
+            }
+        }
+        if (id == UNKNOWN_ID) {
+            return "";
+        }
+        if (Main.DEBUG_MODE) {
+            return getItemRef() + " (" + id + ")";
+        }
+        return getItemRef();
     }
 
     @Override
