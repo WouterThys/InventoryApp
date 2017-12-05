@@ -1,18 +1,24 @@
 package com.waldo.inventory.gui.dialogs.ordereditreferencedialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout {
+public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout
+        implements CacheChangedListener<DistributorPartLink> {
 
     private boolean canClose = true;
 
     public OrderEditReferenceDialog(Application application, String title, OrderItem orderItem) {
         super(application, title);
+
+        CacheManager.cache().addOnDistributorPartLinkChangedListener(this);
 
         initializeComponents();
         initializeLayouts();
@@ -20,13 +26,16 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout {
 
     }
 
+    private void saveLink() {
+        selectedDistributorPartLink.save();
+        originalDistributorPartLink = selectedDistributorPartLink.createCopy();
+    }
+
     private void showSaveDialog() {
         if (selectedDistributorPartLink != null) {
             String msg = selectedDistributorPartLink.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                selectedDistributorPartLink.save();
-                originalDistributorPartLink = selectedDistributorPartLink.createCopy();
-
+                saveLink();
                 dialogResult = OK;
                 dispose();
             }
@@ -61,8 +70,7 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout {
 
     @Override
     protected void onNeutral() {
-        selectedDistributorPartLink.save();
-        originalDistributorPartLink = selectedDistributorPartLink.createCopy();
+        saveLink();
         getButtonNeutral().setEnabled(false);
     }
 
@@ -86,5 +94,35 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout {
             return selectedDistributorPartLink;
         }
         return null;
+    }
+
+
+    //
+    // Listener
+    //
+    @Override
+    public void onInserted(DistributorPartLink link) {
+        if (orderItem.getDistributorPartId() != link.getId()) {
+            orderItem.setDistributorPartId(link.getId());
+            orderItem.save();
+        }
+    }
+
+    @Override
+    public void onUpdated(DistributorPartLink link) {
+        if (orderItem.getDistributorPartId() != link.getId()) {
+            orderItem.setDistributorPartId(link.getId());
+            orderItem.save();
+        }
+    }
+
+    @Override
+    public void onDeleted(DistributorPartLink link) {
+        // Can not happen
+    }
+
+    @Override
+    public void onCacheCleared() {
+        // Don't care
     }
 }

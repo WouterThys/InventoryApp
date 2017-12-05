@@ -24,6 +24,7 @@ public abstract class OrderEditReferenceDialogLayout extends IDialog implements 
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+     OrderItem orderItem;
      DistributorPartLink selectedDistributorPartLink;
      DistributorPartLink originalDistributorPartLink;
 
@@ -74,7 +75,7 @@ public abstract class OrderEditReferenceDialogLayout extends IDialog implements 
         selectedDistributorPartLink = null;
         originalDistributorPartLink = null;
         if (args.length > 0 && args[0] != null) {
-            OrderItem orderItem = (OrderItem) args[0];
+            orderItem = (OrderItem) args[0];
             if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
                 selectedDistributorPartLink = orderItem.getDistributorPartLink();
             } else {
