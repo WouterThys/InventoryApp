@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
+import com.waldo.inventory.gui.dialogs.ordereditreferencedialog.OrderEditReferenceDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 import com.waldo.inventory.managers.SearchManager;
@@ -619,7 +620,10 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     void onEditReference(OrderItem orderItem) {
-
+        if (orderItem != null) {
+            OrderEditReferenceDialog dialog = new OrderEditReferenceDialog(application, "Reference", orderItem);
+            dialog.showDialog();
+        }
     }
 
     //

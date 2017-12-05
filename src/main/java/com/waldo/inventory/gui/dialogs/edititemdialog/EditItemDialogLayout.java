@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
+public abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
 
     protected static final int COMPONENT_TAB = 0;
     protected static final int STOCK_TAB = 1;

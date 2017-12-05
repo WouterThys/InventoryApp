@@ -114,7 +114,10 @@ public class EditProjectDialog extends EditProjectDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        return project;
+        if (isShown) {
+            return project;
+        }
+        return null;
     }
 
     //
