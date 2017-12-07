@@ -12,6 +12,7 @@ import java.sql.SQLException;
 public class Main {
 
     // TODO: setting to change look and feel
+    // TODO: DEBUG_MODE and FULL_SCREEN settings in settings object
     // TODO: smart list in db that clears itself after time
     // TODO: setting for logging session variables in DbQueue
     // TODO: closing down application with wait process and doing all the logs
@@ -19,6 +20,7 @@ public class Main {
 
     // TODO: right click on projects
     // TODO: retest aud projects and project objects (codes, pcbs, ...)
+
     //
 
     private static final LogManager LOG = LogManager.LOG(Main.class);
