@@ -20,7 +20,7 @@ public class IDistributorPartTableModel extends IAbstractTableModel<DistributorP
                 case 0: // Distributor
                     return distributorPartLink.getDistributor().toString();
                 case 1: // Reference
-                    return distributorPartLink.getItemRef();
+                    return distributorPartLink.toString();
             }
         }
         return null;

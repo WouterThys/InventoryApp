@@ -7,7 +7,6 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IDistributorPartTableModel;
@@ -31,12 +30,10 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolB
 
     // Listener
     private Application application;
-    private IEditedListener editedListener;
 
-    public EditItemOrderPanel(Application application, Item newItem, IEditedListener listener) {
+    public EditItemOrderPanel(Application application, Item newItem) {
         this.application = application;
         this.newItem = newItem;
-        this.editedListener = listener;
 
         cache().addOnDistributorPartLinkChangedListener(this);
     }

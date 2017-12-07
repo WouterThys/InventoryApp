@@ -11,6 +11,16 @@ import java.sql.SQLException;
 
 public class Main {
 
+    // TODO: setting to change look and feel
+    // TODO: smart list in db that clears itself after time
+    // TODO: setting for logging session variables in DbQueue
+    // TODO: closing down application with wait process and doing all the logs
+    // TODO: create cached settings object for above stuff
+
+    // TODO: right click on projects
+    // TODO: retest aud projects and project objects (codes, pcbs, ...)
+    //
+
     private static final LogManager LOG = LogManager.LOG(Main.class);
 
     private static final String CO = "CACHE_ONLY";
@@ -33,12 +43,15 @@ public class Main {
             Application app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setPreferredSize(new Dimension(1500, 800));
+            app.setSize(new Dimension(1500, 800));
+
             if (FULL_SCREEN) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
             app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             app.pack();
+            app.setMinimumSize(app.getPreferredSize());
+
             app.setVisible(true);
         });
     }

@@ -104,18 +104,14 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout
     //
     @Override
     public void onInserted(DistributorPartLink link) {
-        if (orderItem.getDistributorPartId() != link.getId()) {
-            orderItem.setDistributorPartId(link.getId());
-            orderItem.save();
-        }
+        orderItem.updateDistributorPart();
+        orderItem.save();
     }
 
     @Override
     public void onUpdated(DistributorPartLink link) {
-        if (orderItem.getDistributorPartId() != link.getId()) {
-            orderItem.setDistributorPartId(link.getId());
-            orderItem.save();
-        }
+        orderItem.updateDistributorPart();
+        orderItem.save();
     }
 
     @Override

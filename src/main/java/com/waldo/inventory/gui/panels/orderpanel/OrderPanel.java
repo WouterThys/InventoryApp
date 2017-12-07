@@ -69,11 +69,11 @@ public class OrderPanel extends OrderPanelLayout {
                 orderItem.setOrderId(order.getId());
                 orderItem.setName(item.toString() + " - " + order.toString());
 
-                // Part number
-                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), item.getId());
-                if (distributorPartLink != null) {
-                    orderItem.setDistributorPartId(distributorPartLink.getId());
-                }
+//                // Part number
+//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), item.getId());
+//                if (distributorPartLink != null) {
+//                    orderItem.setDistributorPartId(distributorPartLink.getId());
+//                }
 
                 orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
             } else {
@@ -94,11 +94,11 @@ public class OrderPanel extends OrderPanelLayout {
         for (OrderItem oi : itemsToOrder) {
             if (!order.containsItemId(oi.getItemId())) {
 
-                // Part number
-                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), oi.getId());
-                if (distributorPartLink != null) {
-                    oi.setDistributorPartId(distributorPartLink.getId());
-                }
+//                // Part number
+//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), oi.getId());
+//                if (distributorPartLink != null) {
+//                    oi.setDistributorPartId(distributorPartLink.getId());
+//                }
 
                 oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
             } else {

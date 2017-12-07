@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
-import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Order extends DbObject {
 
@@ -290,19 +289,22 @@ public class Order extends DbObject {
     }
 
     public void updateItemReferences() {
-        if (getDistributor() != null && getOrderItems().size() > 0) {
-            for (OrderItem oi : orderItems) {
-                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(getDistributor().getId(), oi.getItemId());
-                if (distributorPartLink != null) {
-                    if (oi.getDistributorPartId() != distributorPartLink.getId()) {
-                        oi.setDistributorPartId(distributorPartLink.getId());
-                        oi.save();
-                    }
-                } else {
-                    oi.setDistributorPartId(DbObject.UNKNOWN_ID);
-                    oi.save();
-                }
-            }
+//        if (getDistributor() != null && getOrderItems().size() > 0) {
+//            for (OrderItem oi : orderItems) {
+//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(getDistributor().getId(), oi.getItemId());
+//                if (distributorPartLink != null) {
+//                    if (oi.getDistributorPartId() != distributorPartLink.getId()) {
+//                        oi.setDistributorPartId(distributorPartLink.getId());
+//                        oi.save();
+//                    }
+//                } else {
+//                    oi.setDistributorPartId(DbObject.UNKNOWN_ID);
+//                    oi.save();
+//                }
+//            }
+//        }
+        for (OrderItem oi : orderItems) {
+            oi.updateDistributorPart();
         }
     }
 

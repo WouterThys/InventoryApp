@@ -2,7 +2,6 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
-import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,7 +20,6 @@ public class OrderItem extends DbObject {
     private long itemId;
     private Item item;
     private int amount;
-    private long distributorPartId;
     private DistributorPartLink distributorPartLink;
 
     public OrderItem() {
@@ -40,21 +38,18 @@ public class OrderItem extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
+        int ndx = 1;
         String name = "";
         try {
             name = getOrder().getName() + " - " + getItem().getName();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        statement.setString(1, name);
-        statement.setLong(2, orderId);
-        statement.setLong(3, itemId);
-        statement.setInt(4, amount);
-        if (distributorPartId < UNKNOWN_ID) {
-            distributorPartId = UNKNOWN_ID;
-        }
-        statement.setLong(5, distributorPartId);
-        return 6;
+        statement.setString(ndx++, name);
+        statement.setLong(ndx++, orderId);
+        statement.setLong(ndx++, itemId);
+        statement.setInt(ndx++, amount);
+        return ndx;
     }
 
     @Override
@@ -69,7 +64,6 @@ public class OrderItem extends DbObject {
         orderItem.setOrderId(getOrderId());
         orderItem.setItemId(getItemId());
         orderItem.setAmount(getAmount());
-        orderItem.setDistributorPartId(getDistributorPartId());
         return orderItem;
     }
 
@@ -103,14 +97,6 @@ public class OrderItem extends DbObject {
             }
         }
         cache().notifyListeners(changedHow, this, cache().onOrderItemsChangedListenerList);
-    }
-
-    public static OrderItem createDummyOrderItem(Order order, Item item) {
-        OrderItem oi = new OrderItem();
-        oi.setItemId(item.getId());
-        oi.setOrderId(order.getId());
-        oi.setCanBeSaved(false);
-        return oi;
     }
 
     public long getOrderId() {
@@ -150,28 +136,24 @@ public class OrderItem extends DbObject {
     }
 
     public long getDistributorPartId() {
-        return distributorPartId;
-    }
-
-    public void setDistributorPartId(long distributorPartId) {
-        distributorPartLink = null;
-        this.distributorPartId = distributorPartId;
-    }
-
-    public void setDistributorPartId(String ref) {
-        DistributorPartLink number = SearchManager.sm().findDistributorPartLink(getOrder().getId(), getItemId());
-        if (number == null) {
-            number = new DistributorPartLink(getOrder().getDistributorId(), getItemId());
+        if (distributorPartLink == null) {
+            distributorPartLink = getDistributorPartLink();
         }
-        number.setItemRef(ref);
-        distributorPartId = number.getId();
+        if (distributorPartLink != null) {
+            return distributorPartLink.getId();
+        }
+        return UNKNOWN_ID;
     }
 
     public DistributorPartLink getDistributorPartLink() {
-        if (distributorPartLink == null) {
-            distributorPartLink = sm().findDistributorPartLinkById(distributorPartId);
+        if (distributorPartLink == null && getOrder() != null) {
+            distributorPartLink = sm().findDistributorPartLink(getOrder().getDistributorId(), getItemId());
         }
         return distributorPartLink;
+    }
+
+    public void updateDistributorPart() {
+        distributorPartLink = null;
     }
 
     public Order getOrder() {

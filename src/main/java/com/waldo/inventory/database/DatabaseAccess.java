@@ -203,6 +203,13 @@ public class DatabaseAccess {
                 dbErrorWorker.keepRunning = false;
                 nonoList.stop();
             }
+            if (Main.DEBUG_MODE) {
+                String info = "DBQUEUE -> INFO: \r\n";
+                info += "\t- Handled " + workList.getCount() + " elements \r\n";
+                info += "\t- Average time in list: " + workList.getSessionAverageTimeInQueue() + "ms \r\n";
+                info += "\t- Max capacity: " + workList.getSessionMaxCapacity();
+                System.out.println(info);
+            }
         }
     }
 
@@ -873,7 +880,6 @@ public class DatabaseAccess {
                     o.setOrderId(rs.getLong("orderId"));
                     o.setItemId(rs.getLong("itemId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setDistributorPartId(rs.getLong("distributorPartId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {

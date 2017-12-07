@@ -91,7 +91,7 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel(application, newItem, this);
+        editItemOrderPanel = new EditItemOrderPanel(application, newItem);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 
