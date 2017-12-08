@@ -102,7 +102,7 @@ public class DbQueue<T extends DbQueueObject> {
 
     private void logAdd(T element) {
         SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> ADD TO QUEUE: " +
-                element.getObject().getClass() +
+                element.getObject().getClass().getSimpleName() +
                 " ID=" + element.getObject().getId()));
     }
 

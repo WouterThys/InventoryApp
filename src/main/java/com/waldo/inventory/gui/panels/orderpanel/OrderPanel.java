@@ -6,6 +6,8 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.OrderItemPopup;
+import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
@@ -613,7 +615,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     void onEditItem(OrderItem orderItem) {
         if (orderItem != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedOrderItem.getItem());
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", orderItem.getItem());
             dialog.showDialog();
         }
     }
@@ -640,7 +642,42 @@ public class OrderPanel extends OrderPanelLayout {
             if (order != null && order.canBeSaved()) {
                 treeSelectNewOrder(order);
 
-                popupMenu = createOrderPopup(order);
+                popupMenu = new OrderPopup(selectedOrder) {
+                    @Override
+                    public void onEditOrder(Order order) {
+                        OrderPanel.this.onEditOrder(order);
+                    }
+
+                    @Override
+                    public void onDeleteOrder(Order order) {
+                        OrderPanel.this.onDeleteOrder(order);
+                    }
+
+                    @Override
+                    public void onOrderDetails(Order order) {
+                        OrderPanel.this.onOrderDetails(order);
+                    }
+
+                    @Override
+                    public void onMoveToOrdered(Order order) {
+                        OrderPanel.this.onMoveToOrdered(order);
+                    }
+
+                    @Override
+                    public void onMoveToReceived(Order order) {
+                        OrderPanel.this.onMoveToReceived(order);
+                    }
+
+                    @Override
+                    public void onBackToOrdered(Order order) {
+                        OrderPanel.this.onBackToOrdered(order);
+                    }
+
+                    @Override
+                    public void onBackToPlanned(Order order) {
+                        OrderPanel.this.onBackToPlanned(order);
+                    }
+                };
 
             } else {
                 // TODO special popup for order nodes??
@@ -656,7 +693,42 @@ public class OrderPanel extends OrderPanelLayout {
     void onTableRowClicked(MouseEvent e) {
         if (e.getClickCount() == 1) {
             if (SwingUtilities.isRightMouseButton(e)) {
-                JPopupMenu popupMenu = createOrderItemPopup(selectedOrderItem);
+                JPopupMenu popupMenu = new OrderItemPopup(getSelectedOrderItem()) {
+                    @Override
+                    public void onDeleteOrderItem(OrderItem orderItem) {
+                        OrderPanel.this.onDeleteOrderItem(orderItem);
+                    }
+
+                    @Override
+                    public void onEditReference(OrderItem orderItem) {
+                        OrderPanel.this.onEditReference(orderItem);
+                    }
+
+                    @Override
+                    public void onEditItem(OrderItem item) {
+                        OrderPanel.this.onEditItem(item);
+                    }
+
+                    @Override
+                    public void onOpenLocalDataSheet(Item item) {
+                        OrderPanel.this.onShowDataSheet(item, false);
+                    }
+
+                    @Override
+                    public void onOpenOnlineDataSheet(Item item) {
+                        OrderPanel.this.onShowDataSheet(item, true);
+                    }
+
+                    @Override
+                    public void onOrderItem(Item item) {
+                        OrderPanel.this.onOrderItem(item);
+                    }
+
+                    @Override
+                    public void onShowHistory(Item item) {
+                        OrderPanel.this.onShowHistory(item);
+                    }
+                };
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
