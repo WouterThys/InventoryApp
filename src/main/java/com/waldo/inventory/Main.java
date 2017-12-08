@@ -11,10 +11,11 @@ import java.sql.SQLException;
 
 public class Main {
 
-    // TODO: setting to change look and feel
-    // TODO: DEBUG_MODE and FULL_SCREEN settings in settings object
-    // TODO: smart list in db that clears itself after time
-    // TODO: setting for logging session variables in DbQueue
+    // TODO: setting to change look and feel -> create gui tab
+    // TODO: FULL_SCREEN settings in settings object -> create gui tab
+    // TODO: smart list in db that clears itself after time -> create cache tab
+    // TODO: setting for logging session variables in DbQueue -> in logging tab
+    // TODO: setting for logging db history -> logging tab
     // TODO: closing down application with wait process and doing all the logs
     // TODO: create cached settings object for above stuff
 
@@ -45,14 +46,13 @@ public class Main {
             Application app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setSize(new Dimension(1500, 800));
-
+            app.setPreferredSize(new Dimension(1500, 800));
+            app.setMinimumSize(new Dimension(1000, 600));
             if (FULL_SCREEN) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
             app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             app.pack();
-            app.setMinimumSize(app.getPreferredSize());
 
             app.setVisible(true);
         });

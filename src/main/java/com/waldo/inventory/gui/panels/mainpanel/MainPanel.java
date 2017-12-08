@@ -4,8 +4,10 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.DivisionPopup;
+import com.waldo.inventory.gui.components.popups.ItemPopup;
+import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
@@ -16,7 +18,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseEvent;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -59,43 +60,58 @@ public class MainPanel extends MainPanelLayout {
         if (e.getClickCount() == 1) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
-                openDatasheetOnlineAa.setEnabled(!selectedItem.getOnlineDataSheet().isEmpty());
-                openDatasheetLocalAa.setEnabled(!selectedItem.getLocalDataSheet().isEmpty());
-                itemPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+
+                if (selectedItem != null) {
+                    ItemPopup popup = new ItemPopup(selectedItem) {
+                        @Override
+                        public void onEditItem() {
+                            MainPanel.this.onEditItem();
+                        }
+
+                        @Override
+                        public void onDeleteItem() {
+                            MainPanel.this.onDeleteItem();
+                        }
+
+                        @Override
+                        public void onOpenLocalDataSheet(Item item) {
+                            application.openDataSheet(item, false);
+                        }
+
+                        @Override
+                        public void onOpenOnlineDataSheet(Item item) {
+                            application.openDataSheet(item, true);
+                        }
+
+                        @Override
+                        public void onOrderItem(Item item) {
+                            MainPanel.this.onOrderItem(item);
+                        }
+
+                        @Override
+                        public void onShowHistory(Item item) {
+                            MainPanel.this.onShowHistory(item);
+                        }
+                    };
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
             } else {
                 int row = itemTable.getRowAtPoint(e.getPoint());
                 int col = itemTable.getColumnAtPoint(e.getPoint());
                 if (row >= 0 && col == 4) {
                     if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
                             && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
-                        showLocationPopup(selectedItem, e.getX(), e.getY());
+
+                        LocationPopup popup = new LocationPopup(application, selectedItem);
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             }
         } else if (e.getClickCount() == 2) {
             if (selectedItem != null && !selectedItem.isUnknown()) {
-                EditItemDialog dialog = new EditItemDialog(application, "Item", selectedItem);
-                dialog.showDialog();
+                onEditItem();
             }
         }
-    }
-
-    private void showLocationPopup(Item item, int x, int y) {
-        JPopupMenu menu = new JPopupMenu();
-
-        LocationType type = item.getLocation().getLocationType();
-
-        ILocationMapPanel panel = new ILocationMapPanel(application, type.getLocations(), null, false);
-        ;
-        panel.setHighlighted(item.getLocation(), ILocationMapPanel.GREEN);
-
-        JMenuItem name = new JMenuItem(type.getName());
-        name.setEnabled(false);
-
-        menu.add(name);
-        menu.addSeparator();
-        menu.add(panel);
-        menu.show(itemTable, x - panel.getPreferredSize().width, y);
     }
 
     private void initListeners() {
@@ -243,82 +259,30 @@ public class MainPanel extends MainPanelLayout {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
         if (node != null) {
             selectedDivision = (DbObject) node.getUserObject();
-            JPopupMenu popupMenu = null;
-            switch (DbObject.getType(selectedDivision)) {
-                case DbObject.TYPE_CATEGORY:
-                    popupMenu = createCategoryPopup(node.isRoot());
-                    break;
-                case DbObject.TYPE_PRODUCT:
-                    popupMenu = createProductPopup();
-                    break;
-                case DbObject.TYPE_TYPE:
-                    popupMenu = createTypePopup();
-                    break;
-            }
-            if (popupMenu != null) {
-                popupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
+            JPopupMenu popupMenu = new DivisionPopup(selectedDivision, node.isRoot()) {
+                @Override
+                public void onAddDivision() {
+                    MainPanel.this.onAddDivision();
+                }
+
+                @Override
+                public void onEditDivision() {
+                    MainPanel.this.onEditDivision();
+                }
+
+                @Override
+                public void onDeleteDivision() {
+                    MainPanel.this.onDeleteDivision();
+                }
+            };
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
-    }
-
-    private JPopupMenu createCategoryPopup(boolean isRoot) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
-        nameItem.setEnabled(false);
-        popupMenu.add(nameItem);
-        popupMenu.addSeparator();
-
-        if (!isRoot) {
-            treeAddDivisionAa.putValue(AbstractAction.NAME, "Add product");
-            treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit category");
-            treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete category");
-            popupMenu.add(treeAddDivisionAa);
-            popupMenu.add(treeEditDivisionAa);
-            popupMenu.add(treeDeleteDivisionAa);
-        } else {
-            treeAddDivisionAa.putValue(AbstractAction.NAME, "Add category");
-            popupMenu.add(treeAddDivisionAa);
-        }
-        return popupMenu;
-    }
-
-    private JPopupMenu createProductPopup() {
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
-        nameItem.setEnabled(false);
-
-        treeAddDivisionAa.putValue(AbstractAction.NAME, "Add type");
-        treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit product");
-        treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete product");
-
-        popupMenu.add(nameItem);
-        popupMenu.addSeparator();
-        popupMenu.add(treeAddDivisionAa);
-        popupMenu.add(treeEditDivisionAa);
-        popupMenu.add(treeDeleteDivisionAa);
-        return popupMenu;
-    }
-
-    private JPopupMenu createTypePopup() {
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem nameItem = new JMenuItem("Divisions", imageResource.readImage("Items.Tree.Title"));
-        nameItem.setEnabled(false);
-
-        treeEditDivisionAa.putValue(AbstractAction.NAME, "Edit type");
-        treeDeleteDivisionAa.putValue(AbstractAction.NAME, "Delete type");
-
-        popupMenu.add(nameItem);
-        popupMenu.addSeparator();
-        popupMenu.add(treeEditDivisionAa);
-        popupMenu.add(treeDeleteDivisionAa);
-        return popupMenu;
     }
 
     //
     // Divisions
     //
-    @Override
-    void onAddDivision() {
+    private void onAddDivision() {
         DbObject newDivision = null;
         SubDivisionsDialog divisionsDialog = null;
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
@@ -343,8 +307,7 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
-    @Override
-    void onEditDivision() {
+    private void onEditDivision() {
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
             SubDivisionsDialog divisionsDialog = null;
             switch (DbObject.getType(selectedDivision)) {
@@ -366,8 +329,7 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
-    @Override
-    void onDeleteDivision() {
+    private void onDeleteDivision() {
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
             int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + selectedDivision);
             if (res == JOptionPane.YES_OPTION) {
@@ -420,9 +382,7 @@ public class MainPanel extends MainPanelLayout {
             }
             onAddDivision();
         } else {
-            Item newItem = new Item();
-            EditItemDialog dialog = new EditItemDialog(application, "Add item", newItem);
-            dialog.showDialog();
+            onAddItem();
         }
     }
 
@@ -431,12 +391,7 @@ public class MainPanel extends MainPanelLayout {
         if (source != null && source.equals(divisionTb)) {
             onDeleteDivision();
         } else {
-            Item selectedItem = application.getSelectedItem();
-            if (selectedItem != null) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                    selectedItem.delete();
-                }
-            }
+            onDeleteItem();
         }
     }
 
@@ -445,15 +400,26 @@ public class MainPanel extends MainPanelLayout {
         if (source != null && source.equals(divisionTb)) {
             onEditDivision();
         } else {
-            Item selected = application.getSelectedItem();
-            if (selected != null) {
-                EditItemDialog dialog = new EditItemDialog(application, "Edit item", selected);
-                if (dialog.showDialog() == EditItemDialog.OK) {
-                    Item newItem = dialog.getItem();
-                    if (newItem != null) {
-                        newItem.save();
-                    }
-                }
+            onEditItem();
+        }
+    }
+
+    private void onEditItem() {
+        if (selectedItem != null) {
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
+            dialog.showDialog();
+        }
+    }
+
+    private void onAddItem() {
+        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item());
+        dialog.showDialog();
+    }
+
+    private void onDeleteItem() {
+        if (selectedItem != null) {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
+                selectedItem.delete();
             }
         }
     }

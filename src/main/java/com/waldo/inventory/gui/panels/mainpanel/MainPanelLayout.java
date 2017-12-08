@@ -18,17 +18,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public abstract class MainPanelLayout extends JPanel implements
+abstract class MainPanelLayout extends JPanel implements
         GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
@@ -46,14 +44,6 @@ public abstract class MainPanelLayout extends JPanel implements
     IdBToolBar divisionTb;
 
     ItemDetailPanel detailPanel;
-
-    AbstractAction treeAddDivisionAa;
-    AbstractAction treeEditDivisionAa;
-    AbstractAction treeDeleteDivisionAa;
-
-    AbstractAction openDatasheetOnlineAa;
-    AbstractAction openDatasheetLocalAa;
-    JPopupMenu itemPopupMenu;
 
     /*
      *                  VARIABLES
@@ -93,10 +83,6 @@ public abstract class MainPanelLayout extends JPanel implements
 
     abstract void onTreeRightClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
-
-    abstract void onAddDivision();
-    abstract void onEditDivision();
-    abstract void onDeleteDivision();
 
     //
     // Table stuff
@@ -261,76 +247,6 @@ public abstract class MainPanelLayout extends JPanel implements
         // Division tool bar
         divisionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
-        // Tree actions
-        treeAddDivisionAa = new AbstractAction("Add", imageResource.readImage("Items.Tree.Add")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onAddDivision();
-            }
-        };
-        treeEditDivisionAa = new AbstractAction("Edit", imageResource.readImage("Items.Tree.Edit")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onEditDivision();
-            }
-        };
-        treeDeleteDivisionAa = new AbstractAction("Delete", imageResource.readImage("Items.Tree.Delete")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onDeleteDivision();
-            }
-        };
-
-        // Table actions
-        AbstractAction editItemAa = new AbstractAction("Edit item", imageResource.readImage("Items.Table.Edit")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onToolBarEdit(null);
-            }
-        };
-        AbstractAction deleteItemAa = new AbstractAction("Delete item", imageResource.readImage("Items.Table.Delete")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onToolBarDelete(null);
-            }
-        };
-        openDatasheetOnlineAa = new AbstractAction("Online data sheet", imageResource.readImage("Items.Table.DataSheetOnline")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onShowDataSheet(selectedItem, true);
-            }
-        };
-        openDatasheetLocalAa = new AbstractAction("Local data sheet", imageResource.readImage("Items.Table.DataSheetLocal")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onShowDataSheet(selectedItem, false);
-            }
-        };
-        AbstractAction orderItemAa = new AbstractAction("Order item", imageResource.readImage("Items.Table.Order")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onOrderItem(selectedItem);
-            }
-        };
-        AbstractAction showHistoryAa = new AbstractAction("Show history", imageResource.readImage("Items.Table.History")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainPanelLayout.this.onShowHistory(selectedItem);
-            }
-        };
-
-        itemPopupMenu = new JPopupMenu();
-
-        JMenu dsMenu = new JMenu("Open datasheet");
-        dsMenu.add(new JMenuItem(openDatasheetOnlineAa));
-        dsMenu.add(new JMenuItem(openDatasheetLocalAa));
-
-        itemPopupMenu.add(editItemAa);
-        itemPopupMenu.add(deleteItemAa);
-        itemPopupMenu.addSeparator();
-        itemPopupMenu.add(orderItemAa);
-        itemPopupMenu.add(showHistoryAa);
-        itemPopupMenu.add(dsMenu);
 
         // Item table
         tableModel = new IItemTableModel();
