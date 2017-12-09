@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
 import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +14,12 @@ import java.util.List;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class EditProjectDialog extends EditProjectDialogLayout {
+public class EditProjectDialog extends EditProjectDialogLayout implements CacheChangedListener<Project> {
 
     public EditProjectDialog(Application application, String title, Project project) {
         super(application, title);
+
+        CacheManager.cache().addOnProjectChangedListener(this);
 
         initializeComponents();
         initializeLayouts();
@@ -93,7 +97,6 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     }
 
     private void updateProjectObjects(Project project) {
-        if (project.getId() > DbObject.UNKNOWN_ID) {
             // CODE
             List<ProjectCode> currentCodes = new ArrayList<>(sm().findProjectCodesByProjectId(project.getId()));
 
@@ -102,6 +105,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
                     code = currentCodes.get(currentCodes.indexOf(code));
                     currentCodes.remove(code);
                 }
+                code.setProjectId(project.getId());
                 code.save();
             }
 
@@ -120,6 +124,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
                     pcb = currentPcbs.get(currentPcbs.indexOf(pcb));
                     currentPcbs.remove(pcb);
                 }
+                pcb.setProjectId(project.getId());
                 pcb.save();
             }
 
@@ -138,6 +143,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
                     other = projectOthers.get(projectOthers.indexOf(other));
                     projectOthers.remove(other);
                 }
+                other.setProjectId(project.getId());
                 other.save();
             }
 
@@ -147,7 +153,6 @@ public class EditProjectDialog extends EditProjectDialogLayout {
                 other.delete();
             }
             project.updateProjectOthers();
-        }
     }
 
     //
@@ -156,8 +161,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
-            updateProjectObjects(selectedProject);
-            super.onOK();
+            selectedProject.save();
         }
     }
 
@@ -198,5 +202,30 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     @Override
     public void actionPerformed(ActionEvent e) {
         updateProjectDirectories();
+    }
+
+    //
+    // Project cache
+    //
+    @Override
+    public void onInserted(Project project) {
+        updateProjectObjects(project);
+        super.onOK(); // Close dialog
+    }
+
+    @Override
+    public void onUpdated(Project project) {
+        updateProjectObjects(selectedProject);
+        super.onOK(); // Close dialog
+    }
+
+    @Override
+    public void onDeleted(Project object) {
+        // Should not happen
+    }
+
+    @Override
+    public void onCacheCleared() {
+        // Don't care
     }
 }

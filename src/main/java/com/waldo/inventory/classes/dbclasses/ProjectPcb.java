@@ -290,4 +290,9 @@ public class ProjectPcb extends ProjectObject {
     public void setProjectIDEId(long projectIDEId) {
         super.setProjectIDEId(projectIDEId);
     }
+
+    @Override
+    public long getProjectId() {
+        return super.getProjectId();
+    }
 }

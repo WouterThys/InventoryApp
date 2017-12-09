@@ -102,8 +102,10 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     //
     @Override
     public void onUpdated(ProjectPcb object) {
-        gridPanel.drawTiles(selectedProject.getProjectPcbs());
-        updateEnabledComponents();
+        if (selectedProject != null) {
+            gridPanel.drawTiles(selectedProject.getProjectPcbs());
+            updateEnabledComponents();
+        }
     }
 
     //

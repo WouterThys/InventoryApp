@@ -311,19 +311,21 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     @Override
     public void onInsertError(DbObject object, Throwable throwable, String sql) {
-        showErrorMessage(object, throwable, "Insert");
+        if (!ErrorManager.em().handle(object, throwable, sql)) {
+            showErrorMessage(object, throwable, "Insert");
+        }
     }
 
     @Override
     public void onUpdateError(DbObject object, Throwable throwable, String sql) {
-        showErrorMessage(object, throwable, "Update");
+        if (!ErrorManager.em().handle(object, throwable, sql)) {
+            showErrorMessage(object, throwable, "Update");
+        }
     }
 
     @Override
     public void onDeleteError(DbObject object, Throwable throwable, String sql) {
-        if (ErrorManager.em().handle(object, throwable, sql)) {
-
-        } else {
+        if (!ErrorManager.em().handle(object, throwable, sql)) {
             showErrorMessage(object, throwable, "Delete");
         }
     }

@@ -29,10 +29,6 @@ public class ProjectCode extends ProjectObject {
         setProjectId(projectId);
     }
 
-    @Override
-    public void save() {
-        super.save();
-    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -152,5 +148,10 @@ public class ProjectCode extends ProjectObject {
     @Override
     public void setProjectIDEId(long projectIDEId) {
         super.setProjectIDEId(projectIDEId);
+    }
+
+    @Override
+    public long getProjectId() {
+        return super.getProjectId();
     }
 }

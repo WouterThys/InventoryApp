@@ -17,18 +17,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class ProjectsPanel extends ProjectsPanelLayout {
+public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedListener<Project> {
 
-    private CacheChangedListener<Project> projectChanged;
 
     public ProjectsPanel(Application application) {
         super(application);
 
         initializeComponents();
         initializeLayouts();
-        initializeListeners();
 
-        cache().addOnProjectChangedListener(projectChanged);
+        cache().addOnProjectChangedListener(this);
 
         updateWithFirstProject();
     }
@@ -41,18 +39,15 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         }
     }
 
-    private void initializeListeners() {
-        setProjectChangedListener();
-    }
-
     private void updateProjectObjects(Project project) {
         project.updateProjectCodes();
         project.updateProjectPcbs();
         project.updateProjectOthers();
     }
 
-    private void setProjectChangedListener() {
-        projectChanged = new CacheChangedListener<Project>() {
+
+    //
+    // Cache listener
             @Override
             public void onInserted(Project project) {
                 selectedProject = project;
@@ -103,8 +98,6 @@ public class ProjectsPanel extends ProjectsPanelLayout {
             public void onCacheCleared() {
 
             }
-        };
-    }
 
     public TopToolBar getToolBar() {
         return topToolBar;
@@ -125,9 +118,8 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         if (source.equals(projectsToolBar)) {
             EditProjectDialog dialog = new EditProjectDialog(application, "New Project", new Project());
             if (dialog.showDialog() == IDialog.OK) {
-                // Add Project
-                Project p = dialog.getProject();
-                p.save();
+                // Project is saved in dialog, update
+                onInserted(dialog.getProject());
             }
         }
     }
@@ -147,9 +139,8 @@ public class ProjectsPanel extends ProjectsPanelLayout {
         if (selectedProject != null) {
             EditProjectDialog dialog = new EditProjectDialog(application, "Edit Project", selectedProject);
             if (dialog.showDialog() == IDialog.OK) {
-                // Edit project
-                Project p = dialog.getProject();
-                p.save();
+                // Project is saved in dialog, update
+                onUpdated(dialog.getProject());
             }
         }
     }

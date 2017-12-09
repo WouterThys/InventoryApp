@@ -58,4 +58,8 @@ public class ProjectOther extends ProjectObject {
     }
 
     // Getters and setters
+    @Override
+    public long getProjectId() {
+        return super.getProjectId();
+    }
 }
