@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public abstract class EditProjectObjectDialogLayout<P extends ProjectObject> extends IDialog implements IEditedListener, ActionListener {
+abstract class EditProjectObjectDialogLayout<P extends ProjectObject> extends IDialog implements IEditedListener, ActionListener {
 
     /*
     *                  COMPONENTS

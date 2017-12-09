@@ -30,6 +30,11 @@ public class ProjectCode extends ProjectObject {
     }
 
     @Override
+    public void save() {
+        super.save();
+    }
+
+    @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
 

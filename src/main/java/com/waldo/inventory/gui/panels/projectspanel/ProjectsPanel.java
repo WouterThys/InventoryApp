@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel;
 
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
@@ -12,8 +13,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -47,69 +46,9 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     }
 
     private void updateProjectObjects(Project project) {
-        updateProjectCodes(project);
-        updateProjectPcbs(project);
-        updateProjectOthers(project);
-    }
-
-    private void updateProjectCodes(Project project) {
-        List<ProjectCode> knownCodes = new ArrayList<>(sm().findProjectCodesByProjectId(project.getId()));
-
-        for (ProjectCode code : project.getProjectCodes()) {
-            code.setProjectId(project.getId());
-            int ndx = knownCodes.indexOf(code);
-
-            if (ndx >= 0) {
-                code.setId(knownCodes.get(ndx).getId());
-                code.setRemarksFile(knownCodes.get(ndx).getRemarksFile());
-                knownCodes.remove(ndx);
-            }
-            code.save();
-        }
-
-        for (ProjectCode code : knownCodes) {
-            code.delete();
-        }
-    }
-
-    private void updateProjectPcbs(Project project) {
-        List<ProjectPcb> knownPcbs = new ArrayList<>(sm().findProjectPcbsByProjectId(project.getId()));
-
-        for (ProjectPcb pcb : project.getProjectPcbs()) {
-            pcb.setProjectId(project.getId());
-            int ndx = knownPcbs.indexOf(pcb);
-
-            if (ndx >= 0) {
-                pcb.setId(knownPcbs.get(ndx).getId());
-                pcb.setRemarksFile(knownPcbs.get(ndx).getRemarksFile());
-                knownPcbs.remove(ndx);
-            }
-            pcb.save();
-        }
-
-        for (ProjectPcb pcb : knownPcbs) {
-            pcb.delete();
-        }
-    }
-
-    private void updateProjectOthers(Project project) {
-        List<ProjectOther> knownOthers = new ArrayList<>(sm().findProjectOthersByProjectId(project.getId()));
-
-        for (ProjectOther other : project.getProjectOthers()) {
-            other.setProjectId(project.getId());
-            int ndx = knownOthers.indexOf(other);
-
-            if (ndx >= 0) {
-                other.setId(knownOthers.get(ndx).getId());
-                other.setRemarksFile(knownOthers.get(ndx).getRemarksFile());
-                knownOthers.remove(ndx);
-            }
-            other.save();
-        }
-
-        for (ProjectOther other : knownOthers) {
-            other.delete();
-        }
+        project.updateProjectCodes();
+        project.updateProjectPcbs();
+        project.updateProjectOthers();
     }
 
     private void setProjectChangedListener() {
@@ -184,7 +123,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (source.equals(projectsToolBar)) {
-            EditProjectDialog dialog = new EditProjectDialog(application, "New Project");
+            EditProjectDialog dialog = new EditProjectDialog(application, "New Project", new Project());
             if (dialog.showDialog() == IDialog.OK) {
                 // Add Project
                 Project p = dialog.getProject();
@@ -206,7 +145,7 @@ public class ProjectsPanel extends ProjectsPanelLayout {
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProject != null) {
-            EditProjectDialog dialog = new EditProjectDialog(application, "New Project", selectedProject);
+            EditProjectDialog dialog = new EditProjectDialog(application, "Edit Project", selectedProject);
             if (dialog.showDialog() == IDialog.OK) {
                 // Edit project
                 Project p = dialog.getProject();

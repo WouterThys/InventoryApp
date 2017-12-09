@@ -16,7 +16,7 @@ import java.awt.*;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedListener {
+abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedListener {
 
     /*
     *                  COMPONENTS

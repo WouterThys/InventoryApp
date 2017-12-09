@@ -1,15 +1,11 @@
 package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
 import com.waldo.inventory.Utils.PanelUtils;
-import com.waldo.inventory.classes.dbclasses.Project;
-import com.waldo.inventory.classes.dbclasses.ProjectIDE;
-import com.waldo.inventory.classes.dbclasses.ProjectObject;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IComboCheckBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.tablemodels.IProjectObjectPreviewTableModel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectGridPanel;
 
 import javax.swing.*;
@@ -31,13 +27,20 @@ abstract class EditProjectDialogLayout extends IDialog implements
     private PanelUtils.IBrowseImagePanel iconPnl;
     PanelUtils.IBrowseFilePanel directoryPnl;
     private JButton findProjectsBtn;
-    ProjectGridPanel<ProjectObject> projectGridPanel;
     IComboCheckBox<ProjectIDE> ideTypeCcb;
+
+    private IProjectObjectPreviewTableModel tableModel;
+    private ITable<ProjectObjectPreview> projectTable;
 
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Project project;
+     Project originalProject;
+     Project selectedProject;
+
+     List<ProjectCode> newProjectCodes = new ArrayList<>();
+     List<ProjectPcb> newProjectPcbs = new ArrayList<>();
+     List<ProjectOther> newProjectOthers = new ArrayList<>();
 
     /*
    *                  CONSTRUCTOR
@@ -51,9 +54,73 @@ abstract class EditProjectDialogLayout extends IDialog implements
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        boolean isValid = project.isValidDirectory();
+        boolean isValid = selectedProject.isValidDirectory();
         findProjectsBtn.setEnabled(isValid);
-        projectGridPanel.setEnabled(isValid);
+        projectTable.setEnabled(isValid);
+    }
+
+    Project copyProject(Project from) {
+        Project to = from.createCopy();
+        newProjectPcbs.clear();
+        newProjectCodes.clear();
+        newProjectOthers.clear();
+        for (ProjectCode code : from.getProjectCodes()) {
+            ProjectCode cpy = code.createCopy();
+            newProjectCodes.add(cpy);
+        }
+        for (ProjectPcb pcb : from.getProjectPcbs()) {
+            ProjectPcb cpy = pcb.createCopy();
+            newProjectPcbs.add(cpy);
+        }
+        for (ProjectOther other : from.getProjectOthers()) {
+            ProjectOther cpy = other.createCopy();
+            newProjectOthers.add(cpy);
+        }
+        return to;
+    }
+
+    void tableInit(List<ProjectCode> projectCodes, List<ProjectPcb> projectPcbs, List<ProjectOther> projectOthers) {
+        List<ProjectObject> projectObjectList = new ArrayList<>();
+
+        projectObjectList.addAll(projectCodes);
+        projectObjectList.addAll(projectPcbs);
+        projectObjectList.addAll(projectOthers);
+
+        List<ProjectObjectPreview> previewList = new ArrayList<>(projectObjectList.size());
+        for (ProjectObject projectObject : projectObjectList) {
+            previewList.add(new ProjectObjectPreview(projectObject));
+        }
+        tableModel.setItemList(previewList);
+    }
+
+    public List<ProjectCode> getSelectedProjectCodes() {
+        List<ProjectCode> selected = new ArrayList<>();
+        for (ProjectObject object : tableModel.getSelectedObjects()) {
+            if (object instanceof ProjectCode) {
+                selected.add((ProjectCode) object);
+            }
+        }
+        return selected;
+    }
+
+    public List<ProjectPcb> getSelectedProjectPcbs() {
+        List<ProjectPcb> selected = new ArrayList<>();
+        for (ProjectObject object : tableModel.getSelectedObjects()) {
+            if (object instanceof ProjectPcb) {
+                selected.add((ProjectPcb) object);
+            }
+        }
+        return selected;
+    }
+
+    public List<ProjectOther> getSelectedProjectOthers() {
+        List<ProjectOther> selected = new ArrayList<>();
+        for (ProjectObject object : tableModel.getSelectedObjects()) {
+            if (object instanceof ProjectOther) {
+                selected.add((ProjectOther) object);
+            }
+        }
+        return selected;
     }
 
     /*
@@ -78,10 +145,13 @@ abstract class EditProjectDialogLayout extends IDialog implements
 
         findProjectsBtn = new JButton("Find projects");
         findProjectsBtn.addActionListener(this);
-
-        projectGridPanel = new ProjectGridPanel<>(this, 3,2);
         ideTypeCcb = new IComboCheckBox<>(cache().getProjectIDES(), true);
 
+        tableModel = new IProjectObjectPreviewTableModel();
+
+        projectTable = new ITable<>(tableModel);
+        projectTable.setExactColumnWidth(0, 32);
+        projectTable.setExactColumnWidth(1, 36);
     }
 
     @Override
@@ -103,7 +173,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
 
         buttonPanel.add(findProjectsBtn);
         buttonPanel.add(ideTypeCcb);
-        JScrollPane pane = new JScrollPane(projectGridPanel);
+        JScrollPane pane = new JScrollPane(projectTable);
         pane.setPreferredSize(new Dimension(400, 200));
 
         gridPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -118,20 +188,16 @@ abstract class EditProjectDialogLayout extends IDialog implements
     @Override
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null) {
-            project = (Project) object[0];
+            selectedProject = (Project) object[0];
+            originalProject = copyProject(selectedProject);
 
-            nameTf.setText(project.getName());
-            iconPnl.setText(project.getIconPath());
-            directoryPnl.setText(project.getMainDirectory());
+            nameTf.setText(selectedProject.getName());
+            iconPnl.setText(selectedProject.getIconPath());
+            directoryPnl.setText(selectedProject.getMainDirectory());
 
-            List<ProjectObject> projectObjectList = new ArrayList<>();
-
-            projectObjectList.addAll(project.getProjectCodes());
-            projectObjectList.addAll(project.getProjectPcbs());
-            projectObjectList.addAll(project.getProjectOthers());
-
-            projectGridPanel.drawTiles(projectObjectList);
-            projectGridPanel.updateTiles();
+            tableInit(newProjectCodes, newProjectPcbs, newProjectOthers);
+        } else {
+            originalProject = null;
         }
 
         updateEnabledComponents();

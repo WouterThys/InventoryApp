@@ -231,21 +231,33 @@ public class Project extends DbObject {
 
     public List<ProjectCode> getProjectCodes() {
         if (projectCodes == null) {
-            projectCodes = SearchManager.sm().findProjectCodesByProjectId(getId());
+            if (canBeSaved) {
+                projectCodes = SearchManager.sm().findProjectCodesByProjectId(getId());
+            } else {
+                projectCodes = new ArrayList<>();
+            }
         }
         return projectCodes;
     }
 
     public List<ProjectPcb> getProjectPcbs() {
         if (projectPcbs == null) {
-            projectPcbs = SearchManager.sm().findProjectPcbsByProjectId(getId());
+            if (canBeSaved) {
+                projectPcbs = SearchManager.sm().findProjectPcbsByProjectId(getId());
+            } else {
+                projectPcbs = new ArrayList<>();
+            }
         }
         return projectPcbs;
     }
 
     public List<ProjectOther> getProjectOthers() {
         if (projectOthers == null) {
-            projectOthers = SearchManager.sm().findProjectOthersByProjectId(getId());
+            if (canBeSaved) {
+                projectOthers = SearchManager.sm().findProjectOthersByProjectId(getId());
+            } else {
+                projectOthers = new ArrayList<>();
+            }
         }
         return projectOthers;
     }

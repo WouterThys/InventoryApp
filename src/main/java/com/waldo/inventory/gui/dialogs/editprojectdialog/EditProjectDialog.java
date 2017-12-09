@@ -1,57 +1,41 @@
 package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Project;
-import com.waldo.inventory.classes.dbclasses.ProjectIDE;
-import com.waldo.inventory.classes.dbclasses.ProjectObject;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class EditProjectDialog extends EditProjectDialogLayout {
 
-    private boolean isNew = false;
-
-
     public EditProjectDialog(Application application, String title, Project project) {
         super(application, title);
-
-        isNew = false;
 
         initializeComponents();
         initializeLayouts();
         updateComponents(project);
     }
 
-    public EditProjectDialog(Application application, String title) {
-        super(application, title);
-
-        isNew = true;
-
-        initializeComponents();
-        initializeLayouts();
-        updateComponents(new Project());
-    }
-
 
     public Project getProject() {
-        return project;
+        return selectedProject;
     }
 
     private boolean verify() {
         boolean ok = true;
-        if (project.getName().isEmpty()) {
+        if (selectedProject.getName().isEmpty()) {
             nameTf.setError("Name can't be empty..");
             ok = false;
         } else {
-            if (isNew) {
+            if (selectedProject.getId() < DbObject.UNKNOWN_ID) { // New
                 for (Project project : cache().getProjects()) {
-                    if (project.getName().toUpperCase().equals(this.project.getName().toUpperCase())) {
+                    if (project.getName().toUpperCase().equals(this.selectedProject.getName().toUpperCase())) {
                         nameTf.setError("Name already exists..");
                         ok = false;
                         break;
@@ -60,7 +44,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
             }
         }
 
-        if (project.getMainDirectory().isEmpty()) {
+        if (selectedProject.getMainDirectory().isEmpty()) {
             directoryPnl.setError("Directory can't be empty..");
             ok = false;
         }
@@ -70,28 +54,100 @@ public class EditProjectDialog extends EditProjectDialogLayout {
 
     private void updateProjectDirectories() {
         SwingUtilities.invokeLater(() -> {
-            if (project != null && project.isValidDirectory()) {
-                application.beginWait();
+            if (selectedProject != null && selectedProject.isValidDirectory()) {
                 List<ProjectIDE> ideList = ideTypeCcb.getSelectedElements();
+                application.beginWait();
                 try {
-                    List<ProjectObject> projectObjectList = project.findProjectsInDirectory(
-                            project.getMainDirectory(),
+                    List<ProjectObject> projectObjectList = selectedProject.findProjectsInDirectory(
+                            selectedProject.getMainDirectory(),
                             ideList);
 
-                    project.getProjectCodes().clear();
-                    project.getProjectPcbs().clear();
-                    project.getProjectOthers().clear();
-
-                    for (ProjectObject obj : projectObjectList) {
-                        project.addProjectObject(obj);
+                    newProjectCodes.clear();
+                    newProjectPcbs.clear();
+                    newProjectOthers.clear();
+                    for (ProjectObject object : projectObjectList) {
+                        if (object instanceof ProjectCode) {
+                            ProjectCode code = (ProjectCode) object;
+                            if (!newProjectCodes.contains(code)) {
+                                newProjectCodes.add(code);
+                            }
+                        } else if (object instanceof ProjectPcb) {
+                            ProjectPcb pcb = (ProjectPcb) object;
+                            if (!newProjectPcbs.contains(pcb)) {
+                                newProjectPcbs.add(pcb);
+                            }
+                        } else if (object instanceof ProjectOther) {
+                            ProjectOther other = (ProjectOther) object;
+                            if (!newProjectOthers.contains(other)) {
+                                newProjectOthers.add(other);
+                            }
+                        }
                     }
 
-                    projectGridPanel.drawTiles(projectObjectList);
+                    tableInit(newProjectCodes, newProjectPcbs, newProjectOthers);
                 } finally {
                     application.endWait();
                 }
             }
         });
+    }
+
+    private void updateProjectObjects(Project project) {
+        if (project.getId() > DbObject.UNKNOWN_ID) {
+            // CODE
+            List<ProjectCode> currentCodes = new ArrayList<>(sm().findProjectCodesByProjectId(project.getId()));
+
+            for (ProjectCode code : getSelectedProjectCodes()) {
+                if (currentCodes.contains(code)) {
+                    code = currentCodes.get(currentCodes.indexOf(code));
+                    currentCodes.remove(code);
+                }
+                code.save();
+            }
+
+
+            // - can be deleted
+            for (ProjectCode code : currentCodes) {
+                code.delete();
+            }
+            project.updateProjectCodes();
+
+            // PCB
+            List<ProjectPcb> currentPcbs = new ArrayList<>(sm().findProjectPcbsByProjectId(project.getId()));
+
+            for (ProjectPcb pcb : getSelectedProjectPcbs()) {
+                if (currentPcbs.contains(pcb)) {
+                    pcb = currentPcbs.get(currentPcbs.indexOf(pcb));
+                    currentPcbs.remove(pcb);
+                }
+                pcb.save();
+            }
+
+
+            // - can be deleted
+            for (ProjectPcb pcb : currentPcbs) {
+                pcb.delete();
+            }
+            project.updateProjectPcbs();
+
+            // OTHER
+            List<ProjectOther> projectOthers = new ArrayList<>(sm().findProjectOthersByProjectId(project.getId()));
+
+            for (ProjectOther other : getSelectedProjectOthers()) {
+                if (projectOthers.contains(other)) {
+                    other = projectOthers.get(projectOthers.indexOf(other));
+                    projectOthers.remove(other);
+                }
+                other.save();
+            }
+
+
+            // - can be deleted
+            for (ProjectOther other : projectOthers) {
+                other.delete();
+            }
+            project.updateProjectOthers();
+        }
     }
 
     //
@@ -100,8 +156,16 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     @Override
     protected void onOK() {
         if (verify()) {
+            updateProjectObjects(selectedProject);
             super.onOK();
         }
+    }
+
+    @Override
+    protected void onCancel() {
+        selectedProject = copyProject(originalProject);
+        selectedProject.setCanBeSaved(true);
+        super.onCancel();
     }
 
     //
@@ -115,7 +179,7 @@ public class EditProjectDialog extends EditProjectDialogLayout {
     @Override
     public DbObject getGuiObject() {
         if (isShown) {
-            return project;
+            return selectedProject;
         }
         return null;
     }
