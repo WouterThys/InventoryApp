@@ -5,12 +5,15 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextEditor;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 
 import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,13 +47,15 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
 
     private JPanel cardPanel;
 
-    private ITextEditor remarksTe;
+    private AbstractAction editRemarksAa;
+    private JTextPane remarksTp;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Application application;
+    private ProjectObject selectedProject;
 
     /*
      *                  CONSTRUCTOR
@@ -75,10 +80,33 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         }
     }
 
+    private void readFile(File file) {
+        StyledDocument doc;
+        try (InputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            doc = (DefaultStyledDocument) ois.readObject();
+        }
+        catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Input file was not found!");
+            return;
+        }
+        catch (ClassNotFoundException | IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        remarksTp.setDocument(doc);
+    }
+
     private void updateDetails(ProjectObject project) {
         if (project != null) {
             nameTf.setText(project.getName());
             directoryTf.setText(project.getDirectory());
+            File remarksFile = project.getRemarksFile();
+            if (remarksFile != null) {
+                readFile(remarksFile);
+            } else {
+                remarksTp.setText("");
+            }
 
             CardLayout layout = (CardLayout) cardPanel.getLayout();
             if (project instanceof ProjectCode) {
@@ -180,6 +208,26 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         return cardPanel;
     }
 
+    private JPanel createRemarksPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        JButton b = toolBar.add(editRemarksAa);
+        b.setText("Edit remarks ");
+        b.setVerticalTextPosition(SwingConstants.CENTER);
+        b.setHorizontalTextPosition(SwingConstants.LEFT);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(toolBar, BorderLayout.EAST);
+
+        panel.add(topPanel, BorderLayout.PAGE_START);
+        panel.add(new JScrollPane(remarksTp), BorderLayout.CENTER);
+
+        return panel;
+    }
+
 
     /*
      *                  LISTENERS
@@ -204,7 +252,21 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
 
         cardPanel = new JPanel(new CardLayout());
 
-        remarksTe = new ITextEditor();
+        remarksTp = new JTextPane();
+        remarksTp.setPreferredSize(new Dimension(300, 50));
+        remarksTp.setEditable(false);
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditRemarksDialog dialog = new EditRemarksDialog(application, "Edit project remarks", selectedProject.getRemarksFile());
+                if (dialog.showDialog() == IDialog.OK) {
+                    selectedProject.setRemarksFile(dialog.getFile());
+                    selectedProject.save();
+                }
+            }
+        };
+        editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
+        editRemarksAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit remarks");
     }
 
     @Override
@@ -213,7 +275,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
 
         add(createIconPanel(), BorderLayout.WEST);
         add(createDetailsPanel(), BorderLayout.CENTER);
-        add(remarksTe, BorderLayout.EAST);
+        add(createRemarksPanel(), BorderLayout.EAST);
     }
 
     @Override
@@ -222,7 +284,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
             setVisible(false);
         } else {
             setVisible(true);
-            ProjectObject selectedProject = (ProjectObject) object[0];
+            selectedProject = (ProjectObject) object[0];
             updateIcon(selectedProject);
             updateDetails(selectedProject);
         }

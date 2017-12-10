@@ -4,9 +4,12 @@ import com.waldo.inventory.Utils.Error;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.*;
 
 public class ITextArea extends JTextArea implements FocusListener {
 
@@ -37,7 +40,8 @@ public class ITextArea extends JTextArea implements FocusListener {
         super(hint, rows, columns);
         this.hint = hint;
         this.addFocusListener(this);
-        this.setForeground(Color.gray);
+
+//        this.setForeground(Color.gray);
 //        this.setBorder(normalBorder);
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));
@@ -83,6 +87,34 @@ public class ITextArea extends JTextArea implements FocusListener {
         if (t != null && hint != null && !hint.isEmpty()) {
             showingHint = t.equals(hint);
         }
+    }
+
+    public void setDocument(File file) {
+        if (file != null) {
+            readFile(file);
+        } else {
+            setText("");
+        }
+    }
+
+    private void readFile(File file) {
+        StyledDocument doc;
+
+        try (InputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+            doc = (DefaultStyledDocument) ois.readObject();
+        }
+        catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Input file was not found!");
+            return;
+        }
+        catch (ClassNotFoundException | IOException ex) {
+
+            throw new RuntimeException(ex);
+        }
+
+        setDocument(doc);
     }
 
     public void clearText() {

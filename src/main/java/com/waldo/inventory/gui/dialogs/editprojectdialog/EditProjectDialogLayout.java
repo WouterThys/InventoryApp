@@ -93,7 +93,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
         tableModel.setItemList(previewList);
     }
 
-    public List<ProjectCode> getSelectedProjectCodes() {
+    List<ProjectCode> getSelectedProjectCodes() {
         List<ProjectCode> selected = new ArrayList<>();
         for (ProjectObject object : tableModel.getSelectedObjects()) {
             if (object instanceof ProjectCode) {
@@ -103,7 +103,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
         return selected;
     }
 
-    public List<ProjectPcb> getSelectedProjectPcbs() {
+    List<ProjectPcb> getSelectedProjectPcbs() {
         List<ProjectPcb> selected = new ArrayList<>();
         for (ProjectObject object : tableModel.getSelectedObjects()) {
             if (object instanceof ProjectPcb) {
@@ -113,7 +113,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
         return selected;
     }
 
-    public List<ProjectOther> getSelectedProjectOthers() {
+    List<ProjectOther> getSelectedProjectOthers() {
         List<ProjectOther> selected = new ArrayList<>();
         for (ProjectObject object : tableModel.getSelectedObjects()) {
             if (object instanceof ProjectOther) {
@@ -166,6 +166,8 @@ abstract class EditProjectDialogLayout extends IDialog implements
         gbc.addLine("Name: ", nameTf);
         gbc.addLine("Icon: ", iconPnl);
         gbc.addLine("Directory: ", directoryPnl);
+
+        variablesPanel.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 
         // Grid
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

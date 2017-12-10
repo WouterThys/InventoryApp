@@ -10,8 +10,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 import javax.swing.text.DefaultEditorKit.CopyAction;
 import javax.swing.text.DefaultEditorKit.CutAction;
-import javax.swing.text.DefaultEditorKit.PasteAction;
-import javax.swing.text.StyledEditorKit.ItalicAction;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -49,24 +47,28 @@ public class ITextEditor extends JPanel {
     private static final String ELEM = AbstractDocument.ElementNameAttribute;
     private static final String COMP = StyleConstants.ComponentElementName;
 
-    private JButton copyButton;
-    private JButton cutButton;
-    private JButton pasteButton;
-    private JButton boldButton;
-    private JButton italicButton;
-    private JButton underlineButton;
-    private JButton colorButton;
-    private JButton insertPictureButton;
-    private JButton undoButton;
-    private JButton redoButton;
-    private JButton saveButton;
-    private JButton bulletInsertButton;
-    private JButton numbersInsertButton;
+    private boolean insertingBullets = false;
 
-    public ITextEditor(ActionListener saveActionListener) {
+    private AbstractAction undoAction;
+    private AbstractAction redoAction;
+
+    private AbstractAction copyAction;
+    private AbstractAction cutAction;
+    private AbstractAction pasteAction;
+
+    private AbstractAction boldAction;
+    private AbstractAction italicAction;
+    private AbstractAction underlineAction;
+
+    private AbstractAction colorAction;
+    private AbstractAction insertPictureAction;
+
+    private AbstractAction bulletInsertButton;
+    private AbstractAction numbersInsertButton;
+
+    public ITextEditor() {
         editor = new JTextPane();
         JScrollPane editorScrollPane = new JScrollPane(editor);
-        //editorScrollPane.setPreferredSize(new Dimension(200, 150));
 
         editor.setDocument(getNewDocument());
         editor.addKeyListener(new BulletParaKeyListener());
@@ -76,82 +78,94 @@ public class ITextEditor extends JPanel {
         undoManager = new UndoManager();
         EditButtonActionListener editButtonActionListener = new EditButtonActionListener();
 
+        undoAction = new AbstractAction("Undo", imageResource.readImage("TextEdit.Undo")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onUndo();
+            }
+        };
+        redoAction = new AbstractAction("Redo", imageResource.readImage("TextEdit.Redo")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onRedo();
+            }
+        };
 
-        cutButton = createEditButton(new CutAction(), "Cut", imageResource.readImage("TextEdit.Cut"));
-        cutButton.addActionListener(editButtonActionListener);
-        copyButton = createEditButton(new CopyAction(), "Copy", imageResource.readImage("TextEdit.Copy"));
-        copyButton.addActionListener(editButtonActionListener);
-        pasteButton = createEditButton(new PasteAction(), "Paste", imageResource.readImage("TextEdit.Paste"));
-        pasteButton.addActionListener(editButtonActionListener);
+        copyAction = new CopyAction();
+        copyAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Copy"));
+        pasteAction = new DefaultEditorKit.PasteAction();
+        pasteAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Paste"));
+        cutAction = new CutAction();
+        cutAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Cut"));
 
-        boldButton = createEditButton(new StyledEditorKit.BoldAction(), "Bold", imageResource.readImage("TextEdit.Bold"));
-        boldButton.addActionListener(editButtonActionListener);
-        italicButton = createEditButton(new ItalicAction(), "Italic", imageResource.readImage("TextEdit.Italic"));
-        italicButton.addActionListener(editButtonActionListener);
-        underlineButton = createEditButton(new StyledEditorKit.UnderlineAction(), "Underline", imageResource.readImage("TextEdit.Underline"));
-        underlineButton.addActionListener(editButtonActionListener);
+        boldAction = new StyledEditorKit.BoldAction();
+        boldAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Bold"));
+        italicAction = new StyledEditorKit.ItalicAction();
+        italicAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Italic"));
+        underlineAction = new StyledEditorKit.UnderlineAction();
+        underlineAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Underline"));
 
-        colorButton = createEditButton("Color", imageResource.readImage("TextEdit.Color"));
-        colorButton.addActionListener(new ColorActionListener());
-        insertPictureButton = createEditButton("Picture", imageResource.readImage("TextEdit.Picture"));
-        insertPictureButton.addActionListener(new PictureInsertActionListener());
+        colorAction = new AbstractAction("Color", imageResource.readImage("TextEdit.Color")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onColor();
+            }
+        };
+        insertPictureAction = new AbstractAction("Picture", imageResource.readImage("TextEdit.Picture")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onInsertPicture();
+            }
+        };
 
-        undoButton = createEditButton("Undo", imageResource.readImage("TextEdit.Undo"));
-        undoButton.addActionListener(new UndoActionListener(UndoActionType.UNDO));
-        redoButton = createEditButton("Redo", imageResource.readImage("TextEdit.Redo"));
-        redoButton.addActionListener(new UndoActionListener(UndoActionType.REDO));
-        saveButton = createEditButton("Save", imageResource.readImage("TextEdit.Save"));
-        if (saveActionListener != null) {
-            saveButton.addActionListener(saveActionListener);
-        } else {
-            saveButton.setEnabled(false);
-        }
+        bulletInsertButton = new AbstractAction("Bullets", imageResource.readImage("TextEdit.ListBullets")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onBulletAction(BulletActionType.INSERT);
+            }
+        };
 
-        bulletInsertButton = createEditButton("Bullets", imageResource.readImage("TextEdit.ListBullets"));
-        bulletInsertButton.addActionListener(new BulletActionListener(BulletActionType.INSERT));
-        numbersInsertButton = createEditButton("Numbers", imageResource.readImage("TextEdit.ListNumbers"));
-        numbersInsertButton.addActionListener(new NumbersActionListener(NumbersActionType.INSERT));
+        numbersInsertButton = new AbstractAction("Numbers", imageResource.readImage("TextEdit.ListNumbers")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onInsertNumbers(NumbersActionType.INSERT);
+            }
+        };
 
 
-        JPanel copyPastCutPanel = new JPanel();
-        copyPastCutPanel.setLayout(new BoxLayout(copyPastCutPanel, BoxLayout.Y_AXIS));
-        copyPastCutPanel.add(cutButton);
-        copyPastCutPanel.add(copyButton);
-        copyPastCutPanel.add(pasteButton);
+        JToolBar undoRedoTb = getToolBar(JToolBar.HORIZONTAL);
+        layoutButton(undoRedoTb.add(undoAction), "Undo");
+        layoutButton(undoRedoTb.add(redoAction), "Redo");
 
-        JPanel boldItalicUnderlinePanel = new JPanel();
-        boldItalicUnderlinePanel.setLayout(new BoxLayout(boldItalicUnderlinePanel, BoxLayout.Y_AXIS));
-        boldItalicUnderlinePanel.add(italicButton);
-        boldItalicUnderlinePanel.add(boldButton);
-        boldItalicUnderlinePanel.add(underlineButton);
+        JToolBar copyPasteCutTb = getToolBar(JToolBar.HORIZONTAL);
+        layoutButton(copyPasteCutTb.add(copyAction), "Copy");
+        layoutButton(copyPasteCutTb.add(pasteAction), "Paste");
+        layoutButton(copyPasteCutTb.add(cutAction), "Cut");
 
-        JPanel colorPicturePanel = new JPanel();
-        colorPicturePanel.setLayout(new BoxLayout(colorPicturePanel, BoxLayout.Y_AXIS));
-        colorPicturePanel.add(colorButton);
-        colorPicturePanel.add(insertPictureButton);
+        JToolBar boldItalicUnderlineTb = getToolBar(JToolBar.HORIZONTAL);
+        layoutButton(boldItalicUnderlineTb.add(boldAction), "Bold", editButtonActionListener);
+        layoutButton(boldItalicUnderlineTb.add(italicAction), "Italic", editButtonActionListener);
+        layoutButton(boldItalicUnderlineTb.add(underlineAction), "Underline", editButtonActionListener);
 
-        JPanel listPanel = new JPanel();
-        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
-        listPanel.add(bulletInsertButton);
-        listPanel.add(numbersInsertButton);
+        JToolBar colorPictureTb = getToolBar(JToolBar.HORIZONTAL);
+        layoutButton(colorPictureTb.add(colorAction), "Text color");
+        layoutButton(colorPictureTb.add(insertPictureAction), "Insert image");
 
-        JPanel undoRedoPanel = new JPanel();
-        undoRedoPanel.setLayout(new BoxLayout(undoRedoPanel, BoxLayout.Y_AXIS));
-        undoRedoPanel.add(undoButton);
-        undoRedoPanel.add(redoButton);
-        undoRedoPanel.add(saveButton);
+        JToolBar listTb = getToolBar(JToolBar.HORIZONTAL);
+        layoutButton(listTb.add(bulletInsertButton), "Bullet points");
+        layoutButton(listTb.add(numbersInsertButton), "Numbers");
 
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setFloatable(false);
-        toolBar.add(undoRedoPanel);
+        toolBar.add(undoRedoTb);
         toolBar.addSeparator();
-//        toolBar.add(copyPastCutPanel);
-//        toolBar.addSeparator();
-        toolBar.add(boldItalicUnderlinePanel);
+        toolBar.add(copyPasteCutTb);
         toolBar.addSeparator();
-        toolBar.add(listPanel);
+        toolBar.add(boldItalicUnderlineTb);
         toolBar.addSeparator();
-        toolBar.add(colorPicturePanel);
+        toolBar.add(listTb);
+        toolBar.addSeparator();
+        toolBar.add(colorPictureTb);
         toolBar.setBorder(BorderFactory.createEmptyBorder(2,10,2,10));
 
         setLayout(new BorderLayout());
@@ -165,47 +179,41 @@ public class ITextEditor extends JPanel {
         editor.requestFocusInWindow();
     }
 
-    public ITextEditor() {
-        this(null);
+    private JToolBar getToolBar(int dir) {
+        JToolBar toolBar = new JToolBar(dir);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        return toolBar;
     }
 
-    private JButton createEditButton(TextAction action, String text, ImageIcon icon) {
-        JButton button = new JButton(action);
-        button.setHideActionText(true);
-        button.setIcon(icon);
+    private void layoutButton(JButton button, String text) {
         button.setToolTipText(text);
-        button.setText(text);
-        button.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-        button.setContentAreaFilled(false);
-        return button;
+//        button.setText(text);
+//        button.setVerticalTextPosition(SwingConstants.CENTER);
+//        button.setHorizontalTextPosition(SwingConstants.LEFT);
     }
 
-    private JButton createEditButton(String text, ImageIcon icon) {
-        JButton button = new JButton(icon);
-        button.setToolTipText(text);
-        button.setText(text);
-        button.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-        button.setContentAreaFilled(false);
-        return button;
+    private void layoutButton(JButton button, String text, ActionListener actionListener) {
+        layoutButton(button, text);
+        button.addActionListener(actionListener);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
 
-        copyButton.setEnabled(enabled);
-        cutButton.setEnabled(enabled);
-        pasteButton.setEnabled(enabled);
-        boldButton.setEnabled(enabled);
-        italicButton.setEnabled(enabled);
-        underlineButton.setEnabled(enabled);
-        colorButton.setEnabled(enabled);
-        insertPictureButton.setEnabled(enabled);
-        undoButton.setEnabled(enabled);
-        redoButton.setEnabled(enabled);
+        copyAction.setEnabled(enabled);
+        cutAction.setEnabled(enabled);
+        pasteAction.setEnabled(enabled);
+        boldAction.setEnabled(enabled);
+        italicAction.setEnabled(enabled);
+        underlineAction.setEnabled(enabled);
+        colorAction.setEnabled(enabled);
+        insertPictureAction.setEnabled(enabled);
+        undoAction.setEnabled(enabled);
+        redoAction.setEnabled(enabled);
         bulletInsertButton.setEnabled(enabled);
         numbersInsertButton.setEnabled(enabled);
-        saveButton.setEnabled(enabled);
         editor.setEnabled(enabled);
     }
 
@@ -222,22 +230,6 @@ public class ITextEditor extends JPanel {
         }
     }
 
-    private class ColorActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Color newColor = JColorChooser.showDialog(ITextEditor.this, "Choose a color", Color.BLACK);
-            if (newColor == null) {
-                editor.requestFocusInWindow();
-                return;
-            }
-
-            SimpleAttributeSet attr = new SimpleAttributeSet();
-            StyleConstants.setForeground(attr, newColor);
-            editor.setCharacterAttributes(attr, false);
-            editor.requestFocusInWindow();
-        }
-    }
-
     private class UndoEditListener implements UndoableEditListener {
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
@@ -245,77 +237,74 @@ public class ITextEditor extends JPanel {
         }
     }
 
-    private class UndoActionListener implements ActionListener {
-
-        private UndoActionType undoActionType;
-
-        public UndoActionListener(UndoActionType type) {
-            undoActionType = type;
+    private void onColor() {
+        Color newColor = JColorChooser.showDialog(ITextEditor.this, "Choose a color", Color.BLACK);
+        if (newColor == null) {
+            editor.requestFocusInWindow();
+            return;
         }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+        SimpleAttributeSet attr = new SimpleAttributeSet();
+        StyleConstants.setForeground(attr, newColor);
+        editor.setCharacterAttributes(attr, false);
+        editor.requestFocusInWindow();
+    }
 
-            switch (undoActionType) {
-                case UNDO:
-                    if (! undoManager.canUndo()) {
-                        editor.requestFocusInWindow();
-                        return; // no edits to undo
-                    }
-                    undoManager.undo();
-                    break;
-
-                case REDO:
-                    if (!undoManager.canRedo()) {
-                        editor.requestFocusInWindow();
-                        return; // no edits to redo
-                    }
-                    undoManager.redo();
-            }
+    private void onUndo() {
+        if (! undoManager.canUndo()) {
             editor.requestFocusInWindow();
+            return; // no edits to undo
+        }
+        undoManager.undo();
+        editor.requestFocusInWindow();
+    }
+
+    private void onRedo() {
+        if (!undoManager.canRedo()) {
+            editor.requestFocusInWindow();
+            return; // no edits to redo
+        }
+        undoManager.redo();
+        editor.requestFocusInWindow();
+    }
+
+    private void onInsertPicture() {
+        File pictureFile = choosePictureFile();
+
+        if (pictureFile == null) {
+
+            editor.requestFocusInWindow();
+            return;
+        }
+
+        ImageIcon icon = new ImageIcon(pictureFile.toString());
+        JButton picButton = new JButton(icon);
+        picButton.setBorder(new LineBorder(Color.WHITE));
+        picButton.setMargin(new Insets(0,0,0,0));
+        picButton.setAlignmentY(.9f);
+        picButton.setAlignmentX(.9f);
+        picButton.addFocusListener(new PictureFocusListener());
+        picButton.setName("PICTURE_ID_" + new Random().nextInt());
+        editor.insertComponent(picButton);
+        editor.requestFocusInWindow();
+    }
+
+    private File choosePictureFile() {
+
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "PNG, JPG & GIF Images", "png", "jpg", "gif");
+        chooser.setFileFilter(filter);
+
+        if (chooser.showOpenDialog(ITextEditor.this) == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        else {
+            return null;
         }
     }
 
-    private class PictureInsertActionListener implements ActionListener {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            File pictureFile = choosePictureFile();
-
-            if (pictureFile == null) {
-
-                editor.requestFocusInWindow();
-                return;
-            }
-
-            ImageIcon icon = new ImageIcon(pictureFile.toString());
-            JButton picButton = new JButton(icon);
-            picButton.setBorder(new LineBorder(Color.WHITE));
-            picButton.setMargin(new Insets(0,0,0,0));
-            picButton.setAlignmentY(.9f);
-            picButton.setAlignmentX(.9f);
-            picButton.addFocusListener(new PictureFocusListener());
-            picButton.setName("PICTURE_ID_" + new Random().nextInt());
-            editor.insertComponent(picButton);
-            editor.requestFocusInWindow();
-        }
-
-        private File choosePictureFile() {
-
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "PNG, JPG & GIF Images", "png", "jpg", "gif");
-            chooser.setFileFilter(filter);
-
-            if (chooser.showOpenDialog(ITextEditor.this) == JFileChooser.APPROVE_OPTION) {
-                return chooser.getSelectedFile();
-            }
-            else {
-                return null;
-            }
-        }
-    }
 
     private class PictureFocusListener implements FocusListener {
 
@@ -370,6 +359,63 @@ public class ITextEditor extends JPanel {
 
     private StyledDocument getEditorDocument() {
         return (DefaultStyledDocument) editor.getDocument();
+    }
+
+
+    private void onBulletAction(BulletActionType bulletActionType) {
+        String selectedText = editor.getSelectedText();
+
+        if ((selectedText == null) || (selectedText.trim().isEmpty())) {
+
+            editor.requestFocusInWindow();
+            return;
+        }
+
+        StyledDocument doc = getEditorDocument();
+        Element paraEle = doc.getParagraphElement(editor.getSelectionStart());
+        int paraEleStart = paraEle.getStartOffset();
+        int paraEleEnd = 0;
+
+        BULLETS_PARA_LOOP:
+        do {
+            paraEle = doc.getParagraphElement(paraEleStart);
+            paraEleEnd = paraEle.getEndOffset();
+
+            if ((paraEleEnd - paraEleStart) <= 1) { // empty line/para
+
+                paraEleStart = paraEleEnd;
+                paraEle = doc.getParagraphElement(paraEleStart);
+                continue BULLETS_PARA_LOOP;
+            }
+
+            switch (bulletActionType) {
+
+                case INSERT:
+                    if ((! isBulletedPara(paraEleStart)) &&
+                            (! isNumberedPara(paraEleStart))) {
+
+                        insertBullet(paraEleStart, paraEleStart);
+                    }
+
+                    break; // switch
+
+                case REMOVE:
+                    if (isBulletedPara(paraEleStart)) {
+
+                        removeBullet(paraEleStart, BULLET_LENGTH);
+                    }
+            }
+
+            // Get the updated para element details after bulleting
+            paraEle = doc.getParagraphElement(paraEleStart);
+            paraEleEnd = paraEle.getEndOffset();
+
+            paraEleStart = paraEleEnd;
+
+        } while (paraEleEnd <= editor.getSelectionEnd());
+        // BULLETS_PARA_LOOP
+
+        editor.requestFocusInWindow();
     }
 
     /*
@@ -847,6 +893,89 @@ public class ITextEditor extends JPanel {
         AttributeSet attrSet = getParaStartAttributes(paraEleStart);
         Integer paraNum = (Integer) attrSet.getAttribute(NUMBERS_ATTR);
         return paraNum;
+    }
+
+    private int n;
+    private void onInsertNumbers(NumbersActionType numbersActionType) {
+        StyledDocument doc = getEditorDocument();
+        String selectedText = editor.getSelectedText();
+
+        if ((selectedText == null) || (selectedText.trim().isEmpty())) {
+
+            editor.requestFocusInWindow();
+            return;
+        }
+
+        Element paraEle = doc.getParagraphElement(editor.getSelectionStart());
+        int paraEleStart = paraEle.getStartOffset();
+        int paraEleEnd = 0;
+        boolean firstPara = true;
+
+        NUMBERS_PARA_LOOP:
+        do {
+            paraEle = doc.getParagraphElement(paraEleStart);
+            paraEleEnd = paraEle.getEndOffset();
+
+            if ((paraEleEnd - paraEleStart) <= 1) { // empty line
+
+                if (firstPara) {
+
+                    firstPara = false;
+                    n = 0;
+                }
+
+                paraEleStart = paraEleEnd;
+                paraEle = doc.getParagraphElement(paraEleStart);
+                continue NUMBERS_PARA_LOOP;
+            }
+
+            switch (numbersActionType) {
+
+                case INSERT:
+
+                    if (isBulletedPara(paraEleStart)) {
+
+                        break; // switch
+                    }
+
+                    if (firstPara) {
+
+                        firstPara = false;
+                        n = 0;
+                    }
+
+                    if (isNumberedPara(paraEleStart)) {
+
+                        // remove any existing number
+                        removeNumber(paraEleStart, getNumberLength(paraEleStart));
+                    }
+
+                    if (! isNumberedPara(paraEleStart)) {
+
+                        Integer nextN = new Integer(++n);
+                        insertNumber(paraEleStart, paraEleStart, nextN);
+                    }
+
+                    break; // switch
+
+                case REMOVE:
+
+                    if (isNumberedPara(paraEleStart)) {
+
+                        removeNumber(paraEleStart, getNumberLength(paraEleStart));
+                    }
+            }
+
+            // Get the updated para element details after numbering
+            paraEle = doc.getParagraphElement(paraEleStart);
+            paraEleEnd = paraEle.getEndOffset();
+
+            paraEleStart = paraEleEnd;
+
+        } while (paraEleEnd <= editor.getSelectionEnd());
+        // NUMBERS_PARA_LOOP
+
+        editor.requestFocusInWindow();
     }
 
     /*
