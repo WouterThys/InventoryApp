@@ -1,11 +1,14 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -48,7 +51,7 @@ public class Item extends DbObject {
 
     private float rating;
     private boolean discourageOrder;
-    private String remarks;
+    private String remarksFile;
 
     private boolean isSet;
     private List<SetItem> setItems;
@@ -97,7 +100,15 @@ public class Item extends DbObject {
         statement.setInt(ndx++, getPins());
         statement.setFloat(ndx++, rating);
         statement.setBoolean(ndx++, discourageOrder);
-        statement.setString(ndx++, getRemarks());
+        // Remarks
+        SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
+        if (blob != null) {
+            statement.setBlob(ndx++, blob);
+        } else {
+            statement.setString(ndx++, null);
+        }
+
+
         statement.setBoolean(ndx++, isSet());
 
         // Value
@@ -189,7 +200,7 @@ public class Item extends DbObject {
         item.setPins(getPins());
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
-        item.setRemarks(getRemarks());
+        item.setRemarksFile(getRemarksFile());
         item.setSet(isSet());
 
         return item;
@@ -228,7 +239,7 @@ public class Item extends DbObject {
                 if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
                 if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
-                if (!(ref.getRemarks().equals(getRemarks()))) { System.out.println("Remarks differs"); return false; }
+                //if (!(ref.getRemarksFile().equals(getRemarksFile()))) { System.out.println("Remarks differs"); return false; }
                 if (!(ref.isSet() == isSet())) { System.out.println("Is set differs"); return false; }
             }
         }
@@ -242,6 +253,10 @@ public class Item extends DbObject {
         unknown.setCanBeSaved(false);
         unknown.setInserted(true);
         return unknown;
+    }
+
+    public String createRemarksFileName() {
+        return getId() + "_ItemObject_";
     }
 
     @Override
@@ -468,13 +483,25 @@ public class Item extends DbObject {
         this.discourageOrder = discourageOrder;
     }
 
-    public String getRemarks() {
-        if (remarks == null) {
-            remarks = "";
+    public File getRemarksFile() {
+        if (remarksFile != null && !remarksFile.isEmpty()) {
+            return new File(remarksFile);
         }
-        return remarks;
+        return null;
     }
 
+    public String getRemarksFileName() {
+        if (remarksFile == null) {
+            remarksFile = "";
+        }
+        return remarksFile;
+    }
+
+    public void setRemarksFile(File remarksFile) {
+        if (remarksFile != null && remarksFile.exists()) {
+            this.remarksFile = remarksFile.getAbsolutePath();
+        }
+    }
 
     public long getPackageTypeId() {
         return packageTypeId;
@@ -509,10 +536,6 @@ public class Item extends DbObject {
             packageType = sm().findPackageTypeById(packageTypeId);
         }
         return packageType;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
     }
 
     public boolean isSet() {

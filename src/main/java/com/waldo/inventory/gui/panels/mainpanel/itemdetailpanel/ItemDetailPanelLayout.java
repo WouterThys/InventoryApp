@@ -34,7 +34,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
     IStarRater starRater;
     ICheckBox discourageOrderCb;
-    ITextArea  remarksTa;
+    ITextPane remarksTp;
 
     JButton dataSheetBtn;
     private JButton orderBtn;
@@ -149,7 +149,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         northPanel.add(discourageOrderCb, BorderLayout.EAST);
 
         remarksPnl.add(northPanel, BorderLayout.NORTH);
-        remarksPnl.add(new JScrollPane(remarksTa), BorderLayout.CENTER);
+        remarksPnl.add(new JScrollPane(remarksTp), BorderLayout.CENTER);
         remarksPnl.setBorder(BorderFactory.createEmptyBorder(5,10,2,10));
 
         return remarksPnl;
@@ -174,7 +174,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
                 if (e.getClickCount() >= 2) {
                     EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
                     Object source = e.getSource();
-                    if (source.equals(remarksTa)) {
+                    if (source.equals(remarksTp)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_REMARK);
                     } else if (source.equals(descriptionTa)) {
                         dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DESCRIPTION);
@@ -215,10 +215,8 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         discourageOrderCb.setEnabled(false);
         discourageOrderCb.setHorizontalAlignment(SwingConstants.RIGHT);
         discourageOrderCb.addMouseListener(mouseAdapter);
-        remarksTa = new ITextArea(false);
-        remarksTa.setLineWrap(true);
-        remarksTa.setWrapStyleWord(true);
-        remarksTa.addMouseListener(mouseAdapter);
+        remarksTp = new ITextPane();
+        remarksTp.setEditable(false);
 
         dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));

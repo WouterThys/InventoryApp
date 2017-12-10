@@ -119,7 +119,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         priceLbl.setText(String.valueOf(item.getPrice()));
         starRater.setRating(item.getRating());
         discourageOrderCb.setSelected(item.isDiscourageOrder());
-        remarksTa.setText(item.getRemarks());
+        //remarksTp.setText(item.getRemarksFile());
 
         if (item.getLocationId() > DbObject.UNKNOWN_ID) {
             Location l = SearchManager.sm().findLocationById(item.getLocationId());

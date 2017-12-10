@@ -20,7 +20,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITextEditor extends JPanel {
 
-    private JTextPane editor;
+    private ITextPane editor;
     private UndoManager undoManager;
     private String pictureButtonName;
 
@@ -47,10 +47,9 @@ public class ITextEditor extends JPanel {
     private static final String ELEM = AbstractDocument.ElementNameAttribute;
     private static final String COMP = StyleConstants.ComponentElementName;
 
-    private boolean insertingBullets = false;
-
     private AbstractAction undoAction;
     private AbstractAction redoAction;
+    private AbstractAction saveAction;
 
     private AbstractAction copyAction;
     private AbstractAction cutAction;
@@ -67,7 +66,7 @@ public class ITextEditor extends JPanel {
     private AbstractAction numbersInsertButton;
 
     public ITextEditor() {
-        editor = new JTextPane();
+        editor = new ITextPane();
         JScrollPane editorScrollPane = new JScrollPane(editor);
 
         editor.setDocument(getNewDocument());

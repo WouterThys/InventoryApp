@@ -105,7 +105,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
                 languageCb.setSelectedItem(projectCode.getLanguage());
                 directoryPnl.setText(projectCode.getDirectory());
                 projectIdeCb.setSelectedItem(projectCode.getProjectIDE());
-                //remarksTa.setText(projectCode.getRemarks());
+                //remarksTa.setText(projectCode.getRemarksFile());
             } finally {
                 application.endWait();
             }

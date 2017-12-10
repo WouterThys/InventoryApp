@@ -5,15 +5,15 @@ import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.ITextPane;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 
 import javax.swing.*;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -48,7 +48,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
     private JPanel cardPanel;
 
     private AbstractAction editRemarksAa;
-    private JTextPane remarksTp;
+    private ITextPane remarksTp;
 
 
     /*
@@ -80,33 +80,11 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         }
     }
 
-    private void readFile(File file) {
-        StyledDocument doc;
-        try (InputStream fis = new FileInputStream(file);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-            doc = (DefaultStyledDocument) ois.readObject();
-        }
-        catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, "Input file was not found!");
-            return;
-        }
-        catch (ClassNotFoundException | IOException ex) {
-            throw new RuntimeException(ex);
-        }
-
-        remarksTp.setDocument(doc);
-    }
-
     private void updateDetails(ProjectObject project) {
         if (project != null) {
             nameTf.setText(project.getName());
             directoryTf.setText(project.getDirectory());
-            File remarksFile = project.getRemarksFile();
-            if (remarksFile != null) {
-                readFile(remarksFile);
-            } else {
-                remarksTp.setText("");
-            }
+            remarksTp.setFile(project.getRemarksFile());
 
             CardLayout layout = (CardLayout) cardPanel.getLayout();
             if (project instanceof ProjectCode) {
@@ -252,7 +230,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
 
         cardPanel = new JPanel(new CardLayout());
 
-        remarksTp = new JTextPane();
+        remarksTp = new ITextPane();
         remarksTp.setPreferredSize(new Dimension(300, 50));
         remarksTp.setEditable(false);
         editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {

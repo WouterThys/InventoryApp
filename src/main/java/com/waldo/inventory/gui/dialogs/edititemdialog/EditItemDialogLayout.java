@@ -71,7 +71,8 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Save button
+        // Dialog
+        setResizable(true);
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
@@ -106,9 +107,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
 
-        //componentPanel.updateComponents();
-        //editItemStockPanel.updateComponents();
-        //editItemOrderPanel.updateComponents();
 
         // Add tabs
         tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.Tab.Component"), componentPanel, "Component info");
@@ -118,10 +116,12 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         // Add
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        separator.setMaximumSize(new Dimension(1000000,1));
         getContentPanel().add(separator);
         getContentPanel().add(tabbedPane);
         separator = new JSeparator(JSeparator.HORIZONTAL);
         separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        separator.setMaximumSize(new Dimension(1000000,1));
         getContentPanel().add(separator);
         pack();
     }

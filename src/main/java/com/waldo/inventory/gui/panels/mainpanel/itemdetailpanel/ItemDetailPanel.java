@@ -74,7 +74,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
             starRater.setRating(item.getRating());
             discourageOrderCb.setSelected(item.isDiscourageOrder());
-            remarksTa.setText(item.getRemarks());
+            remarksTp.setFile(item.getRemarksFile());
         }
     }
 

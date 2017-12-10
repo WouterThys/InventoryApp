@@ -45,10 +45,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     // Details
     private PanelUtils.IPackagePanel packagePnl;
     private IComboBox<Manufacturer> manufacturerCb;
-    private ILabel iconLabel;
+    private ILabel manufacturerIconLbl;
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
-    private ITextArea remarksTa;
+    private ITextEditor remarksTe;
     private ICheckBox isSetCb;
     private JButton setValuesBtn;
 
@@ -154,8 +154,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 newCategory.save();
                 SwingUtilities.invokeLater(() -> {
                     updateCategoryCbValues();
-                    updateProductCbValues(((Category)categoryComboBox.getSelectedItem()).getId());
-                    updateTypeCbValues(((Product)productComboBox.getSelectedItem()).getId());
+                    if (categoryComboBox.getSelectedItem() != null) {
+                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                    }
+                    if (productComboBox.getSelectedItem() != null) {
+                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                    }
                 });
             }
         };
@@ -170,8 +174,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                     newProduct.save();
                     SwingUtilities.invokeLater(() -> {
                         updateCategoryCbValues();
-                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
-                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        if (categoryComboBox.getSelectedItem() != null) {
+                            updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        }
+                        if (productComboBox.getSelectedItem() != null) {
+                            updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        }
                     });
                 }
             } else {
@@ -193,8 +201,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                     newType.save();
                     SwingUtilities.invokeLater(() -> {
                         updateCategoryCbValues();
-                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
-                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        if (categoryComboBox.getSelectedItem() != null) {
+                            updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        }
+                        if (productComboBox.getSelectedItem() != null) {
+                            updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        }
                     });
                 }
             } else {
@@ -280,12 +292,12 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 if (m != null) {
                     if (!m.getIconPath().isEmpty()) {
                         Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                        iconLabel.setIcon(path.toString(), 100, 100);
+                        manufacturerIconLbl.setIcon(path.toString(), 48, 48);
                     }
                 }
             }
         });
-        iconLabel = new ILabel("", ILabel.RIGHT);
+        manufacturerIconLbl = new ILabel("", ILabel.RIGHT);
 
         // Remarks stuff
         starRater = new IStarRater(5, 0,0);
@@ -295,11 +307,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         discourageOrderCb.addEditedListener(editedListener, "discourageOrder");
         discourageOrderCb.setAlignmentX(RIGHT_ALIGNMENT);
         discourageOrderCb.setName(EditItemDialogLayout.COMP_DISCOURAGE);
-        remarksTa = new ITextArea();
-        remarksTa.setName(EditItemDialogLayout.COMP_REMARK);
-        remarksTa.setLineWrap(true); // Go to next line when area is full
-        remarksTa.setWrapStyleWord(true); // Don't cut words in two
-        remarksTa.addEditedListener(editedListener, "remarks");
+        remarksTe = new ITextEditor();
+        remarksTe.setName(EditItemDialogLayout.COMP_REMARK);
+        remarksTe.setPreferredSize(new Dimension(300, 100));
 
         // Set stuff
         isSetCb = new ICheckBox("Is set", false);
@@ -389,7 +399,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // MANUFACTURER
         gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
         gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
-        gbc.add(iconLabel, 2,0,1,1);
+        gbc.add(manufacturerIconLbl, 2,0,1,1);
 
         // REMARKS
         gbc = new PanelUtils.GridBagHelper(remarksPanel);
@@ -417,7 +427,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.WEST;
-        remarksPanel.add(new JScrollPane(remarksTa), gbc);
+        remarksPanel.add(new JScrollPane(remarksTe), gbc);
 
         // SET
         setPanel.add(isSetCb, BorderLayout.CENTER);
@@ -426,12 +436,29 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // Add to panel
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+//        panel.add(packagePanel);
+//        panel.add(manufacturerPanel);
+//        panel.add(setPanel);
+//        panel.add(remarksPanel);
+
+
+        panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        panel.add(packagePanel);
-        panel.add(manufacturerPanel);
-        panel.add(remarksPanel);
-        panel.add(setPanel);
+        gbc = new PanelUtils.GridBagHelper(panel);
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        panel.add(packagePanel, gbc); gbc.gridy++;
+        panel.add(manufacturerPanel, gbc); gbc.gridy++;
+        panel.add(setPanel, gbc); gbc.gridy++;
+        gbc.weighty = 1;
+        gbc.fill = PanelUtils.GridBagHelper.BOTH;
+        panel.add(remarksPanel, gbc);
+
 
         return panel;
     }
@@ -487,9 +514,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 Manufacturer m = newItem.getManufacturer();
                 if (m != null && !m.getIconPath().isEmpty()) {
                     Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                    iconLabel.setIcon(path.toString(), 100, 100);
+                    manufacturerIconLbl.setIcon(path.toString(), 48, 48);
                 } else {
-                    iconLabel.setIcon(imageResource.readImage("Common.Unknown"));
+                    manufacturerIconLbl.setIcon(imageResource.readImage("Common.Unknown"));
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -504,7 +531,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         starRater.setRating(newItem.getRating());
         starRater.setSelection(0);
         discourageOrderCb.setSelected(newItem.isDiscourageOrder());
-        remarksTa.setText(newItem.getRemarks());
+        remarksTe.setDocument(newItem.getRemarksFile());
 
         // SETS
         isSetCb.setSelected(newItem.isSet());

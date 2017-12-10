@@ -41,7 +41,7 @@ public class ITextArea extends JTextArea implements FocusListener {
         this.hint = hint;
         this.addFocusListener(this);
 
-//        this.setForeground(Color.gray);
+        this.setForeground(Color.gray);
 //        this.setBorder(normalBorder);
         Font f = this.getFont();
         this.setFont(new Font(f.getName(), Font.BOLD, 15));

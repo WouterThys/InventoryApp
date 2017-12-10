@@ -563,16 +563,18 @@ public class DatabaseAccess {
                     i.setPins(rs.getInt("pins"));
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
-                    i.setRemarks(rs.getString("remark"));
+                    //i.setRemarksFile(rs.getString("remark"));
                     i.setSet(rs.getBoolean("isSet"));
                     i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
                         i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                        i.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), i.createRemarksFileName()));
                     } else {
                         i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
                         i.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                        i.setRemarksFile(null);
                     }
                     i.setInserted(true);
                     items.add(i);
