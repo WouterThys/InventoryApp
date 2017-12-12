@@ -23,6 +23,7 @@ import java.util.List;
 public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, ListSelectionListener {
 
     // TODO: clear (or just don't show) set items if isSet = false
+    // TODO: calculate locations -> check if all items fit in location type
 
     /*
     *                  COMPONENTS
@@ -63,16 +64,16 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
         setItemTable.setEnabled(enabled);
         locationsAction.setEnabled(enabled);
         seriesAction.setEnabled(enabled);
+
+        if (!enabled) {
+            tableModel.clearItemList();
+        }
     }
 
     private void updateEnabledComponents() {
-        if (selectedSetItem == null) {
-            toolBar.setEditActionEnabled(false);
-            toolBar.setDeleteActionEnabled(false);
-        } else {
-            toolBar.setEditActionEnabled(true);
-            toolBar.setDeleteActionEnabled(true);
-        }
+        boolean enabled = selectedSetItem != null;
+        toolBar.setEditActionEnabled(enabled);
+        toolBar.setDeleteActionEnabled(enabled);
     }
 
     private void updateTable() {

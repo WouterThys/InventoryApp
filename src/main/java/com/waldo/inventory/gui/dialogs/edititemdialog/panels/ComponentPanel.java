@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.componentpaneltabs.SetItemPanel;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -69,7 +68,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     // Sets
     private ICheckBox isSetCb;
-    private JButton setValuesBtn;
     private SetItemPanel setItemPanel;
 
 
@@ -319,25 +317,15 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         remarksTe.setName(EditItemDialogLayout.COMP_REMARK);
         remarksTe.setPreferredSize(new Dimension(300, 100));
 
-        // Set stuff
+    }
+
+    private void initializeSetComponents() {
         isSetCb = new ICheckBox("Is set", false);
         isSetCb.addEditedListener(editedListener, "set");
         isSetCb.addActionListener(e -> {
-            setValuesBtn.setEnabled(isSetCb.isSelected());
             setItemPanel.setEnabled(isSetCb.isSelected());
-        });
-        setValuesBtn = new JButton("Set values");
-        setValuesBtn.addActionListener(e -> {
-            if (newItem != null && newItem.getId() > DbObject.UNKNOWN_ID) {
-                SetItemDialog dialog = new SetItemDialog(application, "Set items", newItem);
-                if (dialog.showDialog() == IDialog.OK) {
-                    editedListener.onValueChanged(null, "", 0, 0);
-                }
-            } else {
-                JOptionPane.showMessageDialog(ComponentPanel.this,
-                        "Save item first!",
-                        "Error creating set items",
-                        JOptionPane.ERROR_MESSAGE);
+            if (isSetCb.isSelected()) {
+                setItemPanel.updateComponents(newItem);
             }
         });
         setItemPanel = new SetItemPanel(application, newItem);
@@ -463,12 +451,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         JPanel panel = new JPanel(new BorderLayout());
         JPanel setPanel = new JPanel(new BorderLayout());
 
-        setPanel.add(isSetCb, BorderLayout.CENTER);
-        setPanel.add(setValuesBtn, BorderLayout.EAST);
-        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
+//        setPanel.add(isSetCb, BorderLayout.CENTER);
+//        setPanel.add(setValuesBtn, BorderLayout.EAST);
+//        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
 
-        panel.add(setPanel, BorderLayout.NORTH);
+        panel.add(isSetCb, BorderLayout.NORTH);
         panel.add(setItemPanel, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         return panel;
     }
@@ -485,6 +474,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         initializeBasicComponents();
         initializeDetailsComponents();
+        initializeSetComponents();
     }
 
     @Override
@@ -548,7 +538,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // SETS
         isSetCb.setSelected(newItem.isSet());
-        setValuesBtn.setEnabled(newItem.isSet());
         setItemPanel.updateComponents(newItem); // TODO only do this when tab opens
         setItemPanel.setEnabled(newItem.isSet());
 
