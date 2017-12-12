@@ -9,8 +9,9 @@ public abstract class EditItemAction extends AbstractAction {
 
     private static final String name = "Edit item";
 
-    public EditItemAction() {
+    protected EditItemAction() {
         super(name, imageResource.readImage("Actions.ItemEdit"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onEditItem();

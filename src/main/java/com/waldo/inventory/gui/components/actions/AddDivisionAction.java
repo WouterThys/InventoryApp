@@ -9,8 +9,9 @@ public abstract class AddDivisionAction extends AbstractAction {
 
     private static final String name = "Add division";
 
-    public AddDivisionAction() {
+    protected AddDivisionAction() {
         super(name, imageResource.readImage("Actions.DivisionAdd"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onAddDivision();

@@ -175,8 +175,8 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("SetItem.Parse"));
-        setTitleName("Default series");
+        setTitleIcon(imageResource.readImage("SetItem.Series.Title"));
+        setTitleName(getTitle());
 
         // Components
         typeCbModel = new DefaultComboBoxModel<>();

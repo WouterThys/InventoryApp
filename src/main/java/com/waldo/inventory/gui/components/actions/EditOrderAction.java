@@ -11,6 +11,7 @@ public abstract class EditOrderAction  extends AbstractAction {
 
     protected EditOrderAction() {
         super(name, imageResource.readImage("Actions.OrderEdit"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onEditOrder();

@@ -9,8 +9,9 @@ public abstract class DeleteDivisionAction extends AbstractAction {
 
     private static final String name = "Delete division";
 
-    public DeleteDivisionAction() {
+    protected DeleteDivisionAction() {
         super(name, imageResource.readImage("Actions.DivisionDelete"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onDeleteDivision();

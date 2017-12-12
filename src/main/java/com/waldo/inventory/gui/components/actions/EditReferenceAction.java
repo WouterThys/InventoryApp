@@ -9,8 +9,9 @@ public abstract class EditReferenceAction extends AbstractAction {
 
     private static final String name = "Edit reference";
 
-    public EditReferenceAction() {
+    protected EditReferenceAction() {
         super(name, imageResource.readImage("Actions.OrderReference"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onEditReference();

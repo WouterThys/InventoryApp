@@ -11,6 +11,7 @@ public abstract class AddOrderAction extends AbstractAction {
 
     public AddOrderAction() {
         super(name, imageResource.readImage("Actions.OrderAdd"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onAddOrder();

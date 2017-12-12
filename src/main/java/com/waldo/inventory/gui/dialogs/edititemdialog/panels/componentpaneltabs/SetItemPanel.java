@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels.componentpaneltabs;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -12,7 +9,7 @@ import com.waldo.inventory.gui.components.actions.CreateSetItemSeriesAction;
 import com.waldo.inventory.gui.components.actions.UpdateSetItemLocationsAction;
 import com.waldo.inventory.gui.components.tablemodels.ISetItemTableModel;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemDialog;
-import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemLocationDialog;
+import com.waldo.inventory.gui.dialogs.setitemdialog.extra.CreateSetItemLocationsParametersDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog.ValueParserDialog;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -146,40 +143,41 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
         }
     }
 
-    private void computeLocations(boolean leftRight, boolean upDown, boolean overWrite, Location startLocation) {
-        LocationType locationType = item.getLocation().getLocationType();
+    private void computeLocations(boolean leftRight, boolean upDown, boolean overWrite, int maxRows, int maxCols, Location startLocation) {
 
-        long typeId = locationType.getId();
+        Location location = item.getLocation();
+
+        long typeId = location.getLocationTypeId();
         int row = startLocation.getRow();
         int col = startLocation.getCol();
 
-//        int maxRow = locationType.getRows();
-//        int maxCol = locationType.getColumns();
-//
-//        for (SetItem setItem : getSetItems()) {
-//            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
-//                Location loc = SearchManager.sm().findLocation(typeId, row, col);
-//                setItem.setLocationId(loc.getId());
-//
-//                int newRow = row;
-//                int newCol = leftRight ? (col + 1) : (col - 1);
-//                if (leftRight && newCol >= maxCol) {
-//                    newRow = upDown ? (row+1) : (row-1);
-//                    newCol = 0;
-//                }
-//
-//                if (newRow >= 0 && newRow < maxRow) {
-//                    row = newRow;
-//                } else {
-//                    return;
-//                }
-//                if (newCol >= 0 && newCol < maxCol) {
-//                    col = newCol;
-//                } else {
-//                    return;
-//                }
-//            }
-//        }
+        if (maxCols <= 0) maxCols = 3;
+        if (maxRows <= 0) maxRows = 50;
+
+        for (SetItem setItem : getSetItems()) {
+            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
+                Location loc = SearchManager.sm().findLocation(typeId, row, col);
+                setItem.setLocationId(loc.getId());
+
+                int newRow = row;
+                int newCol = leftRight ? (col + 1) : (col - 1);
+                if (leftRight && newCol >= maxCols) {
+                    newRow = upDown ? (row+1) : (row-1);
+                    newCol = 0;
+                }
+
+                if (newRow >= 0 && newRow < maxRows) {
+                    row = newRow;
+                } else {
+                    return;
+                }
+                if (newCol >= 0 && newCol < maxCols) {
+                    col = newCol;
+                } else {
+                    return;
+                }
+            }
+        }
     }
 
     /*
@@ -202,7 +200,7 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
         seriesAction = new CreateSetItemSeriesAction() {
             @Override
             public void onCreateSeries() {
-                ValueParserDialog dialog = new ValueParserDialog(application, "Parse values");
+                ValueParserDialog dialog = new ValueParserDialog(application, "Item series");
                 if (dialog.showDialog() == IDialog.OK) {
                     List<SetItem> items = dialog.getSetItems();
                     if (items != null) {
@@ -214,13 +212,15 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
         locationsAction = new UpdateSetItemLocationsAction() {
             @Override
             public void onUpdateLocations() {
-                EditSetItemLocationDialog dialog = new EditSetItemLocationDialog(application, "Set locations", item.getLocation().getLocationType());
+                CreateSetItemLocationsParametersDialog dialog = new CreateSetItemLocationsParametersDialog(application, "Set locations", item.getLocation().getLocationType());
                 if (dialog.showDialog() == IDialog.OK) {
                     computeLocations(
-                            dialog.leftToRight(),
-                            dialog.upDown(),
-                            dialog.overWrite(),
-                            dialog.startLocation()
+                            dialog.getLeftToRight(),
+                            dialog.getUpDown(),
+                            dialog.getOverWrite(),
+                            dialog.getMaxRows(),
+                            dialog.getMaxCols(),
+                            dialog.getStartLocation()
                     );
                     updateTable();
                 }
@@ -233,7 +233,7 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
         setLayout(new BorderLayout());
 
         JScrollPane pane = new JScrollPane(setItemTable);
-        pane.setPreferredSize(new Dimension(400, 200));
+        pane.setPreferredSize(new Dimension(500, 200));
 
         toolBar.addSeparateAction(locationsAction);
         toolBar.addAction(seriesAction);

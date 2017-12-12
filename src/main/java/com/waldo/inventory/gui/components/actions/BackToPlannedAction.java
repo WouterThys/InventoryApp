@@ -11,6 +11,7 @@ public abstract class BackToPlannedAction extends AbstractAction {
 
     protected BackToPlannedAction() {
         super(name, imageResource.readImage("Actions.OrderBackToPlanned"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onBackToPlanned();

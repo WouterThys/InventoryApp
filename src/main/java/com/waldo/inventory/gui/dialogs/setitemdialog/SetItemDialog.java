@@ -7,8 +7,8 @@ import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.dialogs.setitemdialog.extra.CreateSetItemLocationsParametersDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemDialog;
-import com.waldo.inventory.gui.dialogs.setitemdialog.extra.EditSetItemLocationDialog;
 import com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog.ValueParserDialog;
 
 import javax.swing.*;
@@ -120,14 +120,14 @@ public class SetItemDialog extends SetItemDialogLayout {
 //        int maxCol = locationType.getColumns();
 //
 //        for (SetItem setItem : getSetItems()) {
-//            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
+//            if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || getOverWrite) {
 //                Location loc = SearchManager.sm().findLocation(typeId, row, col);
 //                setItem.setLocationId(loc.getId());
 //
 //                int newRow = row;
 //                int newCol = leftRight ? (col + 1) : (col - 1);
 //                if (leftRight && newCol >= maxCol) {
-//                    newRow = upDown ? (row+1) : (row-1);
+//                    newRow = getUpDown ? (row+1) : (row-1);
 //                    newCol = 0;
 //                }
 //
@@ -257,13 +257,13 @@ public class SetItemDialog extends SetItemDialogLayout {
             }
         } else {
             if (item.getLocation() != null) {
-                EditSetItemLocationDialog dialog = new EditSetItemLocationDialog(application, "Set locations", item.getLocation().getLocationType());
+                CreateSetItemLocationsParametersDialog dialog = new CreateSetItemLocationsParametersDialog(application, "Set locations", item.getLocation().getLocationType());
                 if (dialog.showDialog() == IDialog.OK) {
                     computeLocations(
-                            dialog.leftToRight(),
-                            dialog.upDown(),
-                            dialog.overWrite(),
-                            dialog.startLocation()
+                            dialog.getLeftToRight(),
+                            dialog.getUpDown(),
+                            dialog.getOverWrite(),
+                            dialog.getStartLocation()
                     );
                     updateTable();
                     getButtonNeutral().setEnabled(true);

@@ -29,10 +29,12 @@ public class Main {
     private static final String CO = "CACHE_ONLY";
     private static final String DM = "DEBUG_MODE";
     private static final String FS = "FULL_SCREEN";
+    private static final String LH = "LOG_HISTORY";
 
     public static boolean CACHE_ONLY = false;
     public static boolean DEBUG_MODE = false;
     public static boolean FULL_SCREEN = false;
+    public static boolean LOG_HISTORY = false;
 
     public static void main(String[] args) throws SQLException {
         String startUpPath = new File("").getAbsolutePath() + File.separator;
@@ -76,6 +78,9 @@ public class Main {
                             break;
                         case FS:
                             FULL_SCREEN = Boolean.valueOf(value);
+                            break;
+                        case LH:
+                            LOG_HISTORY = Boolean.valueOf(value);
                             break;
                     }
                 } catch (Exception e) {

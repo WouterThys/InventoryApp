@@ -11,6 +11,7 @@ public abstract class CreateSetItemSeriesAction extends AbstractAction {
 
     public CreateSetItemSeriesAction() {
         super(name, imageResource.readImage("Actions.SetItemCreateSeries"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onCreateSeries();

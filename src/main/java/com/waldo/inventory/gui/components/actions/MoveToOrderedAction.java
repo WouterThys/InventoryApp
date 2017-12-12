@@ -11,6 +11,7 @@ public abstract class MoveToOrderedAction extends AbstractAction {
 
     protected MoveToOrderedAction() {
         super(name, imageResource.readImage("Actions.OrderMoveToOrdered"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onMoveToOrdered();

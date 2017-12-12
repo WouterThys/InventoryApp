@@ -11,6 +11,7 @@ public abstract class UpdateSetItemLocationsAction extends AbstractAction {
 
     public UpdateSetItemLocationsAction() {
         super(name, imageResource.readImage("Actions.SetItemUpdateLocations"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onUpdateLocations();

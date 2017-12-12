@@ -9,8 +9,9 @@ public abstract class DeleteItemAction extends AbstractAction {
 
     private static final String name = "Delete item";
 
-    public DeleteItemAction() {
+    protected DeleteItemAction() {
         super(name, imageResource.readImage("Actions.ItemDelete"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onDeleteItem();

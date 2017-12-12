@@ -465,6 +465,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         setPanel.add(isSetCb, BorderLayout.CENTER);
         setPanel.add(setValuesBtn, BorderLayout.EAST);
+        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
 
         panel.add(setPanel, BorderLayout.NORTH);
         panel.add(setItemPanel, BorderLayout.CENTER);
