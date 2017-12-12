@@ -42,7 +42,6 @@ abstract class SetItemDialogLayout extends IDialog implements
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     SetItemDialogLayout(Application application, String title, Item item) {
         super(application, title);
-        setResizable(true);
         this.item = item;
     }
 
@@ -74,8 +73,9 @@ abstract class SetItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
+        setResizable(true);
         setTitleIcon(imageResource.readImage("SetItem.Title"));
-        setTitleName("Set items");
+        setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
