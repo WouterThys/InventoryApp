@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ISpinner;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import com.waldo.inventory.managers.SearchManager;
@@ -25,8 +24,7 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
     private JCheckBox upDownCb;
     private JCheckBox overWriteCb;
 
-    private JSpinner maxRowsSp;
-    private JSpinner maxColsSp;
+    private JSpinner numberPerLocationSp;
 
     private LocationType locationType;
     private Location startLocation;
@@ -58,12 +56,8 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
         return overWriteCb.isSelected();
     }
 
-    public int getMaxRows() {
-        return ((SpinnerNumberModel)maxRowsSp.getModel()).getNumber().intValue();
-    }
-
-    public int getMaxCols() {
-        return ((SpinnerNumberModel)maxColsSp.getModel()).getNumber().intValue();
+    public int getNumberPerLocation() {
+        return ((SpinnerNumberModel) numberPerLocationSp.getModel()).getNumber().intValue();
     }
 
 
@@ -80,12 +74,8 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
         upDownCb = new JCheckBox("Up -> Down", true);
         overWriteCb = new JCheckBox("Over-write known locations", true);
 
-        SpinnerNumberModel maxRowsModel = new SpinnerNumberModel(1,1, 1000, 1);
-        SpinnerNumberModel maxColsModel = new SpinnerNumberModel(1,1, 1000, 1);
-
-        maxColsSp = new ISpinner(maxColsModel);
-        maxRowsSp = new ISpinner(maxRowsModel);
-
+        SpinnerNumberModel numberModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
+        numberPerLocationSp = new JSpinner(numberModel);
     }
 
     @Override
@@ -104,18 +94,16 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
         gbc.addLine("", upDownCb);
         gbc.addLine("", overWriteCb);
 
-        JPanel rightPanel = new JPanel();
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(5,3,5,5));
-        gbc = new PanelUtils.GridBagHelper(rightPanel);
-        gbc.addLine("Max cols: ", maxColsSp);
-        gbc.addLine("Max rows: ", maxRowsSp);
+        JPanel bottomPanel = new JPanel();
+        gbc = new PanelUtils.GridBagHelper(bottomPanel);
+        gbc.addLineVertical("# set items per location", numberPerLocationSp);
 
         JPanel centerPanel = new JPanel();
         centerPanel.add(leftPanel);
-        centerPanel.add(rightPanel);
 
         getContentPanel().add(topPanel, BorderLayout.PAGE_START);
         getContentPanel().add(centerPanel, BorderLayout.CENTER);
+        getContentPanel().add(bottomPanel, BorderLayout.PAGE_END);
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 

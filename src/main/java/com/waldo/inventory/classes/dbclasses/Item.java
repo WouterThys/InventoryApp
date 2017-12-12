@@ -546,6 +546,10 @@ public class Item extends DbObject {
         isSet = set;
     }
 
+    public boolean hasSetItems() {
+        return isSet() && getSetItems().size() > 0;
+    }
+
     public List<SetItem> getSetItems() {
         if (isSet()) {
             if (setItems == null) {
