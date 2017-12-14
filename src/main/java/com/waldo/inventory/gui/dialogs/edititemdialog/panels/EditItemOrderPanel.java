@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -143,7 +143,7 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolB
 
         distributorPanel.add(pane, BorderLayout.CENTER);
         distributorPanel.add(toolBar, BorderLayout.EAST);
-        distributorPanel.setBorder(PanelUtils.createTitleBorder("Distributor reference"));
+        distributorPanel.setBorder(GuiUtils.createTitleBorder("Distributor reference"));
 
         // Add to panel
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));

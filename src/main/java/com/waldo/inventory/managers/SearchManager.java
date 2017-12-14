@@ -1,5 +1,6 @@
 package com.waldo.inventory.managers;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 
@@ -876,6 +877,27 @@ public class SearchManager {
             }
         }
         return null;
+    }
+
+    public List<Log> getLogsByType(boolean info, boolean debug, boolean warn, boolean error) {
+        List<Log> logList = new ArrayList<>();
+        for (Log log : cache().getLogs()) {
+            switch (log.getLogType()) {
+                case Statics.LogTypes.INFO:
+                    if (info) logList.add(log);
+                    break;
+                case Statics.LogTypes.DEBUG:
+                    if (debug) logList.add(log);
+                    break;
+                case Statics.LogTypes.WARN:
+                    if (warn) logList.add(log);
+                    break;
+                case Statics.LogTypes.ERROR:
+                    if (error) logList.add(log);
+                    break;
+            }
+        }
+        return logList;
     }
 
 }

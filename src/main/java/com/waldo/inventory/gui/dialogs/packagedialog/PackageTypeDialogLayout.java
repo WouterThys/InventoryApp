@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
@@ -175,7 +175,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         // Text fields
         JPanel textFieldPanel = new JPanel(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(textFieldPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(textFieldPanel);
         gbc.addLine("Name: ", detailNameTf);
         gbc.addLine("Description: ", null);
         gbc.gridwidth = 2;

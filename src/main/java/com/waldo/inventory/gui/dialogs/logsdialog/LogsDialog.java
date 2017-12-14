@@ -30,7 +30,9 @@ public class LogsDialog extends LogsDialogLayout {
 
         initializeComponents();
         initializeLayouts();
-        updateLogTable(true, true, true, true);
+
+        updateSystemLogTable(true, true, true, true);
+        updateCacheLogTable();
 
         updateComponents();
     }
@@ -47,7 +49,7 @@ public class LogsDialog extends LogsDialogLayout {
             application.endWait();
         }
 
-        updateLogTable(
+        updateSystemLogTable(
                 showInfoCb.isSelected(),
                 showDebugCb.isSelected(),
                 showWarnCb.isSelected(),
@@ -61,7 +63,7 @@ public class LogsDialog extends LogsDialogLayout {
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED || e.getStateChange() == ItemEvent.DESELECTED) {
-            updateLogTable(
+            updateSystemLogTable(
                     showInfoCb.isSelected(),
                     showDebugCb.isSelected(),
                     showWarnCb.isSelected(),
@@ -76,9 +78,9 @@ public class LogsDialog extends LogsDialogLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if(!e.getValueIsAdjusting()) {
-            int row = logTable.getSelectedRow();
+            int row = systemLogTable.getSelectedRow();
             if (row >= 0) {
-                updateComponents(logTable.getValueAtRow(row));
+                updateComponents(systemLogTable.getValueAtRow(row));
             }
         }
     }

@@ -106,7 +106,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
             public void onCacheCleared() {}
         });
 
-        cache().addOnItemsChangedListener(new CacheChangedListener<Item>() {
+        cache().getItems().addChangedListener(new CacheChangedListener<Item>() {
             @Override
             public void onInserted(Item item) {}
 

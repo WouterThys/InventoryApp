@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
@@ -131,7 +131,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     private JPanel createSouthPanel() {
         JPanel southPanel = new JPanel(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(southPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(southPanel);
         gbh.addLine("Description: ", descriptionTf);
         gbh.addLine("Footprint: ", footprintTf);
         gbh.addLine("Value: ", setValueTf);

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
@@ -75,11 +75,11 @@ abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
         JPanel left = new JPanel();
         JPanel right = new JPanel();
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(left);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(left);
         gbc.addLine("Inserted by: ", insertedByLbl);
         gbc.addLine("Date: ", insertedWhenLbl);
 
-        gbc = new PanelUtils.GridBagHelper(right);
+        gbc = new GuiUtils.GridBagHelper(right);
         gbc.addLine("Updated by: ", updatedByLbl);
         gbc.addLine("Date: ", updatedWhenLbl);
 
@@ -137,9 +137,9 @@ abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
         orderPane = new JScrollPane(orderHistoryTable);
         pcbPane = new JScrollPane(pcbHistoryTable);
 
-        labelPanel.setBorder(PanelUtils.createTitleBorder("AUD"));
-        orderPane.setBorder(PanelUtils.createTitleBorder("Order history"));
-        pcbPane.setBorder(PanelUtils.createTitleBorder("Pcb history"));
+        labelPanel.setBorder(GuiUtils.createTitleBorder("AUD"));
+        orderPane.setBorder(GuiUtils.createTitleBorder("Order history"));
+        pcbPane.setBorder(GuiUtils.createTitleBorder("Pcb history"));
 
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
         tablePanel.add(orderPane);

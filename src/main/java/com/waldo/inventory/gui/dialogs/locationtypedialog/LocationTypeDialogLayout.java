@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -62,7 +62,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     }
 
     private JPanel createWestPanel() {
-        TitledBorder titledBorder = PanelUtils.createTitleBorder("Locations");
+        TitledBorder titledBorder = GuiUtils.createTitleBorder("Locations");
 
         JPanel westPanel = new JPanel();
         JScrollPane list = new JScrollPane(locationTypeList);
@@ -96,13 +96,13 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     }
 
     private JPanel createLocationTypeDetailPanel() {
-        TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
+        TitledBorder titledBorder = GuiUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel northPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new BorderLayout());
 
         buttonPanel.add(detailCustomBtn, BorderLayout.EAST);
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(northPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(northPanel);
         gbh.addLine("Name: ", detailName);
         gbh.add(buttonPanel, 1,1);
 

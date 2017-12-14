@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.gui.Application;
@@ -266,7 +266,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         JPanel remarkTopPnl = new JPanel();
         JPanel iconPnl = createIconPanel();
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(dataRows);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(dataRows);
         gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
         gbc.addLine(imageResource.readImage("Items.Preview.Footprint"), footprintLbl);
         gbc.addLine(imageResource.readImage("Items.Preview.Price"), priceLbl);

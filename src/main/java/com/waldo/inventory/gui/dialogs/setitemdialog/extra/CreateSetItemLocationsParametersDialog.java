@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
@@ -89,13 +89,13 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
 
         JPanel leftPanel = new JPanel();
         leftPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,3));
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(leftPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(leftPanel);
         gbc.addLine("", leftRightCb);
         gbc.addLine("", upDownCb);
         gbc.addLine("", overWriteCb);
 
         JPanel bottomPanel = new JPanel();
-        gbc = new PanelUtils.GridBagHelper(bottomPanel);
+        gbc = new GuiUtils.GridBagHelper(bottomPanel);
         gbc.addLineVertical("# set items per location", numberPerLocationSp);
 
         JPanel centerPanel = new JPanel();

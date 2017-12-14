@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.classes.dbclasses.Product;
@@ -119,7 +119,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     public void initializeLayouts() {
         JPanel panel = new JPanel();
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(panel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
         gbc.addLine("Component name: ", pcbItemNameTf);
         gbc.addLine("Category: ", categoryCb);
         gbc.addLine("Product: ", productCb);

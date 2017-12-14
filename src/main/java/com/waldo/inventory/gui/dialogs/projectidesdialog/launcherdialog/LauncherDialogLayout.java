@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog;
 
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICheckBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -82,7 +82,7 @@ public abstract class LauncherDialogLayout extends IDialog {
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         // - Browse panel
-        JPanel launcherPanel = PanelUtils.createFileOpenPanel(launcherPathTf, launcherFileBtn);
+        JPanel launcherPanel = GuiUtils.createFileOpenPanel(launcherPathTf, launcherFileBtn);
 
         // - Launcher path
         ILabel launcherLabel = new ILabel("Launcher: ");

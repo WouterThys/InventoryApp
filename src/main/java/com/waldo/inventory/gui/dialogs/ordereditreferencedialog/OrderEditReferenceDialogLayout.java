@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.ordereditreferencedialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -61,7 +61,7 @@ public abstract class OrderEditReferenceDialogLayout extends IDialog implements 
     public void initializeLayouts() {
         getContentPanel().setLayout(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(getContentPanel());
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel());
         gbc.addLine("Distributor: ", distributorLbl);
         gbc.addLine("Reference: ", referenceTf);
 

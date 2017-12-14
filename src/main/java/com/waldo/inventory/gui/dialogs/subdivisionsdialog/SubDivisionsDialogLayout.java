@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
@@ -120,7 +120,7 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
     @Override
     public void initializeLayouts() {
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(getContentPanel());
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel());
 
         switch (divisionType) {
             case Unknown:

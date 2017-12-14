@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
@@ -55,7 +55,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         JPanel amountPanel = new JPanel(new GridBagLayout());
 
         // Border
-        TitledBorder amountBorder = PanelUtils.createTitleBorder("Amount");
+        TitledBorder amountBorder = GuiUtils.createTitleBorder("Amount");
 
         // Labels
         ILabel amountLabel = new ILabel("Amount: ");
@@ -100,7 +100,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         JPanel locationPanel = new JPanel(new GridBagLayout());
 
         // Border
-        TitledBorder amountBorder = PanelUtils.createTitleBorder("Location");
+        TitledBorder amountBorder = GuiUtils.createTitleBorder("Location");
 
         // Grid bags
         GridBagConstraints gbc = new GridBagConstraints();

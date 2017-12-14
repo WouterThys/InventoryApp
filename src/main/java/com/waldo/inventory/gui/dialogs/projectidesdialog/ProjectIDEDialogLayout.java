@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
@@ -132,7 +132,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
 
         // Text fields
         JPanel textFieldPanel = new JPanel(new GridBagLayout());
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(textFieldPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(textFieldPanel);
         gbc.addLine("Name: ", detailName);
         gbc.addLine("Type", projectTypeCb);
         gbc.addLine("", buttonPanel);
@@ -140,7 +140,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
 
         // Item list
         JPanel listPanel = new JPanel(new GridBagLayout());
-        gbc = new PanelUtils.GridBagHelper(listPanel);
+        gbc = new GuiUtils.GridBagHelper(listPanel);
         gbc.addLineVertical("Projects: ", new JScrollPane(detailProjectList), GridBagConstraints.BOTH);
 
         // Add all

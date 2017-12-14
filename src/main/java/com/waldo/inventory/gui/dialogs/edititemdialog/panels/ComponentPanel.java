@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
+import static com.waldo.inventory.Utils.GuiUtils.createFieldConstraints;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -48,7 +48,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     // Basic info
     private ITextField idTextField;
-    private PanelUtils.INameValuePanel nameValuePnl;
+    private GuiUtils.INameValuePanel nameValuePnl;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
     private IComboBox<Category> categoryComboBox;
@@ -56,10 +56,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private IComboBox<Type> typeComboBox;
     private ITextField localDataSheetTextField;
     private JButton localDataSheetButton;
-    private PanelUtils.IBrowseWebPanel onlineDataSheetTextField;
+    private GuiUtils.IBrowseWebPanel onlineDataSheetTextField;
 
     // Details
-    private PanelUtils.IPackagePanel packagePnl;
+    private GuiUtils.IPackagePanel packagePnl;
     private IComboBox<Manufacturer> manufacturerCb;
     private ILabel manufacturerIconLbl;
     private IStarRater starRater;
@@ -240,7 +240,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         idTextField.setEditable(false);
         idTextField.setEnabled(false);
 
-        nameValuePnl = new PanelUtils.INameValuePanel(editedListener, "name", editedListener);
+        nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
 
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
@@ -281,13 +281,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         });
 
         // Online data sheet
-        onlineDataSheetTextField = new PanelUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
+        onlineDataSheetTextField = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
         //onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
     }
 
     private void initializeDetailsComponents() {
         // Package
-        packagePnl = new PanelUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
+        packagePnl = new GuiUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
 
         // Manufacturer
         createManufacturerCb();
@@ -354,9 +354,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {
-                        PanelUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
-                        PanelUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
-                        PanelUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
+                        GuiUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
+                        GuiUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
+                        GuiUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -380,9 +380,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
 
         // Borders
-        TitledBorder packageBorder = PanelUtils.createTitleBorder("Package");
-        TitledBorder manufacturerBorder = PanelUtils.createTitleBorder("Manufacturer");
-        TitledBorder remarksBorder = PanelUtils.createTitleBorder("Remarks");
+        TitledBorder packageBorder = GuiUtils.createTitleBorder("Package");
+        TitledBorder manufacturerBorder = GuiUtils.createTitleBorder("Manufacturer");
+        TitledBorder remarksBorder = GuiUtils.createTitleBorder("Remarks");
 
         packagePanel.setBorder(packageBorder);
         manufacturerPanel.setBorder(manufacturerBorder);
@@ -391,15 +391,15 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // PACKAGE
         packagePanel.add(packagePnl, BorderLayout.CENTER);
 
-        PanelUtils.GridBagHelper gbc;
+        GuiUtils.GridBagHelper gbc;
 
         // MANUFACTURER
-        gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
-        gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
+        gbc = new GuiUtils.GridBagHelper(manufacturerPanel);
+        gbc.addLine("Name: ", GuiUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
         gbc.add(manufacturerIconLbl, 2,0,1,1);
 
         // REMARKS
-        gbc = new PanelUtils.GridBagHelper(remarksPanel);
+        gbc = new GuiUtils.GridBagHelper(remarksPanel);
 
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
@@ -432,7 +432,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        gbc = new PanelUtils.GridBagHelper(panel);
+        gbc = new GuiUtils.GridBagHelper(panel);
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -441,7 +441,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         panel.add(packagePanel, gbc); gbc.gridy++;
         panel.add(manufacturerPanel, gbc); gbc.gridy++;
         gbc.weighty = 1;
-        gbc.fill = PanelUtils.GridBagHelper.BOTH;
+        gbc.fill = GuiUtils.GridBagHelper.BOTH;
         panel.add(remarksPanel, gbc);
 
         return panel;

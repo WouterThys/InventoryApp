@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -125,7 +125,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         JPanel mainPanel = new JPanel();
         JPanel detailPanel = new JPanel(new BorderLayout());
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(mainPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(mainPanel);
         gbc.addLine("Name: ", nameTf);
         gbc.addLine("Directory: ", directoryTf);
 
@@ -138,14 +138,14 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
     }
 
     private JPanel createCardPanel() {
-        PanelUtils.GridBagHelper gbc;
+        GuiUtils.GridBagHelper gbc;
         JPanel codePanel = new JPanel();
         JPanel pcbPanel = new JPanel();
         JPanel otherPanel = new JPanel();
 
-        codePanel.setBorder(PanelUtils.createTitleBorder(imageResource.readImage("Projects.Details.Code")));
-        pcbPanel.setBorder(PanelUtils.createTitleBorder(imageResource.readImage("Projects.Details.Pcb")));
-        otherPanel.setBorder(PanelUtils.createTitleBorder(imageResource.readImage("Projects.Details.Other")));
+        codePanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Code")));
+        pcbPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Pcb")));
+        otherPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Other")));
 
         JPanel westPanel;
         JPanel eastPanel;
@@ -153,10 +153,10 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         // Code
         westPanel = new JPanel();
         eastPanel = new JPanel();
-        gbc = new PanelUtils.GridBagHelper(westPanel);
+        gbc = new GuiUtils.GridBagHelper(westPanel);
         gbc.addLine("IDE: ", codeIdeTf);
         gbc.addLine(" ", null);
-        gbc = new PanelUtils.GridBagHelper(eastPanel);
+        gbc = new GuiUtils.GridBagHelper(eastPanel);
         gbc.addLine("Language: ", languageTf);
         gbc.addLine(" ", null);
         codePanel.setLayout(new BoxLayout(codePanel, BoxLayout.X_AXIS));
@@ -166,10 +166,10 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
         // Pcb
         westPanel = new JPanel();
         eastPanel = new JPanel();
-        gbc = new PanelUtils.GridBagHelper(westPanel);
+        gbc = new GuiUtils.GridBagHelper(westPanel);
         gbc.addLine("IDE: ", pcbIdeTf);
         gbc.addLine("Components from ", itemsFromTf);
-        gbc = new PanelUtils.GridBagHelper(eastPanel);
+        gbc = new GuiUtils.GridBagHelper(eastPanel);
         gbc.addLine("# components: ", numberOfItemsTf);
         gbc.addLine("Last parsed: ", lastParsedTf);
         pcbPanel.setLayout(new BoxLayout(pcbPanel, BoxLayout.X_AXIS));

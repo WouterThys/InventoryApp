@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editprojectdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
@@ -24,8 +24,8 @@ abstract class EditProjectDialogLayout extends IDialog implements
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField nameTf;
-    private PanelUtils.IBrowseImagePanel iconPnl;
-    PanelUtils.IBrowseFilePanel directoryPnl;
+    private GuiUtils.IBrowseImagePanel iconPnl;
+    GuiUtils.IBrowseFilePanel directoryPnl;
     private JButton findProjectsBtn;
     IComboCheckBox<ProjectIDE> ideTypeCcb;
 
@@ -137,10 +137,10 @@ abstract class EditProjectDialogLayout extends IDialog implements
         nameTf = new ITextField();
         nameTf.addEditedListener(this, "name");
 
-        iconPnl = new PanelUtils.IBrowseImagePanel(SettingsManager.settings().getFileSettings().getImgProjectsPath(), this, "iconPath");
+        iconPnl = new GuiUtils.IBrowseImagePanel(SettingsManager.settings().getFileSettings().getImgProjectsPath(), this, "iconPath");
         iconPnl.setEditable(false);
 
-        directoryPnl = new PanelUtils.IBrowseFilePanel("", "home/", this, "mainDirectory");
+        directoryPnl = new GuiUtils.IBrowseFilePanel("", "home/", this, "mainDirectory");
         directoryPnl.setEditable(false);
 
         findProjectsBtn = new JButton("Find projects");
@@ -162,7 +162,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
         JPanel gridPanel = new JPanel(new BorderLayout());
 
         // Variables
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(variablesPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(variablesPanel);
         gbc.addLine("Name: ", nameTf);
         gbc.addLine("Icon: ", iconPnl);
         gbc.addLine("Directory: ", directoryPnl);

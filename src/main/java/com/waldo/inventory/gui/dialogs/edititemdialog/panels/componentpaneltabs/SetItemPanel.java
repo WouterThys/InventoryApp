@@ -22,7 +22,6 @@ import java.util.List;
 
 public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, ListSelectionListener {
 
-    // TODO: clear (or just don't show) set items if isSet = false
     // TODO: calculate locations -> check if all items fit in location type
 
     /*

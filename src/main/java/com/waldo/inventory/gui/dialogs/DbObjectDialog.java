@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -129,7 +129,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
 
         // Additional stuff
-        JPanel iconPathPanel = PanelUtils.createFileOpenPanel(iconPathTextField, browseIconButton);
+        JPanel iconPathPanel = GuiUtils.createFileOpenPanel(iconPathTextField, browseIconButton);
 
         // Add all
         getContentPanel().add(new ITitledEditPanel(

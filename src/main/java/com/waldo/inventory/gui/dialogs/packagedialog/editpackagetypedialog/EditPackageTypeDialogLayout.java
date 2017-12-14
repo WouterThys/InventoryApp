@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
@@ -67,7 +67,7 @@ public abstract class EditPackageTypeDialogLayout extends IDialog implements IEd
         getContentPanel().setLayout(new BorderLayout());
 
         JPanel northPanel = new JPanel();
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(northPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(northPanel);
         gbc.addLine("Name: ", nameTf);
         gbc.addLine("Pins: ", pinsSp);
         gbc.addLine("", allowOtherPinNumbersCb);
