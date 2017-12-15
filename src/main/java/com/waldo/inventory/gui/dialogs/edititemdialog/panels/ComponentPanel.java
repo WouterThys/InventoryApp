@@ -2,15 +2,15 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
+import com.waldo.inventory.gui.dialogs.edititemdialog.panels.componentpaneltabs.SetItemPanel;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.setitemdialog.SetItemDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -26,12 +26,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 
-import static com.waldo.inventory.Utils.PanelUtils.createFieldConstraints;
+import static com.waldo.inventory.Utils.GuiUtils.createFieldConstraints;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class ComponentPanel extends JPanel implements GuiInterface {
+
+    public static final int TAB_BASIC = 0;
+    public static final int TAB_DETAILS = 1;
+    public static final int TAB_SET_ITEMS = 2;
 
     private Application application;
     private Item newItem;
@@ -42,29 +46,31 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     // Tabbed pane
     private JTabbedPane tabbedPane;
 
-    // Details
-    private PanelUtils.IPackagePanel packagePnl;
-    private IComboBox<Manufacturer> manufacturerCb;
-    private ILabel manufacturerIconLbl;
-    private IStarRater starRater;
-    private ICheckBox discourageOrderCb;
-    private ITextEditor remarksTe;
-    private ICheckBox isSetCb;
-    private JButton setValuesBtn;
-
     // Basic info
     private ITextField idTextField;
-    private PanelUtils.INameValuePanel nameValuePnl;
+    private GuiUtils.INameValuePanel nameValuePnl;
     private ITextArea descriptionTextArea;
     private ITextField priceTextField;
     private IComboBox<Category> categoryComboBox;
     private IComboBox<Product> productComboBox;
     private IComboBox<Type> typeComboBox;
-
-    // Data sheet
     private ITextField localDataSheetTextField;
     private JButton localDataSheetButton;
-    private PanelUtils.IBrowseWebPanel onlineDataSheetTextField;
+    private GuiUtils.IBrowseWebPanel onlineDataSheetTextField;
+
+    // Details
+    private GuiUtils.IPackagePanel packagePnl;
+    private IComboBox<Manufacturer> manufacturerCb;
+    private ILabel manufacturerIconLbl;
+    private IStarRater starRater;
+    private ICheckBox discourageOrderCb;
+    private ITextEditor remarksTe;
+
+    // Sets
+    private ICheckBox isSetCb;
+    private SetItemPanel setItemPanel;
+
+
 
     public ComponentPanel(Application application, Item newItem, @NotNull IEditedListener listener) {
         this.application = application;
@@ -75,9 +81,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     /*
      *                  PUBLIC METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void setSelectedTab(int index) {
+    public void setSelectedTab(int tab) {
         if (tabbedPane != null) {
-            tabbedPane.setSelectedIndex(index);
+            tabbedPane.setSelectedIndex(tab);
         }
     }
 
@@ -234,7 +240,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         idTextField.setEditable(false);
         idTextField.setEnabled(false);
 
-        nameValuePnl = new PanelUtils.INameValuePanel(editedListener, "name", editedListener);
+        nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
 
         descriptionTextArea = new ITextArea();
         descriptionTextArea.setLineWrap(true); // Go to next line when area is full
@@ -275,13 +281,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         });
 
         // Online data sheet
-        onlineDataSheetTextField = new PanelUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
+        onlineDataSheetTextField = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
         //onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
     }
 
     private void initializeDetailsComponents() {
         // Package
-        packagePnl = new PanelUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
+        packagePnl = new GuiUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
 
         // Manufacturer
         createManufacturerCb();
@@ -311,25 +317,18 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         remarksTe.setName(EditItemDialogLayout.COMP_REMARK);
         remarksTe.setPreferredSize(new Dimension(300, 100));
 
-        // Set stuff
+    }
+
+    private void initializeSetComponents() {
         isSetCb = new ICheckBox("Is set", false);
         isSetCb.addEditedListener(editedListener, "set");
-        isSetCb.addActionListener(e -> setValuesBtn.setEnabled(isSetCb.isSelected()));
-        setValuesBtn = new JButton("Set values");
-        setValuesBtn.addActionListener(e -> {
-            if (newItem != null && newItem.getId() > DbObject.UNKNOWN_ID) {
-                SetItemDialog dialog = new SetItemDialog(application, "Set items", newItem);
-                if (dialog.showDialog() == IDialog.OK) {
-                    editedListener.onValueChanged(null, "", 0, 0);
-                }
-            } else {
-                JOptionPane.showMessageDialog(ComponentPanel.this,
-                        "Save item first!",
-                        "Error creating set items",
-                        JOptionPane.ERROR_MESSAGE);
+        isSetCb.addActionListener(e -> {
+            setItemPanel.setEnabled(isSetCb.isSelected());
+            if (isSetCb.isSelected()) {
+                setItemPanel.updateComponents(newItem);
             }
         });
-
+        setItemPanel = new SetItemPanel(application, newItem);
     }
 
     private JPanel createBasicPanel() {
@@ -355,9 +354,9 @@ public class ComponentPanel extends JPanel implements GuiInterface {
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {
-                        PanelUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
-                        PanelUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
-                        PanelUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
+                        GuiUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
+                        GuiUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
+                        GuiUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -378,31 +377,29 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         JPanel packagePanel = new JPanel(new BorderLayout());
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
         JPanel remarksPanel = new JPanel(new GridBagLayout());
-        JPanel setPanel = new JPanel(new BorderLayout());
+
 
         // Borders
-        TitledBorder packageBorder = PanelUtils.createTitleBorder("Package");
-        TitledBorder manufacturerBorder = PanelUtils.createTitleBorder("Manufacturer");
-        TitledBorder remarksBorder = PanelUtils.createTitleBorder("Remarks");
-        TitledBorder setBorder = PanelUtils.createTitleBorder("Set");
+        TitledBorder packageBorder = GuiUtils.createTitleBorder("Package");
+        TitledBorder manufacturerBorder = GuiUtils.createTitleBorder("Manufacturer");
+        TitledBorder remarksBorder = GuiUtils.createTitleBorder("Remarks");
 
         packagePanel.setBorder(packageBorder);
         manufacturerPanel.setBorder(manufacturerBorder);
         remarksPanel.setBorder(remarksBorder);
-        setPanel.setBorder(setBorder);
 
         // PACKAGE
         packagePanel.add(packagePnl, BorderLayout.CENTER);
 
-        PanelUtils.GridBagHelper gbc;
+        GuiUtils.GridBagHelper gbc;
 
         // MANUFACTURER
-        gbc = new PanelUtils.GridBagHelper(manufacturerPanel);
-        gbc.addLine("Name: ", PanelUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
+        gbc = new GuiUtils.GridBagHelper(manufacturerPanel);
+        gbc.addLine("Name: ", GuiUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
         gbc.add(manufacturerIconLbl, 2,0,1,1);
 
         // REMARKS
-        gbc = new PanelUtils.GridBagHelper(remarksPanel);
+        gbc = new GuiUtils.GridBagHelper(remarksPanel);
 
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
@@ -429,24 +426,13 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         gbc.anchor = GridBagConstraints.WEST;
         remarksPanel.add(new JScrollPane(remarksTe), gbc);
 
-        // SET
-        setPanel.add(isSetCb, BorderLayout.CENTER);
-        setPanel.add(setValuesBtn, BorderLayout.EAST);
-
 
         // Add to panel
         JPanel panel = new JPanel();
-//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-//        panel.add(packagePanel);
-//        panel.add(manufacturerPanel);
-//        panel.add(setPanel);
-//        panel.add(remarksPanel);
-
 
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        gbc = new PanelUtils.GridBagHelper(panel);
+        gbc = new GuiUtils.GridBagHelper(panel);
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -454,11 +440,24 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         panel.add(packagePanel, gbc); gbc.gridy++;
         panel.add(manufacturerPanel, gbc); gbc.gridy++;
-        panel.add(setPanel, gbc); gbc.gridy++;
         gbc.weighty = 1;
-        gbc.fill = PanelUtils.GridBagHelper.BOTH;
+        gbc.fill = GuiUtils.GridBagHelper.BOTH;
         panel.add(remarksPanel, gbc);
 
+        return panel;
+    }
+
+    private JPanel createSetItemsPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        JPanel setPanel = new JPanel(new BorderLayout());
+
+//        setPanel.add(isSetCb, BorderLayout.CENTER);
+//        setPanel.add(setValuesBtn, BorderLayout.EAST);
+//        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
+
+        panel.add(isSetCb, BorderLayout.NORTH);
+        panel.add(setItemPanel, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         return panel;
     }
@@ -471,8 +470,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
+        //tabbedPane.addChangeListener(e -> /* update tab*/);
+
         initializeBasicComponents();
         initializeDetailsComponents();
+        initializeSetComponents();
     }
 
     @Override
@@ -481,6 +483,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Add tabs
         tabbedPane.addTab("Basic", createBasicPanel());
         tabbedPane.addTab("Details", createDetailsPanel());
+        tabbedPane.addTab("Set items", createSetItemsPanel());
 
         add(tabbedPane, BorderLayout.CENTER);
     }
@@ -535,7 +538,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         // SETS
         isSetCb.setSelected(newItem.isSet());
-        setValuesBtn.setEnabled(newItem.isSet());
+        setItemPanel.updateComponents(newItem); // TODO only do this when tab opens
+        setItemPanel.setEnabled(newItem.isSet());
 
         // Focus
         //nameTextField.requestFocus();

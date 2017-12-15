@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
@@ -40,13 +40,13 @@ public class FilesPanel extends JPanel implements
     private DefaultComboBoxModel<FileSettings> fileSettingsCbModel;
     private JComboBox<FileSettings> fileSettingsComboBox;
 
-    private PanelUtils.IBrowseFilePanel distributorsPathPnl;
-    private PanelUtils.IBrowseFilePanel divisionsPathPnl;
-    private PanelUtils.IBrowseFilePanel idesPathPnl;
-    private PanelUtils.IBrowseFilePanel itemsPathPnl;
-    private PanelUtils.IBrowseFilePanel manufacturersPathPnl;
-    private PanelUtils.IBrowseFilePanel projectsPathPnl;
-    private PanelUtils.IBrowseFilePanel orderFilesPathPnl;
+    private GuiUtils.IBrowseFilePanel distributorsPathPnl;
+    private GuiUtils.IBrowseFilePanel divisionsPathPnl;
+    private GuiUtils.IBrowseFilePanel idesPathPnl;
+    private GuiUtils.IBrowseFilePanel itemsPathPnl;
+    private GuiUtils.IBrowseFilePanel manufacturersPathPnl;
+    private GuiUtils.IBrowseFilePanel projectsPathPnl;
+    private GuiUtils.IBrowseFilePanel orderFilesPathPnl;
 
     private JButton saveBtn;
     private JButton useBtn;
@@ -261,13 +261,13 @@ public class FilesPanel extends JPanel implements
         fileSettingsComboBox.setPreferredSize(new Dimension(120, 30));
 
         // Text fields
-        distributorsPathPnl = new PanelUtils.IBrowseFilePanel();
-        divisionsPathPnl = new PanelUtils.IBrowseFilePanel();
-        idesPathPnl = new PanelUtils.IBrowseFilePanel();
-        itemsPathPnl = new PanelUtils.IBrowseFilePanel();
-        manufacturersPathPnl = new PanelUtils.IBrowseFilePanel();
-        projectsPathPnl = new PanelUtils.IBrowseFilePanel();
-        orderFilesPathPnl = new PanelUtils.IBrowseFilePanel();
+        distributorsPathPnl = new GuiUtils.IBrowseFilePanel();
+        divisionsPathPnl = new GuiUtils.IBrowseFilePanel();
+        idesPathPnl = new GuiUtils.IBrowseFilePanel();
+        itemsPathPnl = new GuiUtils.IBrowseFilePanel();
+        manufacturersPathPnl = new GuiUtils.IBrowseFilePanel();
+        projectsPathPnl = new GuiUtils.IBrowseFilePanel();
+        orderFilesPathPnl = new GuiUtils.IBrowseFilePanel();
 
         distributorsPathPnl.addFieldEditedListener(this, "imgDistributorsPath");
         divisionsPathPnl.addFieldEditedListener(this, "imgDivisionsPath");
@@ -314,7 +314,7 @@ public class FilesPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel);
 
         gbc.addLine("Distributor images: ", distributorsPathPnl);
         gbc.addLine("Division images: ", divisionsPathPnl);

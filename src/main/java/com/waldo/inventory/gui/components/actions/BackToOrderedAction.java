@@ -11,6 +11,7 @@ public abstract class BackToOrderedAction extends AbstractAction {
 
     protected BackToOrderedAction() {
         super(name, imageResource.readImage("Actions.OrderBackToOrdered"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onBackToOrdered();

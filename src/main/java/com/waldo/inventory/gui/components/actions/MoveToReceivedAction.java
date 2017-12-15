@@ -11,6 +11,7 @@ public abstract class MoveToReceivedAction extends AbstractAction {
 
     protected MoveToReceivedAction() {
         super(name, imageResource.readImage("Actions.OrderMoveToReceived"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onMoveToReceived();

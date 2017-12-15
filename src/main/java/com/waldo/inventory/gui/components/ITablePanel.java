@@ -67,7 +67,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         if (listSelectionListener != null) {
             addListSelectionListener(listSelectionListener);
         }
-        addTableRenderer(tableCellRenderer);
+        //addTableRenderer(tableCellRenderer);
     }
 
     /*
@@ -202,7 +202,6 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         // Table
         table = new ITable<>(tableModel);
         table.setRowSorter(null);
-        table.getTableHeader().setReorderingAllowed(false);
 
         // Toolbar
         tableToolBar = new ITableToolBar<>(table);

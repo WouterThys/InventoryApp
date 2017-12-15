@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
@@ -85,8 +85,8 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
         getContentPanel().setLayout(new BorderLayout());
 
         JPanel panel = new JPanel();
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(panel);
-        gbc.addLine("Distributor: ", PanelUtils.createComboBoxWithButton(distributorCb, this));
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
+        gbc.addLine("Distributor: ", GuiUtils.createComboBoxWithButton(distributorCb, this));
         gbc.addLine("Reference: ", referenceTf);
 
         getContentPanel().add(panel, BorderLayout.CENTER);

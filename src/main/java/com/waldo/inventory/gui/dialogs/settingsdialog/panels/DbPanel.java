@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.PanelUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.DatabaseAccess;
@@ -335,7 +335,7 @@ public class DbPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(settingsPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel);
 
         gbc.addLine("Db type: ", dbTypeCb);
         gbc.addLine("Db file name: ", dbNameTf);
@@ -425,7 +425,7 @@ public class DbPanel extends JPanel implements
         toolBar = new IdBToolBar(this);
 
         // BACKUP
-        backupPathPnl = new PanelUtils.IBrowseFilePanel("", "/home/");
+        backupPathPnl = new GuiUtils.IBrowseFilePanel("", "/home/");
         createBackupBtn = new JButton();
     }
 
@@ -436,8 +436,8 @@ public class DbPanel extends JPanel implements
         JPanel settings = createDbSettingsPanel();
         JPanel backup = createDbBackupPanel();
 
-        settings.setBorder(PanelUtils.createTitleBorder("Settings"));
-        backup.setBorder(PanelUtils.createTitleBorder("Backups and Cache"));
+        settings.setBorder(GuiUtils.createTitleBorder("Settings"));
+        backup.setBorder(GuiUtils.createTitleBorder("Backups and Cache"));
 
         add(settings);
         add(backup);

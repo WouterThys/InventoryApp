@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -112,14 +112,14 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
 
         // North
         JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(PanelUtils.createComboBoxWithButton(orderCb, onChangeOrder()), BorderLayout.EAST);
+        northPanel.add(GuiUtils.createComboBoxWithButton(orderCb, onChangeOrder()), BorderLayout.EAST);
 
         // Center
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
 
-        pcbItemPnl.setBorder(PanelUtils.createTitleBorder("Pcb items"));
-        orderPnl.setBorder(PanelUtils.createTitleBorder("To selectedOrder"));
+        pcbItemPnl.setBorder(GuiUtils.createTitleBorder("Pcb items"));
+        orderPnl.setBorder(GuiUtils.createTitleBorder("To selectedOrder"));
 
         centerPanel.add(pcbItemPnl);
         centerPanel.add(orderPnl);

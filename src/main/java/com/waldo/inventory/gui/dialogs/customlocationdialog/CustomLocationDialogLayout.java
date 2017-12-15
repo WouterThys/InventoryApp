@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
@@ -99,9 +99,9 @@ abstract class CustomLocationDialogLayout extends IDialog implements
     private JPanel createCenterPanel() {
         JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel detailPanel = new JPanel(new GridBagLayout());
-        TitledBorder resultBorder = PanelUtils.createTitleBorder("Result");
+        TitledBorder resultBorder = GuiUtils.createTitleBorder("Result");
 
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(detailPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(detailPanel);
         gbh.addLine("Name: ", namePanel);
         gbh.addLine("Alias: ", aliasPanel);
 
@@ -115,7 +115,7 @@ abstract class CustomLocationDialogLayout extends IDialog implements
     private JPanel createEastPanel() {
         JPanel eastPanel = new JPanel(new BorderLayout());
         JPanel customPanel = new JPanel(new BorderLayout());
-        TitledBorder customBorder = PanelUtils.createTitleBorder("Values");
+        TitledBorder customBorder = GuiUtils.createTitleBorder("Values");
 
         customPanel.add(new JScrollPane(inputTa), BorderLayout.CENTER);
         customPanel.add(convertBtn, BorderLayout.SOUTH);

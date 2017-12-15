@@ -35,7 +35,8 @@ public class MainPanel extends MainPanelLayout {
         initializeLayouts();
         initListeners();
 
-        cache().addOnItemsChangedListener(itemsChanged);
+        cache().getItems().addChangedListener(itemsChanged);
+        //cache().addOnItemsChangedListener(itemsChanged);
         cache().addOnCategoriesChangedListener(categoriesChanged);
         cache().addOnProductsChangedListener(productsChanged);
         cache().addOnTypesChangedListener(typesChanged);

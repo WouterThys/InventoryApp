@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.SetItem;
@@ -17,7 +17,7 @@ import java.awt.*;
 public class EditSetItemDialog extends IDialog {
 
     private ITextField nameTextField;
-    private PanelUtils.IValuePanel valuePnl;
+    private GuiUtils.IValuePanel valuePnl;
     private SpinnerNumberModel spinnerModel;
     private ISpinner amountSpinner;
 
@@ -77,7 +77,7 @@ public class EditSetItemDialog extends IDialog {
     @Override
     public void initializeComponents() {
         nameTextField = new ITextField("Name");
-        valuePnl = new PanelUtils.IValuePanel();
+        valuePnl = new GuiUtils.IValuePanel();
 
         spinnerModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(spinnerModel);

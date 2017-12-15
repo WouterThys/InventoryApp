@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -210,7 +210,7 @@ abstract class OrderConfirmDialogLayout extends IDialog implements ActionListene
         datePanel.add(dateReceivedTf, gbc);
         gbc.gridy++;
 
-        TitledBorder dateBorder = PanelUtils.createTitleBorder("Dates");
+        TitledBorder dateBorder = GuiUtils.createTitleBorder("Dates");
         datePanel.setBorder(dateBorder);
 
         // Number panel
@@ -234,7 +234,7 @@ abstract class OrderConfirmDialogLayout extends IDialog implements ActionListene
         gbc.gridy++;
         numberPanel.add(totalPriceTf, gbc);
 
-        TitledBorder numberBorder = PanelUtils.createTitleBorder("Dates");
+        TitledBorder numberBorder = GuiUtils.createTitleBorder("Dates");
         numberPanel.setBorder(numberBorder);
 
 
@@ -259,7 +259,7 @@ abstract class OrderConfirmDialogLayout extends IDialog implements ActionListene
         gbc.gridy++;
         refPanel.add(trackingNrTf, gbc);
 
-        TitledBorder refBorder = PanelUtils.createTitleBorder("References");
+        TitledBorder refBorder = GuiUtils.createTitleBorder("References");
         refPanel.setBorder(refBorder);
 
         // Add together
@@ -291,7 +291,7 @@ abstract class OrderConfirmDialogLayout extends IDialog implements ActionListene
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
 
-        TitledBorder mainBorder = PanelUtils.createTitleBorder(TAB_ORDER_FILE);
+        TitledBorder mainBorder = GuiUtils.createTitleBorder(TAB_ORDER_FILE);
         mainPanel.setBorder(mainBorder);
     }
 

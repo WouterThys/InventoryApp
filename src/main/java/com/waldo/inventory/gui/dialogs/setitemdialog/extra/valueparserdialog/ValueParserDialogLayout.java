@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
 import com.waldo.inventory.gui.Application;
@@ -129,7 +129,7 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     private JPanel createWestPanel() {
         JPanel westPanel = new JPanel(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(westPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(westPanel);
 
         JPanel minPanel = new JPanel(new BorderLayout());
         minPanel.add(minTf, BorderLayout.CENTER);
@@ -175,8 +175,8 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("SetItem.Parse"));
-        setTitleName("Default series");
+        setTitleIcon(imageResource.readImage("SetItem.Series.Title"));
+        setTitleName(getTitle());
 
         // Components
         typeCbModel = new DefaultComboBoxModel<>();

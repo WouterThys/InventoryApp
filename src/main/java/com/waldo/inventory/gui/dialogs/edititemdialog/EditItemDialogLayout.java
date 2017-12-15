@@ -151,17 +151,16 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     /*
      *                  OVERWRITE
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
     @Override
     protected void setFocusTab(String focusTab) {
         switch (focusTab) {
             case TAB_COMPONENTS:
                 tabbedPane.setSelectedIndex(COMPONENT_TAB);
-                componentPanel.setSelectedTab(0);
+                componentPanel.setSelectedTab(ComponentPanel.TAB_BASIC);
                 break;
             case TAB_COMP_DETAILS:
                 tabbedPane.setSelectedIndex(COMPONENT_TAB);
-                componentPanel.setSelectedTab(1);
+                componentPanel.setSelectedTab(ComponentPanel.TAB_DETAILS);
                 break;
             case TAB_ORDERS: tabbedPane.setSelectedIndex(ORDER_TAB); break;
             case TAB_STOCK: tabbedPane.setSelectedIndex(STOCK_TAB); break;

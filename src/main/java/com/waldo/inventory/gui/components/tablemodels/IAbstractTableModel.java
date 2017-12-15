@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -176,5 +177,13 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
+    }
+
+    public boolean hasTableCellRenderer() {
+        return false;
+    }
+
+    public DefaultTableCellRenderer getTableCellRenderer() {
+        return null;
     }
 }

@@ -28,7 +28,11 @@ public class ITable<T> extends JXTable {
         setPreferredScrollableViewportSize(getPreferredSize());
         setAutoCreateRowSorter(true);
 
+        if (model.hasTableCellRenderer()) {
+            setDefaultRenderer(Object.class, model.getTableCellRenderer());
+        }
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
     }
 
     public ITable(IAbstractTableModel<T> model, boolean autoSetHeight) {

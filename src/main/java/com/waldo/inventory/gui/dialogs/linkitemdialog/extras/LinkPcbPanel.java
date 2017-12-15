@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
@@ -91,7 +91,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     private JPanel createSouthPanel() {
         JPanel southPanel = new JPanel(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(southPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(southPanel);
         gbh.addLine("References: ", referencesTf);
         gbh.addLine("Footprint: ", footprintTf);
 

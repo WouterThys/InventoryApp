@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editorderfileformatdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -51,7 +51,7 @@ abstract class EditOrderFileFormatDialogLayout extends IDialog implements IEdite
     public void initializeLayouts() {
         getContentPanel().setLayout(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(getContentPanel());
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(getContentPanel());
         gbh.addLine("Name: ", nameTf);
         gbh.addLine("Separator: ", separatorTf);
 

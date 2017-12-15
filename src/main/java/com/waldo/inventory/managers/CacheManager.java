@@ -1,6 +1,7 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.DatabaseAccess;
@@ -15,18 +16,174 @@ import static com.waldo.inventory.database.DatabaseAccess.db;
 public class CacheManager {
 
     private static final LogManager LOG = LogManager.LOG(CacheManager.class);
+    private final List<CacheLog> cacheLogList;
 
     private static final CacheManager INSTANCE = new CacheManager();
     public static CacheManager cache() {
         return INSTANCE;
     }
 
-    private CacheManager() {}
+    private CacheManager() {
+        cacheLogList = new ArrayList<>();
+        cacheLogList.add(new CacheLog("Items") {
+            @Override
+            public CacheList getCacheList() {
+                return items;
+            }
+        });
+        cacheLogList.add(new CacheLog("Categories"){
+            @Override
+            public CacheList getCacheList() {
+                return categories;
+            }
+        });
+        cacheLogList.add(new CacheLog("Products") {
+            @Override
+            public CacheList getCacheList() {
+                return products;
+            }
+        });
+        cacheLogList.add(new CacheLog("Types") {
+            @Override
+            public CacheList getCacheList() {
+                return types;
+            }
+        });
+        cacheLogList.add(new CacheLog("Manufacturers") {
+            @Override
+            public CacheList getCacheList() {
+                return manufacturers;
+            }
+        });
+        cacheLogList.add(new CacheLog("Locations") {
+            @Override
+            public CacheList getCacheList() {
+                return locations;
+            }
+        });
+        cacheLogList.add(new CacheLog("Location types") {
+            @Override
+            public CacheList getCacheList() {
+                return locationTypes;
+            }
+        });
+        cacheLogList.add(new CacheLog("Orders"){
+            @Override
+            public CacheList getCacheList() {
+                return orders;
+            }
+        });
+        cacheLogList.add(new CacheLog("Order items") {
+            @Override
+            public CacheList getCacheList() {
+                return orderItems;
+            }
+        });
+        cacheLogList.add(new CacheLog("Distributors") {
+            @Override
+            public CacheList getCacheList() {
+                return distributors;
+            }
+        });
+        cacheLogList.add(new CacheLog("Distributor part links") {
+            @Override
+            public CacheList getCacheList() {
+                return distributorPartLinks;
+            }
+        });
+        cacheLogList.add(new CacheLog("Packages") {
+            @Override
+            public CacheList getCacheList() {
+                return packages;
+            }
+        });
+        cacheLogList.add(new CacheLog("Package types") {
+            @Override
+            public CacheList getCacheList() {
+                return packageTypes;
+            }
+        });
+        cacheLogList.add(new CacheLog("Projects"){
+            @Override
+            public CacheList getCacheList() {
+                return projects;
+            }
+        });
+        cacheLogList.add(new CacheLog("Project IDEs") {
+            @Override
+            public CacheList getCacheList() {
+                return projectIDES;
+            }
+        });
+        cacheLogList.add(new CacheLog("Order file formats") {
+            @Override
+            public CacheList getCacheList() {
+                return orderFileFormats;
+            }
+        });
+        cacheLogList.add(new CacheLog("Set items") {
+            @Override
+            public CacheList getCacheList() {
+                return setItems;
+            }
+        });
+        cacheLogList.add(new CacheLog("PCB items") {
+            @Override
+            public CacheList getCacheList() {
+                return pcbItems;
+            }
+        });
+        cacheLogList.add(new CacheLog("PCB item links") {
+            @Override
+            public CacheList getCacheList() {
+                return pcbItemItemLinks;
+            }
+        });
+        cacheLogList.add(new CacheLog("PCB item project links") {
+            @Override
+            public CacheList getCacheList() {
+                return pcbItemProjectLinks;
+            }
+        });
+        cacheLogList.add(new CacheLog("Logs") {
+            @Override
+            public CacheList getCacheList() {
+                return logs;
+            }
+        });
+        cacheLogList.add(new CacheLog("Database history") {
+            @Override
+            public CacheList getCacheList() {
+                return dbHistoryList;
+            }
+        });
+        cacheLogList.add(new CacheLog("Project codes") {
+            @Override
+            public CacheList getCacheList() {
+                return projectCodes;
+            }
+        });
+        cacheLogList.add(new CacheLog("Project PCBs") {
+            @Override
+            public CacheList getCacheList() {
+                return projectPcbs;
+            }
+        });
+        cacheLogList.add(new CacheLog("Project others") {
+            @Override
+            public CacheList getCacheList() {
+                return projectOthers;
+            }
+        });
+        cacheLogList.add(new CacheLog("Project item links") {
+            @Override
+            public CacheList getCacheList() {
+                return pcbItemProjectLinks;
+            }
+        });
+    }
 
-
-
-
-    public List<CacheChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
+    //public List<CacheChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<Category>> onCategoriesChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<Product>> onProductsChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<Type>> onTypesChangedListenerList = new ArrayList<>();
@@ -52,46 +209,44 @@ public class CacheManager {
     public List<CacheChangedListener<ParserItemLink>> onParserItemLinkChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<DistributorPartLink>> onDistributorPartLinkChangedListenerList = new ArrayList<>();
 
-    // Part numbers...
-
     // Cached lists
-    private List<Item> items;
-    private List<Category> categories;
-    private List<Product> products;
-    private List<Type> types;
-    private List<Manufacturer> manufacturers;
-    private List<Location> locations;
-    private List<LocationType> locationTypes;
-    private List<Order> orders;
-    private List<OrderItem> orderItems;
-    private List<Distributor> distributors;
-    private List<DistributorPartLink> distributorPartLinks;
-    private List<PackageType> packageTypes;
-    private List<Project> projects;
-    private List<ProjectIDE> projectIDES;
-    private List<OrderFileFormat> orderFileFormats;
-    private List<Package> packages;
-    private List<SetItem> setItems;
-    private List<PcbItem> pcbItems;
-    private List<PcbItemItemLink> pcbItemItemLinks;
-    private List<PcbItemProjectLink> pcbItemProjectLinks;
-    private List<Log> logs;
-    private List<DbHistory> dbHistoryList;
-    private List<ProjectCode> projectCodes;
-    private List<ProjectPcb> projectPcbs;
-    private List<ProjectOther> projectOthers;
-    private List<ParserItemLink> parserItemLinks;
+    private CacheList<Item> items = null;
+    private CacheList<Category> categories = null;
+    private CacheList<Product> products = null;
+    private CacheList<Type> types = null;
+    private CacheList<Manufacturer> manufacturers = null;
+    private CacheList<Location> locations = null;
+    private CacheList<LocationType> locationTypes = null;
+    private CacheList<Order> orders = null;
+    private CacheList<OrderItem> orderItems = null;
+    private CacheList<Distributor> distributors = null;
+    private CacheList<DistributorPartLink> distributorPartLinks = null;
+    private CacheList<PackageType> packageTypes = null;
+    private CacheList<Project> projects = null;
+    private CacheList<ProjectIDE> projectIDES = null;
+    private CacheList<OrderFileFormat> orderFileFormats = null;
+    private CacheList<Package> packages = null;
+    private CacheList<SetItem> setItems = null;
+    private CacheList<PcbItem> pcbItems = null;
+    private CacheList<PcbItemItemLink> pcbItemItemLinks = null;
+    private CacheList<PcbItemProjectLink> pcbItemProjectLinks = null;
+    private CacheList<Log> logs = null;
+    private CacheList<DbHistory> dbHistoryList = null;
+    private CacheList<ProjectCode> projectCodes = null;
+    private CacheList<ProjectPcb> projectPcbs = null;
+    private CacheList<ProjectOther> projectOthers = null;
+    private CacheList<ParserItemLink> parserItemLinks = null;
 
 
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    public void addOnItemsChangedListener(CacheChangedListener<Item> cacheChangedListener) {
-        if (!onItemsChangedListenerList.contains(cacheChangedListener)) {
-            onItemsChangedListenerList.add(cacheChangedListener);
-        }
-    }
+//    public void addOnItemsChangedListener(CacheChangedListener<Item> cacheChangedListener) {
+//        if (!onItemsChangedListenerList.contains(cacheChangedListener)) {
+//            onItemsChangedListenerList.add(cacheChangedListener);
+//        }
+//    }
 
     public void addOnCategoriesChangedListener(CacheChangedListener<Category> cacheChangedListener) {
         if (!onCategoriesChangedListenerList.contains(cacheChangedListener)) {
@@ -273,6 +428,10 @@ public class CacheManager {
         }
     }
 
+    public List<CacheLog> getCacheLogList() {
+        return cacheLogList;
+    }
+
     public void clearCache() {
 //        items = null; db().notifyListeners(OBJECT_CACHE_CLEAR, null, onItemsChangedListenerList);
 //        categories = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onCategoriesChangedListenerList);
@@ -298,65 +457,65 @@ public class CacheManager {
 
 
 
-    public List<Item> getItems() {
+    public CacheList<Item> getItems() {
         if (items == null) {
-            items = db().updateItems();
+            items = new CacheList<>(db().updateItems());
         }
         return items;
     }
 
-    public List<Category> getCategories() {
+    public CacheList<Category> getCategories() {
         if (categories == null) {
-            categories = db().updateCategories();
+            categories = new CacheList<>(db().updateCategories());
         }
         return categories;
     }
 
-    public List<Product> getProducts() {
+    public CacheList<Product> getProducts() {
         if (products == null) {
-            products = db().updateProducts();
+            products = new CacheList<>(db().updateProducts());
         }
         return products;
     }
 
-    public List<Type> getTypes() {
+    public CacheList<Type> getTypes() {
         if (types == null) {
-            types = db().updateTypes();
+            types = new CacheList<>(db().updateTypes());
         }
         return types;
     }
 
-    public List<Manufacturer> getManufacturers() {
+    public CacheList<Manufacturer> getManufacturers() {
         if (manufacturers == null) {
-            manufacturers = db().updateManufacturers();
+            manufacturers = new CacheList<>(db().updateManufacturers());
         }
         return manufacturers;
     }
 
-    public synchronized List<Location> getLocations()   {
+    public synchronized CacheList<Location> getLocations()   {
         if (locations == null) {
-            locations = db().updateLocations();
+            locations = new CacheList<>(db().updateLocations());
         }
         return locations;
     }
 
-    public List<LocationType> getLocationTypes()   {
+    public CacheList<LocationType> getLocationTypes()   {
         if (locationTypes == null) {
-            locationTypes = db().updateLocationTypes();
+            locationTypes = new CacheList<>(db().updateLocationTypes());
         }
         return locationTypes;
     }
 
-    public List<Order> getOrders()    {
+    public CacheList<Order> getOrders()    {
         if (orders == null) {
-           orders = db().updateOrders();
+           orders = new CacheList<>(db().updateOrders());
         }
         return orders;
     }
 
-    public List<OrderItem> getOrderItems()    {
+    public CacheList<OrderItem> getOrderItems()    {
         if (orderItems == null) {
-            orderItems = db().updateOrderItems();
+            orderItems = new CacheList<>(db().updateOrderItems());
         }
         return orderItems;
     }
@@ -371,135 +530,114 @@ public class CacheManager {
         return items;
     }
 
-    public List<Distributor> getDistributors()    {
+    public CacheList<Distributor> getDistributors()    {
         if (distributors == null) {
-            distributors = db().updateDistributors();
+            distributors = new CacheList<>(db().updateDistributors());
         }
         return distributors;
     }
 
-    public List<DistributorPartLink> getDistributorPartLinks()    {
+    public CacheList<DistributorPartLink> getDistributorPartLinks()    {
         if (distributorPartLinks == null) {
-            distributorPartLinks = db().updateDistributorParts();
+            distributorPartLinks = new CacheList<>(db().updateDistributorParts());
         }
         return distributorPartLinks;
     }
 
-    public List<Package> getPackages()    {
+    public CacheList<Package> getPackages()    {
         if (packages == null) {
-            packages = db().updatePackages();
+            packages = new CacheList<>(db().updatePackages());
         }
         return packages;
     }
 
-    public List<PackageType> getPackageTypes()    {
+    public CacheList<PackageType> getPackageTypes()    {
         if (packageTypes == null) {
-            packageTypes = db().updatePackageTypes();
+            packageTypes = new CacheList<>(db().updatePackageTypes());
         }
         return packageTypes;
     }
 
-    public List<Project> getProjects()    {
+    public CacheList<Project> getProjects()    {
         if (projects == null) {
-            projects = db().updateProjects();
+            projects = new CacheList<>(db().updateProjects());
         }
         return projects;
     }
 
-    public List<ProjectCode> getProjectCodes()    {
+    public CacheList<ProjectCode> getProjectCodes()    {
         if (projectCodes == null) {
-            projectCodes = db().updateProjectCodes();
+            projectCodes = new CacheList<>(db().updateProjectCodes());
         }
         return projectCodes;
     }
 
-    public List<ProjectPcb> getProjectPcbs()    {
+    public CacheList<ProjectPcb> getProjectPcbs()    {
         if (projectPcbs == null) {
-            projectPcbs = db().updateProjectPcbs();
+            projectPcbs = new CacheList<>(db().updateProjectPcbs());
         }
         return projectPcbs;
     }
 
-    public List<PcbItemProjectLink> getPcbItemProjectLinks()    {
+    public CacheList<PcbItemProjectLink> getPcbItemProjectLinks()    {
         if (pcbItemProjectLinks == null) {
-            pcbItemProjectLinks = db().updatePcbItemLinks();
+            pcbItemProjectLinks = new CacheList<>(db().updatePcbItemLinks());
         }
         return pcbItemProjectLinks;
     }
 
-    public List<ProjectIDE> getProjectIDES()    {
+    public CacheList<ProjectIDE> getProjectIDES()    {
         if (projectIDES == null) {
-            projectIDES = db().updateProjectIDEs();
+            projectIDES = new CacheList<>(db().updateProjectIDEs());
         }
         return projectIDES;
     }
 
-    public List<ParserItemLink> getParserItemLinks()    {
+    public CacheList<ParserItemLink> getParserItemLinks()    {
         if (parserItemLinks == null) {
-            parserItemLinks = db().updateParserItemLinks();
+            parserItemLinks = new CacheList<>(db().updateParserItemLinks());
         }
         return parserItemLinks;
     }
 
-    public List<OrderFileFormat> getOrderFileFormats()    {
+    public CacheList<OrderFileFormat> getOrderFileFormats()    {
         if (orderFileFormats == null) {
-            orderFileFormats = db().updateOrderFileFormats();
+            orderFileFormats = new CacheList<>(db().updateOrderFileFormats());
         }
         return orderFileFormats;
     }
 
-    public List<SetItem> getSetItems()    {
+    public CacheList<SetItem> getSetItems()    {
         if (setItems == null) {
-            setItems = db().updateSetItems();
+            setItems = new CacheList<>(db().updateSetItems());
         }
         return setItems;
     }
 
-    public List<PcbItem> getPcbItems()    {
+    public CacheList<PcbItem> getPcbItems()    {
         if (pcbItems == null) {
-            pcbItems = db().updatePcbItems();
+            pcbItems = new CacheList<>(db().updatePcbItems());
         }
         return pcbItems;
     }
 
-    public List<PcbItemItemLink> getPcbItemItemLinks()    {
+    public CacheList<PcbItemItemLink> getPcbItemItemLinks()    {
         if (pcbItemItemLinks == null) {
-            pcbItemItemLinks = db().updateKcItemLinks();
+            pcbItemItemLinks = new CacheList<>(db().updateKcItemLinks());
         }
         return pcbItemItemLinks;
     }
 
-    public List<Log> getLogs()    {
+    public CacheList<Log> getLogs()    {
         if (logs == null) {
-            logs = db().updateLogs();
+            logs = new CacheList<>(db().updateLogs());
         }
         return logs;
     }
 
-    public List<Log> getLogsByType(boolean info, boolean debug, boolean warn, boolean error) {
-        List<Log> logList = new ArrayList<>();
-        for (Log log : getLogs()) {
-            switch (log.getLogType()) {
-                case Statics.LogTypes.INFO:
-                    if (info) logList.add(log);
-                    break;
-                case Statics.LogTypes.DEBUG:
-                    if (debug) logList.add(log);
-                    break;
-                case Statics.LogTypes.WARN:
-                    if (warn) logList.add(log);
-                    break;
-                case Statics.LogTypes.ERROR:
-                    if (error) logList.add(log);
-                    break;
-            }
-        }
-        return logList;
-    }
-
-    public List<DbHistory> getDbHistory() {
+    public CacheList<DbHistory> getDbHistory() {
         if (dbHistoryList == null) {
-            dbHistoryList = db().updateDbHistoryList();
+            dbHistoryList = new CacheList<>(db().updateDbHistoryList());
         }
         return dbHistoryList;
     }

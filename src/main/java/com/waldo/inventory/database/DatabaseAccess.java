@@ -253,7 +253,7 @@ public class DatabaseAccess {
             dbo.tableChanged(OBJECT_INSERT);
 
             // Log to db history
-            if (!(dbo instanceof DbHistory)) {
+            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
                 try {
                     DbHistory dbHistory = new DbHistory(OBJECT_INSERT, dbo);
                     dbHistory.save();
@@ -274,7 +274,7 @@ public class DatabaseAccess {
             dbo.tableChanged(OBJECT_UPDATE);
 
             // Log to db history
-            if (!(dbo instanceof DbHistory)) {
+            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
                 try {
                     DbHistory dbHistory = new DbHistory(OBJECT_UPDATE, dbo);
                     dbHistory.save();
@@ -293,7 +293,7 @@ public class DatabaseAccess {
             dbo.tableChanged(OBJECT_DELETE);
 
             // Log to db history
-            if (!(dbo instanceof DbHistory)) {
+            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
                 try {
                     DbHistory dbHistory = new DbHistory(OBJECT_DELETE, dbo);
                     dbHistory.save();

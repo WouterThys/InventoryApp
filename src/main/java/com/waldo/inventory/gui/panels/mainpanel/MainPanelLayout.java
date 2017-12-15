@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -250,8 +249,8 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IItemTableModel();
-        itemTable = new ITablePanel<>(tableModel, this, new ITableEditors.AmountRenderer());
-        itemTable.setExactColumnWidth(0, 36);
+        itemTable = new ITablePanel<>(tableModel, this);
+        //itemTable.setExactColumnWidth(0, 36);
         itemTable.setDbToolBar(this);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override

@@ -9,8 +9,9 @@ public abstract class ShowItemHistoryAction extends AbstractAction {
 
     private static final String name = "Show history";
 
-    public ShowItemHistoryAction() {
+    protected ShowItemHistoryAction() {
         super(name, imageResource.readImage("Actions.ItemHistory"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onShowHistory();

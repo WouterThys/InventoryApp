@@ -9,8 +9,9 @@ public abstract class OrderItemAction extends AbstractAction {
 
     private static final String name = "Order item";
 
-    public OrderItemAction() {
+    protected OrderItemAction() {
         super(name, imageResource.readImage("Actions.ItemOrder"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onOrderItem();

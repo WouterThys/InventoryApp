@@ -1,11 +1,14 @@
 package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
+import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.tablemodels.ILogTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ICacheLogTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ISystemLogTableModel;
+import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -16,7 +19,7 @@ import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.managers.CacheManager.cache;
+import static com.waldo.inventory.managers.SearchManager.sm;
 
 abstract class LogsDialogLayout extends IDialog implements
         ItemListener,
@@ -26,17 +29,26 @@ abstract class LogsDialogLayout extends IDialog implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    //
+    private JTabbedPane logTabsPnl;
+
+    // System logs
     ICheckBox showInfoCb;
     ICheckBox showDebugCb;
     ICheckBox showWarnCb;
     ICheckBox showErrorCb;
 
     private JButton clearLogsBtn;
+    private SystemLogsDetailPanel systemDetailPanel;
+    private ISystemLogTableModel systemLogTableModel;
+    ITable<Log> systemLogTable;
 
-    private ILogTableModel logTableModel;
-    ITable logTable;
+    // Cache logs
+    private CacheLogsDetailPanel cacheDetailPanel;
+    private ICacheLogTableModel cacheLogTableModel;
+    ITable<CacheLog> cacheLogTable;
 
-    private LogsDetailPanel detailPanel;
+
 
     /*
      *                  CONSTRUCTOR
@@ -50,11 +62,16 @@ abstract class LogsDialogLayout extends IDialog implements
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    void updateLogTable(boolean showInfo, boolean showDebug, boolean showWarn, boolean showError) {
-        List<Log> logList = cache().getLogsByType(showInfo, showDebug, showWarn, showError);
+    void updateSystemLogTable(boolean showInfo, boolean showDebug, boolean showWarn, boolean showError) {
+        List<Log> logList = sm().getLogsByType(showInfo, showDebug, showWarn, showError);
         logList.sort(new Log.LogComparator());
 
-        logTableModel.setItemList(logList);
+        systemLogTableModel.setItemList(logList);
+    }
+
+    void updateCacheLogTable() {
+        List<CacheLog> logList = CacheManager.cache().getCacheLogList();
+        cacheLogTableModel.setItemList(logList);
     }
 
     private JPanel createCheckboxPanel() {
@@ -91,15 +108,7 @@ abstract class LogsDialogLayout extends IDialog implements
         return cbPanel;
     }
 
-    /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    @Override
-    public void initializeComponents() {
-        // Title
-        setTitleIcon(imageResource.readImage("Log.Title"));
-        setTitleName("Logs");
-
+    private void initializeSystemLogComponents() {
         // Checkboxes
         showDebugCb = new ICheckBox("Show debug", true);
         showDebugCb.addItemListener(this);
@@ -132,40 +141,81 @@ abstract class LogsDialogLayout extends IDialog implements
         clearLogsBtn.addActionListener(this);
 
         // Table
-        logTableModel = new ILogTableModel();
-        logTable = new ITable(logTableModel);
-        logTable.getSelectionModel().addListSelectionListener(this);
-        logTable.setRowHeight(32);
-        logTable.getColumnModel().getColumn(0).setMinWidth(32); // Icon
-        logTable.getColumnModel().getColumn(0).setMaxWidth(32); // Icon
-        logTable.getColumnModel().getColumn(1).setMinWidth(100); // Time
-        logTable.getColumnModel().getColumn(1).setMaxWidth(100); // Time
-        logTable.getColumnModel().getColumn(2).setMinWidth(100); // Class
-        logTable.getColumnModel().getColumn(2).setMaxWidth(100); // Class
-        logTable.getColumnModel().getColumn(3).setMinWidth(300); // Message
-        logTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        logTable.setDefaultRenderer(ILabel.class, new ITableEditors.LogTypeEditor());
-        logTable.setOpaque(true);
+        systemLogTableModel = new ISystemLogTableModel();
+        systemLogTable = new ITable<>(systemLogTableModel);
+        systemLogTable.getSelectionModel().addListSelectionListener(this);
+        systemLogTable.setRowHeight(32);
+        systemLogTable.setExactColumnWidth(0, 32); // Icon
+        systemLogTable.setExactColumnWidth(1, 100); // Time
+        systemLogTable.setExactColumnWidth(2, 100); // Class
+        systemLogTable.setExactColumnWidth(3, 300); // Message
+        systemLogTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        systemLogTable.setDefaultRenderer(ILabel.class, new ITableEditors.LogTypeEditor());
+        systemLogTable.setOpaque(true);
 
         // Details
-        detailPanel = new LogsDetailPanel(application);
+        systemDetailPanel = new SystemLogsDetailPanel(application);
+    }
 
+    private void initializeCacheLogComponents() {
+        // Table
+        cacheLogTableModel = new ICacheLogTableModel();
+        cacheLogTable = new ITable<>(cacheLogTableModel);
+
+        cacheDetailPanel = new CacheLogsDetailPanel();
+    }
+
+    /*
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    @Override
+    public void initializeComponents() {
+        // Title
+        setTitleIcon(imageResource.readImage("Log.Title"));
+        setTitleName(getTitle());
+
+        // This
+        logTabsPnl = new JTabbedPane();
+
+        // System
+        initializeSystemLogComponents();
+
+        // Cache
+        initializeCacheLogComponents();
     }
 
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
-        JScrollPane pane = new JScrollPane(logTable);
-        pane.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(detailPanel, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        JPanel systemLogPnl = new JPanel(new BorderLayout());
+        JPanel cacheLogPnl = new JPanel(new BorderLayout());
+
+        // System
+        JScrollPane systemLogPane = new JScrollPane(systemLogTable);
+        systemLogPane.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+
+        JPanel systemCbPanel = new JPanel(new BorderLayout());
+        systemCbPanel.add(systemDetailPanel, BorderLayout.CENTER);
+        systemCbPanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+
+        systemLogPnl.add(createCheckboxPanel(), BorderLayout.BEFORE_FIRST_LINE);
+        systemLogPnl.add(systemLogPane, BorderLayout.CENTER);
+        systemLogPnl.add(systemCbPanel, BorderLayout.EAST);
+
+        // Cache
+        JScrollPane cacheLogPane = new JScrollPane(cacheLogTable);
+        cacheLogPane.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+
+        cacheLogPnl.add(cacheLogPane, BorderLayout.CENTER);
+        cacheLogPnl.add(cacheDetailPanel, BorderLayout.EAST);
 
 
-        getContentPanel().add(createCheckboxPanel(), BorderLayout.BEFORE_FIRST_LINE);
-        getContentPanel().add(pane, BorderLayout.CENTER);
-        getContentPanel().add(panel, BorderLayout.EAST);
+        // Bring it all together
+        logTabsPnl.addTab("System", systemLogPnl);
+        logTabsPnl.addTab("Cache", cacheLogPnl);
+
+        getContentPanel().add(logTabsPnl);
 
         pack();
     }
@@ -183,7 +233,8 @@ abstract class LogsDialogLayout extends IDialog implements
             }
 
             // Details
-            detailPanel.updateComponents(selectedLog);
+            systemDetailPanel.updateComponents(selectedLog);
+            cacheDetailPanel.updateComponents();
         } finally {
             application.endWait();
         }

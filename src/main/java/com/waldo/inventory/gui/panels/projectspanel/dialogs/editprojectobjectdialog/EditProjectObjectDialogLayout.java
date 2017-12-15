@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
@@ -97,7 +97,7 @@ abstract class EditProjectObjectDialogLayout<P extends ProjectObject> extends ID
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldsPanel.add(PanelUtils.createFileOpenPanel(directoryTf, directoryBtn), gbc);
+        fieldsPanel.add(GuiUtils.createFileOpenPanel(directoryTf, directoryBtn), gbc);
 
         // Add
         getContentPanel().add(fieldsPanel, BorderLayout.CENTER);

@@ -9,8 +9,9 @@ public abstract class OpenItemDataSheetOnlineAction extends AbstractAction {
 
     private static final String name = "Online data sheet";
 
-    public OpenItemDataSheetOnlineAction() {
+    protected OpenItemDataSheetOnlineAction() {
         super(name, imageResource.readImage("Actions.ItemDataSheetOnline"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onOpenOnlineDataSheet();

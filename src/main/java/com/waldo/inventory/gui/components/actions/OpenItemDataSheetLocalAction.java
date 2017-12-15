@@ -9,8 +9,9 @@ public abstract class OpenItemDataSheetLocalAction extends AbstractAction {
 
     private static final String name = "Local data sheet";
 
-    public OpenItemDataSheetLocalAction() {
+    protected OpenItemDataSheetLocalAction() {
         super(name, imageResource.readImage("Actions.ItemDataSheetLocal"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onOpenLocalDataSheet();

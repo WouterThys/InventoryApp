@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
@@ -22,7 +22,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private IComboBox<String> languageCb;
-    PanelUtils.IBrowseFilePanel directoryPnl;
+    GuiUtils.IBrowseFilePanel directoryPnl;
     private IComboBox<ProjectIDE> projectIdeCb;
 
      /*
@@ -62,7 +62,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         languageCb.addEditedListener(this, "language", String.class);
 
         // Directory
-        directoryPnl = new PanelUtils.IBrowseFilePanel("", "home/",this, "directory");
+        directoryPnl = new GuiUtils.IBrowseFilePanel("", "home/",this, "directory");
 
         // IDE
         projectIdeCb = new IComboBox<>(
@@ -79,7 +79,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
 
         // Fields
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(fieldsPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(fieldsPanel);
         gbc.addLine("Language: ", languageCb);
         gbc.addLine("IDE: ", projectIdeCb);
         gbc.addLine("Directory: ", directoryPnl);

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
@@ -33,7 +33,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    PanelUtils.IBrowseWebPanel browsePanel;
+    GuiUtils.IBrowseWebPanel browsePanel;
     ILabel detailLogo;
 
     private JList<Item> detailItemList;
@@ -114,7 +114,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
         JPanel panel = new JPanel(new BorderLayout(5,5));
 
         // - Text fields
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(textFieldPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
         gbh.addLine("Name: ", detailName);
         gbh.addLine("Web site: ", browsePanel);
         gbh.add(detailLogo, 1, 2, 1, 1);
@@ -172,7 +172,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
         detailName.setEnabled(false);
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        browsePanel = new PanelUtils.IBrowseWebPanel("Web site", "website", this);
+        browsePanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
 
         detailItemDefaultListModel = new DefaultListModel<>();
         detailItemList = new JList<>(detailItemDefaultListModel);

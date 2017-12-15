@@ -9,8 +9,9 @@ public abstract class EditDivisionAction extends AbstractAction{
 
     private static final String name = "Edit division";
 
-    public EditDivisionAction() {
+    protected EditDivisionAction() {
         super(name, imageResource.readImage("Actions.DivisionEdit"));
+        putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
     public abstract void onEditDivision();

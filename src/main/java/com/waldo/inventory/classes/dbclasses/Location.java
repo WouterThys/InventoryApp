@@ -15,6 +15,8 @@ public class Location extends DbObject {
 
     public static final String TABLE_NAME = "locations";
 
+
+
     // private String name; -> in DbObject
     private long locationTypeId;
     private LocationType locationType;
@@ -134,6 +136,7 @@ public class Location extends DbObject {
         l.setCanBeSaved(false);
         return l;
     }
+
 
     //
     // DatabaseAccess tells the object is updated

@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.importfromcsvdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
@@ -95,7 +95,7 @@ abstract class ReadCsvDialogLayout extends IDialog implements GuiInterface {
         componentRowLabel.setHorizontalAlignment(ILabel.RIGHT);
         componentRowLabel.setVerticalAlignment(ILabel.CENTER);
 
-        JPanel openFilePanel = PanelUtils.createFileOpenPanel(fileNameTf, fileNameOpenBtn);
+        JPanel openFilePanel = GuiUtils.createFileOpenPanel(fileNameTf, fileNameOpenBtn);
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();

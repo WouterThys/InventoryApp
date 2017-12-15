@@ -106,7 +106,8 @@ public class ResourceManager {
             is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key));
             return new ImageIcon(ImageIO.read(is));
         } catch (Exception e) {
-            Status().setWarning("Error loading image icon " + key, e);
+            //Status().setWarning("Error loading image icon " + key, e);
+            //e.printStackTrace();
         } finally {
             if (is != null) {
                 try {

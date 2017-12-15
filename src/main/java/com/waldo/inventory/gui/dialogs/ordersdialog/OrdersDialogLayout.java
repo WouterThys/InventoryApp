@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.ordersdialog;
 
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
@@ -97,7 +97,7 @@ abstract class OrdersDialogLayout extends IDialog
     public void initializeLayouts() {
         getContentPanel().setLayout(new GridBagLayout());
 
-        PanelUtils.GridBagHelper gbc = new PanelUtils.GridBagHelper(getContentPanel());
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel());
         gbc.addLine("Name: ", nameField);
         gbc.addLine("Distributor: ", distributorCb);
 

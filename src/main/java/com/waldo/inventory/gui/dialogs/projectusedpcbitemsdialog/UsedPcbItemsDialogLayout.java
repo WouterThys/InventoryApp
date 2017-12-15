@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -63,8 +63,8 @@ abstract class UsedPcbItemsDialogLayout extends IDialog implements
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
 
-        pcbItemPnl.setBorder(PanelUtils.createTitleBorder("Pcb items"));
-        usedPnl.setBorder(PanelUtils.createTitleBorder("To selectedOrder"));
+        pcbItemPnl.setBorder(GuiUtils.createTitleBorder("Pcb items"));
+        usedPnl.setBorder(GuiUtils.createTitleBorder("To selectedOrder"));
 
         centerPanel.add(pcbItemPnl);
         centerPanel.add(usedPnl);

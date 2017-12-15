@@ -5,6 +5,7 @@ import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -12,6 +13,13 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class LocationType extends DbObject {
 
     public static final String TABLE_NAME = "locationtypes";
+
+    public enum LocationNeighbour {
+        Left,
+        Right,
+        Upper,
+        Lower
+    }
 
     private List<Location> locations;
 
@@ -82,6 +90,92 @@ public class LocationType extends DbObject {
         u.setId(UNKNOWN_ID);
         u.setCanBeSaved(false);
         return u;
+    }
+
+    public Location getNeighbourOfLocation(Location location, LocationNeighbour direction, boolean leftToRight, boolean downwards) {
+        Location neighbour = null;
+        if (location != null) {
+            int newRow = location.getRow();
+            int newCol = location.getCol();
+
+            int maxColsForThisRow = getNumberOfColumnsInRow(newRow)-1;
+            int maxRow = getNumberOfRows()-1;
+
+            switch (direction) {
+                case Right:
+                    newCol++;
+                    if (newCol > maxColsForThisRow) {
+                        newCol = 0;
+                        if (downwards) {
+                            newRow++;
+                            if (newRow > maxRow) {
+                                newRow = 0;
+                                newCol = 0;
+                            }
+                        } else {
+                            newRow--;
+                            if (newRow < 0) {
+                                newRow = maxRow;
+                            }
+                        }
+                    }
+                    break;
+
+                case Left:
+                    newCol--;
+                    if (newCol < 0) {
+                        newCol = maxColsForThisRow;
+                        if (downwards) {
+                            newRow++;
+                            if (newRow > maxRow) {
+                                newRow = 0;
+                                newCol = maxColsForThisRow;
+                            }
+                        } else {
+                            newRow--;
+                            if (newRow < 0) {
+                                newRow = maxRow;
+                            }
+                        }
+                    }
+                    break;
+
+                case Upper:
+                    break;
+
+                case Lower:
+                    break;
+            }
+
+            neighbour = SearchManager.sm().findLocation(getId(), newRow, newCol);
+        }
+        return neighbour;
+    }
+
+    public int getNumberOfColumnsInRow(int row) {
+        return getLocationsInRow(row).size();
+    }
+
+    public int getNumberOfRows() {
+        int maxRow = 0;
+        for (Location location : getLocations()) {
+            if (location.getRow() > maxRow) {
+                maxRow = location.getRow();
+            }
+        }
+        return maxRow;
+    }
+
+    public List<Location> getLocationsInRow(int row) {
+        List<Location> rowLocations = new ArrayList<>();
+        if (row >= 0) {
+            for (Location location : getLocations()) {
+                if (location.getRow() == row) {
+                    rowLocations.add(location);
+                }
+            }
+        }
+        return rowLocations;
     }
 
     public List<Location> getLocations() {

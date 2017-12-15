@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.PanelUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
@@ -36,8 +36,8 @@ abstract class DistributorsDialogLayout extends IDialog implements
     private IObjectSearchPanel searchPanel;
 
     ITextField detailName;
-    PanelUtils.IBrowseWebPanel browseDistributorPanel;
-    PanelUtils.IBrowseWebPanel browseOrderLinkPanel;
+    GuiUtils.IBrowseWebPanel browseDistributorPanel;
+    GuiUtils.IBrowseWebPanel browseOrderLinkPanel;
     ILabel detailLogo;
     IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     private IdBToolBar detailOrderFileFormatTb;
@@ -88,7 +88,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private JPanel createWestPanel() {
-        TitledBorder titledBorder = PanelUtils.createTitleBorder("Distributors");
+        TitledBorder titledBorder = GuiUtils.createTitleBorder("Distributors");
 
         JPanel westPanel = new JPanel();
         JScrollPane list = new JScrollPane(distributorList);
@@ -122,7 +122,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
     }
 
     private JPanel createDistributorsDetailPanel() {
-        TitledBorder titledBorder = PanelUtils.createTitleBorder("Info");
+        TitledBorder titledBorder = GuiUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
 
         // Panels
@@ -130,13 +130,13 @@ abstract class DistributorsDialogLayout extends IDialog implements
         JPanel orderPanel = new JPanel(new GridBagLayout());
 
         // - Text fields
-        PanelUtils.GridBagHelper gbh = new PanelUtils.GridBagHelper(textFieldPanel);
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
         gbh.addLine("Name: ", detailName);
         gbh.addLine("Web site: ", browseDistributorPanel);
         gbh.add(detailLogo, 1, 2, 1, 1);
 
         // - Order stuff
-        gbh = new PanelUtils.GridBagHelper(orderPanel);
+        gbh = new GuiUtils.GridBagHelper(orderPanel);
         gbh.addLine("Order link: ", browseOrderLinkPanel);
         gbh.gridwidth = 2;
         gbh.addLine("File format: ", detailOrderFileFormatCb, GridBagConstraints.BOTH);
@@ -181,8 +181,8 @@ abstract class DistributorsDialogLayout extends IDialog implements
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        browseDistributorPanel = new PanelUtils.IBrowseWebPanel("Web site", "website", this);
-        browseOrderLinkPanel = new PanelUtils.IBrowseWebPanel("Order link", "orderLink", this);
+        browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
+        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
 
         detailOrderFileFormatCb = new IComboBox<>(cache().getOrderFileFormats(), new DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");

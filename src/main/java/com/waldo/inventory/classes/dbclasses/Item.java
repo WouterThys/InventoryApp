@@ -280,11 +280,11 @@ public class Item extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onItemsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().getItems().getChangedListeners());
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
-                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onItemsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().getItems().getChangedListeners());
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
@@ -292,7 +292,7 @@ public class Item extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onItemsChangedListenerList);
+                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().getItems().getChangedListeners());
                 break;
             }
         }
@@ -544,6 +544,10 @@ public class Item extends DbObject {
 
     public void setSet(boolean set) {
         isSet = set;
+    }
+
+    public boolean hasSetItems() {
+        return isSet() && getSetItems().size() > 0;
     }
 
     public List<SetItem> getSetItems() {
