@@ -15,12 +15,9 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.List;
 
-abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements ItemListener, ListSelectionListener {
+abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements
+        ItemListener, ListSelectionListener, ILocationMapPanel.LocationClickListener {
 
-    /*
-    *                  COMPONENTS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    DefaultListModel<Item> listModel;
     JList<Item> itemList;
 
     ILocationMapPanel locationMapPanel;
@@ -46,6 +43,14 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements 
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    Item getItem(long id) {
+        for (Item item : itemsWithoutLocation) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
 
 
     /*
@@ -56,9 +61,11 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements 
         // Dialog
         showTitlePanel(false);
         setResizable(true);
+        getButtonNeutral().setVisible(true);
+        getButtonNeutral().setEnabled(false);
 
         // List
-        listModel = new DefaultListModel<>();
+        DefaultListModel<Item> listModel = new DefaultListModel<>();
         for (Item item : itemsWithoutLocation) {
             listModel.addElement(item);
         }
@@ -66,14 +73,7 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements 
         itemList.addListSelectionListener(this);
 
         // Location
-        locationMapPanel = new ILocationMapPanel(application, null, (e, location) -> {
-            locationMapPanel.clearHighlights();
-            locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
-            if (selectedItem != null && location != null) {
-                selectedItem.setLocationId(location.getId());
-                SwingUtilities.invokeLater(() -> selectedItem.save());
-            }
-        }, true);
+        locationMapPanel = new ILocationMapPanel(application, null,this , true);
 
         locationTypeCb = new IComboBox<>(CacheManager.cache().getLocationTypes(), new DbObjectNameComparator<>(), true);
         locationTypeCb.addItemListener(this);
@@ -87,7 +87,10 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements 
         locationPanel.add(locationTypeCb, BorderLayout.NORTH);
         locationPanel.add(locationMapPanel, BorderLayout.CENTER);
 
-        getContentPanel().add(new JScrollPane(itemList));
+        JScrollPane pane = new JScrollPane(itemList);
+        pane.setPreferredSize(new Dimension(120,200));
+
+        getContentPanel().add(pane);
         getContentPanel().add(locationPanel);
 
         pack();
@@ -95,6 +98,8 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements 
 
     @Override
     public void updateComponents(Object... args) {
-
+        if (itemsWithoutLocation != null && itemsWithoutLocation.size() > 0) {
+            itemList.setSelectedIndex(0);
+        }
     }
 }

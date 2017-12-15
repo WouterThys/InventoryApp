@@ -15,7 +15,7 @@ import java.util.List;
 public class ILocationMapPanel extends JPanel implements GuiInterface {
 
     public interface LocationClickListener {
-        void onClick(ActionEvent e, Location location);
+        void onLocationClicked(ActionEvent e, Location location);
     }
 
     public static final Color GREEN = new Color(19,182,46);
@@ -93,12 +93,12 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     public void addButtonActionListener(ILocationButton button) {
         button.addActionListener(e -> {
             if (locationClickListener != null) {
-                locationClickListener.onClick(e, button.getTheLocation());
+                locationClickListener.onLocationClicked(e, button.getTheLocation());
             }
         });
     }
 
-    public void clearButtons() {
+    public void clear() {
         buttonList.clear();
         buttonPanel.removeAll();
         buttonPanel.revalidate();
@@ -218,11 +218,6 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         setLayout(new BorderLayout());
 
         add(new JScrollPane(buttonPanel), BorderLayout.CENTER);
-
-//        setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createLineBorder(Color.gray, 1),
-//                BorderFactory.createEmptyBorder(5,20,5,20)
-//        ));
         setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
     }
 

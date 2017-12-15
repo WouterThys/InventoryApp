@@ -166,7 +166,7 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     // Location map button click
     //
     @Override
-    public void onClick(ActionEvent e,Location location) {
+    public void onLocationClicked(ActionEvent e, Location location) {
         selectedLocationButton = locationMapPanel.findButton(location.getRow(), location.getCol());
         updateEnabledComponents();
         setButtonDetails(location);
