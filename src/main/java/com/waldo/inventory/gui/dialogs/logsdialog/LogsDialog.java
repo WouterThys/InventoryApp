@@ -6,7 +6,6 @@ import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
@@ -14,16 +13,6 @@ import java.util.List;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LogsDialog extends LogsDialogLayout {
-
-    @Override
-    public int showDialog() {
-        setLocationRelativeTo(application);
-        setPreferredSize(new Dimension(1400, 800));
-        pack();
-        setMinimumSize(getSize());
-        setVisible(true);
-        return dialogResult;
-    }
 
     public LogsDialog(Application application, String title) {
         super(application, title);

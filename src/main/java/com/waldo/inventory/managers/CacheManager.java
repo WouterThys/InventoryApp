@@ -195,7 +195,7 @@ public class CacheManager {
     public List<CacheChangedListener<Order>> onOrdersChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<Location>> onLocationsChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<LocationType>> onLocationTYpeChangedListenerList = new ArrayList<>();
-    public List<CacheChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
+    //public List<CacheChangedListener<OrderItem>> onOrderItemsChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<Distributor>> onDistributorsChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<DistributorPartLink>> onPartNumbersChangedListenerList = new ArrayList<>();
     public List<CacheChangedListener<PackageType>> onPackageTypesChangedListenerList = new ArrayList<>();
@@ -222,7 +222,7 @@ public class CacheManager {
     private CacheList<Location> locations = null;
     private CacheList<LocationType> locationTypes = null;
     private CacheList<Order> orders = null;
-    private CacheList<OrderItem> orderItems = null;
+    private CacheList<OrderItem> orderItems = new CacheList<>();
     private CacheList<Distributor> distributors = null;
     private CacheList<DistributorPartLink> distributorPartLinks = null;
     private CacheList<PackageType> packageTypes = null;
@@ -294,10 +294,17 @@ public class CacheManager {
         }
     }
 
-    public void addOnOrderItemsChangedListener(CacheChangedListener<OrderItem> cacheChangedListener) {
-        if (!onOrderItemsChangedListenerList.contains(cacheChangedListener)) {
-            onOrderItemsChangedListenerList.add(cacheChangedListener);
-        }
+//    public void addOnOrderItemsChangedListener(CacheChangedListener<OrderItem> cacheChangedListener) {
+//        if (!onOrderItemsChangedListenerList.contains(cacheChangedListener)) {
+//            onOrderItemsChangedListenerList.add(cacheChangedListener);
+//        }
+//    }
+    public void addOrderItemListeners(CacheChangedListener<OrderItem> listener) {
+        orderItems.addChangedListener(listener);
+    }
+
+    public List<CacheChangedListener<OrderItem>> getOrderItemListeners() {
+        return orderItems.getChangedListeners();
     }
 
     public void addOnDistributorChangedListener(CacheChangedListener<Distributor> cacheChangedListener) {
@@ -391,10 +398,8 @@ public class CacheManager {
     }
 
     public void removeOnOrdersChangedListener(CacheChangedListener<Order> cacheChangedListener) {
-        if (onOrdersChangedListenerList != null) {
-            if (onOrdersChangedListenerList.contains(cacheChangedListener)) {
-                onOrdersChangedListenerList.remove(cacheChangedListener);
-            }
+        if (onOrdersChangedListenerList.contains(cacheChangedListener)) {
+            onOrdersChangedListenerList.remove(cacheChangedListener);
         }
     }
 
@@ -530,9 +535,9 @@ public class CacheManager {
     }
 
     public CacheList<OrderItem> getOrderItems()    {
-        if (orderItems == null) {
+        if (!orderItems.isFetched()) {
             long start = System.nanoTime();
-            orderItems = new CacheList<>(db().updateOrderItems(), (System.nanoTime() - start));
+            orderItems.setList(db().updateOrderItems(), (System.nanoTime() - start));
         }
         return orderItems;
     }

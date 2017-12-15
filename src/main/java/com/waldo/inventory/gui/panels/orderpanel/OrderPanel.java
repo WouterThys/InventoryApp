@@ -47,7 +47,7 @@ public class OrderPanel extends OrderPanelLayout {
 
         cache().getItems().addChangedListener(itemsChanged);
         cache().addOnOrdersChangedListener(ordersChanged);
-        cache().addOnOrderItemsChangedListener(orderItemsChanged);
+        cache().addOrderItemListeners(orderItemsChanged);
         cache().addOnPartNumbersChangedListener(partNumbersChanged);
 
         updateComponents();
