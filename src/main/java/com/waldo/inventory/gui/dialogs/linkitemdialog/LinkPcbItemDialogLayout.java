@@ -5,7 +5,7 @@ import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
-import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ILinkPcbItemTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
 
@@ -84,7 +84,7 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Panels
-        pcbPanel = new LinkPcbPanel(application, ILinkKiCadTableModel.LINK_COMPONENTS);
+        pcbPanel = new LinkPcbPanel(application, ILinkPcbItemTableModel.LINK_COMPONENTS);
 
         itemPanel = new LinkItemPanel(application);
         itemPanel.addSearchListener(this);

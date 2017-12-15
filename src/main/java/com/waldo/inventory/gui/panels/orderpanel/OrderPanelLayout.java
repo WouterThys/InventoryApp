@@ -322,7 +322,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         // Item table
         tableModel = new IOrderItemTableModel();
         orderItemTable = new ITablePanel<>(tableModel, this);
-        orderItemTable.setExactColumnWidth(0, 25); // Icon
         orderItemTable.setExactColumnWidth(1, 50); // Amount spinner
         orderItemTable.setDbToolBar(this);
         orderItemTable.setDbToolBarEnabled(false);
@@ -332,7 +331,6 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onTableRowClicked(e);
             }
         });
-        orderItemTable.addColumnRenderer(0, new ITableEditors.OrderItemTooltipRenderer());
         orderItemTable.addColumnCellEditor(1, new ITableEditors.SpinnerEditor() {
             @Override
             public void onValueSet(int value) {

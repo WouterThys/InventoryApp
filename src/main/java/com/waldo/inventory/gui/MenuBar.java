@@ -3,7 +3,6 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 import com.waldo.inventory.gui.dialogs.graphsdialog.GraphsDialog;
-import com.waldo.inventory.gui.dialogs.importfromcsvdialog.ReadCsvDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
 import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
 import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
@@ -82,16 +81,12 @@ public class MenuBar extends JMenuBar {
         // Tools menu
         JMenu toolsMenu = new JMenu("Tools");
 
-        JMenuItem importFromCsv = new JMenuItem("Import from csv", imageResource.readImage("MenuBar.Import"));
-        importFromCsv.addActionListener(importFromCsvSelected());
-
         JMenuItem queries = new JMenuItem("Query panel", imageResource.readImage("QueryDialog.TitleIcon", 16));
         queries.addActionListener(showQuerySelected());
 
         JMenuItem kicadParser = new JMenuItem("KiCad parser", imageResource.readImage("Parser.KiCad", 16));
         kicadParser.addActionListener(kicadParserSelected());
 
-        toolsMenu.add(importFromCsv);
         toolsMenu.add(queries);
         toolsMenu.add(kicadParser);
 
@@ -147,13 +142,6 @@ public class MenuBar extends JMenuBar {
         //return  e -> DistributorsDialog.showDialog(application);
         return (e -> {
             DistributorsDialog dialog = new DistributorsDialog(application, "Distributors");
-            dialog.showDialog();
-        });
-    }
-
-    private ActionListener importFromCsvSelected() {
-        return (e -> {
-            ReadCsvDialog dialog = new ReadCsvDialog(application, "Import csv");
             dialog.showDialog();
         });
     }

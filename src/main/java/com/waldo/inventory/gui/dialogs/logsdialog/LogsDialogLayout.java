@@ -150,7 +150,6 @@ abstract class LogsDialogLayout extends IDialog implements
         systemLogTable.setExactColumnWidth(2, 100); // Class
         systemLogTable.setExactColumnWidth(3, 300); // Message
         systemLogTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        systemLogTable.setDefaultRenderer(ILabel.class, new ITableEditors.LogTypeEditor());
         systemLogTable.setOpaque(true);
 
         // Details

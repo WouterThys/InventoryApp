@@ -84,9 +84,6 @@ abstract class SetItemDialogLayout extends IDialog implements
         tableModel = new ISetItemTableModel(new ComparatorUtils.SetItemComparator());
         setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
-        setItemTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
-        setItemTable.setExactColumnWidth(0, 36);
-        setItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
 
         // Tool bar
         toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);

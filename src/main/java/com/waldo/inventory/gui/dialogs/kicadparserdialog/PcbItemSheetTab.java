@@ -2,9 +2,7 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 
 import javax.swing.*;
@@ -55,8 +53,6 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
         pcbItemTableModel = new IPcbItemModel(pcbItemListener);
         pcbItemTable = new ITable<>(pcbItemTableModel);
         pcbItemTable.getSelectionModel().addListSelectionListener(listSelectionListener);
-        pcbItemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
-        pcbItemTable.setExactColumnWidth(0, 30);
         pcbItemTable.setExactColumnWidth(3, 20);
         pcbItemTable.setExactColumnWidth(4, 20);
         pcbItemTable.setExactColumnWidth(5, 20);

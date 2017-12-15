@@ -1,51 +1,58 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
-
-    // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Location"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
+public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
+    private static final String[] COLUMN_NAMES = {"", "Part", "Value", "M"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, Boolean.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon redBall = imageResource.readImage("Ball.red");
 
-    public ISetItemTableModel(Comparator<SetItem> comparator) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
+    public static final int LINK_COMPONENTS = 0;
+    public static final int ORDER_COMPONENTS = 1;
+
+    private int type;
+
+    public ILinkPcbItemTableModel(int type) {
+        super(COLUMN_NAMES, COLUMN_CLASSES);
+
+        this.type = type;
+        if (type == ORDER_COMPONENTS) {
+            columnNames[3] = "O";
+            fireTableStructureChanged();
+        }
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        SetItem setItem = getItemAt(rowIndex);
-
-        if (setItem != null) {
+        PcbItem component = getItemAt(rowIndex);
+        if (component != null) {
             switch (columnIndex) {
                 case -1:
-                    return setItem;
-                case 0: // Amount label
-                    return setItem;
-                case 1: // Name
-                    return setItem.toString();
+                    return component;
+                case 0: // Amount
+                    return component;
+                case 1: // LibSource value
+                    return component.getPartName();
                 case 2: // Value
-                    return setItem.getValue();
-                case 3: // Locations
-                    if (setItem.getLocation() != null) {
-                        return setItem.getLocation().getPrettyString();
+                    return component.getValue();
+                case 3:
+                    if (type == LINK_COMPONENTS) {
+                        return component.hasMatch();
+                    } else {
+                        return component.isOrdered();
                     }
             }
         }
-
         return null;
     }
 
@@ -60,7 +67,7 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof SetItem) {
+                if (value instanceof PcbItem) {
                     if (row == 0) {
                         TableColumn tableColumn = table.getColumnModel().getColumn(column);
                         tableColumn.setMaxWidth(32);
@@ -68,14 +75,9 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
                     }
 
                     ILabel lbl;
-                    SetItem setItem = (SetItem) value;
-                    int amount = setItem.getAmount();
-
-                    if (amount > 0) {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));
-                    } else {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, redBall, String.valueOf(amount));
-                    }
+                    PcbItem pcbItem = (PcbItem) value;
+                    String txt = String.valueOf(pcbItem.getReferences().size());
+                    lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, txt);
 
                     return lbl;
                 }

@@ -108,6 +108,22 @@ public class GuiUtils {
         return lblIcon;
     }
 
+    public static ILabel getTableIconLabel(Color background, int row, boolean isSelected, ImageIcon icon) {
+        ILabel lblIcon = new ILabel(icon);
+
+        if (row % 2 == 1 || isSelected) {
+            lblIcon.setBackground(background);
+        } else {
+            lblIcon.setBackground(Color.WHITE);
+        }
+
+        lblIcon.setOpaque(true);
+
+        lblIcon.setLayout(new GridBagLayout());
+
+        return lblIcon;
+    }
+
 
 
     public static class GridBagHelper extends GridBagConstraints {

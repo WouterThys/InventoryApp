@@ -342,8 +342,6 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
 
         setItemModel = new ISetItemTableModel(null);
         setItemITable = new ITable<>(setItemModel);
-        setItemITable.setDefaultRenderer(ILabel.class, new ITableEditors.AmountRenderer());
-        setItemITable.setExactColumnWidth(0, 36);
 
         // Actions
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {

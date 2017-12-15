@@ -5,11 +5,9 @@ import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.tablemodels.ILinkKiCadTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ILinkPcbItemTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -23,7 +21,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILinkKiCadTableModel tableModel;
+    private ILinkPcbItemTableModel tableModel;
     private ITable itemTable;
 
     private ITextField referencesTf;
@@ -109,10 +107,8 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Table
-        tableModel = new ILinkKiCadTableModel(type);
+        tableModel = new ILinkPcbItemTableModel(type);
         itemTable = new ITable<>(tableModel);
-        itemTable.setDefaultRenderer(ILabel.class, new ITableEditors.PcbItemMatchRenderer());
-        itemTable.getColumnModel().getColumn(0).setMaxWidth(30);
         itemTable.getColumnModel().getColumn(3).setMaxWidth(30);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
