@@ -305,6 +305,7 @@ public class DatabaseAccess {
 
         @Override
         protected Integer doInBackground() throws Exception {
+            Thread.currentThread().setName(name);
             while (keepRunning) {
 
                 DbQueueObject queueObject = workList.take();
@@ -405,6 +406,7 @@ public class DatabaseAccess {
 
         @Override
         protected Integer doInBackground() throws Exception {
+            Thread.currentThread().setName(name);
             while (keepRunning) {
                 DbErrorObject error = nonoList.take();
                 if (error != null) {

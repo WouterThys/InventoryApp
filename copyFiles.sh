@@ -5,13 +5,13 @@ rm -rf /opt/Inventory/orderfiles
 rm -rf /opt/Inventory/Images
 
 echo "Copy .jar file to /opt/Inventory"
-cp -ar /home/waldo/Documents/Geeken/Projects/InventoryApp/out/artifacts/InventoryApp_jar/InventoryApp.jar /opt/Inventory/
+cp -ar /media/wouter/Data/Geeken/Projects/InventoryApp/out/artifacts/InventoryApp_jar/InventoryApp.jar /opt/Inventory/
 
 echo "Copy 'Images' to /opt/Inventory"
-cp -ar /home/waldo/Documents/Geeken/Projects/InventoryApp/Images /opt/Inventory/
+cp -ar /media/wouter/Data/Geeken/Projects/InventoryApp/Images /opt/Inventory/
 
 echo "Copy 'settings.db' to /opt/Inventory"
-cp -ar /home/waldo/Documents/Geeken/Projects/InventoryApp/settings.db /opt/Inventory/
+cp -ar /media/wouter/Data/Geeken/Projects/InventoryApp/settings.db /opt/Inventory/
 
 echo "Done copying local files"
 echo "Trying to secure copy to laptop"

@@ -1,5 +1,7 @@
 package com.waldo.inventory.Utils;
 
+import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
 
 import java.util.Comparator;
@@ -183,6 +185,27 @@ public class ComparatorUtils {
                 return o1.getValue().getRealValue().compareTo(o2.getValue().getRealValue());
             }
             return 0;
+        }
+    }
+
+    //
+    // Cache logs
+    //
+    public static class CacheLogComparator implements Comparator<CacheLog> {
+        @Override
+        public int compare(CacheLog o1, CacheLog o2) {
+            CacheList cacheList1 = o1.getCacheList();
+            CacheList cacheList2 = o2.getCacheList();
+
+            if (cacheList1 != null && cacheList2 == null) {
+                return -1;
+            } else if (cacheList1 == null && cacheList2 != null) {
+                return 1;
+            } else if (cacheList1 != null) {
+                return -Integer.compare(cacheList1.size(), cacheList2.size());
+            } else {
+                return 1;
+            }
         }
     }
 }

@@ -11,11 +11,13 @@ public class DateUtils {
     private static final String shortTimeStr = "--:--";
     private static final String longDateAndTimeStr = "--- ---, ---- --:--";
     private static final String longDateStr = "--- ---, ----";
+    private static final String detailTimeStr = "--:--:--.---";
 
     private static final SimpleDateFormat shortDateAndTime = new SimpleDateFormat("dd/MM/YYYY HH:mm");
     private static final SimpleDateFormat sqlDateAndTime = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
     private static final SimpleDateFormat shortDate = new SimpleDateFormat("dd/MM/YYYY");
     private static final SimpleDateFormat shortTime = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat detailTime = new SimpleDateFormat("HH:mm:ss.SSS");
 
     private static final SimpleDateFormat longDateAndTime = new SimpleDateFormat("ddd MMM, yyyy HH:mm");
     private static final SimpleDateFormat longDate = new SimpleDateFormat("ddd MMM, yyyy");
@@ -57,6 +59,14 @@ public class DateUtils {
             return longDate.format(date);
         } else {
             return longDateStr;
+        }
+    }
+
+    public static String formatDetailTime(Date date) {
+        if (date != null && !date.equals(minDate())) {
+            return detailTime.format(date);
+        } else {
+            return detailTimeStr;
         }
     }
 

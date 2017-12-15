@@ -1,5 +1,6 @@
 package com.waldo.inventory.managers;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -8,6 +9,7 @@ import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 
 import javax.swing.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class CacheManager {
 
     private static final LogManager LOG = LogManager.LOG(CacheManager.class);
     private final List<CacheLog> cacheLogList;
+    private final Date initTime;
 
     private static final CacheManager INSTANCE = new CacheManager();
     public static CacheManager cache() {
@@ -181,6 +184,7 @@ public class CacheManager {
                 return pcbItemProjectLinks;
             }
         });
+        initTime = DateUtils.now();
     }
 
     //public List<CacheChangedListener<Item>> onItemsChangedListenerList = new ArrayList<>();
@@ -432,6 +436,10 @@ public class CacheManager {
         return cacheLogList;
     }
 
+    public Date getInitTime() {
+        return initTime;
+    }
+
     public void clearCache() {
 //        items = null; db().notifyListeners(OBJECT_CACHE_CLEAR, null, onItemsChangedListenerList);
 //        categories = null; notifyListeners(OBJECT_CACHE_CLEAR, null, onCategoriesChangedListenerList);
@@ -459,63 +467,72 @@ public class CacheManager {
 
     public CacheList<Item> getItems() {
         if (items == null) {
-            items = new CacheList<>(db().updateItems());
+            long start = System.nanoTime();
+            items = new CacheList<>(db().updateItems(), (System.nanoTime() - start));
         }
         return items;
     }
 
     public CacheList<Category> getCategories() {
         if (categories == null) {
-            categories = new CacheList<>(db().updateCategories());
+            long start = System.nanoTime();
+            categories = new CacheList<>(db().updateCategories(), (System.nanoTime() - start));
         }
         return categories;
     }
 
     public CacheList<Product> getProducts() {
         if (products == null) {
-            products = new CacheList<>(db().updateProducts());
+            long start = System.nanoTime();
+            products = new CacheList<>(db().updateProducts(), (System.nanoTime() - start));
         }
         return products;
     }
 
     public CacheList<Type> getTypes() {
         if (types == null) {
-            types = new CacheList<>(db().updateTypes());
+            long start = System.nanoTime();
+            types = new CacheList<>(db().updateTypes(), (System.nanoTime() - start));
         }
         return types;
     }
 
     public CacheList<Manufacturer> getManufacturers() {
         if (manufacturers == null) {
-            manufacturers = new CacheList<>(db().updateManufacturers());
+            long start = System.nanoTime();
+            manufacturers = new CacheList<>(db().updateManufacturers(), (System.nanoTime() - start));
         }
         return manufacturers;
     }
 
     public synchronized CacheList<Location> getLocations()   {
         if (locations == null) {
-            locations = new CacheList<>(db().updateLocations());
+            long start = System.nanoTime();
+            locations = new CacheList<>(db().updateLocations(), (System.nanoTime() - start));
         }
         return locations;
     }
 
     public CacheList<LocationType> getLocationTypes()   {
         if (locationTypes == null) {
-            locationTypes = new CacheList<>(db().updateLocationTypes());
+            long start = System.nanoTime();
+            locationTypes = new CacheList<>(db().updateLocationTypes(), (System.nanoTime() - start));
         }
         return locationTypes;
     }
 
     public CacheList<Order> getOrders()    {
         if (orders == null) {
-           orders = new CacheList<>(db().updateOrders());
+            long start = System.nanoTime();
+           orders = new CacheList<>(db().updateOrders(), (System.nanoTime() - start));
         }
         return orders;
     }
 
     public CacheList<OrderItem> getOrderItems()    {
         if (orderItems == null) {
-            orderItems = new CacheList<>(db().updateOrderItems());
+            long start = System.nanoTime();
+            orderItems = new CacheList<>(db().updateOrderItems(), (System.nanoTime() - start));
         }
         return orderItems;
     }
@@ -532,112 +549,128 @@ public class CacheManager {
 
     public CacheList<Distributor> getDistributors()    {
         if (distributors == null) {
-            distributors = new CacheList<>(db().updateDistributors());
+            long start = System.nanoTime();
+            distributors = new CacheList<>(db().updateDistributors(), (System.nanoTime() - start));
         }
         return distributors;
     }
 
     public CacheList<DistributorPartLink> getDistributorPartLinks()    {
         if (distributorPartLinks == null) {
-            distributorPartLinks = new CacheList<>(db().updateDistributorParts());
+            long start = System.nanoTime();
+            distributorPartLinks = new CacheList<>(db().updateDistributorParts(), (System.nanoTime() - start));
         }
         return distributorPartLinks;
     }
 
     public CacheList<Package> getPackages()    {
         if (packages == null) {
-            packages = new CacheList<>(db().updatePackages());
+            long start = System.nanoTime();
+            packages = new CacheList<>(db().updatePackages(), (System.nanoTime() - start));
         }
         return packages;
     }
 
     public CacheList<PackageType> getPackageTypes()    {
         if (packageTypes == null) {
-            packageTypes = new CacheList<>(db().updatePackageTypes());
+            long start = System.nanoTime();
+            packageTypes = new CacheList<>(db().updatePackageTypes(), (System.nanoTime() - start));
         }
         return packageTypes;
     }
 
     public CacheList<Project> getProjects()    {
         if (projects == null) {
-            projects = new CacheList<>(db().updateProjects());
+            long start = System.nanoTime();
+            projects = new CacheList<>(db().updateProjects(), (System.nanoTime() - start));
         }
         return projects;
     }
 
     public CacheList<ProjectCode> getProjectCodes()    {
         if (projectCodes == null) {
-            projectCodes = new CacheList<>(db().updateProjectCodes());
+            long start = System.nanoTime();
+            projectCodes = new CacheList<>(db().updateProjectCodes(), (System.nanoTime() - start));
         }
         return projectCodes;
     }
 
     public CacheList<ProjectPcb> getProjectPcbs()    {
         if (projectPcbs == null) {
-            projectPcbs = new CacheList<>(db().updateProjectPcbs());
+            long start = System.nanoTime();
+            projectPcbs = new CacheList<>(db().updateProjectPcbs(), (System.nanoTime() - start));
         }
         return projectPcbs;
     }
 
     public CacheList<PcbItemProjectLink> getPcbItemProjectLinks()    {
         if (pcbItemProjectLinks == null) {
-            pcbItemProjectLinks = new CacheList<>(db().updatePcbItemLinks());
+            long start = System.nanoTime();
+            pcbItemProjectLinks = new CacheList<>(db().updatePcbItemLinks(), (System.nanoTime() - start));
         }
         return pcbItemProjectLinks;
     }
 
     public CacheList<ProjectIDE> getProjectIDES()    {
         if (projectIDES == null) {
-            projectIDES = new CacheList<>(db().updateProjectIDEs());
+            long start = System.nanoTime();
+            projectIDES = new CacheList<>(db().updateProjectIDEs(), (System.nanoTime() - start));
         }
         return projectIDES;
     }
 
     public CacheList<ParserItemLink> getParserItemLinks()    {
         if (parserItemLinks == null) {
-            parserItemLinks = new CacheList<>(db().updateParserItemLinks());
+            long start = System.nanoTime();
+            parserItemLinks = new CacheList<>(db().updateParserItemLinks(), (System.nanoTime() - start));
         }
         return parserItemLinks;
     }
 
     public CacheList<OrderFileFormat> getOrderFileFormats()    {
         if (orderFileFormats == null) {
-            orderFileFormats = new CacheList<>(db().updateOrderFileFormats());
+            long start = System.nanoTime();
+            orderFileFormats = new CacheList<>(db().updateOrderFileFormats(), (System.nanoTime() - start));
         }
         return orderFileFormats;
     }
 
     public CacheList<SetItem> getSetItems()    {
         if (setItems == null) {
-            setItems = new CacheList<>(db().updateSetItems());
+            long start = System.nanoTime();
+            setItems = new CacheList<>(db().updateSetItems(), (System.nanoTime() - start));
         }
         return setItems;
     }
 
     public CacheList<PcbItem> getPcbItems()    {
         if (pcbItems == null) {
-            pcbItems = new CacheList<>(db().updatePcbItems());
+            long start = System.nanoTime();
+            pcbItems = new CacheList<>(db().updatePcbItems(), (System.nanoTime() - start));
         }
         return pcbItems;
     }
 
     public CacheList<PcbItemItemLink> getPcbItemItemLinks()    {
         if (pcbItemItemLinks == null) {
-            pcbItemItemLinks = new CacheList<>(db().updateKcItemLinks());
+            long start = System.nanoTime();
+            pcbItemItemLinks = new CacheList<>(db().updateKcItemLinks(), (System.nanoTime() - start));
         }
         return pcbItemItemLinks;
     }
 
     public CacheList<Log> getLogs()    {
         if (logs == null) {
-            logs = new CacheList<>(db().updateLogs());
+            long start = System.nanoTime();
+            logs = new CacheList<>(db().updateLogs(), (System.nanoTime() - start));
         }
         return logs;
     }
 
     public CacheList<DbHistory> getDbHistory() {
         if (dbHistoryList == null) {
-            dbHistoryList = new CacheList<>(db().updateDbHistoryList());
+            long start = System.nanoTime();
+            dbHistoryList = new CacheList<>(db().updateDbHistoryList(), (System.nanoTime() - start));
         }
         return dbHistoryList;
     }

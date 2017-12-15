@@ -1,6 +1,9 @@
 package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
+import com.waldo.inventory.Utils.ComparatorUtils;
+import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
@@ -26,6 +29,8 @@ abstract class LogsDialogLayout extends IDialog implements
         ListSelectionListener,
         ActionListener {
 
+    private static final long KILOBYTE = 1024L;
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -44,9 +49,12 @@ abstract class LogsDialogLayout extends IDialog implements
     ITable<Log> systemLogTable;
 
     // Cache logs
-    private CacheLogsDetailPanel cacheDetailPanel;
+    private ILabel initTimeLbl;
+    private ILabel freeMemoryLbl;
+    private ILabel maxMemoryLbl;
+    private ILabel totalMemoryLbl;
     private ICacheLogTableModel cacheLogTableModel;
-    ITable<CacheLog> cacheLogTable;
+    private ITable<CacheLog> cacheLogTable;
 
 
 
@@ -153,15 +161,44 @@ abstract class LogsDialogLayout extends IDialog implements
         systemLogTable.setOpaque(true);
 
         // Details
-        systemDetailPanel = new SystemLogsDetailPanel(application);
+        systemDetailPanel = new SystemLogsDetailPanel();
     }
 
     private void initializeCacheLogComponents() {
         // Table
-        cacheLogTableModel = new ICacheLogTableModel();
+        cacheLogTableModel = new ICacheLogTableModel(new ComparatorUtils.CacheLogComparator());
         cacheLogTable = new ITable<>(cacheLogTableModel);
+        cacheLogTable.setExactColumnWidth(1, 60); // Size column
 
-        cacheDetailPanel = new CacheLogsDetailPanel();
+        initTimeLbl = new ILabel(DateUtils.formatDateTime(CacheManager.cache().getInitTime()));
+        Runtime r = Runtime.getRuntime();
+
+        maxMemoryLbl = new ILabel(String.format("%,8d%n", (r.maxMemory() / KILOBYTE)));
+        freeMemoryLbl = new ILabel(String.format("%,8d%n", (r.freeMemory() / KILOBYTE)));
+        totalMemoryLbl = new ILabel(String.format("%,8d%n", (r.totalMemory() / KILOBYTE)));
+
+    }
+
+    private JPanel createCacheHeaderPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+
+        JPanel timePnl = new JPanel();
+        timePnl.add(new ILabel("Initialisation: "));
+        timePnl.add(initTimeLbl);
+
+        JPanel memoryPnl = new JPanel();
+        memoryPnl.setBorder(BorderFactory.createEmptyBorder(1,20,1,20));
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(memoryPnl);
+        gbc.addLine("Total memory (kb): ", totalMemoryLbl);
+        gbc.addLine("Free memory (kb): ", freeMemoryLbl);
+        gbc.addLine("Max memory (kb): ", maxMemoryLbl);
+
+
+        panel.add(timePnl, BorderLayout.WEST);
+        panel.add(memoryPnl, BorderLayout.CENTER);
+
+        return panel;
     }
 
     /*
@@ -206,8 +243,8 @@ abstract class LogsDialogLayout extends IDialog implements
         JScrollPane cacheLogPane = new JScrollPane(cacheLogTable);
         cacheLogPane.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
+        cacheLogPnl.add(createCacheHeaderPanel(), BorderLayout.PAGE_START);
         cacheLogPnl.add(cacheLogPane, BorderLayout.CENTER);
-        cacheLogPnl.add(cacheDetailPanel, BorderLayout.EAST);
 
 
         // Bring it all together
@@ -233,7 +270,6 @@ abstract class LogsDialogLayout extends IDialog implements
 
             // Details
             systemDetailPanel.updateComponents(selectedLog);
-            cacheDetailPanel.updateComponents();
         } finally {
             application.endWait();
         }

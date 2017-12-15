@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -8,19 +9,20 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
 
-    private static final String[] COLUMN_NAMES = {"", "List", "Size", "Do fetch"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, Integer.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "Size", "List", "Fetched", "Fetch time(ns)"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, Long.class};
 
     private static final ImageIcon fetchedIcon = imageResource.readImage("Ball.green");
     private static final ImageIcon notFetchedIcon = imageResource.readImage("Ball.red");
 
-    public ICacheLogTableModel() {
-        super(COLUMN_NAMES, COLUMN_CLASSES);
+    public ICacheLogTableModel(Comparator<? super CacheLog> comparator) {
+        super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
     }
 
     @Override
@@ -32,16 +34,24 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
                     return log;
                 case 0: // Type label, will be set with with the ITableEditor LogTypeRenderer
                     return log;
-                case 1: // List name
-                    return log.getListName();
-                case 2: // Size
+                case 1: // Size
                     int size = log.getCacheListSize();
                     if (size >= 0) {
                         return size;
                     }
                     return null;
-                case 3: // Do fetch -> button?
-                    return "";
+                case 2: // List name
+                    return log.getListName();
+                case 3: // Date fetched
+                    if (log.getCacheList() != null) {
+                        return DateUtils.formatDetailTime(log.getCacheList().getInitialisationTime());
+                    }
+                    return null;
+                case 4:
+                    if (log.getCacheList() != null) {
+                        return log.getCacheList().getFetchTimeInNanos();
+                    }
+                    return null;
             }
         }
         return null;

@@ -4,7 +4,6 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
@@ -17,6 +16,11 @@ import java.awt.event.MouseEvent;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class SystemLogsDetailPanel extends JPanel implements GuiInterface {
+
+    private final ImageIcon infoIcon = imageResource.readImage("Log.InfoL");
+    private final ImageIcon debugIcon = imageResource.readImage("Log.DebugL");
+    private final ImageIcon warnIcon = imageResource.readImage("Log.WarnL");
+    private final ImageIcon errorIcon = imageResource.readImage("Log.ErrorL");
 
    private Log selectedLog;
 
@@ -31,7 +35,7 @@ public class SystemLogsDetailPanel extends JPanel implements GuiInterface {
    private JPanel messagePanel;
    private JPanel exceptionPanel;
 
-    SystemLogsDetailPanel(Application application) {
+    SystemLogsDetailPanel() {
         initializeComponents();
         initializeLayouts();
     }
@@ -146,19 +150,19 @@ public class SystemLogsDetailPanel extends JPanel implements GuiInterface {
 
                 switch (selectedLog.getLogType()) {
                     case Statics.LogTypes.INFO:
-                        iconLabel.setIcon(imageResource.readImage("Log.InfoL"));
+                        iconLabel.setIcon(infoIcon);
                         typeLabel.setText("Info");
                         break;
                     case Statics.LogTypes.DEBUG:
-                        iconLabel.setIcon(imageResource.readImage("Log.DebugL"));
+                        iconLabel.setIcon(debugIcon);
                         typeLabel.setText("Debug");
                         break;
                     case Statics.LogTypes.WARN:
-                        iconLabel.setIcon(imageResource.readImage("Log.WarnL"));
+                        iconLabel.setIcon(warnIcon);
                         typeLabel.setText("Warning");
                         break;
                     case Statics.LogTypes.ERROR:
-                        iconLabel.setIcon(imageResource.readImage("Log.ErrorL"));
+                        iconLabel.setIcon(errorIcon);
                         typeLabel.setText("Error");
                         break;
                 }
