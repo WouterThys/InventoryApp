@@ -1217,7 +1217,7 @@ public class DatabaseAccess {
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
                     p.setUsedCount(rs.getInt("usedCount"));
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
-                    p.setSheetName(rs.getString("sheetName"));
+                    p.setPcbSheetName(rs.getString("sheetName"));
 
                     // Used and processed
                     p.setUsed(p.getUsedCount() > 0);

@@ -55,7 +55,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
             lsPartTf.setText(selectedComponent.getPartName());
             tStampTf.setText(DateUtils.formatDateTime(selectedComponent.gettStamp()));
             spNamesTa.clearText();
-//            for (String name : selectedComponent.getSheetName()) {
+//            for (String name : selectedComponent.getPcbSheetName()) {
 //                spNamesTa.append(name + "\n");
 //            }
             spNamesTa.setText(selectedComponent.getSheetName());

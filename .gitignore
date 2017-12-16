@@ -53,3 +53,4 @@ fabric.properties
 logs/
 target/
 /InventoryDbModel.mwb
+InventoryAppDbModel.mwb

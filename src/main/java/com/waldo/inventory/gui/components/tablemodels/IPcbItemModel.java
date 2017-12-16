@@ -14,7 +14,7 @@ import java.awt.*;
 import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
+public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
 
     private static final String[] COLUMN_NAMES = {"", "Part", "Reference", "", "", ""};
     private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "PCB Reference", "Is linked", "Is ordered", "Is used"};
@@ -25,20 +25,14 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
     private static final ImageIcon used = imageResource.readImage("Projects.Pcb.Used");
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
 
-    public interface PcbItemListener {
-        PcbItemProjectLink onGetProjectLink(PcbItem pcbItem);
-    }
-
-    private final PcbItemListener pcbItemListener;
-
-    public IPcbItemModel(PcbItemListener itemListener) {
+    public IPcbItemModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES, COLUMN_TOOLTIPS);
-        this.pcbItemListener = itemListener;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        PcbItem component = getItemAt(rowIndex);
+        PcbItemProjectLink link = getItemAt(rowIndex);
+        PcbItem component = link.getPcbItem();
         if (component != null) {
             switch (columnIndex) {
                 case -1:
@@ -58,8 +52,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
                     }
                     break;
                 case 5: // Used
-                    PcbItemProjectLink link = pcbItemListener.onGetProjectLink(component);
-                    if (link != null && link.isUsed()) {
+                    if (link.isUsed()) {
                         return used;
                     }
                     break;

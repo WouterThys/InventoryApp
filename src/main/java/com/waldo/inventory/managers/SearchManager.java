@@ -848,7 +848,7 @@ public class SearchManager {
     public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId, String sheet) {
         if (pcbItemId > 0 && projectPcbId > 0) {
             for (PcbItemProjectLink pil : cache().getPcbItemProjectLinks()) {
-                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId && pil.getSheetName().equals(sheet)) {
+                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId && pil.getPcbSheetName().equals(sheet)) {
                     return pil;
                 }
             }

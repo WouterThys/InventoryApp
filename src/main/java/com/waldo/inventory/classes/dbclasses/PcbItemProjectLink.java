@@ -21,12 +21,12 @@ public class PcbItemProjectLink extends DbObject {
     private PcbItem pcbItem;
     private ProjectPcb projectPcb;
 
+    private String pcbSheetName;
+
     private int usedCount; // Amount used = amount not available anymore in stock
     private boolean used;
     private boolean processed; // Helper variable for used dialog
 
-    // Needed because multiple links can point to same pcbItem
-    private String sheetName;
 
     public PcbItemProjectLink() {
         super(TABLE_NAME);
@@ -86,7 +86,7 @@ public class PcbItemProjectLink extends DbObject {
             return ref.getPcbItemId() == getPcbItemId() &&
                     ref.getProjectPcbId() == getProjectPcbId() &&
                     ref.getUsedCount() == getUsedCount() &&
-                    ref.getSheetName().equals(getSheetName());
+                    ref.getPcbSheetName().equals(getPcbSheetName());
         }
         return false;
     }
@@ -105,7 +105,7 @@ public class PcbItemProjectLink extends DbObject {
         cpy.setPcbItemId(getPcbItemId());
         cpy.setProjectPcbId(getProjectPcbId());
         cpy.setUsedCount(getUsedCount());
-        cpy.sheetName = (getSheetName());
+        cpy.setPcbSheetName(getPcbSheetName());
         cpy.setUsed(isUsed());
         cpy.setProcessed(isProcessed());
 
@@ -149,11 +149,8 @@ public class PcbItemProjectLink extends DbObject {
         }
     }
 
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
-        if (getPcbItemId() > UNKNOWN_ID) {
-            getPcbItem().setSheetName(sheetName);
-        }
+    public void setPcbSheetName(String pcbSheetName) {
+        this.pcbSheetName = pcbSheetName;
     }
 
     // Getters and setters
@@ -178,8 +175,7 @@ public class PcbItemProjectLink extends DbObject {
 
     public PcbItem getPcbItem() {
         if (pcbItem == null) {
-            PcbItem foundItem = SearchManager.sm().findPcbItemById(pcbItemId);
-            pcbItem = foundItem.createCopy();
+            pcbItem = SearchManager.sm().findPcbItemById(pcbItemId);
         }
         return pcbItem;
     }
@@ -191,11 +187,11 @@ public class PcbItemProjectLink extends DbObject {
         return projectPcb;
     }
 
-    public String getSheetName() {
-        if (sheetName == null) {
-            sheetName = "";
+    public String getPcbSheetName() {
+        if (pcbSheetName == null) {
+            pcbSheetName = "";
         }
-        return sheetName;
+        return pcbSheetName;
     }
 
     public int getUsedCount() {

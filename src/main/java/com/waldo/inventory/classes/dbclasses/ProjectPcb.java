@@ -142,15 +142,15 @@ public class ProjectPcb extends ProjectObject {
     }
 
     private HashMap<String, List<PcbItem>> getPcbItemsFromDb() {
-        List<PcbItem> itemList = SearchManager.sm().findPcbItemsForProjectPcb(getId());
+        List<PcbItemProjectLink> itemList = SearchManager.sm().findPcbItemLinksWithProjectPcb(getId());
         HashMap<String, List<PcbItem>> itemMap = new HashMap<>();
 
-        for (PcbItem item : itemList) {
-            String sheet = item.getSheetName();
+        for (PcbItemProjectLink link : itemList) {
+            String sheet = link.getPcbSheetName();
             if (!itemMap.containsKey(sheet)) {
                 itemMap.put(sheet, new ArrayList<>());
             }
-            itemMap.get(sheet).add(item);
+            itemMap.get(sheet).add(link.getPcbItem());
         }
 
         return itemMap;
