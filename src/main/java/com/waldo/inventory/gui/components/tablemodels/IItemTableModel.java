@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -94,14 +94,14 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                     String txt = String.valueOf(item.getAmount());
 
                     if (item.getOrderState() == Statics.ItemOrderStates.ORDERED) {
-                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, blueBall, txt);
+                        lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
                     } else if (item.getOrderState() == Statics.ItemOrderStates.PLANNED) {
-                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, yellowBall, txt);
+                        lbl = new ITableIcon(component.getBackground(), row, isSelected, yellowBall, txt);
                     } else {
                         if (item.getAmount() > 0) {
-                            lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, greenBall, txt);
+                            lbl = new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
                         } else {
-                            lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, redBall, txt);
+                            lbl = new ITableIcon(component.getBackground(), row, isSelected, redBall, txt);
                         }
                     }
 

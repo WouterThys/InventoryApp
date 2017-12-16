@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -78,9 +78,9 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
                     ILabel lbl;
                     CacheLog log = (CacheLog) value;
                     if (log.getCacheList().isFetched()) {
-                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, fetchedIcon, "");
+                        lbl = new ITableIcon(component.getBackground(), row, isSelected, fetchedIcon, "");
                     } else {
-                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, notFetchedIcon, "");
+                        lbl = new ITableIcon(component.getBackground(), row, isSelected, notFetchedIcon, "");
                     }
                     return lbl;
                 }

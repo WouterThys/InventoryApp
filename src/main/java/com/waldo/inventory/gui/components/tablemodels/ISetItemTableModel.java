@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,7 +16,7 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
 
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Location"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class};
+    private static final Class[] COLUMN_CLASSES = {ITableIcon.class, String.class, String.class, String.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon redBall = imageResource.readImage("Ball.red");
@@ -72,9 +72,9 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
                     int amount = setItem.getAmount();
 
                     if (amount > 0) {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));
                     } else {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, redBall, String.valueOf(amount));
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, redBall, String.valueOf(amount));
                     }
 
                     return lbl;

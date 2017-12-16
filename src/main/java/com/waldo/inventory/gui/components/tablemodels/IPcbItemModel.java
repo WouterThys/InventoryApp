@@ -1,15 +1,14 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.colorResource;
@@ -91,20 +90,14 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
                         if (pcbItem.hasMatch()) {
                             PcbItemItemLink link = pcbItem.getMatchedItemLink();
                             if (link.isSetItem()) {
-                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,link.getSetItem().toString());
+                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getSetItem().toString());
                             } else {
-                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,link.getItem().toString());
+                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().toString());
                             }
                             lbl.setForeground(colorResource.readColor("Green"));
                             lbl.setFont(Font.BOLD);
                         } else {
-                            String part = pcbItem.getPartName();
-                            String val = pcbItem.getValue();
-                            if (part.equals(value)) {
-                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected, part);
-                            } else {
-                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,part + " - " + val);
-                            }
+                            lbl = new ITableIcon(c.getBackground(), row, isSelected, pcbItem.getPrettyName());
                         }
                     } else {
                         if (row == 0) {
@@ -113,7 +106,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
                         }
 
                         String txt = String.valueOf(pcbItem.getReferences().size());
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, txt);
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
                     }
 
                     return lbl;

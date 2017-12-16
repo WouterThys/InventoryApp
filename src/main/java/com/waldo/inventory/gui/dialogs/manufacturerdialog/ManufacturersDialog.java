@@ -51,8 +51,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
         }
 
         if (canClose) {
-            dialogResult = OK;
-            dispose();
+            super.onOK();
         }
     }
 
@@ -109,8 +108,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
                     selectedManufacturer.save();
                     originalManufacturer = selectedManufacturer.createCopy();
                     if (closeAfter) {
-                        dialogResult = OK;
-                        dispose();
+                        super.onOK();
                     }
                 }
             }
@@ -290,6 +288,9 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
     @Override
     public DbObject getGuiObject() {
-        return selectedManufacturer;
+        if (isShown) {
+            return selectedManufacturer;
+        }
+        return null;
     }
 }

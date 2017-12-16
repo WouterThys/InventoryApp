@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.popups.PcbItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -88,6 +89,12 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
                                     @Override
                                     public void onEditItem(Item item) {
                                         EditItemDialog dialog = new EditItemDialog(application, "Item", item);
+                                        dialog.showDialog();
+                                    }
+
+                                    @Override
+                                    public void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink) {
+                                        PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(application, link.getPcbItem().getPrettyName(), link);
                                         dialog.showDialog();
                                     }
                                 };

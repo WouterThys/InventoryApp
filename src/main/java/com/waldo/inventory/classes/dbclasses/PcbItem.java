@@ -273,6 +273,16 @@ public class PcbItem extends DbObject {
         this.matchedItem = matchedItem;
     }
 
+    public String getPrettyName() {
+        String part = getPartName();
+        String val = getValue();
+        if (part.equals(value)) {
+            return part;
+        } else {
+            return (part + " - " + val);
+        }
+    }
+
     //
     // Extra's for ordering
     //

@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -75,9 +75,9 @@ public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
                     }
 
                     if (amount > 0) {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));
                     } else {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, redBall, String.valueOf(amount));
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, redBall, String.valueOf(amount));
                     }
 
                     return lbl;

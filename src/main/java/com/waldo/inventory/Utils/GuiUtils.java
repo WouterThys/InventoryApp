@@ -83,59 +83,6 @@ public class GuiUtils {
         };
     }
 
-    public static ILabel getTableIconLabel(Color background, int row, boolean isSelected, ImageIcon icon, String txt) {
-        ILabel lblIcon = new ILabel(icon);
-        ILabel lblText = new ILabel(txt);
-
-        lblText.setForeground(Color.WHITE);
-        Font f = lblText.getFont();
-        lblText.setFont(new Font(f.getName(), Font.BOLD, f.getSize() - 5));
-
-        if (row % 2 == 1 || isSelected) {
-            lblIcon.setBackground(background);
-            lblText.setBackground(background);
-        } else {
-            lblIcon.setBackground(Color.WHITE);
-            lblText.setBackground(Color.WHITE);
-        }
-
-        lblIcon.setOpaque(true);
-        lblText.setOpaque(false);
-
-        lblIcon.setLayout(new GridBagLayout());
-        lblIcon.add(lblText);
-
-        return lblIcon;
-    }
-
-    public static ILabel getTableIconLabel(Color background, int row, boolean isSelected, ImageIcon icon) {
-        ILabel lblIcon = new ILabel(icon);
-
-        if (row % 2 == 1 || isSelected) {
-            lblIcon.setBackground(background);
-        } else {
-            lblIcon.setBackground(Color.WHITE);
-        }
-
-        lblIcon.setOpaque(true);
-        return lblIcon;
-    }
-
-    public static ILabel getTableTextLabel(Color background, int row, boolean isSelected, String txt) {
-        ILabel lblIcon = new ILabel(txt);
-
-        if (row % 2 == 1 || isSelected) {
-            lblIcon.setBackground(background);
-        } else {
-            lblIcon.setBackground(Color.WHITE);
-        }
-
-        lblIcon.setOpaque(true);
-        return lblIcon;
-    }
-
-
-
     public static class GridBagHelper extends GridBagConstraints {
 
         private JPanel panel;

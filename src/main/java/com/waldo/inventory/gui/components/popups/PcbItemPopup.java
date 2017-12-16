@@ -21,10 +21,11 @@ public abstract class PcbItemPopup extends JPopupMenu {
     }
 
     public abstract void onEditItem(Item item);
-
+    public abstract void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink);
 
     private void init(final PcbItemProjectLink itemProjectLink) {
 
+        // Actions
         EditItemAction editItemAction = new EditItemAction() {
             @Override
             public void onEditItem() {
@@ -32,6 +33,13 @@ public abstract class PcbItemPopup extends JPopupMenu {
                 if (pcbItem.hasMatch()) {
                     PcbItemPopup.this.onEditItem(pcbItem.getMatchedItemLink().getItem());
                 }
+            }
+        };
+
+        EditPcbItemAction editPcbItemAction = new EditPcbItemAction() {
+            @Override
+            public void onEditPcbItem() {
+                onPcbItemEdit(itemProjectLink);
             }
         };
 
@@ -58,6 +66,8 @@ public abstract class PcbItemPopup extends JPopupMenu {
             addSeparator();
         }
         add(editItemAction);
+        addSeparator();
+        add(editPcbItemAction);
     }
 }
 

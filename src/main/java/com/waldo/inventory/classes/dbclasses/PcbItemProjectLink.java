@@ -79,6 +79,19 @@ public class PcbItemProjectLink extends DbObject {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof PcbItemProjectLink) {
+            PcbItemProjectLink ref = (PcbItemProjectLink) obj;
+
+            return ref.getPcbItemId() == getPcbItemId() &&
+                    ref.getProjectPcbId() == getProjectPcbId() &&
+                    ref.getUsedCount() == getUsedCount() &&
+                    ref.getSheetName().equals(getSheetName());
+        }
+        return false;
+    }
+
+    @Override
     public PcbItemProjectLink createCopy() {
         return createCopy(new PcbItemProjectLink());
     }
@@ -92,6 +105,9 @@ public class PcbItemProjectLink extends DbObject {
         cpy.setPcbItemId(getPcbItemId());
         cpy.setProjectPcbId(getProjectPcbId());
         cpy.setUsedCount(getUsedCount());
+        cpy.sheetName = (getSheetName());
+        cpy.setUsed(isUsed());
+        cpy.setProcessed(isProcessed());
 
         return cpy;
     }

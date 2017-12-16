@@ -32,7 +32,6 @@ public class ITable<T> extends JXTable {
             setDefaultRenderer(Object.class, model.getTableCellRenderer());
         }
         setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-
     }
 
     public ITable(IAbstractTableModel<T> model, boolean autoSetHeight) {

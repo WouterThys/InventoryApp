@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, Double.class, Double.class};
+    private static final Class[] COLUMN_CLASSES = {ITableIcon.class, Integer.class, String.class, String.class, String.class, Double.class, Double.class};
 
     private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
     private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
@@ -107,13 +107,13 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                     boolean amountOk = orderItem.getAmount() > 0;
                     boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;
                     if (amountOk && referenceOk) {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, imageOk);
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageOk);
                         lbl.setToolTipText(null);
                     } else if (!referenceOk) {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, imageError);
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageError);
                         lbl.setToolTipText("Reference is not set..");
                     } else {
-                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, imageWarn);
+                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageWarn);
                         lbl.setToolTipText("Amount is 0..");
                     }
 

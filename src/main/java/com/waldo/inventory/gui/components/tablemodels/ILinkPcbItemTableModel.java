@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -77,7 +77,7 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
                     ILabel lbl;
                     PcbItem pcbItem = (PcbItem) value;
                     String txt = String.valueOf(pcbItem.getReferences().size());
-                    lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, txt);
+                    lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
 
                     return lbl;
                 }

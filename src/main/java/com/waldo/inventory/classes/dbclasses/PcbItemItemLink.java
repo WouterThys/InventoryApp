@@ -242,11 +242,28 @@ public class PcbItemItemLink extends DbObject {
         return pcbItem;
     }
 
-    public boolean isMatched() {
-        return isMatched;
-    }
-
     public void setMatched(boolean matched) {
         isMatched = matched;
+    }
+
+
+
+    //
+    // Helpers
+    //
+    public String getLinkedItemName() {
+        if (isSetItem) {
+            return getSetItem().toString();
+        } else {
+            return getItem().toString();
+        }
+    }
+
+    public int getLinkedItemAmount() {
+        if (isSetItem) {
+            return getSetItem().getAmount();
+        } else {
+            return getItem().getAmount();
+        }
     }
 }

@@ -66,24 +66,24 @@ public class ISpinner extends JSpinner {
                     DbObject guiObject = editedListener.getGuiObject();
                     if (guiObject != null) {
                         ISpinner spinner = (ISpinner) e.getSource();
-                        String newVal = String.valueOf(spinner.getValue());
+                        Object newVal = spinner.getValue();
 
                         Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
                         Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
 
-                        String oldVal = String.valueOf(getMethod.invoke(guiObject));
+                        Object oldVal = getMethod.invoke(guiObject);
                         switch (fieldClass.getTypeName()) {
                             case "int":
-                                setMethod.invoke(guiObject, Integer.valueOf(newVal));
+                                setMethod.invoke(guiObject, Integer.valueOf(newVal.toString()));
                                 break;
                             case "double":
-                                setMethod.invoke(guiObject, Double.valueOf(newVal));
+                                setMethod.invoke(guiObject, Double.valueOf(newVal.toString()));
                                 break;
                             case "float":
-                                setMethod.invoke(guiObject, Float.valueOf(newVal));
+                                setMethod.invoke(guiObject, Float.valueOf(newVal.toString()));
                                 break;
                             case "long":
-                                setMethod.invoke(guiObject, Long.valueOf(newVal));
+                                setMethod.invoke(guiObject, Long.valueOf(newVal.toString()));
                                 break;
                             default:
                                 setMethod.invoke(guiObject, newVal);
