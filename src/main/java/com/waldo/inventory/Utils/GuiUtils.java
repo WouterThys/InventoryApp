@@ -118,9 +118,19 @@ public class GuiUtils {
         }
 
         lblIcon.setOpaque(true);
+        return lblIcon;
+    }
 
-        lblIcon.setLayout(new GridBagLayout());
+    public static ILabel getTableTextLabel(Color background, int row, boolean isSelected, String txt) {
+        ILabel lblIcon = new ILabel(txt);
 
+        if (row % 2 == 1 || isSelected) {
+            lblIcon.setBackground(background);
+        } else {
+            lblIcon.setBackground(Color.WHITE);
+        }
+
+        lblIcon.setOpaque(true);
         return lblIcon;
     }
 

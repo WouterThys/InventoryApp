@@ -22,7 +22,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +29,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class PcbItemPanel extends JPanel implements
-        GuiInterface, ListSelectionListener, ChangeListener, IPcbItemModel.PcbItemListener {
+        GuiInterface, ChangeListener, IPcbItemModel.PcbItemListener {
 
 
     /*
@@ -54,7 +53,7 @@ public class PcbItemPanel extends JPanel implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public PcbItemPanel(Application application) {
+    PcbItemPanel(Application application) {
         this.application = application;
 
         initializeComponents();
@@ -89,7 +88,7 @@ public class PcbItemPanel extends JPanel implements
 
     private void updateComponentTable(HashMap<String, List<PcbItem>> pcbItemMap) {
         for (String sheet : pcbItemMap.keySet()) {
-            PcbItemSheetTab tab = new PcbItemSheetTab(this, this);
+            PcbItemSheetTab tab = new PcbItemSheetTab(application, this);
             tab.updateComponents(pcbItemMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
@@ -190,30 +189,6 @@ public class PcbItemPanel extends JPanel implements
         updateEnabledComponents();
     }
 
-    private String getSelectedSheet() {
-        return sheetTabs.getTitleAt(sheetTabs.getSelectedIndex());
-    }
-
-    private List<PcbItem> getLinkedPcbItems(List<PcbItem> allItems) {
-        List<PcbItem> linkedItems = new ArrayList<>();
-
-        for (PcbItem pcbItem : allItems) {
-            if (pcbItem.hasMatch()) {
-                linkedItems.add(pcbItem);
-            }
-        }
-
-        return linkedItems;
-    }
-
-
-    //
-    // One of the list values in the sheet tabs selected
-    //
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-
-    }
 
     //
     // Tab changed

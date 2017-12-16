@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.components.ILabel;
 
@@ -11,11 +12,13 @@ import javax.swing.table.TableColumn;
 
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
 
     private static final String[] COLUMN_NAMES = {"", "Part", "Reference", "", "", ""};
+    private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "PCB Reference", "Is linked", "Is ordered", "Is used"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, ImageIcon.class, ImageIcon.class, ImageIcon.class};
 
     private static final ImageIcon linked = imageResource.readImage("Projects.Pcb.Linked");
@@ -30,7 +33,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
     private final PcbItemListener pcbItemListener;
 
     public IPcbItemModel(PcbItemListener itemListener) {
-        super(COLUMN_NAMES, COLUMN_CLASSES);
+        super(COLUMN_NAMES, COLUMN_CLASSES, COLUMN_TOOLTIPS);
         this.pcbItemListener = itemListener;
     }
 
@@ -40,17 +43,9 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
         if (component != null) {
             switch (columnIndex) {
                 case -1:
-                    return component;
                 case 0: // Amount
-                    return component;
                 case 1: // LibSource value
-                    String part = component.getPartName();
-                    String value = component.getValue();
-                    if (part.equals(value)) {
-                        return part;
-                    } else {
-                        return part + " - " + value;
-                    }
+                    return component;
                 case 2: // Reference
                     return component.getReferenceString();
                 case 3: // Linked
@@ -74,6 +69,8 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
         return null;
     }
 
+
+
     @Override
     public boolean hasTableCellRenderer() {
         return true;
@@ -86,17 +83,38 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (value instanceof PcbItem) {
-                    if (row == 0) {
-                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                        tableColumn.setMaxWidth(32);
-                        tableColumn.setMinWidth(32);
-                    }
 
-                    ILabel lbl;
+                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     PcbItem pcbItem = (PcbItem) value;
+                    ILabel lbl;
+                    if (table.getColumnName(column).equals("Part")) {
+                        if (pcbItem.hasMatch()) {
+                            PcbItemItemLink link = pcbItem.getMatchedItemLink();
+                            if (link.isSetItem()) {
+                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,link.getSetItem().toString());
+                            } else {
+                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,link.getItem().toString());
+                            }
+                            lbl.setForeground(colorResource.readColor("Green"));
+                            lbl.setFont(Font.BOLD);
+                        } else {
+                            String part = pcbItem.getPartName();
+                            String val = pcbItem.getValue();
+                            if (part.equals(value)) {
+                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected, part);
+                            } else {
+                                lbl = GuiUtils.getTableTextLabel(c.getBackground(), row, isSelected,part + " - " + val);
+                            }
+                        }
+                    } else {
+                        if (row == 0) {
+                            tableColumn.setMaxWidth(32);
+                            tableColumn.setMinWidth(32);
+                        }
 
-                    String txt = String.valueOf(pcbItem.getReferences().size());
-                    lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, txt);
+                        String txt = String.valueOf(pcbItem.getReferences().size());
+                        lbl = GuiUtils.getTableIconLabel(c.getBackground(), row, isSelected, greenBall, txt);
+                    }
 
                     return lbl;
                 }

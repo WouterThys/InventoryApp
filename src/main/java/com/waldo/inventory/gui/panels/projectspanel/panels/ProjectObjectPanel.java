@@ -219,6 +219,9 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     //
     @Override
     public void onInserted(T object) {
+        if (selectedProject == null) {
+            selectedProject = object.getProject();
+        }
         selectedProject.updateProjectCodes();
         gridPanel.addTile(object);
         selectedProjectObject = object;
@@ -227,6 +230,9 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
 
     @Override
     public void onDeleted(T object) {
+        if (selectedProject == null) {
+            selectedProject = object.getProject();
+        }
         selectedProject.updateProjectCodes();
         gridPanel.removeTile(object);
         selectedProjectObject = null;
