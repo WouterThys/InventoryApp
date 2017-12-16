@@ -26,7 +26,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
     private ITextField referencesTf;
     private ITextField footprintTf;
-    private int type;
+    private final int type;
 
     /*
      *                  CONSTRUCTOR

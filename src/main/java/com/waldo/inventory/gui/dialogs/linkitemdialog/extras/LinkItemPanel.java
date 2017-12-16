@@ -37,7 +37,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
 
     /*
      *                  CONSTRUCTOR

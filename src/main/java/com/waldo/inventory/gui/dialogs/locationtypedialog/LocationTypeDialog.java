@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class LocationTypeDialog extends LocationTypeDialogLayout {
+public class LocationTypeDialog extends LocationTypeDialogLayout implements CacheChangedListener<LocationType> {
 
     private boolean canClose = true;
 
@@ -26,7 +27,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnLocationTypeChangedListener(this);
+        addCacheListener(LocationType.class, this);
 
         updateWithFirstLocationType();
     }

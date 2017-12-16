@@ -25,8 +25,10 @@ public class EditItemLocation extends EditItemLocationLayout {
 
     @Override
     protected void onCancel() {
-        location = originalLocation.createCopy();
-        location.setCanBeSaved(true);
+        if (originalLocation != null) {
+            location = originalLocation.createCopy();
+            location.setCanBeSaved(true);
+        }
         super.onCancel();
     }
 

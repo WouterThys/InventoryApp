@@ -20,7 +20,7 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
     public static final int LINK_COMPONENTS = 0;
     public static final int ORDER_COMPONENTS = 1;
 
-    private int type;
+    private final int type;
 
     public ILinkPcbItemTableModel(int type) {
         super(COLUMN_NAMES, COLUMN_CLASSES);

@@ -24,7 +24,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IAbstractTableModel<T> tableModel;
+    private final IAbstractTableModel<T> tableModel;
     private ITable<T> table;
 
     // Tool bars
@@ -43,23 +43,21 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    private final boolean hasSortOption;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ITablePanel(IAbstractTableModel<T> tableModel) {
-        this(tableModel, null, null);
-    }
 
     public ITablePanel(IAbstractTableModel<T> tableModel, ListSelectionListener listSelectionListener) {
-        this(tableModel, listSelectionListener, null);
+        this(tableModel, listSelectionListener, false);
     }
 
-    public ITablePanel(IAbstractTableModel<T> tableModel, ListSelectionListener listSelectionListener, TableCellRenderer tableCellRenderer) {
+    public ITablePanel(IAbstractTableModel<T> tableModel, ListSelectionListener listSelectionListener, boolean hasSortOption) {
         super(new BorderLayout());
 
         this.tableModel = tableModel;
+        this.hasSortOption = hasSortOption;
 
         initializeComponents();
         initializeLayouts();
@@ -67,7 +65,6 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         if (listSelectionListener != null) {
             addListSelectionListener(listSelectionListener);
         }
-        //addTableRenderer(tableCellRenderer);
     }
 
     /*
@@ -200,11 +197,14 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     @Override
     public void initializeComponents() {
         // Table
-        table = new ITable<>(tableModel);
+        table = new ITable<>(tableModel, false);
         table.setRowSorter(null);
+        if (tableModel.hasTableCellRenderer()) {
+            addTableRenderer(tableModel.getTableCellRenderer());
+        }
 
         // Toolbar
-        tableToolBar = new ITableToolBar<>(table);
+        tableToolBar = new ITableToolBar<>(table, hasSortOption);
 
         // Panels
         centerPanel = new JPanel(new BorderLayout());
@@ -232,7 +232,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     private class HighlightRenderer extends DefaultTableCellRenderer {
 
         private static final String HTML = "%s<span style='color:#000000; background-color:#FFFF00'><nobr>%s</nobr></span>";
-        private TableCellRenderer originalRenderer;
+        private final TableCellRenderer originalRenderer;
 
         public HighlightRenderer(TableCellRenderer originalRenderer) {
             this.originalRenderer = originalRenderer;
@@ -240,7 +240,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component component = null;
+            Component component;
             Class c = table.getColumnClass(column);
 
             if (c == String.class) {

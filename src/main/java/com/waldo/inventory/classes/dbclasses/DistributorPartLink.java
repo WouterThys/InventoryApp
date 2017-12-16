@@ -113,7 +113,6 @@ public class DistributorPartLink extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onDistributorPartLinkChangedListenerList);
     }
 
 

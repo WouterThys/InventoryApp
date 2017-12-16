@@ -81,7 +81,6 @@ public class LocationType extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onLocationTYpeChangedListenerList);
     }
 
     public static LocationType getUnknownLocationType() {

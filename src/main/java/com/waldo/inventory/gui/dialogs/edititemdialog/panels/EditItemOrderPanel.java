@@ -25,17 +25,17 @@ public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolB
     private ITable<DistributorPartLink> linkTable;
     private IdBToolBar toolBar;
 
-    private Item newItem;
+    private final Item newItem;
     private boolean first = true;
 
     // Listener
-    private Application application;
+    private final Application application;
 
     public EditItemOrderPanel(Application application, Item newItem) {
         this.application = application;
         this.newItem = newItem;
 
-        cache().addOnDistributorPartLinkChangedListener(this);
+        cache().addListener(DistributorPartLink.class, this);
     }
 
     private void updateEnabledComponents() {

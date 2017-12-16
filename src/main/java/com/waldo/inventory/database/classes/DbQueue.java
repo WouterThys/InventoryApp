@@ -9,8 +9,8 @@ import java.util.Queue;
 
 public class DbQueue<T extends DbQueueObject> {
 
-    private Queue<T> queue = new LinkedList<>();
-    private int capacity;
+    private final Queue<T> queue = new LinkedList<>();
+    private final int capacity;
     private volatile boolean stopped = false;
 
     // Extras

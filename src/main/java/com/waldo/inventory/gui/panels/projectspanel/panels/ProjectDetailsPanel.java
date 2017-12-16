@@ -54,7 +54,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
     private ProjectObject selectedProject;
 
     /*

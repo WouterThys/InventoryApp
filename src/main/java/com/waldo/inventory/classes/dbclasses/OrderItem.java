@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DatabaseAccess;
-import com.waldo.inventory.managers.CacheManager;
 import com.waldo.inventory.managers.LogManager;
 
 import java.sql.PreparedStatement;
@@ -97,7 +96,6 @@ public class OrderItem extends DbObject {
                 break;
             }
         }
-        CacheManager.cache().notifyListeners(changedHow, this, CacheManager.cache().getOrderItemListeners());
     }
 
     public long getOrderId() {

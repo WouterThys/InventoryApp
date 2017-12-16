@@ -38,7 +38,7 @@ public abstract class ParserDialogLayout extends IDialog implements
     /*
     *                  VARIABLES
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private boolean useParser;
+    private final boolean useParser;
     PcbParser selectedParser;
     ParserItemLink selectedLink;
 

@@ -19,9 +19,9 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
         PcbItemProjectLink onGetLink(PcbItem pcbItem);
     }
 
-    private AmountType amountType;
+    private final AmountType amountType;
     private PcbItemTableModelListener modelListener;
-    private boolean showSetValues;
+    private final boolean showSetValues;
 
     public ILinkedPcbItemTableModel(AmountType amountType, boolean showSetValues) {
         super(COLUMN_NAMES, COLUMN_CLASSES);

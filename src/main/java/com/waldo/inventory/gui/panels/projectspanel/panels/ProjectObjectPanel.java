@@ -37,17 +37,17 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
     private JButton runIdeBtn;
     private ILabel projectObjectNameLbl;
 
-    JPanel eastPanel = new JPanel(new BorderLayout());
-    private JPanel centerPanel = new JPanel(new BorderLayout());
-    private JPanel remarksPanel = new JPanel(new BorderLayout());
-    JPanel menuPanel = new JPanel(new BorderLayout());
+    final JPanel eastPanel = new JPanel(new BorderLayout());
+    private final JPanel centerPanel = new JPanel(new BorderLayout());
+    private final JPanel remarksPanel = new JPanel(new BorderLayout());
+    final JPanel menuPanel = new JPanel(new BorderLayout());
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected Application application;
-    private ProjectObjectListener objectListener;
+    protected final Application application;
+    private final ProjectObjectListener objectListener;
     Project selectedProject;
     T selectedProjectObject;
 

@@ -37,11 +37,11 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public static final int TAB_DETAILS = 1;
     public static final int TAB_SET_ITEMS = 2;
 
-    private Application application;
-    private Item newItem;
+    private final Application application;
+    private final Item newItem;
 
     // Listener
-    private IEditedListener editedListener;
+    private final IEditedListener editedListener;
 
     // Tabbed pane
     private JTabbedPane tabbedPane;

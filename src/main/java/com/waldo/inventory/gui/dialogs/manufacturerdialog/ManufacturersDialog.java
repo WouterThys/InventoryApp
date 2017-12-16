@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -19,7 +20,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class ManufacturersDialog extends ManufacturersDialogLayout {
+public class ManufacturersDialog extends ManufacturersDialogLayout implements CacheChangedListener<Manufacturer> {
 
     private boolean canClose = true;
 
@@ -28,7 +29,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnManufacturerChangedListener(this);
+        addCacheListener(Manufacturer.class, this);
 
         updateWithFirstManufacturer();
     }

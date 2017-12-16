@@ -51,14 +51,14 @@ public abstract class DbObject {
     public static final int TYPE_LOG = 100;
     public static final int TYPE_DB_HISTORY = 101;
 
-    protected String TABLE_NAME;
+    protected final String TABLE_NAME;
     protected boolean isInserted = false;
 
     protected long id = -1;
     protected String name = "";
     protected String iconPath = "";
     protected boolean canBeSaved = true;
-    protected AddUpdateDelete aud = new AddUpdateDelete();
+    protected final AddUpdateDelete aud = new AddUpdateDelete();
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;

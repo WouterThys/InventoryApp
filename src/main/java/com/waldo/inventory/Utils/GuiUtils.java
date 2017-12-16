@@ -674,7 +674,7 @@ public class GuiUtils {
 
     public static class IPackagePanel extends JPanel implements GuiInterface, ActionListener, ItemListener {
 
-        private Application application;
+        private final Application application;
 
         private IComboBox<Package> packageCb;
         private IComboBox<PackageType> typeCb;

@@ -20,8 +20,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITextEditor extends JPanel {
 
-    private ITextPane editor;
-    private UndoManager undoManager;
+    private final ITextPane editor;
+    private final UndoManager undoManager;
     private String pictureButtonName;
 
     enum BulletActionType {INSERT, REMOVE};
@@ -47,23 +47,23 @@ public class ITextEditor extends JPanel {
     private static final String ELEM = AbstractDocument.ElementNameAttribute;
     private static final String COMP = StyleConstants.ComponentElementName;
 
-    private AbstractAction undoAction;
-    private AbstractAction redoAction;
+    private final AbstractAction undoAction;
+    private final AbstractAction redoAction;
     private AbstractAction saveAction;
 
-    private AbstractAction copyAction;
-    private AbstractAction cutAction;
-    private AbstractAction pasteAction;
+    private final AbstractAction copyAction;
+    private final AbstractAction cutAction;
+    private final AbstractAction pasteAction;
 
-    private AbstractAction boldAction;
-    private AbstractAction italicAction;
-    private AbstractAction underlineAction;
+    private final AbstractAction boldAction;
+    private final AbstractAction italicAction;
+    private final AbstractAction underlineAction;
 
-    private AbstractAction colorAction;
-    private AbstractAction insertPictureAction;
+    private final AbstractAction colorAction;
+    private final AbstractAction insertPictureAction;
 
-    private AbstractAction bulletInsertButton;
-    private AbstractAction numbersInsertButton;
+    private final AbstractAction bulletInsertButton;
+    private final AbstractAction numbersInsertButton;
 
     public ITextEditor() {
         editor = new ITextPane();
@@ -422,7 +422,7 @@ public class ITextEditor extends JPanel {
      */
     private class BulletActionListener implements ActionListener {
 
-        private BulletActionType bulletActionType;
+        private final BulletActionType bulletActionType;
 
         public BulletActionListener(BulletActionType actionType) {
 
@@ -805,13 +805,7 @@ public class ITextEditor extends JPanel {
 
         // Position the caret in an EDT, otherwise the caret is
         // positioned at one less position than intended.
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-
-                editor.setCaretPosition(newPos);
-            }
-        });
+        SwingUtilities.invokeLater(() -> editor.setCaretPosition(newPos));
     }
 
     /*
@@ -982,7 +976,7 @@ public class ITextEditor extends JPanel {
      */
     private class NumbersActionListener implements ActionListener {
 
-        private NumbersActionType numbersActionType;
+        private final NumbersActionType numbersActionType;
         private int n;
 
         public NumbersActionListener(NumbersActionType actionType) {
@@ -1115,8 +1109,7 @@ public class ITextEditor extends JPanel {
     }
 
     private String getNumberString(Integer nextNumber) {
-
-        return new String(nextNumber.toString() + "." + " ");
+        return nextNumber.toString() + "." + " ";
     }
 
     private AttributeSet getNumbersAttributes(int paraEleStart, Integer number) {

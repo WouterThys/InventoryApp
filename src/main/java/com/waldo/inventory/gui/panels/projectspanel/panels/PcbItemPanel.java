@@ -48,7 +48,7 @@ public class PcbItemPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
     private ProjectPcb projectPcb;
 
     /*

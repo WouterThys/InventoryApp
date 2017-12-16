@@ -35,10 +35,10 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private String extension;
-    private boolean openAsFolder;
-    private boolean matchExtension;
-    private boolean useParentFolder;
+    private final String extension;
+    private final boolean openAsFolder;
+    private final boolean matchExtension;
+    private final boolean useParentFolder;
 
 
      /*

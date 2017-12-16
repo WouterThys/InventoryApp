@@ -4,10 +4,10 @@ public class ForeignKey {
 
     private String constraintName;
 
-    private DbTable fromTable;
+    private final DbTable fromTable;
     private String fromColumn;
 
-    private DbTable referenceTable;
+    private final DbTable referenceTable;
     private String referenceColumn;
 
     public ForeignKey(DbTable fromTable, String fromColumn, String constraintName, DbTable referenceTable, String referenceColumn) {

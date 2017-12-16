@@ -24,7 +24,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
     }
 
     private int level;
-    private Class logClass;
+    private final Class logClass;
 
     private boolean logInfo;
     private boolean logDebug;

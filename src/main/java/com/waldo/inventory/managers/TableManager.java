@@ -27,7 +27,7 @@ public class TableManager {
     private boolean initSuccess = false;
     private String schemaName = "";
     private BasicDataSource dataSource;
-    private List<DbTable> dbTableList = new ArrayList<>();
+    private final List<DbTable> dbTableList = new ArrayList<>();
 
     private TableManager() {
 

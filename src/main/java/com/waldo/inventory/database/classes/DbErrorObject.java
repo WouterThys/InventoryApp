@@ -4,8 +4,8 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 
 public class DbErrorObject extends  DbQueueObject {
 
-    private Throwable exception;
-    private String sql;
+    private final Throwable exception;
+    private final String sql;
 
     public DbErrorObject(DbObject object, Throwable exception, int how, String sql) {
         super(object, how);

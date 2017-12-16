@@ -31,13 +31,13 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private List<ITileView<P>> tileViews = new ArrayList<>();
+    private final List<ITileView<P>> tileViews = new ArrayList<>();
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private GridComponentClicked<P> gridComponentListener;
+    private final GridComponentClicked<P> gridComponentListener;
 
     /*
      *                  CONSTRUCTOR

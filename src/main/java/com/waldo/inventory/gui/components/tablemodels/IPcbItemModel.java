@@ -27,7 +27,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItem> {
         PcbItemProjectLink onGetProjectLink(PcbItem pcbItem);
     }
 
-    private PcbItemListener pcbItemListener;
+    private final PcbItemListener pcbItemListener;
 
     public IPcbItemModel(PcbItemListener itemListener) {
         super(COLUMN_NAMES, COLUMN_CLASSES);

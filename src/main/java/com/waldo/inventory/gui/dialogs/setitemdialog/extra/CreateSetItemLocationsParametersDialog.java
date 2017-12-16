@@ -26,7 +26,7 @@ public class CreateSetItemLocationsParametersDialog extends IDialog implements A
 
     private JSpinner numberPerLocationSp;
 
-    private LocationType locationType;
+    private final LocationType locationType;
     private Location startLocation;
 
     public CreateSetItemLocationsParametersDialog(Application application, String title, LocationType locationType) {

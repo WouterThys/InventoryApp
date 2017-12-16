@@ -45,9 +45,9 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
     Item selectedItem;
-    private OnItemDetailListener detailListener;
+    private final OnItemDetailListener detailListener;
 
     /*
      *                  CONSTRUCTORS

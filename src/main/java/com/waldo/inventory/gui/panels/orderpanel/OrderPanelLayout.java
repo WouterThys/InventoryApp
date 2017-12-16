@@ -59,7 +59,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    final Application application;
 
     OrderItem selectedOrderItem;
     Order selectedOrder;

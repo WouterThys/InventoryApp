@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.locationtypedialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -19,7 +18,6 @@ import static javax.swing.SpringLayout.*;
 
 abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
-        CacheChangedListener<LocationType>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,

@@ -2,28 +2,20 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import javax.swing.JPanel;
 
 /**
  * The star rater panel. 
@@ -34,7 +26,7 @@ import javax.swing.JPanel;
 public class IStarRater extends JPanel {
 
   /** The listener. */
-  public static interface StarListener {
+  public interface StarListener {
     
     /**
      * Called result.
@@ -45,12 +37,12 @@ public class IStarRater extends JPanel {
   }
   
   /** Listeners. */
-  private List<StarListener> listeners = new ArrayList<StarListener>();
+  private final List<StarListener> listeners = new ArrayList<StarListener>();
   private IEditedListener editedListener;
   private String fieldName;
 
   /** The number of stars n. */
-  private int stars;
+  private final int stars;
   /** The rating [0, n]. 0 = no rating. */
   private float rating;
   /** The selection [0, n]. 0 = no selection. */
@@ -129,8 +121,8 @@ public class IStarRater extends JPanel {
           rollover = 0;
           done = true;
           IStarRater.this.selection = 1 + (event.getX() / STAR_BACKGROUND_IMAGE.getWidth(null));
-          for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).handleSelection(IStarRater.this.selection);
+          for (StarListener listener : listeners) {
+            listener.handleSelection(IStarRater.this.selection);
           }
           repaint();
         }

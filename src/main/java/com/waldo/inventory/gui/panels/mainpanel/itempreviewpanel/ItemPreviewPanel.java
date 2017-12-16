@@ -61,7 +61,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    final Application application;
     Item selectedItem;
 
     /*

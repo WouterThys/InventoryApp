@@ -1,7 +1,10 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -38,6 +42,8 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     protected boolean isShown = false;
 
     protected int dialogResult = -1;
+
+    private List<CacheChangedListener> changedListenerList = null;
 
     public IDialog() {
         initializeDialog();
@@ -144,6 +150,9 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
         // Default no resize
         setResizable(false);
+
+        // Title
+        setTitleName(getTitle());
     }
 
     private JPanel createPanels() {
@@ -282,9 +291,22 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
         onCancel();
     }
 
+
+    public <T extends DbObject> void addCacheListener(Class<T> c, CacheChangedListener<T> listener) {
+        CacheManager.cache().addListener(c, listener);
+        if (changedListenerList == null) {
+            changedListenerList = new ArrayList<>();
+        }
+        changedListenerList.add(listener);
+    }
+
     @Override
     public void windowClosed(WindowEvent e) {
-
+        if (changedListenerList != null) {
+            for (CacheChangedListener listener : changedListenerList) {
+                CacheManager.cache().removeListener(listener);
+            }
+        }
     }
 
     @Override
@@ -311,32 +333,16 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
         titlePanel.setVisible(show);
     }
 
-    protected JPanel getTitlePanel() {
-        return titlePanel;
-    }
-
     protected JPanel getContentPanel() {
         return contentPanel;
-    }
-
-    protected JPanel getButtonPanel() {
-        return buttonPanel;
     }
 
     protected JButton getButtonOK() {
         return buttonOK;
     }
 
-    protected JButton getButtonCancel() {
-        return buttonCancel;
-    }
-
     protected JButton getButtonNeutral() {
         return buttonNeutral;
-    }
-
-    protected void setNuttonNeutralVisible(boolean visible) {
-        buttonNeutral.setVisible(visible);
     }
 
     protected void setTitleIcon(ImageIcon titleIcon) {

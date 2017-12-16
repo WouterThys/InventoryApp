@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ILocationButton extends JButton {
 
-    private Location location;
+    private final Location location;
 
     public ILocationButton(Location location) {
         super();

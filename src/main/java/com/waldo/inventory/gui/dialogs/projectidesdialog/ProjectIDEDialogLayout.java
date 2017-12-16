@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -22,7 +21,6 @@ import static javax.swing.SpringLayout.*;
 
 abstract class ProjectIDEDialogLayout extends IDialog implements
         ListSelectionListener,
-        CacheChangedListener<ProjectIDE>,
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener,
         IdBToolBar.IdbToolBarListener,
@@ -158,7 +156,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Title
         setTitleIcon(imageResource.readImage("Ides.Title"));
-        setTitleName("Project types");
+        setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);

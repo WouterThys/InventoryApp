@@ -3,16 +3,15 @@ package com.waldo.inventory.classes.cache;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
+import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.managers.CacheManager;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.Date;
-import java.util.List;
 
 public class CacheList<T extends DbObject> extends ArrayList<T> {
 
-    private List<CacheChangedListener<T>> changedListeners = new ArrayList<>();
     private boolean isFetched = false;
     // Extra info
     private Date initialisationTime = null;
@@ -23,21 +22,8 @@ public class CacheList<T extends DbObject> extends ArrayList<T> {
         isFetched = false;
     }
 
-    public CacheList(@NotNull Collection<? extends T> collection) {
-        super(collection);
-
-        initialisationTime = DateUtils.now();
-    }
-
-    public CacheList(@NotNull Collection<? extends T> collection, long fetchTimeInNanos) {
-        super(collection);
-
-        this.initialisationTime = DateUtils.now();
-        this.fetchTimeInNanos = fetchTimeInNanos;
-    }
-
     public void setList(@NotNull Collection<? extends T> collection, long fetchTimeInNanos) {
-        if (isFetched) {
+        if (size() > 0) {
             this.clear();
         }
         this.addAll(collection);
@@ -48,24 +34,11 @@ public class CacheList<T extends DbObject> extends ArrayList<T> {
 
     @Override
     public void clear() {
-        super.clear();
+        if (size() > 0) {
+            CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_CACHE_CLEAR, get(0));
+        }
         isFetched = false;
-    }
-
-    public List<CacheChangedListener<T>> getChangedListeners() {
-        return changedListeners;
-    }
-
-    public void addChangedListener(CacheChangedListener<T> listener) {
-        if (listener != null && !changedListeners.contains(listener)) {
-            changedListeners.add(listener);
-        }
-    }
-
-    public void removeChangedListener(CacheChangedListener<T> listener) {
-        if (listener != null) {
-            changedListeners.remove(listener);
-        }
+        super.clear();
     }
 
     public Date getInitialisationTime() {

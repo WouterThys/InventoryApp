@@ -23,7 +23,7 @@ import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class IObjectSearchPanel extends JPanel implements GuiInterface {
 
-    private SearchManager searchManager;
+    private final SearchManager searchManager;
     private IObjectSearchListener objectSearchListener;
     private IObjectSearchBtnListener objectSearchBtnListener;
 

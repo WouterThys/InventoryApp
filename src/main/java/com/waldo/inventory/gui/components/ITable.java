@@ -13,8 +13,8 @@ import java.util.List;
 
 public class ITable<T> extends JXTable {
 
-    private IAbstractTableModel<T> model;
-    private boolean autoAdaptHeight;
+    private final IAbstractTableModel<T> model;
+    private final boolean autoAdaptHeight;
 
     public ITable(IAbstractTableModel<T> model) {
         super(model);

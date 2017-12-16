@@ -43,12 +43,12 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
                 case 2: // List name
                     return log.getListName();
                 case 3: // Date fetched
-                    if (log.getCacheList() != null) {
+                    if (log.getCacheList().isFetched()) {
                         return DateUtils.formatDetailTime(log.getCacheList().getInitialisationTime());
                     }
                     return null;
                 case 4:
-                    if (log.getCacheList() != null) {
+                    if (log.getCacheList().isFetched()) {
                         return log.getCacheList().getFetchTimeInNanos();
                     }
                     return null;
@@ -77,10 +77,10 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
 
                     ILabel lbl;
                     CacheLog log = (CacheLog) value;
-                    if (log.getCacheList() == null) {
-                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, notFetchedIcon, "");
-                    } else {
+                    if (log.getCacheList().isFetched()) {
                         lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, fetchedIcon, "");
+                    } else {
+                        lbl = GuiUtils.getTableIconLabel(component.getBackground(), row, isSelected, notFetchedIcon, "");
                     }
                     return lbl;
                 }

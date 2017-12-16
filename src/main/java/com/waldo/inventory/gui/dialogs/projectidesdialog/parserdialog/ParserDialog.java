@@ -24,7 +24,7 @@ public class ParserDialog extends ParserDialogLayout implements CacheChangedList
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnParserItemLinkChangedListener(this);
+        cache().addListener(ParserItemLink.class, this);
 
         updateComponents();
     }

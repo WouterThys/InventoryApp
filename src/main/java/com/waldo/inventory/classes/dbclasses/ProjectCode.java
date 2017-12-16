@@ -101,7 +101,6 @@ public class ProjectCode extends ProjectObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onProjectCodeChangedListenerList);
     }
 
 //    public static ProjectCode getUnknownProjectCode() {

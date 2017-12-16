@@ -31,7 +31,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    final Application application;
 
     /*
      *                  CONSTRUCTOR

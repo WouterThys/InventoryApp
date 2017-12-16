@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -15,8 +14,7 @@ import java.util.Vector;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class OrderItemDialogLayout extends IDialog implements
-        ActionListener,
-        CacheChangedListener<Order> {
+        ActionListener {
 
     /*
     *                  COMPONENTS

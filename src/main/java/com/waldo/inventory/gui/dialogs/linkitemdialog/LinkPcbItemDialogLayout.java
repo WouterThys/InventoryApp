@@ -33,8 +33,8 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
     PcbItem selectedPcbItem;
     PcbItemItemLink selectedItemLink;
 
-    List<PcbItemItemLink> itemLinksToSave = new ArrayList<>();
-    List<PcbItemItemLink> itemLinksToDelete = new ArrayList<>();
+    final List<PcbItemItemLink> itemLinksToSave = new ArrayList<>();
+    final List<PcbItemItemLink> itemLinksToDelete = new ArrayList<>();
 
     /*
    *                  CONSTRUCTOR

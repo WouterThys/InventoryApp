@@ -26,7 +26,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnProjectChangedListener(this);
+        cache().addListener(Project.class, this);
 
         updateWithFirstProject();
     }

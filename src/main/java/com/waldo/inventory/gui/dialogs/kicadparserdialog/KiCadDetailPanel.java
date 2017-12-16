@@ -30,7 +30,7 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
     private PcbItem selectedComponent;
 
     /*

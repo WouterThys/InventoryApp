@@ -11,7 +11,7 @@ import java.text.Format;
 
 public class IFormattedTextField extends JFormattedTextField {
 
-    private Object beforeEditValue = null;
+    private final Object beforeEditValue = null;
     private boolean edited = false;
     private BindingListener documentListener;
     private final Border empty = new EmptyBorder(4, 4, 4, 4);

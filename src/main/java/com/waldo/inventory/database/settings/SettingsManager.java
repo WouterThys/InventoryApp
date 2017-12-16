@@ -51,9 +51,9 @@ public class SettingsManager {
     private List<LogSettings> logSettingsList = null;
 
     // Listeners
-    private List<DbSettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
-    private List<DbSettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
-    private List<DbSettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
+    private final List<DbSettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
+    private final List<DbSettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
+    private final List<DbSettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
 
     /*
      *                  MAIN STUFF

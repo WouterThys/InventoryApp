@@ -14,8 +14,8 @@ public class IComboCheckBox<E extends DbObject> extends JComboBox<JCheckBox> {
     private static final JCheckBox allBox = new JCheckBox("All", true);
     private static final JCheckBox separatorBox =  new JCheckBox();
 
-    private boolean allOption;
-    private List<E> itemList;
+    private final boolean allOption;
+    private final List<E> itemList;
 
     public IComboCheckBox(List<E> itemList, boolean allOption) {
         super();
@@ -87,7 +87,7 @@ public class IComboCheckBox<E extends DbObject> extends JComboBox<JCheckBox> {
     class ComboBoxRenderer implements ListCellRenderer<JCheckBox> {
 
         int maxWidth = 0;
-        JSeparator separator;
+        final JSeparator separator;
 
         ComboBoxRenderer() {
             setOpaque(true);
@@ -130,7 +130,7 @@ public class IComboCheckBox<E extends DbObject> extends JComboBox<JCheckBox> {
     }
 
     class ComboBoxListener implements ActionListener {
-        JComboBox comboBox;
+        final JComboBox comboBox;
         Object currentObject;
 
         ComboBoxListener(JComboBox comboBox) {
@@ -147,11 +147,11 @@ public class IComboCheckBox<E extends DbObject> extends JComboBox<JCheckBox> {
                 currentObject = comboBox.getSelectedItem();
             }
 
-            if (currentObject.equals(allBox)) {
+            if (currentObject != null && currentObject.equals(allBox)) {
                 allSelected(allBox.isSelected());
             } else {
                 JCheckBox currentBox = (JCheckBox) currentObject;
-                if (currentBox.isEnabled() && allBox.isSelected()) {
+                if (currentBox != null && currentBox.isEnabled() && allBox.isSelected()) {
                     boolean selected = currentBox.isSelected();
                     allSelected(false);
                     currentBox.setSelected(selected);

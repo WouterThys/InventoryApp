@@ -20,8 +20,8 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ListSelectionListener listSelectionListener;
-    private IPcbItemModel.PcbItemListener pcbItemListener;
+    private final ListSelectionListener listSelectionListener;
+    private final IPcbItemModel.PcbItemListener pcbItemListener;
 
     /*
      *                  CONSTRUCTOR

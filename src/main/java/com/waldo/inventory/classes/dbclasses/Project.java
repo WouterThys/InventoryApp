@@ -128,7 +128,6 @@ public class Project extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onProjectChangedListenerList);
     }
 
     /*

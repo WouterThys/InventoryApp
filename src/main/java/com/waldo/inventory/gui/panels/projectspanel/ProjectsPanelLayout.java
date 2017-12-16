@@ -55,7 +55,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    final Application application;
     Project selectedProject;
 
 

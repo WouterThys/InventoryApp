@@ -100,7 +100,6 @@ public class Distributor extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onDistributorsChangedListenerList);
     }
 
     public String getWebsite() {

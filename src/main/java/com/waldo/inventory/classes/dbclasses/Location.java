@@ -163,7 +163,6 @@ public class Location extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onLocationsChangedListenerList);
     }
 
     public boolean hasItems() {

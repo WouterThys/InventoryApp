@@ -117,7 +117,6 @@ public class PcbItemProjectLink extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onPcbItemProjectLinkChangedListenerList);
     }
 
     public void setPcbItemReferences(String references) {

@@ -5,8 +5,6 @@ import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class SelectDataSheetDialog extends JPanel {
@@ -38,40 +36,29 @@ public class SelectDataSheetDialog extends JPanel {
         JPanel buttonPanel = new JPanel();
 
         JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
+        cancelBtn.addActionListener(e -> close());
 
         final JButton onlineBtn = new JButton("Online");
-        onlineBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    OpenUtils.browseLink(onlineLink);
-                    close();
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
+        onlineBtn.addActionListener(e -> {
+            try {
+                OpenUtils.browseLink(onlineLink);
+                close();
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
             }
         });
 
         final JButton localBtn = new JButton("Local");
-        localBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    OpenUtils.openPdf(localLink);
-                    close();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-
+        localBtn.addActionListener(e -> {
+            try {
+                OpenUtils.openPdf(localLink);
+                close();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(SelectDataSheetDialog.this, "Error opening the file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
+
         });
 
         buttonPanel.add(cancelBtn);

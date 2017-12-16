@@ -56,11 +56,9 @@ public class Category extends DbObject {
                 if (!categories.contains(this)) {
                     categories.add(this);
                 }
-                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
-                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
@@ -68,7 +66,6 @@ public class Category extends DbObject {
                 if (categories.contains(this)) {
                     categories.remove(this);
                 }
-                CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, CacheManager.cache().onCategoriesChangedListenerList);
                 break;
             }
         }

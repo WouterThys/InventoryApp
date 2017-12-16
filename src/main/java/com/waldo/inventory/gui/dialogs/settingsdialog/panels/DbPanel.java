@@ -65,7 +65,7 @@ public class DbPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
 
     private DbSettings selectedDbSettings;
     private DbSettings originalDbSettings;

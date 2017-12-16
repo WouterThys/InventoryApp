@@ -37,7 +37,7 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
     private Item item;
     private SetItem selectedSetItem;
 

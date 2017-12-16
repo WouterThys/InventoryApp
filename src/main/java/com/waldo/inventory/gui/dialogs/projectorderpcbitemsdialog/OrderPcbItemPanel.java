@@ -49,7 +49,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private PcbItemListener pcbItemListener;
+    private final PcbItemListener pcbItemListener;
 
     /*
      *                  CONSTRUCTOR

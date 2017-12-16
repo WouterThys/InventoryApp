@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.dbclasses.ProjectObject;
 
 public class ProjectObjectPreview {
 
-    private ProjectObject projectObject;
+    private final ProjectObject projectObject;
     private boolean addToProject;
 
     public ProjectObjectPreview(ProjectObject projectObject) {

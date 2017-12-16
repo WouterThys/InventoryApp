@@ -10,9 +10,9 @@ import java.awt.*;
  */
 public abstract class ErrorProvider extends InputVerifier {
 
-    private Border originalBorder;
-    private Color originalBackgroundColor;
-    private String originalTooltipText;
+    private final Border originalBorder;
+    private final Color originalBackgroundColor;
+    private final String originalTooltipText;
     private Object parent;
 
     /**

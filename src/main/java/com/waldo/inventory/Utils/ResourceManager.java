@@ -18,7 +18,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class ResourceManager {
 
     private static final LogManager LOG = LogManager.LOG(ResourceManager.class);
-    private Properties properties;
+    private final Properties properties;
     private InputStream resourceInput;
     private String resourceFileName;
 

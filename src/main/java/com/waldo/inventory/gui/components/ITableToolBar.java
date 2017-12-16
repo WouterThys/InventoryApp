@@ -27,13 +27,15 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
     private AbstractAction filterAa;
     private ITextField filterTf;
     private boolean hasFilter;
+    private final boolean hasSortOption;
 
-    private ITable<T> table;
+    private final ITable<T> table;
 
-    public ITableToolBar(ITable<T> table) {
+    public ITableToolBar(ITable<T> table, boolean hasSortOption) {
         super(JToolBar.HORIZONTAL);
 
         this.table = table;
+        this.hasSortOption = hasSortOption;
 
         initializeComponents();
         initializeLayouts();
@@ -53,11 +55,11 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
         sorter.setRowFilter(filter);
     }
 
-    public String getFilterText() {
+    String getFilterText() {
         return  filterTf.getText();
     }
 
-    public void addSortComparator(Comparator comparable) {
+    void addSortComparator(Comparator comparable) {
         sortCbModel.addElement(comparable);
     }
 
@@ -132,9 +134,11 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
     public void initializeLayouts() {
         add(filterTf);
         add(filterAa);
-        addSeparator();
-        add(sortLbl);
-        add(sortCb);
+        if (hasSortOption) {
+            addSeparator();
+            add(sortLbl);
+            add(sortCb);
+        }
     }
 
     @Override

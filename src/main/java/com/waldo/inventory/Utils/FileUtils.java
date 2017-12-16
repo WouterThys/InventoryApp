@@ -176,7 +176,7 @@ public class FileUtils {
 
     private static class IDEFilter extends  FileFilter {
 
-        private List<ProjectIDE> ideList;
+        private final List<ProjectIDE> ideList;
 
         IDEFilter(List<ProjectIDE> ideList) {
             this.ideList = ideList;

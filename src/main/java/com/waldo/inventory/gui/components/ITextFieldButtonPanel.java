@@ -8,12 +8,12 @@ import java.awt.event.ActionListener;
 
 public class ITextFieldButtonPanel extends JPanel implements GuiInterface {
 
-    protected String hint;
+    protected final String hint;
     protected String text;
-    protected ImageIcon buttonIcon;
+    protected final ImageIcon buttonIcon;
 
-    protected IEditedListener editedListener;
-    protected String fieldName;
+    protected final IEditedListener editedListener;
+    protected final String fieldName;
 
     protected ITextField textField;
     protected JButton button;

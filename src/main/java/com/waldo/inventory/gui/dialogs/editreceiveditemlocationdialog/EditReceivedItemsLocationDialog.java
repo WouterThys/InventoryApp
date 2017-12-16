@@ -175,7 +175,7 @@ public class EditReceivedItemsLocationDialog extends EditReceivedItemsLocationDi
 
     private static class ItemLocationUpdate {
 
-        private long itemId;
+        private final long itemId;
         private Location oldLocation;
         private Location newLocation;
 

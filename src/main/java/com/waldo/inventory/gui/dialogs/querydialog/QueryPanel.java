@@ -18,21 +18,18 @@ import java.util.TimerTask;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class QueryPanel extends JPanel {
-
-    private Application app;
+class QueryPanel extends JPanel {
 
     private JTextPane queryTextArea;
     private JTextField messageTextField;
-    private JToolBar queryToolBar;
 
     private Action executeAction;
     private Action executeAllAction;
     private Action clearAction;
 
-    public QueryPanel(Application app) {
+    QueryPanel(Application app) {
         this.setLayout(new BorderLayout());
-        this.app = app;
+        Application app1 = app;
         initActions();
         initComponents();
     }
@@ -66,7 +63,7 @@ public class QueryPanel extends JPanel {
     private void initComponents() {
         //queryTextArea = new JEditorPane();
         messageTextField = new JTextField();
-        queryToolBar = new JToolBar();
+        JToolBar queryToolBar = new JToolBar();
 
         final SimpleAttributeSet blueSet = new SimpleAttributeSet();
         StyleConstants.setForeground(blueSet, Color.BLUE);
@@ -85,18 +82,18 @@ public class QueryPanel extends JPanel {
         StyleConstants.setBold(blackSet, false);
 
         List<String> tableNames;
-        String tableNamesString = "";
+        StringBuilder tableNamesString = new StringBuilder();
         try {
             tableNames = DatabaseAccess.db().getTableNames();
             for(String name : tableNames) {
-                tableNamesString += name.toUpperCase() + "|";
+                tableNamesString.append(name.toUpperCase()).append("|");
             }
-            tableNamesString = tableNamesString.substring(0, tableNamesString.length()-2); // remove last | again
+            tableNamesString = new StringBuilder(tableNamesString.substring(0, tableNamesString.length() - 2)); // remove last | again
         } catch (SQLException e) {
             Status().setError("Error initializing.", e);
         }
 
-        final String finalTableNamesString = tableNamesString;
+        final String finalTableNamesString = tableNamesString.toString();
         DefaultStyledDocument doc = new DefaultStyledDocument() {
             @Override
             public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {

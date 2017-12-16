@@ -5,7 +5,6 @@ import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +17,7 @@ public class OrderEditReferenceDialog extends OrderEditReferenceDialogLayout
     public OrderEditReferenceDialog(Application application, String title, OrderItem orderItem) {
         super(application, title);
 
-        CacheManager.cache().addOnDistributorPartLinkChangedListener(this);
+       addCacheListener(DistributorPartLink.class,this);
 
         initializeComponents();
         initializeLayouts();

@@ -197,11 +197,11 @@ public class ComparatorUtils {
             CacheList cacheList1 = o1.getCacheList();
             CacheList cacheList2 = o2.getCacheList();
 
-            if (cacheList1 != null && cacheList2 == null) {
+            if (cacheList1.isFetched() && !cacheList2.isFetched()) {
                 return -1;
-            } else if (cacheList1 == null && cacheList2 != null) {
+            } else if (!cacheList1.isFetched() && cacheList2.isFetched()) {
                 return 1;
-            } else if (cacheList1 != null) {
+            } else if (cacheList1.isFetched()) {
                 return -Integer.compare(cacheList1.size(), cacheList2.size());
             } else {
                 return 1;

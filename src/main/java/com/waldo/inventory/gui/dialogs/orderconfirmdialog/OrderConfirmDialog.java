@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class OrderConfirmDialog extends OrderConfirmDialogLayout implements CacheChangedListener<Order> {
 
@@ -33,7 +32,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         initializeLayouts();
         updateComponents(order);
 
-        cache().addOnOrdersChangedListener(this);
+        addCacheListener(Order.class,this);
 
         checkAndUpdate();
     }

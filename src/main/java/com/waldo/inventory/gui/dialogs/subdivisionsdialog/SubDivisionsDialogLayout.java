@@ -38,7 +38,7 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
     Product product;
     com.waldo.inventory.classes.dbclasses.Type type;
 
-    SubDivisionType divisionType;
+    final SubDivisionType divisionType;
 
 
     SubDivisionsDialogLayout(Application application, String title, DbObject division, SubDivisionType type) {

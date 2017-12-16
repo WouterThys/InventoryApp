@@ -8,8 +8,8 @@ import java.net.URL;
 
 public class IconBorder extends AbstractBorder {
 
-    private ImageIcon icon;
-    private Border originalBorder;
+    private final ImageIcon icon;
+    private final Border originalBorder;
 
     public IconBorder(ImageIcon icon, Border originalBorder) {
         this.icon = icon;

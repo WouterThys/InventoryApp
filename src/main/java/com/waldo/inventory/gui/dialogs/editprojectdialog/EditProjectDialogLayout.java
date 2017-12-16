@@ -38,9 +38,9 @@ abstract class EditProjectDialogLayout extends IDialog implements
      Project originalProject;
      Project selectedProject;
 
-     List<ProjectCode> newProjectCodes = new ArrayList<>();
-     List<ProjectPcb> newProjectPcbs = new ArrayList<>();
-     List<ProjectOther> newProjectOthers = new ArrayList<>();
+     final List<ProjectCode> newProjectCodes = new ArrayList<>();
+     final List<ProjectPcb> newProjectPcbs = new ArrayList<>();
+     final List<ProjectOther> newProjectOthers = new ArrayList<>();
 
     /*
    *                  CONSTRUCTOR

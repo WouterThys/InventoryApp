@@ -48,7 +48,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private PcbItemListener pcbItemListener;
+    private final PcbItemListener pcbItemListener;
     private HashMap<Long, PcbItemProjectLink> linkMap;
 
     /*

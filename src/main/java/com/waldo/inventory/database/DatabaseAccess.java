@@ -234,7 +234,7 @@ public class DatabaseAccess {
     private class DbQueueWorker extends SwingWorker<Integer, String> {
 
         volatile boolean keepRunning = true;
-        private String name;
+        private final String name;
 
         DbQueueWorker(String name) {
             this.name = name;
@@ -325,6 +325,7 @@ public class DatabaseAccess {
                                         String sql = dbo.getScript(DbObject.SQL_INSERT);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                                             insert(stmt, dbo);
+                                            cache().notifyListeners(OBJECT_INSERT, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
                                                 DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
@@ -337,6 +338,7 @@ public class DatabaseAccess {
                                         String sql = dbo.getScript(DbObject.SQL_UPDATE);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             update(stmt, dbo);
+                                            cache().notifyListeners(OBJECT_UPDATE, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
                                                 DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
@@ -349,6 +351,7 @@ public class DatabaseAccess {
                                         String sql = dbo.getScript(DbObject.SQL_DELETE);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             delete(stmt, dbo);
+                                            cache().notifyListeners(OBJECT_DELETE, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
                                                 DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
@@ -375,7 +378,6 @@ public class DatabaseAccess {
                             try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
                                 stmt.execute();
                             }
-                            // TODO: efficient error handling
                             throw e;
                         }
                     }
@@ -398,7 +400,7 @@ public class DatabaseAccess {
     private class DbErrorWorker extends  SwingWorker<Integer, String> {
 
         volatile boolean keepRunning = true;
-        private String name;
+        private final String name;
 
         public DbErrorWorker(String name) {
             this.name = name;

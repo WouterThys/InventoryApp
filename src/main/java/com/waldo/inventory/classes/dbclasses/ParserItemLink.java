@@ -106,7 +106,6 @@ public class ParserItemLink extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onParserItemLinkChangedListenerList);
     }
 
     public static ParserItemLink getUnknownParserItemLink() {

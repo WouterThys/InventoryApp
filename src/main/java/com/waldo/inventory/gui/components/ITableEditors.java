@@ -16,9 +16,9 @@ public class ITableEditors {
 
     public abstract static class SpinnerEditor extends DefaultCellEditor implements SpinnerChangedListener {
 
-        JSpinner spinner;
-        JSpinner.DefaultEditor editor;
-        JTextField textField;
+        final JSpinner spinner;
+        final JSpinner.DefaultEditor editor;
+        final JTextField textField;
         boolean valueSet;
 
         protected SpinnerEditor() {

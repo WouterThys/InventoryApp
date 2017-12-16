@@ -18,12 +18,11 @@ public class TopToolBar extends JPanel implements
         IObjectSearchPanel.IObjectSearchListener,
         IObjectSearchPanel.IObjectSearchBtnListener{
 
-    private Application application;
+    private final Application application;
 
-    private IdBToolBar dbToolBar;
-    private ITableToolBar tableToolBar;
+    private final IdBToolBar dbToolBar;
     private IObjectSearchPanel searchPanel;
-    private JPanel contentPane;
+    private final JPanel contentPane;
 
     public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener){
         this.application = application;
@@ -50,7 +49,7 @@ public class TopToolBar extends JPanel implements
 
         // Tool bars
         dbToolBar = new IdBToolBar(toolBarListener);
-        tableToolBar = new ITableToolBar(table);
+        ITableToolBar tableToolBar = new ITableToolBar(table, false);
 
         contentPane = new JPanel();
         contentPane.setOpaque(false);
@@ -68,14 +67,6 @@ public class TopToolBar extends JPanel implements
 
     public void setDbToolbarVisible(boolean visible) {
         dbToolBar.setVisible(visible);
-    }
-
-    public void setAdvancedSearchVisible(boolean visible) {
-
-    }
-
-    private void applyTableFilter(ITable table) {
-
     }
 
     public void clearSearch() {

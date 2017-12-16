@@ -28,8 +28,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnPackageChangedListener(createPackageListener());
-        cache().addOnPackageTypeChangedListener(createPackageTypeListener());
+        addCacheListener(Package.class, createPackageListener());
+        addCacheListener(PackageType.class, createPackageTypeListener());
         createNewMouseAdapter();
         updateWithFirstPackage();
     }

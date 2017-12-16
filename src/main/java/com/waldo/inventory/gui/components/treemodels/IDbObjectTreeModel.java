@@ -17,9 +17,9 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
         DefaultMutableTreeNode onFindParent(DefaultMutableTreeNode rootNode, E child);
     }
 
-    private ParentListener<E> parentListener;
+    private final ParentListener<E> parentListener;
 
-    private DefaultMutableTreeNode rootNode;
+    private final DefaultMutableTreeNode rootNode;
     private ITree tree;
 
     public IDbObjectTreeModel(DefaultMutableTreeNode rootNode, ParentListener<E> parentListener) {

@@ -92,7 +92,6 @@ public class PcbItem extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onPcbItemChangedListenerList);
     }
 
     @Override

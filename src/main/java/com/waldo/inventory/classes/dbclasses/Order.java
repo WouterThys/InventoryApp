@@ -39,7 +39,7 @@ public class Order extends DbObject {
     private String orderReference;
     private String trackingNumber;
 
-    private List<OrderItem> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+    private final List<OrderItem> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -146,7 +146,6 @@ public class Order extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onOrdersChangedListenerList);
     }
 
     public static class SortAllOrders implements Comparator<Order> {

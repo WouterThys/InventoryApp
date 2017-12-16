@@ -13,10 +13,10 @@ import java.lang.reflect.Method;
 public class BindingListener implements DocumentListener {
 
     private String fieldName = "";
-    public Class fieldClass;
+    public final Class fieldClass;
 
-    private Component component;
-    private IEditedListener editedListener;
+    private final Component component;
+    private final IEditedListener editedListener;
     private boolean enabled;
 
     public BindingListener(Component component, IEditedListener editedListener, String fieldName, Class fieldClass) {

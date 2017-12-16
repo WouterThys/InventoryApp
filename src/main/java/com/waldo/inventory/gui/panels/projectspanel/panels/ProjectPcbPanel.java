@@ -29,7 +29,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectPcbPanel(Application application, ProjectObjectListener listener) {
         super(application, listener);
-        cache().addOnProjectPcbChangedListener(this);
+        cache().addListener(ProjectPcb.class, this);
     }
 
     /*

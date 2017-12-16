@@ -109,7 +109,6 @@ public class ProjectPcb extends ProjectObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onProjectPcbChangedListenerList);
     }
 
     public int numberOfComponents() {

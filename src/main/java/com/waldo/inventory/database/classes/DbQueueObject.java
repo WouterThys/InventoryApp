@@ -4,8 +4,8 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 
 public class DbQueueObject {
 
-    private int how;
-    private DbObject object;
+    private final int how;
+    private final DbObject object;
 
     // Extras
     private long insertTime;

@@ -3,7 +3,6 @@ package com.waldo.inventory.Utils;
 import com.waldo.inventory.classes.Value;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -155,7 +154,7 @@ public class ValueUtils {
 
         // Remove last characters
         int lastNdx = valueTxt.length()-1;
-        while (Character.isAlphabetic(valueTxt.charAt(lastNdx)) && lastNdx >= 0) {
+        while (Character.isAlphabetic(valueTxt.charAt(lastNdx))) {
             valueTxt = valueTxt.substring(0, valueTxt.length()-1);
             lastNdx = valueTxt.length()-1;
         }

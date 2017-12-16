@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.editprojectdialog;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +18,7 @@ public class EditProjectDialog extends EditProjectDialogLayout implements CacheC
     public EditProjectDialog(Application application, String title, Project project) {
         super(application, title);
 
-        CacheManager.cache().addOnProjectChangedListener(this);
+        addCacheListener(Project.class, this);
 
         initializeComponents();
         initializeLayouts();

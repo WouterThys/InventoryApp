@@ -38,7 +38,7 @@ class UsedConfirmedPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private UsedListener usedListener;
+    private final UsedListener usedListener;
 
     /*
      *                  CONSTRUCTOR

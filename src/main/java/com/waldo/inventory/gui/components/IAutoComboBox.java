@@ -76,7 +76,7 @@ public class IAutoComboBox extends JComboBox {
             super.fireActionEvent();
     }
 
-    private AutoTextFieldEditor autoTextFieldEditor;
+    private final AutoTextFieldEditor autoTextFieldEditor;
 
     private boolean isFired;
 

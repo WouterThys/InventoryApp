@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -17,10 +18,9 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class DistributorsDialog extends DistributorsDialogLayout {
+public class DistributorsDialog extends DistributorsDialogLayout implements CacheChangedListener<Distributor> {
 
     private boolean canClose = true;
-
 
     public DistributorsDialog(Application application, String title) {
         super(application, title);
@@ -28,7 +28,7 @@ public class DistributorsDialog extends DistributorsDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnDistributorChangedListener(this);
+        addCacheListener(Distributor.class, this);
 
         updateWithFirstDistributor();
     }

@@ -56,11 +56,9 @@ public class Product extends DbObject {
                 if (!list.contains(this)) {
                     list.add(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onProductsChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
-                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onProductsChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
@@ -68,7 +66,6 @@ public class Product extends DbObject {
                 if (list.contains(this)) {
                     list.remove(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onProductsChangedListenerList);
                 break;
             }
         }

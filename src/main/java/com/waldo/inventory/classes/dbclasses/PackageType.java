@@ -108,7 +108,6 @@ public class PackageType extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onPackageTypesChangedListenerList);
     }
 
     public static PackageType createDummyPackageType() {

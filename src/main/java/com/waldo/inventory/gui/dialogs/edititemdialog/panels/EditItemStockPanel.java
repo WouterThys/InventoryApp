@@ -19,11 +19,11 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
-    private Item newItem;
-    private Application application;
+    private final Item newItem;
+    private final Application application;
 
     // Listener
-    private IEditedListener editedListener;
+    private final IEditedListener editedListener;
 
     private ISpinner amountSpinner;
     private JComboBox<String> amountTypeCb;

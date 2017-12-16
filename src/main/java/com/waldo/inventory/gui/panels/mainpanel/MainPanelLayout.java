@@ -47,7 +47,7 @@ abstract class MainPanelLayout extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Application application;
+    final Application application;
 
     Item selectedItem;
     DbObject selectedDivision;
@@ -249,8 +249,7 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Item table
         tableModel = new IItemTableModel();
-        itemTable = new ITablePanel<>(tableModel, this);
-        //itemTable.setExactColumnWidth(0, 36);
+        itemTable = new ITablePanel<>(tableModel, this, true);
         itemTable.setDbToolBar(this);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override

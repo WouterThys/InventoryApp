@@ -61,7 +61,6 @@ public class Package extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onPackageChangedListenerList);
     }
 
     @Override

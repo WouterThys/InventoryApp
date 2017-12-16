@@ -33,7 +33,7 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectCodePanel(Application application, ProjectObjectListener listener) {
         super(application, listener);
-        cache().addOnProjectCodeChangedListener(this);
+        cache().addListener(ProjectCode.class,this);
     }
 
     /*

@@ -54,7 +54,7 @@ public class FilesPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
 
     private FileSettings selectedFileSettings;
     private FileSettings originalFileSettings;

@@ -27,7 +27,7 @@ public class PcbItemParser {
      * Singleton stuff
      */
 
-    private static PcbItemParser ourInstance = new PcbItemParser();
+    private static final PcbItemParser ourInstance = new PcbItemParser();
 
     public static PcbItemParser getInstance() {
         return ourInstance;
@@ -42,7 +42,7 @@ public class PcbItemParser {
     /*
      * The real stuff
      */
-    private List<PcbParser> pcbParsers;
+    private final List<PcbParser> pcbParsers;
 
     public List<PcbParser> getPcbParsers() {
         return pcbParsers;
@@ -296,7 +296,7 @@ public class PcbItemParser {
         }
     }
 
-    public int getMatchCount(int i) {
+    private int getMatchCount(int i) {
         i = i - ((i >>> 1) & 0x55555555);
         i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
         return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
@@ -308,7 +308,7 @@ public class PcbItemParser {
 
     private static class MyKiCadParser extends PcbParser {
 
-        private KiCadParser kiCadParser;
+        private final KiCadParser kiCadParser;
 
         private MyKiCadParser() {
             kiCadParser = new KiCadParser(KiCadParser);
@@ -393,7 +393,7 @@ public class PcbItemParser {
 
     private static class MyEagleParser extends PcbParser {
 
-        private EagleParser eagleParser;
+        private final EagleParser eagleParser;
 
         private MyEagleParser() {
             eagleParser = new EagleParser(EagleParser);
@@ -420,13 +420,7 @@ public class PcbItemParser {
         public int compare(PcbItemItemLink o1, PcbItemItemLink o2) {
             int mc1 = getMatchCount(o1.getMatch());
             int mc2 = getMatchCount(o2.getMatch());
-            if (mc1 < mc2) {
-                return 1;
-            } else if (mc1 > mc2) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return Integer.compare(mc2, mc1);
         }
     }
 }

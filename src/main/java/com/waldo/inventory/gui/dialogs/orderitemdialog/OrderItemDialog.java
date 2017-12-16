@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
@@ -12,9 +13,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.managers.CacheManager.cache;
-
-public class OrderItemDialog extends OrderItemDialogLayout {
+public class OrderItemDialog extends OrderItemDialogLayout implements CacheChangedListener<Order> {
 
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
@@ -28,7 +27,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
 
-        cache().addOnOrdersChangedListener(this);
+        addCacheListener(Order.class,this);
 
         initializeComponents();
         initializeLayouts();
@@ -42,7 +41,7 @@ public class OrderItemDialog extends OrderItemDialogLayout {
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;
 
-        cache().addOnOrdersChangedListener(this);
+        addCacheListener(Order.class,this);
 
         initializeComponents();
         initializeLayouts();
@@ -73,18 +72,9 @@ public class OrderItemDialog extends OrderItemDialogLayout {
                     itemsToOrderList.add(itemToOrder);
                     application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
                 }
-
-                // Close
-                cache().removeOnOrdersChangedListener(this);
             }
             super.onOK();
         }
-    }
-
-    @Override
-    protected void onCancel() {
-        cache().removeOnOrdersChangedListener(this);
-        super.onCancel();
     }
 
     @Override

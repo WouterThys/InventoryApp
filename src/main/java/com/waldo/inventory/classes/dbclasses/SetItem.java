@@ -78,7 +78,6 @@ public class SetItem extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onSetItemChangedListenerList);
     }
 
     @Override

@@ -29,8 +29,8 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     private JButton iconBtn;
     private JTextPane nameTp;
 
-    private String name;
-    private IT projectObject;
+    private final String name;
+    private final IT projectObject;
     private TileClickListener<IT> listener;
 
     public ITileView(IT projectObject) {
@@ -137,8 +137,8 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
 
 
     class CombinedIcon implements Icon {
-        private Icon center;
-        private Icon error;
+        private final Icon center;
+        private final Icon error;
 
         public CombinedIcon(Icon center, Icon error) {
             this.center = center;

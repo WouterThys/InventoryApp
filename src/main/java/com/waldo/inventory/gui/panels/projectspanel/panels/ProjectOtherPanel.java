@@ -30,7 +30,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectOtherPanel(Application application, ProjectObjectListener listener) {
         super(application, listener);
-        cache().addOnProjectOtherChangedListener(this);
+        cache().addListener(ProjectOther.class,this);
     }
 
     /*

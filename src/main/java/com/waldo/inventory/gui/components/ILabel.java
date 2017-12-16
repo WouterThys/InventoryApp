@@ -151,9 +151,9 @@ public class ILabel extends JLabel {
             return new Dimension( dim.height, dim.width );
         }
 
-        private static Rectangle paintIconR = new Rectangle();
-        private static Rectangle paintTextR = new Rectangle();
-        private static Rectangle paintViewR = new Rectangle();
+        private static final Rectangle paintIconR = new Rectangle();
+        private static final Rectangle paintTextR = new Rectangle();
+        private static final Rectangle paintViewR = new Rectangle();
         private static Insets paintViewInsets = new Insets(0, 0, 0, 0);
 
         public void paint(Graphics g, JComponent c) {

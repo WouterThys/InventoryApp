@@ -27,8 +27,8 @@ public abstract class LauncherDialogLayout extends IDialog {
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     private boolean useDefaultLauncher;
-     private String launcherPath;
+     private final boolean useDefaultLauncher;
+     private final String launcherPath;
 
       /*
      *                  CONSTRUCTOR

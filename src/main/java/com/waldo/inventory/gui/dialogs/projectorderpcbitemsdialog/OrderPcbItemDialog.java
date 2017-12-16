@@ -11,8 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import static com.waldo.inventory.managers.CacheManager.cache;
-
 public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements CacheChangedListener<Order> {
 
     public OrderPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
@@ -23,7 +21,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnOrdersChangedListener(this);
+        addCacheListener(Order.class, this);
     }
 
 

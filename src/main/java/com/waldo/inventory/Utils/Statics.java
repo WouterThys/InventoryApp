@@ -26,7 +26,7 @@ public class Statics {
         public static final int ERROR = 3;
     }
 
-    public static String[] Alphabet = {
+    public static final String[] Alphabet = {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 

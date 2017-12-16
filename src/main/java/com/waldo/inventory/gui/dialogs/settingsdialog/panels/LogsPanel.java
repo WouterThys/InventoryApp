@@ -49,7 +49,7 @@ public class LogsPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Application application;
+    private final Application application;
 
     private LogSettings selectedLogSettings;
     private LogSettings originalLogSettings;

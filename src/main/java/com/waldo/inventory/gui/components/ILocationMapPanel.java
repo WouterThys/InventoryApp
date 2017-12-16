@@ -30,9 +30,9 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private List<ILocationButton> buttonList = new ArrayList<>();
-    private Application application;
-    private LocationClickListener locationClickListener;
-    private boolean showPopup;
+    private final Application application;
+    private final LocationClickListener locationClickListener;
+    private final boolean showPopup;
 
 
     /*

@@ -12,8 +12,8 @@ public class Error {
     public static final int WARNING = 2;
     public static final int ERROR = 3;
 
-    private int errorType;
-    private String message;
+    private final int errorType;
+    private final String message;
 
     public Error(int errorType, String message) {
         this.errorType = errorType;

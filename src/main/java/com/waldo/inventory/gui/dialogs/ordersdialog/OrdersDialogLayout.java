@@ -38,7 +38,7 @@ abstract class OrdersDialogLayout extends IDialog
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    boolean showDates;
+     final boolean showDates;
     Order order;
 
     /*

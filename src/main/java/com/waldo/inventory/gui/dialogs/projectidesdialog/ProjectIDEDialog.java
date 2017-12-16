@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -24,7 +25,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class ProjectIDEDialog extends ProjectIDEDialogLayout {
+public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheChangedListener<ProjectIDE> {
 
     private boolean canClose = true;
 
@@ -33,7 +34,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout {
         initializeComponents();
         initializeLayouts();
 
-        cache().addOnProjectTypeChangedListener(this);
+        cache().addListener(ProjectIDE.class, this);
 
         updateWithFirstProjectType();
     }

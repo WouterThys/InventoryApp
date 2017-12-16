@@ -34,11 +34,9 @@ public class OrderFileFormat extends DbObject {
                 if (!offs.contains(this)) {
                     offs.add(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_INSERT, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
-                cache().notifyListeners(DatabaseAccess.OBJECT_UPDATE, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
@@ -46,7 +44,6 @@ public class OrderFileFormat extends DbObject {
                 if (offs.contains(this)) {
                     offs.remove(this);
                 }
-                cache().notifyListeners(DatabaseAccess.OBJECT_DELETE, this, cache().onOrderFileFormatChangedListenerList);
                 break;
             }
         }

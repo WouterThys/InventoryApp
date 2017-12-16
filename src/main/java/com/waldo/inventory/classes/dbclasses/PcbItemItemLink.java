@@ -124,7 +124,6 @@ public class PcbItemItemLink extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onPcbItemItemLinkChangedListenerList);
     }
 
     @Override

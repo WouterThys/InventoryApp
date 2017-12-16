@@ -100,7 +100,6 @@ public class Manufacturer extends DbObject {
                 break;
             }
         }
-        cache().notifyListeners(changedHow, this, cache().onManufacturerChangedListenerList);
     }
 
     public void setWebsite(String website) {

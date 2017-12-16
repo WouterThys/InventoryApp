@@ -40,10 +40,10 @@ class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    List<Order> orderList = new ArrayList<>();
+    final List<Order> orderList = new ArrayList<>();
     private Order selectedOrder;
 
-    private OrderListener orderListener;
+    private final OrderListener orderListener;
 
     /*
      *                  CONSTRUCTOR

@@ -55,33 +55,10 @@ public class IAutoTextField extends ITextField {
                 setSelectionStart(k);
                 setSelectionEnd(getLength());
             } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
 
-    }
-
-    public IAutoTextField(List list, boolean isStrict, boolean isCaseSensitive) {
-        this.isCaseSensitive = isCaseSensitive;
-        this.isStrict = isStrict;
-        autoComboBox = null;
-        if (list == null) {
-            throw new IllegalArgumentException("values can not be null");
-        } else {
-            dataList = list;
-            init();
-        }
-    }
-
-    public IAutoTextField(List list) {
-        isCaseSensitive = false;
-        isStrict = true;
-        autoComboBox = null;
-        if (list == null) {
-            throw new IllegalArgumentException("values can not be null");
-        } else {
-            dataList = list;
-            init();
-        }
     }
 
     IAutoTextField(List list, IAutoComboBox b) {
@@ -104,8 +81,8 @@ public class IAutoTextField extends ITextField {
     }
 
     private String getMatch(String s) {
-        for (int i = 0; i < dataList.size(); i++) {
-            String s1 = dataList.get(i).toString();
+        for (Object aDataList : dataList) {
+            String s1 = aDataList.toString();
             if (s1 != null) {
                 if (!isCaseSensitive
                         && s1.toLowerCase().startsWith(s.toLowerCase()))
@@ -126,30 +103,31 @@ public class IAutoTextField extends ITextField {
                 int j = Math.max(getCaret().getDot(), getCaret().getMark());
                 _lb.replace(i, j - i, s, null);
             } catch (Exception exception) {
+                exception.printStackTrace();
             }
     }
 
-    public boolean isCaseSensitive() {
+    boolean isCaseSensitive() {
         return isCaseSensitive;
     }
 
-    public void setCaseSensitive(boolean flag) {
+    void setCaseSensitive(boolean flag) {
         isCaseSensitive = flag;
     }
 
-    public boolean isStrict() {
+    boolean isStrict() {
         return isStrict;
     }
 
-    public void setStrict(boolean flag) {
+    void setStrict(boolean flag) {
         isStrict = flag;
     }
 
-    public List getDataList() {
+    List getDataList() {
         return dataList;
     }
 
-    public void setDataList(List list) {
+    void setDataList(List list) {
         if (list == null) {
             throw new IllegalArgumentException("values can not be null");
         } else {

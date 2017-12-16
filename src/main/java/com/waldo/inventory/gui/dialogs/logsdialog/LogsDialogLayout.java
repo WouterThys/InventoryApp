@@ -8,7 +8,10 @@ import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.ICheckBox;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.ICacheLogTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ISystemLogTableModel;
 import com.waldo.inventory.managers.CacheManager;
@@ -16,6 +19,7 @@ import com.waldo.inventory.managers.CacheManager;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.util.List;
@@ -55,7 +59,11 @@ abstract class LogsDialogLayout extends IDialog implements
     private ILabel totalMemoryLbl;
     private ICacheLogTableModel cacheLogTableModel;
     private ITable<CacheLog> cacheLogTable;
+    private AbstractAction clearCacheListAa;
 
+    /*
+     *                  VARIABLES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
     /*
@@ -177,6 +185,17 @@ abstract class LogsDialogLayout extends IDialog implements
         freeMemoryLbl = new ILabel(String.format("%,8d%n", (r.freeMemory() / KILOBYTE)));
         totalMemoryLbl = new ILabel(String.format("%,8d%n", (r.totalMemory() / KILOBYTE)));
 
+        clearCacheListAa = new AbstractAction("Clear cache", imageResource.readImage("Cache.Clear")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CacheLog log = cacheLogTable.getSelectedItem();
+                if (log != null) {
+                    log.getCacheList().clear();
+                    cacheLogTableModel.updateTable();
+                }
+            }
+        };
+
     }
 
     private JPanel createCacheHeaderPanel() {
@@ -194,9 +213,15 @@ abstract class LogsDialogLayout extends IDialog implements
         gbc.addLine("Free memory (kb): ", freeMemoryLbl);
         gbc.addLine("Max memory (kb): ", maxMemoryLbl);
 
+        JToolBar toolbar = new JToolBar(JToolBar.HORIZONTAL);
+        toolbar.setFloatable(false);
+        toolbar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        toolbar.add(clearCacheListAa);
+
 
         panel.add(timePnl, BorderLayout.WEST);
         panel.add(memoryPnl, BorderLayout.CENTER);
+        panel.add(toolbar, BorderLayout.EAST);
 
         return panel;
     }
