@@ -78,6 +78,11 @@ public class ITextField extends JTextField implements FocusListener {
         }
     }
 
+    public void setFont(int size, int style) {
+        Font labelFont = this.getFont();
+        this.setFont(new Font(labelFont.getName(), style, size));
+    }
+
     @Deprecated
     public void setTextBeforeEdit(String t) {
         beforeEditText = t;

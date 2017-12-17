@@ -6,6 +6,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.EditItemAction;
 import com.waldo.inventory.gui.components.actions.OrderItemAction;
+import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -242,8 +243,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         editItemAction = new EditItemAction() {
             @Override
             public void onEditItem() {
-                // TODO: select matched item
-                // TODO: edited listener
+                AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search item");
+                dialog.showDialog();
             }
         };
         orderTf = new ITextField(false);
