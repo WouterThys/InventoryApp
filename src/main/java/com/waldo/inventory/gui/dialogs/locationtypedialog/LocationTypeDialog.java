@@ -213,12 +213,12 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     }
 
     @Override
-    public void nextSearchObject(LocationType next) {
+    public void onNextSearchObject(LocationType next) {
         locationTypeList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(LocationType previous) {
+    public void onPreviousSearchObject(LocationType previous) {
         locationTypeList.setSelectedValue(previous, true);
     }
 

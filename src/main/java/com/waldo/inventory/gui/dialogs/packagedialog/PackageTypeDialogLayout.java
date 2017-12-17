@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
@@ -21,8 +22,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class PackageTypeDialogLayout extends IDialog implements
-        IObjectSearchPanel.IObjectSearchListener<PackageType>,
-        IObjectSearchPanel.IObjectSearchBtnListener<PackageType>,
+        DbObjectSearcher.SearchListener<PackageType>,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
@@ -202,9 +202,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel<>(cache().getPackageTypes());
-        searchPanel.addSearchListener(this);
-        searchPanel.addSearchBtnListener(this);
+        searchPanel = new IObjectSearchPanel<>(cache().getPackageTypes(), this);
 
         // Packages list
         packageModel = new DefaultListModel<>();

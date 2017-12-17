@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.Application;
@@ -17,8 +18,7 @@ import static javax.swing.SpringLayout.*;
 
 abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
-        IObjectSearchPanel.IObjectSearchListener<Manufacturer>,
-        IObjectSearchPanel.IObjectSearchBtnListener<Manufacturer>,
+        DbObjectSearcher.SearchListener<Manufacturer>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -153,9 +153,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel<>(cache().getManufacturers());
-        searchPanel.addSearchListener(this);
-        searchPanel.addSearchBtnListener(this);
+        searchPanel = new IObjectSearchPanel<>(cache().getManufacturers(), this);
 
         // Manufacturers list
         manufacturerDefaultListModel = new DefaultListModel<>();

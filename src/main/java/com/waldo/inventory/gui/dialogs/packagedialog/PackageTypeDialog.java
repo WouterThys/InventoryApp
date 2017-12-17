@@ -356,12 +356,12 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
     @Override
-    public void nextSearchObject(PackageType next) {
+    public void onNextSearchObject(PackageType next) {
         packageList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(PackageType previous) {
+    public void onPreviousSearchObject(PackageType previous) {
         packageList.setSelectedValue(previous, true);
     }
 

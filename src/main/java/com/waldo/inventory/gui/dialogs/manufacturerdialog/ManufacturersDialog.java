@@ -185,12 +185,12 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     }
 
     @Override
-    public void nextSearchObject(Manufacturer next) {
+    public void onNextSearchObject(Manufacturer next) {
         manufacturerList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(Manufacturer previous) {
+    public void onPreviousSearchObject(Manufacturer previous) {
         manufacturerList.setSelectedValue(previous, true);
     }
 

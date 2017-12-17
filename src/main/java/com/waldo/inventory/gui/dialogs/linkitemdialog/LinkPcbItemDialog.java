@@ -193,6 +193,16 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
         updateEnabledComponents();
     }
 
+    @Override
+    public void onNextSearchObject(Item next) {
+
+    }
+
+    @Override
+    public void onPreviousSearchObject(Item previous) {
+
+    }
+
     //
     // Buttons clicked
     //

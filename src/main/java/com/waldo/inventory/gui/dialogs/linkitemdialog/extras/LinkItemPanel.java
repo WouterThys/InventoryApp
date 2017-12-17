@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
@@ -53,7 +54,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addSearchListener(IObjectSearchPanel.IObjectSearchListener<Item> listener) {
+    public void addSearchListener(DbObjectSearcher.SearchListener<Item> listener) {
         searchPanel.addSearchListener(listener);
     }
 

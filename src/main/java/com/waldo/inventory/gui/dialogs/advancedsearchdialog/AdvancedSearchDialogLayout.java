@@ -28,12 +28,10 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
 
     private IFoundItemsTableModel tableModel;
     private ITable<Item> foundItemTable;
-    private FoundItemDetailPanel detailPanel;
 
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 
     /*
    *                  CONSTRUCTOR
@@ -78,7 +76,6 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
 
         tableModel = new IFoundItemsTableModel();
         foundItemTable = new ITable<>(tableModel);
-        detailPanel = new FoundItemDetailPanel(application);
 
     }
 
@@ -101,16 +98,12 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
         infoPnl.add(resultLbl, BorderLayout.WEST);
         infoPnl.add(toolBar, BorderLayout.EAST);
 
-        JPanel foundPnl = new JPanel(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(foundItemTable);
-        scrollPane.setPreferredSize(new Dimension(300, 200));
-
-        foundPnl.add(scrollPane, BorderLayout.CENTER);
-        foundPnl.add(detailPanel, BorderLayout.EAST);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
 
         JPanel resultPnl = new JPanel(new BorderLayout());
         resultPnl.add(infoPnl, BorderLayout.PAGE_START);
-        resultPnl.add(foundPnl, BorderLayout.CENTER);
+        resultPnl.add(scrollPane, BorderLayout.CENTER);
 
         getContentPanel().add(searchPnl, BorderLayout.NORTH);
         getContentPanel().add(resultPnl, BorderLayout.CENTER);

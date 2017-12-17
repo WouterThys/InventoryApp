@@ -55,6 +55,16 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
 
     }
 
+    @Override
+    public void onNextSearchObject(Item next) {
+
+    }
+
+    @Override
+    public void onPreviousSearchObject(Item previous) {
+
+    }
+
     //
     // LIST SELECTION LISTENER
     //

@@ -191,12 +191,12 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     }
 
     @Override
-    public void nextSearchObject(ProjectIDE next) {
+    public void onNextSearchObject(ProjectIDE next) {
         projectTypeList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(ProjectIDE previous) {
+    public void onPreviousSearchObject(ProjectIDE previous) {
         projectTypeList.setSelectedValue(previous, true);
     }
 

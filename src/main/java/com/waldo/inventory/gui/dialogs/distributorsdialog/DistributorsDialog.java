@@ -175,12 +175,12 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     }
 
     @Override
-    public void nextSearchObject(Distributor next) {
+    public void onNextSearchObject(Distributor next) {
         distributorList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(Distributor previous) {
+    public void onPreviousSearchObject(Distributor previous) {
         distributorList.setSelectedValue(previous, true);
     }
 

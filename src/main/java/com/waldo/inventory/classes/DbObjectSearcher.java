@@ -7,6 +7,13 @@ import java.util.List;
 
 public class DbObjectSearcher<T extends DbObject> {
 
+    public interface SearchListener<dbo extends DbObject> {
+        void onDbObjectFound(List<dbo> foundObjects);
+        void onSearchCleared();
+        void onNextSearchObject(dbo next);
+        void onPreviousSearchObject(dbo previous);
+    }
+
     private boolean searched = false;
     private boolean inAdvanced = false;
     private boolean hasAdvancedSearchOption;
@@ -15,15 +22,20 @@ public class DbObjectSearcher<T extends DbObject> {
     private List<T> resultList = new ArrayList<>();
     private int currentResultNdx = 0;
 
+    private SearchListener<T> searchListener;
+
     public DbObjectSearcher(List<T> searchList) {
-        this.searchList = searchList;
+        this(searchList, null);
     }
 
-    public DbObjectSearcher(List<T> searchList, int ... searchOptions) {
+    public DbObjectSearcher(List<T> searchList, SearchListener<T> searchListener) {
         this.searchList = searchList;
-        this.searchOptions = searchOptions;
+        this.searchListener = searchListener;
     }
 
+    public void addSearchListener(SearchListener<T> searchListener) {
+        this.searchListener = searchListener;
+    }
 
     public List<T> search(String searchWord) {
         List<T> foundObjects;
@@ -37,28 +49,41 @@ public class DbObjectSearcher<T extends DbObject> {
 
         currentResultNdx = 0;
         resultList = foundObjects;
+
+        if (searchListener != null) {
+            searchListener.onDbObjectFound(foundObjects);
+        }
+
         return foundObjects;
     }
 
     public void clearSearch() {
         resultList.clear();
         currentResultNdx = 0;
+
+        if (searchListener != null) {
+            searchListener.onSearchCleared();
+        }
     }
 
-    public T getNextFoundObject() {
-        currentResultNdx++;
-        if (currentResultNdx >= resultList.size()) {
-            currentResultNdx = 0;
+    public void getNextFoundObject() {
+        if (searchListener != null) {
+            currentResultNdx++;
+            if (currentResultNdx >= resultList.size()) {
+                currentResultNdx = 0;
+            }
+            searchListener.onNextSearchObject(resultList.get(currentResultNdx));
         }
-        return resultList.get(currentResultNdx);
     }
 
-    public T getPreviousFoundObject() {
-        currentResultNdx--;
-        if (currentResultNdx < 0) {
-            currentResultNdx = resultList.size()-1;
+    public void getPreviousFoundObject() {
+        if (searchListener != null) {
+            currentResultNdx--;
+            if (currentResultNdx < 0) {
+                currentResultNdx = resultList.size()-1;
+            }
+            searchListener.onPreviousSearchObject(resultList.get(currentResultNdx));
         }
-        return resultList.get(currentResultNdx);
     }
 
     private List<T> searchForObject(List<T> listToSearch, String searchWord) {

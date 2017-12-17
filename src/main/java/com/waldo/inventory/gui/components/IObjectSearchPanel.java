@@ -16,8 +16,6 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface {
 
     private final DbObjectSearcher<T> searchManager;
-    private IObjectSearchListener<T> objectSearchListener;
-    private IObjectSearchBtnListener<T> objectSearchBtnListener;
 
     private ITextField searchField;
     private JButton searchButton;
@@ -26,46 +24,33 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private IImageButton previousBtn;
     private IImageButton nextBtn;
 
-    public IObjectSearchPanel(List<T> searchList) {
-        searchManager = new DbObjectSearcher<>(searchList);
+    public IObjectSearchPanel(List<T> searchList, DbObjectSearcher.SearchListener<T> searchListener) {
+        searchManager = new DbObjectSearcher<>(searchList, searchListener);
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
-    public void addSearchListener(IObjectSearchListener<T> listener) {
-        this.objectSearchListener = listener;
-    }
-
-    public void addSearchBtnListener(IObjectSearchBtnListener<T> listener) {
-        this.objectSearchBtnListener = listener;
-    }
-
-    public interface IObjectSearchListener<dbo extends DbObject> {
-        void onDbObjectFound(java.util.List<dbo> foundObjects);
-        void onSearchCleared();
-    }
-
-    public interface IObjectSearchBtnListener<dbo extends DbObject> {
-        void nextSearchObject(dbo next);
-        void previousSearchObject(dbo previous);
+    public IObjectSearchPanel(List<T> searchList) {
+        this(searchList, null);
     }
 
     public void setSearchList(List<T> searchList) {
         searchManager.setSearchList(searchList);
     }
 
+    public void addSearchListener(DbObjectSearcher.SearchListener<T> searchListener) {
+        searchManager.addSearchListener(searchListener);
+    }
+
     public void clearSearch() {
-        searchManager.clearSearch();
         setSearched(false);
         clearLabel();
         searchField.setText("");
         btnPanel.setVisible(false);
 
-        if (objectSearchListener != null) {
-            objectSearchListener.onSearchCleared();
-        }
+        searchManager.clearSearch();
     }
 
     public void search(String searchWord) {
@@ -81,14 +66,11 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
                 Status().setMessage(foundObjects.size() + " object(s) found!");
             }
 
-            if (objectSearchBtnListener != null && foundObjects.size() > 1) {
+            if (foundObjects.size() > 1) {
                 btnPanel.setVisible(true);
             }
 
             setSearched(true);
-            if (objectSearchListener != null) {
-                objectSearchListener.onDbObjectFound(foundObjects);
-            }
         } else {
             setError("Nothing found..");
         }
@@ -117,18 +99,6 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         infoLabel.setForeground(Color.BLACK);
         infoLabel.setText(info);
         Status().setMessage(info);
-    }
-
-    private void getNextFoundItem() {
-        if (objectSearchBtnListener != null && searchManager.getResultList().size() > 1) {
-            objectSearchBtnListener.previousSearchObject(searchManager.getPreviousFoundObject());
-        }
-    }
-
-    private void getPreviousFoundItem() {
-        if (objectSearchBtnListener != null && searchManager.getResultList().size() > 1) {
-            objectSearchBtnListener.nextSearchObject(searchManager.getNextFoundObject());
-        }
     }
 
     @Override
@@ -195,8 +165,8 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         nextBtn.setBorder(BorderFactory.createEmptyBorder());
         nextBtn.setContentAreaFilled(false);
 
-        previousBtn.addActionListener(e -> getPreviousFoundItem());
-        nextBtn.addActionListener(e -> getNextFoundItem());
+        previousBtn.addActionListener(e -> searchManager.getPreviousFoundObject());
+        nextBtn.addActionListener(e -> searchManager.getNextFoundObject());
     }
 
 
