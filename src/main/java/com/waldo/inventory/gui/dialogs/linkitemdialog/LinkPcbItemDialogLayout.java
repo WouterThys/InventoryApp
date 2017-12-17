@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.gui.Application;
@@ -19,7 +20,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 
 abstract class LinkPcbItemDialogLayout extends IDialog implements
-        IObjectSearchPanel.IObjectSearchListener, ActionListener {
+        IObjectSearchPanel.IObjectSearchListener<Item>, ActionListener {
 
     /*
     *                  COMPONENTS

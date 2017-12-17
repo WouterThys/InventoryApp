@@ -9,7 +9,6 @@ import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.tablemodels.IFoundItemsTableModel;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -60,17 +59,16 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
 
         // This
         searchTf = new ITextField();
-        searchTf.setFont(30, Font.BOLD);
         searchBtn = new JButton(imageResource.readImage("Search.Go"));
 
         resultLbl = new ILabel("Results: ");
 
         nextResultAction = new AbstractAction("Next", imageResource.readImage("Search.Next")) {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-                    }
-                };
+            }
+        };
         prevResultAction = new AbstractAction("Previous", imageResource.readImage("Search.Previous")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,7 +85,7 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
-        getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         JPanel searchPnl = new JPanel(new BorderLayout());
         searchPnl.add(searchTf, BorderLayout.CENTER);
@@ -96,7 +94,7 @@ abstract class AdvancedSearchDialogLayout extends IDialog {
         JPanel infoPnl = new JPanel(new BorderLayout());
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setFloatable(false);
-        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
         toolBar.add(nextResultAction);
         toolBar.add(prevResultAction);
 

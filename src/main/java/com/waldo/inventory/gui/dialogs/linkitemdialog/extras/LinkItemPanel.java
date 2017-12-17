@@ -28,7 +28,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILinkItemTableModel tableModel;
     private ITable<PcbItemItemLink> itemTable;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<Item> searchPanel;
 
     private ITextField descriptionTf;
     private ITextField footprintTf;
@@ -53,7 +53,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addSearchListener(IObjectSearchPanel.IObjectSearchListener listener) {
+    public void addSearchListener(IObjectSearchPanel.IObjectSearchListener<Item> listener) {
         searchPanel.addSearchListener(listener);
     }
 
@@ -73,7 +73,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     public PcbItemItemLink getSelectedItem() {
         int row = itemTable.getSelectedRow();
         if (row >=0) {
-            return (PcbItemItemLink) itemTable.getValueAtRow(row);
+            return itemTable.getValueAtRow(row);
         }
         return null;
     }
@@ -150,7 +150,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     @Override
     public void initializeComponents() {
         // Search panel
-        searchPanel = new IObjectSearchPanel(false);
+        searchPanel = new IObjectSearchPanel<>(cache().getItems());
         searchPanel.setSearchList(new ArrayList<>(cache().getItems()));
 
         // Table

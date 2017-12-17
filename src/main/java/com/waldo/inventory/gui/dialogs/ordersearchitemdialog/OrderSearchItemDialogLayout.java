@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
@@ -11,14 +11,16 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
+import static com.waldo.inventory.managers.CacheManager.cache;
+
 abstract class OrderSearchItemDialogLayout extends IDialog implements
-        IObjectSearchPanel.IObjectSearchListener,
+        IObjectSearchPanel.IObjectSearchListener<Item>,
         ListSelectionListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<Item> searchPanel;
     ITable resultTable;
     IItemTableModel resultTableModel;
 
@@ -44,7 +46,7 @@ abstract class OrderSearchItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Search panel
-        searchPanel = new IObjectSearchPanel(true, DbObject.TYPE_ITEM);
+        searchPanel = new IObjectSearchPanel<>(cache().getItems());
         searchPanel.addSearchListener(this);
 
         // Item table

@@ -1,9 +1,6 @@
 package com.waldo.inventory.gui;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -12,16 +9,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
-
-public class TopToolBar extends JPanel implements
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener{
+public class TopToolBar extends JPanel {
+//        implements
+//        IObjectSearchPanel.IObjectSearchListener,
+//        IObjectSearchPanel.IObjectSearchBtnListener {
 
     private final Application application;
 
     private final IdBToolBar dbToolBar;
-    private IObjectSearchPanel searchPanel;
+    //private IObjectSearchPanel searchPanel;
     private final JPanel contentPane;
 
     public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener){
@@ -34,14 +30,14 @@ public class TopToolBar extends JPanel implements
         contentPane.setOpaque(false);
 
         // Search stuff: search only for items
-        searchPanel = new IObjectSearchPanel(true, DbObject.TYPE_ITEM);
-        searchPanel.addSearchListener(this);
-        searchPanel.addSearchBtnListener(this);
+//        searchPanel = new IObjectSearchPanel(true, DbObject.TYPE_ITEM);
+//        searchPanel.addSearchListener(this);
+//        searchPanel.addSearchBtnListener(this);
 
         setLayout(new BorderLayout());
         add(dbToolBar, BorderLayout.WEST);
         add(contentPane, BorderLayout.CENTER);
-        add(searchPanel, BorderLayout.EAST);
+//        add(searchPanel, BorderLayout.EAST);
     }
 
     public TopToolBar(Application application, IdBToolBar.IdbToolBarListener toolBarListener, ITable table) {
@@ -70,9 +66,9 @@ public class TopToolBar extends JPanel implements
     }
 
     public void clearSearch() {
-        if (searchPanel != null) {
-            searchPanel.clearSearch();
-        }
+//        if (searchPanel != null) {
+//            searchPanel.clearSearch();
+//        }
     }
 
     public JPanel getContentPane() {
@@ -88,85 +84,85 @@ public class TopToolBar extends JPanel implements
         layout.putConstraint(SpringLayout.WEST, dbToolBar, -5, SpringLayout.WEST, this);
 
         // Search panel
-        layout.putConstraint(SpringLayout.NORTH, searchPanel, 5, SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.SOUTH, searchPanel, -5, SpringLayout.SOUTH, this);
-        layout.putConstraint(SpringLayout.EAST, searchPanel, 5, SpringLayout.EAST, this);
+//        layout.putConstraint(SpringLayout.NORTH, searchPanel, 5, SpringLayout.NORTH, this);
+//        layout.putConstraint(SpringLayout.SOUTH, searchPanel, -5, SpringLayout.SOUTH, this);
+//        layout.putConstraint(SpringLayout.EAST, searchPanel, 5, SpringLayout.EAST, this);
 
         // Content
         layout.putConstraint(SpringLayout.NORTH, contentPane, 5, SpringLayout.NORTH, this);
         layout.putConstraint(SpringLayout.SOUTH, contentPane, -5, SpringLayout.SOUTH, this);
         layout.putConstraint(SpringLayout.WEST, contentPane, 5, SpringLayout.EAST, dbToolBar);
-        layout.putConstraint(SpringLayout.EAST, contentPane, 5, SpringLayout.WEST, searchPanel);
+        //layout.putConstraint(SpringLayout.EAST, contentPane, 5, SpringLayout.WEST, searchPanel);
 
         add(dbToolBar);
         add(contentPane);
-        add(searchPanel);
+        //add(searchPanel);
         setPreferredSize(new Dimension(600,  60));
         setLayout(layout);
     }
 
-    @Override
-    public void onDbObjectFound(java.util.List<DbObject> foundObjects) {
-        application.setTableItems(foundObjects);
-        if (foundObjects.size() > 0) {
-            if (foundObjects.get(0) instanceof Item) {
-                application.setSelectedItem((Item) foundObjects.get(0));
-            }
-            if (foundObjects.get(0) instanceof OrderItem) {
-                application.setSelectedOrderItem((OrderItem) foundObjects.get(0));
-            }
-        }
-    }
-
-    @Override
-    public void onSearchCleared() {
-        application.setTableItems(null); // Should set the table to the selected sub category
-        switch (application.getSelectedTab()) {
-            case Application.TAB_ITEMS:
-                application.setSelectedItem(application.getSelectedItem());
-                break;
-            case Application.TAB_ORDERS:
-                application.setSelectedOrderItem(application.getSelectedOrderItem());
-                break;
-        }
-
-    }
-
-    @Override
-    public void nextSearchObject(DbObject next) {
-        if (next instanceof Item) {
-            try {
-                application.setSelectedItem((Item) next);
-            } catch (Exception e) {
-                Status().setError("Error selecting item.", e);
-            }
-        }
-        if (next instanceof OrderItem) {
-            try {
-                application.setSelectedOrderItem((OrderItem) next);
-            } catch (Exception e) {
-                Status().setError("Error selecting OrderItem.", e);
-            }
-        }
-    }
-
-    @Override
-    public void previousSearchObject(DbObject previous) {
-        if (previous instanceof Item) {
-            try {
-                application.setSelectedItem((Item) previous);
-            } catch (Exception e) {
-                Status().setError("Error selecting item.", e);
-            }
-        }
-        if (previous instanceof OrderItem) {
-            try {
-                application.setSelectedOrderItem((OrderItem) previous);
-            } catch (Exception e) {
-                Status().setError("Error selecting OrderItem.", e);
-            }
-        }
-    }
+//    @Override
+//    public void onDbObjectFound(java.util.List<DbObject> foundObjects) {
+//        application.setTableItems(foundObjects);
+//        if (foundObjects.size() > 0) {
+//            if (foundObjects.get(0) instanceof Item) {
+//                application.setSelectedItem((Item) foundObjects.get(0));
+//            }
+//            if (foundObjects.get(0) instanceof OrderItem) {
+//                application.setSelectedOrderItem((OrderItem) foundObjects.get(0));
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onSearchCleared() {
+//        application.setTableItems(null); // Should set the table to the selected sub category
+//        switch (application.getSelectedTab()) {
+//            case Application.TAB_ITEMS:
+//                application.setSelectedItem(application.getSelectedItem());
+//                break;
+//            case Application.TAB_ORDERS:
+//                application.setSelectedOrderItem(application.getSelectedOrderItem());
+//                break;
+//        }
+//
+//    }
+//
+//    @Override
+//    public void nextSearchObject(DbObject next) {
+//        if (next instanceof Item) {
+//            try {
+//                application.setSelectedItem((Item) next);
+//            } catch (Exception e) {
+//                Status().setError("Error selecting item.", e);
+//            }
+//        }
+//        if (next instanceof OrderItem) {
+//            try {
+//                application.setSelectedOrderItem((OrderItem) next);
+//            } catch (Exception e) {
+//                Status().setError("Error selecting OrderItem.", e);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void previousSearchObject(DbObject previous) {
+//        if (previous instanceof Item) {
+//            try {
+//                application.setSelectedItem((Item) previous);
+//            } catch (Exception e) {
+//                Status().setError("Error selecting item.", e);
+//            }
+//        }
+//        if (previous instanceof OrderItem) {
+//            try {
+//                application.setSelectedOrderItem((OrderItem) previous);
+//            } catch (Exception e) {
+//                Status().setError("Error selecting OrderItem.", e);
+//            }
+//        }
+//    }
 
     public void setRefreshActionEnabled(boolean enabled) {
         dbToolBar.setRefreshActionEnabled(enabled);
@@ -185,13 +181,13 @@ public class TopToolBar extends JPanel implements
     }
 
     public void setSearchEnabled(boolean enabled) {
-        searchPanel.setEnabled(enabled);
+        //searchPanel.setEnabled(enabled);
     }
 
     public void setSearchList(List<DbObject> searchList) {
-        if (searchPanel != null) {
-            searchPanel.setSearchList(searchList);
-        }
+//        if (searchPanel != null) {
+//            searchPanel.setSearchList(searchList);
+//        }
     }
 
     @Override

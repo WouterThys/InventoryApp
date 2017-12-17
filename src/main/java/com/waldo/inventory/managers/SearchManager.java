@@ -7,7 +7,6 @@ import com.waldo.inventory.classes.dbclasses.Package;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class SearchManager {
@@ -18,324 +17,324 @@ public class SearchManager {
         return INSTANCE;
     }
 
-    private boolean searched = false;
-    private boolean inAdvanced = false;
-    private boolean hasAdvancedSearchOption;
-    private int[] searchOptions;
-    private List<DbObject> searchList;
-    private List<DbObject> resultList = new ArrayList<>();
-    private int currentResultNdx = 0;
-
-    public SearchManager() {
-    }
-
-    public SearchManager(int ... searchOptions) {
-        this.searchOptions = searchOptions;
-    }
-
-    public SearchManager(List<DbObject> searchList) {
-        this.searchList = searchList;
-    }
-
-    public SearchManager(List<DbObject> searchList, int ... searchOptions) {
-        this.searchList = searchList;
-        this.searchOptions = searchOptions;
-    }
-
-
-    public List<DbObject> search(String searchWord) {
-        List<DbObject> foundObjects;
-
-        // Search list
-        if (searchOptions == null || searchOptions.length == 0) {
-            if (searchList == null) {
-                foundObjects = searchAllKnownObjects(searchWord);
-            } else {
-                foundObjects = searchForObject(searchList, searchWord);
-            }
-        } else {
-            // Should work with search options -> more specific search
-            if (searchList == null) {
-                foundObjects = searchSpecific(searchOptions, searchWord);
-            } else {
-                foundObjects = searchSpecific(searchList, searchOptions, searchWord);
-            }
-        }
-
-        currentResultNdx = 0;
-        resultList = foundObjects;
-        return foundObjects;
-    }
-
-    public void clearSearch() {
-        resultList.clear();
-        currentResultNdx = 0;
-    }
-
-    public DbObject getNextFoundObject() {
-        currentResultNdx++;
-        if (currentResultNdx >= resultList.size()) {
-            currentResultNdx = 0;
-        }
-        return resultList.get(currentResultNdx);
-    }
-
-    public DbObject getPreviousFoundObject() {
-        currentResultNdx--;
-        if (currentResultNdx < 0) {
-            currentResultNdx = resultList.size()-1;
-        }
-        return resultList.get(currentResultNdx);
-    }
-
-
-    private List<DbObject> searchAllKnownObjects(String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-
-        // Categories
-        Status().setMessage("Searching for: Categories");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getCategories()), searchWord));
-
-        // Products
-        Status().setMessage("Searching for: Products");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getProducts()), searchWord));
-
-        // Types
-        Status().setMessage("Searching for: Types");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getTypes()), searchWord));
-
-        // Orders
-        Status().setMessage("Searching for: Orders");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getOrders()), searchWord));
-
-        // Locations
-        Status().setMessage("Searching for: Locations");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getLocations()), searchWord));
-
-        // Manufacturers
-        Status().setMessage("Searching for: Manufacturers");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getManufacturers()), searchWord));
-
-        // Distributors
-        Status().setMessage("Searching for: Distributors");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getDistributors()), searchWord));
-
-        // Items
-        Status().setMessage("Searching for: Items");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getItems()), searchWord));
-
-        // Package types
-        Status().setMessage("Searching for: Package types");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
-
-        // Projects
-        Status().setMessage("Searching for: Projects");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getProjects()), searchWord));
-
-        // Project directories
-        //Status().setMessage("Searching for: Project directories");
-        //foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjectDirectories()), searchWord));
-
-        // Project types
-        Status().setMessage("Searching for: Project types");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getProjectIDES()), searchWord));
-
-        // Package types
-        Status().setMessage("Searching for: Package types");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
-
-        // Logs
-        Status().setMessage("Searching for: Logs");
-        foundList.addAll(searchForObject(new ArrayList<>(cache().getLogs()), searchWord));
-
-        return foundList;
-    }
-
-    private List<DbObject> searchSpecific(int[] searchOptions, String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-        for (int type : searchOptions) {
-            switch (type) {
-                case DbObject.TYPE_CATEGORY:
-                    Status().setMessage("Searching for: Categories");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getCategories()), searchWord));
-                    break;
-                case DbObject.TYPE_PRODUCT:
-                    Status().setMessage("Searching for: Products");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProducts()), searchWord));
-                    break;
-                case DbObject.TYPE_TYPE:
-                    Status().setMessage("Searching for: Types");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getTypes()), searchWord));
-                    break;
-                case DbObject.TYPE_ORDER:
-                    Status().setMessage("Searching for: Orders");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getOrders()), searchWord));
-                    break;
-                case DbObject.TYPE_LOCATION:
-                    Status().setMessage("Searching for: Locations");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLocations()), searchWord));
-                    break;
-                case DbObject.TYPE_LOCATION_TYPE:
-                    Status().setMessage("Searching for: Location types");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLocationTypes()), searchWord));
-                    break;
-                case DbObject.TYPE_MANUFACTURER:
-                    Status().setMessage("Searching for: Manufacturers");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getManufacturers()), searchWord));
-                    break;
-                case DbObject.TYPE_DISTRIBUTOR:
-                    Status().setMessage("Searching for: Distributors");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getDistributors()), searchWord));
-                    break;
-                case DbObject.TYPE_ITEM:
-                    Status().setMessage("Searching for: Items");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getItems()), searchWord));
-                    break;
-                case DbObject.TYPE_PACKAGE_TYPE:
-                    Status().setMessage("Searching for: PackageType");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT:
-                    Status().setMessage("Searching for: Projects");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProjects()), searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT_TYPE:
-                    Status().setMessage("Searching for: Project types");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProjectIDES()), searchWord));
-                    break;
-                case DbObject.TYPE_PACKAGE:
-                    Status().setMessage("Searching for: Package types");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
-                    break;
-                case DbObject.TYPE_LOG:
-                    Status().setMessage("Searching for: Logs");
-                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLogs()), searchWord));
-                default:
-                    break;
-            }
-        }
-        return foundList;
-    }
-
-    private List<DbObject> searchSpecific(List<DbObject> searchList, int[] searchOptions, String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-        for (int type : searchOptions) {
-            switch (type) {
-                case DbObject.TYPE_CATEGORY:
-                    Status().setMessage("Searching for: Categories");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PRODUCT:
-                    Status().setMessage("Searching for: Products");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_TYPE:
-                    Status().setMessage("Searching for: Types");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_ORDER:
-                    Status().setMessage("Searching for: Orders");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_LOCATION:
-                    Status().setMessage("Searching for: Locations");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_LOCATION_TYPE:
-                    Status().setMessage("Searching for: Location types");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_MANUFACTURER:
-                    Status().setMessage("Searching for: Manufacturers");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_DISTRIBUTOR:
-                    Status().setMessage("Searching for: Distributors");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_ITEM:
-                    Status().setMessage("Searching for: Items");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PACKAGE_TYPE:
-                    Status().setMessage("Searching for: PackageTypes");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PACKAGE:
-                    Status().setMessage("Searching for: Packages");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT:
-                    Status().setMessage("Searching for: Projects");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_PROJECT_TYPE:
-                    Status().setMessage("Searching for: Project types");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                case DbObject.TYPE_LOG:
-                    Status().setMessage("Searching for: Logs");
-                    foundList.addAll(searchForObject(searchList, searchWord));
-                    break;
-                default:
-                    break;
-            }
-        }
-        return foundList;
-    }
-
-    private List<DbObject> searchForObject(List<DbObject> listToSearch, String searchWord) {
-        List<DbObject> foundList = new ArrayList<>();
-        if (listToSearch == null || listToSearch.size() == 0) {
-            return foundList;
-        }
-
-        searchWord = searchWord.toUpperCase();
-
-        for (DbObject dbo : listToSearch) {
-            if (dbo.hasMatch(searchWord)) {
-                foundList.add(dbo);
-            }
-        }
-
-        return foundList;
-    }
-
-    public boolean isSearched() {
-        return searched;
-    }
-
-    public void setSearched(boolean searched) {
-        this.searched = searched;
-    }
-
-    public boolean isInAdvanced() {
-        return inAdvanced;
-    }
-
-    public void setInAdvanced(boolean inAdvanced) {
-        this.inAdvanced = inAdvanced;
-    }
-
-    public boolean isHasAdvancedSearchOption() {
-        return hasAdvancedSearchOption;
-    }
-
-    public void setHasAdvancedSearchOption(boolean hasAdvancedSearchOption) {
-        this.hasAdvancedSearchOption = hasAdvancedSearchOption;
-    }
-
-    public void setSearchOptions(int[] searchOptions) {
-        this.searchOptions = searchOptions;
-    }
-
-    public void setSearchList(List<DbObject> searchList) {
-        this.searchList = searchList;
-    }
-
-    public List<DbObject> getResultList() {
-        return resultList;
-    }
+//    private boolean searched = false;
+//    private boolean inAdvanced = false;
+//    private boolean hasAdvancedSearchOption;
+//    private int[] searchOptions;
+//    private List<DbObject> searchList;
+//    private List<DbObject> resultList = new ArrayList<>();
+//    private int currentResultNdx = 0;
+//
+//    public SearchManager() {
+//    }
+//
+//    public SearchManager(int ... searchOptions) {
+//        this.searchOptions = searchOptions;
+//    }
+//
+//    public SearchManager(List<DbObject> searchList) {
+//        this.searchList = searchList;
+//    }
+//
+//    public SearchManager(List<DbObject> searchList, int ... searchOptions) {
+//        this.searchList = searchList;
+//        this.searchOptions = searchOptions;
+//    }
+//
+//
+//    public List<DbObject> search(String searchWord) {
+//        List<DbObject> foundObjects;
+//
+//        // Search list
+//        if (searchOptions == null || searchOptions.length == 0) {
+//            if (searchList == null) {
+//                foundObjects = searchAllKnownObjects(searchWord);
+//            } else {
+//                foundObjects = searchForObject(searchList, searchWord);
+//            }
+//        } else {
+//            // Should work with search options -> more specific search
+//            if (searchList == null) {
+//                foundObjects = searchSpecific(searchOptions, searchWord);
+//            } else {
+//                foundObjects = searchSpecific(searchList, searchOptions, searchWord);
+//            }
+//        }
+//
+//        currentResultNdx = 0;
+//        resultList = foundObjects;
+//        return foundObjects;
+//    }
+//
+//    public void clearSearch() {
+//        resultList.clear();
+//        currentResultNdx = 0;
+//    }
+//
+//    public DbObject getNextFoundObject() {
+//        currentResultNdx++;
+//        if (currentResultNdx >= resultList.size()) {
+//            currentResultNdx = 0;
+//        }
+//        return resultList.get(currentResultNdx);
+//    }
+//
+//    public DbObject getPreviousFoundObject() {
+//        currentResultNdx--;
+//        if (currentResultNdx < 0) {
+//            currentResultNdx = resultList.size()-1;
+//        }
+//        return resultList.get(currentResultNdx);
+//    }
+//
+//
+//    private List<DbObject> searchAllKnownObjects(String searchWord) {
+//        List<DbObject> foundList = new ArrayList<>();
+//
+//        // Categories
+//        Status().setMessage("Searching for: Categories");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getCategories()), searchWord));
+//
+//        // Products
+//        Status().setMessage("Searching for: Products");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getProducts()), searchWord));
+//
+//        // Types
+//        Status().setMessage("Searching for: Types");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getTypes()), searchWord));
+//
+//        // Orders
+//        Status().setMessage("Searching for: Orders");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getOrders()), searchWord));
+//
+//        // Locations
+//        Status().setMessage("Searching for: Locations");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getLocations()), searchWord));
+//
+//        // Manufacturers
+//        Status().setMessage("Searching for: Manufacturers");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getManufacturers()), searchWord));
+//
+//        // Distributors
+//        Status().setMessage("Searching for: Distributors");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getDistributors()), searchWord));
+//
+//        // Items
+//        Status().setMessage("Searching for: Items");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getItems()), searchWord));
+//
+//        // Package types
+//        Status().setMessage("Searching for: Package types");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
+//
+//        // Projects
+//        Status().setMessage("Searching for: Projects");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getProjects()), searchWord));
+//
+//        // Project directories
+//        //Status().setMessage("Searching for: Project directories");
+//        //foundList.addAll(searchForObject(new ArrayList<>(CacheManager.cache().getProjectDirectories()), searchWord));
+//
+//        // Project types
+//        Status().setMessage("Searching for: Project types");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getProjectIDES()), searchWord));
+//
+//        // Package types
+//        Status().setMessage("Searching for: Package types");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
+//
+//        // Logs
+//        Status().setMessage("Searching for: Logs");
+//        foundList.addAll(searchForObject(new ArrayList<>(cache().getLogs()), searchWord));
+//
+//        return foundList;
+//    }
+//
+//    private List<DbObject> searchSpecific(int[] searchOptions, String searchWord) {
+//        List<DbObject> foundList = new ArrayList<>();
+//        for (int type : searchOptions) {
+//            switch (type) {
+//                case DbObject.TYPE_CATEGORY:
+//                    Status().setMessage("Searching for: Categories");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getCategories()), searchWord));
+//                    break;
+//                case DbObject.TYPE_PRODUCT:
+//                    Status().setMessage("Searching for: Products");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProducts()), searchWord));
+//                    break;
+//                case DbObject.TYPE_TYPE:
+//                    Status().setMessage("Searching for: Types");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getTypes()), searchWord));
+//                    break;
+//                case DbObject.TYPE_ORDER:
+//                    Status().setMessage("Searching for: Orders");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getOrders()), searchWord));
+//                    break;
+//                case DbObject.TYPE_LOCATION:
+//                    Status().setMessage("Searching for: Locations");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLocations()), searchWord));
+//                    break;
+//                case DbObject.TYPE_LOCATION_TYPE:
+//                    Status().setMessage("Searching for: Location types");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLocationTypes()), searchWord));
+//                    break;
+//                case DbObject.TYPE_MANUFACTURER:
+//                    Status().setMessage("Searching for: Manufacturers");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getManufacturers()), searchWord));
+//                    break;
+//                case DbObject.TYPE_DISTRIBUTOR:
+//                    Status().setMessage("Searching for: Distributors");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getDistributors()), searchWord));
+//                    break;
+//                case DbObject.TYPE_ITEM:
+//                    Status().setMessage("Searching for: Items");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getItems()), searchWord));
+//                    break;
+//                case DbObject.TYPE_PACKAGE_TYPE:
+//                    Status().setMessage("Searching for: PackageType");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
+//                    break;
+//                case DbObject.TYPE_PROJECT:
+//                    Status().setMessage("Searching for: Projects");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProjects()), searchWord));
+//                    break;
+//                case DbObject.TYPE_PROJECT_TYPE:
+//                    Status().setMessage("Searching for: Project types");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getProjectIDES()), searchWord));
+//                    break;
+//                case DbObject.TYPE_PACKAGE:
+//                    Status().setMessage("Searching for: Package types");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getPackageTypes()), searchWord));
+//                    break;
+//                case DbObject.TYPE_LOG:
+//                    Status().setMessage("Searching for: Logs");
+//                    foundList.addAll(searchForObject(new ArrayList<>(cache().getLogs()), searchWord));
+//                default:
+//                    break;
+//            }
+//        }
+//        return foundList;
+//    }
+//
+//    private List<DbObject> searchSpecific(List<DbObject> searchList, int[] searchOptions, String searchWord) {
+//        List<DbObject> foundList = new ArrayList<>();
+//        for (int type : searchOptions) {
+//            switch (type) {
+//                case DbObject.TYPE_CATEGORY:
+//                    Status().setMessage("Searching for: Categories");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_PRODUCT:
+//                    Status().setMessage("Searching for: Products");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_TYPE:
+//                    Status().setMessage("Searching for: Types");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_ORDER:
+//                    Status().setMessage("Searching for: Orders");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_LOCATION:
+//                    Status().setMessage("Searching for: Locations");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_LOCATION_TYPE:
+//                    Status().setMessage("Searching for: Location types");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_MANUFACTURER:
+//                    Status().setMessage("Searching for: Manufacturers");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_DISTRIBUTOR:
+//                    Status().setMessage("Searching for: Distributors");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_ITEM:
+//                    Status().setMessage("Searching for: Items");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_PACKAGE_TYPE:
+//                    Status().setMessage("Searching for: PackageTypes");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_PACKAGE:
+//                    Status().setMessage("Searching for: Packages");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_PROJECT:
+//                    Status().setMessage("Searching for: Projects");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_PROJECT_TYPE:
+//                    Status().setMessage("Searching for: Project types");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                case DbObject.TYPE_LOG:
+//                    Status().setMessage("Searching for: Logs");
+//                    foundList.addAll(searchForObject(searchList, searchWord));
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//        return foundList;
+//    }
+//
+//    private List<DbObject> searchForObject(List<DbObject> listToSearch, String searchWord) {
+//        List<DbObject> foundList = new ArrayList<>();
+//        if (listToSearch == null || listToSearch.size() == 0) {
+//            return foundList;
+//        }
+//
+//        searchWord = searchWord.toUpperCase();
+//
+//        for (DbObject dbo : listToSearch) {
+//            if (dbo.hasMatch(searchWord)) {
+//                foundList.add(dbo);
+//            }
+//        }
+//
+//        return foundList;
+//    }
+//
+//    public boolean isSearched() {
+//        return searched;
+//    }
+//
+//    public void setSearched(boolean searched) {
+//        this.searched = searched;
+//    }
+//
+//    public boolean isInAdvanced() {
+//        return inAdvanced;
+//    }
+//
+//    public void setInAdvanced(boolean inAdvanced) {
+//        this.inAdvanced = inAdvanced;
+//    }
+//
+//    public boolean isHasAdvancedSearchOption() {
+//        return hasAdvancedSearchOption;
+//    }
+//
+//    public void setHasAdvancedSearchOption(boolean hasAdvancedSearchOption) {
+//        this.hasAdvancedSearchOption = hasAdvancedSearchOption;
+//    }
+//
+//    public void setSearchOptions(int[] searchOptions) {
+//        this.searchOptions = searchOptions;
+//    }
+//
+//    public void setSearchList(List<DbObject> searchList) {
+//        this.searchList = searchList;
+//    }
+//
+//    public List<DbObject> getResultList() {
+//        return resultList;
+//    }
 
     /*
      *                  FINDERS

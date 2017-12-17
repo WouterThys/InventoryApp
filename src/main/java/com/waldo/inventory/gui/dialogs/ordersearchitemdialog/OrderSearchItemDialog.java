@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 
@@ -46,13 +45,9 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
     // SEARCH LISTENER
     //
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
+    public void onDbObjectFound(List<Item> foundObjects) {
         itemToOrder = null;
-        List<Item> foundItems = new ArrayList<>(foundObjects.size());
-        for (DbObject object : foundObjects) {
-            foundItems.add((Item)object);
-        }
-        resultTableModel.setItemList(foundItems);
+        resultTableModel.setItemList(foundObjects);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
@@ -18,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class PackageTypeDialogLayout extends IDialog implements
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
+        IObjectSearchPanel.IObjectSearchListener<PackageType>,
+        IObjectSearchPanel.IObjectSearchBtnListener<PackageType>,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
@@ -34,7 +34,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
     JList<Package> packageList;
     DefaultListModel<Package> packageModel;
     IdBToolBar listToolBar;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<PackageType> searchPanel;
 
     ITextField detailNameTf;
     ITextArea detailDescriptionTa;
@@ -104,13 +104,9 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         detailTableModel.removeItems(typeList);
     }
 
-    void typeTableDelete(List<PackageType> typeList) {
-        detailTableModel.removeItems(typeList);
-    }
-
     PackageType typeTableGetSelected() {
         int row = detailTypeTable.getSelectedRow();
-        return (PackageType) detailTypeTable.getValueAtRow(row);
+        return detailTypeTable.getValueAtRow(row);
     }
 
     List<PackageType> typeTableGetAllSelected() {
@@ -118,7 +114,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         int[] selectedRows = detailTypeTable.getSelectedRows();
         if (selectedRows.length > 0) {
             for (int row : selectedRows) {
-                PackageType type = (PackageType) detailTypeTable.getValueAtRow(row);
+                PackageType type =  detailTypeTable.getValueAtRow(row);
                 if (type != null) {
                     typeList.add(type);
                 }
@@ -206,7 +202,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_PACKAGE, DbObject.TYPE_PACKAGE_TYPE);
+        searchPanel = new IObjectSearchPanel<>(cache().getPackageTypes());
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 

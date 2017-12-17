@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.Application;
@@ -13,12 +12,13 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
+        IObjectSearchPanel.IObjectSearchListener<Manufacturer>,
+        IObjectSearchPanel.IObjectSearchBtnListener<Manufacturer>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -28,7 +28,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
     JList<Manufacturer> manufacturerList;
     DefaultListModel<Manufacturer> manufacturerDefaultListModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<Manufacturer> searchPanel;
 
     ITextField detailName;
     GuiUtils.IBrowseWebPanel browsePanel;
@@ -153,7 +153,7 @@ abstract class ManufacturersDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_MANUFACTURER);
+        searchPanel = new IObjectSearchPanel<>(cache().getManufacturers());
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 

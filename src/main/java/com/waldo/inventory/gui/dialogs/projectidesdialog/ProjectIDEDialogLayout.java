@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.gui.Application;
@@ -17,12 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class ProjectIDEDialogLayout extends IDialog implements
         ListSelectionListener,
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
+        IObjectSearchPanel.IObjectSearchListener<ProjectIDE>,
+        IObjectSearchPanel.IObjectSearchBtnListener<ProjectIDE>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener,
         ActionListener {
@@ -33,7 +33,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     JList<ProjectIDE> projectTypeList;
     DefaultListModel<ProjectIDE> projectTypeModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<ProjectIDE> searchPanel;
 
     ITextField detailName;
     ILabel detailLogo;
@@ -162,7 +162,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_PROJECT_TYPE);
+        searchPanel = new IObjectSearchPanel<>(cache().getProjectIDES());
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 

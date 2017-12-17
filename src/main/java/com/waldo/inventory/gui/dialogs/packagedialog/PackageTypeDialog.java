@@ -345,8 +345,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     // Search
     //
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
-        PackageType pFound = (PackageType) foundObjects.get(0); // Just get first, later get other with "next" arrow?
+    public void onDbObjectFound(List<PackageType> foundObjects) {
+        PackageType pFound = foundObjects.get(0); // Just get first, later get other with "next" arrow?
         packageList.setSelectedValue(pFound, true);
     }
 
@@ -356,12 +356,12 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
     @Override
-    public void nextSearchObject(DbObject next) {
+    public void nextSearchObject(PackageType next) {
         packageList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(DbObject previous) {
+    public void previousSearchObject(PackageType previous) {
         packageList.setSelectedValue(previous, true);
     }
 

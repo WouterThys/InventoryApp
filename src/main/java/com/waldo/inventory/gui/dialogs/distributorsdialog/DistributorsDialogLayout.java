@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.gui.Application;
@@ -20,8 +19,8 @@ import static javax.swing.SpringLayout.*;
 
 abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
+        IObjectSearchPanel.IObjectSearchListener<Distributor>,
+        IObjectSearchPanel.IObjectSearchBtnListener<Distributor>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -31,7 +30,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
     JList<Distributor> distributorList;
     private DefaultListModel<Distributor> distributorDefaultListModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<Distributor> searchPanel;
 
     ITextField detailName;
     GuiUtils.IBrowseWebPanel browseDistributorPanel;
@@ -162,7 +161,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_DISTRIBUTOR);
+        searchPanel = new IObjectSearchPanel<>(cache().getDistributors());
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 

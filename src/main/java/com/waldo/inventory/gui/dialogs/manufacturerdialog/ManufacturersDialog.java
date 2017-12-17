@@ -174,8 +174,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     //
 
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
-        Manufacturer mFound = (Manufacturer) foundObjects.get(0);
+    public void onDbObjectFound(List<Manufacturer> foundObjects) {
+        Manufacturer mFound = foundObjects.get(0);
         manufacturerList.setSelectedValue(mFound, true);
     }
 
@@ -185,12 +185,12 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     }
 
     @Override
-    public void nextSearchObject(DbObject next) {
+    public void nextSearchObject(Manufacturer next) {
         manufacturerList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(DbObject previous) {
+    public void previousSearchObject(Manufacturer previous) {
         manufacturerList.setSelectedValue(previous, true);
     }
 

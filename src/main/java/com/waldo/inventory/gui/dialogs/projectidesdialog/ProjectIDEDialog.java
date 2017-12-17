@@ -180,8 +180,8 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     //
 
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
-        ProjectIDE ptFound = (ProjectIDE) foundObjects.get(0);
+    public void onDbObjectFound(List<ProjectIDE> foundObjects) {
+        ProjectIDE ptFound = foundObjects.get(0);
         projectTypeList.setSelectedValue(ptFound, true);
     }
 
@@ -191,12 +191,12 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     }
 
     @Override
-    public void nextSearchObject(DbObject next) {
+    public void nextSearchObject(ProjectIDE next) {
         projectTypeList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(DbObject previous) {
+    public void previousSearchObject(ProjectIDE previous) {
         projectTypeList.setSelectedValue(previous, true);
     }
 

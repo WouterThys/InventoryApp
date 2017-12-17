@@ -143,11 +143,11 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     // Search stuff
     //
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
+    public void onDbObjectFound(List<Item> foundObjects) {
         List<PcbItemItemLink> itemMatches = new ArrayList<>();
-        for (DbObject object : foundObjects) {
+        for (Item object : foundObjects) {
             int type = DbObject.getType(object);
-            if (type == DbObject.TYPE_ITEM) {
+            //if (type == DbObject.TYPE_ITEM) {
                 if (selectedPcbItem != null) {
                     List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, (Item) object);
                     if (matches.size() > 0) {
@@ -160,20 +160,20 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
                     PcbItemItemLink m = new PcbItemItemLink(0, null, (Item)object);
                     itemMatches.add(m);
                 }
-            } else if (type == DbObject.TYPE_SET_ITEM) {
-                if (selectedPcbItem != null) {
-                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, ((SetItem) object).getItem());
-                    if (matches.size() > 0) {
-                        itemMatches.addAll(matches);
-                    } else {
-                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem,  (SetItem)object);
-                        itemMatches.add(m);
-                    }
-                } else {
-                    PcbItemItemLink m = new PcbItemItemLink(0, null, (SetItem) object);
-                    itemMatches.add(m);
-                }
-            }
+//            } else if (type == DbObject.TYPE_SET_ITEM) {
+//                if (selectedPcbItem != null) {
+//                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, ((SetItem) object).getItem());
+//                    if (matches.size() > 0) {
+//                        itemMatches.addAll(matches);
+//                    } else {
+//                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem,  (SetItem)object);
+//                        itemMatches.add(m);
+//                    }
+//                } else {
+//                    PcbItemItemLink m = new PcbItemItemLink(0, null, (SetItem) object);
+//                    itemMatches.add(m);
+//                }
+//            }
         }
 
         itemPanel.setItemList(itemMatches);

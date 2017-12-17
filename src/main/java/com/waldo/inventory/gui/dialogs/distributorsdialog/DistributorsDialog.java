@@ -164,8 +164,8 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     // Search listeners
     //
     @Override
-    public void onDbObjectFound(List<DbObject> foundObjects) {
-        Distributor dFound = (Distributor) foundObjects.get(0);
+    public void onDbObjectFound(List<Distributor> foundObjects) {
+        Distributor dFound = foundObjects.get(0);
         distributorList.setSelectedValue(dFound, true);
     }
 
@@ -175,12 +175,12 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     }
 
     @Override
-    public void nextSearchObject(DbObject next) {
+    public void nextSearchObject(Distributor next) {
         distributorList.setSelectedValue(next, true);
     }
 
     @Override
-    public void previousSearchObject(DbObject previous) {
+    public void previousSearchObject(Distributor previous) {
         distributorList.setSelectedValue(previous, true);
     }
 

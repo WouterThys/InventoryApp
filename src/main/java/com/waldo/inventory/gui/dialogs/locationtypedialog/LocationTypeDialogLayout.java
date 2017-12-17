@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
@@ -18,8 +17,8 @@ import static javax.swing.SpringLayout.*;
 
 abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
-        IObjectSearchPanel.IObjectSearchListener,
-        IObjectSearchPanel.IObjectSearchBtnListener,
+        IObjectSearchPanel.IObjectSearchListener<LocationType>,
+        IObjectSearchPanel.IObjectSearchBtnListener<LocationType>,
         IdBToolBar.IdbToolBarListener,
         ActionListener,
         IEditedListener{
@@ -30,7 +29,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     JList<LocationType> locationTypeList;
     private DefaultListModel<LocationType> locationTypeModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel searchPanel;
+    private IObjectSearchPanel<LocationType> searchPanel;
 
     private JButton detailCustomBtn;
     ITextField detailName;
@@ -125,7 +124,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel(false, DbObject.TYPE_LOCATION_TYPE);
+        searchPanel = new IObjectSearchPanel<>(cache().getLocationTypes());
         searchPanel.addSearchListener(this);
         searchPanel.addSearchBtnListener(this);
 
