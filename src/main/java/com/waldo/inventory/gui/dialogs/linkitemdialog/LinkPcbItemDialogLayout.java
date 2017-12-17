@@ -84,7 +84,7 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Panels
-        pcbPanel = new LinkPcbPanel(application, ILinkPcbItemTableModel.LINK_COMPONENTS);
+        pcbPanel = new LinkPcbPanel(ILinkPcbItemTableModel.LINK_COMPONENTS);
 
         itemPanel = new LinkItemPanel(application);
         itemPanel.addSearchListener(this);

@@ -154,7 +154,8 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         for (PcbItem item : pcbTableGetItemList()) {
             PcbItemProjectLink link = getLink(item);
             if (link != null && !link.isUsed()) {
-                link.setUsedCount(item.getReferences().size());
+                //TODO#24
+                //link.setUsedCount(item.getReferences().size());
             }
         }
         pcbTableUpdate();
@@ -171,14 +172,14 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     //
     private List<PcbItem> getLinkedPcbItems(ProjectPcb pcb) {
         List<PcbItem> linkedItems = new ArrayList<>();
-
-        for (String sheet : pcb.getPcbItemMap().keySet()) {
-            for (PcbItem pcbItem : pcb.getPcbItemMap().get(sheet)) {
-                if (pcbItem.hasMatch()) {
-                    linkedItems.add(pcbItem);
-                }
-            }
-        }
+        // TODO#24
+//        for (String sheet : pcb.getPcbItemMap().keySet()) {
+//            for (PcbItem pcbItem : pcb.getPcbItemMap().get(sheet)) {
+//                if (pcbItem.hasMatch()) {
+//                    linkedItems.add(pcbItem);
+//                }
+//            }
+//        }
 
         return linkedItems;
     }
@@ -277,7 +278,8 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
                 int realColumnIndex = convertColumnIndexToModel(colIndex);
 
                 if (realColumnIndex == 1) { //Sport column
-                    tip = getValueAtRow(rowIndex).getReferenceString();
+                    //tip = getValueAtRow(rowIndex).getReferenceString();
+                    //TODO#24
                 }
                 return tip;
             }

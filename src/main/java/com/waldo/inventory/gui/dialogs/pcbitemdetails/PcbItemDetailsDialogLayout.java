@@ -100,9 +100,10 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             partNameTf.setText(pcbItem.getPartName());
             sheetNameTf.setText(pcbItem.getSheetName());
 
-            for (String ref : pcbItem.getReferences()) {
-                refListModel.addElement(ref);
-            }
+            //TODO#24
+//            for (String ref : pcbItem.getReferences()) {
+//                refListModel.addElement(ref);
+//            }
         }
     }
 

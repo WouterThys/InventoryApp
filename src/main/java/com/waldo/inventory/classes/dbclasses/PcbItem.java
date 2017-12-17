@@ -2,13 +2,11 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.database.DatabaseAccess;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -17,13 +15,17 @@ public class PcbItem extends DbObject {
 
     public static final String TABLE_NAME = "pcbitems";
 
-    private String ref;
-    private String value; // db
     private String footprint; // db
-    private String library;
-    private String partName;
-    private String sheetName;
-    private Date tStamp;
+    private String library; // db
+    private String partName; // db
+
+    private String ref; // => to PcbItemProjectLink
+    private String value; // => to PcbItemProjectLink
+    private String sheetName; // => to PcbItemProjectLink
+
+    private Date tStamp; // not used
+
+
     // After sorting multiple references can group together in one PcbItem
     private List<String> references;
 
@@ -34,6 +36,8 @@ public class PcbItem extends DbObject {
     // Order
     private OrderItem orderItem = null;
     private int orderAmount  = 0;
+
+
 
     public PcbItem() {
         super(TABLE_NAME);
@@ -48,6 +52,9 @@ public class PcbItem extends DbObject {
         this.partName = partName;
         this.sheetName = sheetName;
         this.tStamp = tStamp;
+
+        references = new ArrayList<>();
+        references.add(ref);
     }
 
     @Override
@@ -63,7 +70,6 @@ public class PcbItem extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
-        statement.setString(ndx++, getValue());
         statement.setString(ndx++, getFootprint());
         statement.setString(ndx++, getLibrary());
         statement.setString(ndx++, getPartName());
@@ -103,14 +109,10 @@ public class PcbItem extends DbObject {
     public PcbItem createCopy(DbObject copyInto) {
         PcbItem cpy = new PcbItem();
         copyBaseFields(cpy);
-        cpy.setValue(getValue());
         cpy.setFootprint(getFootprint());
         cpy.setLibrary(getLibrary());
-        cpy.setRef(getRef());
-        cpy.setReferences(getReferences());
         cpy.setPartName(getPartName());
         cpy.settStamp(gettStamp());
-        cpy.setSheetName(getSheetName());
         return cpy;
     }
 
@@ -120,9 +122,7 @@ public class PcbItem extends DbObject {
             PcbItem ref = (PcbItem) obj;
 
             return ref.getLibrary().equals(getLibrary()) &&
-                    ref.getValue().equals(getValue()) &&
                     ref.getFootprint().equals(getFootprint()) &&
-                    ref.getSheetName().equals(getSheetName()) &&
                     ref.getPartName().equals(getPartName());
         }
         return false;
@@ -135,19 +135,11 @@ public class PcbItem extends DbObject {
         return ref;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
-
     public String getValue() {
         if (value == null) {
             value = "";
         }
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getFootprint() {
@@ -190,10 +182,6 @@ public class PcbItem extends DbObject {
         return sheetName;
     }
 
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
-    }
-
     public Date gettStamp() {
         return tStamp;
     }
@@ -202,60 +190,11 @@ public class PcbItem extends DbObject {
         this.tStamp = tStamp;
     }
 
-    public List<String> getReferences() {
-        if (references == null) {
-            references = new ArrayList<>();
-            references.add(getRef()); // Add your own reference
-        }
-        return references;
-    }
-
-    public void setReferences(List<String> references) {
-        this.references = references;
-    }
-
-
-    public void addReference(String reference) {
-        if (!getReferences().contains(reference)) {
-            getReferences().add(reference);
-        }
-    }
-
-    public String getReferenceString() {
-        StringBuilder refs = new StringBuilder();
-        getReferences().sort(new ReferenceComparer());
-        for (String r : getReferences()) {
-            refs.append(r).append(", ");
-        }
-        refs.delete(refs.lastIndexOf(", "), refs.length());
-        return refs.toString();
-    }
-
-    private static class ReferenceComparer implements Comparator<String> {
-        @Override
-        public int compare(String o1, String o2) {
-            String one = StringUtils.leftPad(o1, 5, "0");
-            String two = StringUtils.leftPad(o2, 5, "0");
-            return one.compareTo(two);
-        }
-    }
-
     public List<PcbItemItemLink> getItemLinkList() {
         if (itemLinkList == null) {
             itemLinkList = PcbItemParser.getInstance().findLinkWithItem(this);
         }
         return itemLinkList;
-    }
-
-    public int matchCount() {
-        return getItemLinkList().size();
-    }
-
-    public int highestMatch() {
-        if (getItemLinkList().size() > 0) {
-            return getItemLinkList().get(0).getMatch();
-        }
-        return 0;
     }
 
     public boolean hasMatch() {
@@ -273,13 +212,9 @@ public class PcbItem extends DbObject {
         this.matchedItem = matchedItem;
     }
 
-    public String getPrettyName() {
-        String part = getPartName();
-        String val = getValue();
-        if (part.equals(value)) {
-            return part;
-        } else {
-            return (part + " - " + val);
+    public void addReference(String reference) {
+        if (references != null && !references.contains(reference)) {
+            references.add(reference);
         }
     }
 

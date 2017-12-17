@@ -1,6 +1,5 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
@@ -25,7 +24,7 @@ public class ProjectPcb extends ProjectObject {
 
     // Variables
     private Date lastParsedDate; // Compare with pcb file's 'Last modified' date to check if should parse again
-    private HashMap<String, List<PcbItem>> pcbItemMap;
+    private List<PcbItemProjectLink> pcbItemProjectLinks;
     private boolean hasParsed;
 
     // Extra
@@ -112,100 +111,85 @@ public class ProjectPcb extends ProjectObject {
     }
 
     public int numberOfComponents() {
-        int size = 0;
-        for (String sheet : getPcbItemMap().keySet()) {
-            size += getPcbItemMap().get(sheet).size();
-        }
-        return size;
+        return getPcbItemMap().size();
     }
 
-    private HashMap<String, List<PcbItem>> getPcbItemsFromParser(File fileToParse) {
+    private List<PcbItemProjectLink> getPcbItemsFromParser(File fileToParse) {
         hasParsed = false;
-        HashMap<String, List<PcbItem>> pcbItems = new HashMap<>();
+        List<PcbItemProjectLink> pcbItemLinks = new ArrayList<>();
 
         if (getParser() == null) {
-            return pcbItems;
+            return pcbItemLinks;
         }
 
-        pcbItems = getParser().parse(fileToParse);
+        HashMap<String, List<PcbItem>> pcbItems = getParser().parse(fileToParse);
 
         // Update pcb items in database
         PcbItemParser.getInstance().updatePcbItemDb(pcbItems);
 
         // Update links with project
-        PcbItemParser.getInstance().updatePcbItemProjectLinksDb(pcbItems, this);
+        pcbItemLinks.addAll(PcbItemParser.getInstance().updatePcbItemProjectLinksDb(pcbItems, this));
 
-        lastParsedDate = DateUtils.now();
+        //TODO#24 lastParsedDate = DateUtils.now();
         hasParsed = true;
-        save();
-        return pcbItems;
+        //TODO#24 save();
+        return pcbItemLinks;
     }
 
-    private HashMap<String, List<PcbItem>> getPcbItemsFromDb() {
-        List<PcbItemProjectLink> itemList = SearchManager.sm().findPcbItemLinksWithProjectPcb(getId());
-        HashMap<String, List<PcbItem>> itemMap = new HashMap<>();
-
-        for (PcbItemProjectLink link : itemList) {
-            String sheet = link.getPcbSheetName();
-            if (!itemMap.containsKey(sheet)) {
-                itemMap.put(sheet, new ArrayList<>());
-            }
-            itemMap.get(sheet).add(link.getPcbItem());
-        }
-
-        return itemMap;
+    private List<PcbItemProjectLink> getPcbItemsFromDb() {
+        return SearchManager.sm().findPcbItemLinksWithProjectPcb(getId());
     }
 
     public boolean parseAgain() {
         boolean result = false;
         File file = new File(getDirectory());
         if (file.exists()) {
-            HashMap<String, List<PcbItem>> newMap = getPcbItemsFromParser(file);
-            if (newMap.size() > 0) {
-                pcbItemMap = newMap;
+            List<PcbItemProjectLink> links = getPcbItemsFromParser(file);
+            if (links.size() > 0) {
+                pcbItemProjectLinks.clear();
+                pcbItemProjectLinks.addAll(links);
                 result = true;
             }
         }
         return result;
     }
 
-    public HashMap<String, List<PcbItem>> getPcbItemMap() {
-        if (pcbItemMap == null) {
+    public List<PcbItemProjectLink> getPcbItemMap() {
+        if (pcbItemProjectLinks == null) {
             File file = new File(getDirectory());
             if (lastParsedDate != null) {
                 if (file.exists()) {
                     Date fileLastModified = new Date(file.lastModified());
                     if (fileLastModified.after(lastParsedDate)) { // Parse again
-                        pcbItemMap = getPcbItemsFromParser(file);
+                        pcbItemProjectLinks = getPcbItemsFromParser(file);
                     } else { // Get from db
-                        pcbItemMap = getPcbItemsFromDb();
+                        pcbItemProjectLinks = getPcbItemsFromDb();
                     }
                 } else { // Invalid file, can happen when opening app on different computer, try to get items from db
-                    pcbItemMap = getPcbItemsFromDb();
+                    pcbItemProjectLinks = getPcbItemsFromDb();
                 }
             } else { // Never parsed: try to parse if file exists
                 if (file.exists()) {
-                    pcbItemMap = getPcbItemsFromParser(file);
+                    pcbItemProjectLinks = getPcbItemsFromParser(file);
                 } else { // Invalid file, can happen when opening app on different computer, try to get items from db
-                    pcbItemMap = getPcbItemsFromDb();
+                    pcbItemProjectLinks = getPcbItemsFromDb();
                 }
             }
-            List<PcbItem> linkedItems = findKnownLinks(pcbItemMap);
+            List<PcbItem> linkedItems = findKnownLinks(pcbItemProjectLinks);
             findKnownOrders(linkedItems);
         }
-        return pcbItemMap;
+        return pcbItemProjectLinks;
     }
 
-    private List<PcbItem> findKnownLinks(HashMap<String, List<PcbItem>> pcbItemMap) {
+    private List<PcbItem> findKnownLinks(List<PcbItemProjectLink> pcbItemProjectLinks) {
         List<PcbItem> linkedItems = new ArrayList<>();
-        for (String sheet : pcbItemMap.keySet()) {
-            for (PcbItem item : pcbItemMap.get(sheet)) {
-                PcbItemItemLink link = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
-                if (link != null) {
-                    item.setMatchedItem(link);
-                    hasLinkedItems = true;
-                    linkedItems.add(item);
-                }
+        for (PcbItemProjectLink projectLink : pcbItemProjectLinks) {
+            PcbItem item = projectLink.getPcbItem();
+            PcbItemItemLink itemLink = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
+            if (itemLink != null) {
+                item.setMatchedItem(itemLink);
+                hasLinkedItems = true;
+                linkedItems.add(item);
             }
         }
         return linkedItems;
@@ -231,11 +215,10 @@ public class ProjectPcb extends ProjectObject {
 
     public List<Item> getLinkedItems() {
         List<Item> items = new ArrayList<>();
-        for (String sheet : getPcbItemMap().keySet()) {
-            for (PcbItem pcbItem : getPcbItemMap().get(sheet)) {
-                if (pcbItem.hasMatch()) {
-                    items.add(pcbItem.getMatchedItemLink().getItem());
-                }
+        for (PcbItemProjectLink link : getPcbItemMap()) {
+            PcbItem pcbItem = link.getPcbItem();
+            if (pcbItem.hasMatch()) {
+                items.add(pcbItem.getMatchedItemLink().getItem());
             }
         }
         return items;

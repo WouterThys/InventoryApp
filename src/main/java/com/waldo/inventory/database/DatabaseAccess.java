@@ -1215,9 +1215,10 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setPcbItemId(rs.getLong("pcbItemId"));
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    p.setValue(rs.getString("value"));
                     p.setUsedCount(rs.getInt("usedCount"));
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
-                    p.setPcbSheetName(rs.getString("sheetName"));
+                    p.setPcbSheetName(rs.getString("pcbSheetName"));
 
                     // Used and processed
                     p.setUsed(p.getUsedCount() > 0);
@@ -1395,26 +1396,25 @@ public class DatabaseAccess {
             return pcbItems;
         }
         Status().setMessage("Fetching pcb items from DB");
-        PcbItem kc = null;
+        PcbItem pcbItem = null;
         String sql = scriptResource.readString(PcbItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    kc = new PcbItem();
-                    kc.setId(rs.getLong("id"));
-                    kc.setValue(rs.getString("value"));
-                    kc.setFootprint(rs.getString("footprint"));
-                    kc.setLibrary(rs.getString("lib"));
-                    kc.setPartName(rs.getString("part"));
+                    pcbItem = new PcbItem();
+                    pcbItem.setId(rs.getLong("id"));
+                    pcbItem.setFootprint(rs.getString("footprint"));
+                    pcbItem.setLibrary(rs.getString("lib"));
+                    pcbItem.setPartName(rs.getString("part"));
 
-                    kc.setInserted(true);
-                    pcbItems.add(kc);
+                    pcbItem.setInserted(true);
+                    pcbItems.add(pcbItem);
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(kc, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(pcbItem, e, OBJECT_SELECT, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {

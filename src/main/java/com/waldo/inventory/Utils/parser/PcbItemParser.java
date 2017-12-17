@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -242,40 +243,49 @@ public class PcbItemParser {
         for (String sheet : pcbItemMap.keySet()) {
             for (PcbItem pcbItem : pcbItemMap.get(sheet)) {
                 PcbItem foundItem = SearchManager.sm().findPcbItem(
-                        pcbItem.getValue(),
                         pcbItem.getFootprint(),
                         pcbItem.getLibrary(),
                         pcbItem.getPartName()
                 );
 
                 if (foundItem == null) {
-                    itemsToSave.add(pcbItem);
+                    if (!itemsToSave.contains(pcbItem)) {
+                        itemsToSave.add(pcbItem);
+                    }
                 } else {
-                    PcbItem newItem = foundItem.createCopy();
-                    newItem.setRef(pcbItem.getRef());
-                    newItem.setReferences(pcbItem.getReferences());
-                    newItem.settStamp(pcbItem.gettStamp());
-                    newItem.setSheetName(pcbItem.getSheetName());
+                    PcbItem newItem = new PcbItem(
+                            pcbItem.getRef(),
+                            pcbItem.getValue(),
+                            pcbItem.getFootprint(),
+                            pcbItem.getLibrary(),
+                            pcbItem.getPartName(),
+                            foundItem.getSheetName(),
+                            DateUtils.now()
+                    );
+                    newItem.setId(foundItem.getId());
 
                     int ndx = pcbItemMap.get(sheet).indexOf(pcbItem);
                     pcbItemMap.get(sheet).set(ndx, newItem);
                 }
             }
-        }
 
-        for (PcbItem item : itemsToSave) {
-            item.save();
+            for (PcbItem item : itemsToSave) {
+                item.save();
+            }
+            itemsToSave.clear();
         }
     }
 
-    public void updatePcbItemProjectLinksDb(HashMap<String, List<PcbItem>> pcbItems, ProjectPcb projectPcb) {
+    public List<PcbItemProjectLink> updatePcbItemProjectLinksDb(HashMap<String, List<PcbItem>> pcbItems, ProjectPcb projectPcb) {
         // Create new list with links
         List<PcbItemProjectLink> toDelete = new ArrayList<>(SearchManager.sm().findPcbItemLinksWithProjectPcb(projectPcb.getId()));
         List<PcbItemProjectLink> toSave = new ArrayList<>();
+        List<PcbItemProjectLink> result = new ArrayList<>();
 
         for (String sheet : pcbItems.keySet()) {
+
             for (PcbItem pcbItem : pcbItems.get(sheet)) {
-                PcbItemProjectLink link = SearchManager.sm().findPcbItemLink(pcbItem.getId(), projectPcb.getId(), sheet);
+                PcbItemProjectLink link = SearchManager.sm().findPcbItemLink(pcbItem, projectPcb.getId(), sheet);
                 if (link != null) {
                     toDelete.remove(link);
                 } else {
@@ -283,18 +293,23 @@ public class PcbItemParser {
                     toSave.add(link);
                 }
             }
+
+            // Save
+            for (PcbItemProjectLink link : toSave) {
+                //link.save();
+            }
+
+            // What remains in currentLinks can be removed
+            for (PcbItemProjectLink link : toDelete) {
+                //link.delete();
+            }
+
+            result.addAll(toSave);
         }
 
-        // Save
-        for (PcbItemProjectLink link : toSave) {
-            link.save();
-        }
-
-        // What remains in currentLinks can be removed
-        for (PcbItemProjectLink link : toDelete) {
-            link.delete();
-        }
+        return result;
     }
+
 
     private int getMatchCount(int i) {
         i = i - ((i >>> 1) & 0x55555555);

@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.dialogs.linkitemdialog.extras;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITextField;
@@ -13,7 +13,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class LinkPcbPanel extends JPanel implements GuiInterface {
@@ -31,7 +30,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LinkPcbPanel(Application application, int type) {
+    public LinkPcbPanel(int type) {
         this.type = type;
 
         initializeComponents();
@@ -54,7 +53,7 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
 
     public void updateSelectedValueData(PcbItem component) {
         if (component != null) {
-            referencesTf.setText(component.getReferenceString());
+            //TODO#24 referencesTf.setText(component.getReferenceString());
             footprintTf.setText(component.getFootprint());
         } else {
             referencesTf.clearText();
@@ -74,16 +73,12 @@ public class LinkPcbPanel extends JPanel implements GuiInterface {
         tableModel.updateTable();
     }
 
-    public void updateTable(HashMap<String, List<PcbItem>> pcbItems) {
+    public void updateTable(List<PcbItemProjectLink> pcbItemProjectLinks) {
         List<PcbItem> pcbItemsList = new ArrayList<>();
-        for (String sheet : pcbItems.keySet()) {
-            pcbItemsList.addAll(pcbItems.get(sheet));
+        for (PcbItemProjectLink link : pcbItemProjectLinks) {
+            pcbItemsList.add(link.getPcbItem());
         }
         tableModel.setItemList(pcbItemsList);
-    }
-
-    public java.util.List<PcbItem> getKcComponentList() {
-        return tableModel.getItemList();
     }
 
     private JPanel createSouthPanel() {

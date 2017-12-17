@@ -702,10 +702,9 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItem findPcbItem(String value, String footprint, String lib, String part) {
+    public PcbItem findPcbItem(String footprint, String lib, String part) {
         for (PcbItem component : cache().getPcbItems()) {
-            if (component.getValue().equals(value) &&
-                    component.getFootprint().equals(footprint) &&
+            if (component.getFootprint().equals(footprint) &&
                     component.getLibrary().equals(lib) &&
                     component.getPartName().equals(part)) {
 
@@ -845,10 +844,13 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItemProjectLink findPcbItemLink(long pcbItemId, long projectPcbId, String sheet) {
-        if (pcbItemId > 0 && projectPcbId > 0) {
+    public PcbItemProjectLink findPcbItemLink(PcbItem pcbItem, long projectPcbId, String sheet) {
+        if (pcbItem != null && projectPcbId > 0) {
             for (PcbItemProjectLink pil : cache().getPcbItemProjectLinks()) {
-                if (pil.getPcbItemId() == pcbItemId && pil.getProjectPcbId() == projectPcbId && pil.getPcbSheetName().equals(sheet)) {
+                if (pil.getPcbItemId() == pcbItem.getId() &&
+                        pil.getProjectPcbId() == projectPcbId &&
+                        pil.getValue().equals(pcbItem.getValue()) &&
+                        pil.getPcbSheetName().equals(sheet)) {
                     return pil;
                 }
             }

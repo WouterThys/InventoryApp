@@ -44,7 +44,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
                 case 0: // Amount
                     int amount = 0;
                     switch (amountType) {
-                        case ItemAmount: amount = pcbItem.getReferences().size(); break;
+                        case ItemAmount: amount = 0; break; //TODO#24 pcbItem.getReferences().size(); break;
                         case OrderAmount: amount = pcbItem.getOrderAmount(); break;
                         case UsedAmount:
                             if (modelListener != null) {

@@ -1,9 +1,6 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
@@ -140,7 +137,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
                 if (item.getMatchedItemLink().isSetItem()) {
                     item.setOrderAmount(1);
                 } else {
-                    item.setOrderAmount(item.getReferences().size());
+                    //TODO#24 item.setOrderAmount(item.getReferences().size());
                 }
             }
         }
@@ -199,13 +196,12 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         List<PcbItem> linkedItems = new ArrayList<>();
         List<Long> containedItems = new ArrayList<>();
 
-        for (String sheet : pcb.getPcbItemMap().keySet()) {
-            for (PcbItem pcbItem : pcb.getPcbItemMap().get(sheet)) {
-                if (pcbItem.hasMatch()) {
-                    if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
-                        linkedItems.add(pcbItem);
-                        containedItems.add(pcbItem.getMatchedItemLink().getItemId());
-                    }
+        for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
+            PcbItem pcbItem = link.getPcbItem();
+            if (pcbItem.hasMatch()) {
+                if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
+                    linkedItems.add(pcbItem);
+                    containedItems.add(pcbItem.getMatchedItemLink().getItemId());
                 }
             }
         }
@@ -270,7 +266,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
                 int realColumnIndex = convertColumnIndexToModel(colIndex);
 
                 if (realColumnIndex == 1) { //Sport column
-                    tip = getValueAtRow(rowIndex).getReferenceString();
+                    //TODO#24 tip = getValueAtRow(rowIndex).getReferenceString();
                 }
                 return tip;
             }

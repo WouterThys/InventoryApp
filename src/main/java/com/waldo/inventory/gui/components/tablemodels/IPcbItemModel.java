@@ -40,7 +40,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                 case 1: // LibSource value
                     return component;
                 case 2: // Reference
-                    return component.getReferenceString();
+                    return "";//TODO#24 component.getReferenceString();
                 case 3: // Linked
                     if (component.hasMatch()) {
                         return linked;
@@ -90,7 +90,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                             lbl.setForeground(colorResource.readColor("Green"));
                             lbl.setFont(Font.BOLD);
                         } else {
-                            lbl = new ITableIcon(c.getBackground(), row, isSelected, pcbItem.getPrettyName());
+                            lbl = new ITableIcon(c.getBackground(), row, isSelected, "");//TODO#24 pcbItem.getPrettyName());
                         }
                     } else {
                         if (row == 0) {
@@ -98,7 +98,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                             tableColumn.setMinWidth(32);
                         }
 
-                        String txt = String.valueOf(pcbItem.getReferences().size());
+                        String txt = "";//TODO#24 String.valueOf(pcbItem.getReferences().size());
                         lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
                     }
 

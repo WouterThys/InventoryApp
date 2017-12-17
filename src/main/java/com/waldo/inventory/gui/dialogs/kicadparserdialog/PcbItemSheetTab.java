@@ -1,15 +1,10 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.popups.PcbItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelectionListener {
     
@@ -24,22 +20,19 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private IPcbItemModel pcbItemTableModel;
-    private ITable<PcbItem> pcbItemTable;
+    private ITable<PcbItemProjectLink> pcbItemTable;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
-    private final IPcbItemModel.PcbItemListener pcbItemListener;
-
-    private PcbItem selectedPcbItem;
+    private PcbItemProjectLink selectedPcbItem;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public PcbItemSheetTab(Application application, IPcbItemModel.PcbItemListener pcbItemListener) {
+    public PcbItemSheetTab(Application application) {
         this.application = application;
-        this.pcbItemListener = pcbItemListener;
         initializeComponents();
         initializeLayouts();
     }
@@ -57,7 +50,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
 
     private void tableSelectItem(int row) {
         if (row >= 0) {
-            selectedPcbItem = (PcbItem) pcbItemTableModel.getValueAt(row, -1);
+            selectedPcbItem = (PcbItemProjectLink) pcbItemTableModel.getValueAt(row, -1);
             pcbItemTable.selectItem(selectedPcbItem);
         }
     }
@@ -68,7 +61,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
     @Override
     public void initializeComponents() {
         // Table
-        pcbItemTableModel = new IPcbItemModel(pcbItemListener);
+        pcbItemTableModel = new IPcbItemModel();
         pcbItemTable = new ITable<>(pcbItemTableModel);
         pcbItemTable.getSelectionModel().addListSelectionListener(this);
         pcbItemTable.setExactColumnWidth(3, 20);
@@ -79,29 +72,30 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e)) {
-                    if (pcbItemListener != null) {
-                        tableSelectItem(pcbItemTable.rowAtPoint(e.getPoint()));
-                        if (selectedPcbItem != null) {
-                            PcbItemProjectLink link = pcbItemListener.onGetProjectLink(selectedPcbItem);
-
-                            if (link != null) {
-                                PcbItemPopup popup = new PcbItemPopup(link) {
-                                    @Override
-                                    public void onEditItem(Item item) {
-                                        EditItemDialog dialog = new EditItemDialog(application, "Item", item);
-                                        dialog.showDialog();
-                                    }
-
-                                    @Override
-                                    public void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink) {
-                                        PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(application, link.getPcbItem().getPrettyName(), link);
-                                        dialog.showDialog();
-                                    }
-                                };
-                                popup.show(e.getComponent(), e.getX(), e.getY());
-                            }
-                        }
-                    }
+                    //TODO#24
+//                    if (pcbItemListener != null) {
+//                        tableSelectItem(pcbItemTable.rowAtPoint(e.getPoint()));
+//                        if (selectedPcbItem != null) {
+//                            PcbItemProjectLink link = pcbItemListener.onGetProjectLink(selectedPcbItem);
+//
+//                            if (link != null) {
+//                                PcbItemPopup popup = new PcbItemPopup(link) {
+//                                    @Override
+//                                    public void onEditItem(Item item) {
+//                                        EditItemDialog dialog = new EditItemDialog(application, "Item", item);
+//                                        dialog.showDialog();
+//                                    }
+//
+//                                    @Override
+//                                    public void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink) {
+//                                        PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(application, link.getPcbItem().getPrettyName(), link);
+//                                        dialog.showDialog();
+//                                    }
+//                                };
+//                                popup.show(e.getComponent(), e.getX(), e.getY());
+//                            }
+//                        }
+//                    }
                 }
             }
         });
@@ -117,9 +111,12 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
     }
 
     @Override
-    public void updateComponents(Object... object) {
-        if (object.length != 0 && object[0] != null) {
-            java.util.List<PcbItem> components = (java.util.List<PcbItem>) object[0];
+    public void updateComponents(Object... args) {
+        if (args.length > 0 && args[0] != null) {
+            java.util.List<PcbItemProjectLink> components = new ArrayList<>();
+            for (Object o : args) {
+                components.add((PcbItemProjectLink)o);
+            }
             pcbItemTableModel.setItemList(components);
         }
     }
