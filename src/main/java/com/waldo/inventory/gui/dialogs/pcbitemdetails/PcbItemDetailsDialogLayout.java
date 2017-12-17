@@ -29,7 +29,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITextField projectTf;
     private ITextField pcbProjectTf;
 
-    private ITextField referenceTf;
     private ITextField valueTf;
     private ITextField footprintTf;
     private ITextField libraryTf;
@@ -91,19 +90,18 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         }
     }
 
-    private void setPcbItemInfo(PcbItem pcbItem) {
-        if (pcbItem != null) {
-            referenceTf.setText(pcbItem.getRef());
-            valueTf.setText(pcbItem.getValue());
+    private void setPcbItemInfo(PcbItemProjectLink projectLink) {
+        if (projectLink != null) {
+            PcbItem pcbItem = projectLink.getPcbItem();
+            valueTf.setText(projectLink.getValue());
             footprintTf.setText(pcbItem.getFootprint());
             libraryTf.setText(pcbItem.getLibrary());
             partNameTf.setText(pcbItem.getPartName());
-            sheetNameTf.setText(pcbItem.getSheetName());
+            sheetNameTf.setText(projectLink.getPcbSheetName());
 
-            //TODO#24
-//            for (String ref : pcbItem.getReferences()) {
-//                refListModel.addElement(ref);
-//            }
+            for (String ref : projectLink.getReferences()) {
+                refListModel.addElement(ref);
+            }
         }
     }
 
@@ -168,7 +166,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
         gbc.addLine("Name: ", partNameTf);
         gbc.addLine("Value: ", valueTf);
-        gbc.addLine("Reference: ", referenceTf);
         gbc.addLine("Footprint: ", footprintTf);
         gbc.addLine("Library: ", libraryTf);
         gbc.addLine("Sheet: ", sheetNameTf);
@@ -176,7 +173,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         // List
         JPanel listPnl = new JPanel(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(referencesList);
-        listPnl.add(new ILabel("Equals: "), BorderLayout.PAGE_START);
+        listPnl.add(new ILabel("References"), BorderLayout.PAGE_START);
         listPnl.add(scrollPane, BorderLayout.CENTER);
 
         // Add
@@ -229,7 +226,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         pcbProjectTf = new ITextField(false);
 
         // PcbItem
-        referenceTf = new ITextField(false);
         valueTf = new ITextField(false);
         footprintTf = new ITextField(false);
         libraryTf = new ITextField(false);
@@ -279,7 +275,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     public void updateComponents(Object... args) {
         if (pcbItemProjectLink != null) {
             setProjectInfo(pcbItemProjectLink.getProjectPcb());
-            setPcbItemInfo(pcbItemProjectLink.getPcbItem());
+            setPcbItemInfo(pcbItemProjectLink);
             setReferencesInfo(pcbItemProjectLink);
         }
     }

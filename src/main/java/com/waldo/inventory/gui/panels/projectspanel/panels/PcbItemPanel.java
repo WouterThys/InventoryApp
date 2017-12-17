@@ -97,7 +97,7 @@ public class PcbItemPanel extends JPanel implements
 
         for (String sheet : map.keySet()) {
             PcbItemSheetTab tab = new PcbItemSheetTab(application);
-            tab.updateComponents(map.get(sheet));
+            tab.updateComponents(map.get(sheet).toArray());
             sheetTabs.add(sheet, tab);
         }
     }

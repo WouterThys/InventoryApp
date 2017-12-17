@@ -9,15 +9,12 @@ import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.AmountType;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 class OrderPcbItemPanel extends JPanel implements GuiInterface {
@@ -30,7 +27,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILinkedPcbItemTableModel linkedPcbItemModel;
-    private ITable<PcbItem> linkedPcbItemTable;
+    private ITable<PcbItemProjectLink> linkedPcbItemTable;
 
     private AbstractAction addOneAa;
     private AbstractAction remOneAa;
@@ -64,7 +61,7 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public void updateEnabledComponents() {
-        PcbItem selectedItem = pcbTableGetSelected();
+        PcbItem selectedItem = pcbTableGetSelected().getPcbItem();
 
         boolean selected = selectedItem != null && !selectedItem.isOrdered();
         int orderSize = orderSize();
@@ -91,15 +88,15 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         linkedPcbItemModel.updateTable();
     }
 
-    public PcbItem pcbTableGetSelected() {
+    public PcbItemProjectLink pcbTableGetSelected() {
         return linkedPcbItemTable.getSelectedItem();
     }
 
-    public List<PcbItem> pcbTableGetAllSelected() {
+    public List<PcbItemProjectLink> pcbTableGetAllSelected() {
         return linkedPcbItemTable.getSelectedItems();
     }
 
-    public List<PcbItem> pcbTableGetItemList() {
+    public List<PcbItemProjectLink> pcbTableGetItemList() {
         return linkedPcbItemModel.getItemList();
     }
 
@@ -123,7 +120,8 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     }
 
     private void onRemAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
+            PcbItem item = link.getPcbItem();
             if (!item.isOrdered()) {
                 item.setOrderAmount(0);
             }
@@ -132,12 +130,13 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     }
 
     private void onAddAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
+            PcbItem item = link.getPcbItem();
             if (!item.isOrdered()) {
                 if (item.getMatchedItemLink().isSetItem()) {
                     item.setOrderAmount(1);
                 } else {
-                    //TODO#24 item.setOrderAmount(item.getReferences().size());
+                    item.setOrderAmount(link.getNumberOfItems());
                 }
             }
         }
@@ -161,7 +160,8 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
     public int orderSize() {
         int size = 0;
-        for (PcbItem item : linkedPcbItemModel.getItemList()) {
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
+            PcbItem item = link.getPcbItem();
             if (item.getOrderAmount() > 0 && !item.isOrdered()) {
                 size++;
             }
@@ -171,7 +171,8 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
     public List<PcbItem> getPcbItemsToOrder() {
         List<PcbItem> toOrder = new ArrayList<>();
-        for (PcbItem item : linkedPcbItemModel.getItemList()) {
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
+            PcbItem item = link.getPcbItem();
             if (!item.isOrdered() && item.getOrderAmount() > 0) {
                 toOrder.add(item);
             }
@@ -192,15 +193,15 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         updateEnabledComponents();
     }
 
-    private List<PcbItem> getLinkedPcbItems(ProjectPcb pcb) {
-        List<PcbItem> linkedItems = new ArrayList<>();
+    private List<PcbItemProjectLink> getLinkedPcbItems(ProjectPcb pcb) {
+        List<PcbItemProjectLink> linkedItems = new ArrayList<>();
         List<Long> containedItems = new ArrayList<>();
 
         for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
             PcbItem pcbItem = link.getPcbItem();
             if (pcbItem.hasMatch()) {
                 if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
-                    linkedItems.add(pcbItem);
+                    linkedItems.add(link);
                     containedItems.add(pcbItem.getMatchedItemLink().getItemId());
                 }
             }
@@ -231,52 +232,14 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         // Table
         linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.OrderAmount, false);
-        linkedPcbItemTable = new ITable<PcbItem>(linkedPcbItemModel) {
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component component = super.prepareRenderer(renderer, row, column);
-                PcbItem p = getValueAtRow(row);
-
-                if (!isRowSelected(row)) {
-                    component.setBackground(getBackground());
-                    if (p.isOrdered()) {
-                        component.setBackground(colorResource.readColor("Green.Light"));
-                    } else {
-                        if (p.getOrderAmount() > 0) {
-                            component.setBackground(colorResource.readColor("Blue.Light"));
-                        }
-                    }
-                }
-
-                if (p.isOrdered()) {
-                    component.setForeground(Color.gray);
-                } else {
-                    component.setForeground(Color.black);
-                }
-
-                return component;
-            }
-
-            @Override
-            public String getToolTipText(MouseEvent event) {
-                String tip = null;
-                java.awt.Point p = event.getPoint();
-                int rowIndex = rowAtPoint(p);
-                int colIndex = columnAtPoint(p);
-                int realColumnIndex = convertColumnIndexToModel(colIndex);
-
-                if (realColumnIndex == 1) { //Sport column
-                    //TODO#24 tip = getValueAtRow(rowIndex).getReferenceString();
-                }
-                return tip;
-            }
-        };
+        linkedPcbItemTable = new ITable<>(linkedPcbItemModel);
         linkedPcbItemTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
         TableColumn tableColumn = linkedPcbItemTable.getColumnModel().getColumn(0);
         tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
             @Override
             public void onValueSet(int value) {
-                PcbItem pcbItem = linkedPcbItemTable.getSelectedItem();
+                PcbItemProjectLink link = linkedPcbItemTable.getSelectedItem();
+                PcbItem pcbItem = link.getPcbItem();
                 if (pcbItem != null) {
                     pcbItem.setOrderAmount(value);
                 }
@@ -288,14 +251,14 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onAddOne(pcbTableGetSelected());
+                onAddOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };
         remOneAa = new AbstractAction("RemOne", imageResource.readImage("Projects.Order.RemOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onRemOne(pcbTableGetSelected());
+                onRemOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };

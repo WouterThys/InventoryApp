@@ -19,8 +19,7 @@ public class UsedPcbItemsDialog extends UsedPcbItemsDialogLayout {
     }
 
     private void removeUnusedItems() {
-        for (PcbItem pcbItem : pcbItemPnl.pcbTableGetItemList()) {
-            PcbItemProjectLink link = pcbItemPnl.getLink(pcbItem);
+        for (PcbItemProjectLink link : pcbItemPnl.pcbTableGetItemList()) {
             if (link != null && !link.isUsed()) {
                 link.setUsedCount(0);
             }

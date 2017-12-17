@@ -76,7 +76,7 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
 
                     ILabel lbl;
                     PcbItem pcbItem = (PcbItem) value;
-                    String txt = "";//TODO#24 String.valueOf(pcbItem.getReferences().size());
+                    String txt = String.valueOf(pcbItem.getReferences().size());
                     lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
 
                     return lbl;

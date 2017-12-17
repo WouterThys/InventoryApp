@@ -35,7 +35,8 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
     }
 
     private void removeUnorderedItems() {
-        for (PcbItem pcbItem : pcbItemPnl.pcbTableGetItemList()) {
+        for (PcbItemProjectLink link : pcbItemPnl.pcbTableGetItemList()) {
+            PcbItem pcbItem = link.getPcbItem();
             if (pcbItem.isOrdered()) {
                 OrderItem orderItem = pcbItem.getOrderItem();
                 if (orderItem.getId() < DbObject.UNKNOWN_ID) {

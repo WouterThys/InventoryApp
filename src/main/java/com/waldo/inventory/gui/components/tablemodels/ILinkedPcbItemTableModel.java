@@ -4,7 +4,13 @@ import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 
-public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+
+import static com.waldo.inventory.gui.Application.colorResource;
+
+public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProjectLink> {
 
     private static final String[] COLUMN_NAMES = {"#", "Pcb item", "Item"};
     private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, String.class};
@@ -15,12 +21,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
         UsedAmount
     }
 
-    public interface PcbItemTableModelListener {
-        PcbItemProjectLink onGetLink(PcbItem pcbItem);
-    }
-
     private final AmountType amountType;
-    private PcbItemTableModelListener modelListener;
     private final boolean showSetValues;
 
     public ILinkedPcbItemTableModel(AmountType amountType, boolean showSetValues) {
@@ -29,48 +30,35 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
         this.showSetValues = showSetValues;
     }
 
-    public ILinkedPcbItemTableModel(AmountType amountType, boolean showSetValues, PcbItemTableModelListener modelListener) {
-        this(amountType, showSetValues);
-        this.modelListener = modelListener;
-    }
-
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        PcbItem pcbItem = getItemAt(rowIndex);
-        if (pcbItem != null) {
+        PcbItemProjectLink link = getItemAt(rowIndex);
+
+        if (link != null) {
+            PcbItem pcbItem = link.getPcbItem();
             switch (columnIndex) {
                 case -1:
-                    return pcbItem;
+                    return link;
                 case 0: // Amount
                     int amount = 0;
                     switch (amountType) {
-                        case ItemAmount: amount = 0; break; //TODO#24 pcbItem.getReferences().size(); break;
+                        case ItemAmount: amount = link.getNumberOfItems(); break;
                         case OrderAmount: amount = pcbItem.getOrderAmount(); break;
-                        case UsedAmount:
-                            if (modelListener != null) {
-                                amount = modelListener.onGetLink(pcbItem).getUsedCount();
-                            }
-                            break;
+                        case UsedAmount: amount = link.getUsedCount(); break;
                     }
                     return amount;
                 case 1: // Pcb item name and value
                     if (!showSetValues && pcbItem.getMatchedItemLink().isSetItem()) {
                         return pcbItem.getPartName() + " (Set)";
                     } else {
-                        String name = pcbItem.getPartName();
-                        String value = pcbItem.getValue();
-                        if (name.equals(value)) {
-                            return name;
-                        } else {
-                            return name + " - " + value;
-                        }
+                        return link.getPrettyName();
                     }
                 case 2: // Item name
-                    PcbItemItemLink link = pcbItem.getMatchedItemLink();
-                    if (!showSetValues || !link.isSetItem()) {
-                        return link.getItem().toString();
+                    PcbItemItemLink itemLink = pcbItem.getMatchedItemLink();
+                    if (!showSetValues || !itemLink.isSetItem()) {
+                        return itemLink.getItem().toString();
                     } else {
-                        return link.getSetItem().toString();
+                        return itemLink.getSetItem().toString();
                     }
 
             }
@@ -80,15 +68,52 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItem> {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        PcbItem item = (PcbItem) getValueAt(rowIndex, -1);
+        PcbItemProjectLink link = (PcbItemProjectLink) getValueAt(rowIndex, -1);
         switch (amountType) {
             case ItemAmount:
                 return false;
             case OrderAmount:
-                return ((columnIndex == 0) && !item.isOrdered());
+                return ((columnIndex == 0) && !link.getPcbItem().isOrdered());
             case UsedAmount:
-                return ((columnIndex == 0) && !modelListener.onGetLink(item).isUsed());
+                return ((columnIndex == 0) && !link.isUsed());
         }
         return false;
+    }
+
+    @Override
+    public boolean hasTableCellRenderer() {
+        return true;
+    }
+
+    @Override
+    public DefaultTableCellRenderer getTableCellRenderer() {
+        return new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                PcbItemProjectLink link = getItemAt(row);
+                PcbItem p = link.getPcbItem();
+
+                if (!isSelected) {
+                    component.setBackground(getBackground());
+                    if (p.isOrdered()) {
+                        component.setBackground(colorResource.readColor("Green.Light"));
+                    } else {
+                        if (p.getOrderAmount() > 0) {
+                            component.setBackground(colorResource.readColor("Blue.Light"));
+                        }
+                    }
+                }
+
+                if (p.isOrdered()) {
+                    component.setForeground(Color.gray);
+                } else {
+                    component.setForeground(Color.black);
+                }
+
+                return component;
+            }
+        };
     }
 }

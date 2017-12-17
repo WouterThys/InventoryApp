@@ -32,15 +32,16 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         PcbItemProjectLink link = getItemAt(rowIndex);
-        PcbItem component = link.getPcbItem();
-        if (component != null) {
+
+        if (link != null) {
+            PcbItem component = link.getPcbItem();
             switch (columnIndex) {
                 case -1:
                 case 0: // Amount
                 case 1: // LibSource value
-                    return component;
+                    return link;
                 case 2: // Reference
-                    return "";//TODO#24 component.getReferenceString();
+                    return link.getReferenceString();
                 case 3: // Linked
                     if (component.hasMatch()) {
                         return linked;
@@ -74,10 +75,11 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof PcbItem) {
+                if (value instanceof PcbItemProjectLink) {
 
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                    PcbItem pcbItem = (PcbItem) value;
+                    PcbItemProjectLink projectLink = (PcbItemProjectLink) value;
+                    PcbItem pcbItem = projectLink.getPcbItem();
                     ILabel lbl;
                     if (table.getColumnName(column).equals("Part")) {
                         if (pcbItem.hasMatch()) {
@@ -90,7 +92,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                             lbl.setForeground(colorResource.readColor("Green"));
                             lbl.setFont(Font.BOLD);
                         } else {
-                            lbl = new ITableIcon(c.getBackground(), row, isSelected, "");//TODO#24 pcbItem.getPrettyName());
+                            lbl = new ITableIcon(c.getBackground(), row, isSelected, projectLink.getPrettyName());
                         }
                     } else {
                         if (row == 0) {
@@ -98,7 +100,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                             tableColumn.setMinWidth(32);
                         }
 
-                        String txt = "";//TODO#24 String.valueOf(pcbItem.getReferences().size());
+                        String txt = String.valueOf(projectLink.getNumberOfItems());
                         lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
                     }
 

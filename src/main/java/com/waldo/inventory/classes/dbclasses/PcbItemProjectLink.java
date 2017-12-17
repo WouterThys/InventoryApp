@@ -192,6 +192,10 @@ public class PcbItemProjectLink extends DbObject {
         return "";
     }
 
+    public int getNumberOfItems() {
+        return getReferences().size();
+    }
+
     // Getters and setters
 
     public long getPcbItemId() {

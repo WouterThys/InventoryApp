@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
@@ -130,9 +131,9 @@ public class ProjectPcb extends ProjectObject {
         // Update links with project
         PcbItemParser.getInstance().updatePcbItemProjectLinksDb(this, pcbItemLinks);
 
-        //TODO#24 lastParsedDate = DateUtils.now();
+        lastParsedDate = DateUtils.now();
         hasParsed = true;
-        //TODO#24 save();
+        save();
         return pcbItemLinks;
     }
 

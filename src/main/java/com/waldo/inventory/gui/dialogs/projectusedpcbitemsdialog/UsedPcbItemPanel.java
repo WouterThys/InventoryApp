@@ -8,7 +8,6 @@ import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -23,9 +22,8 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.AmountType;
-import static com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.PcbItemTableModelListener;
 
-class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModelListener {
+class UsedPcbItemPanel extends JPanel implements GuiInterface {
 
     interface PcbItemListener {
         void onAdd();
@@ -35,7 +33,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILinkedPcbItemTableModel linkedPcbItemModel;
-    private ITable<PcbItem> linkedPcbItemTable;
+    private ITable<PcbItemProjectLink> linkedPcbItemTable;
 
     private AbstractAction addOneAa;
     private AbstractAction remOneAa;
@@ -65,10 +63,13 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void updateEnabledComponents() {
-        PcbItem selectedItem = pcbTableGetSelected();
-        PcbItemProjectLink link = getLink(selectedItem);
+        PcbItemProjectLink link = pcbTableGetSelected();
+        PcbItem selectedItem = null;
+        if (link != null) {
+            selectedItem = link.getPcbItem();
+        }
 
-        boolean selected = selectedItem != null && link != null && !link.isUsed();
+        boolean selected = selectedItem != null && !link.isUsed();
         int usedSize = usedSize();
         boolean hasUsed = usedSize > 0;
 
@@ -82,10 +83,10 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     //
     // Pcb item table
     //
-    private void pcbTableInit(List<PcbItem> pcbItemList) {
-        if (pcbItemList != null) {
-            linkedPcbItemModel.setItemList(pcbItemList);
-            linkedPcbItemTable.setRowSelectionInterval(0,0);
+    private void pcbTableInit(List<PcbItemProjectLink> projectLinks) {
+        if (projectLinks != null) {
+            linkedPcbItemModel.setItemList(projectLinks);
+            linkedPcbItemTable.setRowSelectionInterval(0, 0);
         }
     }
 
@@ -93,15 +94,15 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         linkedPcbItemModel.updateTable();
     }
 
-    private PcbItem pcbTableGetSelected() {
+    private PcbItemProjectLink pcbTableGetSelected() {
         return linkedPcbItemTable.getSelectedItem();
     }
 
-    List<PcbItem> pcbTableGetAllSelected() {
+    List<PcbItemProjectLink> pcbTableGetAllSelected() {
         return linkedPcbItemTable.getSelectedItems();
     }
 
-    List<PcbItem> pcbTableGetItemList() {
+    List<PcbItemProjectLink> pcbTableGetItemList() {
         return linkedPcbItemModel.getItemList();
     }
 
@@ -140,8 +141,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     }
 
     private void onRemAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
-            PcbItemProjectLink link = getLink(item);
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
             if (link != null && !link.isUsed()) {
                 link.setUsedCount(0);
                 pcbTableUpdate();
@@ -151,11 +151,9 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     }
 
     private void onAddAll() {
-        for (PcbItem item : pcbTableGetItemList()) {
-            PcbItemProjectLink link = getLink(item);
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
             if (link != null && !link.isUsed()) {
-                //TODO#24
-                //link.setUsedCount(item.getReferences().size());
+                link.setUsedCount(link.getNumberOfItems());
             }
         }
         pcbTableUpdate();
@@ -170,17 +168,14 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
     //
     // Methods
     //
-    private List<PcbItem> getLinkedPcbItems(ProjectPcb pcb) {
-        List<PcbItem> linkedItems = new ArrayList<>();
-        // TODO#24
-//        for (String sheet : pcb.getPcbItemMap().keySet()) {
-//            for (PcbItem pcbItem : pcb.getPcbItemMap().get(sheet)) {
-//                if (pcbItem.hasMatch()) {
-//                    linkedItems.add(pcbItem);
-//                }
-//            }
-//        }
-
+    private List<PcbItemProjectLink> getLinkedPcbItems(ProjectPcb pcb) {
+        List<PcbItemProjectLink> linkedItems = new ArrayList<>();
+        for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
+            PcbItem pcbItem = link.getPcbItem();
+            if (pcbItem.hasMatch()) {
+                linkedItems.add(link);
+            }
+        }
         return linkedItems;
     }
 
@@ -204,13 +199,12 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         updateEnabledComponents();
     }
 
-    private HashMap<Long, PcbItemProjectLink> createLinkMap(ProjectPcb pcb, List<PcbItem> linkedItems) {
+    private HashMap<Long, PcbItemProjectLink> createLinkMap(ProjectPcb pcb, List<PcbItemProjectLink> linkedItems) {
         HashMap<Long, PcbItemProjectLink> map = new HashMap<>();
 
-        for (PcbItem pcbItem : linkedItems) {
-            PcbItemProjectLink link = SearchManager.sm().findPcbItemProjectLink(pcb.getId(), pcbItem.getId());
+        for (PcbItemProjectLink link : linkedItems) {
             if (link != null) {
-                map.put(pcbItem.getId(), link);
+                map.put(link.getPcbItem().getId(), link);
             }
         }
 
@@ -228,24 +222,18 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         return pcbToolBar;
     }
 
-    @Override
-    public PcbItemProjectLink onGetLink(PcbItem pcbItem) {
-        return getLink(pcbItem);
-    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Table
-        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.UsedAmount, true, this);
-        linkedPcbItemTable = new ITable<PcbItem>(linkedPcbItemModel) {
+        linkedPcbItemModel = new ILinkedPcbItemTableModel(AmountType.UsedAmount, true);
+        linkedPcbItemTable = new ITable<PcbItemProjectLink>(linkedPcbItemModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component component =  super.prepareRenderer(renderer, row, column);
-                PcbItem p = getValueAtRow(row);
-                PcbItemProjectLink link = getLink(p);
+                Component component = super.prepareRenderer(renderer, row, column);
+                PcbItemProjectLink link = getValueAtRow(row);
 
                 if (link != null) {
                     if (!isRowSelected(row)) {
@@ -278,8 +266,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
                 int realColumnIndex = convertColumnIndexToModel(colIndex);
 
                 if (realColumnIndex == 1) { //Sport column
-                    //tip = getValueAtRow(rowIndex).getReferenceString();
-                    //TODO#24
+                    tip = getValueAtRow(rowIndex).getReferenceString();
                 }
                 return tip;
             }
@@ -289,13 +276,10 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         tableColumn.setCellEditor(new ITableEditors.SpinnerEditor() {
             @Override
             public void onValueSet(int value) {
-                PcbItem pcbItem = linkedPcbItemTable.getSelectedItem();
-                if (pcbItem != null) {
-                    PcbItemProjectLink link = getLink(pcbItem);
+                    PcbItemProjectLink link = linkedPcbItemTable.getSelectedItem();
                     if (link != null) {
                         link.setUsedCount(value);
                     }
-                }
             }
         });
         linkedPcbItemTable.setExactColumnWidth(0, 60);
@@ -304,14 +288,14 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onAddOne(pcbTableGetSelected());
+                onAddOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };
         remOneAa = new AbstractAction("RemOne", imageResource.readImage("Projects.Order.RemOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onRemOne(pcbTableGetSelected());
+                onRemOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };
@@ -370,7 +354,7 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface, PcbItemTableModel
         if (args.length > 0 && args[0] != null) {
             ProjectPcb pcb = (ProjectPcb) args[0];
 
-            List<PcbItem> linkedItems = getLinkedPcbItems(pcb);
+            List<PcbItemProjectLink> linkedItems = getLinkedPcbItems(pcb);
             linkMap = createLinkMap(pcb, linkedItems);
             pcbTableInit(linkedItems);
             updateEnabledComponents();
