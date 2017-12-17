@@ -1,7 +1,6 @@
 package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -97,7 +96,7 @@ public class PcbItemParser {
                 return MATCH_FOOTPRINT;
             }
         }
-        return  0;
+        return 0;
     }
 
     public List<PcbItemItemLink> linkWithSetItem(PcbItem component, Item item) {
@@ -238,76 +237,81 @@ public class PcbItemParser {
         return itemLinkList;
     }
 
-    public void updatePcbItemDb(HashMap<String, List<PcbItem>> pcbItemMap) {
+    public List<PcbItemProjectLink> updatePcbItemDb(ProjectPcb pcbProject, HashMap<String, List<PcbItem>> pcbItemMap) {
+
         List<PcbItem> itemsToSave = new ArrayList<>();
+        List<PcbItemProjectLink> projectLinks = new ArrayList<>();
+
         for (String sheet : pcbItemMap.keySet()) {
             for (PcbItem pcbItem : pcbItemMap.get(sheet)) {
-                PcbItem foundItem = SearchManager.sm().findPcbItem(
+                PcbItem foundItem;
+                PcbItemProjectLink link;
+
+                foundItem = SearchManager.sm().findPcbItem(
                         pcbItem.getFootprint(),
                         pcbItem.getLibrary(),
                         pcbItem.getPartName()
                 );
 
                 if (foundItem == null) {
-                    if (!itemsToSave.contains(pcbItem)) {
+                    int ndx  = itemsToSave.indexOf(pcbItem);
+                    if (ndx < 0) {
                         itemsToSave.add(pcbItem);
+                        link = new PcbItemProjectLink(pcbItem, pcbProject);
+                    } else {
+                        PcbItem knownItem = itemsToSave.get(ndx);
+                        link = new PcbItemProjectLink(knownItem, pcbProject);
+                        link.setReferences(pcbItem.getReferences());
+                        link.setValue(pcbItem.getValue());
+                        link.setPcbSheetName(pcbItem.getSheetName());
                     }
                 } else {
-                    PcbItem newItem = new PcbItem(
-                            pcbItem.getRef(),
-                            pcbItem.getValue(),
-                            pcbItem.getFootprint(),
-                            pcbItem.getLibrary(),
-                            pcbItem.getPartName(),
-                            foundItem.getSheetName(),
-                            DateUtils.now()
-                    );
-                    newItem.setId(foundItem.getId());
+                    PcbItem newItem = foundItem.createCopy();
+                    newItem.setRef(pcbItem.getRef());
+                    newItem.setValue(pcbItem.getValue());
+                    newItem.setReferences(pcbItem.getReferences());
+                    newItem.settStamp(pcbItem.gettStamp());
+                    newItem.setSheetName(pcbItem.getSheetName());
 
                     int ndx = pcbItemMap.get(sheet).indexOf(pcbItem);
                     pcbItemMap.get(sheet).set(ndx, newItem);
-                }
-            }
 
-            for (PcbItem item : itemsToSave) {
-                item.save();
+                    link = new PcbItemProjectLink(newItem, pcbProject);
+                }
+
+                projectLinks.add(link);
             }
-            itemsToSave.clear();
         }
+
+        for (PcbItem item : itemsToSave) {
+            item.save();
+        }
+
+        return projectLinks;
     }
 
-    public List<PcbItemProjectLink> updatePcbItemProjectLinksDb(HashMap<String, List<PcbItem>> pcbItems, ProjectPcb projectPcb) {
+    public void updatePcbItemProjectLinksDb(ProjectPcb projectPcb, List<PcbItemProjectLink> projectLinks) {
         // Create new list with links
         List<PcbItemProjectLink> toDelete = new ArrayList<>(SearchManager.sm().findPcbItemLinksWithProjectPcb(projectPcb.getId()));
         List<PcbItemProjectLink> toSave = new ArrayList<>();
-        List<PcbItemProjectLink> result = new ArrayList<>();
 
-        for (String sheet : pcbItems.keySet()) {
-
-            for (PcbItem pcbItem : pcbItems.get(sheet)) {
-                PcbItemProjectLink link = SearchManager.sm().findPcbItemLink(pcbItem, projectPcb.getId(), sheet);
-                if (link != null) {
-                    toDelete.remove(link);
-                } else {
-                    link = new PcbItemProjectLink(pcbItem, projectPcb);
-                    toSave.add(link);
-                }
+        for (PcbItemProjectLink link : projectLinks) {
+            if (toDelete.contains(link)) {
+                toDelete.remove(link);
+            } else {
+                toSave.add(link);
             }
-
-            // Save
-            for (PcbItemProjectLink link : toSave) {
-                //link.save();
-            }
-
-            // What remains in currentLinks can be removed
-            for (PcbItemProjectLink link : toDelete) {
-                //link.delete();
-            }
-
-            result.addAll(toSave);
         }
 
-        return result;
+        // Save
+        for (PcbItemProjectLink link : toSave) {
+            link.save();
+        }
+
+        // What remains in currentLinks can be removed
+        for (PcbItemProjectLink link : toDelete) {
+            link.delete();
+        }
     }
 
 

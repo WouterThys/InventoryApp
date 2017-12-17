@@ -115,7 +115,9 @@ public abstract class ProjectObject extends DbObject {
     }
 
     public void setProjectId(long projectId) {
-        project = null;
+        if (project != null && project.getId() != projectId) {
+            project = null;
+        }
         this.projectId = projectId;
     }
 
@@ -131,7 +133,9 @@ public abstract class ProjectObject extends DbObject {
     }
 
     public void setProjectIDEId(long projectIDEId) {
-        projectIDE = null;
+        if (projectIDE != null && projectIDE.getId() != projectIDEId) {
+            projectIDE = null;
+        }
         this.projectIDEId = projectIDEId;
     }
 
@@ -149,7 +153,7 @@ public abstract class ProjectObject extends DbObject {
         return null;
     }
 
-    public String getRemarksFileName() {
+    String getRemarksFileName() {
         if (remarksFile == null) {
             remarksFile = "";
         }

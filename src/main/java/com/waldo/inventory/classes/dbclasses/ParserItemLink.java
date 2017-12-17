@@ -108,14 +108,6 @@ public class ParserItemLink extends DbObject {
         }
     }
 
-    public static ParserItemLink getUnknownParserItemLink() {
-        ParserItemLink u = new ParserItemLink();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
-    }
-
     public boolean hasCategory() {
         return categoryId > UNKNOWN_ID;
     }
@@ -157,7 +149,9 @@ public class ParserItemLink extends DbObject {
     }
 
     public void setCategoryId(long categoryId) {
-        category = null;
+        if (category != null && category.getId() != categoryId) {
+            category = null;
+        }
         this.categoryId = categoryId;
     }
 
@@ -173,7 +167,9 @@ public class ParserItemLink extends DbObject {
     }
 
     public void setProductId(long productId) {
-        product = null;
+        if (product != null && product.getId() != productId) {
+            product = null;
+        }
         this.productId = productId;
     }
 
@@ -189,7 +185,9 @@ public class ParserItemLink extends DbObject {
     }
 
     public void setTypeId(long typeId) {
-        type = null;
+        if (type != null && type.getId() != typeId) {
+            type = null;
+        }
         this.typeId = typeId;
     }
 

@@ -143,7 +143,9 @@ public class SetItem extends DbObject {
     }
 
     public void setItemId(long itemId) {
-        item = null;
+        if (item != null && item.getId() != itemId) {
+            item = null;
+        }
         this.itemId = itemId;
     }
 
@@ -159,7 +161,9 @@ public class SetItem extends DbObject {
     }
 
     public void setLocationId(long locationId) {
-        location = null;
+        if (location != null && location.getId() != locationId) {
+            location = null;
+        }
         this.locationId = locationId;
     }
 

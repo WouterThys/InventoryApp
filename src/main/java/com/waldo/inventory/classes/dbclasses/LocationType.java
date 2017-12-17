@@ -83,14 +83,6 @@ public class LocationType extends DbObject {
         }
     }
 
-    public static LocationType getUnknownLocationType() {
-        LocationType u = new LocationType();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
-    }
-
     public Location getNeighbourOfLocation(Location location, LocationNeighbour direction, boolean leftToRight, boolean downwards) {
         Location neighbour = null;
         if (location != null) {
@@ -151,11 +143,11 @@ public class LocationType extends DbObject {
         return neighbour;
     }
 
-    public int getNumberOfColumnsInRow(int row) {
+    private int getNumberOfColumnsInRow(int row) {
         return getLocationsInRow(row).size();
     }
 
-    public int getNumberOfRows() {
+    private int getNumberOfRows() {
         int maxRow = 0;
         for (Location location : getLocations()) {
             if (location.getRow() > maxRow) {
@@ -165,7 +157,7 @@ public class LocationType extends DbObject {
         return maxRow;
     }
 
-    public List<Location> getLocationsInRow(int row) {
+    private List<Location> getLocationsInRow(int row) {
         List<Location> rowLocations = new ArrayList<>();
         if (row >= 0) {
             for (Location location : getLocations()) {

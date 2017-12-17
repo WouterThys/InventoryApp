@@ -110,27 +110,14 @@ public class PackageType extends DbObject {
         }
     }
 
-    public static PackageType createDummyPackageType() {
-        PackageType p = new PackageType();
-        p.setName("");
-        p.setCanBeSaved(false);
-        return p;
-    }
-
-    public static PackageType getUnknownPackageType() {
-        PackageType p = new PackageType();
-        p.setName(UNKNOWN_NAME);
-        p.setId(UNKNOWN_ID);
-        p.setCanBeSaved(false);
-        return p;
-    }
-
     public long getPackageId() {
         return packageId;
     }
 
     public void setPackageId(long packageId) {
-        aPackage = null;
+        if (aPackage != null && aPackage.getId() != packageId) {
+            aPackage = null;
+        }
         this.packageId = packageId;
     }
 

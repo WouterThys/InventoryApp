@@ -85,7 +85,9 @@ public class Product extends DbObject {
     }
 
     public void setCategoryId(long categoryId) {
-        category = null;
+        if (category != null && category.getId() != categoryId) {
+            category = null;
+        }
         this.categoryId = categoryId;
     }
 

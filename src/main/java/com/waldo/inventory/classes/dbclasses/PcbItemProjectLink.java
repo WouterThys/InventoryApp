@@ -49,23 +49,39 @@ public class PcbItemProjectLink extends DbObject {
         this.projectPcb = projectPcb;
 
         if (pcbItem != null) {
-            this.pcbItem = pcbItem;
             pcbItemId = pcbItem.getId();
             value = pcbItem.getValue();
             pcbSheetName = pcbItem.getSheetName();
+            references = pcbItem.getReferences();
         }
+
         if (projectPcb != null) {
             projectPcbId = projectPcb.getId();
         }
     }
 
+    @Override
+    public String toString() {
+        String result = "";
+        if (getProjectPcb() != null) {
+            result = projectPcb.toString();
+        }
+        if (getPcbItem() != null) {
+            result += " <-> " + pcbItem.toString();
+        }
+        return result;
+    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
         if (getPcbItemId() < UNKNOWN_ID) {
-            setPcbItemId(UNKNOWN_ID);
+            if (pcbItem != null) {
+                setPcbItemId(pcbItem.getId());
+            } else {
+                setPcbItemId(UNKNOWN_ID);
+            }
         }
         if (getProjectPcbId() < UNKNOWN_ID) {
             setProjectPcbId(UNKNOWN_ID);
@@ -96,6 +112,7 @@ public class PcbItemProjectLink extends DbObject {
                     ref.getProjectPcbId() == getProjectPcbId() &&
                     ref.getValue().equals(getValue()) &&
                     ref.getUsedCount() == getUsedCount() &&
+                    ref.getReferenceString().equals(getReferenceString()) &&
                     ref.getPcbSheetName().equals(getPcbSheetName());
         }
         return false;
@@ -182,7 +199,9 @@ public class PcbItemProjectLink extends DbObject {
     }
 
     public void setPcbItemId(long pcbItemId) {
-        this.pcbItem = null;
+        if (pcbItem != null && pcbItem.getId() != pcbItemId) {
+            pcbItem = null;
+        }
         this.pcbItemId = pcbItemId;
     }
 
@@ -191,7 +210,9 @@ public class PcbItemProjectLink extends DbObject {
     }
 
     public void setProjectPcbId(long projectPcbId) {
-        this.projectPcb = null;
+        if (projectPcb != null && projectPcb.getId() != projectPcbId) {
+            projectPcb = null;
+        }
         this.projectPcbId = projectPcbId;
     }
 
@@ -256,11 +277,13 @@ public class PcbItemProjectLink extends DbObject {
 
     public String getReferenceString() {
         StringBuilder refs = new StringBuilder();
-        getReferences().sort(new ReferenceComparer());
-        for (String r : getReferences()) {
-            refs.append(r).append(", ");
+        if (getReferences().size() > 0) {
+            getReferences().sort(new ReferenceComparer());
+            for (String r : getReferences()) {
+                refs.append(r).append(", ");
+            }
+            refs.delete(refs.lastIndexOf(", "), refs.length());
         }
-        refs.delete(refs.lastIndexOf(", "), refs.length());
         return refs.toString();
     }
 

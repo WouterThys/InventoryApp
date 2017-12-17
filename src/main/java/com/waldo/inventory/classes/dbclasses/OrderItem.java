@@ -107,12 +107,16 @@ public class OrderItem extends DbObject {
     }
 
     public void setOrderId(long orderId) {
-        order = null;
+        if (order != null && order.getId() != orderId) {
+            order = null;
+        }
         this.orderId = orderId;
     }
 
     public void setItemId(long itemId) {
-        item = null;
+        if (item != null && item.getId() != itemId) {
+            item = null;
+        }
         this.itemId = itemId;
     }
 

@@ -121,7 +121,9 @@ public class DistributorPartLink extends DbObject {
     }
 
     public void setDistributorId(long distributorId) {
-        distributor = null;
+        if (distributor != null && distributor.getId() != distributorId) {
+            distributor = null;
+        }
         this.distributorId = distributorId;
     }
 
@@ -137,7 +139,9 @@ public class DistributorPartLink extends DbObject {
     }
 
     public void setItemId(long itemId) {
-        item = null;
+        if (item != null && item.getId() != itemId) {
+            item = null;
+        }
         this.itemId = itemId;
     }
 

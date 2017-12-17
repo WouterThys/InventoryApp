@@ -129,14 +129,6 @@ public class Location extends DbObject {
         return createCopy(new Location());
     }
 
-    public static Location getUnknownLocation() {
-        Location l = new Location();
-        l.setName(UNKNOWN_NAME);
-        l.setId(UNKNOWN_ID);
-        l.setCanBeSaved(false);
-        return l;
-    }
-
 
     //
     // DatabaseAccess tells the object is updated
@@ -201,7 +193,9 @@ public class Location extends DbObject {
     }
 
     public void setLocationTypeId(long locationTypeId) {
-        locationType = null;
+        if (locationType != null && locationType.getId() != locationTypeId) {
+            locationType = null;
+        }
         this.locationTypeId = locationTypeId;
     }
 
@@ -218,10 +212,6 @@ public class Location extends DbObject {
 
     public void setRow(int row) {
         this.row = row;
-    }
-
-    public void setRowAsString(String row) {
-        this.row = Statics.indexOfAlphabet(row);
     }
 
     public int getCol() {

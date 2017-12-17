@@ -205,12 +205,6 @@ public class Order extends DbObject {
         return builder.toString();
     }
 
-    public void browseDistributor() throws IOException {
-        if (getDistributorId() > UNKNOWN_ID) {
-            OpenUtils.browseLink(getDistributor().getWebsite());
-        }
-    }
-
     public void browseOrderPage() throws IOException {
         if (getDistributorId() > UNKNOWN_ID) {
             OpenUtils.browseLink(getDistributor().getOrderLink());
@@ -279,29 +273,7 @@ public class Order extends DbObject {
         }
     }
 
-    public void removeItemFromTempList(OrderItem item) {
-        if (item != null) {
-            if (orderItems.contains(item)) {
-                orderItems.remove(item);
-            }
-        }
-    }
-
     public void updateItemReferences() {
-//        if (getDistributor() != null && getOrderItems().size() > 0) {
-//            for (OrderItem oi : orderItems) {
-//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(getDistributor().getId(), oi.getItemId());
-//                if (distributorPartLink != null) {
-//                    if (oi.getDistributorPartId() != distributorPartLink.getId()) {
-//                        oi.setDistributorPartId(distributorPartLink.getId());
-//                        oi.save();
-//                    }
-//                } else {
-//                    oi.setDistributorPartId(DbObject.UNKNOWN_ID);
-//                    oi.save();
-//                }
-//            }
-//        }
         for (OrderItem oi : orderItems) {
             oi.updateDistributorPart();
         }
@@ -419,8 +391,10 @@ public class Order extends DbObject {
     }
 
     public void setDistributorId(long id) {
+        if (distributor != null && distributor.getId() != id) {
+            distributor = null;
+        }
         this.distributorId = id;
-        distributor = null;
     }
 
     public void setDistributor(String id) {

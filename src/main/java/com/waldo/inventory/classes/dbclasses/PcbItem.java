@@ -218,6 +218,26 @@ public class PcbItem extends DbObject {
         }
     }
 
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    public List<String> getReferences() {
+        return references;
+    }
+
+    public void setReferences(List<String> references) {
+        this.references = references;
+    }
+
     //
     // Extra's for ordering
     //

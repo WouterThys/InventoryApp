@@ -129,17 +129,10 @@ public class Distributor extends DbObject {
     }
 
     public void setOrderFileFormatId(long orderFileFormatId) {
-        this.orderFileFormatId = orderFileFormatId;
-        orderFileFormat = null;
-    }
-
-    public void setOrderFileFormatId(String id) {
-        try {
-            this.orderFileFormatId = Long.valueOf(id);
+        if (orderFileFormat != null && orderFileFormat.getId() != orderFileFormatId) {
             orderFileFormat = null;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        this.orderFileFormatId = orderFileFormatId;
     }
 
     public OrderFileFormat getOrderFileFormat() {

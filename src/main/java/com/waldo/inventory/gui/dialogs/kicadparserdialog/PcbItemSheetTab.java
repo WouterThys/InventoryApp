@@ -115,7 +115,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
         if (args.length > 0 && args[0] != null) {
             java.util.List<PcbItemProjectLink> components = new ArrayList<>();
             for (Object o : args) {
-                components.add((PcbItemProjectLink)o);
+//                components.add((PcbItemProjectLink)o);
             }
             pcbItemTableModel.setItemList(components);
         }

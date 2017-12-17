@@ -342,7 +342,9 @@ public class Item extends DbObject {
     }
 
     public void setCategoryId(long categoryId) {
-        category = null;
+        if (category != null && category.getId() != categoryId) {
+            category = null;
+        }
         this.categoryId = categoryId;
     }
 
@@ -358,7 +360,9 @@ public class Item extends DbObject {
     }
 
     public void setProductId(long productId) {
-        product = null;
+        if (product != null && product.getId() != productId) {
+            product = null;
+        }
         this.productId = productId;
     }
 
@@ -374,7 +378,9 @@ public class Item extends DbObject {
     }
 
     public void setTypeId(long typeId) {
-        type = null;
+        if (type != null && type.getId() != typeId) {
+            type = null;
+        }
         this.typeId = typeId;
     }
 
@@ -412,7 +418,9 @@ public class Item extends DbObject {
     }
 
     public void setManufacturerId(long manufacturerId) {
-        manufacturer = null;
+        if (manufacturer != null && manufacturer.getId() != manufacturerId) {
+            manufacturer = null;
+        }
         this.manufacturerId = manufacturerId;
     }
 
@@ -429,7 +437,9 @@ public class Item extends DbObject {
     }
 
     public void setLocationId(long locationId) {
-        location = null;
+        if (location != null && location.getId() != locationId) {
+            location = null;
+        }
         this.locationId = locationId;
     }
 
@@ -505,7 +515,9 @@ public class Item extends DbObject {
     }
 
     public void setPackageTypeId(long packageTypeId) {
-        packageType = null;
+        if (packageType != null && packageType.getId() != packageTypeId) {
+            packageType = null;
+        }
         this.packageTypeId = packageTypeId;
     }
 

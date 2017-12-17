@@ -368,13 +368,13 @@ public class DatabaseAccess {
                                     hasMoreWork = false;
                                 }
                             } while (hasMoreWork && keepRunning);
+
                             // Close db
                             try (PreparedStatement stmt = connection.prepareStatement("commit;")) {
                                 stmt.execute();
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
-                            System.out.print("ROLLING BACK DB");
+                            System.out.print("ROLLING BACK DB :" + e);
                             try (PreparedStatement stmt = connection.prepareStatement("rollback;")) {
                                 stmt.execute();
                             }
