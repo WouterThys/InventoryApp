@@ -2,20 +2,24 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
-    private static final String[] COLUMN_NAMES = {"", "Name"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class};
+    // Names and classes
+    private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon redBall = imageResource.readImage("Ball.red");
@@ -26,6 +30,10 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
+    public void setItemList(List<Item> itemList) {
+        super.setItemList(itemList);
+    }
+
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Item item = getItemAt(rowIndex);
@@ -33,11 +41,18 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
         if (item != null) {
             switch (columnIndex) {
                 case -1:
-                    return item;
                 case 0: // Amount label
                     return item;
                 case 1: // Name
                     return item.toString();
+                case 2: // Description
+                    return item.getDescription();
+                case 3: // Manufacturer
+                    Manufacturer m = SearchManager.sm().findManufacturerById(item.getManufacturerId());
+                    if (m != null && !m.isUnknown()) {
+                        return m.toString();
+                    }
+                    return "";
             }
         }
         return null;

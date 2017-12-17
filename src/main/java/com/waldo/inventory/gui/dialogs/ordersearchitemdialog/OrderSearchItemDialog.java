@@ -45,7 +45,7 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
     // SEARCH LISTENER
     //
     @Override
-    public void onDbObjectFound(List<Item> foundObjects) {
+    public void onObjectsFound(List<Item> foundObjects) {
         itemToOrder = null;
         resultTableModel.setItemList(foundObjects);
     }

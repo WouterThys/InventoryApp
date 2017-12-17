@@ -1,11 +1,14 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.MATCH_MANUAL;
 
 public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
 
@@ -17,6 +20,33 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
         initializeComponents();
         initializeLayouts();
         updateComponents();
+    }
+
+    @Override
+    void onSelectNewItem() {
+        AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search item", false);
+        if (dialog.showDialog() == IDialog.OK) {
+            Item newMatch = dialog.getSelectedItem();
+            if (newMatch != null) {
+                PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
+                PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
+                if (itemItemLink == null) {
+                    itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, newMatch);
+                    itemItemLink.save(); // TODO: also with original stuff so that it can be canceled
+                } else {
+                    if (itemItemLink.getItemId() != newMatch.getId()) {
+                        itemItemLink.setItemId(newMatch.getId());
+                        itemItemLink.save();
+                    }
+                }
+                updateMatchedItemPanel(newMatch.getName(), newMatch.getAmount());
+            }
+        }
+    }
+
+    @Override
+    void onSelectNewOrder() {
+
     }
 
     private void showSaveDialog() {

@@ -2,13 +2,14 @@ package com.waldo.inventory.classes;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DbObjectSearcher<T extends DbObject> {
 
     public interface SearchListener<dbo extends DbObject> {
-        void onDbObjectFound(List<dbo> foundObjects);
+        void onObjectsFound(List<dbo> foundObjects);
         void onSearchCleared();
         void onNextSearchObject(dbo next);
         void onPreviousSearchObject(dbo previous);
@@ -33,28 +34,22 @@ public class DbObjectSearcher<T extends DbObject> {
         this.searchListener = searchListener;
     }
 
-    public void addSearchListener(SearchListener<T> searchListener) {
-        this.searchListener = searchListener;
-    }
+    public void search(String searchWord) {
+        resultList.clear();
+        SwingUtilities.invokeLater(() -> {
+            // Search list
+            if (searchOptions == null || searchOptions.length == 0) {
+                resultList = searchForObject(searchList, searchWord);
+            } else {
+                resultList = searchForObject(searchList /*, searchOptions*/, searchWord);
+            }
 
-    public List<T> search(String searchWord) {
-        List<T> foundObjects;
+            currentResultNdx = 0;
 
-        // Search list
-        if (searchOptions == null || searchOptions.length == 0) {
-            foundObjects = searchForObject(searchList, searchWord);
-        } else {
-            foundObjects = searchForObject(searchList /*, searchOptions*/, searchWord);
-        }
-
-        currentResultNdx = 0;
-        resultList = foundObjects;
-
-        if (searchListener != null) {
-            searchListener.onDbObjectFound(foundObjects);
-        }
-
-        return foundObjects;
+            if (searchListener != null) {
+                searchListener.onObjectsFound(resultList);
+            }
+        });
     }
 
     public void clearSearch() {
@@ -66,7 +61,11 @@ public class DbObjectSearcher<T extends DbObject> {
         }
     }
 
-    public void getNextFoundObject() {
+    public boolean hasSearchResults() {
+        return resultList != null && resultList.size() > 0;
+    }
+
+    public void findNextObject() {
         if (searchListener != null) {
             currentResultNdx++;
             if (currentResultNdx >= resultList.size()) {
@@ -76,7 +75,7 @@ public class DbObjectSearcher<T extends DbObject> {
         }
     }
 
-    public void getPreviousFoundObject() {
+    public void findPreviousObject() {
         if (searchListener != null) {
             currentResultNdx--;
             if (currentResultNdx < 0) {

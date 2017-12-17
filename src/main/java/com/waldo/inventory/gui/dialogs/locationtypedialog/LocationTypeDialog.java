@@ -202,7 +202,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     // Search
     //
     @Override
-    public void onDbObjectFound(List<LocationType> foundObjects) {
+    public void onObjectsFound(List<LocationType> foundObjects) {
         LocationType found = foundObjects.get(0);
         locationTypeList.setSelectedValue(found, true);
     }

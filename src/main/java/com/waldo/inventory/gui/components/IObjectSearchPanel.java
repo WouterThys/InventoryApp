@@ -13,7 +13,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface {
+public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface, DbObjectSearcher.SearchListener<T> {
 
     private final DbObjectSearcher<T> searchManager;
 
@@ -24,8 +24,11 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private IImageButton previousBtn;
     private IImageButton nextBtn;
 
+    private DbObjectSearcher.SearchListener<T> searchListener;
+
     public IObjectSearchPanel(List<T> searchList, DbObjectSearcher.SearchListener<T> searchListener) {
-        searchManager = new DbObjectSearcher<>(searchList, searchListener);
+        this.searchManager = new DbObjectSearcher<>(searchList, this);
+        this.searchListener = searchListener;
 
         initializeComponents();
         initializeLayouts();
@@ -41,7 +44,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     }
 
     public void addSearchListener(DbObjectSearcher.SearchListener<T> searchListener) {
-        searchManager.addSearchListener(searchListener);
+        this.searchListener = searchListener;
     }
 
     public void clearSearch() {
@@ -54,26 +57,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     }
 
     public void search(String searchWord) {
-        List<T> foundObjects = searchManager.search(searchWord);
-
-        // Found!
-        if (foundObjects.size() > 0) {
-            if (foundObjects.size() == 1) {
-                setInfo("1 object found!");
-                Status().setMessage("1 object(s) found!");
-            } else {
-                setInfo(foundObjects.size() + " object(s) found!");
-                Status().setMessage(foundObjects.size() + " object(s) found!");
-            }
-
-            if (foundObjects.size() > 1) {
-                btnPanel.setVisible(true);
-            }
-
-            setSearched(true);
-        } else {
-            setError("Nothing found..");
-        }
+        searchManager.search(searchWord);
     }
 
     private void setSearched(boolean searched) {
@@ -165,8 +149,8 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         nextBtn.setBorder(BorderFactory.createEmptyBorder());
         nextBtn.setContentAreaFilled(false);
 
-        previousBtn.addActionListener(e -> searchManager.getPreviousFoundObject());
-        nextBtn.addActionListener(e -> searchManager.getNextFoundObject());
+        previousBtn.addActionListener(e -> searchManager.findPreviousObject());
+        nextBtn.addActionListener(e -> searchManager.findNextObject());
     }
 
 
@@ -213,4 +197,46 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
             infoLabel.setEnabled(enabled);
     }
 
+    @Override
+    public void onObjectsFound(List<T> foundObjects) {
+        if (foundObjects.size() > 0) {
+            if (foundObjects.size() == 1) {
+                setInfo("1 object found!");
+            } else {
+                setInfo(foundObjects.size() + " object(s) found!");
+            }
+
+            if (foundObjects.size() > 1) {
+                btnPanel.setVisible(true);
+            }
+
+            setSearched(true);
+        } else {
+            setError("Nothing found..");
+        }
+        if (searchListener != null) {
+            searchListener.onObjectsFound(foundObjects);
+        }
+    }
+
+    @Override
+    public void onSearchCleared() {
+        if (searchListener != null) {
+            searchListener.onSearchCleared();
+        }
+    }
+
+    @Override
+    public void onNextSearchObject(T next) {
+        if (searchListener != null) {
+            searchListener.onNextSearchObject(next);
+        }
+    }
+
+    @Override
+    public void onPreviousSearchObject(T previous) {
+        if (searchListener != null) {
+            searchListener.onPreviousSearchObject(previous);
+        }
+    }
 }

@@ -102,7 +102,7 @@ public class TopToolBar extends JPanel {
     }
 
 //    @Override
-//    public void onDbObjectFound(java.util.List<DbObject> foundObjects) {
+//    public void onObjectsFound(java.util.List<DbObject> foundObjects) {
 //        application.setTableItems(foundObjects);
 //        if (foundObjects.size() > 0) {
 //            if (foundObjects.get(0) instanceof Item) {

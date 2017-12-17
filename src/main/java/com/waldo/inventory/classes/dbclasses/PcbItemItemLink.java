@@ -15,6 +15,7 @@ public class PcbItemItemLink extends DbObject {
     public static final String TABLE_NAME = "pcbitemitemlinks";
 
     // Bitwise matches
+    public static final int MATCH_MANUAL = 0; // User selected item
     public static final int MATCH_NAME = 1;
     public static final int MATCH_VALUE = 2;
     public static final int MATCH_FOOTPRINT = 4;

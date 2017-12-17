@@ -143,7 +143,7 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     // Search stuff
     //
     @Override
-    public void onDbObjectFound(List<Item> foundObjects) {
+    public void onObjectsFound(List<Item> foundObjects) {
         List<PcbItemItemLink> itemMatches = new ArrayList<>();
         for (Item object : foundObjects) {
             int type = DbObject.getType(object);

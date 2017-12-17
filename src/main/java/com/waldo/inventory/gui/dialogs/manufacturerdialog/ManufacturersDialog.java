@@ -174,7 +174,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     //
 
     @Override
-    public void onDbObjectFound(List<Manufacturer> foundObjects) {
+    public void onObjectsFound(List<Manufacturer> foundObjects) {
         Manufacturer mFound = foundObjects.get(0);
         manufacturerList.setSelectedValue(mFound, true);
     }

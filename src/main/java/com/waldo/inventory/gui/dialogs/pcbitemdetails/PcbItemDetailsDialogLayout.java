@@ -6,7 +6,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.EditItemAction;
 import com.waldo.inventory.gui.components.actions.OrderItemAction;
-import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,6 +72,9 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    abstract void onSelectNewItem();
+    abstract void onSelectNewOrder();
+
     private void updateEnabledComponents() {
 
     }
@@ -243,8 +245,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         editItemAction = new EditItemAction() {
             @Override
             public void onEditItem() {
-                AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search item");
-                dialog.showDialog();
+                onSelectNewItem();
             }
         };
         orderTf = new ITextField(false);
@@ -252,7 +253,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         orderItemAction = new OrderItemAction() {
             @Override
             public void onOrderItem() {
-                // TODO: add item to order
+                onSelectNewOrder();
             }
         };
         spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
