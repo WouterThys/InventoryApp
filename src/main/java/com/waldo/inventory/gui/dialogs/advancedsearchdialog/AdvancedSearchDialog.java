@@ -106,7 +106,6 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
                 int size = foundObjects.size();
                 if (size == 0) {
                     setInfo("No items found..");
-                    tableClear();
                 } else if (size == 1) {
                     setInfo("1 item found!");
                     addResults(new ArrayList<>(foundObjects));
@@ -141,7 +140,6 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
                 int size = foundObjects.size();
                 if (size == 0) {
                     setInfo("No items found..");
-                    tableClear();
                 } else if (size == 1) {
                     setInfo("1 item found!");
                     addResults(new ArrayList<>(foundObjects));

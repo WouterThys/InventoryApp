@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
@@ -181,7 +182,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         nextPrevTb.add(nextResultAction);
         nextPrevTb.add(prevResultAction);
 
-        tableModel = new IFoundItemsTableModel(searchType);
+        tableModel = new IFoundItemsTableModel(searchType, new ComparatorUtils.ObjectMatchComparator());
         foundItemTable = new ITable<>(tableModel);
         if (!allowMultiSelect) {
             foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

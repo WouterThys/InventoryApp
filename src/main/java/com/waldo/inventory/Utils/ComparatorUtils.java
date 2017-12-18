@@ -28,6 +28,14 @@ public class ComparatorUtils {
         }
     }
 
+    public static class ObjectMatchComparator implements Comparator<DbObject> {
+        @Override
+        public int compare(DbObject o1, DbObject o2) {
+            MatchComparator mc = new MatchComparator();
+            return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
+        }
+    }
+
     //
     // Item
     //
@@ -103,6 +111,8 @@ public class ComparatorUtils {
             return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
         }
     }
+
+
 
     //
     // Manufacturer

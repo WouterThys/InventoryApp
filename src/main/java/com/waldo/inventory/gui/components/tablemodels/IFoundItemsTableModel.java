@@ -13,6 +13,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -25,15 +26,12 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, ILabel.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon redBall = imageResource.readImage("Ball.red");
-    private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
     private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
-    private static final ImageIcon blackBall = imageResource.readImage("Ball.black");
 
     private SearchType searchType;
 
-    public IFoundItemsTableModel(SearchType searchType) {
-        super(COLUMN_NAMES, COLUMN_CLASSES);
+    public IFoundItemsTableModel(SearchType searchType, Comparator<DbObject> comparator) {
+        super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
         this.searchType = searchType;
     }
 

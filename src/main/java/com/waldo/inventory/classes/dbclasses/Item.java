@@ -199,7 +199,7 @@ public class Item extends DbObject {
 
                 if(PcbItem.matchesName(pcbName, itemName)) match++;
                 if (getValue().hasValue()) {
-                    if (PcbItem.matchesValue(pcbValue, getValue())) match++;
+                    if (PcbItem.matchesValue(pcbValue, getValue(), itemName)) match++;
                 } else {
                     if (PcbItem.matchesName(pcbValue, getName())) match++;
                 }

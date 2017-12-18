@@ -145,9 +145,7 @@ public class SetItem extends DbObject {
                     }
                 }
 
-                String itemName = getName().toUpperCase();
-
-                if(PcbItem.matchesName(pcbName, itemName)) match++;
+                match++; // Name matches
                 if(PcbItem.matchesValue(pcbValue, getValue())) match++;
 
                 // Only check footprint match if there is already a match
