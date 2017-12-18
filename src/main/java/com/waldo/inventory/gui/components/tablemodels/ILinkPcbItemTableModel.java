@@ -47,7 +47,7 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
                     return component.getValue();
                 case 3:
                     if (type == LINK_COMPONENTS) {
-                        return component.hasMatch();
+                        return component.hasMatchedItem();
                     } else {
                         return component.isOrdered();
                     }
@@ -76,8 +76,8 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
 
                     ILabel lbl;
                     PcbItem pcbItem = (PcbItem) value;
-                    String txt = String.valueOf(pcbItem.getReferences().size());
-                    lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
+                    String txt = "";//String.valueOf(pcbItem.getReferences().size());
+                    lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall);
 
                     return lbl;
                 }

@@ -16,6 +16,7 @@ public class Package extends DbObject {
 
     public Package() {
         super(TABLE_NAME);
+        matchCount = 1;
     }
 
     @Override
@@ -38,6 +39,14 @@ public class Package extends DbObject {
         String search = searchTerm.toUpperCase();
         String name = getName().toUpperCase();
         return name.contains(search) || search.contains(name);
+    }
+
+    @Override
+    protected int findMatch(String searchTerm) {
+        int match = 0;
+        String name = getName().toUpperCase();
+        if( name.contains(searchTerm) || searchTerm.contains(name)) match++;
+        return match;
     }
 
     @Override

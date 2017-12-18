@@ -9,10 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.MATCH_MANUAL;
+import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
 public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
 
-    private boolean canClose = true;
 
     public PcbItemDetailsDialog(Application application, String title, PcbItemProjectLink itemProjectLink) {
         super(application, title, itemProjectLink);
@@ -24,11 +24,16 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
 
     @Override
     void onSelectNewItem() {
-        AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search item", false);
+
+        AdvancedSearchDialog dialog = new AdvancedSearchDialog(
+                application,
+                "Search item",
+                SearchType.PcbItem,
+                pcbItemProjectLink);
         if (dialog.showDialog() == IDialog.OK) {
+            PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
             Item newMatch = dialog.getSelectedItem();
             if (newMatch != null) {
-                PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
                 PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
                 if (itemItemLink == null) {
                     itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, newMatch);
@@ -57,7 +62,6 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
                 originalProjectLink = pcbItemProjectLink.createCopy();
             }
         }
-        canClose = true;
     }
 
     private boolean checkChange() {
@@ -82,7 +86,6 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
     @Override
     protected void onOK() {
         if (checkChange()) {
-            canClose = false;
             showSaveDialog();
         }
 

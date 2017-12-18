@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
 
@@ -92,6 +93,14 @@ public class ComparatorUtils {
         public int compare(Item o1, Item o2) {
             LocationComparator lc = new LocationComparator();
             return lc.compare(o1.getLocation(), o2.getLocation());
+        }
+    }
+
+    public static class ItemMatchComparator implements Comparator<Item> {
+        @Override
+        public int compare(Item o1, Item o2) {
+            MatchComparator mc = new MatchComparator();
+            return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
         }
     }
 
@@ -205,6 +214,25 @@ public class ComparatorUtils {
                 return -Integer.compare(cacheList1.size(), cacheList2.size());
             } else {
                 return 1;
+            }
+        }
+    }
+
+    //
+    // Match
+    //
+    public static class MatchComparator implements Comparator<DbObjectMatch> {
+        @Override
+        public int compare(DbObjectMatch o1, DbObjectMatch o2) {
+            if (o1 == null && o2 != null) {
+                return -1;
+            } else if (o1 != null && o2 == null) {
+                return 1;
+            } else if (o1 != null){
+                // Actual compare
+                return -Integer.compare(o1.getMatchPercent(), o2.getMatchPercent());
+            } else {
+                return -1;
             }
         }
     }

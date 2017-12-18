@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IPackageTypeTableModel;
@@ -22,7 +22,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class PackageTypeDialogLayout extends IDialog implements
-        DbObjectSearcher.SearchListener<PackageType>,
+        Search.SearchListener<PackageType>,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {

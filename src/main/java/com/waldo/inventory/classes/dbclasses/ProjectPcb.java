@@ -218,7 +218,7 @@ public class ProjectPcb extends ProjectObject {
         List<Item> items = new ArrayList<>();
         for (PcbItemProjectLink link : getPcbItemMap()) {
             PcbItem pcbItem = link.getPcbItem();
-            if (pcbItem.hasMatch()) {
+            if (pcbItem.hasMatchedItem()) {
                 items.add(pcbItem.getMatchedItemLink().getItem());
             }
         }

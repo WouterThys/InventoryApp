@@ -53,11 +53,6 @@ public class OrderItem extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        return super.hasMatch(searchTerm);
-    }
-
-    @Override
     public OrderItem createCopy(DbObject copyInto) {
         OrderItem orderItem = (OrderItem) copyInto;
         copyBaseFields(orderItem);

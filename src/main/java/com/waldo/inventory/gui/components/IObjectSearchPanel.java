@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
@@ -13,9 +13,9 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface, DbObjectSearcher.SearchListener<T> {
+public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface, Search.SearchListener<T> {
 
-    private final DbObjectSearcher<T> searchManager;
+    private final Search.DbObjectSearch<T> searchManager;
 
     private ITextField searchField;
     private JButton searchButton;
@@ -24,10 +24,10 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private IImageButton previousBtn;
     private IImageButton nextBtn;
 
-    private DbObjectSearcher.SearchListener<T> searchListener;
+    private Search.SearchListener<T> searchListener;
 
-    public IObjectSearchPanel(List<T> searchList, DbObjectSearcher.SearchListener<T> searchListener) {
-        this.searchManager = new DbObjectSearcher<>(searchList, this);
+    public IObjectSearchPanel(List<T> searchList, Search.SearchListener<T> searchListener) {
+        this.searchManager = new Search.DbObjectSearch<>(searchList, this);
         this.searchListener = searchListener;
 
         initializeComponents();
@@ -43,7 +43,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         searchManager.setSearchList(searchList);
     }
 
-    public void addSearchListener(DbObjectSearcher.SearchListener<T> searchListener) {
+    public void addSearchListener(Search.SearchListener<T> searchListener) {
         this.searchListener = searchListener;
     }
 

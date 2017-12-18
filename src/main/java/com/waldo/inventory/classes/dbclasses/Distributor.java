@@ -20,6 +20,7 @@ public class Distributor extends DbObject {
 
     public Distributor() {
         super(TABLE_NAME);
+        matchCount = 3;
     }
 
 
@@ -36,15 +37,10 @@ public class Distributor extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            if (searchTerm.contains(getWebsite().toUpperCase())) {
-                return true;
-            }
-        }
-        return false;
+    protected int findMatch(String searchTerm) {
+        int match = super.findMatch(searchTerm);
+        if (searchTerm.contains(getWebsite().toUpperCase())) match++;
+        return match;
     }
 
     @Override

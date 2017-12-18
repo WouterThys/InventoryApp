@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
@@ -15,7 +15,7 @@ import java.awt.*;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class OrderSearchItemDialogLayout extends IDialog implements
-        DbObjectSearcher.SearchListener<Item>,
+        Search.SearchListener<Item>,
         ListSelectionListener {
 
     /*

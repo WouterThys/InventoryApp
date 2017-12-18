@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.parser.PcbItemParser;
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
 
 import java.sql.Date;
@@ -128,6 +129,44 @@ public class PcbItem extends DbObject {
         return false;
     }
 
+    public static boolean matchesName(String pcbName, String itemName) {
+        return (pcbName.length() > 2 && itemName.length() > 2) && (itemName.contains(pcbName) || pcbName.contains(itemName));
+    }
+
+    public static boolean matchesValue(String pcbValue, Value value) {
+        Value pcbVal = Value.tryFindValue(pcbValue);
+        if (pcbVal != null) {
+            if (pcbVal.equalsIgnoreUnits(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean matchesValue(String pcbValue, Value value, String itemName) {
+        boolean res = matchesValue(pcbValue, value);
+
+        if (!res) { // Try to match with name
+            if (pcbValue.contains(itemName) || itemName.contains(pcbValue)) {
+                res = true;
+            }
+        }
+
+        return res;
+    }
+
+    public static boolean matchesFootprint(String pcbFp, PackageType packageType) {
+        if (pcbFp != null && !pcbFp.isEmpty() && packageType != null) {
+            String pkName = packageType.getPackage().getName().toUpperCase();
+            String ptName = packageType.getName().toUpperCase();
+
+            if (pcbFp.contains(pkName) || pkName.contains(pcbFp) || pcbFp.contains(ptName) || ptName.contains(pcbFp)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getRef() {
         if (ref == null)  {
             ref = "";
@@ -197,7 +236,7 @@ public class PcbItem extends DbObject {
         return itemLinkList;
     }
 
-    public boolean hasMatch() {
+    public boolean hasMatchedItem() {
         return matchedItem != null;
     }
 

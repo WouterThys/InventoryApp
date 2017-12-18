@@ -43,7 +43,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                 case 2: // Reference
                     return link.getReferenceString();
                 case 3: // Linked
-                    if (component.hasMatch()) {
+                    if (component.hasMatchedItem()) {
                         return linked;
                     }
                     break;
@@ -82,7 +82,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                     PcbItem pcbItem = projectLink.getPcbItem();
                     ILabel lbl;
                     if (table.getColumnName(column).equals("Part")) {
-                        if (pcbItem.hasMatch()) {
+                        if (pcbItem.hasMatchedItem()) {
                             PcbItemItemLink link = pcbItem.getMatchedItemLink();
                             if (link.isSetItem()) {
                                 lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getSetItem().toString());

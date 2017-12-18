@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
@@ -20,7 +20,7 @@ import static javax.swing.SpringLayout.*;
 
 abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectSearcher.SearchListener<Distributor>,
+        Search.SearchListener<Distributor>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 

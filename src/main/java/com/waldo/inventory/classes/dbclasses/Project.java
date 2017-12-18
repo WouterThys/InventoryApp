@@ -81,15 +81,6 @@ public class Project extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            return false; // TODO
-        }
-    }
-
-    @Override
     public Project createCopy(DbObject copyInto) {
         Project product = (Project) copyInto;
         copyBaseFields(product);

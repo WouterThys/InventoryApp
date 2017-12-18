@@ -29,6 +29,7 @@ public class Location extends DbObject {
 
     public Location() {
         super(TABLE_NAME);
+        matchCount = 7;
     }
 
     @Override
@@ -87,28 +88,19 @@ public class Location extends DbObject {
         return result;
     }
 
+
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            if (getLocationType() == null) {
-                return false;
-            }
-            // Local objects
-            if (getLocationType().getName().toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (Statics.Alphabet[row].toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (String.valueOf(col).toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (getPrettyString().toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (getAlias().toUpperCase().contains(searchTerm)) {
-                return true;
-            }
-        }
-        return false;
+    protected int findMatch(String searchTerm) {
+        int match = super.findMatch(searchTerm);
+
+        // Local objects
+        if (getLocationType() != null && getLocationType().getName().toUpperCase().contains(searchTerm)) match++;
+        if (Statics.Alphabet[row].toUpperCase().contains(searchTerm)) match++;
+        if (String.valueOf(col).toUpperCase().contains(searchTerm)) match++;
+        if (getPrettyString().toUpperCase().contains(searchTerm)) match++;
+        if (getAlias().toUpperCase().contains(searchTerm)) match++;
+
+        return match;
     }
 
     @Override

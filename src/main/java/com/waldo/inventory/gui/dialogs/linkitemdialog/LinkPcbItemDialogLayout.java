@@ -1,12 +1,11 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkPcbItemTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
@@ -21,7 +20,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 
 abstract class LinkPcbItemDialogLayout extends IDialog implements
-        DbObjectSearcher.SearchListener<Item>, ActionListener {
+        Search.SearchListener<Item>, ActionListener {
 
     /*
     *                  COMPONENTS
@@ -53,7 +52,7 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         linkBtn.setEnabled(selectedPcbItem != null && selectedItemLink != null);
 
         if (selectedPcbItem != null) {
-            if (selectedPcbItem.hasMatch()) {
+            if (selectedPcbItem.hasMatchedItem()) {
                 linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
             } else {
                 linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));

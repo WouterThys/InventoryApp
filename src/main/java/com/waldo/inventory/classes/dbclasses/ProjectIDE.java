@@ -35,6 +35,7 @@ public class ProjectIDE extends DbObject {
 
     public ProjectIDE() {
         super(TABLE_NAME);
+        matchCount = 3;
     }
 
     public void launch(File file) throws IOException {
@@ -98,12 +99,10 @@ public class ProjectIDE extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            return (getExtension().toUpperCase().contains(searchTerm));
-        }
+    protected int findMatch(String searchTerm) {
+        int match = super.findMatch(searchTerm);
+        if (getExtension().toUpperCase().contains(searchTerm)) match++;
+        return match;
     }
 
     @Override

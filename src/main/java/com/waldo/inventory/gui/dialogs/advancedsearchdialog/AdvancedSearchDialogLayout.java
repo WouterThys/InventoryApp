@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
-import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -16,38 +17,59 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener {
+public abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener {
+
+
+    public enum SearchType {
+        SearchWord,
+        PcbItem
+    }
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ITextField searchTf;
 
+
     private ILabel resultLbl;
 
     private IFoundItemsTableModel tableModel;
-    private ITable<Item> foundItemTable;
+    private ITable<DbObject> foundItemTable;
 
     private JToolBar nextPrevTb;
 
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private boolean allowMultiSelect;
+     private SearchType searchType;
+     private boolean allowMultiSelect;
+
+     private String searchWord = "";
+     private PcbItemProjectLink searchPcbItem = null;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AdvancedSearchDialogLayout(Application application, String title, boolean allowMultiSelect) {
+    AdvancedSearchDialogLayout(Application application, String title, SearchType searchType, Object... args) {
         super(application, title);
-        this.allowMultiSelect = allowMultiSelect;
-
+        this.searchType = searchType;
+        switch (searchType) {
+            case SearchWord:
+                allowMultiSelect = true;
+                if (args.length > 0) searchWord = String.valueOf(args[0]);
+                break;
+            case PcbItem:
+                allowMultiSelect = false;
+                if (args.length > 0) searchPcbItem = (PcbItemProjectLink) args[0];
+            break;
+        }
     }
 
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     abstract void onSearch(String searchWord);
+    abstract void onSearch(DbObject dbObject);
     abstract void onNext();
     abstract void onPrevious();
     abstract void onMouseClicked(MouseEvent e);
@@ -60,8 +82,17 @@ abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelecti
         nextPrevTb.setEnabled(tableModel.getRowCount() > 1);
     }
 
-    void tableInitialize(List<Item> foundItems) {
-        tableModel.setItemList(foundItems);
+//    void tableInitialize(List<Item> foundItems) {
+//        switch (searchType) {
+//            case PcbItem:
+//                foundItems.sort(new ComparatorUtils.ItemMatchComparator());
+//                break;
+//        }
+//        tableModel.setItemList(foundItems);
+//    }
+
+    void addResults(List<DbObject> results) {
+        tableModel.addItems(results);
     }
 
     void tableUpdate() {
@@ -72,15 +103,15 @@ abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelecti
         tableModel.clearItemList();
     }
 
-    void tableSelect(Item item) {
+    void tableSelect(DbObject item) {
         foundItemTable.selectItem(item);
     }
 
-    Item tableGetSelected() {
+    DbObject tableGetSelected() {
         return foundItemTable.getSelectedItem();
     }
 
-    List<Item> tableGetAllSelected() {
+    List<DbObject> tableGetAllSelected() {
         return foundItemTable.getSelectedItems();
     }
 
@@ -150,7 +181,7 @@ abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelecti
         nextPrevTb.add(nextResultAction);
         nextPrevTb.add(prevResultAction);
 
-        tableModel = new IFoundItemsTableModel();
+        tableModel = new IFoundItemsTableModel(searchType);
         foundItemTable = new ITable<>(tableModel);
         if (!allowMultiSelect) {
             foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -193,10 +224,18 @@ abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelecti
 
     @Override
     public void updateComponents(Object... args) {
-        if (args.length > 0 && args[0] != null) {
-
-        } else {
-
+        switch (searchType) {
+            case SearchWord:
+                if (searchWord != null && !searchWord.isEmpty()) {
+                    searchTf.setText(searchWord);
+                    onSearch(searchWord);
+                }
+                break;
+            case PcbItem:
+                if (searchPcbItem != null) {
+                    onSearch(searchPcbItem);
+                }
+                break;
         }
     }
 }

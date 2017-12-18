@@ -60,11 +60,6 @@ public class PackageType extends DbObject {
         return result;
     }
 
-    @Override
-    public boolean hasMatch(String searchTerm) {
-        return super.hasMatch(searchTerm);
-    }
-
 
     @Override
     public PackageType createCopy(DbObject copyInto) {

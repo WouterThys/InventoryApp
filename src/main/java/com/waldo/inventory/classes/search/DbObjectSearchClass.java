@@ -1,4 +1,4 @@
-package com.waldo.inventory.classes;
+package com.waldo.inventory.classes.search;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 
@@ -6,30 +6,23 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbObjectSearcher<T extends DbObject> {
-
-    public interface SearchListener<dbo extends DbObject> {
-        void onObjectsFound(List<dbo> foundObjects);
-        void onSearchCleared();
-        void onNextSearchObject(dbo next);
-        void onPreviousSearchObject(dbo previous);
-    }
+class DbObjectSearchClass<T0 extends DbObject> {
 
     private boolean searched = false;
     private boolean inAdvanced = false;
     private boolean hasAdvancedSearchOption;
     private int[] searchOptions;
-    private List<T> searchList;
-    private List<T> resultList = new ArrayList<>();
+    private List<T0> searchList;
+    private List<T0> resultList = new ArrayList<>();
     private int currentResultNdx = 0;
 
-    private SearchListener<T> searchListener;
+    private Search.SearchListener<T0> searchListener;
 
-    public DbObjectSearcher(List<T> searchList) {
+    DbObjectSearchClass(List<T0> searchList) {
         this(searchList, null);
     }
 
-    public DbObjectSearcher(List<T> searchList, SearchListener<T> searchListener) {
+    DbObjectSearchClass(List<T0> searchList, Search.SearchListener<T0> searchListener) {
         this.searchList = searchList;
         this.searchListener = searchListener;
     }
@@ -47,6 +40,18 @@ public class DbObjectSearcher<T extends DbObject> {
             currentResultNdx = 0;
 
             if (searchListener != null) {
+                searchListener.onObjectsFound(resultList);
+            }
+        });
+    }
+
+    public void search(DbObject dbObject) {
+        resultList.clear();
+        SwingUtilities.invokeLater(() -> {
+            resultList = searchForObject(searchList, dbObject);
+
+            currentResultNdx = 0;
+            if (searchListener != null)  {
                 searchListener.onObjectsFound(resultList);
             }
         });
@@ -85,16 +90,31 @@ public class DbObjectSearcher<T extends DbObject> {
         }
     }
 
-    private List<T> searchForObject(List<T> listToSearch, String searchWord) {
-        List<T> foundList = new ArrayList<>();
-        if (listToSearch == null || listToSearch.size() == 0) {
+    private List<T0> searchForObject(List<T0> listToSearches, String searchWord) {
+        List<T0> foundList = new ArrayList<>();
+        if (listToSearches == null || listToSearches.size() == 0) {
             return foundList;
         }
 
         searchWord = searchWord.toUpperCase();
 
-        for (T dbo : listToSearch) {
+        for (T0 dbo : listToSearches) {
             if (dbo.hasMatch(searchWord)) {
+                foundList.add(dbo);
+            }
+        }
+
+        return foundList;
+    }
+
+    private List<T0> searchForObject(List<T0> listToSearches, DbObject searchObject) {
+        List<T0> foundList = new ArrayList<>();
+        if (listToSearches == null || listToSearches.size() == 0) {
+            return foundList;
+        }
+
+        for (T0 dbo : listToSearches) {
+            if (dbo.hasMatch(searchObject)) {
                 foundList.add(dbo);
             }
         }
@@ -130,11 +150,11 @@ public class DbObjectSearcher<T extends DbObject> {
         this.searchOptions = searchOptions;
     }
 
-    public void setSearchList(List<T> searchList) {
+    public void setSearchList(List<T0> searchList) {
         this.searchList = searchList;
     }
 
-    public List<T> getResultList() {
+    public List<T0> getResultList() {
         return resultList;
     }
 

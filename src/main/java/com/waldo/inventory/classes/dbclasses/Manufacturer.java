@@ -23,6 +23,7 @@ public class Manufacturer extends DbObject {
 
     public Manufacturer() {
         super(TABLE_NAME);
+        matchCount = 3;
     }
 
     public static Manufacturer getUnknownManufacturer() {
@@ -48,12 +49,10 @@ public class Manufacturer extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            return (getWebsite().toUpperCase().contains(searchTerm)) ;
-        }
+    protected int findMatch(String searchTerm) {
+        int match = super.findMatch(searchTerm);
+        if ((getWebsite().toUpperCase().contains(searchTerm))) match++;
+        return match;
     }
 
     @Override

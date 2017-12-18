@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -20,7 +19,6 @@ import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class Item extends DbObject {
 
-    private static final LogManager LOG = LogManager.LOG(Item.class);
     public static final String TABLE_NAME = "items";
 
     private Value value;
@@ -58,6 +56,7 @@ public class Item extends DbObject {
 
     public Item() {
         super(TABLE_NAME);
+        matchCount = 12;
     }
 
     @Override
@@ -126,59 +125,95 @@ public class Item extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            // Local objects
-            if (getDescription().toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (getLocalDataSheet().toUpperCase().contains(searchTerm)) {
-                return true;
-            } else if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) {
-                return true;
-            }
+    protected int findMatch(String searchTerm) {
+        if (this.isUnknown()) return 0;
+        getObjectMatch().setMatchCount(12);
+        int match = super.findMatch(searchTerm);
 
-            if (getValue().toString().equals(searchTerm)) {
-                return true;
-            }
 
-            // Covert category, product, type, ...
-            Category c = sm().findCategoryById(categoryId);
-            if (c != null && c.hasMatch(searchTerm)) {
-                return true;
-            }
+        // Local objects
+        if (getDescription().toUpperCase().contains(searchTerm)) match++;
+        if (getLocalDataSheet().toUpperCase().contains(searchTerm)) match++;
+        if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) match++;
+        if (getValue().toString().equals(searchTerm)) match++;
 
-            Product p = sm().findProductById(productId);
-            if (p != null && p.hasMatch(searchTerm)) {
-                return true;
-            }
+        // Covert category, product, type, ...
+        Category c = sm().findCategoryById(categoryId);
+        if (c != null && c.hasMatch(searchTerm)) match++;
 
-            Type t = sm().findTypeById(typeId);
-            if (t != null && t.hasMatch(searchTerm)) {
-                return true;
-            }
+        Product p = sm().findProductById(productId);
+        if (p != null && p.hasMatch(searchTerm)) match++;
 
-            Manufacturer m = sm().findManufacturerById(manufacturerId);
-            if (m != null && m.hasMatch(searchTerm)) {
-                return true;
-            }
+        Type t = sm().findTypeById(typeId);
+        if (t != null && t.hasMatch(searchTerm)) match++;
 
-            Location l = sm().findLocationById(locationId);
-            if (l != null && l.hasMatch(searchTerm)) {
-                return true;
-            }
+        Manufacturer m = sm().findManufacturerById(manufacturerId);
+        if (m != null && m.hasMatch(searchTerm)) match++;
 
-            PackageType pa = sm().findPackageTypeById(packageTypeId);
-            if (pa != null && pa.hasMatch(searchTerm)) {
-                return true;
-            }
+        Location l = sm().findLocationById(locationId);
+        if (l != null && l.hasMatch(searchTerm)) match++;
 
-        }
-        return false;
+        PackageType pa = sm().findPackageTypeById(packageTypeId);
+        if (pa != null && pa.hasMatch(searchTerm)) match++;
+
+        return match;
     }
 
-        @Override
+    @Override
+    protected int findMatch(DbObject dbObject) {
+        if (this.isUnknown()) return 0;
+        int match = 0;
+        if (dbObject != null && dbObject instanceof PcbItemProjectLink) {
+            getObjectMatch().setMatchCount(3);
+
+            PcbItemProjectLink projectLink = (PcbItemProjectLink) dbObject;
+            PcbItem pcbItem = projectLink.getPcbItem();
+
+            String pcbName = pcbItem.getPartName().toUpperCase();
+            String pcbValue = projectLink.getValue();
+            String pcbFp = pcbItem.getFootprint();
+
+            ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
+            if (parserLink != null) {
+
+                if (parserLink.hasCategory()) {
+                    if (getCategoryId() != parserLink.getCategoryId()) {
+                        return 0;
+                    }
+                }
+
+                if (parserLink.hasProduct()) {
+                    if (getProductId() != parserLink.getProductId()) {
+                        return 0;
+                    }
+                }
+
+                if (parserLink.hasType()) {
+                    if (getTypeId() != parserLink.getTypeId()) {
+                        return 0;
+                    }
+                }
+            }
+
+                String itemName = getName().toUpperCase();
+
+                if(PcbItem.matchesName(pcbName, itemName)) match++;
+                if (getValue().hasValue()) {
+                    if (PcbItem.matchesValue(pcbValue, getValue())) match++;
+                } else {
+                    if (PcbItem.matchesName(pcbValue, getName())) match++;
+                }
+
+                // Only check footprint match if there is already a match
+                if (match > 0 && getPackageTypeId() > UNKNOWN_ID) {
+                    if(PcbItem.matchesFootprint(pcbFp, getPackageType())) match++;
+                }
+
+        }
+        return match;
+    }
+
+    @Override
     public Item createCopy(DbObject copyInto) {
         Item item = (Item) copyInto;
         copyBaseFields(item);
@@ -244,15 +279,6 @@ public class Item extends DbObject {
             }
         }
         return result;
-    }
-
-    public static Item getUnknownItem() {
-        Item unknown = new Item();
-        unknown.setId(UNKNOWN_ID);
-        unknown.setName(UNKNOWN_NAME);
-        unknown.setCanBeSaved(false);
-        unknown.setInserted(true);
-        return unknown;
     }
 
     public String createRemarksFileName() {
@@ -497,12 +523,12 @@ public class Item extends DbObject {
         return null;
     }
 
-    public String getRemarksFileName() {
-        if (remarksFile == null) {
-            remarksFile = "";
-        }
-        return remarksFile;
-    }
+//    public String getRemarksFileName() {
+//        if (remarksFile == null) {
+//            remarksFile = "";
+//        }
+//        return remarksFile;
+//    }
 
     public void setRemarksFile(File remarksFile) {
         if (remarksFile != null && remarksFile.exists()) {

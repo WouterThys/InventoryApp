@@ -30,7 +30,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
             @Override
             public void onEditItem() {
                 PcbItem pcbItem = itemProjectLink.getPcbItem();
-                if (pcbItem.hasMatch()) {
+                if (pcbItem.hasMatchedItem()) {
                     PcbItemPopup.this.onEditItem(pcbItem.getMatchedItemLink().getItem());
                 }
             }
@@ -46,7 +46,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
        PcbItem pcbItem = itemProjectLink.getPcbItem();
        boolean addHeader = false;
         JPanel iconPanel = new JPanel();
-        if (pcbItem.hasMatch()) {
+        if (pcbItem.hasMatchedItem()) {
             iconPanel.add(new ILabel(linked));
             addHeader = true;
         } else {

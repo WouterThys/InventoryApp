@@ -81,16 +81,6 @@ public class SetItem extends DbObject {
     }
 
     @Override
-    public boolean hasMatch(String searchTerm) {
-        if (super.hasMatch(searchTerm)) {
-            return true;
-        } else {
-            // TODO
-        }
-        return false;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         boolean result  = super.equals(obj);
         if (result) {
@@ -120,6 +110,53 @@ public class SetItem extends DbObject {
         setItem.setAmount(getAmount());
         setValue(getValue());
         return setItem;
+    }
+
+    @Override
+    protected int findMatch(DbObject dbObject) {
+        int match = 0;
+        if (dbObject != null && dbObject instanceof PcbItemProjectLink) {
+            getObjectMatch().setMatchCount(3);
+            PcbItemProjectLink projectLink = (PcbItemProjectLink) dbObject;
+            PcbItem pcbItem = projectLink.getPcbItem();
+
+            String pcbName = pcbItem.getPartName().toUpperCase();
+            String pcbValue = projectLink.getValue();
+            String pcbFp = pcbItem.getFootprint();
+
+            ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
+            if (parserLink != null) {
+
+                if (parserLink.hasCategory()) {
+                    if (getItem().getCategoryId() != parserLink.getCategoryId()) {
+                        return 0;
+                    }
+                }
+
+                if (parserLink.hasProduct()) {
+                    if (getItem().getProductId() != parserLink.getProductId()) {
+                        return 0;
+                    }
+                }
+
+                if (parserLink.hasType()) {
+                    if (getItem().getTypeId() != parserLink.getTypeId()) {
+                        return 0;
+                    }
+                }
+
+                String itemName = getName().toUpperCase();
+
+                if(PcbItem.matchesName(pcbName, itemName)) match++;
+                if(PcbItem.matchesValue(pcbValue, getValue())) match++;
+
+                // Only check footprint match if there is already a match
+                if (match > 0 && item.getPackageTypeId() > UNKNOWN_ID) {
+                    if(PcbItem.matchesFootprint(pcbFp, item.getPackageType())) match++;
+                }
+            }
+        }
+        return match;
     }
 
     public int getAmount() {

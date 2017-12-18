@@ -2,6 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
 import com.waldo.inventory.classes.AddUpdateDelete;
+import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.managers.LogManager;
 
 import java.sql.PreparedStatement;
@@ -59,6 +60,10 @@ public abstract class DbObject {
     protected String iconPath = "";
     protected boolean canBeSaved = true;
     protected final AddUpdateDelete aud = new AddUpdateDelete();
+
+    // Matching
+    protected int matchCount = 2;
+    protected DbObjectMatch objectMatch;
 
     protected DbObject(String tableName) {
         TABLE_NAME = tableName;
@@ -195,10 +200,53 @@ public abstract class DbObject {
         return false;
     }
 
+
     public boolean hasMatch(String searchTerm) {
-        return getName().toUpperCase().contains(searchTerm.toUpperCase())
-                || getIconPath().toUpperCase().contains(searchTerm.toUpperCase());
+        calculateMatch(searchTerm.toUpperCase());
+        return objectMatch.hasMatch();
     }
+
+    public boolean hasMatch(DbObject dbObject) {
+        calculateMatch(dbObject);
+        return objectMatch.hasMatch();
+    }
+
+    public DbObjectMatch getObjectMatch() {
+        if (objectMatch == null) {
+            objectMatch = new DbObjectMatch(matchCount) {
+                @Override
+                public void calculateMatch(String searchWord) {
+                    match = findMatch(searchWord);
+                }
+
+                @Override
+                public void calculateMatch(DbObject dbObject) {
+                    match = findMatch(dbObject);
+                }
+            };
+        }
+        return objectMatch;
+    }
+
+    private void calculateMatch(String searchWord) {
+        getObjectMatch().calculateMatch(searchWord);
+    }
+
+    private void calculateMatch(DbObject dbObject) {
+        getObjectMatch().calculateMatch(dbObject);
+    }
+
+    protected int findMatch(String searchTerm) {
+        int match = 0;
+        if (getName().toUpperCase().contains(searchTerm)) match++;
+        if (getIconPath().toUpperCase().contains(searchTerm)) match++;
+        return match;
+    }
+
+    protected int findMatch(DbObject dbObject) {
+        return 0;
+    }
+
 
     public abstract DbObject createCopy();
 

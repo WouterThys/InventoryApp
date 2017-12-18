@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
 import com.waldo.inventory.managers.SearchManager;
@@ -14,45 +16,71 @@ import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
-public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
+public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer", "Match"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, ILabel.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon redBall = imageResource.readImage("Ball.red");
     private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
     private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
+    private static final ImageIcon blackBall = imageResource.readImage("Ball.black");
 
-    public IFoundItemsTableModel() {
+    private SearchType searchType;
+
+    public IFoundItemsTableModel(SearchType searchType) {
         super(COLUMN_NAMES, COLUMN_CLASSES);
+        this.searchType = searchType;
     }
 
-    public void setItemList(List<Item> itemList) {
+    public void setItemList(List<DbObject> itemList) {
         super.setItemList(itemList);
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Item item = getItemAt(rowIndex);
+    public int getColumnCount() {
+        switch (searchType) {
+            case SearchWord: return 4;
+            case PcbItem: return 5;
+        }
+        return super.getColumnCount();
+    }
 
-        if (item != null) {
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        DbObject obj = getItemAt(rowIndex);
+
+        if (obj != null) {
             switch (columnIndex) {
                 case -1:
                 case 0: // Amount label
-                    return item;
+                    return obj;
                 case 1: // Name
-                    return item.toString();
+                    return obj.toString();
                 case 2: // Description
-                    return item.getDescription();
+                    if (obj instanceof Item) {
+                        return ((Item)obj).getDescription();
+                    } else {
+                        return ((SetItem)obj).getItem().getDescription();
+                    }
                 case 3: // Manufacturer
-                    Manufacturer m = SearchManager.sm().findManufacturerById(item.getManufacturerId());
+                    Manufacturer m;
+                    if (obj instanceof Item) {
+                        m = SearchManager.sm().findManufacturerById(((Item)obj).getManufacturerId());
+                    } else {
+                        m = SearchManager.sm().findManufacturerById(((SetItem)obj).getItem().getManufacturerId());
+                    }
+
                     if (m != null && !m.isUnknown()) {
                         return m.toString();
                     }
                     return "";
+                case 4: // Match
+                    return obj.getObjectMatch();
             }
         }
         return null;
@@ -77,27 +105,68 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                         tableColumn.setMinWidth(32);
                     }
 
-                    ILabel lbl;
                     Item item = (Item) value;
                     String txt = String.valueOf(item.getAmount());
 
-                    if (item.getOrderState() == Statics.ItemOrderStates.ORDERED) {
-                        lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
-                    } else if (item.getOrderState() == Statics.ItemOrderStates.PLANNED) {
-                        lbl = new ITableIcon(component.getBackground(), row, isSelected, yellowBall, txt);
-                    } else {
-                        if (item.getAmount() > 0) {
-                            lbl = new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
-                        } else {
-                            lbl = new ITableIcon(component.getBackground(), row, isSelected, redBall, txt);
-                        }
+                    return new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
+                } else if (value instanceof SetItem) {
+                    if (row == 0) {
+                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                        tableColumn.setMaxWidth(32);
+                        tableColumn.setMinWidth(32);
                     }
+                    String txt = String.valueOf(((SetItem)value).getAmount());
+                    return new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
 
-                    return lbl;
+                } else if (value instanceof DbObjectMatch) {
+                    return new MatchValue(((DbObjectMatch)value).getMatchPercent());
                 }
                 return component;
             }
         };
     }
+
+    private static class MatchValue extends ILabel {
+
+        private static Paint generatePaint(Color c, int height) {
+            return new LinearGradientPaint(0.0f, 0.0f, 0.0f, (float)height, new float[]{0.0f, 0.5f, 1.0f}, new Color[]{c.darker(), c.brighter(), c.darker()}, MultipleGradientPaint.CycleMethod.REFLECT);
+        }
+
+        private static Paint greenPaint = generatePaint(Color.GREEN, 25);
+        private static Paint orangePaint = generatePaint(Color.ORANGE, 24);
+        private static Paint redPaint = generatePaint(Color.RED, 23);
+
+        private int val;
+
+        public MatchValue(int value) {
+            this.val = value;
+            setPreferredSize(new Dimension(100, 25));
+            setMaximumSize(getPreferredSize());
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g;
+            int x = 1;
+            int y = 1;
+            int w = getWidth() - 2;
+            int h = getHeight() - 2;
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.fillRect(x, y, w, h);
+            Paint backPaint;
+            if (val >= 75)
+                backPaint = greenPaint;
+            else if (val >= 50)
+                backPaint = orangePaint;
+            else
+                backPaint = redPaint;
+            g2d.setPaint(backPaint);
+            int wd = (int) Math.round(w * val / 100.0);
+            g2d.fillRect(x, y, wd, h);
+            g2d.draw3DRect(x, y, wd, h, true);
+            // Draw some text here if you want
+        }
+    }
+
 
 }

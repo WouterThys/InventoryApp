@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.DbObjectSearcher;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -18,7 +18,7 @@ import static javax.swing.SpringLayout.*;
 
 abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
-        DbObjectSearcher.SearchListener<Manufacturer>,
+        Search.SearchListener<Manufacturer>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
