@@ -59,6 +59,10 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
         }
     }
 
+    private void tableUpdate() {
+        pcbItemTableModel.updateTable();
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -94,6 +98,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
                                                 pcbItemProjectLink.getPrettyName(),
                                                 pcbItemProjectLink);
                                         dialog.showDialog();
+                                        tableUpdate();
                                     }
                                 };
                                 popup.show(e.getComponent(), e.getX(), e.getY());

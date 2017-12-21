@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.DeleteItemAction;
 import com.waldo.inventory.gui.components.actions.EditItemAction;
 import com.waldo.inventory.gui.components.actions.OrderItemAction;
 
@@ -42,6 +43,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITableIcon matchedItemLbl;
     private ITextField matchedItemTf;
     private EditItemAction editItemAction;
+    private DeleteItemAction deleteItemAction;
 
     private ITableIcon orderLbl;
     private ITextField orderTf;
@@ -74,6 +76,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     abstract void onSelectNewItem();
     abstract void onSelectNewOrder();
+    abstract void onDeleteMatchedItem();
 
     private void updateEnabledComponents() {
 
@@ -128,6 +131,15 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     void updateMatchedItemPanel(String name, int amount) {
         matchedItemTf.setText(name);
         setItemAmount(amount);
+    }
+
+    void clearMatchedItemPanel() {
+        // TODO: what if already changed?
+        //..
+        matchedItemLbl.setText("");
+        matchedItemLbl.setIcon((ImageIcon)null);
+        matchedItemTf.setText("");
+
     }
 
     void setItemAmount(int amount) {
@@ -191,11 +203,14 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         panel.setBorder(GuiUtils.createTitleBorder("References"));
 
         JPanel itemPnl = new JPanel(new BorderLayout());
-        JButton itemBtn = new JButton(editItemAction);
-        itemBtn.setText("Select");
+        JToolBar itemTb = new JToolBar();
+        itemTb.setFloatable(false);
+        itemTb.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        itemTb.add(editItemAction);
+        itemTb.add(deleteItemAction);
         itemPnl.add(matchedItemLbl, BorderLayout.WEST);
         itemPnl.add(matchedItemTf, BorderLayout.CENTER);
-        itemPnl.add(itemBtn, BorderLayout.EAST);
+        itemPnl.add(itemTb, BorderLayout.EAST);
 
         JPanel orderPnl = new JPanel(new BorderLayout());
         JButton orderBtn = new JButton(orderItemAction);
@@ -246,6 +261,12 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             @Override
             public void onEditItem() {
                 onSelectNewItem();
+            }
+        };
+        deleteItemAction = new DeleteItemAction() {
+            @Override
+            public void onDeleteItem() {
+                onDeleteMatchedItem();
             }
         };
         orderTf = new ITextField(false);

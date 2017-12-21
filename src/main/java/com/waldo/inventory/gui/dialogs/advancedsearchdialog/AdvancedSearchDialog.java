@@ -36,17 +36,25 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
         updateComponents();
     }
 
-    public Item getSelectedItem() {
-        return null;
-        //return tableGetSelected();
+    public DbObject getSelectedItem() {
+        return tableGetSelected();
     }
 
     @Override
     void onMouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
-            EditItemDialog editItemDialog = new EditItemDialog(application, "Edit item", getSelectedItem());
-            editItemDialog.showDialog();
-            tableUpdate();
+            DbObject object = getSelectedItem();
+            if (object != null) {
+                Item item;
+                if (object instanceof Item) {
+                    item = (Item) object;
+                } else {
+                    item = ((SetItem)object).getItem();
+                }
+                EditItemDialog editItemDialog = new EditItemDialog(application, "Edit item", item);
+                editItemDialog.showDialog();
+                tableUpdate();
+            }
         }
     }
 

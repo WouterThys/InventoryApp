@@ -32,11 +32,16 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
                 pcbItemProjectLink);
         if (dialog.showDialog() == IDialog.OK) {
             PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
-            Item newMatch = dialog.getSelectedItem();
+            DbObject newMatch = dialog.getSelectedItem();
             if (newMatch != null) {
                 PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
+
                 if (itemItemLink == null) {
-                    itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, newMatch);
+                    if (newMatch instanceof  Item) {
+                        itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, (Item) newMatch);
+                    } else {
+                        itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, (SetItem) newMatch);
+                    }
                     itemItemLink.save(); // TODO: also with original stuff so that it can be canceled
                 } else {
                     if (itemItemLink.getItemId() != newMatch.getId()) {
@@ -44,8 +49,20 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
                         itemItemLink.save();
                     }
                 }
-                updateMatchedItemPanel(newMatch.getName(), newMatch.getAmount());
+                updateMatchedItemPanel(newMatch.getName(), itemItemLink.getAmount());
             }
+        }
+    }
+
+    @Override
+    void onDeleteMatchedItem() {
+        PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
+        PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
+        if (itemItemLink != null) {
+            pcbItem.setMatchedItem(null);
+            itemItemLink.delete();
+            pcbItem.save();
+            clearMatchedItemPanel();
         }
     }
 
