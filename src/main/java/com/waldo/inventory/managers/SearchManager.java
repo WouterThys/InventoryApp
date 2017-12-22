@@ -501,6 +501,18 @@ public class SearchManager {
         return pcbItems;
     }
 
+    public List<PcbItemProjectLink> findPcbItemProjectLinksWithPcbItem(long pcbItemId) {
+        List<PcbItemProjectLink> linkList = new ArrayList<>();
+        if (pcbItemId > DbObject.UNKNOWN_ID) {
+            for (PcbItemProjectLink projectLink : cache().getPcbItemProjectLinks()) {
+                if (projectLink.getPcbItemId() == pcbItemId) {
+                    linkList.add(projectLink);
+                }
+            }
+        }
+        return linkList;
+    }
+
     public List<PcbItemProjectLink> findPcbItemLinksWithProjectPcb(long projectPcbId) {
         List<PcbItemProjectLink> links = new ArrayList<>();
         if (projectPcbId > 0) {

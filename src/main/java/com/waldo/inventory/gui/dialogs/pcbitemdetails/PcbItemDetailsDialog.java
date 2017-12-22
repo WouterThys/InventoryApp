@@ -8,6 +8,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,9 +37,14 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
                 SearchType.PcbItem,
                 pcbItemProjectLink);
         if (dialog.showDialog() == IDialog.OK) {
-            PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
-            PcbItemItemLink itemLink = pcbItemProjectLink.getPcbItemItemLink();
-            DbObject newMatch = dialog.getSelectedItem();
+            updatePcbItemLink(pcbItemProjectLink, dialog.getSelectedItem());
+        }
+    }
+
+    private void updatePcbItemLink(PcbItemProjectLink projectLink, DbObject newMatch) {
+        if (projectLink != null) {
+            PcbItem pcbItem = projectLink.getPcbItem();
+            PcbItemItemLink itemLink = projectLink.getPcbItemItemLink();
             if (pcbItem != null && newMatch != null) {
                 if (itemLink == null) {
                     // Create new
@@ -48,7 +54,15 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
                     itemLink.setMatchedItem(newMatch);
                 }
                 itemLink.save();
-                updateMatchedItemPanel(newMatch.getName(), itemLink.getAmount());
+            }
+        }
+    }
+
+    private void updateOtherPcbItems(PcbItemItemLink itemLink) {
+        for (PcbItemProjectLink itemProjectLink : SearchManager.sm().findPcbItemProjectLinksWithPcbItem(pcbItemProjectLink.getPcbItemId())) {
+            if (itemProjectLink.getId() != pcbItemProjectLink.getId() && pcbItemProjectLink.getValue().equals(itemProjectLink.getValue())) {
+                itemProjectLink.setPcbItemItemLinkId(itemLink.getId());
+                itemProjectLink.save();
             }
         }
     }
@@ -69,12 +83,22 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     }
 
+    private void savePcbItemProjectLink(PcbItemProjectLink projectLink) {
+        if (projectLink != null) {
+            pcbItemProjectLink.save();
+            originalProjectLink = pcbItemProjectLink.createCopy();
+            getButtonNeutral().setEnabled(false);
+            if (pcbItemProjectLink.hasMatchedItem()) {
+                SwingUtilities.invokeLater(() -> updateOtherPcbItems(pcbItemProjectLink.getPcbItemItemLink()));
+            }
+        }
+    }
+
     private void showSaveDialog() {
         if (pcbItemProjectLink != null) {
             String msg = "Edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                pcbItemProjectLink.save();
-                originalProjectLink = pcbItemProjectLink.createCopy();
+                savePcbItemProjectLink(pcbItemProjectLink);
             }
         }
     }
@@ -108,9 +132,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     @Override
     protected void onNeutral() {
-        pcbItemProjectLink.save();
-        originalProjectLink = pcbItemProjectLink.createCopy();
-        getButtonNeutral().setEnabled(false);
+        savePcbItemProjectLink(pcbItemProjectLink);
     }
 
     @Override
@@ -151,6 +173,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     public void onInserted(PcbItemItemLink itemLink) {
         if (pcbItemProjectLink != null) {
             pcbItemProjectLink.setPcbItemItemLinkId(itemLink.getId());
+            updateMatchedItemPanel(itemLink.getPrettyName(), itemLink.getAmount());
             onValueChanged(this, "pcbItemProjectLinkId", 0, itemLink.getId());
         }
     }
@@ -159,6 +182,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     public void onUpdated(PcbItemItemLink itemLink) {
         if (pcbItemProjectLink != null) {
             pcbItemProjectLink.setPcbItemItemLinkId(itemLink.getId());
+            updateMatchedItemPanel(itemLink.getPrettyName(), itemLink.getAmount());
             onValueChanged(this, "pcbItemProjectLinkId", 0, itemLink.getId());
         }
     }
