@@ -88,7 +88,7 @@ public class PcbItemProjectLink extends DbObject {
 
         statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getProjectPcbId());
-        // TODO #24 statement.setLong(ndx++, getPcbItemItemLinkId());
+        statement.setLong(ndx++, getPcbItemItemLinkId());
 
         statement.setString(ndx++, getValue());
         statement.setInt(ndx++, getUsedCount());

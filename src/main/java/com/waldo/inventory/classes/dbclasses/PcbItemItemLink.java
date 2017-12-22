@@ -99,7 +99,6 @@ public class PcbItemItemLink extends DbObject {
 
         statement.setLong(ndx++, getItemId());
         statement.setLong(ndx++, getSetItemId());
-        statement.setBoolean(ndx++, isSetItem());
         statement.setInt(ndx++, getMatch());
         statement.setLong(ndx++, getPcbItemId());
 

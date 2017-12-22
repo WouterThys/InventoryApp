@@ -1,9 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
@@ -22,7 +19,7 @@ import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearc
 public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Name", "Description", "Manufacturer", "Match"};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Footprint", "Manufacturer", "Match"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, ILabel.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
@@ -59,11 +56,21 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
                     return obj;
                 case 1: // Name
                     return obj.toString();
-                case 2: // Description
+                case 2: // Footprint
+                    PackageType packageType;
                     if (obj instanceof Item) {
-                        return ((Item)obj).getDescription();
+                        packageType = ((Item) obj).getPackageType();
                     } else {
-                        return ((SetItem)obj).getItem().getDescription();
+                        packageType = ((SetItem) obj).getItem().getPackageType();
+                    }
+                    if (packageType != null) {
+                        if (packageType.getPackageId() > DbObject.UNKNOWN_ID) {
+                            return packageType.getPackage().toString() + " - " + packageType.toString();
+                        } else {
+                            return packageType.toString();
+                        }
+                    } else {
+                        return "";
                     }
                 case 3: // Manufacturer
                     Manufacturer m;

@@ -105,6 +105,13 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
 
                         }
 
+                } else if (e.getClickCount() == 2) {
+                    PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(
+                            application,
+                            pcbItemProjectLink.getPrettyName(),
+                            pcbItemProjectLink);
+                    dialog.showDialog();
+                    tableUpdate();
                 }
             }
         });
