@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.AutoCalculateUsedAction;
 import com.waldo.inventory.gui.components.actions.DeleteItemAction;
 import com.waldo.inventory.gui.components.actions.EditItemAction;
 import com.waldo.inventory.gui.components.actions.OrderItemAction;
@@ -49,8 +50,9 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITextField orderTf;
     private OrderItemAction orderItemAction;
 
-    SpinnerNumberModel spinnerNumberModel;
+    private SpinnerNumberModel spinnerNumberModel;
     ISpinner usedSpinner;
+    private AutoCalculateUsedAction autoCalculateUsedAction;
 
      /*
      *                  VARIABLES
@@ -77,9 +79,14 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     abstract void onSelectNewItem();
     abstract void onSelectNewOrder();
     abstract void onDeleteMatchedItem();
+    abstract void onMatchedItemAutoSetUsed();
 
-    private void updateEnabledComponents() {
-
+    void updateEnabledComponents() {
+        if (pcbItemProjectLink != null) {
+            boolean enabled = pcbItemProjectLink.hasMatchedItem();
+            usedSpinner.setEnabled(enabled);
+            autoCalculateUsedAction.setEnabled(enabled);
+        }
     }
 
     private void setProjectInfo(ProjectPcb pcbProject) {
@@ -117,8 +124,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             if (pcbItemProjectLink.hasMatchedItem()) {
                 PcbItemItemLink itemLink = pcbItemProjectLink.getPcbItemItemLink();
                 updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
-            } else {
-                usedSpinner.setEnabled(false);
             }
             if (pcbItem.getOrderItem() != null) {
                 orderTf.setText(pcbItem.getOrderItem().getOrder().toString());
@@ -219,10 +224,18 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         orderPnl.add(orderTf, BorderLayout.CENTER);
         orderPnl.add(orderBtn, BorderLayout.EAST);
 
+        JPanel usedPnl = new JPanel(new BorderLayout());
+        JToolBar usedTb = new JToolBar();
+        usedTb.setFloatable(false);
+        usedTb.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        usedTb.add(autoCalculateUsedAction);
+        usedPnl.add(usedSpinner, BorderLayout.CENTER);
+        usedPnl.add(usedTb, BorderLayout.EAST);
+
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
         gbc.addLine(imageResource.readImage("Projects.Pcb.Linked"), itemPnl);
         gbc.addLine(imageResource.readImage("Projects.Pcb.Ordered"), orderPnl);
-        gbc.addLine(imageResource.readImage("Projects.Pcb.Used"), usedSpinner);
+        gbc.addLine(imageResource.readImage("Projects.Pcb.Used"), usedPnl);
 
         return panel;
     }
@@ -280,6 +293,12 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
         usedSpinner = new ISpinner(spinnerNumberModel);
         usedSpinner.addEditedListener(this, "usedCount");
+        autoCalculateUsedAction = new AutoCalculateUsedAction() {
+            @Override
+            public void onAutoSetUsed() {
+                onMatchedItemAutoSetUsed();
+            }
+        };
     }
 
     @Override
@@ -291,6 +310,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         getContentPanel().add(createPcbItemInfo(), BorderLayout.CENTER);
         getContentPanel().add(createReferencesPanel(), BorderLayout.SOUTH);
 
+        getContentPanel().setPreferredSize(new Dimension(600, getContentPanel().getPreferredSize().height));
+
         pack();
     }
 
@@ -300,6 +321,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             setProjectInfo(pcbItemProjectLink.getProjectPcb());
             setPcbItemInfo(pcbItemProjectLink);
             setReferencesInfo(pcbItemProjectLink);
+            updateEnabledComponents();
         }
     }
 }

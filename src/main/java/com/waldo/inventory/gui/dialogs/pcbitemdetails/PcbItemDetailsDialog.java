@@ -72,8 +72,9 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
         if (pcbItemProjectLink != null) {
             PcbItemItemLink itemItemLink = pcbItemProjectLink.getPcbItemItemLink();
             if (itemItemLink != null) {
-                itemItemLink.delete();
+                itemItemLink.delete(); // Should also delete other pcb item links
                 clearMatchedItemPanel();
+                updateEnabledComponents();
             }
         }
     }
@@ -81,6 +82,17 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     @Override
     void onSelectNewOrder() {
 
+    }
+
+    @Override
+    void onMatchedItemAutoSetUsed() {
+        if(pcbItemProjectLink != null) {
+            int amount = pcbItemProjectLink.getNumberOfItems();
+            if (updateItemAmount(0 - amount)) {
+                usedSpinner.setTheValue(amount);
+                getButtonNeutral().setEnabled(checkChange());
+            }
+        }
     }
 
     private void savePcbItemProjectLink(PcbItemProjectLink projectLink) {
@@ -156,6 +168,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
         } else {
             getButtonNeutral().setEnabled(checkChange());
         }
+        updateEnabledComponents();
     }
 
     @Override

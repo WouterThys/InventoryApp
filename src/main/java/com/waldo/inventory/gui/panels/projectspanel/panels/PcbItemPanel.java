@@ -162,7 +162,7 @@ public class PcbItemPanel extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        buttonPanel.add(linkAa);
+        //buttonPanel.add(linkAa);
         buttonPanel.add(orderAa);
         buttonPanel.add(usedAa);
         buttonPanel.addSeparator();
