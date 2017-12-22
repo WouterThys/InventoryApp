@@ -256,6 +256,8 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     }
 
+
+
     protected void onOK() {
         dialogResult = OK;
         dispose();
@@ -272,13 +274,15 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     }
 
     public void beginWait() {
-        updating = true;
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if (application != null) {
+            application.beginWait(this);
+        }
     }
 
     public void endWait() {
-        this.setCursor(Cursor.getDefaultCursor());
-        updating = false;
+        if (application != null) {
+            application.endWait(this);
+        }
     }
 
     @Override
@@ -302,6 +306,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     @Override
     public void windowClosed(WindowEvent e) {
+        endWait();
         if (changedListenerList != null) {
             for (CacheChangedListener listener : changedListenerList) {
                 CacheManager.cache().removeListener(listener);

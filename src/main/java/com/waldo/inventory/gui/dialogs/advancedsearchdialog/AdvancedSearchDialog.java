@@ -61,7 +61,14 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
     @Override
     void onSearch(String searchWord) {
         if (searchWord != null && !searchWord.isEmpty()) {
-            searcher.search(searchWord);
+            tableClear();
+            beginWait();
+            try {
+                searcher.search(searchWord);
+            } finally {
+                endWait();
+            }
+
         } else {
             setError("Enter a search word");
             tableClear();
@@ -112,12 +119,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
             @Override
             public void onObjectsFound(List<Item> foundObjects) {
                 int size = foundObjects.size();
-                if (size == 0) {
-                    setInfo("No items found..");
-                } else if (size == 1) {
-                    setInfo("1 item found!");
-                    addResults(new ArrayList<>(foundObjects));
-                } else  {
+                if (size > 0) {
                     setInfo(String.valueOf(size) + " results found!!");
                     addResults(new ArrayList<>(foundObjects));
                 }
@@ -146,12 +148,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
             @Override
             public void onObjectsFound(List<SetItem> foundObjects) {
                 int size = foundObjects.size();
-                if (size == 0) {
-                    setInfo("No items found..");
-                } else if (size == 1) {
-                    setInfo("1 item found!");
-                    addResults(new ArrayList<>(foundObjects));
-                } else  {
+                if (size > 0) {
                     setInfo(String.valueOf(size) + " results found!!");
                     addResults(new ArrayList<>(foundObjects));
                 }

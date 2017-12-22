@@ -278,12 +278,20 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     }
 
     public void beginWait() {
+        beginWait(this);
+    }
+
+    public void beginWait(Component component) {
         updating = true;
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     public void endWait() {
-        this.setCursor(Cursor.getDefaultCursor());
+        endWait(this);
+    }
+
+    public void endWait(Component component) {
+        component.setCursor(Cursor.getDefaultCursor());
         updating = false;
     }
 

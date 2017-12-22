@@ -76,13 +76,17 @@ public class Search {
         }
 
         public void search(String searchWord) {
-            searchClass0.search(searchWord);
-            searchClass1.search(searchWord);
+
+                searchClass0.search(searchWord, false);
+                searchClass1.search(searchWord, false);
+
         }
 
         public void search(DbObject dbObject) {
-            searchClass0.search(dbObject);
-            searchClass1.search(dbObject);
+
+                searchClass0.search(dbObject, false);
+                searchClass1.search(dbObject, false);
+
         }
 
         public void clearSearch() {

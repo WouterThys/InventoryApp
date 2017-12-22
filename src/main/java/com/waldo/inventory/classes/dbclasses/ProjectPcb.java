@@ -147,6 +147,9 @@ public class ProjectPcb extends ProjectObject {
         if (file.exists()) {
             List<PcbItemProjectLink> links = getPcbItemsFromParser(file);
             if (links.size() > 0) {
+                for (PcbItemProjectLink link : pcbItemProjectLinks) {
+                    link.delete();
+                }
                 pcbItemProjectLinks.clear();
                 pcbItemProjectLinks.addAll(links);
                 result = true;

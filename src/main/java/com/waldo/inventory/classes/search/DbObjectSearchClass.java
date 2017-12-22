@@ -27,34 +27,58 @@ class DbObjectSearchClass<T0 extends DbObject> {
         this.searchListener = searchListener;
     }
 
-    public void search(String searchWord) {
+    public void search(final String searchWord) {
+        search(searchWord, true);
+    }
+
+    public void search(final String searchWord, boolean async) {
         resultList.clear();
-        SwingUtilities.invokeLater(() -> {
-            // Search list
-            if (searchOptions == null || searchOptions.length == 0) {
-                resultList = searchForObject(searchList, searchWord);
-            } else {
-                resultList = searchForObject(searchList /*, searchOptions*/, searchWord);
-            }
 
-            currentResultNdx = 0;
+        if (async) {
+            SwingUtilities.invokeLater(() -> {
+                doSearch(searchWord);
+            });
+        } else {
+            doSearch(searchWord);
+        }
+    }
 
-            if (searchListener != null) {
-                searchListener.onObjectsFound(resultList);
-            }
-        });
+    private void doSearch(String searchWord) {
+        // Search list
+        if (searchOptions == null || searchOptions.length == 0) {
+            resultList = searchForObject(searchList, searchWord);
+        } else {
+            resultList = searchForObject(searchList /*, searchOptions*/, searchWord);
+        }
+
+        currentResultNdx = 0;
+
+        if (searchListener != null) {
+            searchListener.onObjectsFound(resultList);
+        }
     }
 
     public void search(DbObject dbObject) {
-        resultList.clear();
-        SwingUtilities.invokeLater(() -> {
-            resultList = searchForObject(searchList, dbObject);
+        search(dbObject, true);
+    }
 
-            currentResultNdx = 0;
-            if (searchListener != null)  {
-                searchListener.onObjectsFound(resultList);
-            }
-        });
+    public void search(DbObject dbObject, boolean async) {
+        resultList.clear();
+
+        if (async) {
+            SwingUtilities.invokeLater(() -> doSearch(dbObject));
+        } else {
+            doSearch(dbObject);
+        }
+    }
+
+    private void doSearch(DbObject dbObject) {
+        resultList = searchForObject(searchList, dbObject);
+        currentResultNdx = 0;
+        if (searchListener != null)  {
+            searchListener.onObjectsFound(resultList);
+        }
+
     }
 
     public void clearSearch() {
