@@ -146,7 +146,7 @@ public class ErrorManager {
         }
 
         String message = String.format(
-                "Could not delete %s \"%s\" because the link %s (= %s) does not exist..",
+                "Could not delete/insert %s \"%s\" because the link %s (= %s) does not exist..",
                 object.getClass().getSimpleName(),
                 object.getName(),
                 foreignKey.getFromColumn(),

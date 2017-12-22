@@ -28,9 +28,6 @@ public class ProjectPcb extends ProjectObject {
     private List<PcbItemProjectLink> pcbItemProjectLinks;
     private boolean hasParsed;
 
-    // Extra
-    private boolean hasLinkedItems;
-
     public ProjectPcb() {
         super(TABLE_NAME);
     }
@@ -131,6 +128,9 @@ public class ProjectPcb extends ProjectObject {
         // Update links with project
         PcbItemParser.getInstance().updatePcbItemProjectLinksDb(this, pcbItemLinks);
 
+        // Update links with item
+        PcbItemParser.getInstance().updatePcbItemItemLinks(pcbItemLinks);
+
         lastParsedDate = DateUtils.now();
         hasParsed = true;
         save();
@@ -176,56 +176,41 @@ public class ProjectPcb extends ProjectObject {
                     pcbItemProjectLinks = getPcbItemsFromDb();
                 }
             }
-            List<PcbItem> linkedItems = findKnownLinks(pcbItemProjectLinks);
-            findKnownOrders(linkedItems);
+            findKnownOrders(pcbItemProjectLinks);
         }
         return pcbItemProjectLinks;
     }
 
-    private List<PcbItem> findKnownLinks(List<PcbItemProjectLink> pcbItemProjectLinks) {
-        List<PcbItem> linkedItems = new ArrayList<>();
-        for (PcbItemProjectLink projectLink : pcbItemProjectLinks) {
-            PcbItem item = projectLink.getPcbItem();
-            PcbItemItemLink itemLink = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
-            if (itemLink != null) {
-                // TODO #24
-//                item.setMatchedItem(itemLink);
-//                hasLinkedItems = true;
-//                linkedItems.add(item);
-            }
-        }
-        return linkedItems;
-    }
-
-    private void findKnownOrders(List<PcbItem> linkedItems) {
-        java.util.List<Order> planned = SearchManager.sm().findPlannedOrders();
-        if (planned.size() > 0) {
+    private void findKnownOrders(List<PcbItemProjectLink> projectLinks) {
+        if (projectLinks != null && projectLinks.size() > 0) {
+            List<Order> planned = SearchManager.sm().findPlannedOrders();
+            if (planned.size() > 0) {
                 for (Order order : planned) {
                     for (OrderItem oi : order.getOrderItems()) {
-                        for (PcbItem item : linkedItems) {
-                            // TODO #24
-//                            if (oi.getItemId() == item.getMatchedItemLink().getItemId()) {
-//                                item.setOrderItem(oi);
-//                                item.setOrderAmount(oi.getAmount());
-//                                break;
-//                            }
+                        for (PcbItemProjectLink link : projectLinks) {
+                            if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
+                                if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {
+                                    link.getPcbItem().setOrderItem(oi);
+                                    link.getPcbItem().setOrderAmount(oi.getAmount());
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
+            }
         }
     }
 
-
-    public List<Item> getLinkedItems() {
-        List<Item> items = new ArrayList<>();
-        for (PcbItemProjectLink link : getPcbItemMap()) {
-            PcbItem pcbItem = link.getPcbItem();
-            // TODO #24
-//            if (pcbItem.hasMatchedItem()) {
-//                items.add(pcbItem.getMatchedItemLink().getItem());
-//            }
+    public boolean hasLinkedItems() {
+        if (getPcbItemMap() != null && getPcbItemMap().size() > 0) {
+            for (PcbItemProjectLink link : getPcbItemMap()) {
+                if (link.hasMatchedItem()) {
+                    return true;
+                }
+            }
         }
-        return items;
+        return false;
     }
 
     public Date getLastParsedDate() {
@@ -247,10 +232,6 @@ public class ProjectPcb extends ProjectObject {
             return getProjectIDE().getPcbItemParser();
         }
         return null;
-    }
-
-    public boolean hasLinkedItems() {
-        return hasLinkedItems;
     }
 
     public boolean hasParsed() {

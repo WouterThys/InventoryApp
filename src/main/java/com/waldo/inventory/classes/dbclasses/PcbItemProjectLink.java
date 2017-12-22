@@ -19,9 +19,11 @@ public class PcbItemProjectLink extends DbObject {
     // Link
     private long pcbItemId; // Id of PcbItem
     private long projectPcbId; // Link to pcb in project
+    private long pcbItemItemLinkId; // Link with matched item
 
     private PcbItem pcbItem;
     private ProjectPcb projectPcb;
+    private PcbItemItemLink pcbItemItemLink;
 
     // Specific for this PCB
     private String value;
@@ -30,12 +32,6 @@ public class PcbItemProjectLink extends DbObject {
 
     private int usedCount; // Amount used = amount not available anymore in stock
     private boolean used;
-
-
-
-
-
-
     private boolean processed; // Helper variable for used dialog
 
 
@@ -86,9 +82,14 @@ public class PcbItemProjectLink extends DbObject {
         if (getProjectPcbId() < UNKNOWN_ID) {
             setProjectPcbId(UNKNOWN_ID);
         }
+        if (getPcbItemItemLinkId() < UNKNOWN_ID) {
+            setPcbItemItemLinkId(UNKNOWN_ID);
+        }
 
         statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getProjectPcbId());
+        // TODO #24 statement.setLong(ndx++, getPcbItemItemLinkId());
+
         statement.setString(ndx++, getValue());
         statement.setInt(ndx++, getUsedCount());
 
@@ -110,6 +111,7 @@ public class PcbItemProjectLink extends DbObject {
 
             return ref.getPcbItemId() == getPcbItemId() &&
                     ref.getProjectPcbId() == getProjectPcbId() &&
+                    ref.getPcbItemItemLinkId() == getPcbItemItemLinkId() &&
                     ref.getValue().equals(getValue()) &&
                     ref.getUsedCount() == getUsedCount() &&
                     ref.getReferenceString().equals(getReferenceString()) &&
@@ -131,9 +133,11 @@ public class PcbItemProjectLink extends DbObject {
         // Add variables
         cpy.setPcbItemId(getPcbItemId());
         cpy.setProjectPcbId(getProjectPcbId());
+        cpy.setPcbItemItemLinkId(getPcbItemItemLinkId());
         cpy.setValue(getValue());
         cpy.setUsedCount(getUsedCount());
         cpy.setPcbSheetName(getPcbSheetName());
+        cpy.setReferences(getReferences());
         cpy.setUsed(isUsed());
         cpy.setProcessed(isProcessed());
 
@@ -232,6 +236,28 @@ public class PcbItemProjectLink extends DbObject {
             projectPcb = SearchManager.sm().findProjectPcbById(projectPcbId);
         }
         return projectPcb;
+    }
+
+    public long getPcbItemItemLinkId() {
+        return pcbItemItemLinkId;
+    }
+
+    public void setPcbItemItemLinkId(long pcbItemItemLinkId) {
+        if (pcbItemItemLink != null && pcbItemItemLink.getId() != pcbItemItemLinkId) {
+            pcbItemItemLink = null;
+        }
+        this.pcbItemItemLinkId = pcbItemItemLinkId;
+    }
+
+    public PcbItemItemLink getPcbItemItemLink() {
+        if (pcbItemItemLink == null) {
+            pcbItemItemLink = SearchManager.sm().findPcbItemItemLinkById(pcbItemItemLinkId);
+        }
+        return pcbItemItemLink;
+    }
+
+    public boolean hasMatchedItem() {
+        return pcbItemItemLinkId > UNKNOWN_ID;
     }
 
     public String getPcbSheetName() {

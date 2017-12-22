@@ -53,7 +53,7 @@ public class PcbItem extends DbObject {
 
     @Override
     public String toString() {
-        String result = getRef() + ", " + getValue();
+        String result = getPartName();
         if (getId() <= 0) {
             result += " *";
         }

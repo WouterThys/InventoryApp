@@ -2,10 +2,7 @@ package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
 import com.waldo.kicadparser.classes.Component;
@@ -130,6 +127,28 @@ public class PcbItemParser {
         // What remains in currentLinks can be removed
         for (PcbItemProjectLink link : toDelete) {
             link.delete();
+        }
+    }
+
+    public void updatePcbItemItemLinks(List<PcbItemProjectLink> projectLinks) {
+        for (PcbItemProjectLink projectLink : projectLinks) {
+            if (projectLink.getPcbItemId() > DbObject.UNKNOWN_ID) {
+                PcbItem pcbItem = projectLink.getPcbItem();
+
+                List<PcbItemItemLink> itemItemLinkList = SearchManager.sm().findPcbItemItemLinksForPcbItem(pcbItem.getId());
+                for (PcbItemItemLink itemItemLink : itemItemLinkList) {
+                    if (itemItemLink.isSetItem()) {
+                        SetItem setItem = itemItemLink.getSetItem();
+                        if (PcbItem.matchesValue(projectLink.getValue(), setItem.getValue())) {
+                            projectLink.setPcbItemItemLinkId(itemItemLink.getId());
+                            break;
+                        }
+                    } else {
+                        projectLink.setPcbItemItemLinkId(itemItemLink.getId());
+                        break;
+                    }
+                }
+            }
         }
     }
 

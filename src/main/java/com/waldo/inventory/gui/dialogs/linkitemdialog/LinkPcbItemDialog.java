@@ -162,8 +162,8 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
 //                        itemMatches.add(m);
 //                    }
                 } else {
-                    PcbItemItemLink m = new PcbItemItemLink(0, null, (Item)object);
-                    itemMatches.add(m);
+//                    PcbItemItemLink m = new PcbItemItemLink(0, null, (Item)object);
+//                    itemMatches.add(m);
                 }
 //            } else if (type == DbObject.TYPE_SET_ITEM) {
 //                if (selectedPcbItem != null) {

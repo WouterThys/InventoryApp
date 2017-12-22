@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
@@ -10,6 +11,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
@@ -41,10 +43,9 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                 case 2: // Reference
                     return link.getReferenceString();
                 case 3: // Linked
-                    // TODO #24
-//                    if (component.hasMatchedItem()) {
-//                        return linked;
-//                    }
+                    if (link.hasMatchedItem()) {
+                        return linked;
+                    }
                     break;
                 case 4: // Ordered
                     if (component.isOrdered()) {
@@ -78,22 +79,20 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
 
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     PcbItemProjectLink projectLink = (PcbItemProjectLink) value;
-                    PcbItem pcbItem = projectLink.getPcbItem();
-                    ILabel lbl = null;
+                    ILabel lbl;
                     if (table.getColumnName(column).equals("Part")) {
-                        // TODO #24
-//                        if (pcbItem.hasMatchedItem()) {
-//                            PcbItemItemLink link = pcbItem.getMatchedItemLink();
-//                            if (link.isSetItem()) {
-//                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getSetItem().toString());
-//                            } else {
-//                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().toString());
-//                            }
-//                            lbl.setForeground(colorResource.readColor("Green"));
-//                            lbl.setFont(Font.BOLD);
-//                        } else {
-//                            lbl = new ITableIcon(c.getBackground(), row, isSelected, projectLink.getPrettyName());
-//                        }
+                        if (projectLink.hasMatchedItem()) {
+                            PcbItemItemLink link = projectLink.getPcbItemItemLink();
+                            if (link.isSetItem()) {
+                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getSetItem().toString());
+                            } else {
+                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().toString());
+                            }
+                            lbl.setForeground(colorResource.readColor("Green"));
+                            lbl.setFont(Font.BOLD);
+                        } else {
+                            lbl = new ITableIcon(c.getBackground(), row, isSelected, projectLink.getPrettyName());
+                        }
                     } else {
                         if (row == 0) {
                             tableColumn.setMaxWidth(32);

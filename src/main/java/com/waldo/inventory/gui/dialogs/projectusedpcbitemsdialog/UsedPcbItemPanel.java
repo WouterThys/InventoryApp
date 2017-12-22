@@ -171,11 +171,9 @@ class UsedPcbItemPanel extends JPanel implements GuiInterface {
     private List<PcbItemProjectLink> getLinkedPcbItems(ProjectPcb pcb) {
         List<PcbItemProjectLink> linkedItems = new ArrayList<>();
         for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
-            PcbItem pcbItem = link.getPcbItem();
-            // TODO #24
-//            if (pcbItem.hasMatchedItem()) {
-//                linkedItems.add(link);
-//            }
+            if (link.hasMatchedItem()) {
+                linkedItems.add(link);
+            }
         }
         return linkedItems;
     }

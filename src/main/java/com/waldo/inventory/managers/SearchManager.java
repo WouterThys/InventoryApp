@@ -237,8 +237,8 @@ public class SearchManager {
         List<ProjectPcb> projects = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (ProjectPcb pcb : cache().getProjectPcbs()) {
-                for (Item item : pcb.getLinkedItems()) {
-                    if (item.getId() == itemId) {
+                for (PcbItemProjectLink projectLink : pcb.getPcbItemMap()) {
+                    if (projectLink.getPcbItemItemLinkId() > DbObject.UNKNOWN_ID && projectLink.getPcbItemItemLink().getItemId() == itemId) {
                         projects.add(pcb);
                         break;
                     }
@@ -416,11 +416,11 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItemItemLink findPcbItemLinkForPcbItem(long pcbItemId) {
-        if (pcbItemId > 0) {
-            for (PcbItemItemLink pcbItemItemLink : cache().getPcbItemItemLinks()) {
-                if (pcbItemItemLink.getPcbItemId() == pcbItemId) {
-                    return pcbItemItemLink;
+    public PcbItemItemLink findPcbItemItemLinkById(long id) {
+        if (id > DbObject.UNKNOWN_ID) {
+            for (PcbItemItemLink link : cache().getPcbItemItemLinks()) {
+                if (link.getId() == id) {
+                    return link;
                 }
             }
         }
@@ -507,6 +507,18 @@ public class SearchManager {
             for (PcbItemProjectLink link : cache().getPcbItemProjectLinks()) {
                 if (link.getProjectPcbId() == projectPcbId) {
                     links.add(link);
+                }
+            }
+        }
+        return links;
+    }
+
+    public List<PcbItemItemLink> findPcbItemItemLinksForPcbItem(long pcbItemId) {
+        List<PcbItemItemLink> links = new ArrayList<>();
+        if (pcbItemId > DbObject.UNKNOWN_ID) {
+            for (PcbItemItemLink itemItemLink : cache().getPcbItemItemLinks()) {
+                if (itemItemLink.getPcbItemId() == pcbItemId) {
+                    links.add(itemItemLink);
                 }
             }
         }

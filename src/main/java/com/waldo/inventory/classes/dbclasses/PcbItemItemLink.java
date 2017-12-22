@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
@@ -33,6 +34,15 @@ public class PcbItemItemLink extends DbObject {
 
     public PcbItemItemLink() {
         super(TABLE_NAME);
+    }
+
+    public PcbItemItemLink(@NotNull PcbItem pcbItem,@NotNull DbObject dbObject) {
+        super(TABLE_NAME);
+        this.pcbItem = pcbItem;
+        if (pcbItem != null) {
+            pcbItemId = pcbItem.getId();
+        }
+        setMatchedItem(dbObject);
     }
 
     public PcbItemItemLink(int match, PcbItem pcbItem, Item item) {
@@ -137,6 +147,18 @@ public class PcbItemItemLink extends DbObject {
         return cpy;
     }
 
+    public String getPrettyName() {
+        if (isSetItem()) {
+            if (getSetItem().getValue().hasValue()) {
+                return getItem().toString() + " - " + getSetItem().getValue().toString();
+            } else {
+                return getItem().toString() + " - " + getSetItem().toString();
+            }
+        } else {
+            return getItem().toString();
+        }
+    }
+
     public boolean hasNameMatch() {
         return (match & MATCH_NAME) == MATCH_NAME;
     }
@@ -229,6 +251,22 @@ public class PcbItemItemLink extends DbObject {
             pcbItem = SearchManager.sm().findPcbItemById(pcbItemId);
         }
         return pcbItem;
+    }
+
+    public void setMatchedItem(@NotNull DbObject matchedItem) {
+        this.match = matchedItem.getObjectMatch().getMatchPercent();
+
+        if (matchedItem instanceof Item) {
+            this.setItem = null;
+            this.setItemId = -1;
+            this.item = (Item) matchedItem;
+            this.itemId = item.getId();
+        } else if (matchedItem instanceof SetItem) {
+            this.setItem = (SetItem) matchedItem;
+            this.setItemId = setItem.getId();
+            this.item = setItem.getItem();
+            this.itemId = item.getId();
+        }
     }
 
 
