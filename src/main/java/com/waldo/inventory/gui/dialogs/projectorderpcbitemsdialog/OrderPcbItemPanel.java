@@ -133,11 +133,12 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
         for (PcbItemProjectLink link : pcbTableGetItemList()) {
             PcbItem item = link.getPcbItem();
             if (!item.isOrdered()) {
-                if (item.getMatchedItemLink().isSetItem()) {
-                    item.setOrderAmount(1);
-                } else {
-                    item.setOrderAmount(link.getNumberOfItems());
-                }
+                // TODO #24
+//                if (item.getMatchedItemLink().isSetItem()) {
+//                    item.setOrderAmount(1);
+//                } else {
+//                    item.setOrderAmount(link.getNumberOfItems());
+//                }
             }
         }
         pcbTableUpdate();
@@ -183,10 +184,11 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
     void createOrderItems(Order order) {
         if (order != null)  {
             for (PcbItem item : getPcbItemsToOrder()) {
-                OrderItem orderItem = new OrderItem(order.getId(), item.getMatchedItemLink().getItemId(), item.getOrderAmount());
-                order.addItemToTempList(orderItem);
-
-                item.setOrderItem(orderItem);
+                // TODO #24
+//                OrderItem orderItem = new OrderItem(order.getId(), item.getMatchedItemLink().getItemId(), item.getOrderAmount());
+//                order.addItemToTempList(orderItem);
+//
+//                item.setOrderItem(orderItem);
             }
         }
         pcbTableUpdate();
@@ -199,12 +201,13 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
         for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
             PcbItem pcbItem = link.getPcbItem();
-            if (pcbItem.hasMatchedItem()) {
-                if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
-                    linkedItems.add(link);
-                    containedItems.add(pcbItem.getMatchedItemLink().getItemId());
-                }
-            }
+            // TODO #24
+//            if (pcbItem.hasMatchedItem()) {
+//                if (!containedItems.contains(pcbItem.getMatchedItemLink().getItemId())) {
+//                    linkedItems.add(link);
+//                    containedItems.add(pcbItem.getMatchedItemLink().getItemId());
+//                }
+//            }
         }
 
         return linkedItems;

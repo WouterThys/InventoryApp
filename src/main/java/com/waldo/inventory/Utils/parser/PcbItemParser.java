@@ -2,8 +2,10 @@ package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
 import com.waldo.kicadparser.classes.Component;
@@ -14,9 +16,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.*;
-import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PcbItemParser {
 
@@ -55,186 +54,6 @@ public class PcbItemParser {
             }
         }
         return null;
-    }
-
-    private int matchName(String pcbName, String itemName) {
-        if ((pcbName.length() > 2 && itemName.length() > 2) && (itemName.contains(pcbName) || pcbName.contains(itemName))) {
-            return MATCH_NAME; // Set bit
-        } else {
-            return 0;
-        }
-    }
-
-    private int matchValue(String pcbValue, Value value) {
-        Value pcbVal = Value.tryFindValue(pcbValue);
-        if (pcbVal != null) {
-            if (pcbVal.equalsIgnoreUnits(value)) {
-                return MATCH_VALUE;
-            }
-        }
-        return 0;
-    }
-
-    private int matchValue(String pcbValue, Value value, String itemName) {
-        int res = matchValue(pcbValue, value);
-
-        if (res == 0) { // Try to match with name
-            if (pcbValue.contains(itemName) || itemName.contains(pcbValue)) {
-                res = MATCH_VALUE;
-            }
-        }
-
-        return res;
-    }
-
-    private int matchFootprint(String pcbFp, PackageType packageType) {
-        if (pcbFp != null && !pcbFp.isEmpty() && packageType != null) {
-            String pkName = packageType.getPackage().getName().toUpperCase();
-            String ptName = packageType.getName().toUpperCase();
-
-            if (pcbFp.contains(pkName) || pkName.contains(pcbFp) || pcbFp.contains(ptName) || ptName.contains(pcbFp)) {
-                return MATCH_FOOTPRINT;
-            }
-        }
-        return 0;
-    }
-
-    public List<PcbItemItemLink> linkWithSetItem(PcbItem component, Item item) {
-        List<PcbItemItemLink> itemMatches = new ArrayList<>();
-
-        String pcbName = component.getPartName().toUpperCase();
-        String pcbValue = component.getValue();
-        String pcbFp = component.getFootprint().toUpperCase();
-
-        ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
-
-        if (parserLink != null) {
-
-            if (parserLink.hasCategory()) {
-                if (item.getCategoryId() != parserLink.getCategoryId()) {
-                    return itemMatches;
-                }
-            }
-
-            if (parserLink.hasProduct()) {
-                if (item.getProductId() != parserLink.getProductId()) {
-                    return itemMatches;
-                }
-            }
-
-            if (parserLink.hasType()) {
-                if (item.getTypeId() != parserLink.getTypeId()) {
-                    return itemMatches;
-                }
-            }
-        }
-
-        for (SetItem setItem : SearchManager.sm().findSetItemsByItemId(item.getId())) {
-            PcbItemItemLink link = SearchManager.sm().findPcbItemLinkWithSetItem(setItem.getId(), component.getId());
-            if (link != null) {
-                itemMatches.add(link);
-                component.setMatchedItem(link);
-            } else {
-                int match = 0;
-                String itemName = setItem.getName().toUpperCase();
-
-                match |= matchName(pcbName, itemName); // Set bit
-                match |= matchValue(pcbValue, setItem.getValue()); // Set bit
-
-                // Only check footprint match if there is already a match
-                if (match > 0 && item.getPackageTypeId() > UNKNOWN_ID) {
-                    match |= matchFootprint(pcbFp, item.getPackageType());
-                }
-
-                if (match > 0) {
-                    itemMatches.add(new PcbItemItemLink(match, component, setItem));
-                }
-            }
-
-        }
-        return itemMatches;
-    }
-
-
-    public List<PcbItemItemLink> linkWithItem(PcbItem pcbItem, Item item) {
-        List<PcbItemItemLink> itemMatches = new ArrayList<>();
-
-
-        PcbItemItemLink link = SearchManager.sm().findPcbItemLinkWithItem(item.getId(), pcbItem.getId());
-        if (link != null) {
-            itemMatches.add(link);
-            pcbItem.setMatchedItem(link);
-        } else {
-            int match = 0;
-
-            String itemName = item.getName().toUpperCase();
-
-            String pcbName = pcbItem.getPartName().toUpperCase();
-            String pcbValue = pcbItem.getValue();
-            String pcbFp = pcbItem.getFootprint().toUpperCase();
-
-            ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
-
-            if (parserLink != null) {
-
-                if (parserLink.hasCategory()) {
-                    if (item.getCategoryId() != parserLink.getCategoryId()) {
-                        return itemMatches;
-                    }
-                }
-
-                if (parserLink.hasProduct()) {
-                    if (item.getProductId() != parserLink.getProductId()) {
-                        return itemMatches;
-                    }
-                }
-
-                if (parserLink.hasType()) {
-                    if (item.getTypeId() != parserLink.getTypeId()) {
-                        return itemMatches;
-                    }
-                }
-            }
-
-            match |= matchName(pcbName, itemName); // Set bit
-            match |= matchValue(pcbValue, item.getValue(), itemName);
-            if (match > 0 && item.getPackageTypeId() > UNKNOWN_ID) {
-                match |= matchFootprint(pcbFp, item.getPackageType());
-            }
-
-            if (match > 0) {
-                itemMatches.add(new PcbItemItemLink(match, pcbItem, item));
-            }
-        }
-
-        return itemMatches;
-    }
-
-    public List<PcbItemItemLink> findLinkWithItem(PcbItem pcbItem) {
-        List<PcbItemItemLink> itemLinkList = new ArrayList<>();
-
-        for (Item item : cache().getItems()) {
-            if (item.isSet()) {
-                itemLinkList.addAll(linkWithSetItem(pcbItem, item));
-            } else {
-                itemLinkList.addAll(linkWithItem(pcbItem, item));
-            }
-
-            if (itemLinkList.size() > 15) {
-                break;
-            }
-        }
-
-        itemLinkList.sort(new MatchComparator());
-
-        if (itemLinkList.size() == 1) {
-            int match = itemLinkList.get(0).getMatch();
-            if (getMatchCount(match) == 3) {
-                pcbItem.setMatchedItem(itemLinkList.get(0));
-            }
-        }
-
-        return itemLinkList;
     }
 
     public List<PcbItemProjectLink> updatePcbItemDb(ProjectPcb pcbProject, HashMap<String, List<PcbItem>> pcbItemMap) {

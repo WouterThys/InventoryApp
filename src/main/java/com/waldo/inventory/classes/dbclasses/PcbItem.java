@@ -1,6 +1,5 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
 
@@ -20,19 +19,13 @@ public class PcbItem extends DbObject {
     private String library; // db
     private String partName; // db
 
+    // Values used when parsing from file, these values will be empty when fetched from db
     private String ref; // => to PcbItemProjectLink
     private String value; // => to PcbItemProjectLink
     private String sheetName; // => to PcbItemProjectLink
+    private List<String> references; // => PcbItemProjectLink
 
     private Date tStamp; // not used
-
-
-    // After sorting multiple references can group together in one PcbItem
-    private List<String> references;
-
-    // Link with item
-    private List<PcbItemItemLink> itemLinkList;
-    private PcbItemItemLink matchedItem;
 
     // Order
     private OrderItem orderItem = null;
@@ -227,28 +220,6 @@ public class PcbItem extends DbObject {
 
     public void settStamp(Date tStamp) {
         this.tStamp = tStamp;
-    }
-
-    public List<PcbItemItemLink> getItemLinkList() {
-        if (itemLinkList == null) {
-            itemLinkList = PcbItemParser.getInstance().findLinkWithItem(this);
-        }
-        return itemLinkList;
-    }
-
-    public boolean hasMatchedItem() {
-        return matchedItem != null;
-    }
-
-    public PcbItemItemLink getMatchedItemLink() {
-        return matchedItem;
-    }
-
-    public void setMatchedItem(PcbItemItemLink matchedItem) {
-        if (matchedItem != null) {
-            matchedItem.setMatched(true);
-        }
-        this.matchedItem = matchedItem;
     }
 
     public void addReference(String reference) {

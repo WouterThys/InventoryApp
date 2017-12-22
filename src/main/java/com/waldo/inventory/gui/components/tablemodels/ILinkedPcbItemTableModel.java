@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 
 import javax.swing.*;
@@ -48,18 +47,20 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProject
                     }
                     return amount;
                 case 1: // Pcb item name and value
-                    if (!showSetValues && pcbItem.getMatchedItemLink().isSetItem()) {
-                        return pcbItem.getPartName() + " (Set)";
-                    } else {
-                        return link.getPrettyName();
-                    }
+                    // TODO #24
+//                    if (!showSetValues && pcbItem.getMatchedItemLink().isSetItem()) {
+//                        return pcbItem.getPartName() + " (Set)";
+//                    } else {
+//                        return link.getPrettyName();
+//                    }
                 case 2: // Item name
-                    PcbItemItemLink itemLink = pcbItem.getMatchedItemLink();
-                    if (!showSetValues || !itemLink.isSetItem()) {
-                        return itemLink.getItem().toString();
-                    } else {
-                        return itemLink.getSetItem().toString();
-                    }
+                    // TODO #24
+//                    PcbItemItemLink itemLink = pcbItem.getMatchedItemLink();
+//                    if (!showSetValues || !itemLink.isSetItem()) {
+//                        return itemLink.getItem().toString();
+//                    } else {
+//                        return itemLink.getSetItem().toString();
+//                    }
 
             }
         }

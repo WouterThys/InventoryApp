@@ -52,11 +52,12 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         linkBtn.setEnabled(selectedPcbItem != null && selectedItemLink != null);
 
         if (selectedPcbItem != null) {
-            if (selectedPcbItem.hasMatchedItem()) {
-                linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
-            } else {
-                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
-            }
+            // TODO #24
+//            if (selectedPcbItem.hasMatchedItem()) {
+//                linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
+//            } else {
+//                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
+//            }
         }
 
         if (itemLinksToSave.size() > 0 || itemLinksToDelete.size() > 0) {

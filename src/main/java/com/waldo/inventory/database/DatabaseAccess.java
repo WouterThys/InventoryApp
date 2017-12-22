@@ -1441,7 +1441,6 @@ public class DatabaseAccess {
                     kil.setId(rs.getLong("id"));
                     kil.setItemId(rs.getLong("itemId"));
                     kil.setSetItemId(rs.getLong("setItemId"));
-                    kil.setIsSetItem(rs.getBoolean("isSetItem"));
                     kil.setMatch(rs.getByte("componentMatch"));
                     kil.setPcbItemId(rs.getLong("pcbItemId"));
 

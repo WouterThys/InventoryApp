@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.linkitemdialog;
 
-import com.waldo.inventory.Utils.parser.PcbItemParser;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 
@@ -30,16 +32,17 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
                 selectedPcbItem = pcbPanel.getSelectedComponent();
                 if (selectedPcbItem != null) {
                     pcbPanel.updateSelectedValueData(selectedPcbItem);
-                    itemPanel.setItemList(selectedPcbItem.getItemLinkList());
-                    if (selectedPcbItem.hasMatchedItem()) {
-                        itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
-                    } else {
-                        if (selectedPcbItem.getItemLinkList().size() > 0) {
-                            itemPanel.selectMatchItem(selectedPcbItem.getItemLinkList().get(0));
-                        } else {
-                            selectedItemLink = null;
-                        }
-                    }
+                    // TODO #24
+//                    itemPanel.setItemList(selectedPcbItem.getItemLinkList());
+//                    if (selectedPcbItem.hasMatchedItem()) {
+//                        itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
+//                    } else {
+//                        if (selectedPcbItem.getItemLinkList().size() > 0) {
+//                            itemPanel.selectMatchItem(selectedPcbItem.getItemLinkList().get(0));
+//                        } else {
+//                            selectedItemLink = null;
+//                        }
+//                    }
                 }
                 updateEnabledComponents();
             }
@@ -112,18 +115,19 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
             public void onUpdated(Item item) {
                 if (selectedItemLink != null) {
                     List<PcbItemItemLink> links;
-                    if (item.isSet()) {
-                        links = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, item);
-                    } else {
-                        links = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, item);
-                    }
+                    // TODO #24
+//                    if (item.isSet()) {
+//                        links = PcbItemParser.getInstance().linkWithSetItem(selectedPcbItem, item);
+//                    } else {
+//                        links = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, item);
+//                    }
 
-                    for (PcbItemItemLink link : links) {
-                        if (link.getItemId() == selectedItemLink.getItemId()) {
-                            link.createCopy(selectedItemLink);
-                            break;
-                        }
-                    }
+//                    for (PcbItemItemLink link : links) {
+//                        if (link.getItemId() == selectedItemLink.getItemId()) {
+//                            link.createCopy(selectedItemLink);
+//                            break;
+//                        }
+//                    }
                 }
 
                 pcbPanel.updateTable();
@@ -149,13 +153,14 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
             int type = DbObject.getType(object);
             //if (type == DbObject.TYPE_ITEM) {
                 if (selectedPcbItem != null) {
-                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, (Item) object);
-                    if (matches.size() > 0) {
-                        itemMatches.addAll(matches);
-                    } else {
-                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem, (Item)object);
-                        itemMatches.add(m);
-                    }
+                    // TODO #24
+//                    List<PcbItemItemLink> matches = PcbItemParser.getInstance().linkWithItem(selectedPcbItem, (Item) object);
+//                    if (matches.size() > 0) {
+//                        itemMatches.addAll(matches);
+//                    } else {
+//                        PcbItemItemLink m = new PcbItemItemLink(0, selectedPcbItem, (Item)object);
+//                        itemMatches.add(m);
+//                    }
                 } else {
                     PcbItemItemLink m = new PcbItemItemLink(0, null, (Item)object);
                     itemMatches.add(m);
@@ -182,11 +187,12 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     @Override
     public void onSearchCleared() {
         if (selectedPcbItem != null) {
-            if (selectedPcbItem.hasMatchedItem()) {
-                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
-            } else {
-                selectedItemLink = null;
-            }
+            // TODO #24
+//            if (selectedPcbItem.hasMatchedItem()) {
+//                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
+//            } else {
+//                selectedItemLink = null;
+//            }
         } else {
             itemPanel.clearItemList();
         }
@@ -210,27 +216,27 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(linkBtn)) {
             if (selectedPcbItem != null && selectedItemLink != null) {
-                if (selectedPcbItem.hasMatchedItem()) { // Remove link
-                    selectedPcbItem.setMatchedItem(null);
-                    selectedItemLink.setMatched(false);
-                    if (itemLinksToSave.contains(selectedItemLink)) {
-                        itemLinksToSave.remove(selectedItemLink);
-                    } else {
-                        if (!itemLinksToDelete.contains(selectedItemLink)) {
-                            itemLinksToDelete.add(selectedItemLink);
-                        }
-                    }
-                } else { // Set link
-                    selectedPcbItem.getItemLinkList().add(selectedItemLink);
-                    selectedPcbItem.setMatchedItem(selectedItemLink);
-                    if (itemLinksToDelete.contains(selectedItemLink)) {
-                        itemLinksToDelete.remove(selectedItemLink);
-                    } else {
-                        if (!itemLinksToSave.contains(selectedItemLink)) {
-                            itemLinksToSave.add(selectedItemLink);
-                        }
-                    }
-                }
+                // TODO #24
+//                if (selectedPcbItem.hasMatchedItem()) { // Remove link
+//                    selectedPcbItem.setMatchedItem(null);
+//                    if (itemLinksToSave.contains(selectedItemLink)) {
+//                        itemLinksToSave.remove(selectedItemLink);
+//                    } else {
+//                        if (!itemLinksToDelete.contains(selectedItemLink)) {
+//                            itemLinksToDelete.add(selectedItemLink);
+//                        }
+//                    }
+//                } else { // Set link
+//                    selectedPcbItem.getItemLinkList().add(selectedItemLink);
+//                    selectedPcbItem.setMatchedItem(selectedItemLink);
+//                    if (itemLinksToDelete.contains(selectedItemLink)) {
+//                        itemLinksToDelete.remove(selectedItemLink);
+//                    } else {
+//                        if (!itemLinksToSave.contains(selectedItemLink)) {
+//                            itemLinksToSave.add(selectedItemLink);
+//                        }
+//                    }
+//                }
                 pcbPanel.updateTable();
                 updateEnabledComponents();
             }

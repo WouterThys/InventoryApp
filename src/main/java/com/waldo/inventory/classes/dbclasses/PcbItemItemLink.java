@@ -31,9 +31,6 @@ public class PcbItemItemLink extends DbObject {
     private long pcbItemId;
     private PcbItem pcbItem;
 
-    private boolean isSetItem;
-    private boolean isMatched;
-
     public PcbItemItemLink() {
         super(TABLE_NAME);
     }
@@ -51,8 +48,6 @@ public class PcbItemItemLink extends DbObject {
         if (item != null) {
             itemId = item.getId();
         }
-
-        isSetItem = false;
         setItemId = -1;
     }
 
@@ -68,10 +63,8 @@ public class PcbItemItemLink extends DbObject {
 
         if (setItem != null) {
             setItemId = setItem.getId();
+            itemId = setItem.getItemId();
         }
-
-        isSetItem = true;
-        itemId = -1;
     }
 
     @Override
@@ -139,7 +132,6 @@ public class PcbItemItemLink extends DbObject {
         copyBaseFields(cpy);
         cpy.setItemId(getItemId());
         cpy.setSetItemId(getSetItemId());
-        cpy.setIsSetItem(isSetItem());
         cpy.setMatch(getMatch());
 
         return cpy;
@@ -158,7 +150,7 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public String getName() {
-        if (isSetItem) {
+        if (isSetItem()) {
             return getItem().getName() + "/" + getSetItem().toString();
         } else {
             return getItem().getName();
@@ -183,7 +175,7 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public Item getItem() {
-        if (isSetItem) {
+        if (isSetItem()) {
             return getSetItem().getItem();
         }
         if (item == null) {
@@ -201,11 +193,7 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public boolean isSetItem() {
-        return isSetItem;
-    }
-
-    public void setIsSetItem(boolean setItem) {
-        isSetItem = setItem;
+        return (getSetItemId() > UNKNOWN_ID);
     }
 
     public void setItemId(long id) {
@@ -213,7 +201,7 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public long getItemId() {
-        if (isSetItem) {
+        if (isSetItem()) {
             itemId = getItem().getId();
         }
         return itemId;
@@ -243,17 +231,13 @@ public class PcbItemItemLink extends DbObject {
         return pcbItem;
     }
 
-    public void setMatched(boolean matched) {
-        isMatched = matched;
-    }
-
 
 
     //
     // Helpers
     //
     public String getLinkedItemName() {
-        if (isSetItem) {
+        if (isSetItem()) {
             return getSetItem().toString();
         } else {
             return getItem().toString();
@@ -261,7 +245,7 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public int getLinkedItemAmount() {
-        if (isSetItem) {
+        if (isSetItem()) {
             return getSetItem().getAmount();
         } else {
             return getItem().getAmount();

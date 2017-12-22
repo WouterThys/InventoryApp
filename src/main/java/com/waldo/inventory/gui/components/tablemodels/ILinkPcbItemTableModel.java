@@ -46,11 +46,12 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
                 case 2: // Value
                     return component.getValue();
                 case 3:
-                    if (type == LINK_COMPONENTS) {
-                        return component.hasMatchedItem();
-                    } else {
-                        return component.isOrdered();
-                    }
+                    // TODO #24
+//                    if (type == LINK_COMPONENTS) {
+//                        return component.hasMatchedItem();
+//                    } else {
+//                        return component.isOrdered();
+//                    }
             }
         }
         return null;

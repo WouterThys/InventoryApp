@@ -114,12 +114,13 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private void setReferencesInfo(PcbItemProjectLink pcbItemProjectLink) {
         if (pcbItemProjectLink != null) {
             PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
-            if (pcbItem.hasMatchedItem()) {
-                PcbItemItemLink itemLink = pcbItem.getMatchedItemLink();
-                updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
-            } else {
-                usedSpinner.setEnabled(false);
-            }
+            // TODO #24
+//            if (pcbItem.hasMatchedItem()) {
+//                PcbItemItemLink itemLink = pcbItem.getMatchedItemLink();
+//                updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
+//            } else {
+//                usedSpinner.setEnabled(false);
+//            }
             if (pcbItem.getOrderItem() != null) {
                 orderTf.setText(pcbItem.getOrderItem().getOrder().toString());
             }

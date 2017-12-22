@@ -1,6 +1,8 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
@@ -8,7 +10,6 @@ import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog
 import javax.swing.*;
 import java.awt.*;
 
-import static com.waldo.inventory.classes.dbclasses.PcbItemItemLink.MATCH_MANUAL;
 import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
 public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
@@ -34,22 +35,8 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
             PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
             DbObject newMatch = dialog.getSelectedItem();
             if (newMatch != null) {
-                PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
-
-                if (itemItemLink == null) {
-                    if (newMatch instanceof  Item) {
-                        itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, (Item) newMatch);
-                    } else {
-                        itemItemLink = new PcbItemItemLink(MATCH_MANUAL, pcbItem, (SetItem) newMatch);
-                    }
-                    itemItemLink.save(); // TODO: also with original stuff so that it can be canceled
-                } else {
-                    if (itemItemLink.getItemId() != newMatch.getId()) {
-                        itemItemLink.setItemId(newMatch.getId());
-                        itemItemLink.save();
-                    }
-                }
-                updateMatchedItemPanel(newMatch.getName(), itemItemLink.getAmount());
+                // TODO #24
+                //updateMatchedItemPanel(newMatch.getName(), currentLink.getAmount());
             }
         }
     }
@@ -57,13 +44,14 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout {
     @Override
     void onDeleteMatchedItem() {
         PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
-        PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
-        if (itemItemLink != null) {
-            pcbItem.setMatchedItem(null);
-            itemItemLink.delete();
-            pcbItem.save();
-            clearMatchedItemPanel();
-        }
+        // TODO #24
+//        PcbItemItemLink itemItemLink = pcbItem.getMatchedItemLink();
+//        if (itemItemLink != null) {
+//            pcbItem.setMatchedItem(null);
+//            itemItemLink.delete();
+//            pcbItem.save();
+//            clearMatchedItemPanel();
+//        }
     }
 
     @Override

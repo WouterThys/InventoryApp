@@ -188,9 +188,10 @@ public class ProjectPcb extends ProjectObject {
             PcbItem item = projectLink.getPcbItem();
             PcbItemItemLink itemLink = SearchManager.sm().findPcbItemLinkForPcbItem(item.getId());
             if (itemLink != null) {
-                item.setMatchedItem(itemLink);
-                hasLinkedItems = true;
-                linkedItems.add(item);
+                // TODO #24
+//                item.setMatchedItem(itemLink);
+//                hasLinkedItems = true;
+//                linkedItems.add(item);
             }
         }
         return linkedItems;
@@ -202,11 +203,12 @@ public class ProjectPcb extends ProjectObject {
                 for (Order order : planned) {
                     for (OrderItem oi : order.getOrderItems()) {
                         for (PcbItem item : linkedItems) {
-                            if (oi.getItemId() == item.getMatchedItemLink().getItemId()) {
-                                item.setOrderItem(oi);
-                                item.setOrderAmount(oi.getAmount());
-                                break;
-                            }
+                            // TODO #24
+//                            if (oi.getItemId() == item.getMatchedItemLink().getItemId()) {
+//                                item.setOrderItem(oi);
+//                                item.setOrderAmount(oi.getAmount());
+//                                break;
+//                            }
                         }
                     }
                 }
@@ -218,9 +220,10 @@ public class ProjectPcb extends ProjectObject {
         List<Item> items = new ArrayList<>();
         for (PcbItemProjectLink link : getPcbItemMap()) {
             PcbItem pcbItem = link.getPcbItem();
-            if (pcbItem.hasMatchedItem()) {
-                items.add(pcbItem.getMatchedItemLink().getItem());
-            }
+            // TODO #24
+//            if (pcbItem.hasMatchedItem()) {
+//                items.add(pcbItem.getMatchedItemLink().getItem());
+//            }
         }
         return items;
     }
