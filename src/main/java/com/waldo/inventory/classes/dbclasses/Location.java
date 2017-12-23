@@ -15,14 +15,16 @@ public class Location extends DbObject {
 
     public static final String TABLE_NAME = "locations";
 
-
-
     // private String name; -> in DbObject
     private long locationTypeId;
     private LocationType locationType;
     private int row = 0;
     private int col = 0;
     private String alias;
+
+    // For layout
+    private LocationLayout layout = new LocationLayout();
+
 
     // Items or SetItems for this location
     private List<DbObject> items;
@@ -86,6 +88,25 @@ public class Location extends DbObject {
             }
         }
         return result;
+    }
+
+    public static Location createLocation(String name, int r, int c, long locationTypeId) {
+        Location location = SearchManager.sm().findLocation(locationTypeId, r, c);
+        if (location == null) {
+            location = new Location();
+        } else {
+            location = location.createCopy();
+        }
+        if (name != null && !name.isEmpty()) {
+            location.setName(name);
+        } else {
+            location.setName("(" + Statics.Alphabet[r] + "," + c + ")");
+        }
+        location.setCol(c);
+        location.setRow(r);
+        location.setLocationTypeId(locationTypeId);
+
+        return location;
     }
 
 
@@ -204,6 +225,7 @@ public class Location extends DbObject {
 
     public void setRow(int row) {
         this.row = row;
+        this.layout.y = row;
     }
 
     public int getCol() {
@@ -212,6 +234,7 @@ public class Location extends DbObject {
 
     public void setCol(int column) {
         this.col = column;
+        this.layout.x = column;
     }
 
     public String getAlias() {
@@ -223,5 +246,46 @@ public class Location extends DbObject {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public void setLayout(int x, int y, int w, int h) {
+        layout.set(x, y, w, h);
+    }
+
+    public void setLayout(int x, int y, int w, int h, int wx, int wy) {
+        layout.set(x, y, w, h, wx, wy);
+    }
+
+    public LocationLayout getLayout() {
+        return layout;
+    }
+
+    //
+    // Helper class for layout buttons
+    //
+    public static class LocationLayout {
+        public int x = 0; // X coordinate
+        public int y = 0; // Y coordinate
+        public int w = 1; // Width
+        public int h = 1; // Height
+        public int wx = 0; // Weight x
+        public int wy = 0; // Weight y
+
+        LocationLayout() {
+
+        }
+
+        public void set(int x, int y, int w, int h) {
+            set(x, y, w, h, 0, 0);
+        }
+
+        public void set(int x, int y, int w, int h, int wx, int wy) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.wx = wx;
+            this.wy = wy;
+        }
     }
 }

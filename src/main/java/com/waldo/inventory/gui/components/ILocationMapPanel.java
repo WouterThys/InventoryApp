@@ -114,43 +114,140 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         drawButtons(buttonList);
     }
 
-    private void drawButtons(List<ILocationButton> locationButtons) {
-        buttonPanel.removeAll();
+    private void updateLocations(List<ILocationButton> locations, String input) {
+        String rows[] = input.split("\\r?\\n");
 
-        if (!buttonList.equals(locationButtons)) {
-            buttonList = locationButtons;
-        }
+        if (rows.length == locations.size()) {
+            for (int i=0; i < rows.length; i++) {
+                try {
+                    String row = rows[i];
+                    Location loc = locations.get(i).getTheLocation();
 
-        GridBagConstraints btnGbc = new GridBagConstraints();
-        btnGbc.insets = new Insets(2,2,2,2);
-        btnGbc.fill = GridBagConstraints.HORIZONTAL;
-        btnGbc.weightx = 1;
-        btnGbc.gridy = 0;
+                    row = row.replace(" ", "");
 
-        GridBagConstraints pnlGbc = new GridBagConstraints();
-        pnlGbc.fill = GridBagConstraints.HORIZONTAL;
-        btnGbc.gridx = 0;
+                    String[] params = valueBetween(row, "(", ")").split(",");
+                    int c = Integer.valueOf(params[0]); // X = column
+                    int r = Integer.valueOf(params[1]); // Y = row
+                    int w = Integer.valueOf(params[2]); // Width
+                    int h = Integer.valueOf(params[3]); // Height
+                    int wx = 0;
+                    int wy = 0;
 
-        int r = 0;
-        List<ILocationButton> temp = new ArrayList<>(locationButtons);
-        while (temp.size() > 0) {
-            List<ILocationButton> btns = locationButtonsForRow(r, temp);
+                    if (params.length > 4) {
+                        wx = Integer.valueOf(params[4]);
+                    }
+                    if (params.length > 5) {
+                        wy = Integer.valueOf(params[5]);
+                    }
 
-            JPanel rowPanel = new JPanel(new GridBagLayout());
-            for (ILocationButton btn : btns) {
-                btnGbc.gridx = btn.getCol();
-                rowPanel.add(btn, btnGbc);
+
+                    loc.setLayout(c, r, w, h, wx, wy);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            pnlGbc.gridy = r;
-            buttonPanel.add(rowPanel, pnlGbc);
-
-            temp.removeAll(btns);
-            r++;
         }
 
+    }
 
-        buttonPanel.revalidate();
-        buttonPanel.repaint();
+    private String valueBetween(String s, String first, String last) {
+        s = s.substring(s.indexOf(first) + 1);
+        s = s.substring(0, s.indexOf(last));
+
+        return s;
+    }
+
+
+
+    private void drawButtons(List<ILocationButton> locationButtons) {
+        if (locationButtons != null) {
+            buttonPanel.removeAll();
+
+            if (!buttonList.equals(locationButtons)) {
+                buttonList = locationButtons;
+            }
+
+            boolean hasDefinition = false;
+            if (locationButtons.size() > 0) {
+                hasDefinition = locationButtons.get(0).getTheLocation().getLocationType().hasLayoutDefinition();
+            }
+
+            if (hasDefinition) {
+                updateLocations(locationButtons, locationButtons.get(0).getTheLocation().getLocationType().getLayoutDefinition());
+                buttonPanel.setLayout(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+
+//                gbc.gridx = 0; gbc.gridy = 0;
+//                gbc.weightx = 0; gbc.weighty = 0;
+//                gbc.gridwidth = 1; gbc.gridheight = 2;
+//                buttonPanel.add(new JButton("A0"), gbc);
+//
+//                gbc.gridx = 1; gbc.gridy = 0;
+//                gbc.weightx = 0; gbc.weighty = 0;
+//                gbc.gridwidth = 1; gbc.gridheight = 2;
+//                buttonPanel.add(new JButton("A1"), gbc);
+//
+//                gbc.gridx = 2; gbc.gridy = 0;
+//                gbc.weightx = 1; gbc.weighty = 0;
+//                gbc.gridwidth = 2; gbc.gridheight = 2;
+//                buttonPanel.add(new JButton("A2"), gbc);
+//
+//                gbc.gridx = 0; gbc.gridy = 2;
+//                gbc.weightx = 1; gbc.weighty = 0;
+//                gbc.gridwidth = 3; gbc.gridheight = 2;
+//                buttonPanel.add(new JButton("A3"), gbc);
+//
+//                gbc.gridx = 3; gbc.gridy = 2;
+//                gbc.weightx = 0; gbc.weighty = 0;
+//                gbc.gridwidth = 1; gbc.gridheight = 2;
+//                buttonPanel.add(new JButton("A4"), gbc);
+
+                for (ILocationButton btn : locationButtons) {
+                    Location.LocationLayout layout = btn.getBtnLayout();
+
+                    gbc.gridx = layout.x;
+                    gbc.gridy = layout.y;
+                    gbc.gridwidth = layout.w;
+                    gbc.gridheight = layout.h;
+                    gbc.weightx = layout.wx;
+                    gbc.weighty = layout.wy;
+
+                    buttonPanel.add(btn, gbc);
+                }
+            } else {
+                GridBagConstraints btnGbc = new GridBagConstraints();
+                btnGbc.insets = new Insets(2, 2, 2, 2);
+                btnGbc.fill = GridBagConstraints.HORIZONTAL;
+                btnGbc.weightx = 1;
+                btnGbc.gridy = 0;
+
+                GridBagConstraints pnlGbc = new GridBagConstraints();
+                pnlGbc.fill = GridBagConstraints.HORIZONTAL;
+                btnGbc.gridx = 0;
+
+                int r = 0;
+                List<ILocationButton> temp = new ArrayList<>(locationButtons);
+                while (temp.size() > 0) {
+                    List<ILocationButton> btns = locationButtonsForRow(r, temp);
+
+                    JPanel rowPanel = new JPanel(new GridBagLayout());
+                    for (ILocationButton btn : btns) {
+                        btnGbc.gridx = btn.getCol();
+                        rowPanel.add(btn, btnGbc);
+                    }
+                    pnlGbc.gridy = r;
+                    buttonPanel.add(rowPanel, pnlGbc);
+
+                    temp.removeAll(btns);
+                    r++;
+                }
+            }
+
+            buttonPanel.revalidate();
+            buttonPanel.repaint();
+        }
     }
 
     public List<ILocationButton> locationButtonsForRow(int row, List<ILocationButton> locationButtons) {

@@ -21,6 +21,7 @@ public class LocationType extends DbObject {
         Lower
     }
 
+    private String layoutDefinition;
     private List<Location> locations;
 
     public LocationType() {
@@ -30,24 +31,25 @@ public class LocationType extends DbObject {
 
     @Override
     public boolean equals(Object obj) {
-        boolean result =  super.equals(obj);
-        if (result) {
-            if (!(obj instanceof LocationType)) {
-                return false;
-            }
-        }
-        return result;
+        boolean result = super.equals(obj);
+        return result && obj instanceof LocationType && ((LocationType) obj).getLayoutDefinition().equals(getLayoutDefinition());
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        return addBaseParameters(statement);
+        int ndx = addBaseParameters(statement);
+
+        statement.setString(ndx++, getLayoutDefinition());
+
+        return ndx;
     }
 
     @Override
     public LocationType createCopy(DbObject copyInto) {
         LocationType cpy = (LocationType) copyInto;
         copyBaseFields(cpy);
+
+        cpy.setLayoutDefinition(getLayoutDefinition());
 
         return cpy;
     }
@@ -178,5 +180,20 @@ public class LocationType extends DbObject {
 
     public void updateLocations() {
         locations = null;
+    }
+
+    public String getLayoutDefinition() {
+        if (layoutDefinition == null) {
+            layoutDefinition = "";
+        }
+        return layoutDefinition;
+    }
+
+    public void setLayoutDefinition(String layoutDefinition) {
+        this.layoutDefinition = layoutDefinition;
+    }
+
+    public boolean hasLayoutDefinition() {
+        return !getLayoutDefinition().isEmpty();
     }
 }

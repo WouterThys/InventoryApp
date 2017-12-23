@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
@@ -60,46 +59,75 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
     }
 
     private List<Location> convertInput(String input) {
-        List<Location> buttonList = new ArrayList<>();
+        List<Location> locationList = new ArrayList<>();
 
         if (input != null && !input.isEmpty()) {
             String rows[] = input.split("\\r?\\n");
+            if (input.contains("(")) {
+                locationType.setLayoutDefinition(input);
+                locationList = createLocationsFromInput(rows);
+            } else {
+                locationList = smartCreateLocationFromInput(rows);
+            }
 
-            int r = 0;
-            int c = 0;
+        }
 
-            for (String row : rows) {
-                String cols[] = row.split(",");
-                for (String col : cols) {
-                    Location loc = createLocation(col, r, c);
-                    buttonList.add(loc);
-                    c++;
-                }
-                c = 0;
-                r++;
+        return locationList;
+    }
+
+    private List<Location> smartCreateLocationFromInput(String[] rows) {
+        List<Location> buttonList = new ArrayList<>();
+
+        int r = 0;
+        int c = 0;
+
+        for (String row : rows) {
+            String cols[] = row.split(",");
+            for (String col : cols) {
+                Location loc = Location.createLocation(col, r, c, locationType.getId());
+                buttonList.add(loc);
+                c++;
+            }
+            c = 0;
+            r++;
+        }
+        return buttonList;
+    }
+
+    private List<Location> createLocationsFromInput(String[] rows) {
+        List<Location> buttonList = new ArrayList<>();
+
+        for (String row : rows) {
+            try {
+                row = row.replace(" ", "");
+                int ndx = row.indexOf("(");
+                String name = row.substring(0, ndx);
+
+                String[] params = valueBetween(row, "(", ")").split(",");
+                int c = Integer.valueOf(params[0]); // X = column
+                int r = Integer.valueOf(params[1]); // Y = row
+
+                Location loc = Location.createLocation(name, r, c, locationType.getId());
+                buttonList.add(loc);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Could not create location for: " + row + ". Aborting...",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                buttonList.clear();
             }
         }
 
         return buttonList;
     }
 
-    private Location createLocation(String name, int r, int c) {
-        Location location = SearchManager.sm().findLocation(locationType.getId(), r, c);
-        if (location == null) {
-            location = new Location();
-        } else {
-            location = location.createCopy();
-        }
-        if (name != null && !name.isEmpty()) {
-            location.setName(name);
-        } else {
-            location.setName("(" + Statics.Alphabet[r] + "," + c + ")");
-        }
-        location.setCol(c);
-        location.setRow(r);
-        location.setLocationTypeId(locationType.getId());
+    private String valueBetween(String s, String first, String last) {
+        s = s.substring(s.indexOf(first) + 1);
+        s = s.substring(0, s.indexOf(last));
 
-        return location;
+        return s;
     }
 
     private boolean compareLocations() {

@@ -800,6 +800,7 @@ public class DatabaseAccess {
                     l.setId(rs.getLong("id"));
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconPath"));
+                    l.setLayoutDefinition(rs.getString("layoutDefinition"));
 
                     l.setInserted(true);
                     locationTypes.add(l);

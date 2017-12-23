@@ -92,6 +92,10 @@ public class ILocationButton extends JButton {
         return location.getCol();
     }
 
+    public Location.LocationLayout getBtnLayout() {
+        return location.getLayout();
+    }
+
     @Override
     public String getName() {
         if (location != null) {

@@ -77,20 +77,24 @@ abstract class CustomLocationDialogLayout extends IDialog implements
 
     private void setLocationDetails() {
         if (newLocationList.size() > 0) {
-            StringBuilder input = new StringBuilder();
-            List<ILocationButton> tmp = new ArrayList<>(locationMapPanel.getLocationButtons());
-            int r = 0;
-            while (tmp.size() > 0) {
-                List<ILocationButton> buttonsPerRow = locationMapPanel.locationButtonsForRow(r, tmp);
+            if (locationType.hasLayoutDefinition()) {
+                inputTa.setText(locationType.getLayoutDefinition());
+            } else {
+                StringBuilder input = new StringBuilder();
+                List<ILocationButton> tmp = new ArrayList<>(locationMapPanel.getLocationButtons());
+                int r = 0;
+                while (tmp.size() > 0) {
+                    List<ILocationButton> buttonsPerRow = locationMapPanel.locationButtonsForRow(r, tmp);
 
-                for (ILocationButton button : buttonsPerRow) {
-                    input.append(button.getName()).append(",");
+                    for (ILocationButton button : buttonsPerRow) {
+                        input.append(button.getName()).append(",");
+                    }
+                    input.append("\n");
+                    tmp.removeAll(buttonsPerRow);
+                    r++;
                 }
-                input.append("\n");
-                tmp.removeAll(buttonsPerRow);
-                r++;
+                inputTa.setText(input.toString());
             }
-            inputTa.setText(input.toString());
         } else {
             inputTa.clearText();
         }
