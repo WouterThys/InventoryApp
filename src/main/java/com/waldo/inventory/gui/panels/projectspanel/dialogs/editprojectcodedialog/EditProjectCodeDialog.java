@@ -11,7 +11,7 @@ import java.io.File;
 
 public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
 
-    private boolean canClose;
+    private boolean canClose = true;
 
     public EditProjectCodeDialog(Application application, String title, ProjectCode projectCode) {
         super(application, title);

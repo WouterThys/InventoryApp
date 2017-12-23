@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import org.jdesktop.swingx.JXTable;
 
-import javax.swing.*;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -31,7 +31,7 @@ public class ITable<T> extends JXTable {
         if (model.hasTableCellRenderer()) {
             setDefaultRenderer(Object.class, model.getTableCellRenderer());
         }
-        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public ITable(IAbstractTableModel<T> model, boolean autoSetHeight) {
@@ -45,8 +45,7 @@ public class ITable<T> extends JXTable {
 
         setPreferredScrollableViewportSize(getPreferredSize());
         setAutoCreateRowSorter(true);
-
-        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     }
 
     @Override
@@ -58,16 +57,16 @@ public class ITable<T> extends JXTable {
         }
     }
 
-//    @Override
-//    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-//        // Width
-//        Component component = super.prepareRenderer(renderer, row, column);
-//        int rendererWidth = component.getPreferredSize().width;
-//        TableColumn tableColumn = getColumnModel().getColumn(column);
-//        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
-//
-//        return component;
-//    }
+    @Override
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        // Width
+        Component component = super.prepareRenderer(renderer, row, column);
+        int rendererWidth = component.getPreferredSize().width;
+        TableColumn tableColumn = getColumnModel().getColumn(column);
+        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+
+        return component;
+    }
 
     @SuppressWarnings("unchecked")
     public T getValueAtRow(int row) {

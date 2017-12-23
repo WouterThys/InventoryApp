@@ -282,8 +282,8 @@ abstract class MainPanelLayout extends JPanel implements
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-        subDivisionTree.setPreferredSize(new Dimension(300, 200));
         JScrollPane pane = new JScrollPane(subDivisionTree);
+        pane.setPreferredSize(new Dimension(300, 200));
         westPanel.add(pane, BorderLayout.CENTER);
         westPanel.add(divisionTb, BorderLayout.PAGE_END);
         westPanel.setMinimumSize(new Dimension(200,200));

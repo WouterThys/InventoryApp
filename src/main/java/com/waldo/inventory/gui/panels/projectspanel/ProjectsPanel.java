@@ -48,56 +48,56 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
 
     //
     // Cache listener
-            @Override
-            public void onInserted(Project project) {
-                selectedProject = project;
-                updateProjectObjects(project);
+    @Override
+    public void onInserted(Project project) {
+        selectedProject = project;
+        updateProjectObjects(project);
 
-                updatePanels(TAB_CODE, project);
-                treeRecreateNodes();
-                final long projectId = treeUpdate();
+        updatePanels(TAB_CODE, project);
+        treeRecreateNodes();
+        final long projectId = treeUpdate();
 
-                SwingUtilities.invokeLater(() -> {
-                    selectedProject = sm().findProjectById(projectId);
-                    treeSelectProject(selectedProject);
+        SwingUtilities.invokeLater(() -> {
+            selectedProject = sm().findProjectById(projectId);
+            treeSelectProject(selectedProject);
 
-                    updateVisibleComponents();
-                    updateEnabledComponents();
-                });
+            updateVisibleComponents();
+            updateEnabledComponents();
+        });
 
-            }
+    }
 
-            @Override
-            public void onUpdated(Project project) {
-                selectedProject = project;
-                updateProjectObjects(project);
+    @Override
+    public void onUpdated(Project project) {
+        selectedProject = project;
+        updateProjectObjects(project);
 
-                updatePanels(getSelectedTab(), project);
-                treeRecreateNodes();
-                final long projectId = treeUpdate();
+        updatePanels(getSelectedTab(), project);
+        treeRecreateNodes();
+        final long projectId = treeUpdate();
 
-                SwingUtilities.invokeLater(() -> {
-                    selectedProject = sm().findProjectById(projectId);
-                    treeSelectProject(selectedProject);
+        SwingUtilities.invokeLater(() -> {
+            selectedProject = sm().findProjectById(projectId);
+            treeSelectProject(selectedProject);
 
-                    updateVisibleComponents();
-                    updateEnabledComponents();
-                });
-            }
+            updateVisibleComponents();
+            updateEnabledComponents();
+        });
+    }
 
-            @Override
-            public void onDeleted(Project project) {
-                selectedProject = null;
+    @Override
+    public void onDeleted(Project project) {
+        selectedProject = null;
 
-                treeDeleteProject(project);
-                updateVisibleComponents();
-                updateEnabledComponents();
-            }
+        treeDeleteProject(project);
+        updateVisibleComponents();
+        updateEnabledComponents();
+    }
 
-            @Override
-            public void onCacheCleared() {
+    @Override
+    public void onCacheCleared() {
 
-            }
+    }
 
     public TopToolBar getToolBar() {
         return topToolBar;
@@ -194,8 +194,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
                 updateToolBar();
                 updateVisibleComponents();
                 updateEnabledComponents();
-            }
-            finally {
+            } finally {
                 application.endWait();
             }
         }

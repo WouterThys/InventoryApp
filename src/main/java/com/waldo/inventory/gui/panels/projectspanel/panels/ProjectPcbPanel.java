@@ -58,7 +58,6 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         super.initializeLayouts();
         eastPanel.add(pcbItemPanel, BorderLayout.CENTER);
         menuPanel.add(pcbItemPanel.getToolbarPanel(), BorderLayout.WEST);
-        //hideRemarks(true);
     }
 
     @Override
@@ -102,10 +101,13 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     //
     @Override
     public void onUpdated(ProjectPcb object) {
-        if (selectedProject != null) {
-            gridPanel.drawTiles(selectedProject.getProjectPcbs());
-            updateEnabledComponents();
+        if (selectedProject == null) {
+            selectedProject = object.getProject();
         }
+
+        selectedProject.updateProjectPcbs();
+        gridPanel.drawTiles(selectedProject.getProjectPcbs());
+        updateEnabledComponents();
     }
 
     //

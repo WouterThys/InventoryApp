@@ -202,6 +202,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         if (tableModel.hasTableCellRenderer()) {
             addTableRenderer(tableModel.getTableCellRenderer());
         }
+        //table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Toolbar
         tableToolBar = new ITableToolBar<>(table, hasSortOption);

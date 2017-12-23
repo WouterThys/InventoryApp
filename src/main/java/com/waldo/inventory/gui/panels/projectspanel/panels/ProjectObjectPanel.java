@@ -111,17 +111,6 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         this.selectedProjectObject = selectedProjectObject;
     }
 
-//    void hideRemarks(boolean hide) {
-//        if (!hide) {
-//            remarksTe.setVisible(true);
-//            hideRemarksLbl.setText("Remarks");
-//        } else {
-//            remarksTe.setVisible(false);
-//            hideRemarksLbl.setText("Remarks ...");
-//        }
-//        hidingRemarks = !hide;
-//    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -149,20 +138,6 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
                 }
             }
         });
-
-        // Eas
-//        remarksTe = new ITextEditor();
-//        remarksTe.setEnabled(false);
-//        hideRemarksLbl = new ILabel("Remarks", ILabel.CENTER);
-//        hideRemarksLbl.setFont(Font.BOLD);
-//        hideRemarksLbl.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (e.getClickCount() == 1) {
-//                    hideRemarks(hidingRemarks);
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -223,6 +198,8 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
             selectedProject = object.getProject();
         }
         selectedProject.updateProjectCodes();
+        selectedProject.updateProjectPcbs();
+        selectedProject.updateProjectOthers();
         gridPanel.addTile(object);
         selectedProjectObject = object;
         updateEnabledComponents();
@@ -234,6 +211,8 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
             selectedProject = object.getProject();
         }
         selectedProject.updateProjectCodes();
+        selectedProject.updateProjectPcbs();
+        selectedProject.updateProjectOthers();
         gridPanel.removeTile(object);
         selectedProjectObject = null;
         updateEnabledComponents();

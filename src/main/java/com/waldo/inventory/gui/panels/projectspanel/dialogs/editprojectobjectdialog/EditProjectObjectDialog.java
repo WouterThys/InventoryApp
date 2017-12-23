@@ -12,7 +12,7 @@ import java.io.File;
 
 public class EditProjectObjectDialog<P extends ProjectObject> extends EditProjectObjectDialogLayout {
 
-    private boolean canClose;
+    private boolean canClose = true;
 
     public EditProjectObjectDialog(Application application, String title, P projectObject) {
         super(application, title);

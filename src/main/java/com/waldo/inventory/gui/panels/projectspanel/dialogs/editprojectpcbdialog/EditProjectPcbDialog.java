@@ -12,7 +12,7 @@ import java.io.File;
 
 public class EditProjectPcbDialog extends EditProjectPcbDialogLayout {
 
-    private boolean canClose;
+    private boolean canClose = true;
 
     public EditProjectPcbDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
