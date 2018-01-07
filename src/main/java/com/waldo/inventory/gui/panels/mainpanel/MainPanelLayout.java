@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -196,6 +197,27 @@ abstract class MainPanelLayout extends JPanel implements
         createNodes(rootNode);
     }
 
+    private JPanel createItemDivisionPanel() {
+        JPanel westPanel = new JPanel(new BorderLayout());
+        // Title
+        JPanel itemTitlePnl = new JPanel(new BorderLayout());
+        ILabel itemTitleLbl = new ILabel("Items");
+        itemTitleLbl.setFont(25, Font.BOLD);
+        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
+        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
+        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+        JScrollPane pane = new JScrollPane(subDivisionTree);
+        pane.setPreferredSize(new Dimension(300, 200));
+        westPanel.add(itemTitlePnl, BorderLayout.PAGE_START);
+        westPanel.add(pane, BorderLayout.CENTER);
+        westPanel.add(divisionTb, BorderLayout.PAGE_END);
+        westPanel.setMinimumSize(new Dimension(200,200));
+
+        return westPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -274,7 +296,7 @@ abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel westPanel = new JPanel(new BorderLayout());
+        JPanel westPanel = createItemDivisionPanel();
         JPanel centerPanel = new JPanel(new BorderLayout());
 
         // Panel them together
@@ -282,11 +304,21 @@ abstract class MainPanelLayout extends JPanel implements
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-        JScrollPane pane = new JScrollPane(subDivisionTree);
-        pane.setPreferredSize(new Dimension(300, 200));
-        westPanel.add(pane, BorderLayout.CENTER);
-        westPanel.add(divisionTb, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(200,200));
+//        // Title
+//        JPanel itemTitlePnl = new JPanel(new BorderLayout());
+//        ILabel itemTitleLbl = new ILabel("Items");
+//        itemTitleLbl.setFont(25, Font.BOLD);
+//        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+//        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
+//        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
+//        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+//
+//        JScrollPane pane = new JScrollPane(subDivisionTree);
+//        pane.setPreferredSize(new Dimension(300, 200));
+//        westPanel.add(itemTitlePnl, BorderLayout.PAGE_START);
+//        westPanel.add(pane, BorderLayout.CENTER);
+//        westPanel.add(divisionTb, BorderLayout.PAGE_END);
+//        westPanel.setMinimumSize(new Dimension(200,200));
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
