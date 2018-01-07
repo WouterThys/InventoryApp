@@ -523,13 +523,6 @@ public class Item extends DbObject {
         return null;
     }
 
-//    public String getRemarksFileName() {
-//        if (remarksFile == null) {
-//            remarksFile = "";
-//        }
-//        return remarksFile;
-//    }
-
     public void setRemarksFile(File remarksFile) {
         if (remarksFile != null && remarksFile.exists()) {
             this.remarksFile = remarksFile.getAbsolutePath();

@@ -70,6 +70,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
+            componentPanel.updateRemarks();
             newItem.save();
             originalItem = newItem.createCopy();
 
@@ -87,7 +88,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     }
 
     private boolean checkChange() {
-        return (newItem != null) && !(newItem.equals(originalItem));
+        return (newItem != null) && (componentPanel.updateRemarks() || !(newItem.equals(originalItem)));
     }
 
     private void showSaveDialog(boolean closeAfter) {

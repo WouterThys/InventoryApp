@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
+import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
@@ -15,6 +16,7 @@ import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,6 +24,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
@@ -107,6 +112,43 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void updateTypeCbValues(long productId) {
         typeComboBox.updateList(sm().findTypeListForProduct(productId));
         typeComboBox.setSelectedItem(newItem.getType());
+    }
+
+    public boolean updateRemarks() {
+        boolean changed = false;
+        DefaultStyledDocument document = remarksTe.getStyledDocument();
+        File file = newItem.getRemarksFile();
+        if (document != null && (document.getLength() > 0 || file != null)) {
+            if (file == null) {
+                try {
+                    file = FileUtils.createTempFile("remarks");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (file != null) {
+                newItem.setRemarksFile(file);
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
+                        objectOutputStream.writeObject(document);
+                        objectOutputStream.flush();
+                        objectOutputStream.close();
+                        changed = true;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Could not save file..",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+        return changed;
     }
 
     /*

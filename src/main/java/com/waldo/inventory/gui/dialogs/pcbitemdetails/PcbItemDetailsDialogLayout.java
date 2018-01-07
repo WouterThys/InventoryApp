@@ -4,10 +4,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.AutoCalculateUsedAction;
-import com.waldo.inventory.gui.components.actions.DeleteItemAction;
-import com.waldo.inventory.gui.components.actions.EditItemAction;
-import com.waldo.inventory.gui.components.actions.OrderItemAction;
+import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +42,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITextField matchedItemTf;
     private EditItemAction editItemAction;
     private DeleteItemAction deleteItemAction;
+    private ViewAllLinksAction viewAllLinksAction;
 
     private ITableIcon orderLbl;
     private ITextField orderTf;
@@ -79,6 +77,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     abstract void onSelectNewItem();
     abstract void onSelectNewOrder();
     abstract void onDeleteMatchedItem();
+    abstract void onViewAllItemLinks();
     abstract void onMatchedItemAutoSetUsed();
 
     void updateEnabledComponents() {
@@ -86,6 +85,9 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             boolean enabled = pcbItemProjectLink.hasMatchedItem();
             usedSpinner.setEnabled(enabled);
             autoCalculateUsedAction.setEnabled(enabled);
+
+            deleteItemAction.setEnabled(pcbItemProjectLink.getPcbItemItemLink() != null);
+            viewAllLinksAction.setEnabled(pcbItemProjectLink.getPcbItem().getKnownItemLinks().size() > 0);
         }
     }
 
@@ -213,6 +215,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         itemTb.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
         itemTb.add(editItemAction);
         itemTb.add(deleteItemAction);
+        itemTb.add(viewAllLinksAction);
         itemPnl.add(matchedItemLbl, BorderLayout.WEST);
         itemPnl.add(matchedItemTf, BorderLayout.CENTER);
         itemPnl.add(itemTb, BorderLayout.EAST);
@@ -280,6 +283,12 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             @Override
             public void onDeleteItem() {
                 onDeleteMatchedItem();
+            }
+        };
+        viewAllLinksAction = new ViewAllLinksAction() {
+            @Override
+            public void onViewAllLinks() {
+                onViewAllItemLinks();
             }
         };
         orderTf = new ITextField(false);

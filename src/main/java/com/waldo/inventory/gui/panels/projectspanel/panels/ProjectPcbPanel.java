@@ -82,7 +82,9 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         if (selectedProject != null) {
             ProjectPcb newProjectPcb = new ProjectPcb(selectedProject.getId());
             EditProjectPcbDialog dialog = new EditProjectPcbDialog(application, "Add pcb", newProjectPcb);
-            dialog.showDialog();
+            if (dialog.showDialog() == IDialog.OK) {
+                pcbItemPanel.updateComponents(newProjectPcb);
+            }
         }
     }
 
@@ -92,8 +94,15 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             EditProjectPcbDialog dialog = new EditProjectPcbDialog(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
                 selectedProjectObject.save();
+                updateComponents(selectedProjectObject);
             }
         }
+    }
+
+    @Override
+    public void onDeleted(ProjectPcb object) {
+        super.onDeleted(object);
+        pcbItemPanel.updateComponents((ProjectPcb)null);
     }
 
     //

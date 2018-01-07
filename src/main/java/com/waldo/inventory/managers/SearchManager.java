@@ -382,10 +382,9 @@ public class SearchManager {
         return null;
     }
 
-    public PcbItem findPcbItem(String footprint, String lib, String part) {
+    public PcbItem findPcbItem(String footprint, String part) {
         for (PcbItem component : cache().getPcbItems()) {
             if (component.getFootprint().equals(footprint) &&
-                    component.getLibrary().equals(lib) &&
                     component.getPartName().equals(part)) {
 
                 return component;

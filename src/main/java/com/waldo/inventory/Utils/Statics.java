@@ -97,11 +97,13 @@ public class Statics {
     }
 
     public static class Units {
-        public static final String R_UNIT = "\u2126";
-        public static final String C_UNIT = "F";
-        public static final String L_UNIT = "H";
+        public static final String R_UNIT = "\u2126"; // Ohm
+        public static final String C_UNIT = "F"; // Farad
+        public static final String L_UNIT = "H"; // Henry
+        public static final String V_UNIT = "V"; // Volt
+        public static final String I_UNIT = "A"; // Amperes
 
-        public static final String[] ALL = {R_UNIT, C_UNIT, L_UNIT};
+        public static final String[] ALL = {R_UNIT, C_UNIT, L_UNIT, V_UNIT, I_UNIT};
     }
 
     public static class CodeLanguage {
