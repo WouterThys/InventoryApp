@@ -5,20 +5,19 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class EditItemAction extends AbstractAction {
+public abstract class DeleteAction extends AbstractAction {
 
-    private static final String name = "Edit item";
+    private static final String name = "Delete";
 
-    protected EditItemAction() {
-        super(name, imageResource.readImage("Actions.ItemEdit"));
+    public DeleteAction() {
+        super(name, imageResource.readImage("Actions.ItemDelete"));
         putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
-    public abstract void onEditItem();
+    public abstract void onDelete();
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onEditItem();
+        onDelete();
     }
 }
-

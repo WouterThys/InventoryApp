@@ -241,18 +241,24 @@ public class MainPanel extends MainPanelLayout {
     private void setSetChangedListener() {
         setsChanged = new CacheChangedListener<Set>() {
             @Override
-            public void onInserted(Set object) {
-
+            public void onInserted(Set set) {
+                selectedSet = set;
+                listAddItem(set);
+                updateEnabledComponents();
             }
 
             @Override
-            public void onUpdated(Set object) {
-
+            public void onUpdated(Set set) {
+                selectedSet = set;
+                listUpdateItems();
+                updateEnabledComponents();
             }
 
             @Override
-            public void onDeleted(Set object) {
-
+            public void onDeleted(Set set) {
+                selectedSet = null;
+                listDeleteItem(set);
+                updateEnabledComponents();
             }
 
             @Override
@@ -274,6 +280,9 @@ public class MainPanel extends MainPanelLayout {
                 selectedDivision = null;
                 return; // Nothing selected
             }
+
+            selectedSet = null;
+            setList.clearSelection();
 
             selectedItem = null;
             application.clearSearch();
@@ -398,6 +407,7 @@ public class MainPanel extends MainPanelLayout {
         if (selectedSet != null) {
             EditSetDialog dialog = new EditSetDialog(application, "Edit set", selectedSet);
             dialog.showDialog();
+            setList.setSelectedValue(selectedSet, true);
         }
     }
 
@@ -416,12 +426,26 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
-            if (e.getSource().equals(setList)) {
-                selectedSet = setList.getSelectedValue();
-                // TODO: show set items in table
-            } else {
-                selectedItem = itemTable.getSelectedItem();
-                updateComponents(selectedDivision);
+            application.beginWait();
+            try {
+                if (e.getSource().equals(setList)) {
+                    selectedSet = setList.getSelectedValue();
+                    if (selectedSet != null) {
+                        selectedDivision = null;
+                        treeModel.setSelectedObject(null);
+                        tableModel.setItemList(selectedSet.getSetItems());
+
+                        selectedItem = null;
+                        detailPanel.updateComponents((Item)null);
+                    }
+                    updateEnabledComponents();
+                } else {
+                    selectedItem = itemTable.getSelectedItem();
+                    updateComponents(selectedDivision);
+                }
+            } finally {
+
+                application.endWait();
             }
         }
     }

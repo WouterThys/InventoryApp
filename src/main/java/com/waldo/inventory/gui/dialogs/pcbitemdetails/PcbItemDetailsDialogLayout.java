@@ -40,8 +40,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     // References
     private ITableIcon matchedItemLbl;
     private ITextField matchedItemTf;
-    private EditItemAction editItemAction;
-    private DeleteItemAction deleteItemAction;
+    private EditAction editAction;
+    private DeleteAction deleteAction;
     private ViewAllLinksAction viewAllLinksAction;
 
     private ITableIcon orderLbl;
@@ -86,7 +86,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             usedSpinner.setEnabled(enabled);
             autoCalculateUsedAction.setEnabled(enabled);
 
-            deleteItemAction.setEnabled(pcbItemProjectLink.getPcbItemItemLink() != null);
+            deleteAction.setEnabled(pcbItemProjectLink.getPcbItemItemLink() != null);
             viewAllLinksAction.setEnabled(pcbItemProjectLink.getPcbItem().getKnownItemLinks().size() > 0);
         }
     }
@@ -213,8 +213,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         JToolBar itemTb = new JToolBar();
         itemTb.setFloatable(false);
         itemTb.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        itemTb.add(editItemAction);
-        itemTb.add(deleteItemAction);
+        itemTb.add(editAction);
+        itemTb.add(deleteAction);
         itemTb.add(viewAllLinksAction);
         itemPnl.add(matchedItemLbl, BorderLayout.WEST);
         itemPnl.add(matchedItemTf, BorderLayout.CENTER);
@@ -273,15 +273,15 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         // References
         matchedItemTf = new ITextField(false);
         matchedItemLbl = new ITableIcon(matchedItemTf.getBackground());
-        editItemAction = new EditItemAction() {
+        editAction = new EditAction() {
             @Override
-            public void onEditItem() {
+            public void onEdit() {
                 onSelectNewItem();
             }
         };
-        deleteItemAction = new DeleteItemAction() {
+        deleteAction = new DeleteAction() {
             @Override
-            public void onDeleteItem() {
+            public void onDelete() {
                 onDeleteMatchedItem();
             }
         };

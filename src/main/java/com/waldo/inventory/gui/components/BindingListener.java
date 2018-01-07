@@ -78,8 +78,9 @@ public class BindingListener implements DocumentListener {
 
                     String oldVal = "";
                     if (!fieldName.isEmpty()) {
-                        Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
-                        Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
+
+                        Method setMethod = guiObject.getClass().getMethod("set" + fieldName, fieldClass);
+                        Method getMethod = guiObject.getClass().getMethod("get" + fieldName);
 
                         oldVal = String.valueOf(getMethod.invoke(guiObject)).trim();
                         switch (fieldClass.getTypeName()) {

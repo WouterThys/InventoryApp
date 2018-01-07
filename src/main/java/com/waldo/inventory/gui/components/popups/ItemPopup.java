@@ -22,16 +22,16 @@ public abstract class ItemPopup extends JPopupMenu {
 
     private void init(final Item item) {
 
-        EditItemAction editItemAction = new EditItemAction() {
+        EditAction editAction = new EditAction() {
             @Override
-            public void onEditItem() {
+            public void onEdit() {
                 ItemPopup.this.onEditItem();
             }
         };
 
-        DeleteItemAction deleteItemAction = new DeleteItemAction() {
+        DeleteAction deleteAction = new DeleteAction() {
             @Override
-            public void onDeleteItem() {
+            public void onDelete() {
                 ItemPopup.this.onDeleteItem();
             }
         };
@@ -72,8 +72,8 @@ public abstract class ItemPopup extends JPopupMenu {
         openItemDataSheetOnlineAction.setEnabled(!item.getOnlineDataSheet().isEmpty());
         openItemDataSheetLocalAction.setEnabled(!item.getLocalDataSheet().isEmpty());
 
-        add(editItemAction);
-        add(deleteItemAction);
+        add(editAction);
+        add(deleteAction);
         addSeparator();
         add(orderItemAction);
         add(showItemHistoryAction);

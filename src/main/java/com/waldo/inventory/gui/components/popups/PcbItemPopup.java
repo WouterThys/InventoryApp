@@ -26,9 +26,9 @@ public abstract class PcbItemPopup extends JPopupMenu {
     private void init(final PcbItemProjectLink itemProjectLink) {
 
         // Actions
-        EditItemAction editItemAction = new EditItemAction() {
+        EditAction editAction = new EditAction() {
             @Override
-            public void onEditItem() {
+            public void onEdit() {
                 if (itemProjectLink.hasMatchedItem()) {
                     PcbItemPopup.this.onEditItem(itemProjectLink.getPcbItemItemLink());
                 }
@@ -49,7 +49,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
             iconPanel.add(new ILabel(linked));
             addHeader = true;
         } else {
-            editItemAction.setEnabled(false);
+            editAction.setEnabled(false);
         }
         if (pcbItem.isOrdered()) {
             iconPanel.add(new ILabel(ordered));
@@ -64,7 +64,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
             add(iconPanel);
             addSeparator();
         }
-        add(editItemAction);
+        add(editAction);
         addSeparator();
         add(editPcbItemAction);
     }

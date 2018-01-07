@@ -32,10 +32,30 @@ public class Set extends DbObject {
         setName(name);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            if (obj instanceof Set) {
+                Set set = (Set) obj;
+                if (set.getLocationId() == getLocationId() && set.getManufacturerId() == getManufacturerId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+
+        if (getManufacturerId() < DbObject.UNKNOWN_ID) {
+            setManufacturerId(DbObject.UNKNOWN_ID);
+        }
+
+        if (getLocationId() < DbObject.UNKNOWN_ID) {
+            setLocationId(DbObject.UNKNOWN_ID);
+        }
 
         // Add parameters
         statement.setLong(ndx++, getManufacturerId());

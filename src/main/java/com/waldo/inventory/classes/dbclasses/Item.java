@@ -285,16 +285,6 @@ public class Item extends DbObject {
         return getId() + "_ItemObject_";
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
     //
     // DatabaseAccess tells the object is updated
     //

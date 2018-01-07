@@ -217,6 +217,19 @@ abstract class MainPanelLayout extends JPanel implements
         }
     }
 
+    void listAddItem(Set set) {
+        setListModel.addElement(set);
+    }
+
+    void listDeleteItem(Set set) {
+        setListModel.removeElement(set);
+    }
+
+    void listUpdateItems() {
+        initializeSets();
+    }
+
+    // Other
     private JPanel createItemDivisionPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         // Title

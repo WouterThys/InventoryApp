@@ -616,6 +616,17 @@ public class SearchManager {
         return null;
     }
 
+    public Set findSetByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Set set : cache().getSets()) {
+                if (set.getName().equals(name)) {
+                    return set;
+                }
+            }
+        }
+        return null;
+    }
+
     public SetItemLink findSetItemLinkById(long setItemLinkId) {
         if (setItemLinkId > 0) {
             for (SetItemLink sil : cache().getSetItemLinks()) {

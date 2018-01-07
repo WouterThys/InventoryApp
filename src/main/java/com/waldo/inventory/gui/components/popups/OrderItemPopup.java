@@ -40,9 +40,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
 
         // Item
-        EditItemAction editItemAction = new EditItemAction() {
+        EditAction editAction = new EditAction() {
             @Override
-            public void onEditItem() {
+            public void onEdit() {
                 OrderItemPopup.this.onEditItem(orderItem);
             }
         };
@@ -86,7 +86,7 @@ public abstract class OrderItemPopup extends JPopupMenu {
         add(deleteOrderItemAction);
         add(editReferenceAction);
         addSeparator();
-        add(editItemAction);
+        add(editAction);
         add(showItemHistoryAction);
         add(dsMenu);
         addSeparator();
