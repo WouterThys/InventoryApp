@@ -605,4 +605,37 @@ public class SearchManager {
         return logList;
     }
 
+    public Set findSetById(long setId) {
+        if (setId > 0) {
+            for (Set set : cache().getSets()) {
+                if (set.getId() == setId) {
+                    return set;
+                }
+            }
+        }
+        return null;
+    }
+
+    public SetItemLink findSetItemLinkById(long setItemLinkId) {
+        if (setItemLinkId > 0) {
+            for (SetItemLink sil : cache().getSetItemLinks()) {
+                if (sil.getId() == setItemLinkId) {
+                    return sil;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Item> findSetItemsBySetId(long setId) {
+        List<Item> setItems = new ArrayList<>();
+        if (setId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink sil : cache().getSetItemLinks()) {
+                if (sil.getSetId() == setId) {
+                    setItems.add(sil.getItem());
+                }
+            }
+        }
+        return setItems;
+    }
 }

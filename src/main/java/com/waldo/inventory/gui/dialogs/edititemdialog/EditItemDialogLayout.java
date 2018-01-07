@@ -138,6 +138,8 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
                 } catch (Exception e) {
                     //Status().setError("Error updating components", e);
                 }
+            } else {
+                setTitleIcon(imageResource.readImage("Items.Edit.Title"));
             }
             setTitleName(newItem.getName().trim());
 

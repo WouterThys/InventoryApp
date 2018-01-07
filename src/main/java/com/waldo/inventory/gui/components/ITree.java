@@ -21,6 +21,42 @@ public class ITree extends JTree {
         setMinimumSize(d);
     }
 
+    public static DefaultTreeCellRenderer getItemsRenderer() {
+        return new DefaultTreeCellRenderer() {
+            private final ImageIcon categoryIcon =imageResource.readImage("Items.Tree.Category");
+            private final ImageIcon productIcon = imageResource.readImage("Items.Tree.Product");
+            private final ImageIcon typeIcon = imageResource.readImage("Items.Tree.Type");
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+                if (value instanceof DefaultMutableTreeNode) {
+                    DbObject object = (DbObject) ((DefaultMutableTreeNode) value).getUserObject();
+                    if (object.canBeSaved()) {
+                        switch (DbObject.getType(object)) {
+                            case DbObject.TYPE_CATEGORY:
+                                setIcon(categoryIcon);
+                                break;
+                            case DbObject.TYPE_PRODUCT:
+                                setIcon(productIcon);
+                                break;
+                            case DbObject.TYPE_TYPE:
+                                setIcon(typeIcon);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        setIcon(null);
+                    }
+                }
+
+                return c;
+            }
+        };
+    }
+
     public static DefaultTreeCellRenderer getOrdersRenderer() {
         return new DefaultTreeCellRenderer() {
             private final ImageIcon receivedIcon = imageResource.readImage("Orders.Tree.Received");

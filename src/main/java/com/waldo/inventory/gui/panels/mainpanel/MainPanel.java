@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.editsetdialog.EditSetDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -27,6 +28,7 @@ public class MainPanel extends MainPanelLayout {
     private CacheChangedListener<Category> categoriesChanged;
     private CacheChangedListener<Product> productsChanged;
     private CacheChangedListener<Type> typesChanged;
+    private CacheChangedListener<Set> setsChanged;
 
     public MainPanel(Application application) {
         super(application);
@@ -39,6 +41,7 @@ public class MainPanel extends MainPanelLayout {
         cache().addListener(Category.class, categoriesChanged);
         cache().addListener(Product.class, productsChanged);
         cache().addListener(Type.class, typesChanged);
+        cache().addListener(Set.class, setsChanged);
 
         updateComponents((Object) null);
     }
@@ -119,6 +122,7 @@ public class MainPanel extends MainPanelLayout {
         setCategoriesChangedListener();
         setProductsChangedListener();
         setTypesChangedListener();
+        setSetChangedListener();
     }
 
     private void setItemsChangedListener() {
@@ -234,6 +238,30 @@ public class MainPanel extends MainPanelLayout {
         };
     }
 
+    private void setSetChangedListener() {
+        setsChanged = new CacheChangedListener<Set>() {
+            @Override
+            public void onInserted(Set object) {
+
+            }
+
+            @Override
+            public void onUpdated(Set object) {
+
+            }
+
+            @Override
+            public void onDeleted(Set object) {
+
+            }
+
+            @Override
+            public void onCacheCleared() {
+
+            }
+        };
+    }
+
     //
     // Tree selection interface
     //
@@ -338,14 +366,63 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
+
+    // Items
+    private void onEditItem() {
+        if (selectedItem != null) {
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
+            dialog.showDialog();
+        }
+    }
+
+    private void onAddItem() {
+        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item());
+        dialog.showDialog();
+    }
+
+    private void onDeleteItem() {
+        if (selectedItem != null) {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
+                selectedItem.delete();
+            }
+        }
+    }
+
+    // Sets
+    private void onAddSet() {
+        EditSetDialog dialog = new EditSetDialog(application, "Add set", new Set());
+        dialog.showDialog();
+    }
+
+    private void onEditSet() {
+        if (selectedSet != null) {
+            EditSetDialog dialog = new EditSetDialog(application, "Edit set", selectedSet);
+            dialog.showDialog();
+        }
+    }
+
+    private void onDeleteSet() {
+        if (selectedSet != null && selectedSet.canBeSaved()) {
+            int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + selectedSet);
+            if (res == JOptionPane.YES_OPTION) {
+                selectedSet.delete();
+            }
+        }
+    }
+
     //
-    // Table selection changed
+    // Table or list selection changed
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
-            selectedItem = itemTable.getSelectedItem();
-            updateComponents(selectedDivision);
+            if (e.getSource().equals(setList)) {
+                selectedSet = setList.getSelectedValue();
+                // TODO: show set items in table
+            } else {
+                selectedItem = itemTable.getSelectedItem();
+                updateComponents(selectedDivision);
+            }
         }
     }
 
@@ -356,6 +433,8 @@ public class MainPanel extends MainPanelLayout {
     public void onToolBarRefresh(IdBToolBar source) {
         if (source.equals(divisionTb)) {
             treeRecreateNodes();
+        } else if (source.equals(setTb)) {
+            initializeSets();
         } else {
             application.beginWait();
             try {
@@ -376,11 +455,13 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (source.equals(divisionTb)) {
+        if (source != null && source.equals(divisionTb)) {
             if (selectedDivision == null) {
                 selectedDivision = virtualRoot;
             }
             onAddDivision();
+        } else if (source != null && source.equals(setTb)) {
+            onAddSet();
         } else {
             onAddItem();
         }
@@ -390,6 +471,8 @@ public class MainPanel extends MainPanelLayout {
     public void onToolBarDelete(IdBToolBar source) {
         if (source != null && source.equals(divisionTb)) {
             onDeleteDivision();
+        } else if (source != null && source.equals(setTb)) {
+            onDeleteSet();
         } else {
             onDeleteItem();
         }
@@ -399,28 +482,10 @@ public class MainPanel extends MainPanelLayout {
     public void onToolBarEdit(IdBToolBar source) {
         if (source != null && source.equals(divisionTb)) {
             onEditDivision();
+        } else if (source != null && source.equals(setTb)) {
+            onEditSet();
         } else {
             onEditItem();
-        }
-    }
-
-    private void onEditItem() {
-        if (selectedItem != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
-            dialog.showDialog();
-        }
-    }
-
-    private void onAddItem() {
-        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item());
-        dialog.showDialog();
-    }
-
-    private void onDeleteItem() {
-        if (selectedItem != null) {
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                selectedItem.delete();
-            }
         }
     }
 

@@ -23,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -43,6 +44,10 @@ abstract class MainPanelLayout extends JPanel implements
     IDbObjectTreeModel<DbObject> treeModel;
     IdBToolBar divisionTb;
 
+    DefaultListModel<Set> setListModel;
+    JList<Set> setList; // TODO: make table or tree with divisions?
+    IdBToolBar setTb;
+
     ItemDetailPanel detailPanel;
 
     /*
@@ -52,6 +57,7 @@ abstract class MainPanelLayout extends JPanel implements
 
     Item selectedItem;
     DbObject selectedDivision;
+    Set selectedSet;
 
     Category virtualRoot;
 
@@ -69,6 +75,7 @@ abstract class MainPanelLayout extends JPanel implements
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
 
+        // Divisions
         enabled = selectedDivision != null && selectedDivision.canBeSaved();
         divisionTb.setEditActionEnabled(enabled);
         divisionTb.setDeleteActionEnabled(enabled);
@@ -79,6 +86,11 @@ abstract class MainPanelLayout extends JPanel implements
                 divisionTb.setAddActionEnabled(true);
             }
         }
+
+        // Sets
+        enabled = selectedSet != null;
+        setTb.setEditActionEnabled(enabled);
+        setTb.setDeleteActionEnabled(enabled);
     }
 
     abstract void onTreeRightClick(MouseEvent e);
@@ -197,25 +209,61 @@ abstract class MainPanelLayout extends JPanel implements
         createNodes(rootNode);
     }
 
+    // Sets stuff
+    void initializeSets() {
+        setListModel.clear();
+        for (Set set : cache().getSets()) {
+            setListModel.addElement(set);
+        }
+    }
+
     private JPanel createItemDivisionPanel() {
-        JPanel westPanel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         // Title
         JPanel itemTitlePnl = new JPanel(new BorderLayout());
+        ILabel itemTitleIcon = new ILabel(imageResource.readImage("Items.SmallTitle"));
         ILabel itemTitleLbl = new ILabel("Items");
         itemTitleLbl.setFont(25, Font.BOLD);
         itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
         itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
+
+        itemTitlePnl.add(itemTitleIcon, BorderLayout.WEST);
         itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
         itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         JScrollPane pane = new JScrollPane(subDivisionTree);
-        pane.setPreferredSize(new Dimension(300, 200));
-        westPanel.add(itemTitlePnl, BorderLayout.PAGE_START);
-        westPanel.add(pane, BorderLayout.CENTER);
-        westPanel.add(divisionTb, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(200,200));
+        pane.setPreferredSize(new Dimension(300, 400));
+        panel.add(itemTitlePnl, BorderLayout.PAGE_START);
+        panel.add(pane, BorderLayout.CENTER);
+        panel.add(divisionTb, BorderLayout.PAGE_END);
+        panel.setMinimumSize(new Dimension(200,200));
 
-        return westPanel;
+
+        return panel;
+    }
+
+    private JPanel createSetPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        // Title
+        JPanel itemTitlePnl = new JPanel(new BorderLayout());
+        ILabel itemTitleIcon = new ILabel(imageResource.readImage("Sets.SmallTitle"));
+        ILabel itemTitleLbl = new ILabel("Sets");
+        itemTitleLbl.setFont(25, Font.BOLD);
+        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
+
+        itemTitlePnl.add(itemTitleIcon, BorderLayout.WEST);
+        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
+        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+        JScrollPane pane = new JScrollPane(setList);
+        pane.setPreferredSize(new Dimension(300, 200));
+        panel.add(itemTitlePnl, BorderLayout.PAGE_START);
+        panel.add(pane, BorderLayout.CENTER);
+        panel.add(setTb, BorderLayout.PAGE_END);
+        panel.setMinimumSize(new Dimension(200,200));
+
+        return panel;
     }
 
     /*
@@ -223,7 +271,7 @@ abstract class MainPanelLayout extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Sub division tree
+        // Divisions
         virtualRoot = new Category("All");
         virtualRoot.setCanBeSaved(false);
 
@@ -251,6 +299,7 @@ abstract class MainPanelLayout extends JPanel implements
 
         subDivisionTree = new ITree(treeModel);
         subDivisionTree.addTreeSelectionListener(this);
+        subDivisionTree.setCellRenderer(ITree.getItemsRenderer());
         subDivisionTree.setExpandsSelectedPaths(true);
         subDivisionTree.setScrollsOnExpand(true);
         subDivisionTree.addMouseListener(new MouseAdapter() {
@@ -264,12 +313,16 @@ abstract class MainPanelLayout extends JPanel implements
             }
         });
         treeModel.setTree(subDivisionTree);
-
-        // Division tool bar
         divisionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
+        // Sets
+        setListModel = new DefaultListModel<>();
+        setList = new JList<>(setListModel);
+        setList.addListSelectionListener(this);
+        setTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
-        // Item table
+
+        // Items
         tableModel = new IItemTableModel();
         itemTable = new ITablePanel<>(tableModel, this, true);
         itemTable.setDbToolBar(this);
@@ -296,34 +349,27 @@ abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel westPanel = createItemDivisionPanel();
+        JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
+
+        JPanel divisionPanel = createItemDivisionPanel();
+        JPanel setPanel = createSetPanel();
 
         // Panel them together
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-//        // Title
-//        JPanel itemTitlePnl = new JPanel(new BorderLayout());
-//        ILabel itemTitleLbl = new ILabel("Items");
-//        itemTitleLbl.setFont(25, Font.BOLD);
-//        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
-//        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
-//        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
-//        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-//
-//        JScrollPane pane = new JScrollPane(subDivisionTree);
-//        pane.setPreferredSize(new Dimension(300, 200));
-//        westPanel.add(itemTitlePnl, BorderLayout.PAGE_START);
-//        westPanel.add(pane, BorderLayout.CENTER);
-//        westPanel.add(divisionTb, BorderLayout.PAGE_END);
-//        westPanel.setMinimumSize(new Dimension(200,200));
+        JSplitPane westSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, divisionPanel, setPanel);
+        westSplitPane.setResizeWeight(1);
+
+        westSplitPane.setOneTouchExpandable(true);
+
 
         // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
-        splitPane.setOneTouchExpandable(true);
-        add(splitPane, BorderLayout.CENTER);
+        JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westSplitPane, centerPanel);
+        centerSplitPane.setOneTouchExpandable(true);
+        add(centerSplitPane, BorderLayout.CENTER);
     }
 
     @Override
@@ -337,6 +383,9 @@ abstract class MainPanelLayout extends JPanel implements
                     tableInitialize((DbObject) object[0]);
                 }
             }
+
+            // Sets
+           initializeSets();
 
             // Enabled components
             updateEnabledComponents();

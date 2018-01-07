@@ -1543,4 +1543,76 @@ public class DatabaseAccess {
     }
 
 
+
+    public List<Set> updateSets()    {
+        List<Set> sets = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return sets;
+        }
+        Status().setMessage("Fetching sets from DB");
+        Set s = null;
+        String sql = scriptResource.readString(Set.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    s = new Set();
+                    s.setId(rs.getLong("id"));
+                    s.setName(rs.getString("name"));
+                    s.setIconPath(rs.getString("iconPath"));
+
+                    s.setManufacturerId(rs.getLong("manufacturerId"));
+                    s.setLocationId(rs.getLong("locationId"));
+
+                    s.setInserted(true);
+                    sets.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return sets;
+    }
+
+    public List<SetItemLink> updateSetItemLinks()    {
+        List<SetItemLink> setItemLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return setItemLinks;
+        }
+        Status().setMessage("Fetching set item links from DB");
+        SetItemLink s = null;
+        String sql = scriptResource.readString(SetItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    s = new SetItemLink();
+                    s.setId(rs.getLong("id"));
+
+                    s.setSetId(rs.getLong("setId"));
+                    s.setItemId(rs.getLong("itemId"));
+
+                    s.setInserted(true);
+                    setItemLinks.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return setItemLinks;
+    }
 }

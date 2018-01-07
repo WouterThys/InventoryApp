@@ -56,6 +56,8 @@ public class CacheManager {
         cacheLogList.add(new CacheLog("Project PCBs", projectPcbs));
         cacheLogList.add(new CacheLog("Project others", projectOthers));
         cacheLogList.add(new CacheLog("Project item links", pcbItemProjectLinks));
+        cacheLogList.add(new CacheLog("Sets", sets));
+        cacheLogList.add(new CacheLog("Set item links", setItemLinks));
         initTime = DateUtils.now();
     }
 
@@ -69,7 +71,6 @@ public class CacheManager {
     private final CacheList<LocationType> locationTypes = new CacheList<>();
     private final CacheList<Order> orders = new CacheList<>();
     private final CacheList<OrderItem> orderItems = new CacheList<>();
-    ;
     private final CacheList<Distributor> distributors = new CacheList<>();
     private final CacheList<DistributorPartLink> distributorPartLinks = new CacheList<>();
     private final CacheList<PackageType> packageTypes = new CacheList<>();
@@ -87,6 +88,8 @@ public class CacheManager {
     private final CacheList<ProjectPcb> projectPcbs = new CacheList<>();
     private final CacheList<ProjectOther> projectOthers = new CacheList<>();
     private final CacheList<ParserItemLink> parserItemLinks = new CacheList<>();
+    private final CacheList<Set> sets = new CacheList<>();
+    private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
 
     // Listeners
     private final Map<Class<? extends DbObject>, List<CacheChangedListener<? extends DbObject>>> changedListenerMap = new HashMap<>();
@@ -185,6 +188,8 @@ public class CacheManager {
         projectPcbs.clear();
         projectOthers.clear();
         parserItemLinks.clear();
+        sets.clear();
+        setItemLinks.clear();
     }
 
 
@@ -398,4 +403,19 @@ public class CacheManager {
         return dbHistoryList;
     }
 
+    public CacheList<Set> getSets() {
+        if (!sets.isFetched()) {
+            long start = System.nanoTime();
+            sets.setList(db().updateSets(), (System.nanoTime() - start));
+        }
+        return sets;
+    }
+
+    public CacheList<SetItemLink> getSetItemLinks() {
+        if (!setItemLinks.isFetched()) {
+            long start = System.nanoTime();
+            setItemLinks.setList(db().updateSetItemLinks(), (System.nanoTime() - start));
+        }
+        return setItemLinks;
+    }
 }
