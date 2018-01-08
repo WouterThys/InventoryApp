@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
-import com.waldo.inventory.gui.dialogs.edititemdialog.panels.componentpaneltabs.SetItemPanel;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
@@ -40,10 +39,10 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     public static final int TAB_BASIC = 0;
     public static final int TAB_DETAILS = 1;
-    public static final int TAB_SET_ITEMS = 2;
 
     private final Application application;
-    private final Item newItem;
+    private final Item selectedItem;
+    private final Set selectedSet;
 
     // Listener
     private final IEditedListener editedListener;
@@ -72,14 +71,15 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ITextEditor remarksTe;
 
     // Sets
-    private ICheckBox isSetCb;
-    private SetItemPanel setItemPanel;
+    //private ICheckBox isSetCb;
+    //private SetItemPanel setItemPanel;
 
 
 
-    public ComponentPanel(Application application, Item newItem, @NotNull IEditedListener listener) {
+    public ComponentPanel(Application application, Item selectedItem, Set selectedSet, @NotNull IEditedListener listener) {
         this.application = application;
-        this.newItem = newItem;
+        this.selectedItem = selectedItem;
+        this.selectedSet = selectedSet;
         this.editedListener = listener;
     }
 
@@ -95,29 +95,47 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private void updateManufacturerCbValues() {
         if (manufacturerCb != null) {
             manufacturerCb.updateList(cache().getManufacturers());
-            manufacturerCb.setSelectedItem(newItem.getManufacturer());
+            manufacturerCb.setSelectedItem(selectedItem.getManufacturer());
+        }
+    }
+
+    private void updateManufacturerCb(Manufacturer manufacturer) {
+        manufacturerCb.setSelectedItem(manufacturer);
+
+        if (manufacturer != null) {
+            try {
+                String p = manufacturer.getIconPath();
+                if (!p.isEmpty()) {
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), p);
+                    manufacturerIconLbl.setIcon(path.toString(), 48, 48);
+                } else {
+                    manufacturerIconLbl.setIcon((ImageIcon) null);
+                }
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
     private void updateCategoryCbValues() {
         categoryComboBox.updateList();
-        categoryComboBox.setSelectedItem(newItem.getCategory());
+        categoryComboBox.setSelectedItem(selectedItem.getCategory());
     }
 
     public void updateProductCbValues(long categoryId) {
         productComboBox.updateList(sm().findProductListForCategory(categoryId));
-        productComboBox.setSelectedItem(newItem.getProduct());
+        productComboBox.setSelectedItem(selectedItem.getProduct());
     }
 
     public void updateTypeCbValues(long productId) {
         typeComboBox.updateList(sm().findTypeListForProduct(productId));
-        typeComboBox.setSelectedItem(newItem.getType());
+        typeComboBox.setSelectedItem(selectedItem.getType());
     }
 
     public boolean updateRemarks() {
         boolean changed = false;
         DefaultStyledDocument document = remarksTe.getStyledDocument();
-        File file = newItem.getRemarksFile();
+        File file = selectedItem.getRemarksFile();
         if (document != null && (document.getLength() > 0 || file != null)) {
             if (file == null) {
                 try {
@@ -128,7 +146,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
             }
 
             if (file != null) {
-                newItem.setRemarksFile(file);
+                selectedItem.setRemarksFile(file);
                 try (FileOutputStream outputStream = new FileOutputStream(file)) {
                     try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
                         objectOutputStream.writeObject(document);
@@ -157,40 +175,40 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private void createCategoryCb() {
         categoryComboBox = new IComboBox<>(cache().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         categoryComboBox.addEditedListener(editedListener, "categoryId");
-        categoryComboBox.setSelectedItem(newItem.getCategory());
+        categoryComboBox.setSelectedItem(selectedItem.getCategory());
     }
 
     private void createProductCb() {
         java.util.List<Product> productList;
-        if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-            productList = sm().findProductListForCategory(newItem.getCategoryId());
+        if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+            productList = sm().findProductListForCategory(selectedItem.getCategoryId());
         } else {
             productList = cache().getProducts();
         }
 
         productComboBox = new IComboBox<>(productList, new ComparatorUtils.DbObjectNameComparator<>(), true);
         productComboBox.addEditedListener(editedListener, "productId");
-        productComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getCategoryId() > DbObject.UNKNOWN_ID));
-        productComboBox.setSelectedItem(newItem.getProduct());
+        productComboBox.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID));
+        productComboBox.setSelectedItem(selectedItem.getProduct());
     }
 
     private void createTypeCb() {
         java.util.List<Type> typeList;
-        if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-            typeList = sm().findTypeListForProduct(newItem.getProductId());
+        if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+            typeList = sm().findTypeListForProduct(selectedItem.getProductId());
         } else {
             typeList = cache().getTypes();
         }
 
         typeComboBox = new IComboBox<>(typeList, new ComparatorUtils.DbObjectNameComparator<>(), true);
         typeComboBox.addEditedListener(editedListener, "typeId");
-        typeComboBox.setEnabled((newItem.getId() >= 0) && (newItem.getProductId() > DbObject.UNKNOWN_ID));
-        typeComboBox.setSelectedItem(newItem.getType());
+        typeComboBox.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getProductId() > DbObject.UNKNOWN_ID));
+        typeComboBox.setSelectedItem(selectedItem.getType());
     }
 
     private void createManufacturerCb() {
         manufacturerCb = new IComboBox<>(cache().getManufacturers(), new ComparatorUtils.DbObjectNameComparator<>(), true);
-        manufacturerCb.setSelectedItem(newItem.getManufacturer());
+        manufacturerCb.setSelectedItem(selectedItem.getManufacturer());
         manufacturerCb.addEditedListener(editedListener, "manufacturerId");
     }
 
@@ -215,8 +233,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private ActionListener createAddProductListener() {
         return e -> {
-            if (newItem.getCategoryId() > DbObject.UNKNOWN_ID) {
-                Product newProduct = new Product(newItem.getCategoryId());
+            if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
+                Product newProduct = new Product(selectedItem.getCategoryId());
                 SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add product", newProduct);
                 if (subDivisionsDialog.showDialog() == IDialog.OK) {
                     newProduct.save();
@@ -242,8 +260,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     private ActionListener createAddTypeListener() {
         return e -> {
-            if (newItem.getCategoryId() > DbObject.UNKNOWN_ID && newItem.getProductId() > DbObject.UNKNOWN_ID) {
-                Type newType = new Type(newItem.getProductId());
+            if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID && selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
+                Type newType = new Type(selectedItem.getProductId());
                 SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add type", newType);
                 if (subDivisionsDialog.showDialog() == IDialog.OK) {
                     newType.save();
@@ -361,17 +379,17 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     }
 
-    private void initializeSetComponents() {
-        isSetCb = new ICheckBox("Is set", false);
-        isSetCb.addEditedListener(editedListener, "set");
-        isSetCb.addActionListener(e -> {
-            setItemPanel.setEnabled(isSetCb.isSelected());
-            if (isSetCb.isSelected()) {
-                setItemPanel.updateComponents(newItem);
-            }
-        });
-        setItemPanel = new SetItemPanel(application, newItem);
-    }
+//    private void initializeSetComponents() {
+//        isSetCb = new ICheckBox("Is set", false);
+//        isSetCb.addEditedListener(editedListener, "set");
+//        isSetCb.addActionListener(e -> {
+//            setItemPanel.setEnabled(isSetCb.isSelected());
+//            if (isSetCb.isSelected()) {
+//                setItemPanel.updateComponents(selectedItem);
+//            }
+//        });
+//        setItemPanel = new SetItemPanel(application, selectedItem);
+//    }
 
     private JPanel createBasicPanel() {
         JPanel basicPanel = new JPanel();
@@ -489,20 +507,20 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         return panel;
     }
 
-    private JPanel createSetItemsPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JPanel setPanel = new JPanel(new BorderLayout());
-
-//        setPanel.add(isSetCb, BorderLayout.CENTER);
-//        setPanel.add(setValuesBtn, BorderLayout.EAST);
-//        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
-
-        panel.add(isSetCb, BorderLayout.NORTH);
-        panel.add(setItemPanel, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-
-        return panel;
-    }
+//    private JPanel createSetItemsPanel() {
+//        JPanel panel = new JPanel(new BorderLayout());
+//        JPanel setPanel = new JPanel(new BorderLayout());
+//
+////        setPanel.add(isSetCb, BorderLayout.CENTER);
+////        setPanel.add(setValuesBtn, BorderLayout.EAST);
+////        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
+//
+//        panel.add(isSetCb, BorderLayout.NORTH);
+//        panel.add(setItemPanel, BorderLayout.CENTER);
+//        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+//
+//        return panel;
+//    }
 
 
     /*
@@ -516,7 +534,7 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
         initializeBasicComponents();
         initializeDetailsComponents();
-        initializeSetComponents();
+        //initializeSetComponents();
     }
 
     @Override
@@ -525,63 +543,50 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // Add tabs
         tabbedPane.addTab("Basic", createBasicPanel());
         tabbedPane.addTab("Details", createDetailsPanel());
-        tabbedPane.addTab("Set items", createSetItemsPanel());
+        //tabbedPane.addTab("Set items", createSetItemsPanel());
 
         add(tabbedPane, BorderLayout.CENTER);
     }
 
     @Override
     public void updateComponents(Object... object) {
-        idTextField.setText(String.valueOf(newItem.getId()));
-        nameValuePnl.setNameTxt(newItem.getName().trim());
-        nameValuePnl.setValue(newItem.getValue());
-        descriptionTextArea.setText(newItem.getDescription().trim());
-        priceTextField.setText(String.valueOf(newItem.getPrice()));
+        idTextField.setText(String.valueOf(selectedItem.getId()));
+        nameValuePnl.setNameTxt(selectedItem.getName().trim());
+        nameValuePnl.setValue(selectedItem.getValue());
+        descriptionTextArea.setText(selectedItem.getDescription().trim());
+        priceTextField.setText(String.valueOf(selectedItem.getPrice()));
 
         // Combo boxes
-        categoryComboBox.setSelectedItem(newItem.getCategory());
-        productComboBox.setSelectedItem(newItem.getProduct());
-        typeComboBox.setSelectedItem(newItem.getType());
+        categoryComboBox.setSelectedItem(selectedItem.getCategory());
+        productComboBox.setSelectedItem(selectedItem.getProduct());
+        typeComboBox.setSelectedItem(selectedItem.getType());
 
         // DATA SHEETS
-        localDataSheetTextField.setText(newItem.getLocalDataSheet());
-        onlineDataSheetTextField.setText(newItem.getOnlineDataSheet());
+        localDataSheetTextField.setText(selectedItem.getLocalDataSheet());
+        onlineDataSheetTextField.setText(selectedItem.getOnlineDataSheet());
 
         // PACKAGE
-        packagePnl.setPackageType(newItem.getPackageType(), newItem.getPins());
+        packagePnl.setPackageType(selectedItem.getPackageType(), selectedItem.getPins());
 
         // MANUFACTURER
-        if (newItem.getManufacturerId() >= 0) {
-            manufacturerCb.setSelectedItem(newItem.getManufacturer());
-
-            // Set icon
-            try {
-                Manufacturer m = newItem.getManufacturer();
-                if (m != null && !m.getIconPath().isEmpty()) {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                    manufacturerIconLbl.setIcon(path.toString(), 48, 48);
-                } else {
-                    manufacturerIconLbl.setIcon(imageResource.readImage("Common.Unknown"));
-                }
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        } else {
-            if (manufacturerCb.getModel().getSize() > 0) {
-                manufacturerCb.setSelectedIndex(0);
+        if (selectedItem.getManufacturerId() > DbObject.UNKNOWN_ID) { // Edit
+            updateManufacturerCb(selectedItem.getManufacturer());
+        } else { // Add
+            if (selectedSet != null) {
+               updateManufacturerCb(selectedSet.getManufacturer());
             }
         }
 
         // REMARKS
-        starRater.setRating(newItem.getRating());
+        starRater.setRating(selectedItem.getRating());
         starRater.setSelection(0);
-        discourageOrderCb.setSelected(newItem.isDiscourageOrder());
-        remarksTe.setDocument(newItem.getRemarksFile());
+        discourageOrderCb.setSelected(selectedItem.isDiscourageOrder());
+        remarksTe.setDocument(selectedItem.getRemarksFile());
 
         // SETS
-        isSetCb.setSelected(newItem.isSet());
-        setItemPanel.updateComponents(newItem); // TODO only do this when tab opens
-        setItemPanel.setEnabled(newItem.isSet());
+//        isSetCb.setSelected(selectedItem.isSet());
+//        setItemPanel.updateComponents(selectedItem); // TODO only do this when tab opens
+//        setItemPanel.setEnabled(selectedItem.isSet());
 
         // Focus
         //nameTextField.requestFocus();

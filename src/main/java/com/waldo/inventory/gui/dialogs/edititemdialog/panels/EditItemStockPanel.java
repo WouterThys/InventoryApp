@@ -1,10 +1,12 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -21,7 +23,8 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
 
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
-    private final Item newItem;
+    private final Item selectedItem;
+    private final Set selectedSet;
     private final Application application;
 
     // Listener
@@ -36,9 +39,10 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     private EditAction editAction;
     private DeleteAction deleteAction;
 
-    public EditItemStockPanel(Application application, Item newItem, IEditedListener editedListener) {
+    public EditItemStockPanel(Application application, @NotNull Item selectedItem, Set selectedSet,@NotNull IEditedListener editedListener) {
         this.application = application;
-        this.newItem = newItem;
+        this.selectedItem = selectedItem;
+        this.selectedSet = selectedSet;
         this.editedListener = editedListener;
     }
 
@@ -210,14 +214,14 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
                 EditItemLocation dialog;
                 dialog = new EditItemLocation(application,
                         "Select",
-                        newItem.getLocation());
+                        selectedItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {
                     Location newLocation = dialog.getItemLocation();
                     if (newLocation != null) {
-                        newItem.setLocationId(newLocation.getId());
+                        selectedItem.setLocationId(newLocation.getId());
                         newLocation.updateItems();
                     } else {
-                        newItem.setLocationId(DbObject.UNKNOWN_ID);
+                        selectedItem.setLocationId(DbObject.UNKNOWN_ID);
                     }
                     updateLocationFields(newLocation);
                     editedListener.onValueChanged(
@@ -239,7 +243,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
                         JOptionPane.YES_NO_OPTION);
 
                 if (res == JOptionPane.YES_OPTION) {
-                    newItem.setLocationId(-1);
+                    selectedItem.setLocationId(-1);
                     updateLocationFields(null);
                     editedListener.onValueChanged(
                             EditItemStockPanel.this,
@@ -263,11 +267,17 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     public void updateComponents(Object... object) {
         application.beginWait();
         try {
-            if (newItem != null) {
-                amountTypeCb.setSelectedIndex(newItem.getAmountType());
-                amountSpinner.setValue(newItem.getAmount());
+            if (selectedItem != null) {
+                amountTypeCb.setSelectedIndex(selectedItem.getAmountType());
+                amountSpinner.setValue(selectedItem.getAmount());
 
-                updateLocationFields(newItem.getLocation());
+                if (selectedItem.getId() > DbObject.UNKNOWN_ID) { // Edit
+                    updateLocationFields(selectedItem.getLocation());
+                } else { // Add
+                    if (selectedSet != null) {
+                        updateLocationFields(selectedSet.getLocation());
+                    }
+                }
             }
         } finally {
             application.endWait();

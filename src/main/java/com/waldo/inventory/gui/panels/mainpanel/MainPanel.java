@@ -10,7 +10,6 @@ import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.editsetdialog.EditSetDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -379,33 +378,48 @@ public class MainPanel extends MainPanelLayout {
     // Items
     private void onEditItem() {
         if (selectedItem != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
+            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem, selectedSet);
             dialog.showDialog();
         }
     }
 
     private void onAddItem() {
-        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item());
+        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item(), selectedSet);
         dialog.showDialog();
     }
 
     private void onDeleteItem() {
         if (selectedItem != null) {
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(application, "Delete " + selectedItem + "?", "Delete", JOptionPane.YES_NO_OPTION)) {
-                selectedItem.delete();
+            if (selectedSet != null) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                        this,
+                        "Delete " + selectedItem + " from " + selectedSet + "?",
+                        "Delete",
+                        JOptionPane.YES_NO_OPTION)) {
+
+                    selectedSet.removeSetItem(selectedItem);
+                }
+            } else {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                        this,
+                        "Delete " + selectedItem + "?",
+                        "Delete",
+                        JOptionPane.YES_NO_OPTION)) {
+                    selectedItem.delete();
+                }
             }
         }
     }
 
     // Sets
     private void onAddSet() {
-        EditSetDialog dialog = new EditSetDialog(application, "Add set", new Set());
+        EditItemDialog dialog = new EditItemDialog(application, "Add set", new Set());
         dialog.showDialog();
     }
 
     private void onEditSet() {
         if (selectedSet != null) {
-            EditSetDialog dialog = new EditSetDialog(application, "Edit set", selectedSet);
+            EditItemDialog dialog = new EditItemDialog(application, "Edit set", selectedSet);
             dialog.showDialog();
             setList.setSelectedValue(selectedSet, true);
         }

@@ -182,14 +182,6 @@ public class Location extends DbObject {
                 // If locationId < UNKNOWN_ID, the item has no location or the location is derived from the SetItems
                 if (item.getLocationId() == getId()) {
                     items.add(item);
-                } else {
-                    if (item.isSet()) {
-                        for (SetItem setItem : item.getSetItems()) {
-                            if (setItem.getLocationId() == getId()) {
-                                items.add(setItem);
-                            }
-                        }
-                    }
                 }
             }
         }

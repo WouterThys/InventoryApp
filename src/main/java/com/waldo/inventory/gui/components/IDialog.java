@@ -365,4 +365,8 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     protected ILabel getTitleIconLabel() {
         return titleIconLabel;
     }
+
+    protected void setInfoIcon(ImageIcon infoIcon) {
+        titleInfoLabel.setIcon(infoIcon);
+    }
 }

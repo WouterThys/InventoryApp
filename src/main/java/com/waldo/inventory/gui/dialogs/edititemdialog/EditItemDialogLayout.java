@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -52,10 +53,9 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Item newItem;
+    Item selectedItem;
     Item originalItem;
-
-//    boolean isNew = false;
+    Set selectedSet;
 
     EditItemDialogLayout(Application application, String title) {
         super(application, title);
@@ -84,15 +84,15 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         renderer.setHorizontalTextAlignment(SwingConstants.TRAILING);
 
         // Panels
-        componentPanel = new ComponentPanel(application, newItem, this);
+        componentPanel = new ComponentPanel(application, selectedItem, selectedSet,this);
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
 
-        editItemStockPanel = new EditItemStockPanel(application, newItem, this);
+        editItemStockPanel = new EditItemStockPanel(application, selectedItem, selectedSet,this);
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel(application, newItem);
+        editItemOrderPanel = new EditItemOrderPanel(application, selectedItem);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 
@@ -106,7 +106,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         componentPanel.initializeLayouts();
         editItemStockPanel.initializeLayouts();
         editItemOrderPanel.initializeLayouts();
-
 
         // Add tabs
         tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.Tab.Component"), componentPanel, "Component info");
@@ -130,9 +129,9 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     public void updateComponents(Object... object) {
         try {
             application.beginWait();
-            if (!newItem.getIconPath().isEmpty()) {
+            if (!selectedItem.getIconPath().isEmpty()) {
                 try {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), newItem.getIconPath());
+                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), selectedItem.getIconPath());
                     URL url = path.toUri().toURL();
                     setTitleIcon(imageResource.readImage(url, 64, 64));
                 } catch (Exception e) {
@@ -141,7 +140,10 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
             } else {
                 setTitleIcon(imageResource.readImage("Items.Edit.Title"));
             }
-            setTitleName(newItem.getName().trim());
+            if (selectedItem.isSet()) {
+                setInfoIcon(imageResource.readImage("Sets.Edit.Title"));
+            }
+            setTitleName(selectedItem.getName().trim());
 
             ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
             //componentPanel.updateComponents(null);

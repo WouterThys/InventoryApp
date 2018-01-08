@@ -1,79 +1,53 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.managers.SearchManager;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
-import static com.waldo.inventory.managers.CacheManager.cache;
-
-public class Set extends DbObject {
-
-    public static final String TABLE_NAME = "sets";
-
+public class Set extends Item {
     // Variables
-    private long manufacturerId;
-    private Manufacturer manufacturer;
-
-    private long locationId;
-    private Location location;
-
     private List<Item> setItems;
 
 
     public Set() {
-        super(TABLE_NAME);
+
     }
 
     public Set(String name) {
-        super(TABLE_NAME);
         setName(name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            if (obj instanceof Set) {
-                Set set = (Set) obj;
-                if (set.getLocationId() == getLocationId() && set.getManufacturerId() == getManufacturerId()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = addBaseParameters(statement);
-
-        if (getManufacturerId() < DbObject.UNKNOWN_ID) {
-            setManufacturerId(DbObject.UNKNOWN_ID);
-        }
-
-        if (getLocationId() < DbObject.UNKNOWN_ID) {
-            setLocationId(DbObject.UNKNOWN_ID);
-        }
-
-        // Add parameters
-        statement.setLong(ndx++, getManufacturerId());
-        statement.setLong(ndx++, getLocationId());
-
-        return ndx;
+    public boolean isSet() {
+        return true;
     }
 
     @Override
     public Set createCopy(DbObject copyInto) {
-        Set cpy = (Set) copyInto;
-        copyBaseFields(cpy);
+        Set item = (Set) copyInto;
+        copyBaseFields(item);
 
-        // Add variables
-        cpy.setManufacturerId(getManufacturerId());
-        cpy.setLocationId(getLocationId());
+        item.setValue(Value.copy(getValue()));
+        item.setDescription(getDescription());
+        item.setPrice(getPrice());
+        item.setCategoryId(getCategoryId());
+        item.setProductId(getProductId());
+        item.setTypeId(getTypeId());
+        item.setLocalDataSheet(getLocalDataSheet());
+        item.setOnlineDataSheet(getOnlineDataSheet());
+        item.setManufacturerId(getManufacturerId());
+        item.setLocationId(getLocationId());
+        item.setAmount(getAmount());
+        item.setAmountType(getAmountType());
+        item.setOrderState(getOrderState());
+        item.setPackageTypeId(getPackageTypeId());
+        item.setPins(getPins());
+        item.setRating(getRating());
+        item.setDiscourageOrder(isDiscourageOrder());
+        item.setRemarksFile(getRemarksFile());
 
-        return cpy;
+        return item;
     }
 
     @Override
@@ -81,78 +55,63 @@ public class Set extends DbObject {
         return createCopy(new Set());
     }
 
-    //
-    // DbManager tells the object is updated
-    //
     @Override
-    public void tableChanged(int changedHow) {
-        switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
-                List<Set> list = cache().getSets();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
-                break;
+    public boolean equals(Object obj) {
+        boolean result =  super.equals(obj);
+        if (result) {
+            if (!(obj instanceof Set)) {
+                return false;
+            } else {
+                Set ref = (Set) obj;
+                if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
+                if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
+                if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
+                if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
+                if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
+                if (!(ref.getProductId() == getProductId())) { System.out.println("Product differs"); return false; }
+                if (!(ref.getTypeId() == getTypeId())) { System.out.println("Type differs"); return false; }
+                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { System.out.println("Local datasheet differs"); return false; }
+                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { System.out.println("Online datasheet differs"); return false; }
+                if (!(ref.getManufacturerId() == getManufacturerId())) { System.out.println("Manufacturer differs"); return false; }
+                if (!(ref.getLocationId() == getLocationId())) { System.out.println("Location differs"); return false; }
+                if (!(ref.getAmount() == getAmount())) { System.out.println("Amount differs"); return false; }
+                if (!(ref.getAmountType() == getAmountType())) { System.out.println("Amount type differs"); return false; }
+                if (!(ref.getOrderState() == getOrderState())) { System.out.println("Order state differs"); return false; }
+                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
+                    System.out.println("Package type differs: " + ref.getPackageTypeId() + "<->" + getPackageTypeId());
+                    return false; }
+                if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
+                if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
+                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
+                if (!(ref.isSet() == isSet())) { System.out.println("IsSet differs"); return false; }
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
-                break;
-            }
-            case DatabaseAccess.OBJECT_DELETE: {
-                List<Set> list = cache().getSets();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
-                break;
+        }
+        return result;
+    }
+
+    public void addSetItem(Item setItem) {
+        if (setItem != null && !getSetItems().contains(setItem)) {
+            SetItemLink link = new SetItemLink(this, setItem);
+            link.save();
+            updateSetItems();
+        }
+    }
+
+    public void removeSetItem(Item setItem) {
+        if (setItem != null) {
+            SetItemLink link = SearchManager.sm().findSetItemLinkBySetAndItem(getId(), setItem.getId());
+            if (link != null) {
+                link.delete();
+                updateSetItems();
             }
         }
     }
 
-    public static Set getUnknownSet() {
-        Set u = new Set();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
+    public void updateSetItems() {
+        setItems = null;
     }
 
     // Getters and setters
-
-    public long getManufacturerId() {
-        return manufacturerId;
-    }
-
-    public void setManufacturerId(long manufacturerId) {
-        if (manufacturer != null && manufacturer.getId() != manufacturerId) {
-            manufacturer = null;
-        }
-        this.manufacturerId = manufacturerId;
-    }
-
-    public Manufacturer getManufacturer() {
-        if (manufacturer == null) {
-            manufacturer = SearchManager.sm().findManufacturerById(manufacturerId);
-        }
-        return manufacturer;
-    }
-
-    public long getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(long locationId) {
-        if (location != null && location.getId() != locationId) {
-            location = null;
-        }
-        this.locationId = locationId;
-    }
-
-    public Location getLocation() {
-        if (location == null) {
-            location = SearchManager.sm().findLocationById(locationId);
-        }
-        return location;
-    }
-
     public List<Item> getSetItems() {
         if (setItems == null) {
             setItems = SearchManager.sm().findSetItemsBySetId(getId());

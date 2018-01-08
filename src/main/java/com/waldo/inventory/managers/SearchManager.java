@@ -627,6 +627,21 @@ public class SearchManager {
         return null;
     }
 
+    public List<Set> findSetsByItemId(long itemId) {
+        List<Set> setList = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (Set set : cache().getSets()) {
+                for (Item item : findSetItemsBySetId(set.getId())) {
+                    if (item.getId() == itemId) {
+                        setList.add(set);
+                        break;
+                    }
+                }
+            }
+        }
+        return setList;
+    }
+
     public SetItemLink findSetItemLinkById(long setItemLinkId) {
         if (setItemLinkId > 0) {
             for (SetItemLink sil : cache().getSetItemLinks()) {
@@ -648,5 +663,16 @@ public class SearchManager {
             }
         }
         return setItems;
+    }
+
+    public SetItemLink findSetItemLinkBySetAndItem(long setId, long itemId) {
+        if (setId > DbObject.UNKNOWN_ID && itemId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink link : cache().getSetItemLinks()) {
+                if (link.getSetId() == setId && link.getItemId() == itemId) {
+                    return link;
+                }
+            }
+        }
+        return null;
     }
 }

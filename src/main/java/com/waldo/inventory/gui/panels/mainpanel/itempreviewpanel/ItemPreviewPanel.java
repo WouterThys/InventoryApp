@@ -124,22 +124,14 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         if (item.getLocationId() > DbObject.UNKNOWN_ID) {
             Location l = SearchManager.sm().findLocationById(item.getLocationId());
             if (l != null && !l.isUnknown()) {
-                if (item.isSet()) {
-                    locationLbl.setText(l.getLocationType().getName().substring(0,3));
-                } else {
-                    locationLbl.setText(l.getPrettyString());
-                }
+                locationLbl.setText(l.getPrettyString());
             }
         } else {
             locationLbl.setText("");
         }
 
-        if (item.isSet()) {
-            setItemModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
-            setItemPanel.setVisible(true);
-        } else {
-            setItemPanel.setVisible(false);
-        }
+        setItemPanel.setVisible(false);
+
     }
 
     private JPanel createIconPanel() {

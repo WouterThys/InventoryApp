@@ -21,38 +21,36 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
-    private Value value;
-    private String description = "";
-    private double price = 0;
+    protected Value value;
+    protected String description = "";
+    protected double price = 0;
 
-    private long categoryId = -1;
-    private Category category;
-    private long productId = -1;
-    private Product product;
-    private long typeId = -1;
-    private Type type;
+    protected long categoryId = -1;
+    protected Category category;
+    protected long productId = -1;
+    protected Product product;
+    protected long typeId = -1;
+    protected Type type;
+    protected boolean isSet = false;
 
-    private String localDataSheet = "";
-    private String onlineDataSheet = "";
+    protected String localDataSheet = "";
+    protected String onlineDataSheet = "";
 
-    private long manufacturerId = -1;
-    private Manufacturer manufacturer;
-    private long locationId = UNKNOWN_ID;
-    private Location location;
-    private int amount = 0;
-    private int amountType = Statics.ItemAmountTypes.NONE;
-    private int orderState = Statics.ItemOrderStates.NONE;
+    protected long manufacturerId = -1;
+    protected Manufacturer manufacturer;
+    protected long locationId = UNKNOWN_ID;
+    protected Location location;
+    protected int amount = 0;
+    protected int amountType = Statics.ItemAmountTypes.NONE;
+    protected int orderState = Statics.ItemOrderStates.NONE;
 
-    private long packageTypeId = UNKNOWN_ID;
-    private PackageType packageType;
-    private int pins;
+    protected long packageTypeId = UNKNOWN_ID;
+    protected PackageType packageType;
+    protected int pins;
 
-    private float rating;
-    private boolean discourageOrder;
-    private String remarksFile;
-
-    private boolean isSet;
-    private List<SetItem> setItems;
+    protected float rating;
+    protected boolean discourageOrder;
+    protected String remarksFile;
 
     public Item() {
         super(TABLE_NAME);
@@ -107,7 +105,7 @@ public class Item extends DbObject {
             statement.setString(ndx++, null);
         }
 
-
+        // Set items
         statement.setBoolean(ndx++, isSet());
 
         // Value
@@ -236,7 +234,6 @@ public class Item extends DbObject {
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarksFile(getRemarksFile());
-        item.setSet(isSet());
 
         return item;
     }
@@ -274,8 +271,7 @@ public class Item extends DbObject {
                 if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
                 if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
-                //if (!(ref.getRemarksFile().equals(getRemarksFile()))) { System.out.println("Remarks differs"); return false; }
-                if (!(ref.isSet() == isSet())) { System.out.println("Is set differs"); return false; }
+                if (!(ref.isSet() == isSet())) { System.out.println("IsSet differs"); return false; }
             }
         }
         return result;
@@ -441,14 +437,6 @@ public class Item extends DbObject {
     }
 
     public long getLocationId() {
-        if (isSet()) {
-            // Check if set has locations
-            for (SetItem setItem : getSetItems()) {
-                if (setItem.getLocationId() > UNKNOWN_ID) {
-                    return -1; // If one of the SetItems has a location, the item has no location
-                }
-            }
-        }
         return locationId;
     }
 
@@ -556,26 +544,12 @@ public class Item extends DbObject {
         return packageType;
     }
 
+    public boolean isSetItem() {
+        return SearchManager.sm().findSetsByItemId(getId()).size() > 0;
+    }
+
     public boolean isSet() {
-        return isSet;
-    }
-
-    public void setSet(boolean set) {
-        isSet = set;
-    }
-
-    public boolean hasSetItems() {
-        return isSet() && getSetItems().size() > 0;
-    }
-
-    public List<SetItem> getSetItems() {
-        if (isSet()) {
-            if (setItems == null) {
-                setItems = SearchManager.sm().findSetItemsByItemId(getId());
-            }
-            return setItems;
-        }
-        return null;
+        return false;
     }
 
     public Value getValue() {

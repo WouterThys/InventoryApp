@@ -541,7 +541,7 @@ public class DatabaseAccess {
         }
         Status().setMessage("Fetching items from DB");
         Item i = null;
-        String sql = scriptResource.readString(Item.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        String sql = "SELECT * FROM items WHERE isSet = 0";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -567,8 +567,6 @@ public class DatabaseAccess {
                     i.setPins(rs.getInt("pins"));
                     i.setRating(rs.getFloat("rating"));
                     i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
-                    //i.setRemarksFile(rs.getString("remark"));
-                    i.setSet(rs.getBoolean("isSet"));
                     i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
@@ -1551,7 +1549,7 @@ public class DatabaseAccess {
         }
         Status().setMessage("Fetching sets from DB");
         Set s = null;
-        String sql = scriptResource.readString(Set.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        String sql = "SELECT * FROM items WHERE isSet = 1";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -1561,10 +1559,33 @@ public class DatabaseAccess {
                     s.setId(rs.getLong("id"));
                     s.setName(rs.getString("name"));
                     s.setIconPath(rs.getString("iconPath"));
-
+                    s.setDescription(rs.getString("description"));
+                    s.setPrice(rs.getDouble("price"));
+                    s.setCategoryId(rs.getInt("categoryId"));
+                    s.setProductId(rs.getInt("productId"));
+                    s.setTypeId(rs.getInt("typeId"));
+                    s.setLocalDataSheet(rs.getString("localDataSheet"));
+                    s.setOnlineDataSheet(rs.getString("onlineDataSheet"));
                     s.setManufacturerId(rs.getLong("manufacturerId"));
                     s.setLocationId(rs.getLong("locationId"));
+                    s.setAmount(rs.getInt("amount"));
+                    s.setAmountType(rs.getInt("amountType"));
+                    s.setOrderState(rs.getInt("orderState"));
+                    s.setPackageTypeId(rs.getLong("packageTypeId"));
+                    s.setPins(rs.getInt("pins"));
+                    s.setRating(rs.getFloat("rating"));
+                    s.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                    s.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
 
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        s.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                        s.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                        s.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), s.createRemarksFileName()));
+                    } else {
+                        s.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
+                        s.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                        s.setRemarksFile(null);
+                    }
                     s.setInserted(true);
                     sets.add(s);
                 }

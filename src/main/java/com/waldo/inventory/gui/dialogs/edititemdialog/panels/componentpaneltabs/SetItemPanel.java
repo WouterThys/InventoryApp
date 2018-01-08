@@ -137,8 +137,8 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
     }
 
     private void updateSetItems(List<SetItem> setItems) {
-        if (item.isSet()) {
-            List<SetItem> knownSetItems = new ArrayList<>(item.getSetItems());
+        if (item.isSetItem()) {
+            List<SetItem> knownSetItems = new ArrayList<>();// TODO#25 new ArrayList<>(item.getSetItems());
 
             // Updates
             for (SetItem setItem : setItems) {
@@ -248,7 +248,7 @@ public class SetItemPanel extends JPanel implements GuiInterface, IdBToolBar.Idb
             @Override
             public void onCreateSeries() {
                 int res = JOptionPane.OK_OPTION;
-                if (item.hasSetItems()) {
+                if (item.isSetItem()) {
                     res = JOptionPane.showConfirmDialog(
                         SetItemPanel.this,
                         "The set item wizard will overwrite all existing set items already defined..",

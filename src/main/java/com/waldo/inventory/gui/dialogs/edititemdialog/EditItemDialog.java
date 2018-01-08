@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.classes.dbclasses.Category;
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Product;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
@@ -24,22 +21,27 @@ public class EditItemDialog extends EditItemDialogLayout {
     private boolean canClose = true;
 
     public EditItemDialog(Application application, String title, Item item)  {
+        this(application, title, item, null);
+    }
+
+    public EditItemDialog(Application application, String title, Item item, Set set)  {
         super(application, title);
         if (application != null) {
             setLocationRelativeTo(application);
         } else {
             setLocationByPlatform(true);
         }
-        setValues(item);
+        setValues(item, set);
         initializeComponents();
         initializeLayouts();
         initActions();
         updateComponents();
     }
 
-    private void setValues(Item item) {
-        newItem = item;
-        originalItem = newItem.createCopy();
+    private void setValues(Item item, Set set) {
+        selectedItem = item;
+        originalItem = selectedItem.createCopy();
+        selectedSet = set;
     }
 
     private void initActions() {
@@ -52,12 +54,21 @@ public class EditItemDialog extends EditItemDialogLayout {
         initProductChangedAction();
     }
 
+    private void save() {
+        selectedItem.save();
+        originalItem = selectedItem.createCopy();
+
+        if (selectedSet != null) {
+            selectedSet.addSetItem(selectedItem);
+        }
+    }
+
     @Override
     protected void onOK() {
         if (verify()) {
             if (checkChange()) {
                 canClose = false;
-                showSaveDialog(true);
+                showSaveDialog();
             }
 
             if (canClose) {
@@ -71,49 +82,42 @@ public class EditItemDialog extends EditItemDialogLayout {
     protected void onNeutral() {
         if (verify()) {
             componentPanel.updateRemarks();
-            newItem.save();
-            originalItem = newItem.createCopy();
+            save();
 
             getButtonNeutral().setEnabled(false);
             // Don't call update for just one component
-            componentPanel.updateRating(newItem.getRating());
+            componentPanel.updateRating(selectedItem.getRating());
         }
     }
 
     @Override
     protected void onCancel() {
-        originalItem.createCopy(newItem);
-        newItem.setCanBeSaved(true);
+        originalItem.createCopy(selectedItem);
+        selectedItem.setCanBeSaved(true);
         super.onCancel();
     }
 
     private boolean checkChange() {
-        return (newItem != null) && (componentPanel.updateRemarks() || !(newItem.equals(originalItem)));
+        return (selectedItem != null) && (componentPanel.updateRemarks() || !(selectedItem.equals(originalItem)));
     }
 
-    private void showSaveDialog(boolean closeAfter) {
-        if (newItem != null) {
-            String msg = newItem.getName() + " is edited, do you want to save?";
+    private void showSaveDialog() {
+        if (selectedItem != null) {
+            String msg = selectedItem.getName() + " is edited, do you want to save?";
             if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 if (verify()) {
-                    newItem.save();
-                    originalItem = newItem.createCopy();
-                    if (closeAfter) {
-                        dispose();
-                    }
+                    save();
+                    super.onOK();
                 }
             }
         } else {
-            if (closeAfter) {
-                dialogResult = OK;
-                dispose();
-            }
+            super.onOK();
         }
         canClose = true;
     }
 
     public Item getItem() {
-        return newItem;
+        return selectedItem;
     }
 
     private void initIconDoubleClicked() {
@@ -132,7 +136,7 @@ public class EditItemDialog extends EditItemDialogLayout {
                     if (fileChooser.showDialog(EditItemDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
                         String iconPath = fileChooser.getSelectedFile().getPath();
                         if (!iconPath.isEmpty()) {
-                            newItem.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
+                            selectedItem.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
                             try {
                                 lbl.setIcon(iconPath, 48,48);
                                 onValueChanged(lbl, "iconPath", "", iconPath);
@@ -178,7 +182,7 @@ public class EditItemDialog extends EditItemDialogLayout {
             componentPanel.setNameFieldError("Name can not be empty");
             ok = false;
         } else {
-            if (newItem.getId() < DbObject.UNKNOWN_ID) {
+            if (selectedItem.getId() < DbObject.UNKNOWN_ID) {
                 Item check = sm().findItemByName(name);
                 if (check != null) {
                     componentPanel.setNameFieldError("Name already exists in items");
@@ -212,7 +216,7 @@ public class EditItemDialog extends EditItemDialogLayout {
     @Override
     public DbObject getGuiObject() {
         if (isShown) {
-            return newItem;
+            return selectedItem;
         } else {
             return null;
         }
