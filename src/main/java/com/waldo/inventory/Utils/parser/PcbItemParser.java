@@ -10,7 +10,6 @@ import com.waldo.kicadparser.classes.Component;
 import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,7 +64,6 @@ public class PcbItemParser {
 
                 foundItem = SearchManager.sm().findPcbItem(
                         pcbItem.getFootprint(),
-                        pcbItem.getLibrary(),
                         pcbItem.getPartName()
                 );
 
@@ -135,28 +133,19 @@ public class PcbItemParser {
             if (projectLink.getPcbItemId() > DbObject.UNKNOWN_ID) {
                 PcbItem pcbItem = projectLink.getPcbItem();
 
-                List<PcbItemItemLink> itemItemLinkList = SearchManager.sm().findPcbItemItemLinksForPcbItem(pcbItem.getId());
-                for (PcbItemItemLink itemItemLink : itemItemLinkList) {
-                    if (itemItemLink.isSetItem()) {
-                        SetItem setItem = itemItemLink.getSetItem();
-                        if (PcbItem.matchesValue(projectLink.getValue(), setItem.getValue())) {
-                            projectLink.setPcbItemItemLinkId(itemItemLink.getId());
+                for (PcbItemItemLink link : pcbItem.getKnownItemLinks()) {
+                    if (link.isSetItem()) {
+                        if (PcbItem.matchesValue(pcbItem.getValue(), link.getSetItem().getValue())) {
+                            projectLink.setPcbItemItemLinkId(link.getId());
                             break;
                         }
                     } else {
-                        projectLink.setPcbItemItemLinkId(itemItemLink.getId());
+                        projectLink.setPcbItemItemLinkId(link.getId());
                         break;
                     }
                 }
             }
         }
-    }
-
-
-    private int getMatchCount(int i) {
-        i = i - ((i >>> 1) & 0x55555555);
-        i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
-        return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
     }
 
     /*
@@ -209,7 +198,7 @@ public class PcbItemParser {
             for (String sheet : kiCadMap.keySet()) {
                 resultMap.put(sheet, new ArrayList<>());
                 for (Component c : kiCadMap.get(sheet)) {
-                    PcbItem item = findItem(resultMap.get(sheet), c.getValue(), c.getFootprint(), c.getLibSource().getLib(), c.getLibSource().getPart());
+                    PcbItem item = findItem(resultMap.get(sheet), c.getValue(), c.getFootprint(), c.getLibSource().getPart());
                     if (item != null) {
                         item.addReference(c.getRef());
                     } else {
@@ -229,11 +218,10 @@ public class PcbItemParser {
             return resultMap;
         }
 
-        private PcbItem findItem(List<PcbItem> items, String value, String footprint, String library, String part) {
+        private PcbItem findItem(List<PcbItem> items, String value, String footprint, String part) {
             for (PcbItem item : items) {
                 if (item.getValue().equals(value) &&
                         item.getFootprint().equals(footprint) &&
-                        item.getLibrary().equals(library) &&
                         item.getPartName().equals(part)) {
 
                     return item;
@@ -269,15 +257,6 @@ public class PcbItemParser {
         @Override
         public String getName() {
             return eagleParser.getParserName();
-        }
-    }
-
-    private class MatchComparator implements Comparator<PcbItemItemLink> {
-        @Override
-        public int compare(PcbItemItemLink o1, PcbItemItemLink o2) {
-            int mc1 = getMatchCount(o1.getMatch());
-            int mc2 = getMatchCount(o2.getMatch());
-            return Integer.compare(mc2, mc1);
         }
     }
 }

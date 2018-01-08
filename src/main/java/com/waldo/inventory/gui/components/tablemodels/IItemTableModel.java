@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -50,13 +49,13 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 case 2: // Description
                     return item.getDescription();
                 case 3: // Manufacturer
-                    Manufacturer m = SearchManager.sm().findManufacturerById(item.getManufacturerId());
+                    Manufacturer m = item.getManufacturer();
                     if (m != null && !m.isUnknown()) {
                         return m.toString();
                     }
                     return "";
                 case 4: // Location
-                    Location l = SearchManager.sm().findLocationById(item.getLocationId());
+                    Location l = item.getLocation();
                     if (l != null && !l.isUnknown()) {
                         if (item.isSet()) {
                             return l.getLocationType().getName().substring(0,3);

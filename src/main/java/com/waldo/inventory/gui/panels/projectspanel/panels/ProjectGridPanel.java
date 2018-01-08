@@ -83,15 +83,8 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         for (ITileView view : tileViews) {
             add(view);
         }
-        //revalidate();
+        revalidate();
         repaint();
-    }
-
-    public void updateTiles() {
-        for (ITileView view : tileViews) {
-            //view.revalidate();
-            view.repaint();
-        }
     }
 
     public void addTile(P projectObject) {

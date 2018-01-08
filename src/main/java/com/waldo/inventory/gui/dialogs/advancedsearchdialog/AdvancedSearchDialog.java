@@ -122,6 +122,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
                 if (size > 0) {
                     setInfo(String.valueOf(size) + " results found!!");
                     addResults(new ArrayList<>(foundObjects));
+                    tableSelect(0);
                 }
                 updateEnabledComponents();
             }
@@ -151,6 +152,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
                 if (size > 0) {
                     setInfo(String.valueOf(size) + " results found!!");
                     addResults(new ArrayList<>(foundObjects));
+                    tableSelect(0);
                 }
                 updateEnabledComponents();
             }

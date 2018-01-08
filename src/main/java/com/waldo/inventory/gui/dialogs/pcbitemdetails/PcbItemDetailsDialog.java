@@ -8,6 +8,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
+import com.waldo.inventory.gui.dialogs.alllinkeditemsdialog.AllLinkedItemsDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -69,13 +70,24 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     @Override
     void onDeleteMatchedItem() {
-        if (pcbItemProjectLink != null) {
-            PcbItemItemLink itemItemLink = pcbItemProjectLink.getPcbItemItemLink();
-            if (itemItemLink != null) {
-                itemItemLink.delete(); // Should also delete other pcb item links
-                clearMatchedItemPanel();
-                updateEnabledComponents();
+        if (pcbItemProjectLink != null && pcbItemProjectLink.getPcbItemItemLink() != null) {
+            String msg = "Delete link with " + pcbItemProjectLink.getPcbItemItemLink().getPrettyName() + "?";
+            if (JOptionPane.showConfirmDialog(this, msg, "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                PcbItemItemLink itemItemLink = pcbItemProjectLink.getPcbItemItemLink();
+                if (itemItemLink != null) {
+                    itemItemLink.delete(); // Should also delete other pcb item links
+                    clearMatchedItemPanel();
+                    updateEnabledComponents();
+                }
             }
+        }
+    }
+
+    @Override
+    void onViewAllItemLinks() {
+        if (pcbItemProjectLink != null) {
+            AllLinkedItemsDialog dialog = new AllLinkedItemsDialog(application, pcbItemProjectLink.getPcbItem());
+            dialog.showDialog();
         }
     }
 

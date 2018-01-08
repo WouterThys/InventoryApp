@@ -102,7 +102,7 @@ public class PcbItemPanel extends JPanel implements
         }
     }
 
-    private void clearComponentTable() {
+    public void clearComponentTable() {
         sheetTabs.removeAll();
     }
 
@@ -183,9 +183,6 @@ public class PcbItemPanel extends JPanel implements
             try {
                 clearComponentTable();
                 updateComponentTable(projectPcb.getPcbItemMap());
-
-                //setDetails();
-
             } finally {
                 application.endWait();
             }

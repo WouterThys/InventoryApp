@@ -2,6 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -30,6 +31,9 @@ public class PcbItem extends DbObject {
     // Order
     private OrderItem orderItem = null;
     private int orderAmount  = 0;
+
+    // All known links
+    private List<PcbItemItemLink> knownItemLinks;
 
 
 
@@ -115,8 +119,7 @@ public class PcbItem extends DbObject {
         if (obj != null && obj instanceof PcbItem) {
             PcbItem ref = (PcbItem) obj;
 
-            return ref.getLibrary().equals(getLibrary()) &&
-                    ref.getFootprint().equals(getFootprint()) &&
+            return ref.getFootprint().equals(getFootprint()) &&
                     ref.getPartName().equals(getPartName());
         }
         return false;
@@ -246,6 +249,13 @@ public class PcbItem extends DbObject {
 
     public void setReferences(List<String> references) {
         this.references = references;
+    }
+
+    public List<PcbItemItemLink> getKnownItemLinks() {
+        if (knownItemLinks == null) {
+            knownItemLinks = SearchManager.sm().findPcbItemItemLinksForPcbItem(getId());
+        }
+        return knownItemLinks;
     }
 
     //

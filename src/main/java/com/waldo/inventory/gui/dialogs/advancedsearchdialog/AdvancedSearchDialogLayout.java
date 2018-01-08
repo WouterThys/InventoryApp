@@ -108,6 +108,10 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         foundItemTable.selectItem(item);
     }
 
+    void tableSelect(int ndx) {
+        foundItemTable.selectItem(tableModel.getItemList().get(ndx));
+    }
+
     DbObject tableGetSelected() {
         return foundItemTable.getSelectedItem();
     }

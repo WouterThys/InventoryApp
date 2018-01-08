@@ -201,7 +201,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         selectedProject.updateProjectPcbs();
         selectedProject.updateProjectOthers();
         gridPanel.addTile(object);
-        selectedProjectObject = object;
+        selectProjectObject(object);
         updateEnabledComponents();
     }
 
@@ -214,7 +214,7 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         selectedProject.updateProjectPcbs();
         selectedProject.updateProjectOthers();
         gridPanel.removeTile(object);
-        selectedProjectObject = null;
+        selectProjectObject(null);
         updateEnabledComponents();
     }
 
