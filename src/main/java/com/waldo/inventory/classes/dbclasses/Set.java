@@ -1,9 +1,12 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Set extends Item {
     // Variables
@@ -87,6 +90,34 @@ public class Set extends Item {
             }
         }
         return result;
+    }
+
+    //
+    // DatabaseAccess tells the object is updated
+    //
+    @Override
+    public void tableChanged(int changedHow) {
+        switch (changedHow) {
+            case DatabaseAccess.OBJECT_INSERT: {
+
+                    List<Set> list = cache().getSets();
+                    if (!list.contains(this)) {
+                        list.add(this);
+                    }
+                break;
+            }
+            case DatabaseAccess.OBJECT_UPDATE: {
+                break;
+            }
+            case DatabaseAccess.OBJECT_DELETE: {
+                    List<Set> list = cache().getSets();
+                    if (list.contains(this)) {
+                        list.remove(this);
+                    }
+
+                break;
+            }
+        }
     }
 
     public void addSetItem(Item setItem) {

@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
@@ -16,32 +17,31 @@ import java.io.File;
 
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class EditItemDialog extends EditItemDialogLayout {
+public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     private boolean canClose = true;
 
-    public EditItemDialog(Application application, String title, Item item)  {
-        this(application, title, item, null);
-    }
-
-    public EditItemDialog(Application application, String title, Item item, Set set)  {
+    public EditItemDialog(Application application, String title, @NotNull T item)  {
         super(application, title);
         if (application != null) {
             setLocationRelativeTo(application);
         } else {
             setLocationByPlatform(true);
         }
-        setValues(item, set);
+        setValues(item);
         initializeComponents();
         initializeLayouts();
         initActions();
-        updateComponents();
+        updateComponents(item);
     }
 
-    private void setValues(Item item, Set set) {
+    public void setValuesForSet(Set set) {
+        setForSet(set);
+    }
+
+    private void setValues(Item item) {
         selectedItem = item;
         originalItem = selectedItem.createCopy();
-        selectedSet = set;
     }
 
     private void initActions() {
@@ -57,10 +57,6 @@ public class EditItemDialog extends EditItemDialogLayout {
     private void save() {
         selectedItem.save();
         originalItem = selectedItem.createCopy();
-
-        if (selectedSet != null) {
-            selectedSet.addSetItem(selectedItem);
-        }
     }
 
     @Override
@@ -149,8 +145,9 @@ public class EditItemDialog extends EditItemDialogLayout {
             }
         });
     }
+
     private void initTabChangedAction() {
-        tabbedPane.addChangeListener(this::updateComponents);
+        tabbedPane.addChangeListener(e -> updateComponents(selectedItem));
     }
 
     private void initCategoryChangedAction() {
@@ -193,7 +190,10 @@ public class EditItemDialog extends EditItemDialogLayout {
 
         String price = componentPanel.getPriceFieldValue();
         try {
-            Double.valueOf(price);
+            double d = Double.valueOf(price);
+            if (d < 0) {
+                ok = false;
+            }
         } catch (Exception e) {
             componentPanel.setPriceFieldError("This should be a number");
             ok = false;

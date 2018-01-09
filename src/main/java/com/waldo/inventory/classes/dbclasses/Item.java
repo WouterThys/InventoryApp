@@ -31,7 +31,6 @@ public class Item extends DbObject {
     protected Product product;
     protected long typeId = -1;
     protected Type type;
-    protected boolean isSet = false;
 
     protected String localDataSheet = "";
     protected String onlineDataSheet = "";
@@ -288,20 +287,25 @@ public class Item extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DatabaseAccess.OBJECT_INSERT: {
-                List<Item> list = cache().getItems();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+
+                    List<Item> list = cache().getItems();
+                    if (!list.contains(this)) {
+                        list.add(this);
+                    }
+
+
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
-                List<Item> list = cache().getItems();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+
+                    List<Item> list = cache().getItems();
+                    if (list.contains(this)) {
+                        list.remove(this);
+                    }
+
                 break;
             }
         }

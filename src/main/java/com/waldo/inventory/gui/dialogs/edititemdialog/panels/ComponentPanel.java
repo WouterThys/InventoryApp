@@ -35,14 +35,13 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class ComponentPanel extends JPanel implements GuiInterface {
+public class ComponentPanel<T extends Item> extends JPanel implements GuiInterface {
 
     public static final int TAB_BASIC = 0;
     public static final int TAB_DETAILS = 1;
 
     private final Application application;
-    private final Item selectedItem;
-    private final Set selectedSet;
+    private final T selectedItem;
 
     // Listener
     private final IEditedListener editedListener;
@@ -70,22 +69,43 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     private ICheckBox discourageOrderCb;
     private ITextEditor remarksTe;
 
-    // Sets
-    //private ICheckBox isSetCb;
-    //private SetItemPanel setItemPanel;
 
-
-
-    public ComponentPanel(Application application, Item selectedItem, Set selectedSet, @NotNull IEditedListener listener) {
+    public ComponentPanel(Application application, T selectedItem, @NotNull IEditedListener listener) {
         this.application = application;
         this.selectedItem = selectedItem;
-        this.selectedSet = selectedSet;
         this.editedListener = listener;
     }
 
     /*
      *                  PUBLIC METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void setValuesForSet(Set set) {
+        categoryComboBox.setSelectedItem(set.getCategory());
+        productComboBox.setSelectedItem(set.getProduct());
+        typeComboBox.setSelectedItem(set.getType());
+
+        categoryComboBox.setEnabled(false);
+        productComboBox.setEnabled(false);
+        typeComboBox.setEnabled(false);
+
+        // DATA SHEETS
+        localDataSheetTextField.setText(set.getLocalDataSheet());
+        onlineDataSheetTextField.setText(set.getOnlineDataSheet());
+
+        // PACKAGE
+        packagePnl.setPackageType(set.getPackageType(), set.getPins());
+
+        // MANUFACTURER
+        if (set.getManufacturerId() > DbObject.UNKNOWN_ID) { // Edit
+            updateManufacturerCb(selectedItem.getManufacturer());
+        }
+
+        // REMARKS
+        starRater.setRating(set.getRating());
+        starRater.setSelection(0);
+        discourageOrderCb.setSelected(set.isDiscourageOrder());
+    }
+
     public void setSelectedTab(int tab) {
         if (tabbedPane != null) {
             tabbedPane.setSelectedIndex(tab);
@@ -379,18 +399,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
 
     }
 
-//    private void initializeSetComponents() {
-//        isSetCb = new ICheckBox("Is set", false);
-//        isSetCb.addEditedListener(editedListener, "set");
-//        isSetCb.addActionListener(e -> {
-//            setItemPanel.setEnabled(isSetCb.isSelected());
-//            if (isSetCb.isSelected()) {
-//                setItemPanel.updateComponents(selectedItem);
-//            }
-//        });
-//        setItemPanel = new SetItemPanel(application, selectedItem);
-//    }
-
     private JPanel createBasicPanel() {
         JPanel basicPanel = new JPanel();
         basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
@@ -507,21 +515,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         return panel;
     }
 
-//    private JPanel createSetItemsPanel() {
-//        JPanel panel = new JPanel(new BorderLayout());
-//        JPanel setPanel = new JPanel(new BorderLayout());
-//
-////        setPanel.add(isSetCb, BorderLayout.CENTER);
-////        setPanel.add(setValuesBtn, BorderLayout.EAST);
-////        setPanel.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
-//
-//        panel.add(isSetCb, BorderLayout.NORTH);
-//        panel.add(setItemPanel, BorderLayout.CENTER);
-//        panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-//
-//        return panel;
-//    }
-
 
     /*
     *                  LISTENERS
@@ -530,11 +523,8 @@ public class ComponentPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-        //tabbedPane.addChangeListener(e -> /* update tab*/);
-
         initializeBasicComponents();
         initializeDetailsComponents();
-        //initializeSetComponents();
     }
 
     @Override
@@ -571,10 +561,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         // MANUFACTURER
         if (selectedItem.getManufacturerId() > DbObject.UNKNOWN_ID) { // Edit
             updateManufacturerCb(selectedItem.getManufacturer());
-        } else { // Add
-            if (selectedSet != null) {
-               updateManufacturerCb(selectedSet.getManufacturer());
-            }
         }
 
         // REMARKS
@@ -582,14 +568,6 @@ public class ComponentPanel extends JPanel implements GuiInterface {
         starRater.setSelection(0);
         discourageOrderCb.setSelected(selectedItem.isDiscourageOrder());
         remarksTe.setDocument(selectedItem.getRemarksFile());
-
-        // SETS
-//        isSetCb.setSelected(selectedItem.isSet());
-//        setItemPanel.updateComponents(selectedItem); // TODO only do this when tab opens
-//        setItemPanel.setEnabled(selectedItem.isSet());
-
-        // Focus
-        //nameTextField.requestFocus();
     }
 
     /*

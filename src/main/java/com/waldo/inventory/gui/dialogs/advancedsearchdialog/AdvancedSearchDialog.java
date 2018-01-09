@@ -51,7 +51,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
                 } else {
                     item = ((SetItem)object).getItem();
                 }
-                EditItemDialog editItemDialog = new EditItemDialog(application, "Edit item", item);
+                EditItemDialog<Item> editItemDialog = new EditItemDialog<>(application, "Edit item", item);
                 editItemDialog.showDialog();
                 tableUpdate();
             }

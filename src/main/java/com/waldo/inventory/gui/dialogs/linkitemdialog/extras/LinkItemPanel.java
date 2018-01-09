@@ -86,10 +86,6 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
         tableModel.clearItemList();
     }
 
-    public void selectMatchItem(PcbItemItemLink matchedItem) {
-        itemTable.selectItem(matchedItem);
-    }
-
     public void updateSelectedValueData(PcbItemItemLink match) {
         if (match != null) {
             if (!match.isSetItem()) {
@@ -171,7 +167,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                 if (e.getClickCount() == 2) {
                     Item item = getSelectedItem().getItem();
                     if (item != null) {
-                        EditItemDialog itemDialog = new EditItemDialog(application, "Edit " + item.getName(), item);
+                        EditItemDialog<Item> itemDialog = new EditItemDialog<>(application, "Edit " + item.getName(), item);
                         if (itemDialog.showDialog() == IDialog.OK) {
                             tableModel.updateTable();
                         }

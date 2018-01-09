@@ -378,13 +378,16 @@ public class MainPanel extends MainPanelLayout {
     // Items
     private void onEditItem() {
         if (selectedItem != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem, selectedSet);
+            EditItemDialog dialog = new EditItemDialog<>(application, "Edit item", selectedItem);
             dialog.showDialog();
         }
     }
 
     private void onAddItem() {
-        EditItemDialog dialog = new EditItemDialog(application, "Add item", new Item(), selectedSet);
+        EditItemDialog dialog = new EditItemDialog<>(application, "Add item", new Item());
+        if (selectedSet != null) {
+            dialog.setValuesForSet(selectedSet);
+        }
         dialog.showDialog();
     }
 
@@ -413,13 +416,13 @@ public class MainPanel extends MainPanelLayout {
 
     // Sets
     private void onAddSet() {
-        EditItemDialog dialog = new EditItemDialog(application, "Add set", new Set());
+        EditItemDialog dialog = new EditItemDialog<>(application, "Add set", new Set());
         dialog.showDialog();
     }
 
     private void onEditSet() {
         if (selectedSet != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit set", selectedSet);
+            EditItemDialog dialog = new EditItemDialog<>(application, "Edit set", selectedSet);
             dialog.showDialog();
             setList.setSelectedValue(selectedSet, true);
         }

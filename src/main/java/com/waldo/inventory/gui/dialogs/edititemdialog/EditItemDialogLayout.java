@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class EditItemDialogLayout extends IDialog implements IEditedListener {
+public abstract class EditItemDialogLayout<T extends Item> extends IDialog implements IEditedListener {
 
     protected static final int COMPONENT_TAB = 0;
     protected static final int STOCK_TAB = 1;
@@ -45,17 +45,16 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITabbedPane tabbedPane;
 
-    ComponentPanel componentPanel;
-    private EditItemStockPanel editItemStockPanel;
-    private EditItemOrderPanel editItemOrderPanel;
+    ComponentPanel<T> componentPanel;
+    private EditItemStockPanel<T> editItemStockPanel;
+    private EditItemOrderPanel<T> editItemOrderPanel;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Item selectedItem;
-    Item originalItem;
-    Set selectedSet;
+    T selectedItem;
+    T originalItem;
 
     EditItemDialogLayout(Application application, String title) {
         super(application, title);
@@ -64,7 +63,12 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    void setForSet(Set set) {
+        if (set != null) {
+            componentPanel.setValuesForSet(set);
+            editItemStockPanel.setValuesForSet(set);
+        }
+    }
 
     /*
      *                  LISTENERS
@@ -84,15 +88,15 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
         renderer.setHorizontalTextAlignment(SwingConstants.TRAILING);
 
         // Panels
-        componentPanel = new ComponentPanel(application, selectedItem, selectedSet,this);
+        componentPanel = new ComponentPanel<>(application, selectedItem,this);
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
 
-        editItemStockPanel = new EditItemStockPanel(application, selectedItem, selectedSet,this);
+        editItemStockPanel = new EditItemStockPanel<>(application, selectedItem,this);
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel(application, selectedItem);
+        editItemOrderPanel = new EditItemOrderPanel<>(application, selectedItem);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 
@@ -127,8 +131,8 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
 
     @Override
     public void updateComponents(Object... object) {
+        application.beginWait();
         try {
-            application.beginWait();
             if (!selectedItem.getIconPath().isEmpty()) {
                 try {
                     Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), selectedItem.getIconPath());
@@ -146,7 +150,6 @@ public abstract class EditItemDialogLayout extends IDialog implements IEditedLis
             setTitleName(selectedItem.getName().trim());
 
             ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
-            //componentPanel.updateComponents(null);
         } finally {
             application.endWait();
         }

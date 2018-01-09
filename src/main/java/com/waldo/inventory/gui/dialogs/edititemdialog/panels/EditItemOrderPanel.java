@@ -19,19 +19,19 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class EditItemOrderPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, CacheChangedListener<DistributorPartLink> {
+public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener, CacheChangedListener<DistributorPartLink> {
 
     private IDistributorPartTableModel tableModel;
     private ITable<DistributorPartLink> linkTable;
     private IdBToolBar toolBar;
 
-    private final Item newItem;
+    private final T newItem;
     private boolean first = true;
 
     // Listener
     private final Application application;
 
-    public EditItemOrderPanel(Application application, Item newItem) {
+    public EditItemOrderPanel(Application application, T newItem) {
         this.application = application;
         this.newItem = newItem;
 

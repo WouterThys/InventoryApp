@@ -16,7 +16,7 @@ public class ILocationButton extends JButton {
 
     private final Location location;
 
-    public ILocationButton(Location location) {
+    ILocationButton(Location location) {
         super();
 
         this.location = location;
@@ -41,7 +41,7 @@ public class ILocationButton extends JButton {
         return location.getItems();
     }
 
-    public void showPopup(MouseEvent e, Application application) {
+    void showPopup(MouseEvent e, Application application) {
         if (location.getItems().size() > 0) {
             Component component = e.getComponent();
             JPopupMenu popupMenu = new JPopupMenu();
@@ -72,10 +72,10 @@ public class ILocationButton extends JButton {
             if (menu != null) {
                 menu.addActionListener(e -> {
                     if (item instanceof Item) {
-                        EditItemDialog dialog = new EditItemDialog(application, "Item", (Item) item);
+                        EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", (Item) item);
                         dialog.showDialog();
                     } else {
-                        EditItemDialog dialog = new EditItemDialog(application, "Item", ((SetItem) item).getItem());
+                        EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", ((SetItem) item).getItem());
                         dialog.showDialog();
                     }
                 });
@@ -92,7 +92,7 @@ public class ILocationButton extends JButton {
         return location.getCol();
     }
 
-    public Location.LocationLayout getBtnLayout() {
+    Location.LocationLayout getBtnLayout() {
         return location.getLayout();
     }
 

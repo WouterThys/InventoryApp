@@ -19,12 +19,11 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 
-public class EditItemStockPanel extends JPanel implements GuiInterface {
+public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
 
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
-    private final Item selectedItem;
-    private final Set selectedSet;
+    private final T selectedItem;
     private final Application application;
 
     // Listener
@@ -39,11 +38,16 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     private EditAction editAction;
     private DeleteAction deleteAction;
 
-    public EditItemStockPanel(Application application, @NotNull Item selectedItem, Set selectedSet,@NotNull IEditedListener editedListener) {
+    public EditItemStockPanel(Application application, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
         this.application = application;
         this.selectedItem = selectedItem;
-        this.selectedSet = selectedSet;
         this.editedListener = editedListener;
+    }
+
+    public void setValuesForSet(Set set) {
+        amountTypeCb.setSelectedIndex(set.getAmountType());
+        amountSpinner.setValue(set.getAmount());
+        updateLocationFields(set.getLocation());
     }
 
     private void updateLocationFields(Location location) {
@@ -270,14 +274,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
             if (selectedItem != null) {
                 amountTypeCb.setSelectedIndex(selectedItem.getAmountType());
                 amountSpinner.setValue(selectedItem.getAmount());
-
-                if (selectedItem.getId() > DbObject.UNKNOWN_ID) { // Edit
-                    updateLocationFields(selectedItem.getLocation());
-                } else { // Add
-                    if (selectedSet != null) {
-                        updateLocationFields(selectedSet.getLocation());
-                    }
-                }
+                updateLocationFields(selectedItem.getLocation());
             }
         } finally {
             application.endWait();
