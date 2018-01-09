@@ -23,17 +23,17 @@ public abstract class OrderPopup extends JPopupMenu {
 
 
     private void init(Order order) {
-        EditOrderAction editOrderAction = new EditOrderAction() {
+        EditAction editOrderAction = new EditAction("Edit order") {
             @Override
-            public void onEditOrder() {
-                OrderPopup.this.onEditOrder(order);
+            public void onEdit() {
+                onEditOrder(order);
             }
         };
 
-        DeleteOrderAction deleteOrderAction = new DeleteOrderAction() {
+        DeleteAction deleteOrderAction = new DeleteAction("Delete order") {
             @Override
-            public void onDeleteOrder() {
-                OrderPopup.this.onDeleteOrder(order);
+            public void onDelete() {
+                onDeleteOrder(order);
             }
         };
 

@@ -25,9 +25,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
 
     private void init(OrderItem orderItem) {
         // Order item
-        DeleteOrderItemAction deleteOrderItemAction = new DeleteOrderItemAction() {
+        DeleteAction deleteOrderItemAction = new DeleteAction("Delete order item") {
             @Override
-            public void onDeleteOrderItem() {
+            public void onDelete() {
                 OrderItemPopup.this.onDeleteOrderItem(orderItem);
             }
         };
@@ -40,7 +40,7 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
 
         // Item
-        EditAction editAction = new EditAction() {
+        EditAction editAction = new EditAction("Edit order item") {
             @Override
             public void onEdit() {
                 OrderItemPopup.this.onEditItem(orderItem);

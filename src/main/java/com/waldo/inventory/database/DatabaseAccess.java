@@ -541,7 +541,7 @@ public class DatabaseAccess {
         }
         Status().setMessage("Fetching items from DB");
         Item i = null;
-        String sql = "SELECT * FROM items WHERE isSet = 0";
+        String sql = scriptResource.readString(Item.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
@@ -549,37 +549,39 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     i = new Item();
                     i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    i.setIconPath(rs.getString("iconPath"));
-                    i.setDescription(rs.getString("description"));
-                    i.setPrice(rs.getDouble("price"));
-                    i.setCategoryId(rs.getInt("categoryId"));
-                    i.setProductId(rs.getInt("productId"));
-                    i.setTypeId(rs.getInt("typeId"));
-                    i.setLocalDataSheet(rs.getString("localDataSheet"));
-                    i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
-                    i.setManufacturerId(rs.getLong("manufacturerId"));
-                    i.setLocationId(rs.getLong("locationId"));
-                    i.setAmount(rs.getInt("amount"));
-                    i.setAmountType(rs.getInt("amountType"));
-                    i.setOrderState(rs.getInt("orderState"));
-                    i.setPackageTypeId(rs.getLong("packageTypeId"));
-                    i.setPins(rs.getInt("pins"));
-                    i.setRating(rs.getFloat("rating"));
-                    i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
-                    i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
+                    if (i.getId() > DbObject.UNKNOWN_ID) {
+                        i.setName(rs.getString("name"));
+                        i.setIconPath(rs.getString("iconPath"));
+                        i.setDescription(rs.getString("description"));
+                        i.setPrice(rs.getDouble("price"));
+                        i.setCategoryId(rs.getInt("categoryId"));
+                        i.setProductId(rs.getInt("productId"));
+                        i.setTypeId(rs.getInt("typeId"));
+                        i.setLocalDataSheet(rs.getString("localDataSheet"));
+                        i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
+                        i.setManufacturerId(rs.getLong("manufacturerId"));
+                        i.setLocationId(rs.getLong("locationId"));
+                        i.setAmount(rs.getInt("amount"));
+                        i.setAmountType(rs.getInt("amountType"));
+                        i.setOrderState(rs.getInt("orderState"));
+                        i.setPackageTypeId(rs.getLong("packageTypeId"));
+                        i.setPins(rs.getInt("pins"));
+                        i.setRating(rs.getFloat("rating"));
+                        i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                        i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
 
-                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
-                        i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
-                        i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
-                        i.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), i.createRemarksFileName()));
-                    } else {
-                        i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
-                        i.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
-                        i.setRemarksFile(null);
+                        if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                            i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                            i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                            i.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), i.createRemarksFileName()));
+                        } else {
+                            i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
+                            i.getAud().setUpdated(rs.getString("updatedBy"), DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                            i.setRemarksFile(null);
+                        }
+                        i.setInserted(true);
+                        items.add(i);
                     }
-                    i.setInserted(true);
-                    items.add(i);
                 }
             }
         } catch (SQLException e) {

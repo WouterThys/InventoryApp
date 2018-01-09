@@ -61,6 +61,13 @@ public class IDbObjectTreeModel<E extends DbObject> extends DefaultTreeModel {
         }
     }
 
+    public void expandNode(DefaultMutableTreeNode treeNode) {
+        TreeNode[] nodes = getPathToRoot(treeNode);
+        TreePath path = new TreePath(nodes);
+        tree.expandPath(path);
+
+    }
+
     public void setSelectedObject(E object) {
         if (object != null) {
             DefaultMutableTreeNode node = findNode(object);

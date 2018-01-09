@@ -74,9 +74,10 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void removeItems(List<T> itemsToDelete) {
         for(T t : itemsToDelete) {
             int ndx = itemList.indexOf(t);
-            itemList.remove(ndx);
-
-            fireTableRowsDeleted(ndx, ndx);
+            if (ndx >= 0) {
+                itemList.remove(ndx);
+                fireTableRowsDeleted(ndx, ndx);
+            }
         }
         sort();
     }

@@ -37,6 +37,7 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     public void setValuesForSet(Set set) {
         setForSet(set);
+        originalItem = selectedItem.createCopy();
     }
 
     private void setValues(Item item) {

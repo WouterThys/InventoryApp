@@ -45,6 +45,10 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
     }
 
     public void setValuesForSet(Set set) {
+        selectedItem.setAmountType(set.getAmountType());
+        selectedItem.setAmount(set.getAmount());
+        selectedItem.setLocationId(set.getLocationId());
+
         amountTypeCb.setSelectedIndex(set.getAmountType());
         amountSpinner.setValue(set.getAmount());
         updateLocationFields(set.getLocation());

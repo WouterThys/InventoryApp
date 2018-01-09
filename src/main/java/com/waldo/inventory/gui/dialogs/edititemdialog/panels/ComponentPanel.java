@@ -80,27 +80,32 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
      *                  PUBLIC METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void setValuesForSet(Set set) {
+        selectedItem.setCategoryId(set.getCategoryId());
         categoryComboBox.setSelectedItem(set.getCategory());
+        selectedItem.setProductId(set.getProductId());
         productComboBox.setSelectedItem(set.getProduct());
+        selectedItem.setTypeId(set.getTypeId());
         typeComboBox.setSelectedItem(set.getType());
 
-        categoryComboBox.setEnabled(false);
-        productComboBox.setEnabled(false);
-        typeComboBox.setEnabled(false);
-
         // DATA SHEETS
+        selectedItem.setLocalDataSheet(set.getLocalDataSheet());
         localDataSheetTextField.setText(set.getLocalDataSheet());
+        selectedItem.setOnlineDataSheet(set.getOnlineDataSheet());
         onlineDataSheetTextField.setText(set.getOnlineDataSheet());
 
         // PACKAGE
+        selectedItem.setPackageTypeId(set.getPackageTypeId());
+        selectedItem.setPins(set.getPins());
         packagePnl.setPackageType(set.getPackageType(), set.getPins());
 
         // MANUFACTURER
         if (set.getManufacturerId() > DbObject.UNKNOWN_ID) { // Edit
-            updateManufacturerCb(selectedItem.getManufacturer());
+            selectedItem.setManufacturerId(set.getManufacturerId());
+            updateManufacturerCb(set.getManufacturer());
         }
 
         // REMARKS
+        selectedItem.setRating(set.getRating());
         starRater.setRating(set.getRating());
         starRater.setSelection(0);
         discourageOrderCb.setSelected(set.isDiscourageOrder());

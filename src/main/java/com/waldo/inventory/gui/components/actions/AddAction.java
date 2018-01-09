@@ -5,27 +5,26 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class EditAction extends AbstractAction {
+public abstract class AddAction extends AbstractAction {
 
-    private static final String name = "Edit";
+    private static final String name = "Add";
 
-    protected EditAction() {
-        super(name, imageResource.readImage("Actions.Edit"));
+    protected AddAction() {
+        super(name, imageResource.readImage("Actions.Add"));
     }
 
-    protected EditAction(String name) {
-        super(name, imageResource.readImage("Actions.Edit"));
+    protected AddAction(String name) {
+        super(name, imageResource.readImage("Actions.Add"));
     }
 
     public void setName(String name) {
         putValue(AbstractAction.NAME, name);
     }
 
-    public abstract void onEdit();
+    public abstract void onAdd();
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onEdit();
+        onAdd();
     }
 }
-

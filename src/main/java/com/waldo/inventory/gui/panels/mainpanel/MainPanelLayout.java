@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -23,7 +22,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -34,19 +32,18 @@ abstract class MainPanelLayout extends JPanel implements
         IdBToolBar.IdbToolBarListener,
         ItemDetailPanelLayout.OnItemDetailListener {
 
+    private static final String TREE_ITEMS = "Items";
+    private static final String TREE_SETS = "Sets";
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITablePanel<Item> itemTable;
     IItemTableModel tableModel;
 
-    ITree subDivisionTree;
+    ITree selectionTree;
     IDbObjectTreeModel<DbObject> treeModel;
-    IdBToolBar divisionTb;
-
-    DefaultListModel<Set> setListModel;
-    JList<Set> setList; // TODO: make table or tree with divisions?
-    IdBToolBar setTb;
+    IdBToolBar selectionTb;
 
     ItemDetailPanel detailPanel;
 
@@ -56,10 +53,13 @@ abstract class MainPanelLayout extends JPanel implements
     final Application application;
 
     Item selectedItem;
-    DbObject selectedDivision;
-    Set selectedSet;
+    DbObject selectedDivision; // Category, Product, Type or Set
 
-    Category virtualRoot;
+    private final Category invisibleRoot = new Category("");
+    private final Item itemRoot = new Item(TREE_ITEMS);
+    private final Set setRoot = new Set(TREE_SETS);
+    private final DefaultMutableTreeNode iRoot = new DefaultMutableTreeNode(itemRoot, true);
+    private final DefaultMutableTreeNode sRoot = new DefaultMutableTreeNode(setRoot, true);
 
     /*
      *                  CONSTRUCTOR
@@ -77,20 +77,15 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Divisions
         enabled = selectedDivision != null && selectedDivision.canBeSaved();
-        divisionTb.setEditActionEnabled(enabled);
-        divisionTb.setDeleteActionEnabled(enabled);
+        selectionTb.setEditActionEnabled(enabled);
+        selectionTb.setDeleteActionEnabled(enabled);
         if (enabled) {
             if (DbObject.getType(selectedDivision) == DbObject.TYPE_TYPE) {
-                divisionTb.setAddActionEnabled(false);
+                selectionTb.setAddActionEnabled(false);
             } else {
-                divisionTb.setAddActionEnabled(true);
+                selectionTb.setAddActionEnabled(true);
             }
         }
-
-        // Sets
-        enabled = selectedSet != null;
-        setTb.setEditActionEnabled(enabled);
-        setTb.setDeleteActionEnabled(enabled);
     }
 
     abstract void onTreeRightClick(MouseEvent e);
@@ -101,13 +96,11 @@ abstract class MainPanelLayout extends JPanel implements
     //
     public void tableInitialize(DbObject selectedObject) {
         java.util.List<Item> itemList = new ArrayList<>();
-        if (selectedObject == null || selectedObject.getName().equals("All")) {
+        if (selectedObject == null || selectedObject.getName().equals(TREE_ITEMS)) {
             itemList = new ArrayList<>(cache().getItems());
-            for (Item item : itemList) {
-                if (item.getId() == DbObject.UNKNOWN_ID) {
-                    itemList.remove(item);
-                    break;
-                }
+        } else if (selectedObject.getName().equals(TREE_SETS)) {
+            for (Set set : cache().getSets()) {
+                itemList.addAll(set.getSetItems());
             }
         } else {
             switch (DbObject.getType(selectedObject)) {
@@ -123,6 +116,8 @@ abstract class MainPanelLayout extends JPanel implements
                     Type t = (Type)selectedObject;
                     itemList = sm().findItemListForType(t);
                     break;
+                case DbObject.TYPE_SET:
+                    itemList = ((Set) selectedObject).getSetItems();
                 default:
                     break;
             }
@@ -180,11 +175,16 @@ abstract class MainPanelLayout extends JPanel implements
     }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {
+        rootNode.add(iRoot);
+        rootNode.add(sRoot);
+
+        // Divisions
         cache().getCategories().sort(new ComparatorUtils.DbObjectNameComparator<>());
-        for (Category category : cache().getCategories()) {
+        List<Category> categories = cache().getCategories();
+        for (Category category : categories) {
             if (!category.isUnknown()) {
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
-                rootNode.add(cNode);
+                iRoot.add(cNode);
 
                 List<Product> productList = sm().findProductListForCategory(category.getId());
                 productList.sort(new ComparatorUtils.DbObjectNameComparator<>());
@@ -201,6 +201,16 @@ abstract class MainPanelLayout extends JPanel implements
                 }
             }
         }
+
+        // Sets
+        List<Set> setList = cache().getSets();
+        if (setList.size() > 0) {
+            setList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            for (Set set : cache().getSets()) {
+                DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(set, false);
+                sRoot.add(sNode);
+            }
+        }
     }
 
     void treeRecreateNodes() {
@@ -209,72 +219,25 @@ abstract class MainPanelLayout extends JPanel implements
         createNodes(rootNode);
     }
 
-    // Sets stuff
-    void initializeSets() {
-        setListModel.clear();
-        for (Set set : cache().getSets()) {
-            setListModel.addElement(set);
-        }
-    }
-
-    void listAddItem(Set set) {
-        setListModel.addElement(set);
-    }
-
-    void listDeleteItem(Set set) {
-        setListModel.removeElement(set);
-    }
-
-    void listUpdateItems() {
-        initializeSets();
+    DbObject treeGetItemRoot() {
+        return itemRoot;
     }
 
     // Other
-    private JPanel createItemDivisionPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        // Title
-        JPanel itemTitlePnl = new JPanel(new BorderLayout());
-        ILabel itemTitleIcon = new ILabel(imageResource.readImage("Items.SmallTitle"));
-        ILabel itemTitleLbl = new ILabel("Items");
-        itemTitleLbl.setFont(25, Font.BOLD);
-        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
 
-        itemTitlePnl.add(itemTitleIcon, BorderLayout.WEST);
-        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
-        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-
-        JScrollPane pane = new JScrollPane(subDivisionTree);
-        pane.setPreferredSize(new Dimension(300, 400));
-        panel.add(itemTitlePnl, BorderLayout.PAGE_START);
-        panel.add(pane, BorderLayout.CENTER);
-        panel.add(divisionTb, BorderLayout.PAGE_END);
-        panel.setMinimumSize(new Dimension(200,200));
-
-
-        return panel;
+    boolean setsSelected() {
+        return (selectedDivision != null && selectedDivision instanceof Set);
     }
 
-    private JPanel createSetPanel() {
+    private JPanel createItemDivisionPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        // Title
-        JPanel itemTitlePnl = new JPanel(new BorderLayout());
-        ILabel itemTitleIcon = new ILabel(imageResource.readImage("Sets.SmallTitle"));
-        ILabel itemTitleLbl = new ILabel("Sets");
-        itemTitleLbl.setFont(25, Font.BOLD);
-        itemTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        itemTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
 
-        itemTitlePnl.add(itemTitleIcon, BorderLayout.WEST);
-        itemTitlePnl.add(itemTitleLbl, BorderLayout.CENTER);
-        itemTitlePnl.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-
-        JScrollPane pane = new JScrollPane(setList);
-        pane.setPreferredSize(new Dimension(300, 200));
-        panel.add(itemTitlePnl, BorderLayout.PAGE_START);
+        JScrollPane pane = new JScrollPane(selectionTree);
+        pane.setPreferredSize(new Dimension(300, 400));
         panel.add(pane, BorderLayout.CENTER);
-        panel.add(setTb, BorderLayout.PAGE_END);
+        panel.add(selectionTb, BorderLayout.PAGE_END);
         panel.setMinimumSize(new Dimension(200,200));
+
 
         return panel;
     }
@@ -285,15 +248,16 @@ abstract class MainPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Divisions
-        virtualRoot = new Category("All");
-        virtualRoot.setCanBeSaved(false);
+        invisibleRoot.setCanBeSaved(false);
+        itemRoot.setCanBeSaved(false);
+        setRoot.setCanBeSaved(false);
 
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(invisibleRoot, true);
         createNodes(rootNode);
         treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
             switch (DbObject.getType(child)) {
                 case DbObject.TYPE_CATEGORY:
-                    return rootNode;
+                    return iRoot;
 
                 case DbObject.TYPE_PRODUCT: {
                     Product p = (Product) child;
@@ -306,34 +270,34 @@ abstract class MainPanelLayout extends JPanel implements
                     Product p = sm().findProductById(t.getProductId()); // The parent object
                     return treeModel.findNode(p);
                 }
+
+                case DbObject.TYPE_SET:
+                    return sRoot;
             }
             return null;
         });
 
-        subDivisionTree = new ITree(treeModel);
-        subDivisionTree.addTreeSelectionListener(this);
-        subDivisionTree.setCellRenderer(ITree.getItemsRenderer());
-        subDivisionTree.setExpandsSelectedPaths(true);
-        subDivisionTree.setScrollsOnExpand(true);
-        subDivisionTree.addMouseListener(new MouseAdapter() {
+        selectionTree = new ITree(treeModel);
+        selectionTree.addTreeSelectionListener(this);
+        selectionTree.setCellRenderer(ITree.getItemsRenderer());
+        selectionTree.setExpandsSelectedPaths(true);
+        selectionTree.setScrollsOnExpand(true);
+        selectionTree.setRootVisible(false);
+        selectionTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    int row = subDivisionTree.getClosestRowForLocation(e.getX(), e.getY());
-                    subDivisionTree.setSelectionRow(row);
+                    int row = selectionTree.getClosestRowForLocation(e.getX(), e.getY());
+                    selectionTree.setSelectionRow(row);
                     onTreeRightClick(e);
                 }
             }
         });
-        treeModel.setTree(subDivisionTree);
-        divisionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
+        treeModel.setTree(selectionTree);
+        treeModel.expandNode(iRoot);
+        treeModel.expandNode(sRoot);
 
-        // Sets
-        setListModel = new DefaultListModel<>();
-        setList = new JList<>(setListModel);
-        setList.addListSelectionListener(this);
-        setTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
-
+        selectionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
         // Items
         tableModel = new IItemTableModel();
@@ -362,25 +326,16 @@ abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
-
         JPanel divisionPanel = createItemDivisionPanel();
-        JPanel setPanel = createSetPanel();
 
         // Panel them together
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-        JSplitPane westSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, divisionPanel, setPanel);
-        westSplitPane.setResizeWeight(1);
-
-        westSplitPane.setOneTouchExpandable(true);
-
-
         // Add
-        JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westSplitPane, centerPanel);
+        JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, divisionPanel, centerPanel);
         centerSplitPane.setOneTouchExpandable(true);
         add(centerSplitPane, BorderLayout.CENTER);
     }
@@ -396,9 +351,6 @@ abstract class MainPanelLayout extends JPanel implements
                     tableInitialize((DbObject) object[0]);
                 }
             }
-
-            // Sets
-           initializeSets();
 
             // Enabled components
             updateEnabledComponents();

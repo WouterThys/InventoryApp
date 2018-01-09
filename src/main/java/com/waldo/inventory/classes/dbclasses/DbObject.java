@@ -86,6 +86,7 @@ public abstract class DbObject {
     }
 
     public static int getType(DbObject dbObject) {
+        if (dbObject instanceof Set) return TYPE_SET;
         if (dbObject instanceof Item) return TYPE_ITEM;
         if (dbObject instanceof Category) return TYPE_CATEGORY;
         if (dbObject instanceof Product) return TYPE_PRODUCT;
@@ -111,7 +112,6 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectPcb) return  TYPE_PROJECT_PCB;
         if (dbObject instanceof ProjectOther) return TYPE_PROJECT_OTHER;
         if (dbObject instanceof ParserItemLink) return TYPE_PARSER_ITEM_LINK;
-        if (dbObject instanceof Set) return TYPE_SET;
         if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
 
         return TYPE_UNKNOWN;

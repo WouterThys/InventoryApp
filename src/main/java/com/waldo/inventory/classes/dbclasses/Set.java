@@ -124,7 +124,7 @@ public class Set extends Item {
         if (setItem != null && !getSetItems().contains(setItem)) {
             SetItemLink link = new SetItemLink(this, setItem);
             link.save();
-            updateSetItems();
+            setItems.add(setItem);
         }
     }
 
@@ -133,7 +133,7 @@ public class Set extends Item {
             SetItemLink link = SearchManager.sm().findSetItemLinkBySetAndItem(getId(), setItem.getId());
             if (link != null) {
                 link.delete();
-                updateSetItems();
+                setItems.remove(setItem);
             }
         }
     }

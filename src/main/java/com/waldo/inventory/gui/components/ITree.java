@@ -26,6 +26,8 @@ public class ITree extends JTree {
             private final ImageIcon categoryIcon =imageResource.readImage("Items.Tree.Category");
             private final ImageIcon productIcon = imageResource.readImage("Items.Tree.Product");
             private final ImageIcon typeIcon = imageResource.readImage("Items.Tree.Type");
+            private final ImageIcon itemIcon = imageResource.readImage("Items.Tree.Item");
+            private final ImageIcon setIcon = imageResource.readImage("Items.Tree.Set");
 
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -43,6 +45,12 @@ public class ITree extends JTree {
                                 break;
                             case DbObject.TYPE_TYPE:
                                 setIcon(typeIcon);
+                                break;
+                            case DbObject.TYPE_SET:
+                                setIcon(setIcon);
+                                break;
+                            case DbObject.TYPE_ITEM:
+                                setIcon(itemIcon);
                                 break;
                             default:
                                 break;

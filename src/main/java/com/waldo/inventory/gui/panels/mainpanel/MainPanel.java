@@ -121,7 +121,7 @@ public class MainPanel extends MainPanelLayout {
         setCategoriesChangedListener();
         setProductsChangedListener();
         setTypesChangedListener();
-        setSetChangedListener();
+        setSetsChangedListener();
     }
 
     private void setItemsChangedListener() {
@@ -129,10 +129,10 @@ public class MainPanel extends MainPanelLayout {
             @Override
             public void onInserted(Item item) {
                 selectedItem = item;
-                // Select the division in the tree
+
                 treeSelectDivisionForItem(item);
-                // Set the table
                 tableInitialize(selectedDivision);
+
                 // Add to table
                 tableAddItem(item);
                 // Select in table
@@ -158,6 +158,7 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Item item) {
                 tableRemoveItem(item);
                 selectedItem = null;
+                updateEnabledComponents();
             }
 
             @Override
@@ -237,32 +238,25 @@ public class MainPanel extends MainPanelLayout {
         };
     }
 
-    private void setSetChangedListener() {
+    private void setSetsChangedListener() {
         setsChanged = new CacheChangedListener<Set>() {
             @Override
             public void onInserted(Set set) {
-                selectedSet = set;
-                listAddItem(set);
-                updateEnabledComponents();
+                treeModel.addObject(set, false);
             }
 
             @Override
             public void onUpdated(Set set) {
-                selectedSet = set;
-                listUpdateItems();
-                updateEnabledComponents();
+                treeModel.updateObject(set);
             }
 
             @Override
             public void onDeleted(Set set) {
-                selectedSet = null;
-                listDeleteItem(set);
-                updateEnabledComponents();
+                treeModel.removeObject(set);
             }
 
             @Override
             public void onCacheCleared() {
-
             }
         };
     }
@@ -273,15 +267,12 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!application.isUpdating()) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
 
             if (node == null) {
                 selectedDivision = null;
                 return; // Nothing selected
             }
-
-            selectedSet = null;
-            setList.clearSelection();
 
             selectedItem = null;
             application.clearSearch();
@@ -292,10 +283,10 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     void onTreeRightClick(MouseEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) subDivisionTree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
         if (node != null) {
             selectedDivision = (DbObject) node.getUserObject();
-            JPopupMenu popupMenu = new DivisionPopup(selectedDivision, node.isRoot()) {
+            JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
                 @Override
                 public void onAddDivision() {
                     MainPanel.this.onAddDivision();
@@ -310,6 +301,11 @@ public class MainPanel extends MainPanelLayout {
                 public void onDeleteDivision() {
                     MainPanel.this.onDeleteDivision();
                 }
+
+                @Override
+                public void onSetWizardAction() {
+                    MainPanel.this.onSetWizardAction();
+                }
             };
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
@@ -319,48 +315,57 @@ public class MainPanel extends MainPanelLayout {
     // Divisions
     //
     private void onAddDivision() {
-        DbObject newDivision = null;
-        SubDivisionsDialog divisionsDialog = null;
+        DbObject newDivision;
+        IDialog dialog = null;
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
             switch (DbObject.getType(selectedDivision)) {
                 case DbObject.TYPE_CATEGORY:
                     newDivision = new Product(selectedDivision.getId());
-                    divisionsDialog = new SubDivisionsDialog(application, "Add product", (Product) newDivision);
+                    dialog = new SubDivisionsDialog(application, "Add product", (Product) newDivision);
                     break;
                 case DbObject.TYPE_PRODUCT:
                     newDivision = new Type(selectedDivision.getId());
-                    divisionsDialog = new SubDivisionsDialog(application, "Add type", (Type) newDivision);
+                    dialog = new SubDivisionsDialog(application, "Add type", (Type) newDivision);
+                    break;
+                case DbObject.TYPE_SET:
+                    newDivision = new Set();
+                    dialog = new EditItemDialog<>(application, "Add set", (Set) newDivision);
                     break;
             }
         } else {
-            newDivision = new Category();
-            divisionsDialog = new SubDivisionsDialog(application, "Add category", (Category) newDivision);
-        }
-        if (divisionsDialog != null) {
-            if (divisionsDialog.showDialog() == IDialog.OK) {
-                newDivision.save();
+            if (setsSelected()) {
+                newDivision = new Set();
+                dialog = new EditItemDialog<>(application, "Add set", (Set) newDivision);
+            } else {
+                newDivision = new Category();
+                dialog = new SubDivisionsDialog(application, "Add category", (Category) newDivision);
             }
+        }
+        if (dialog != null) {
+            dialog.showDialog();
         }
     }
 
     private void onEditDivision() {
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            SubDivisionsDialog divisionsDialog = null;
+            IDialog dialog = null;
+            String title = "Edit " + selectedDivision.getName();
             switch (DbObject.getType(selectedDivision)) {
                 case DbObject.TYPE_CATEGORY:
-                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Category) selectedDivision);
+                    dialog = new SubDivisionsDialog(application, title, (Category) selectedDivision);
                     break;
                 case DbObject.TYPE_PRODUCT:
-                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Product) selectedDivision);
+                    dialog = new SubDivisionsDialog(application, title, (Product) selectedDivision);
                     break;
                 case DbObject.TYPE_TYPE:
-                    divisionsDialog = new SubDivisionsDialog(application, "Edit " + selectedDivision.getName(), (Type) selectedDivision);
+                    dialog = new SubDivisionsDialog(application, title, (Type) selectedDivision);
+                    break;
+                case DbObject.TYPE_SET:
+                    dialog = new EditItemDialog<>(application, title, (Set) selectedDivision);
                     break;
             }
-            if (divisionsDialog != null) {
-                if (divisionsDialog.showDialog() == IDialog.OK) {
-                    selectedDivision.save();
-                }
+            if (dialog != null) {
+                dialog.showDialog();
             }
         }
     }
@@ -371,6 +376,12 @@ public class MainPanel extends MainPanelLayout {
             if (res == JOptionPane.YES_OPTION) {
                 selectedDivision.delete();
             }
+        }
+    }
+
+    private void onSetWizardAction() {
+        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+            // Add set items wizard dialog
         }
     }
 
@@ -385,22 +396,25 @@ public class MainPanel extends MainPanelLayout {
 
     private void onAddItem() {
         EditItemDialog dialog = new EditItemDialog<>(application, "Add item", new Item());
-        if (selectedSet != null) {
-            dialog.setValuesForSet(selectedSet);
+        if (setsSelected()) {
+            dialog.setValuesForSet((Set) selectedDivision);
         }
         dialog.showDialog();
     }
 
     private void onDeleteItem() {
         if (selectedItem != null) {
-            if (selectedSet != null) {
+            if (setsSelected()) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
                         this,
-                        "Delete " + selectedItem + " from " + selectedSet + "?",
+                        "Delete " + selectedItem + " from " + selectedDivision + "?",
                         "Delete",
                         JOptionPane.YES_NO_OPTION)) {
 
-                    selectedSet.removeSetItem(selectedItem);
+                    tableRemoveItem(selectedItem);
+                    ((Set)selectedDivision).removeSetItem(selectedItem);
+                    selectedItem = null;
+                    updateEnabledComponents();
                 }
             } else {
                 if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
@@ -414,29 +428,6 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
-    // Sets
-    private void onAddSet() {
-        EditItemDialog dialog = new EditItemDialog<>(application, "Add set", new Set());
-        dialog.showDialog();
-    }
-
-    private void onEditSet() {
-        if (selectedSet != null) {
-            EditItemDialog dialog = new EditItemDialog<>(application, "Edit set", selectedSet);
-            dialog.showDialog();
-            setList.setSelectedValue(selectedSet, true);
-        }
-    }
-
-    private void onDeleteSet() {
-        if (selectedSet != null && selectedSet.canBeSaved()) {
-            int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + selectedSet);
-            if (res == JOptionPane.YES_OPTION) {
-                selectedSet.delete();
-            }
-        }
-    }
-
     //
     // Table or list selection changed
     //
@@ -445,21 +436,8 @@ public class MainPanel extends MainPanelLayout {
         if (!e.getValueIsAdjusting() && !application.isUpdating()) {
             application.beginWait();
             try {
-                if (e.getSource().equals(setList)) {
-                    selectedSet = setList.getSelectedValue();
-                    if (selectedSet != null) {
-                        selectedDivision = null;
-                        treeModel.setSelectedObject(null);
-                        tableModel.setItemList(selectedSet.getSetItems());
-
-                        selectedItem = null;
-                        detailPanel.updateComponents((Item)null);
-                    }
-                    updateEnabledComponents();
-                } else {
-                    selectedItem = itemTable.getSelectedItem();
-                    updateComponents(selectedDivision);
-                }
+                selectedItem = itemTable.getSelectedItem();
+                updateComponents(selectedDivision);
             } finally {
 
                 application.endWait();
@@ -472,10 +450,8 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        if (source.equals(divisionTb)) {
+        if (source.equals(selectionTb)) {
             treeRecreateNodes();
-        } else if (source.equals(setTb)) {
-            initializeSets();
         } else {
             application.beginWait();
             try {
@@ -496,13 +472,11 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (source != null && source.equals(divisionTb)) {
+        if (source != null && source.equals(selectionTb)) {
             if (selectedDivision == null) {
-                selectedDivision = virtualRoot;
+                selectedDivision = treeGetItemRoot();
             }
             onAddDivision();
-        } else if (source != null && source.equals(setTb)) {
-            onAddSet();
         } else {
             onAddItem();
         }
@@ -510,10 +484,8 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (source != null && source.equals(divisionTb)) {
+        if (source != null && source.equals(selectionTb)) {
             onDeleteDivision();
-        } else if (source != null && source.equals(setTb)) {
-            onDeleteSet();
         } else {
             onDeleteItem();
         }
@@ -521,10 +493,8 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (source != null && source.equals(divisionTb)) {
+        if (source != null && source.equals(selectionTb)) {
             onEditDivision();
-        } else if (source != null && source.equals(setTb)) {
-            onEditSet();
         } else {
             onEditItem();
         }

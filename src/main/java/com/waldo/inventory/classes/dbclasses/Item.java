@@ -56,6 +56,12 @@ public class Item extends DbObject {
         matchCount = 12;
     }
 
+    public Item(String name) {
+        super(TABLE_NAME);
+        matchCount = 12;
+        setName(name);
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
