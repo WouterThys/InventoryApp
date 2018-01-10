@@ -105,6 +105,19 @@ public class ComparatorUtils {
         }
     }
 
+    public static class ItemValueComparator implements Comparator<Item> {
+        @Override
+        public String toString() {
+            return "Value";
+        }
+
+        @Override
+        public int compare(Item o1, Item o2) {
+            ValueComparator lc = new ValueComparator();
+            return lc.compare(o1.getValue(), o2.getValue());
+        }
+    }
+
     public static class ItemMatchComparator implements Comparator<Item> {
         @Override
         public int compare(Item o1, Item o2) {

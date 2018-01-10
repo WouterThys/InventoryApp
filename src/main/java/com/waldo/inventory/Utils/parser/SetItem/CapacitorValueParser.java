@@ -20,10 +20,8 @@ public class CapacitorValueParser extends SetItemValueParser {
     public List<Value> parse(String series) throws ParseException, IOException {
         valueList = new ArrayList<>();
 
-            List<String> stringValues = getParseValues(series);
-
-            valueList = createValues(stringValues);
-
+        List<String> stringValues = getParseValues(series);
+        valueList = createValues(stringValues);
 
         return valueList;
     }
