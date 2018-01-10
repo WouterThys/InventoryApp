@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -406,7 +407,8 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void onDeleteItem() {
-        if (selectedItem != null) {
+        List<Item> selectedItems = itemTable.getAllSelectedItems();
+        if (selectedItems != null) {
             if (setsSelected()) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
                         this,
@@ -420,12 +422,24 @@ public class MainPanel extends MainPanelLayout {
                     updateEnabledComponents();
                 }
             } else {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                        this,
-                        "Delete " + selectedItem + "?",
-                        "Delete",
-                        JOptionPane.YES_NO_OPTION)) {
-                    selectedItem.delete();
+                if (selectedItems.size() == 1) {
+                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                            this,
+                            "Delete " + selectedItems.get(0) + "?",
+                            "Delete",
+                            JOptionPane.YES_NO_OPTION)) {
+                        selectedItems.get(0).delete();
+                    }
+                } else if (selectedItems.size() > 1) {
+                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                            this,
+                            "Delete all " + selectedItems.size() + " selected items?",
+                            "Delete",
+                            JOptionPane.YES_NO_OPTION)) {
+                        for (Item item : selectedItems) {
+                            item.delete();
+                        }
+                    }
                 }
             }
         }

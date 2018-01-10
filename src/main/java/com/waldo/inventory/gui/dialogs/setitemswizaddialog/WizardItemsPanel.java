@@ -292,7 +292,6 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
                 try {
                     parser.parse(series);
                     valueList = parser.crop(skip);
-                    valueList.sort(new ComparatorUtils.ValueComparator());
                 } catch (ParseException | IOException e1) {
                     JOptionPane.showMessageDialog(
                             WizardItemsPanel.this,

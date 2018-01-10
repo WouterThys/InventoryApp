@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Location;
@@ -26,13 +27,15 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
     private JSpinner numberPerLocationSp;
 
     private final Application application;
+    private final IDialog parent;
     private LocationType locationType;
     private Location startLocation;
 
-    WizardLocationsPanel(Application application, Location location) {
+    WizardLocationsPanel(Application application, IDialog parent, Location location) {
         super();
 
         this.application = application;
+        this.parent = parent;
 
         if (location != null) {
             this.locationType = location.getLocationType();
@@ -80,6 +83,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
 
         Location newLocation = startLocation;
         int count = 0;
+        int total = 0;
         for (Value value : settings.getValues()) {
             //if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
                 // Set location
@@ -88,6 +92,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
 
                 if (count >= numberPerLocation) {
                     count = 0;
+                    total++;
                     // Find new location
                     newLocation = locationType.getNeighbourOfLocation(newLocation, direction, leftRight, upDown);
                     if (newLocation == null) {
@@ -101,6 +106,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
                     }
                 }
             //}
+            settings.setNumberOfLocations(total);
         }
     }
 
@@ -154,6 +160,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         if (locationType != null && !locationType.isUnknown()) {
             startLocationPnl.setLocations(locationType.getLocations());
             startLocationPnl.setHighlighted(startLocation, ILocationMapPanel.GREEN);
+            parent.pack();
         }
     }
 

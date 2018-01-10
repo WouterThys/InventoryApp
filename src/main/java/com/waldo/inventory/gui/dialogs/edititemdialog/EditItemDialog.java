@@ -20,6 +20,7 @@ import static com.waldo.inventory.managers.SearchManager.sm;
 public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     private boolean canClose = true;
+    private boolean allowSave = true;
 
     public EditItemDialog(Application application, String title, @NotNull T item)  {
         super(application, title);
@@ -56,7 +57,9 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
     }
 
     private void save() {
-        selectedItem.save();
+        if (allowSave) {
+            selectedItem.save();
+        }
         originalItem = selectedItem.createCopy();
     }
 
@@ -115,6 +118,10 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     public Item getItem() {
         return selectedItem;
+    }
+
+    public void setAllowSave(boolean allowSave) {
+        this.allowSave = allowSave;
     }
 
     private void initIconDoubleClicked() {

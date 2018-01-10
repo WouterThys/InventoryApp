@@ -1,20 +1,22 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.dbclasses.Set;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class WizardSettings {
 
     private final Set selectedSet;
 
-    private Map<Value, Location> valueLocationMap = new HashMap<>();
+    private Map<Value, Location> valueLocationMap = new TreeMap<>(new ComparatorUtils.ValueComparator());
+    private int numberOfLocations;
 
     private Manufacturer manufacturer;
 
@@ -46,16 +48,18 @@ public class WizardSettings {
         }
     }
 
+    public int getNumberOfItems() {
+        return valueLocationMap.size();
+    }
+
+
+
     public Location getLocation(Value value) {
         return valueLocationMap.get(value);
     }
 
     public Set getSelectedSet() {
         return selectedSet;
-    }
-
-    public Map<Value, Location> getValueLocationMap() {
-        return valueLocationMap;
     }
 
     public Manufacturer getManufacturer() {
@@ -107,5 +111,13 @@ public class WizardSettings {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public int getNumberOfLocations() {
+        return numberOfLocations;
+    }
+
+    public void setNumberOfLocations(int numberOfLocations) {
+        this.numberOfLocations = numberOfLocations;
     }
 }

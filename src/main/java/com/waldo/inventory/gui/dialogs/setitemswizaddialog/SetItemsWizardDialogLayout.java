@@ -114,8 +114,8 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
 
 
         wizardItemsPanel = new WizardItemsPanel(application, this, selectedSet);
-        wizardLocationsPanel = new WizardLocationsPanel(application, selectedSet.getLocation());
-        wizardParsePanel = new WizardParsePanel(application);
+        wizardLocationsPanel = new WizardLocationsPanel(application, this, selectedSet.getLocation());
+        wizardParsePanel = new WizardParsePanel(application, this);
     }
 
     @Override
@@ -128,6 +128,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
 
         cardLayout.show(cardsPnl, PANEL_ITEMS);
         getContentPanel().add(cardsPnl, BorderLayout.CENTER);
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         pack();
     }
