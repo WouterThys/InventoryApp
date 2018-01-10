@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.components.actions.EditAction;
 import com.waldo.inventory.gui.components.actions.WizardAction;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public abstract class DivisionPopup extends JPopupMenu {
 
@@ -54,14 +55,14 @@ public abstract class DivisionPopup extends JPopupMenu {
 
         AddAction addDivisionAction = new AddAction() {
             @Override
-            public void onAdd() {
+            public void onAdd(ActionEvent e) {
                 onAddDivision();
             }
         };
 
         EditAction editDivisionAction = new EditAction() {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 onEditDivision();
             }
         };

@@ -21,10 +21,10 @@ public abstract class AddAction extends AbstractAction {
         putValue(AbstractAction.NAME, name);
     }
 
-    public abstract void onAdd();
+    public abstract void onAdd(ActionEvent e);
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onAdd();
+        onAdd(e);
     }
 }

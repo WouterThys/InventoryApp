@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
+import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
@@ -56,26 +56,26 @@ public abstract class ValueParserDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateTypeCb() {
         typeCbModel.removeAllElements();
-        typeCbModel.addElement(SetItemParser.R);
-        typeCbModel.addElement(SetItemParser.C);
-        typeCbModel.addElement(SetItemParser.L);
+        typeCbModel.addElement(SetItemValueParser.R);
+        typeCbModel.addElement(SetItemValueParser.C);
+        typeCbModel.addElement(SetItemValueParser.L);
         typeCb.setSelectedIndex(0);
     }
 
     void updateSeriesTb() {
         seriesCbModel.removeAllElements();
         switch ((String) typeCbModel.getSelectedItem()) {
-            case SetItemParser.R:
-                for (String e : SetItemParser.R_SERIES) {
+            case SetItemValueParser.R:
+                for (String e : SetItemValueParser.R_SERIES) {
                     seriesCbModel.addElement(e);
                 }
                 break;
-            case SetItemParser.C:
-                for (String e : SetItemParser.R_SERIES) {
+            case SetItemValueParser.C:
+                for (String e : SetItemValueParser.R_SERIES) {
                     seriesCbModel.addElement(e);
                 }
                 break;
-            case SetItemParser.L:
+            case SetItemValueParser.L:
                 seriesCbModel.addElement("TODO L");
                 break;
         }
@@ -85,17 +85,17 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     void updateMinUnitCb() {
         minUnitCbModel.removeAllElements();
         switch ((String) typeCbModel.getSelectedItem()) {
-            case SetItemParser.R:
+            case SetItemValueParser.R:
                 for (int i = 3; i < 10; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
-            case SetItemParser.C:
+            case SetItemValueParser.C:
                 for (int i = 0; i < 6; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
-            case SetItemParser.L:
+            case SetItemValueParser.L:
                 for (int i = 0; i < 6; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
@@ -107,17 +107,17 @@ public abstract class ValueParserDialogLayout extends IDialog implements
     void updateMaxUnitCb() {
         maxUnitCbModel.removeAllElements();
         switch ((String) typeCbModel.getSelectedItem()) {
-            case SetItemParser.R:
+            case SetItemValueParser.R:
                 for (int i = 3; i < 10; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
-            case SetItemParser.C:
+            case SetItemValueParser.C:
                 for (int i = 0; i < 6; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
                 break;
-            case SetItemParser.L:
+            case SetItemValueParser.L:
                 for (int i = 0; i < 6; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }

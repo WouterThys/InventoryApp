@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -275,7 +276,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         matchedItemLbl = new ITableIcon(matchedItemTf.getBackground());
         editAction = new EditAction() {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 onSelectNewItem();
             }
         };

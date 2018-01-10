@@ -285,6 +285,10 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
         }
     }
 
+    public boolean isUpdating() {
+        return application != null && application.isUpdating();
+    }
+
     @Override
     public void windowOpened(WindowEvent e) {
 

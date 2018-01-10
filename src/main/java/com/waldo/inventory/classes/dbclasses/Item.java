@@ -52,14 +52,37 @@ public class Item extends DbObject {
     protected String remarksFile;
 
     public Item() {
-        super(TABLE_NAME);
-        matchCount = 12;
+        this("");
     }
 
     public Item(String name) {
         super(TABLE_NAME);
         matchCount = 12;
         setName(name);
+    }
+
+    public Item(String name, Value value, Manufacturer manufacturer, PackageType packageType, int pins, Location location, Set set) {
+        this(name);
+        this.value = value;
+        this.manufacturer = manufacturer;
+        this.location = location;
+        this.packageType = packageType;
+        this.pins = pins;
+
+        if (manufacturer != null) manufacturerId = manufacturer.getId();
+        if (location != null) locationId = location.getId();
+        if (packageType != null) packageTypeId = packageType.getId();
+
+        if (set != null) {
+            this.rating = set.getRating();
+            this.category = set.getCategory();
+            this.product = set.getProduct();
+            this.type = set.getType();
+
+            if (category != null) categoryId = category.getId();
+            if (product != null) productId = product.getId();
+            if (type != null) typeId = type.getId();
+        }
     }
 
     @Override

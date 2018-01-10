@@ -1,15 +1,12 @@
 package com.waldo.inventory.gui.dialogs.setitemdialog.extra.valueparserdialog;
 
-import com.waldo.inventory.Utils.parser.SetItem.SetItemParser;
+import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IStatusStrip;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 public class ValueParserDialog extends ValueParserDialogLayout {
@@ -92,26 +89,26 @@ public class ValueParserDialog extends ValueParserDialogLayout {
             double max = Double.valueOf(maxTf.getText());
             int skip = Integer.valueOf(valueSkipSp.getValue().toString());
 
-            SetItemParser parser = SetItemParser.getParser(type);
+            SetItemValueParser parser = SetItemValueParser.getParser(type);
             if (parser != null) {
                 parser.setMinValue(min, minUnit);
                 parser.setMaxValue(max, maxUnit);
 
-                try {
-                    parser.parse(series);
-                    setItemList = parser.crop(skip);
-
-                    if (setItemList != null) {
-                        resultTa.clearText();
-
-                        for (SetItem si : setItemList) {
-                            resultTa.append(si.getValue() + ",  ");
-                        }
-                    }
-
-                } catch (ParseException | IOException e1) {
-                    IStatusStrip.Status().setError("Error parsing file", e1);
-                }
+//                try {
+//                    parser.parse(series);
+//                    setItemList = parser.crop(skip);
+//
+//                    if (setItemList != null) {
+//                        resultTa.clearText();
+//
+//                        for (SetItem si : setItemList) {
+//                            resultTa.append(si.getValue() + ",  ");
+//                        }
+//                    }
+//
+//                } catch (ParseException | IOException e1) {
+//                    IStatusStrip.Status().setError("Error parsing file", e1);
+//                }
             }
         }
     }

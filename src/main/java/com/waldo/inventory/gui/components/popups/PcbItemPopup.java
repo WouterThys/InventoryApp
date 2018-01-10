@@ -6,6 +6,8 @@ import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
 
+import java.awt.event.ActionEvent;
+
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class PcbItemPopup extends JPopupMenu {
@@ -28,7 +30,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
         // Actions
         EditAction editAction = new EditAction("Edit item") {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 if (itemProjectLink.hasMatchedItem()) {
                     onEditItem(itemProjectLink.getPcbItemItemLink());
                 }
@@ -37,7 +39,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
 
         EditAction editPcbItemAction = new EditAction("Edit pcb item") {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 onPcbItemEdit(itemProjectLink);
             }
         };

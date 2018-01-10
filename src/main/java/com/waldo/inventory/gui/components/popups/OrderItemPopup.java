@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public abstract class OrderItemPopup extends JPopupMenu {
 
@@ -42,7 +43,7 @@ public abstract class OrderItemPopup extends JPopupMenu {
         // Item
         EditAction editAction = new EditAction("Edit order item") {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 OrderItemPopup.this.onEditItem(orderItem);
             }
         };

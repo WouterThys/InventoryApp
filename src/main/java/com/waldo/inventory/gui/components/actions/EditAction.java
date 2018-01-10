@@ -21,11 +21,11 @@ public abstract class EditAction extends AbstractAction {
         putValue(AbstractAction.NAME, name);
     }
 
-    public abstract void onEdit();
+    public abstract void onEdit(ActionEvent e);
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onEdit();
+        onEdit(e);
     }
 }
 

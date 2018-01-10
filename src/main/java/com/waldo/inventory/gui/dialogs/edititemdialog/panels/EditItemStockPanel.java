@@ -17,6 +17,7 @@ import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
 public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
@@ -218,7 +219,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
 
         editAction = new EditAction() {
             @Override
-            public void onEdit() {
+            public void onEdit(ActionEvent e) {
                 EditItemLocation dialog;
                 dialog = new EditItemLocation(application,
                         "Select",

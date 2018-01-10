@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
@@ -104,7 +105,7 @@ public class MainPanel extends MainPanelLayout {
                     if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
                             && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
 
-                        LocationPopup popup = new LocationPopup(application, selectedItem);
+                        LocationPopup popup = new LocationPopup(application, selectedItem.getLocation());
                         popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
@@ -380,8 +381,10 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void onSetWizardAction() {
-        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+        if (setsSelected() && selectedDivision.canBeSaved()) {
             // Add set items wizard dialog
+            SetItemsWizardDialog dialog = new SetItemsWizardDialog(application, "Set item magic", (Set) selectedDivision);
+            dialog.showDialog();
         }
     }
 
