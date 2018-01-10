@@ -51,6 +51,7 @@ class WizardParsePanel extends JPanel implements GuiInterface {
                         settings.getManufacturer(),
                         settings.getPackageType(),
                         settings.getPins(),
+                        settings.getAmount(),
                         settings.getLocation(value),
                         settings.getSelectedSet());
 

@@ -19,15 +19,12 @@ public class CapacitorValueParser extends SetItemValueParser {
     @Override
     public List<Value> parse(String series) throws ParseException, IOException {
         valueList = new ArrayList<>();
-        if (parserFile.exists()) {
 
             List<String> stringValues = getParseValues(series);
 
             valueList = createValues(stringValues);
 
-        } else {
-            valueList = null;
-        }
+
         return valueList;
     }
 

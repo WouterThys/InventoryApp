@@ -61,13 +61,17 @@ public class Item extends DbObject {
         setName(name);
     }
 
-    public Item(String name, Value value, Manufacturer manufacturer, PackageType packageType, int pins, Location location, Set set) {
+    public Item(String name, Value value, Manufacturer manufacturer, PackageType packageType, int pins, int amount, Location location, Set set) {
         this(name);
+        if (value == null) {
+            value = new Value();
+        }
         this.value = value;
         this.manufacturer = manufacturer;
         this.location = location;
         this.packageType = packageType;
         this.pins = pins;
+        this.amount = amount;
 
         if (manufacturer != null) manufacturerId = manufacturer.getId();
         if (location != null) locationId = location.getId();
