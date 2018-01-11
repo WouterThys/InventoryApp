@@ -21,6 +21,7 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
+    protected String alias;
     protected Value value;
     protected String description = "";
     protected double price = 0;
@@ -57,11 +58,11 @@ public class Item extends DbObject {
 
     public Item(String name) {
         super(TABLE_NAME);
-        matchCount = 12;
+        matchCount = 13;
         setName(name);
     }
 
-    public Item(String name, Value value, Manufacturer manufacturer, PackageType packageType, int pins, int amount, Location location, Set set) {
+    public Item(String name, String alias, Value value, Manufacturer manufacturer, PackageType packageType, int pins, int amount, Location location, Set set) {
         this(name);
         if (value == null) {
             value = new Value();
@@ -72,6 +73,7 @@ public class Item extends DbObject {
         this.packageType = packageType;
         this.pins = pins;
         this.amount = amount;
+        this.description = alias + " " + value.toString();
 
         if (manufacturer != null) manufacturerId = manufacturer.getId();
         if (location != null) locationId = location.getId();
@@ -93,7 +95,7 @@ public class Item extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
         statement.setString(ndx++, name);
-
+        statement.setString(ndx++, alias);
         statement.setString(ndx++, description);
         statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
@@ -157,11 +159,12 @@ public class Item extends DbObject {
     @Override
     protected int findMatch(String searchTerm) {
         if (this.isUnknown()) return 0;
-        getObjectMatch().setMatchCount(12);
+        getObjectMatch().setMatchCount(matchCount);
         int match = super.findMatch(searchTerm);
 
 
         // Local objects
+        if (getAlias().toUpperCase().contains(searchTerm)) match ++;
         if (getDescription().toUpperCase().contains(searchTerm)) match++;
         if (getLocalDataSheet().toUpperCase().contains(searchTerm)) match++;
         if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) match++;
@@ -248,6 +251,7 @@ public class Item extends DbObject {
         Item item = (Item) copyInto;
         copyBaseFields(item);
 
+        item.setAlias(getAlias());
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
         item.setPrice(getPrice());
@@ -283,6 +287,7 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
+                if (!(ref.getAlias().equals(getAlias()))) {System.out.println("Alias differs"); return false; }
                 if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
@@ -320,20 +325,16 @@ public class Item extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DatabaseAccess.OBJECT_INSERT: {
-
                     List<Item> list = cache().getItems();
                     if (!list.contains(this)) {
                         list.add(this);
                     }
-
-
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
-
                     List<Item> list = cache().getItems();
                     if (list.contains(this)) {
                         list.remove(this);
@@ -358,6 +359,17 @@ public class Item extends DbObject {
         if (currentState != getOrderState()) {
             save();
         }
+    }
+
+    public String getAlias() {
+        if (alias == null) {
+            alias = "";
+        }
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getDescription() {

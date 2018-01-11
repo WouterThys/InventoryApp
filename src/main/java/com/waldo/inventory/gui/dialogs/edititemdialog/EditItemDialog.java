@@ -163,9 +163,9 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
                 e -> {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
                         Category selectedCategory = (Category) e.getItem();
-                        componentPanel.getProductComboBox().setEnabled(!selectedCategory.isUnknown());
+                        componentPanel.getProductCb().setEnabled(!selectedCategory.isUnknown());
                         componentPanel.updateProductCbValues(selectedCategory.getId());
-                        componentPanel.getTypeComboBox().setEnabled(false);
+                        componentPanel.getTypeCb().setEnabled(false);
                     }
                 });
     }
@@ -173,7 +173,7 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
         componentPanel.setProductChangedAction(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Product selectedProduct = (Product) e.getItem();
-                componentPanel.getTypeComboBox().setEnabled(!selectedProduct.isUnknown());
+                componentPanel.getTypeCb().setEnabled(!selectedProduct.isUnknown());
                 componentPanel.updateTypeCbValues(selectedProduct.getId());
             }
         });

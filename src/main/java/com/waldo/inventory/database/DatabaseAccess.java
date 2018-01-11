@@ -552,6 +552,7 @@ public class DatabaseAccess {
                     if (i.getId() > DbObject.UNKNOWN_ID) {
                         i.setName(rs.getString("name"));
                         i.setIconPath(rs.getString("iconPath"));
+                        i.setAlias(rs.getString("alias"));
                         i.setDescription(rs.getString("description"));
                         i.setPrice(rs.getDouble("price"));
                         i.setCategoryId(rs.getInt("categoryId"));
@@ -1561,6 +1562,7 @@ public class DatabaseAccess {
                     s.setId(rs.getLong("id"));
                     s.setName(rs.getString("name"));
                     s.setIconPath(rs.getString("iconPath"));
+                    s.setAlias(rs.getString("alias"));
                     s.setDescription(rs.getString("description"));
                     s.setPrice(rs.getDouble("price"));
                     s.setCategoryId(rs.getInt("categoryId"));

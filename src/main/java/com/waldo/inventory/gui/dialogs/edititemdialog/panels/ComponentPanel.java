@@ -50,16 +50,16 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private JTabbedPane tabbedPane;
 
     // Basic info
-    private ITextField idTextField;
     private GuiUtils.INameValuePanel nameValuePnl;
-    private ITextArea descriptionTextArea;
-    private ITextField priceTextField;
-    private IComboBox<Category> categoryComboBox;
-    private IComboBox<Product> productComboBox;
-    private IComboBox<Type> typeComboBox;
-    private ITextField localDataSheetTextField;
-    private JButton localDataSheetButton;
-    private GuiUtils.IBrowseWebPanel onlineDataSheetTextField;
+    private ITextField aliasTf;
+    private ITextArea descriptionTa;
+    private ITextField priceTf;
+    private IComboBox<Category> categoryCb;
+    private IComboBox<Product> productCb;
+    private IComboBox<Type> typeCb;
+    private ITextField localDataSheetTf;
+    private JButton localDataSheetBtn;
+    private GuiUtils.IBrowseWebPanel onlineDataSheetTf;
 
     // Details
     private GuiUtils.IPackagePanel packagePnl;
@@ -81,17 +81,17 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void setValuesForSet(Set set) {
         selectedItem.setCategoryId(set.getCategoryId());
-        categoryComboBox.setSelectedItem(set.getCategory());
+        categoryCb.setSelectedItem(set.getCategory());
         selectedItem.setProductId(set.getProductId());
-        productComboBox.setSelectedItem(set.getProduct());
+        productCb.setSelectedItem(set.getProduct());
         selectedItem.setTypeId(set.getTypeId());
-        typeComboBox.setSelectedItem(set.getType());
+        typeCb.setSelectedItem(set.getType());
 
         // DATA SHEETS
         selectedItem.setLocalDataSheet(set.getLocalDataSheet());
-        localDataSheetTextField.setText(set.getLocalDataSheet());
+        localDataSheetTf.setText(set.getLocalDataSheet());
         selectedItem.setOnlineDataSheet(set.getOnlineDataSheet());
-        onlineDataSheetTextField.setText(set.getOnlineDataSheet());
+        onlineDataSheetTf.setText(set.getOnlineDataSheet());
 
         // PACKAGE
         selectedItem.setPackageTypeId(set.getPackageTypeId());
@@ -143,18 +143,18 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     }
 
     private void updateCategoryCbValues() {
-        categoryComboBox.updateList();
-        categoryComboBox.setSelectedItem(selectedItem.getCategory());
+        categoryCb.updateList();
+        categoryCb.setSelectedItem(selectedItem.getCategory());
     }
 
     public void updateProductCbValues(long categoryId) {
-        productComboBox.updateList(sm().findProductListForCategory(categoryId));
-        productComboBox.setSelectedItem(selectedItem.getProduct());
+        productCb.updateList(sm().findProductListForCategory(categoryId));
+        productCb.setSelectedItem(selectedItem.getProduct());
     }
 
     public void updateTypeCbValues(long productId) {
-        typeComboBox.updateList(sm().findTypeListForProduct(productId));
-        typeComboBox.setSelectedItem(selectedItem.getType());
+        typeCb.updateList(sm().findTypeListForProduct(productId));
+        typeCb.setSelectedItem(selectedItem.getType());
     }
 
     public boolean updateRemarks() {
@@ -198,9 +198,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void createCategoryCb() {
-        categoryComboBox = new IComboBox<>(cache().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
-        categoryComboBox.addEditedListener(editedListener, "categoryId");
-        categoryComboBox.setSelectedItem(selectedItem.getCategory());
+        categoryCb = new IComboBox<>(cache().getCategories(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        categoryCb.addEditedListener(editedListener, "categoryId");
+        categoryCb.setSelectedItem(selectedItem.getCategory());
     }
 
     private void createProductCb() {
@@ -211,10 +211,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
             productList = cache().getProducts();
         }
 
-        productComboBox = new IComboBox<>(productList, new ComparatorUtils.DbObjectNameComparator<>(), true);
-        productComboBox.addEditedListener(editedListener, "productId");
-        productComboBox.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID));
-        productComboBox.setSelectedItem(selectedItem.getProduct());
+        productCb = new IComboBox<>(productList, new ComparatorUtils.DbObjectNameComparator<>(), true);
+        productCb.addEditedListener(editedListener, "productId");
+        productCb.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID));
+        productCb.setSelectedItem(selectedItem.getProduct());
     }
 
     private void createTypeCb() {
@@ -225,10 +225,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
             typeList = cache().getTypes();
         }
 
-        typeComboBox = new IComboBox<>(typeList, new ComparatorUtils.DbObjectNameComparator<>(), true);
-        typeComboBox.addEditedListener(editedListener, "typeId");
-        typeComboBox.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getProductId() > DbObject.UNKNOWN_ID));
-        typeComboBox.setSelectedItem(selectedItem.getType());
+        typeCb = new IComboBox<>(typeList, new ComparatorUtils.DbObjectNameComparator<>(), true);
+        typeCb.addEditedListener(editedListener, "typeId");
+        typeCb.setEnabled((selectedItem.getId() >= 0) && (selectedItem.getProductId() > DbObject.UNKNOWN_ID));
+        typeCb.setSelectedItem(selectedItem.getType());
     }
 
     private void createManufacturerCb() {
@@ -245,11 +245,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
                 newCategory.save();
                 SwingUtilities.invokeLater(() -> {
                     updateCategoryCbValues();
-                    if (categoryComboBox.getSelectedItem() != null) {
-                        updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                    if (categoryCb.getSelectedItem() != null) {
+                        updateProductCbValues(((Category) categoryCb.getSelectedItem()).getId());
                     }
-                    if (productComboBox.getSelectedItem() != null) {
-                        updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                    if (productCb.getSelectedItem() != null) {
+                        updateTypeCbValues(((Product) productCb.getSelectedItem()).getId());
                     }
                 });
             }
@@ -265,11 +265,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
                     newProduct.save();
                     SwingUtilities.invokeLater(() -> {
                         updateCategoryCbValues();
-                        if (categoryComboBox.getSelectedItem() != null) {
-                            updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        if (categoryCb.getSelectedItem() != null) {
+                            updateProductCbValues(((Category) categoryCb.getSelectedItem()).getId());
                         }
-                        if (productComboBox.getSelectedItem() != null) {
-                            updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        if (productCb.getSelectedItem() != null) {
+                            updateTypeCbValues(((Product) productCb.getSelectedItem()).getId());
                         }
                     });
                 }
@@ -292,11 +292,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
                     newType.save();
                     SwingUtilities.invokeLater(() -> {
                         updateCategoryCbValues();
-                        if (categoryComboBox.getSelectedItem() != null) {
-                            updateProductCbValues(((Category) categoryComboBox.getSelectedItem()).getId());
+                        if (categoryCb.getSelectedItem() != null) {
+                            updateProductCbValues(((Category) categoryCb.getSelectedItem()).getId());
                         }
-                        if (productComboBox.getSelectedItem() != null) {
-                            updateTypeCbValues(((Product) productComboBox.getSelectedItem()).getId());
+                        if (productCb.getSelectedItem() != null) {
+                            updateTypeCbValues(((Product) productCb.getSelectedItem()).getId());
                         }
                     });
                 }
@@ -321,17 +321,14 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     private void initializeBasicComponents() {
         // Identification
-        idTextField = new ITextField();
-        idTextField.setEditable(false);
-        idTextField.setEnabled(false);
-
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
+        aliasTf = new ITextField(editedListener, "alias");
 
-        descriptionTextArea = new ITextArea();
-        descriptionTextArea.setLineWrap(true); // Go to next line when area is full
-        descriptionTextArea.setWrapStyleWord(true); // Don't cut words in two
-        descriptionTextArea.addEditedListener(editedListener, "description");
-        descriptionTextArea.setName(EditItemDialogLayout.COMP_DESCRIPTION);
+        descriptionTa = new ITextArea();
+        descriptionTa.setLineWrap(true); // Go to next line when area is full
+        descriptionTa.setWrapStyleWord(true); // Don't cut words in two
+        descriptionTa.addEditedListener(editedListener, "description");
+        descriptionTa.setName(EditItemDialogLayout.COMP_DESCRIPTION);
 
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
@@ -340,8 +337,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         formatter.setMaximum(Double.MAX_VALUE);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
-        priceTextField = new ITextField();
-        priceTextField.addEditedListener(editedListener, "price", double.class);
+        priceTf = new ITextField();
+        priceTf.addEditedListener(editedListener, "price", double.class);
 
         // Combo boxes
         createCategoryCb();
@@ -349,10 +346,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         createTypeCb();
 
         // Local data sheet
-        localDataSheetTextField = new ITextField();
-        localDataSheetTextField.addEditedListener(editedListener, "localDataSheet");
-        localDataSheetButton = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        localDataSheetButton.addActionListener(new AbstractAction() {
+        localDataSheetTf = new ITextField();
+        localDataSheetTf.addEditedListener(editedListener, "localDataSheet");
+        localDataSheetBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
+        localDataSheetBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -366,8 +363,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         });
 
         // Online data sheet
-        onlineDataSheetTextField = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
-        //onlineDataSheetTextField.addEditedListener(editedListener, "onlineDataSheet");
+        onlineDataSheetTf = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
+        //onlineDataSheetTf.addEditedListener(editedListener, "onlineDataSheet");
     }
 
     private void initializeDetailsComponents() {
@@ -411,37 +408,37 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         JPanel local = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = createFieldConstraints(0,0);
         constraints.gridwidth = 1;
-        local.add(localDataSheetTextField, constraints);
+        local.add(localDataSheetTf, constraints);
         constraints = createFieldConstraints(1,0);
         constraints.gridwidth = 1;
         constraints.weightx = 0.1;
-        local.add(localDataSheetButton, constraints);
+        local.add(localDataSheetBtn, constraints);
 
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
-                new String[] {"Database ID: ", "Name: "},
-                new JComponent[] {idTextField, nameValuePnl}
+                new String[] {"Name: ", "Alias: "},
+                new JComponent[] {nameValuePnl, aliasTf}
         ));
 
         basicPanel.add(new ITitledEditPanel(
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {
-                        GuiUtils.createComboBoxWithButton(categoryComboBox, createAddCategoryListener()),
-                        GuiUtils.createComboBoxWithButton(productComboBox, createAddProductListener()),
-                        GuiUtils.createComboBoxWithButton(typeComboBox, createAddTypeListener())}
+                        GuiUtils.createComboBoxWithButton(categoryCb, createAddCategoryListener()),
+                        GuiUtils.createComboBoxWithButton(productCb, createAddProductListener()),
+                        GuiUtils.createComboBoxWithButton(typeCb, createAddTypeListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
                 "Data sheets",
                 new String[] {"Local: ", "Online: "},
-                new JComponent[] {local, onlineDataSheetTextField}
+                new JComponent[] {local, onlineDataSheetTf}
         ));
 
         basicPanel.add(new ITitledEditPanel(
                 "Info",
                 new String[] {"Price: ", "Description: "},
-                new JComponent[] {priceTextField, new JScrollPane(descriptionTextArea)}
+                new JComponent[] {priceTf, new JScrollPane(descriptionTa)}
         ));
         return basicPanel;
     }
@@ -545,20 +542,20 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     @Override
     public void updateComponents(Object... object) {
-        idTextField.setText(String.valueOf(selectedItem.getId()));
+        aliasTf.setText(selectedItem.getAlias().trim());
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
         nameValuePnl.setValue(selectedItem.getValue());
-        descriptionTextArea.setText(selectedItem.getDescription().trim());
-        priceTextField.setText(String.valueOf(selectedItem.getPrice()));
+        descriptionTa.setText(selectedItem.getDescription().trim());
+        priceTf.setText(String.valueOf(selectedItem.getPrice()));
 
         // Combo boxes
-        categoryComboBox.setSelectedItem(selectedItem.getCategory());
-        productComboBox.setSelectedItem(selectedItem.getProduct());
-        typeComboBox.setSelectedItem(selectedItem.getType());
+        categoryCb.setSelectedItem(selectedItem.getCategory());
+        productCb.setSelectedItem(selectedItem.getProduct());
+        typeCb.setSelectedItem(selectedItem.getType());
 
         // DATA SHEETS
-        localDataSheetTextField.setText(selectedItem.getLocalDataSheet());
-        onlineDataSheetTextField.setText(selectedItem.getOnlineDataSheet());
+        localDataSheetTf.setText(selectedItem.getLocalDataSheet());
+        onlineDataSheetTf.setText(selectedItem.getOnlineDataSheet());
 
         // PACKAGE
         packagePnl.setPackageType(selectedItem.getPackageType(), selectedItem.getPins());
@@ -580,11 +577,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public void setCategoryChangedAction(ItemListener categoryChangedAction) {
-        categoryComboBox.addItemListener(categoryChangedAction);
+        categoryCb.addItemListener(categoryChangedAction);
     }
 
     public void setProductChangedAction(ItemListener productChangedAction) {
-        productComboBox.addItemListener(productChangedAction);
+        productCb.addItemListener(productChangedAction);
     }
 
     public String getNameFieldValue() {
@@ -596,23 +593,23 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     }
 
     public String getPriceFieldValue() {
-        return priceTextField.getText();
+        return priceTf.getText();
     }
 
     public void setPriceFieldError(String error) {
-        priceTextField.setError(error);
+        priceTf.setError(error);
     }
 
     private void setLocalDataSheetFieldValue(String localDataSheetFieldValue) {
-        localDataSheetTextField.setText(localDataSheetFieldValue);
+        localDataSheetTf.setText(localDataSheetFieldValue);
     }
 
-    public IComboBox getProductComboBox() {
-        return productComboBox;
+    public IComboBox getProductCb() {
+        return productCb;
     }
 
-    public IComboBox getTypeComboBox() {
-        return typeComboBox;
+    public IComboBox getTypeCb() {
+        return typeCb;
     }
 
     public void updateRating(float rating) {

@@ -111,7 +111,6 @@ public class GuiUtils {
     public static class GridBagHelper extends GridBagConstraints {
 
         private JPanel panel;
-        private int labelWidth = -1;
 
         public GridBagHelper(JPanel panel) {
             this.panel = panel;
@@ -126,10 +125,6 @@ public class GuiUtils {
             panel.setOpaque(false);
         }
 
-        public void setLabelWidth(int width) {
-            this.labelWidth = width;
-        }
-
         public void addLineVertical(String labelText, JComponent component) {
             addLineVertical(labelText, component, GridBagConstraints.HORIZONTAL);
         }
@@ -142,8 +137,7 @@ public class GuiUtils {
             weightx = 0; weighty = 0;
             gridwidth = 1; anchor = GridBagConstraints.WEST;
             this.fill = GridBagConstraints.NONE;
-            ILabel lbl = new ILabel(labelText, ILabel.LEFT);
-            panel.add(lbl, this);
+            panel.add(new ILabel(labelText, ILabel.LEFT), this);
 
             gridwidth = oldGw;
             gridheight = oldGh;
@@ -168,7 +162,9 @@ public class GuiUtils {
             weightx = 0; weighty = 0;
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
-            panel.add(new ILabel(labelText, ILabel.RIGHT), this);
+            ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
+            lbl.setPreferredSize(new Dimension(120,20));
+            panel.add(lbl, this);
 
             gridwidth = oldGw;
             gridheight = oldGh;

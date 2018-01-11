@@ -114,6 +114,7 @@ class WizardParsePanel extends JPanel implements
                 String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
                 item = new Item(
                         name,
+                        settings.getTypeName(),
                         value,
                         settings.getManufacturer(),
                         settings.getPackageType(),
