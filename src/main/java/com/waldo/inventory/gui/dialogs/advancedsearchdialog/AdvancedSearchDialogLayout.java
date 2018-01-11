@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -35,7 +36,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     private ILabel resultLbl;
 
     private IFoundItemsTableModel tableModel;
-    private ITable<DbObject> foundItemTable;
+    private ITable<Item> foundItemTable;
 
     private JToolBar nextPrevTb;
 
@@ -92,7 +93,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
 //        tableModel.setItemList(foundItems);
 //    }
 
-    void addResults(List<DbObject> results) {
+    void addResults(List<Item> results) {
         tableModel.addItems(results);
     }
 
@@ -104,7 +105,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         tableModel.clearItemList();
     }
 
-    void tableSelect(DbObject item) {
+    void tableSelect(Item item) {
         foundItemTable.selectItem(item);
     }
 
@@ -112,12 +113,8 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         foundItemTable.selectItem(tableModel.getItemList().get(ndx));
     }
 
-    DbObject tableGetSelected() {
+    Item tableGetSelected() {
         return foundItemTable.getSelectedItem();
-    }
-
-    List<DbObject> tableGetAllSelected() {
-        return foundItemTable.getSelectedItems();
     }
 
     void setError(String error) {

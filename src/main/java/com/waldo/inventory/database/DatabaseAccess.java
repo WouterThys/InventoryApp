@@ -4,7 +4,6 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
@@ -12,8 +11,8 @@ import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.managers.TableManager;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.inventory.managers.TableManager;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
@@ -1356,43 +1355,6 @@ public class DatabaseAccess {
         return orderFileFormats;
     }
 
-    public List<SetItem> updateSetItems()    {
-        List<SetItem> setItems = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return setItems;
-        }
-        Status().setMessage("Fetching set items from DB");
-        SetItem si = null;
-        String sql = scriptResource.readString(SetItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    si = new SetItem();
-                    si.setId(rs.getLong("id"));
-                    si.setName(rs.getString("name"));
-                    si.setIconPath(rs.getString("iconPath"));
-                    si.setAmount(rs.getInt("amount"));
-                    si.setValue(new Value(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit")));
-                    si.setItemId(rs.getLong("itemId"));
-                    si.setLocationId(rs.getLong("locationId"));
-
-                    si.setInserted(true);
-                    setItems.add(si);
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(si, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-        return setItems;
-    }
-
     public List<PcbItem> updatePcbItems()    {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
@@ -1443,7 +1405,6 @@ public class DatabaseAccess {
                     kil = new PcbItemItemLink();
                     kil.setId(rs.getLong("id"));
                     kil.setItemId(rs.getLong("itemId"));
-                    kil.setSetItemId(rs.getLong("setItemId"));
                     kil.setMatch(rs.getByte("componentMatch"));
                     kil.setPcbItemId(rs.getLong("pcbItemId"));
 

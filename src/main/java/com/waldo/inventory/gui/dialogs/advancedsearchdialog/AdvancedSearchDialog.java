@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -16,10 +15,9 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
 
-    private Search.DbObjectSearch2<Item, SetItem> searcher;
+    private Search.DbObjectSearch<Item> searcher;
 
     private Search.SearchListener<Item> itemSearchListener;
-    private Search.SearchListener<SetItem> setItemSearchListener;
 
     public AdvancedSearchDialog(Application application, String title, SearchType searchType, Object... args) {
         super(application, title, searchType, args);
@@ -29,14 +27,13 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
 
         initializeListeners();
 
-        searcher = new Search.DbObjectSearch2<>(
-                cache().getItems(), itemSearchListener,
-                cache().getSetItems(), setItemSearchListener);
+        searcher = new Search.DbObjectSearch<>(
+                cache().getItems(), itemSearchListener);
 
         updateComponents();
     }
 
-    public DbObject getSelectedItem() {
+    public Item getSelectedItem() {
         return tableGetSelected();
     }
 
@@ -45,13 +42,8 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
         if (e.getClickCount() == 2) {
             DbObject object = getSelectedItem();
             if (object != null) {
-                Item item;
-                if (object instanceof Item) {
-                    item = (Item) object;
-                } else {
-                    item = ((SetItem)object).getItem();
-                }
-                EditItemDialog<Item> editItemDialog = new EditItemDialog<>(application, "Edit item", item);
+                Item item = (Item) object;
+                EditItemDialog editItemDialog = new EditItemDialog<>(application, "Edit item", item);
                 editItemDialog.showDialog();
                 tableUpdate();
             }
@@ -141,36 +133,6 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
 
             @Override
             public void onPreviousSearchObject(Item previous) {
-                tableSelect(previous);
-            }
-        };
-
-        setItemSearchListener = new Search.SearchListener<SetItem>() {
-            @Override
-            public void onObjectsFound(List<SetItem> foundObjects) {
-                int size = foundObjects.size();
-                if (size > 0) {
-                    setInfo(String.valueOf(size) + " results found!!");
-                    addResults(new ArrayList<>(foundObjects));
-                    tableSelect(0);
-                }
-                updateEnabledComponents();
-            }
-
-            @Override
-            public void onSearchCleared() {
-                tableClear();
-                clearResultText();
-                updateEnabledComponents();
-            }
-
-            @Override
-            public void onNextSearchObject(SetItem next) {
-                tableSelect(next);
-            }
-
-            @Override
-            public void onPreviousSearchObject(SetItem previous) {
                 tableSelect(previous);
             }
         };

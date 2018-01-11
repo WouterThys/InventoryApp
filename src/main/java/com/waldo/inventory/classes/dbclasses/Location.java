@@ -26,8 +26,8 @@ public class Location extends DbObject {
     private LocationLayout layout = new LocationLayout();
 
 
-    // Items or SetItems for this location
-    private List<DbObject> items;
+    // Items for this location
+    private List<Item> items;
 
     public Location() {
         super(TABLE_NAME);
@@ -174,7 +174,7 @@ public class Location extends DbObject {
         return getItems().size() > 0;
     }
 
-    public List<DbObject> getItems() {
+    public List<Item> getItems() {
         if (items == null) {
             items = new ArrayList<>();
             List<Item> itemList = cache().getItems();

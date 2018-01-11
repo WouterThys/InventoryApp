@@ -88,38 +88,19 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
 
     public void updateSelectedValueData(PcbItemItemLink match) {
         if (match != null) {
-            if (!match.isSetItem()) {
-                Item item = match.getItem();
-
-                descriptionTf.setText(item.getDescription());
-                if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
-                    PackageType pt = item.getPackageType();
-                    String footprint = pt.getPackage() + "/" + pt;
-                    footprintTf.setText(footprint);
-                } else {
-                    footprintTf.setText("");
-                }
-                if (item.getValue().hasValue()) {
-                    setValueTf.setText(item.getValue().toString());
-                } else {
-                    setValueTf.setText("");
-                }
-            } else { // SetItem
-                Item item = match.getItem();
-
-                descriptionTf.setText(item.getDescription());
-                if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
-                    PackageType pt = item.getPackageType();
-                    String footprint = pt.getPackage() + "/" + pt;
-                    footprintTf.setText(footprint);
-                } else {
-                    footprintTf.setText("");
-                }
-                if (match.getSetItem().getValue().hasValue()) {
-                    setValueTf.setText(match.getSetItem().getValue().toString());
-                } else {
-                    setValueTf.setText("");
-                }
+            Item item = match.getItem();
+            descriptionTf.setText(item.getDescription());
+            if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+                PackageType pt = item.getPackageType();
+                String footprint = pt.getPackage() + "/" + pt;
+                footprintTf.setText(footprint);
+            } else {
+                footprintTf.setText("");
+            }
+            if (item.getValue().hasValue()) {
+                setValueTf.setText(item.getValue().toString());
+            } else {
+                setValueTf.setText("");
             }
         } else {
             descriptionTf.clearText();

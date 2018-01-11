@@ -38,7 +38,6 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT = 12;
     public static final int TYPE_PROJECT_TYPE = 14;
     public static final int TYPE_ORDER_FILE_FORMAT = 15;
-    public static final int TYPE_SET_ITEM = 16;
     public static final int TYPE_LOCATION_TYPE = 18;
     public static final int TYPE_PROJECT_CODE = 19;
     public static final int TYPE_PROJECT_PCB = 20;
@@ -101,8 +100,6 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
         if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
         if (dbObject instanceof Package) return TYPE_PACKAGE;
-        if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
-
         if (dbObject instanceof PcbItem) return TYPE_KC_COMPONENT;
         if (dbObject instanceof PcbItemItemLink) return TYPE_KC_ITEM_LINK;
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;

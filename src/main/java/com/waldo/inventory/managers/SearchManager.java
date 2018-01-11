@@ -354,25 +354,6 @@ public class SearchManager {
         return null;
     }
 
-    public SetItem findSetItemById(long id) {
-        for (SetItem si : cache().getSetItems()) {
-            if (si.getId() == id) {
-                return si;
-            }
-        }
-        return null;
-    }
-
-    public List<SetItem> findSetItemsByItemId(long id) {
-        List<SetItem> setItems = new ArrayList<>();
-        for (SetItem si : cache().getSetItems()) {
-            if (si.getItemId() == id) {
-                setItems.add(si);
-            }
-        }
-        return setItems;
-    }
-
     public PcbItem findPcbItemById(long id) {
         for (PcbItem component : cache().getPcbItems()) {
             if (component.getId() == id) {
@@ -388,28 +369,6 @@ public class SearchManager {
                     component.getPartName().equals(part)) {
 
                 return component;
-            }
-        }
-        return null;
-    }
-
-    public PcbItemItemLink findPcbItemLinkWithItem(long itemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : cache().getPcbItemItemLinks()) {
-            if (!pcbItemItemLink.isSetItem()) {
-                if(pcbItemItemLink.getItemId() == itemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
-                    return pcbItemItemLink;
-                }
-            }
-        }
-        return null;
-    }
-
-    public PcbItemItemLink findPcbItemLinkWithSetItem(long setItemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : cache().getPcbItemItemLinks()) {
-            if (pcbItemItemLink.isSetItem()) {
-                if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
-                    return pcbItemItemLink;
-                }
             }
         }
         return null;

@@ -83,11 +83,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                     if (table.getColumnName(column).equals("Part")) {
                         if (projectLink.hasMatchedItem()) {
                             PcbItemItemLink link = projectLink.getPcbItemItemLink();
-                            if (link.isSetItem()) {
-                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getSetItem().toString());
-                            } else {
-                                lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().toString());
-                            }
+                            lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().toString());
                             lbl.setForeground(colorResource.readColor("Green"));
                             lbl.setFont(Font.BOLD);
                         } else {

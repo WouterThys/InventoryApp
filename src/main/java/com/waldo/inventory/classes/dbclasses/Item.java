@@ -229,12 +229,13 @@ public class Item extends DbObject {
             }
 
                 String itemName = getName().toUpperCase();
+                String itemAlias = getAlias().toUpperCase();
 
-                if(PcbItem.matchesName(pcbName, itemName)) match++;
+                if(PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
                 if (getValue().hasValue()) {
                     if (PcbItem.matchesValue(pcbValue, getValue(), itemName)) match++;
                 } else {
-                    if (PcbItem.matchesName(pcbValue, getName())) match++;
+                    if(PcbItem.matchesName(pcbName, itemName)) match++;
                 }
 
                 // Only check footprint match if there is already a match

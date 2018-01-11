@@ -19,7 +19,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon redBall = imageResource.readImage("Ball.red");
-    private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
 
     /*
     *                  COMPONENTS
@@ -60,7 +59,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     PcbItemProjectLink originalProjectLink;
 
     int newItemAmount = -1;
-    int originalItemAmount = -1;
+    private int originalItemAmount = -1;
 
     /*
    *                  CONSTRUCTOR

@@ -118,14 +118,6 @@ public class ComparatorUtils {
         }
     }
 
-    public static class ItemMatchComparator implements Comparator<Item> {
-        @Override
-        public int compare(Item o1, Item o2) {
-            MatchComparator mc = new MatchComparator();
-            return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
-        }
-    }
-
 
 
     //
@@ -205,19 +197,6 @@ public class ComparatorUtils {
             } else {
                 return -1;
             }
-        }
-    }
-
-    //
-    // Set item
-    //
-    public static class SetItemComparator implements Comparator<SetItem> {
-        @Override
-        public int compare(SetItem o1, SetItem o2) {
-            if (o1.getValue() != null && o2.getValue() != null) {
-                return o1.getValue().getRealValue().compareTo(o2.getValue().getRealValue());
-            }
-            return 0;
         }
     }
 

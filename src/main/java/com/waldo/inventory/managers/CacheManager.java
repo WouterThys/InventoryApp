@@ -47,7 +47,6 @@ public class CacheManager {
         cacheLogList.add(new CacheLog("Projects", projects));
         cacheLogList.add(new CacheLog("Project IDEs", projectIDES));
         cacheLogList.add(new CacheLog("Order file formats", orderFileFormats));
-        cacheLogList.add(new CacheLog("Set items", setItems));
         cacheLogList.add(new CacheLog("PCB items", pcbItems));
         cacheLogList.add(new CacheLog("PCB item links", pcbItemItemLinks));
         cacheLogList.add(new CacheLog("PCB item project links", pcbItemProjectLinks));
@@ -78,7 +77,6 @@ public class CacheManager {
     private final CacheList<ProjectIDE> projectIDES = new CacheList<>();
     private final CacheList<OrderFileFormat> orderFileFormats = new CacheList<>();
     private final CacheList<Package> packages = new CacheList<>();
-    private final CacheList<SetItem> setItems = new CacheList<>();
     private final CacheList<PcbItem> pcbItems = new CacheList<>();
     private final CacheList<PcbItemItemLink> pcbItemItemLinks = new CacheList<>();
     private final CacheList<PcbItemProjectLink> pcbItemProjectLinks = new CacheList<>();
@@ -178,7 +176,6 @@ public class CacheManager {
         projectIDES.clear();
         orderFileFormats.clear();
         packages.clear();
-        setItems.clear();
         pcbItems.clear();
         pcbItemItemLinks.clear();
         pcbItemProjectLinks.clear();
@@ -361,14 +358,6 @@ public class CacheManager {
             orderFileFormats.setList(db().updateOrderFileFormats(), (System.nanoTime() - start));
         }
         return orderFileFormats;
-    }
-
-    public synchronized CacheList<SetItem> getSetItems() {
-        if (!setItems.isFetched()) {
-            long start = System.nanoTime();
-            setItems.setList(db().updateSetItems(), (System.nanoTime() - start));
-        }
-        return setItems;
     }
 
     public synchronized CacheList<PcbItem> getPcbItems() {

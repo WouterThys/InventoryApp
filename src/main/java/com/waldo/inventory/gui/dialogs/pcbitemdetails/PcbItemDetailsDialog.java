@@ -1,9 +1,6 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
@@ -31,7 +28,6 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     @Override
     void onSelectNewItem() {
-
         AdvancedSearchDialog dialog = new AdvancedSearchDialog(
                 application,
                 "Search item",
@@ -42,7 +38,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
         }
     }
 
-    private void updatePcbItemLink(PcbItemProjectLink projectLink, DbObject newMatch) {
+    private void updatePcbItemLink(PcbItemProjectLink projectLink, Item newMatch) {
         if (projectLink != null) {
             PcbItem pcbItem = projectLink.getPcbItem();
             PcbItemItemLink itemLink = projectLink.getPcbItemItemLink();
@@ -71,7 +67,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     @Override
     void onDeleteMatchedItem() {
         if (pcbItemProjectLink != null && pcbItemProjectLink.getPcbItemItemLink() != null) {
-            String msg = "Delete link with " + pcbItemProjectLink.getPcbItemItemLink().getPrettyName() + "?";
+            String msg = "Delete link with " + pcbItemProjectLink.getPcbItemItemLink().getLinkedItemName() + "?";
             if (JOptionPane.showConfirmDialog(this, msg, "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 PcbItemItemLink itemItemLink = pcbItemProjectLink.getPcbItemItemLink();
                 if (itemItemLink != null) {
@@ -198,7 +194,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     public void onInserted(PcbItemItemLink itemLink) {
         if (pcbItemProjectLink != null) {
             pcbItemProjectLink.setPcbItemItemLinkId(itemLink.getId());
-            updateMatchedItemPanel(itemLink.getPrettyName(), itemLink.getAmount());
+            updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
             onValueChanged(this, "pcbItemProjectLinkId", 0, itemLink.getId());
         }
     }
@@ -207,7 +203,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     public void onUpdated(PcbItemItemLink itemLink) {
         if (pcbItemProjectLink != null) {
             pcbItemProjectLink.setPcbItemItemLinkId(itemLink.getId());
-            updateMatchedItemPanel(itemLink.getPrettyName(), itemLink.getAmount());
+            updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
             onValueChanged(this, "pcbItemProjectLinkId", 0, itemLink.getId());
         }
     }

@@ -1,10 +1,12 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,7 +18,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
-public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
+public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Footprint", "Manufacturer", "Match"};
@@ -32,7 +34,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
         this.searchType = searchType;
     }
 
-    public void setItemList(List<DbObject> itemList) {
+    public void setItemList(List<Item> itemList) {
         super.setItemList(itemList);
     }
 
@@ -47,22 +49,17 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        DbObject obj = getItemAt(rowIndex);
+        Item setItem = getItemAt(rowIndex);
 
-        if (obj != null) {
+        if (setItem != null) {
             switch (columnIndex) {
                 case -1:
                 case 0: // Amount label
-                    return obj;
+                    return setItem;
                 case 1: // Name
-                    return obj.toString();
+                    return setItem.toString();
                 case 2: // Footprint
-                    PackageType packageType;
-                    if (obj instanceof Item) {
-                        packageType = ((Item) obj).getPackageType();
-                    } else {
-                        packageType = ((SetItem) obj).getItem().getPackageType();
-                    }
+                    PackageType packageType = setItem.getPackageType();
                     if (packageType != null) {
                         if (packageType.getPackageId() > DbObject.UNKNOWN_ID) {
                             return packageType.getPackage().toString() + " - " + packageType.toString();
@@ -73,19 +70,13 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
                         return "";
                     }
                 case 3: // Manufacturer
-                    Manufacturer m;
-                    if (obj instanceof Item) {
-                        m = SearchManager.sm().findManufacturerById(((Item)obj).getManufacturerId());
-                    } else {
-                        m = SearchManager.sm().findManufacturerById(((SetItem)obj).getItem().getManufacturerId());
-                    }
-
+                    Manufacturer m = setItem.getManufacturer();
                     if (m != null && !m.isUnknown()) {
                         return m.toString();
                     }
                     return "";
                 case 4: // Match
-                    return obj.getObjectMatch();
+                    return setItem.getObjectMatch();
             }
         }
         return null;
@@ -114,15 +105,6 @@ public class IFoundItemsTableModel extends IAbstractTableModel<DbObject> {
                     String txt = String.valueOf(item.getAmount());
 
                     return new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
-                } else if (value instanceof SetItem) {
-                    if (row == 0) {
-                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                        tableColumn.setMaxWidth(32);
-                        tableColumn.setMinWidth(32);
-                    }
-                    String txt = String.valueOf(((SetItem)value).getAmount());
-                    return new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
-
                 } else if (value instanceof DbObjectMatch) {
                     return new MatchValue(((DbObjectMatch)value).getMatchPercent());
                 }

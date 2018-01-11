@@ -54,10 +54,8 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProject
                 case 2: // Item name
                     if (link.hasMatchedItem()) {
                         PcbItemItemLink itemLink = link.getPcbItemItemLink();
-                        if (!showSetValues || !itemLink.isSetItem()) {
+                        if (!showSetValues) {
                             return itemLink.getItem().toString();
-                        } else {
-                            return itemLink.getSetItem().toString();
                         }
                     }
                     return "";

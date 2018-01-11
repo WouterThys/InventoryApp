@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.SetItem;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
 
@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
+public class ISetItemTableModel extends IAbstractTableModel<Item> {
 
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Location"};
@@ -21,13 +21,13 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon redBall = imageResource.readImage("Ball.red");
 
-    public ISetItemTableModel(Comparator<SetItem> comparator) {
+    public ISetItemTableModel(Comparator<Item> comparator) {
         super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        SetItem setItem = getItemAt(rowIndex);
+        Item setItem = getItemAt(rowIndex);
 
         if (setItem != null) {
             switch (columnIndex) {
@@ -60,7 +60,7 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof SetItem) {
+                if (value instanceof Item) {
                     if (row == 0) {
                         TableColumn tableColumn = table.getColumnModel().getColumn(column);
                         tableColumn.setMaxWidth(32);
@@ -68,7 +68,7 @@ public class ISetItemTableModel extends IAbstractTableModel<SetItem> {
                     }
 
                     ILabel lbl;
-                    SetItem setItem = (SetItem) value;
+                    Item setItem = (Item) value;
                     int amount = setItem.getAmount();
 
                     if (amount > 0) {
