@@ -105,32 +105,54 @@ class WizardParsePanel extends JPanel implements
         replaceAction.setEnabled(enabled);
     }
 
+    private Item findByValue(List<Item> itemList, Value value) {
+        if (itemList != null && value != null) {
+            for (Item item : itemList) {
+                if (item.getValue().equals(value)) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
     private List<Item> createItemsFromSettings(WizardSettings settings) {
-        List<Item> setItems = new ArrayList<>();
+        List<Item> newSetItems = new ArrayList<>();
         if (settings != null) {
-            int nameCnt = 1;
-            Item item;
+
+            if (settings.isKeepOldSetItems()) {
+                newSetItems.addAll(settings.getSelectedSet().getSetItems());
+            }
+
+            int nameCnt = 0;
             for (Value value : settings.getValues()) {
-                String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
-                item = new Item(
-                        name,
-                        settings.getTypeName(),
-                        value,
-                        settings.getManufacturer(),
-                        settings.getPackageType(),
-                        settings.getPins(),
-                        settings.getAmount(),
-                        settings.getLocation(value),
-                        settings.getSelectedSet());
-
-                setItems.add(item);
-
+                Item item;
                 nameCnt++;
+                if (settings.isKeepOldSetItems() && settings.isReplaceValues()) {
+                    item = findByValue(newSetItems, value);
+                    if (item != null) {
+                        continue;
+                    }
+                }
+                    String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
+                    item = new Item(
+                            name,
+                            settings.getTypeName(),
+                            value,
+                            settings.getManufacturer(),
+                            settings.getPackageType(),
+                            settings.getPins(),
+                            settings.getAmount(),
+                            settings.getLocation(value),
+                            settings.getSelectedSet());
+
+
+                newSetItems.add(item);
             }
 
         }
-        setItems.sort(new ComparatorUtils.ItemValueComparator());
-        return setItems;
+        newSetItems.sort(new ComparatorUtils.ItemValueComparator());
+        return newSetItems;
     }
     /*
      *                  LISTENERS
@@ -286,8 +308,6 @@ class WizardParsePanel extends JPanel implements
 
             numberOfItemsLbl.setText(String.valueOf(wizardSettings.getNumberOfItems()));
             numberOfLocationsLbl.setText(String.valueOf(wizardSettings.getNumberOfLocations()));
-        } else {
-
         }
         updateEnabledComponents();
     }

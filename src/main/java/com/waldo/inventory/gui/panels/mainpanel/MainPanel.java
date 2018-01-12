@@ -132,10 +132,14 @@ public class MainPanel extends MainPanelLayout {
             public void onInserted(Item item) {
                 selectedItem = item;
 
-                treeSelectDivisionForItem(item);
-                tableInitialize(selectedDivision);
+                if (setsSelected()) {
+                    ((Set) selectedDivision).addSetItem(item);
+                } else {
+                    treeSelectDivisionForItem(item);
+                }
 
                 // Add to table
+                tableInitialize(selectedDivision);
                 tableAddItem(item);
                 // Select in table
                 tableSelectItem(item);

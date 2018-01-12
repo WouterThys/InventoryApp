@@ -27,11 +27,11 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListener {
 
-    private static final int lblWidth = 20;
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ICheckBox keepOldValuesCb;
+    private ICheckBox replaceValuesCb;
 
     // Values
     private DefaultComboBoxModel<String> typeCbModel;
@@ -82,7 +82,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void updateSettings(WizardSettings settings) {
+    void updateSettings(WizardSettings settings) {
         if (settings != null) {
             settings.setManufacturer((Manufacturer) manufacturerCb.getSelectedItem());
             settings.setPackageType(packagePnl.getPackageType());
@@ -90,6 +90,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
             settings.setAmount(((SpinnerNumberModel)amountSpinner.getModel()).getNumber().intValue());
             settings.setTypeName((String) typeCb.getSelectedItem());
             settings.setKeepOldSetItems(keepOldValuesCb.isSelected());
+            settings.setReplaceValues(replaceValuesCb.isSelected());
             settings.setValues(createValues());
         }
     }
@@ -305,6 +306,16 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         return valueList;
     }
 
+    private JPanel createOldValuesPnl() {
+        JPanel oldValuesPnl = new JPanel();
+
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(oldValuesPnl);
+        gbc.addLine("Keep old values: ", keepOldValuesCb);
+        gbc.addLine("Replace values: ", replaceValuesCb);
+
+        return oldValuesPnl;
+    }
+
     private JPanel createValuesPanel() {
         JPanel valuesPnl = new JPanel();
 
@@ -406,7 +417,11 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         SpinnerModel valueSpModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
         valueSkipSp = new ISpinner(valueSpModel);
 
-        keepOldValuesCb = new ICheckBox("Keep old items", true);
+        keepOldValuesCb = new ICheckBox("", true);
+        keepOldValuesCb.addActionListener(e -> {
+            replaceValuesCb.setEnabled(keepOldValuesCb.isSelected());
+        });
+        replaceValuesCb = new ICheckBox("", false);
 
         // Items
         packagePnl = new GuiUtils.IPackagePanel(application);
@@ -420,15 +435,18 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     public void initializeLayouts() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        JPanel oldValuesPnl = createOldValuesPnl();
+        oldValuesPnl.setBorder(GuiUtils.createTitleBorder("Old set items"));
+
         JPanel valuesPnl = createValuesPanel();
-        valuesPnl.setBorder(GuiUtils.createTitleBorder("Values"));
+        valuesPnl.setBorder(GuiUtils.createTitleBorder("New set items"));
 
         JPanel itemPnl = createItemPanel();
         itemPnl.setBorder(GuiUtils.createTitleBorder("Items"));
 
         packagePnl.setBorder(GuiUtils.createTitleBorder("Package"));
 
-        add(keepOldValuesCb);
+        add(oldValuesPnl);
         add(valuesPnl);
         add(itemPnl);
         add(packagePnl);

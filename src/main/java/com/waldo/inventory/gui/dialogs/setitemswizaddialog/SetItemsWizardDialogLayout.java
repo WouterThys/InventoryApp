@@ -135,10 +135,6 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
 
     @Override
     public void updateComponents(Object... args) {
-        if (args.length > 0 && args[0] != null) {
 
-        } else {
-
-        }
     }
 }

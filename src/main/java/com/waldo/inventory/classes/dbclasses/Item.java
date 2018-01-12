@@ -73,6 +73,7 @@ public class Item extends DbObject {
         this.packageType = packageType;
         this.pins = pins;
         this.amount = amount;
+        this.alias = alias;
         this.description = alias + " " + value.toString();
 
         if (manufacturer != null) manufacturerId = manufacturer.getId();

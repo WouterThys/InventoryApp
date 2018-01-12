@@ -26,6 +26,7 @@ public class WizardSettings {
     private int amount;
     private String typeName;
     private boolean keepOldSetItems;
+    private boolean replaceValues;
 
     WizardSettings(Set selectedSet) {
         this.selectedSet = selectedSet;
@@ -100,6 +101,14 @@ public class WizardSettings {
 
     public void setKeepOldSetItems(boolean keepOldSetItems) {
         this.keepOldSetItems = keepOldSetItems;
+    }
+
+    public boolean isReplaceValues() {
+        return replaceValues;
+    }
+
+    public void setReplaceValues(boolean replaceValues) {
+        this.replaceValues = replaceValues;
     }
 
     public String getTypeName() {
