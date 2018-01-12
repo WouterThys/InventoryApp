@@ -120,12 +120,15 @@ public class Set extends Item {
         }
     }
 
-    public void addSetItem(Item setItem) {
+    public boolean addSetItem(Item setItem) {
+        boolean result = false;
         if (setItem != null && !getSetItems().contains(setItem)) {
             SetItemLink link = new SetItemLink(this, setItem);
             link.save();
             setItems.add(setItem);
+            result = true;
         }
+        return result;
     }
 
     public void removeSetItem(Item setItem) {

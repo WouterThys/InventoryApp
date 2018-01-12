@@ -27,6 +27,7 @@ public class WizardSettings {
     private String typeName;
     private boolean keepOldSetItems;
     private boolean replaceValues;
+    private boolean overWriteLocations;
 
     WizardSettings(Set selectedSet) {
         this.selectedSet = selectedSet;
@@ -109,6 +110,14 @@ public class WizardSettings {
 
     public void setReplaceValues(boolean replaceValues) {
         this.replaceValues = replaceValues;
+    }
+
+    public boolean isOverWriteLocations() {
+        return overWriteLocations;
+    }
+
+    public void setOverWriteLocations(boolean overWriteLocations) {
+        this.overWriteLocations = overWriteLocations;
     }
 
     public String getTypeName() {

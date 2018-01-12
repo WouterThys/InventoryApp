@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -95,6 +96,11 @@ public class MainPanel extends MainPanelLayout {
                         @Override
                         public void onShowHistory(Item item) {
                             MainPanel.this.onShowHistory(item);
+                        }
+
+                        @Override
+                        public void onAddToSet(Set set, Item item) {
+                            MainPanel.this.onAddItemToSet(set, item);
                         }
                     };
                     popup.show(e.getComponent(), e.getX(), e.getY());
@@ -414,38 +420,103 @@ public class MainPanel extends MainPanelLayout {
         List<Item> selectedItems = itemTable.getAllSelectedItems();
         if (selectedItems != null) {
             if (setsSelected()) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                        this,
-                        "Delete " + selectedItem + " from " + selectedDivision + "?",
-                        "Delete",
-                        JOptionPane.YES_NO_OPTION)) {
-
-                    tableRemoveItem(selectedItem);
-                    ((Set)selectedDivision).removeSetItem(selectedItem);
-                    selectedItem = null;
-                    updateEnabledComponents();
-                }
+                deleteItemsFromSet(selectedItems);
             } else {
-                if (selectedItems.size() == 1) {
-                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                            this,
-                            "Delete " + selectedItems.get(0) + "?",
-                            "Delete",
-                            JOptionPane.YES_NO_OPTION)) {
-                        selectedItems.get(0).delete();
+                deleteItems(selectedItems);
+            }
+        }
+    }
+
+    private void deleteItems(List<Item> selectedItems) {
+        String message = "";
+        boolean delete = true;
+
+        if (selectedItems.size() == 1) {
+            message = "Delete " + selectedItems.get(0) + "?";
+        } else if (selectedItems.size() > 1) {
+            message = "Delete " + selectedItems.size() + " selected items?";
+        } else {
+            delete = false;
+        }
+
+        delete &= JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+                this,
+                message,
+                "Delete",
+                JOptionPane.YES_NO_OPTION);
+
+        if (delete) {
+            boolean askAgain = true;
+            for (Item item : selectedItems) {
+                List<SetItemLink> setItemLinks = SearchManager.sm().findSetItemLinksByItemId(item.getId());
+                if (askAgain && setItemLinks.size() > 0) {
+                    String msg = item.toString() + " is contained in a set, deleting the item will also delete it from the set. Do you want to go on?";
+                    JCheckBox forAllItems = new JCheckBox("Do this for all items", true);
+                    Object[] params;
+                    if (selectedItems.size() > 1) {
+                        params = new Object[] {msg, forAllItems};
+                    } else {
+                        params = new Object[] {msg};
                     }
-                } else if (selectedItems.size() > 1) {
                     if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                            this,
-                            "Delete all " + selectedItems.size() + " selected items?",
-                            "Delete",
-                            JOptionPane.YES_NO_OPTION)) {
-                        for (Item item : selectedItems) {
-                            item.delete();
+                            MainPanel.this,
+                            params,
+                            "Contained in set",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE)) {
+
+                        askAgain = !forAllItems.isSelected();
+
+                        for (SetItemLink setItemLink : setItemLinks) {
+                            setItemLink.getSet().removeSetItem(item);
+                        }
+
+                        item.delete();
+                    }
+                } else {
+                    if (!askAgain) {
+                        for (SetItemLink setItemLink : setItemLinks) {
+                            setItemLink.getSet().removeSetItem(item);
                         }
                     }
+                    item.delete();
                 }
             }
+        }
+    }
+
+    private void deleteItemsFromSet(List<Item> selectedItems) {
+        int res = JOptionPane.NO_OPTION;
+        JCheckBox checkBox = new JCheckBox("Also delete item", false);
+
+        if (selectedItems.size() == 1) {
+            String message = "Delete " + selectedItems.get(0) + " from " + selectedDivision + "?";
+            Object[] params = {message, checkBox};
+            res = JOptionPane.showConfirmDialog(
+                    this,
+                    params,
+                    "Delete",
+                    JOptionPane.YES_NO_OPTION);
+        } else if (selectedItems.size() > 1) {
+            String message = "Delete all " + selectedItems.size() + " selected items?";
+            Object[] params = {message, checkBox};
+            res = JOptionPane.showConfirmDialog(
+                    this,
+                    params,
+                    "Delete",
+                    JOptionPane.YES_NO_OPTION);
+        }
+
+        if (res == JOptionPane.YES_OPTION) {
+            for (Item item : selectedItems) {
+                tableRemoveItem(item);
+                ((Set)selectedDivision).removeSetItem(item);
+                if (checkBox.isSelected()) {
+                    item.delete();
+                }
+            }
+            selectedItem = null;
+            updateEnabledComponents();
         }
     }
 
@@ -549,6 +620,24 @@ public class MainPanel extends MainPanelLayout {
     public void onShowHistory(Item item) {
         if (item != null) {
             application.showHistory(item);
+        }
+    }
+
+    private void onAddItemToSet(Set set, Item item) {
+        if (set != null && item != null) {
+            selectedItem = item;
+            selectedDivision = set;
+
+            // Add to table
+            treeSelectDivision(selectedDivision);
+            tableInitialize(selectedDivision);
+            if (set.addSetItem(item)) {
+                tableAddItem(item);
+            }
+            // Select in table
+            tableSelectItem(item);
+            detailPanel.updateComponents(selectedItem);
+            updateEnabledComponents();
         }
     }
 

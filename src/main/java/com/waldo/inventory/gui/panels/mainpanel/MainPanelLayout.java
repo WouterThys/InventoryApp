@@ -174,6 +174,12 @@ abstract class MainPanelLayout extends JPanel implements
         treeModel.setSelectedObject(selectedDivision);
     }
 
+    void treeSelectDivision(DbObject division) {
+        if (division != null) {
+            treeModel.setSelectedObject(division);
+        }
+    }
+
     private void createNodes(DefaultMutableTreeNode rootNode) {
         rootNode.add(iRoot);
         rootNode.add(sRoot);

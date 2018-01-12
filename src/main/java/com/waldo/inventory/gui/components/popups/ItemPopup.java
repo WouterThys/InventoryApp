@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.components.actions.*;
+import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,6 +22,7 @@ public abstract class ItemPopup extends JPopupMenu {
     public abstract void onOpenOnlineDataSheet(Item item);
     public abstract void onOrderItem(Item item);
     public abstract void onShowHistory(Item item);
+    public abstract void onAddToSet(Set set, Item item);
 
     private void init(final Item item) {
 
@@ -65,7 +68,7 @@ public abstract class ItemPopup extends JPopupMenu {
             }
         };
 
-
+        // Data sheets
         JMenu dsMenu = new JMenu("Open data sheet");
         dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
         dsMenu.add(new JMenuItem(openItemDataSheetLocalAction));
@@ -73,11 +76,25 @@ public abstract class ItemPopup extends JPopupMenu {
         openItemDataSheetOnlineAction.setEnabled(!item.getOnlineDataSheet().isEmpty());
         openItemDataSheetLocalAction.setEnabled(!item.getLocalDataSheet().isEmpty());
 
+        // Sets
+        JMenu setMenu = new JMenu("Add to set");
+        for (Set set : CacheManager.cache().getSets()) {
+            setMenu.add(new JMenuItem(new AddItemToSetAction(set) {
+                @Override
+                public void onAddToSet(ActionEvent e, Set set) {
+                    ItemPopup.this.onAddToSet(set, item);
+                }
+            }));
+        }
+
+        // Add
         add(editAction);
         add(deleteAction);
         addSeparator();
         add(orderItemAction);
         add(showItemHistoryAction);
         add(dsMenu);
+        addSeparator();
+        add(setMenu);
     }
 }

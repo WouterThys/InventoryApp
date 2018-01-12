@@ -77,9 +77,10 @@ public class Value {
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof Value) {
             Value v = (Value) obj;
-            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
-                return true;
-            }
+//            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
+//                return true;
+//            }
+            return v.toString().equals(toString());
         }
         return false;
     }

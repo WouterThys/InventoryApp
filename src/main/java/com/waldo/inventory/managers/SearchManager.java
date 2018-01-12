@@ -634,4 +634,16 @@ public class SearchManager {
         }
         return null;
     }
+
+    public List<SetItemLink> findSetItemLinksByItemId(long itemId) {
+        List<SetItemLink> setItemLinks = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink link : cache().getSetItemLinks()) {
+                if (link.getItemId() == itemId) {
+                    setItemLinks.add(link);
+                }
+            }
+        }
+        return setItemLinks;
+    }
 }

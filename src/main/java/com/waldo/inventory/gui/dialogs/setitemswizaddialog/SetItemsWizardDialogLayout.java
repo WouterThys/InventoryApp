@@ -30,8 +30,8 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     Set selectedSet;
-     final WizardSettings wizardSettings;
+     private final Set selectedSet;
+     private final WizardSettings wizardSettings;
      private String currentTab = PANEL_ITEMS;
 
     /*
@@ -107,6 +107,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);
         getButtonNeutral().setText("Back");
+        setResizable(true);
 
         // This
         cardLayout = new CardLayout();

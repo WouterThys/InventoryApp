@@ -30,7 +30,7 @@ class WizardParsePanel extends JPanel implements
         IdBToolBar.IdbToolBarListener,
         ListSelectionListener,
         CacheChangedListener<Item> {
-    
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -72,8 +72,8 @@ class WizardParsePanel extends JPanel implements
     public void replace(Item selectedItem) {
         if (selectedItem != null) {
             AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search", AdvancedSearchDialogLayout.SearchType.SearchWord);
-            if(dialog.showDialog() == IDialog.OK) {
-                Item newItem = (Item) dialog.getSelectedItem();
+            if (dialog.showDialog() == IDialog.OK) {
+                Item newItem = dialog.getSelectedItem();
 
                 if (newItem != null) {
                     tableModel.replaceItem(selectedItem, newItem);
@@ -131,29 +131,32 @@ class WizardParsePanel extends JPanel implements
                 if (settings.isKeepOldSetItems() && settings.isReplaceValues()) {
                     item = findByValue(newSetItems, value);
                     if (item != null) {
+                        if (settings.isOverWriteLocations()) {
+                            item.setLocationId(settings.getLocation(value).getId());
+                        }
                         continue;
                     }
                 }
-                    String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
-                    item = new Item(
-                            name,
-                            settings.getTypeName(),
-                            value,
-                            settings.getManufacturer(),
-                            settings.getPackageType(),
-                            settings.getPins(),
-                            settings.getAmount(),
-                            settings.getLocation(value),
-                            settings.getSelectedSet());
+                String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
+                item = new Item(
+                        name,
+                        settings.getTypeName(),
+                        value,
+                        settings.getManufacturer(),
+                        settings.getPackageType(),
+                        settings.getPins(),
+                        settings.getAmount(),
+                        settings.getLocation(value),
+                        settings.getSelectedSet());
 
 
                 newSetItems.add(item);
             }
-
         }
         newSetItems.sort(new ComparatorUtils.ItemValueComparator());
         return newSetItems;
     }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -239,6 +242,7 @@ class WizardParsePanel extends JPanel implements
         tableModel = new IWizardSetItemsTableModel();
         setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
+        setItemTable.setRowSorter(null);
 
         numberOfItemsLbl = new ILabel();
         numberOfLocationsLbl = new ILabel();
@@ -287,12 +291,12 @@ class WizardParsePanel extends JPanel implements
 
         infoPnl.setBorder(BorderFactory.createCompoundBorder(
                 GuiUtils.createTitleBorder("Result"),
-                BorderFactory.createEmptyBorder(2,50,2,2)
+                BorderFactory.createEmptyBorder(2, 50, 2, 2)
         ));
 
         tablePnl.setBorder(BorderFactory.createCompoundBorder(
                 GuiUtils.createTitleBorder("Set items"),
-                BorderFactory.createEmptyBorder(2,5,10,5)
+                BorderFactory.createEmptyBorder(2, 5, 10, 5)
         ));
 
         add(infoPnl, BorderLayout.NORTH);

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Location;
@@ -106,6 +105,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
                     }
                 }
             //}
+            settings.setOverWriteLocations(overWrite);
             settings.setNumberOfLocations(total);
         }
     }

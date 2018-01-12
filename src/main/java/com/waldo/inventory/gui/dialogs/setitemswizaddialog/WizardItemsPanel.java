@@ -134,16 +134,19 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
                 for (int i = 3; i < 10; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                minUnitCb.setSelectedIndex(2);
                 break;
             case SetItemValueParser.C:
                 for (int i = 0; i < 6; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                minUnitCbModel.setSelectedItem(Statics.UnitMultipliers.p);
                 break;
             case SetItemValueParser.L:
                 for (int i = 0; i < 6; i++) {
                     minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                minUnitCbModel.setSelectedItem(Statics.UnitMultipliers.m);
                 break;
         }
         minUnitCb.setSelectedIndex(1);
@@ -156,16 +159,19 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
                 for (int i = 3; i < 10; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.M);
                 break;
             case SetItemValueParser.C:
                 for (int i = 0; i < 6; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.M);
                 break;
             case SetItemValueParser.L:
                 for (int i = 0; i < 6; i++) {
                     maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
                 }
+                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.x);
                 break;
         }
         maxUnitCb.setSelectedIndex(2);

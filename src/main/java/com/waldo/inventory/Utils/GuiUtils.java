@@ -163,7 +163,8 @@ public class GuiUtils {
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
-            lbl.setPreferredSize(new Dimension(120,20));
+            lbl.setMinimumSize(new Dimension(140,20));
+            lbl.setPreferredSize(new Dimension(120, 20));
             panel.add(lbl, this);
 
             gridwidth = oldGw;
