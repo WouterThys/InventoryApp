@@ -60,6 +60,9 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
+    //
+    // Table
+    //
     @Override
     void onTableRowClicked(MouseEvent e) {
         if (e.getClickCount() == 1) {
@@ -122,6 +125,18 @@ public class MainPanel extends MainPanelLayout {
                 onEditItem();
             }
         }
+    }
+
+    @Override
+    public void onShowSets(boolean show) {
+        showSets = show;
+        tableInitialize(selectedDivision);
+    }
+
+    @Override
+    public void onShowSetItems(boolean show) {
+        showSetItems = show;
+        tableInitialize(selectedDivision);
     }
 
     private void initListeners() {

@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
@@ -30,7 +31,8 @@ abstract class MainPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.OnItemDetailListener {
+        ItemDetailPanelLayout.OnItemDetailListener,
+        TableOptionsPopup.TableOptionsListener {
 
     private static final String TREE_ITEMS = "Items";
     private static final String TREE_SETS = "Sets";
@@ -60,6 +62,9 @@ abstract class MainPanelLayout extends JPanel implements
     private final Set setRoot = new Set(TREE_SETS);
     private final DefaultMutableTreeNode iRoot = new DefaultMutableTreeNode(itemRoot, true);
     private final DefaultMutableTreeNode sRoot = new DefaultMutableTreeNode(setRoot, true);
+
+    boolean showSets = true;
+    boolean showSetItems = false;
 
     /*
      *                  CONSTRUCTOR
@@ -97,7 +102,7 @@ abstract class MainPanelLayout extends JPanel implements
     public void tableInitialize(DbObject selectedObject) {
         java.util.List<Item> itemList = new ArrayList<>();
         if (selectedObject == null || selectedObject.getName().equals(TREE_ITEMS)) {
-            itemList = new ArrayList<>(cache().getItems());
+            itemList = filterItems(cache().getItems(), showSets, showSetItems);
         } else if (selectedObject.getName().equals(TREE_SETS)) {
             for (Set set : cache().getSets()) {
                 itemList.addAll(set.getSetItems());
@@ -106,15 +111,15 @@ abstract class MainPanelLayout extends JPanel implements
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
-                    itemList = sm().findItemListForCategory(c);
+                    itemList = filterItems(sm().findItemListForCategory(c), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Product p = (Product)selectedObject;
-                    itemList = sm().findItemListForProduct(p);
+                    itemList = filterItems(sm().findItemListForProduct(p), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_TYPE:
                     Type t = (Type)selectedObject;
-                    itemList = sm().findItemListForType(t);
+                    itemList = filterItems(sm().findItemListForType(t), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_SET:
                     itemList = ((Set) selectedObject).getSetItems();
@@ -123,6 +128,37 @@ abstract class MainPanelLayout extends JPanel implements
             }
         }
         tableModel.setItemList(itemList);
+    }
+
+    private List<Item> filterItems(List<Item> itemList, boolean showSets, boolean showSetItems) {
+        List<Item> filtered = new ArrayList<>();
+        if (itemList != null && itemList.size() > 0) {
+            if (showSets && showSetItems) { // Both true
+                filtered = new ArrayList<>(itemList);
+            } else if (!showSets && !showSetItems){ // Both false
+                for (Item item : itemList) {
+                    if (!item.isSet() && !item.isSetItem()) {
+                        filtered.add(item);
+                    }
+                }
+            } else { // One is true
+                if (!showSets) {
+                    for (Item item : itemList) {
+                        if (!item.isSet()) {
+                            filtered.add(item);
+                        }
+                    }
+                }
+                if (!showSetItems) {
+                    for (Item item : itemList) {
+                        if (!item.isSetItem()) {
+                            filtered.add(item);
+                        }
+                    }
+                }
+            }
+        }
+        return filtered;
     }
 
     long tableUpdate() {
@@ -315,10 +351,11 @@ abstract class MainPanelLayout extends JPanel implements
                 onTableRowClicked(e);
             }
         });
-        itemTable.addSortOption(new ComparatorUtils.ItemDivisionComparator());
-        itemTable.addSortOption(new ComparatorUtils.DbObjectNameComparator());
-        itemTable.addSortOption(new ComparatorUtils.ItemManufacturerComparator());
-        itemTable.addSortOption(new ComparatorUtils.ItemLocationComparator());
+        itemTable.addSortOption(new ComparatorUtils.ItemDivisionComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.DbObjectNameComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.ItemManufacturerComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.ItemLocationComparator(), null);
+        itemTable.addTableOptionsListener(this);
         tableInitialize(null);
 
         // Details

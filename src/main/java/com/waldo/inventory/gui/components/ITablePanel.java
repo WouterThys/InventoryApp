@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 
 import javax.swing.*;
@@ -83,11 +84,6 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     public void addColumnCellEditor(int columnIndex, TableCellEditor editor) {
         TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
         tableColumn.setCellEditor(editor);
-    }
-
-    public void addColumnRenderer(int columnIndex, TableCellRenderer cellRenderer) {
-        TableColumn tableColumn = table.getColumnModel().getColumn(columnIndex);
-        tableColumn.setCellRenderer(cellRenderer);
     }
 
     public void addMouseListener(MouseListener listener) {
@@ -183,8 +179,12 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         }
     }
 
-    public void addSortOption(Comparator comparator) {
-        tableToolBar.addSortComparator(comparator);
+    public void addSortOption(Comparator comparator, ImageIcon icon) {
+        tableToolBar.addSortComparator(comparator, comparator.toString(), icon);
+    }
+
+    public void addTableOptionsListener(TableOptionsPopup.TableOptionsListener tableOptionsListener) {
+        tableToolBar.addTableOptionsListener(tableOptionsListener);
     }
 
     public JPanel getTitlePanel() {
