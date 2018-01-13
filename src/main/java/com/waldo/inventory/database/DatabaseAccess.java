@@ -4,7 +4,6 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.*;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
@@ -12,8 +11,8 @@ import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.managers.TableManager;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.inventory.managers.TableManager;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
@@ -549,39 +548,40 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     i = new Item();
                     i.setId(rs.getLong("id"));
-                    i.setName(rs.getString("name"));
-                    i.setIconPath(rs.getString("iconPath"));
-                    i.setDescription(rs.getString("description"));
-                    i.setPrice(rs.getDouble("price"));
-                    i.setCategoryId(rs.getInt("categoryId"));
-                    i.setProductId(rs.getInt("productId"));
-                    i.setTypeId(rs.getInt("typeId"));
-                    i.setLocalDataSheet(rs.getString("localDataSheet"));
-                    i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
-                    i.setManufacturerId(rs.getLong("manufacturerId"));
-                    i.setLocationId(rs.getLong("locationId"));
-                    i.setAmount(rs.getInt("amount"));
-                    i.setAmountType(rs.getInt("amountType"));
-                    i.setOrderState(rs.getInt("orderState"));
-                    i.setPackageTypeId(rs.getLong("packageTypeId"));
-                    i.setPins(rs.getInt("pins"));
-                    i.setRating(rs.getFloat("rating"));
-                    i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
-                    //i.setRemarksFile(rs.getString("remark"));
-                    i.setSet(rs.getBoolean("isSet"));
-                    i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
+                    if (i.getId() > DbObject.UNKNOWN_ID) {
+                        i.setName(rs.getString("name"));
+                        i.setIconPath(rs.getString("iconPath"));
+                        i.setAlias(rs.getString("alias"));
+                        i.setDescription(rs.getString("description"));
+                        i.setPrice(rs.getDouble("price"));
+                        i.setCategoryId(rs.getInt("categoryId"));
+                        i.setProductId(rs.getInt("productId"));
+                        i.setTypeId(rs.getInt("typeId"));
+                        i.setLocalDataSheet(rs.getString("localDataSheet"));
+                        i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
+                        i.setManufacturerId(rs.getLong("manufacturerId"));
+                        i.setLocationId(rs.getLong("locationId"));
+                        i.setAmount(rs.getInt("amount"));
+                        i.setAmountType(rs.getInt("amountType"));
+                        i.setOrderState(rs.getInt("orderState"));
+                        i.setPackageTypeId(rs.getLong("packageTypeId"));
+                        i.setPins(rs.getInt("pins"));
+                        i.setRating(rs.getFloat("rating"));
+                        i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                        i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
 
-                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
-                        i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
-                        i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
-                        i.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), i.createRemarksFileName()));
-                    } else {
-                        i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
-                        i.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
-                        i.setRemarksFile(null);
+                        if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                            i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                            i.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                            i.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), i.createRemarksFileName()));
+                        } else {
+                            i.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
+                            i.getAud().setUpdated(rs.getString("updatedBy"), DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                            i.setRemarksFile(null);
+                        }
+                        i.setInserted(true);
+                        items.add(i);
                     }
-                    i.setInserted(true);
-                    items.add(i);
                 }
             }
         } catch (SQLException e) {
@@ -1355,43 +1355,6 @@ public class DatabaseAccess {
         return orderFileFormats;
     }
 
-    public List<SetItem> updateSetItems()    {
-        List<SetItem> setItems = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return setItems;
-        }
-        Status().setMessage("Fetching set items from DB");
-        SetItem si = null;
-        String sql = scriptResource.readString(SetItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    si = new SetItem();
-                    si.setId(rs.getLong("id"));
-                    si.setName(rs.getString("name"));
-                    si.setIconPath(rs.getString("iconPath"));
-                    si.setAmount(rs.getInt("amount"));
-                    si.setValue(new Value(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit")));
-                    si.setItemId(rs.getLong("itemId"));
-                    si.setLocationId(rs.getLong("locationId"));
-
-                    si.setInserted(true);
-                    setItems.add(si);
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(si, e, OBJECT_SELECT, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-        return setItems;
-    }
-
     public List<PcbItem> updatePcbItems()    {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
@@ -1442,7 +1405,6 @@ public class DatabaseAccess {
                     kil = new PcbItemItemLink();
                     kil.setId(rs.getLong("id"));
                     kil.setItemId(rs.getLong("itemId"));
-                    kil.setSetItemId(rs.getLong("setItemId"));
                     kil.setMatch(rs.getByte("componentMatch"));
                     kil.setPcbItemId(rs.getLong("pcbItemId"));
 
@@ -1543,4 +1505,100 @@ public class DatabaseAccess {
     }
 
 
+
+    public List<Set> updateSets()    {
+        List<Set> sets = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return sets;
+        }
+        Status().setMessage("Fetching sets from DB");
+        Set s = null;
+        String sql = "SELECT * FROM items WHERE isSet = 1";
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    s = new Set();
+                    s.setId(rs.getLong("id"));
+                    s.setName(rs.getString("name"));
+                    s.setIconPath(rs.getString("iconPath"));
+                    s.setAlias(rs.getString("alias"));
+                    s.setDescription(rs.getString("description"));
+                    s.setPrice(rs.getDouble("price"));
+                    s.setCategoryId(rs.getInt("categoryId"));
+                    s.setProductId(rs.getInt("productId"));
+                    s.setTypeId(rs.getInt("typeId"));
+                    s.setLocalDataSheet(rs.getString("localDataSheet"));
+                    s.setOnlineDataSheet(rs.getString("onlineDataSheet"));
+                    s.setManufacturerId(rs.getLong("manufacturerId"));
+                    s.setLocationId(rs.getLong("locationId"));
+                    s.setAmount(rs.getInt("amount"));
+                    s.setAmountType(rs.getInt("amountType"));
+                    s.setOrderState(rs.getInt("orderState"));
+                    s.setPackageTypeId(rs.getLong("packageTypeId"));
+                    s.setPins(rs.getInt("pins"));
+                    s.setRating(rs.getFloat("rating"));
+                    s.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                    s.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        s.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
+                        s.getAud().setUpdated(rs.getString("updatedBy"), rs.getTimestamp("updatedDate"));
+                        s.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), s.createRemarksFileName()));
+                    } else {
+                        s.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
+                        s.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                        s.setRemarksFile(null);
+                    }
+                    s.setInserted(true);
+                    sets.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return sets;
+    }
+
+    public List<SetItemLink> updateSetItemLinks()    {
+        List<SetItemLink> setItemLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return setItemLinks;
+        }
+        Status().setMessage("Fetching set item links from DB");
+        SetItemLink s = null;
+        String sql = scriptResource.readString(SetItemLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    s = new SetItemLink();
+                    s.setId(rs.getLong("id"));
+
+                    s.setSetId(rs.getLong("setId"));
+                    s.setItemId(rs.getLong("itemId"));
+
+                    s.setInserted(true);
+                    setItemLinks.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return setItemLinks;
+    }
 }

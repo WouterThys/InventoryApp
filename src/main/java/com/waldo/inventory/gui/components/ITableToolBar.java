@@ -2,6 +2,8 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.gui.components.actions.TableOptionsAction;
+import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 
 import javax.swing.*;
@@ -11,7 +13,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.util.Comparator;
 import java.util.regex.PatternSyntaxException;
 
@@ -19,10 +20,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiInterface {
 
-    private ILabel sortLbl;
 
-    private DefaultComboBoxModel<Comparator> sortCbModel;
-    private JComboBox<Comparator> sortCb;
+
+    private TableOptionsAction tableOptionsAction;
+    private TableOptionsPopup tableOptionsPopup;
 
     private AbstractAction filterAa;
     private ITextField filterTf;
@@ -59,8 +60,12 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
         return  filterTf.getText();
     }
 
-    void addSortComparator(Comparator comparable) {
-        sortCbModel.addElement(comparable);
+    void addSortComparator(Comparator comparable, String name, ImageIcon imageIcon) {
+        tableOptionsPopup.addSortOption(comparable, name, imageIcon);
+    }
+
+    void addTableOptionsListener(TableOptionsPopup.TableOptionsListener tableOptionsListener) {
+        tableOptionsPopup.addTableOptionsListener(tableOptionsListener);
     }
 
     @Override
@@ -70,19 +75,22 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
         setFloatable(false);
         setBorder(new EmptyBorder(5,5,5,5));
 
-        // Sort
-        sortLbl = new ILabel(imageResource.readImage("Toolbar.Table.ApplySort"));
-        sortCbModel = new DefaultComboBoxModel<>();
-        sortCb = new JComboBox<>(sortCbModel);
-        sortCb.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
+        tableOptionsAction = new TableOptionsAction() {
+            @Override
+            public void onTableOptions(ActionEvent e) {
+                tableOptionsPopup.show(ITableToolBar.this, 0,0);
+            }
+        };
+        tableOptionsPopup = new TableOptionsPopup() {
+            @Override
+            public void onSortBy(Comparator comparator) {
                 if (table.getModel() instanceof IAbstractTableModel) {
                     IAbstractTableModel tm = (IAbstractTableModel) table.getModel();
-                    tm.setSortOrder((Comparator) sortCb.getSelectedItem());
+                    tm.setSortOrder(comparator);
                     tm.sort();
                 }
             }
-        });
+        };
 
         // Filter
         filterAa = new AbstractAction("Filter", imageResource.readImage("Toolbar.Table.ApplyFilter")) {
@@ -136,8 +144,7 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
         add(filterAa);
         if (hasSortOption) {
             addSeparator();
-            add(sortLbl);
-            add(sortCb);
+            add(tableOptionsAction);
         }
     }
 

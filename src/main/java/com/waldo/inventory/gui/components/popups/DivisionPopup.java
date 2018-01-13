@@ -1,31 +1,34 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.gui.components.actions.AddDivisionAction;
-import com.waldo.inventory.gui.components.actions.DeleteDivisionAction;
-import com.waldo.inventory.gui.components.actions.EditDivisionAction;
+import com.waldo.inventory.gui.components.actions.AddAction;
+import com.waldo.inventory.gui.components.actions.DeleteAction;
+import com.waldo.inventory.gui.components.actions.EditAction;
+import com.waldo.inventory.gui.components.actions.WizardAction;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public abstract class DivisionPopup extends JPopupMenu {
 
-    public enum DivisionType {
-        Root,
+    private enum DivisionType {
+        RootItem,
+        RootSet,
         Category,
         Product,
-        Type
+        Type,
+        Set
     }
 
-    protected DivisionPopup(DbObject division, boolean isRoot) {
+    protected DivisionPopup(DbObject division) {
         super();
 
         switch (DbObject.getType(division)) {
+            case DbObject.TYPE_ITEM:
+                init(DivisionType.RootItem);
+                break;
             case DbObject.TYPE_CATEGORY:
-                if (isRoot) {
-                    init(DivisionType.Root);
-                } else {
-                    init(DivisionType.Category);
-                }
+                init(DivisionType.Category);
                 break;
             case DbObject.TYPE_PRODUCT:
                 init(DivisionType.Product);
@@ -33,62 +36,90 @@ public abstract class DivisionPopup extends JPopupMenu {
             case DbObject.TYPE_TYPE:
                 init(DivisionType.Type);
                 break;
+            case DbObject.TYPE_SET:
+                if (division.canBeSaved()) {
+                    init(DivisionType.Set);
+                } else {
+                    init(DivisionType.RootSet);
+                }
+                break;
         }
     }
 
     public abstract void onAddDivision();
     public abstract void onEditDivision();
     public abstract void onDeleteDivision();
+    public abstract void onSetWizardAction();
 
     private void init(DivisionType divisionType) {
 
-        AddDivisionAction addDivisionAction = new AddDivisionAction() {
+        AddAction addDivisionAction = new AddAction() {
             @Override
-            public void onAddDivision() {
-                DivisionPopup.this.onAddDivision();
+            public void onAdd(ActionEvent e) {
+                onAddDivision();
             }
         };
 
-        EditDivisionAction editDivisionAction = new EditDivisionAction() {
+        EditAction editDivisionAction = new EditAction() {
             @Override
-            public void onEditDivision() {
-                DivisionPopup.this.onEditDivision();
+            public void onEdit(ActionEvent e) {
+                onEditDivision();
             }
         };
 
-        DeleteDivisionAction deleteDivisionAction = new DeleteDivisionAction() {
+        DeleteAction deleteDivisionAction = new DeleteAction() {
             @Override
-            public void onDeleteDivision() {
-                DivisionPopup.this.onDeleteDivision();
+            public void onDelete() {
+                onDeleteDivision();
+            }
+        };
+
+        WizardAction setItemsWizardAction = new WizardAction() {
+            @Override
+            public void onMagic() {
+                onSetWizardAction();
             }
         };
 
         switch (divisionType) {
-            case Root:
-                addDivisionAction.putValue(AbstractAction.NAME, "Add category");
+            case RootItem:
+                addDivisionAction.setName("Add category");
+                add(addDivisionAction);
+                break;
+            case RootSet:
+                addDivisionAction.setName("Add set");
                 add(addDivisionAction);
                 break;
             case Category:
-                addDivisionAction.putValue(AbstractAction.NAME, "Add product");
-                editDivisionAction.putValue(AbstractAction.NAME, "Edit category");
-                deleteDivisionAction.putValue(AbstractAction.NAME, "Delete category");
+                addDivisionAction.setName("Add product");
+                editDivisionAction.setName("Edit category");
+                deleteDivisionAction.setName("Delete category");
                 add(addDivisionAction);
                 add(editDivisionAction);
                 add(deleteDivisionAction);
                 break;
             case Product:
-                addDivisionAction.putValue(AbstractAction.NAME, "Add type");
-                editDivisionAction.putValue(AbstractAction.NAME, "Edit product");
-                deleteDivisionAction.putValue(AbstractAction.NAME, "Delete product");
+                addDivisionAction.setName("Add type");
+                editDivisionAction.setName("Edit product");
+                deleteDivisionAction.setName("Delete product");
                 add(addDivisionAction);
                 add(editDivisionAction);
                 add(deleteDivisionAction);
                 break;
             case Type:
-                editDivisionAction.putValue(AbstractAction.NAME, "Edit type");
-                deleteDivisionAction.putValue(AbstractAction.NAME, "Delete type");
+                editDivisionAction.setName("Edit type");
+                deleteDivisionAction.setName("Delete type");
                 add(editDivisionAction);
                 add(deleteDivisionAction);
+                break;
+            case Set:
+                editDivisionAction.setName("Edit set");
+                deleteDivisionAction.setName("Delete set");
+                setItemsWizardAction.setName("Set item wizard");
+                add(editDivisionAction);
+                add(deleteDivisionAction);
+                addSeparator();
+                add(setItemsWizardAction);
                 break;
         }
 

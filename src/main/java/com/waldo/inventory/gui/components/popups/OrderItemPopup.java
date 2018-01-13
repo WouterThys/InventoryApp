@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public abstract class OrderItemPopup extends JPopupMenu {
 
@@ -25,9 +26,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
 
     private void init(OrderItem orderItem) {
         // Order item
-        DeleteOrderItemAction deleteOrderItemAction = new DeleteOrderItemAction() {
+        DeleteAction deleteOrderItemAction = new DeleteAction("Delete order item") {
             @Override
-            public void onDeleteOrderItem() {
+            public void onDelete() {
                 OrderItemPopup.this.onDeleteOrderItem(orderItem);
             }
         };
@@ -40,9 +41,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
 
         // Item
-        EditItemAction editItemAction = new EditItemAction() {
+        EditAction editAction = new EditAction("Edit order item") {
             @Override
-            public void onEditItem() {
+            public void onEdit(ActionEvent e) {
                 OrderItemPopup.this.onEditItem(orderItem);
             }
         };
@@ -86,7 +87,7 @@ public abstract class OrderItemPopup extends JPopupMenu {
         add(deleteOrderItemAction);
         add(editReferenceAction);
         addSeparator();
-        add(editItemAction);
+        add(editAction);
         add(showItemHistoryAction);
         add(dsMenu);
         addSeparator();

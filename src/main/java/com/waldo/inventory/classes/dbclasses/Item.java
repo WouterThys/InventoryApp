@@ -21,49 +21,82 @@ public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
-    private Value value;
-    private String description = "";
-    private double price = 0;
+    protected String alias;
+    protected Value value;
+    protected String description = "";
+    protected double price = 0;
 
-    private long categoryId = -1;
-    private Category category;
-    private long productId = -1;
-    private Product product;
-    private long typeId = -1;
-    private Type type;
+    protected long categoryId = -1;
+    protected Category category;
+    protected long productId = -1;
+    protected Product product;
+    protected long typeId = -1;
+    protected Type type;
 
-    private String localDataSheet = "";
-    private String onlineDataSheet = "";
+    protected String localDataSheet = "";
+    protected String onlineDataSheet = "";
 
-    private long manufacturerId = -1;
-    private Manufacturer manufacturer;
-    private long locationId = UNKNOWN_ID;
-    private Location location;
-    private int amount = 0;
-    private int amountType = Statics.ItemAmountTypes.NONE;
-    private int orderState = Statics.ItemOrderStates.NONE;
+    protected long manufacturerId = -1;
+    protected Manufacturer manufacturer;
+    protected long locationId = UNKNOWN_ID;
+    protected Location location;
+    protected int amount = 0;
+    protected int amountType = Statics.ItemAmountTypes.NONE;
+    protected int orderState = Statics.ItemOrderStates.NONE;
 
-    private long packageTypeId = UNKNOWN_ID;
-    private PackageType packageType;
-    private int pins;
+    protected long packageTypeId = UNKNOWN_ID;
+    protected PackageType packageType;
+    protected int pins;
 
-    private float rating;
-    private boolean discourageOrder;
-    private String remarksFile;
-
-    private boolean isSet;
-    private List<SetItem> setItems;
+    protected float rating;
+    protected boolean discourageOrder;
+    protected String remarksFile;
 
     public Item() {
+        this("");
+    }
+
+    public Item(String name) {
         super(TABLE_NAME);
-        matchCount = 12;
+        matchCount = 13;
+        setName(name);
+    }
+
+    public Item(String name, String alias, Value value, Manufacturer manufacturer, PackageType packageType, int pins, int amount, Location location, Set set) {
+        this(name);
+        if (value == null) {
+            value = new Value();
+        }
+        this.value = value;
+        this.manufacturer = manufacturer;
+        this.location = location;
+        this.packageType = packageType;
+        this.pins = pins;
+        this.amount = amount;
+        this.alias = alias;
+        this.description = alias + " " + value.toString();
+
+        if (manufacturer != null) manufacturerId = manufacturer.getId();
+        if (location != null) locationId = location.getId();
+        if (packageType != null) packageTypeId = packageType.getId();
+
+        if (set != null) {
+            this.rating = set.getRating();
+            this.category = set.getCategory();
+            this.product = set.getProduct();
+            this.type = set.getType();
+
+            if (category != null) categoryId = category.getId();
+            if (product != null) productId = product.getId();
+            if (type != null) typeId = type.getId();
+        }
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
         statement.setString(ndx++, name);
-
+        statement.setString(ndx++, alias);
         statement.setString(ndx++, description);
         statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
@@ -107,7 +140,7 @@ public class Item extends DbObject {
             statement.setString(ndx++, null);
         }
 
-
+        // Set items
         statement.setBoolean(ndx++, isSet());
 
         // Value
@@ -127,11 +160,12 @@ public class Item extends DbObject {
     @Override
     protected int findMatch(String searchTerm) {
         if (this.isUnknown()) return 0;
-        getObjectMatch().setMatchCount(12);
+        getObjectMatch().setMatchCount(matchCount);
         int match = super.findMatch(searchTerm);
 
 
         // Local objects
+        if (getAlias().toUpperCase().contains(searchTerm)) match ++;
         if (getDescription().toUpperCase().contains(searchTerm)) match++;
         if (getLocalDataSheet().toUpperCase().contains(searchTerm)) match++;
         if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) match++;
@@ -196,12 +230,13 @@ public class Item extends DbObject {
             }
 
                 String itemName = getName().toUpperCase();
+                String itemAlias = getAlias().toUpperCase();
 
-                if(PcbItem.matchesName(pcbName, itemName)) match++;
+                if(PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
                 if (getValue().hasValue()) {
                     if (PcbItem.matchesValue(pcbValue, getValue(), itemName)) match++;
                 } else {
-                    if (PcbItem.matchesName(pcbValue, getName())) match++;
+                    if(PcbItem.matchesName(pcbName, itemName)) match++;
                 }
 
                 // Only check footprint match if there is already a match
@@ -218,6 +253,7 @@ public class Item extends DbObject {
         Item item = (Item) copyInto;
         copyBaseFields(item);
 
+        item.setAlias(getAlias());
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
         item.setPrice(getPrice());
@@ -236,7 +272,6 @@ public class Item extends DbObject {
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarksFile(getRemarksFile());
-        item.setSet(isSet());
 
         return item;
     }
@@ -254,6 +289,7 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
+                if (!(ref.getAlias().equals(getAlias()))) {System.out.println("Alias differs"); return false; }
                 if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
@@ -274,8 +310,7 @@ public class Item extends DbObject {
                 if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
                 if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
                 if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
-                //if (!(ref.getRemarksFile().equals(getRemarksFile()))) { System.out.println("Remarks differs"); return false; }
-                if (!(ref.isSet() == isSet())) { System.out.println("Is set differs"); return false; }
+                if (!(ref.isSet() == isSet())) { System.out.println("IsSet differs"); return false; }
             }
         }
         return result;
@@ -285,16 +320,6 @@ public class Item extends DbObject {
         return getId() + "_ItemObject_";
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
     //
     // DatabaseAccess tells the object is updated
     //
@@ -302,20 +327,21 @@ public class Item extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DatabaseAccess.OBJECT_INSERT: {
-                List<Item> list = cache().getItems();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+                    List<Item> list = cache().getItems();
+                    if (!list.contains(this)) {
+                        list.add(this);
+                    }
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
-                List<Item> list = cache().getItems();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+                    List<Item> list = cache().getItems();
+                    if (list.contains(this)) {
+                        list.remove(this);
+                    }
+
                 break;
             }
         }
@@ -335,6 +361,17 @@ public class Item extends DbObject {
         if (currentState != getOrderState()) {
             save();
         }
+    }
+
+    public String getAlias() {
+        if (alias == null) {
+            alias = "";
+        }
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getDescription() {
@@ -451,14 +488,6 @@ public class Item extends DbObject {
     }
 
     public long getLocationId() {
-        if (isSet()) {
-            // Check if set has locations
-            for (SetItem setItem : getSetItems()) {
-                if (setItem.getLocationId() > UNKNOWN_ID) {
-                    return -1; // If one of the SetItems has a location, the item has no location
-                }
-            }
-        }
         return locationId;
     }
 
@@ -566,26 +595,12 @@ public class Item extends DbObject {
         return packageType;
     }
 
+    public boolean isSetItem() {
+        return SearchManager.sm().findSetsByItemId(getId()).size() > 0;
+    }
+
     public boolean isSet() {
-        return isSet;
-    }
-
-    public void setSet(boolean set) {
-        isSet = set;
-    }
-
-    public boolean hasSetItems() {
-        return isSet() && getSetItems().size() > 0;
-    }
-
-    public List<SetItem> getSetItems() {
-        if (isSet()) {
-            if (setItems == null) {
-                setItems = SearchManager.sm().findSetItemsByItemId(getId());
-            }
-            return setItems;
-        }
-        return null;
+        return false;
     }
 
     public Value getValue() {

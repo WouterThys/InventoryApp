@@ -68,8 +68,8 @@ public class ISpinner extends JSpinner {
                         ISpinner spinner = (ISpinner) e.getSource();
                         Object newVal = spinner.getValue();
 
-                        Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, fieldClass);
-                        Method getMethod = guiObject.getClass().getDeclaredMethod("get" + fieldName);
+                        Method setMethod = guiObject.getClass().getMethod("set" + fieldName, fieldClass);
+                        Method getMethod = guiObject.getClass().getMethod("get" + fieldName);
 
                         Object oldVal = getMethod.invoke(guiObject);
                         switch (fieldClass.getTypeName()) {

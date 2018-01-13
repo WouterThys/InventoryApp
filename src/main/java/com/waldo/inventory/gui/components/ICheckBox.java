@@ -50,8 +50,8 @@ public class ICheckBox extends JCheckBox implements ItemListener {
                     ICheckBox checkBox = (ICheckBox) e.getSource();
                     String newVal = String.valueOf(checkBox.isSelected());
 
-                    Method setMethod = guiObject.getClass().getDeclaredMethod("set" + fieldName, boolean.class);
-                    Method getMethod = guiObject.getClass().getDeclaredMethod("is" + fieldName);
+                    Method setMethod = guiObject.getClass().getMethod("set" + fieldName, boolean.class);
+                    Method getMethod = guiObject.getClass().getMethod("is" + fieldName);
 
                     String oldVal = String.valueOf(getMethod.invoke(guiObject));
                     setMethod.invoke(guiObject, Boolean.valueOf(newVal));

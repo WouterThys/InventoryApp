@@ -55,12 +55,37 @@ public class GuiUtils {
     }
 
     public static JPanel createComboBoxWithButton(JComboBox comboBox, ActionListener listener) {
-        JPanel boxPanel = new JPanel(new BorderLayout());
         JButton button = new JButton(imageResource.readImage("Toolbar.Db.AddIcon", 16));
         button.addActionListener(listener);
+        return createComboBoxWithButton(comboBox, button);
+    }
+
+    public static JPanel createComboBoxWithButton(JComboBox comboBox, JButton button) {
+        JPanel boxPanel = new JPanel(new BorderLayout());
         boxPanel.add(comboBox, BorderLayout.CENTER);
         boxPanel.add(button, BorderLayout.EAST);
         return boxPanel;
+    }
+
+    public static JToolBar createNewToolbar() {
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        return toolBar;
+    }
+
+    public static JToolBar createNewToolbar(Action... actions) {
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+
+        if (actions.length > 0) {
+            for (Action a : actions) {
+                toolBar.add(a);
+            }
+        }
+
+        return toolBar;
     }
 
     public static TitledBorder createTitleBorder(String name) {
@@ -137,7 +162,10 @@ public class GuiUtils {
             weightx = 0; weighty = 0;
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
-            panel.add(new ILabel(labelText, ILabel.RIGHT), this);
+            ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
+            lbl.setMinimumSize(new Dimension(140,20));
+            lbl.setPreferredSize(new Dimension(120, 20));
+            panel.add(lbl, this);
 
             gridwidth = oldGw;
             gridheight = oldGh;
@@ -639,6 +667,10 @@ public class GuiUtils {
 
         private PackageType packageType;
 
+        public IPackagePanel(Application application) {
+            this(application, null, "", "");
+        }
+
         public IPackagePanel(Application application, IEditedListener listener, String typeField, String pinsField) {
             super();
 
@@ -646,9 +678,18 @@ public class GuiUtils {
 
             initializeComponents();
             initializeLayouts();
+            if (listener != null) {
+                typeCb.addEditedListener(listener, typeField);
+                pinsSp.addEditedListener(listener, pinsField);
+            }
+        }
 
-            typeCb.addEditedListener(listener, typeField);
-            pinsSp.addEditedListener(listener, pinsField);
+        public PackageType getPackageType() {
+            return (PackageType) typeCb.getSelectedItem();
+        }
+
+        public int getPins() {
+            return ((SpinnerNumberModel)pinsSp.getModel()).getNumber().intValue();
         }
 
         public void setPackageType(PackageType packageType, int pins) {
@@ -726,7 +767,6 @@ public class GuiUtils {
             if (packageType != null && !packageType.isUnknown()) {
                 Package p = packageType.getPackage();
                 if (p != null) {
-
                         packageCb.selectItem(p);
                         typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
                         if (packageType.isAllowOtherPinNumbers()) {

@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.classes.dbclasses.SetItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
@@ -16,7 +14,7 @@ public class ILocationButton extends JButton {
 
     private final Location location;
 
-    public ILocationButton(Location location) {
+    ILocationButton(Location location) {
         super();
 
         this.location = location;
@@ -37,11 +35,11 @@ public class ILocationButton extends JButton {
         return location;
     }
 
-    public List<DbObject> getItems() {
+    public List<Item> getItems() {
         return location.getItems();
     }
 
-    public void showPopup(MouseEvent e, Application application) {
+    void showPopup(MouseEvent e, Application application) {
         if (location.getItems().size() > 0) {
             Component component = e.getComponent();
             JPopupMenu popupMenu = new JPopupMenu();
@@ -59,28 +57,16 @@ public class ILocationButton extends JButton {
     }
 
     private void addItemsToPopup(JPopupMenu popupMenu, Application application) {
-        for (DbObject item : location.getItems()) {
+        for (Item item : location.getItems()) {
 
-            JMenuItem menu;
-            if (item instanceof Item) {
-                menu = new JMenuItem(item.getName());
-            } else if (item instanceof SetItem) {
-                menu = new JMenuItem(item.getName() + " - " +((SetItem) item).getValue());
-            } else {
-                menu = null;
-            }
-            if (menu != null) {
+            JMenuItem menu = new JMenuItem(item.getName());
                 menu.addActionListener(e -> {
-                    if (item instanceof Item) {
-                        EditItemDialog dialog = new EditItemDialog(application, "Item", (Item) item);
+                        EditItemDialog dialog = new EditItemDialog<>(application, "Item", item);
                         dialog.showDialog();
-                    } else {
-                        EditItemDialog dialog = new EditItemDialog(application, "Item", ((SetItem) item).getItem());
-                        dialog.showDialog();
-                    }
+
                 });
                 popupMenu.add(menu);
-            }
+
         }
     }
 
@@ -92,7 +78,7 @@ public class ILocationButton extends JButton {
         return location.getCol();
     }
 
-    public Location.LocationLayout getBtnLayout() {
+    Location.LocationLayout getBtnLayout() {
         return location.getLayout();
     }
 

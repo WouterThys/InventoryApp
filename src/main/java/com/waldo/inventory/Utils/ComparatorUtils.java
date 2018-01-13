@@ -1,6 +1,7 @@
 package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -104,11 +105,16 @@ public class ComparatorUtils {
         }
     }
 
-    public static class ItemMatchComparator implements Comparator<Item> {
+    public static class ItemValueComparator implements Comparator<Item> {
+        @Override
+        public String toString() {
+            return "Value";
+        }
+
         @Override
         public int compare(Item o1, Item o2) {
-            MatchComparator mc = new MatchComparator();
-            return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
+            ValueComparator lc = new ValueComparator();
+            return lc.compare(o1.getValue(), o2.getValue());
         }
     }
 
@@ -195,13 +201,13 @@ public class ComparatorUtils {
     }
 
     //
-    // Set item
+    // Value
     //
-    public static class SetItemComparator implements Comparator<SetItem> {
+    public static class ValueComparator implements Comparator<Value> {
         @Override
-        public int compare(SetItem o1, SetItem o2) {
-            if (o1.getValue() != null && o2.getValue() != null) {
-                return o1.getValue().getRealValue().compareTo(o2.getValue().getRealValue());
+        public int compare(Value v1, Value v2) {
+            if (v1 != null && v2 != null) {
+                return v1.getRealValue().compareTo(v2.getRealValue());
             }
             return 0;
         }

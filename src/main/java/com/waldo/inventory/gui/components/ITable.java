@@ -56,17 +56,6 @@ public class ITable<T> extends JXTable {
         }
     }
 
-//    @Override
-//    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-//        // Width
-//        Component component = super.prepareRenderer(renderer, row, column);
-//        int rendererWidth = component.getPreferredSize().width;
-//        TableColumn tableColumn = getColumnModel().getColumn(column);
-//        tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
-//
-//        return component;
-//    }
-
     @SuppressWarnings("unchecked")
     public T getValueAtRow(int row) {
         if (row >= 0) {

@@ -74,9 +74,10 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
     public void removeItems(List<T> itemsToDelete) {
         for(T t : itemsToDelete) {
             int ndx = itemList.indexOf(t);
-            itemList.remove(ndx);
-
-            fireTableRowsDeleted(ndx, ndx);
+            if (ndx >= 0) {
+                itemList.remove(ndx);
+                fireTableRowsDeleted(ndx, ndx);
+            }
         }
         sort();
     }
@@ -109,11 +110,12 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         }
     }
 
-    public void updateItem(T item) {
-        if (itemList.contains(item)) {
-            int row = itemList.indexOf(item);
-            if (row >= 0) {
-                fireTableRowsUpdated(row, row);
+    public void replaceItem(T oldItem, T newItem) {
+        if (itemList != null) {
+            int ndx = itemList.indexOf(oldItem);
+            if (ndx >= 0) {
+                itemList.set(ndx, newItem);
+                fireTableDataChanged();
             }
         }
     }

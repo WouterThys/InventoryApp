@@ -26,9 +26,6 @@ public class PcbItemItemLink extends DbObject {
     private long itemId;
     private Item item;
 
-    private long setItemId;
-    private SetItem setItem;
-
     private long pcbItemId;
     private PcbItem pcbItem;
 
@@ -36,13 +33,13 @@ public class PcbItemItemLink extends DbObject {
         super(TABLE_NAME);
     }
 
-    public PcbItemItemLink(@NotNull PcbItem pcbItem,@NotNull DbObject dbObject) {
+    public PcbItemItemLink(@NotNull PcbItem pcbItem,@NotNull Item item) {
         super(TABLE_NAME);
         this.pcbItem = pcbItem;
         if (pcbItem != null) {
             pcbItemId = pcbItem.getId();
         }
-        setMatchedItem(dbObject);
+        setMatchedItem(item);
     }
 
     public PcbItemItemLink(int match, PcbItem pcbItem, Item item) {
@@ -57,23 +54,6 @@ public class PcbItemItemLink extends DbObject {
 
         if (item != null) {
             itemId = item.getId();
-        }
-        setItemId = -1;
-    }
-
-    public PcbItemItemLink(int match, PcbItem pcbItem, SetItem setItem) {
-        super(TABLE_NAME);
-        this.match = match;
-        this.setItem = setItem;
-        this.pcbItem = pcbItem;
-
-        if (pcbItem != null) {
-            pcbItemId = pcbItem.getId();
-        }
-
-        if (setItem != null) {
-            setItemId = setItem.getId();
-            itemId = setItem.getItemId();
         }
     }
 
@@ -93,12 +73,8 @@ public class PcbItemItemLink extends DbObject {
         if (getItemId() < UNKNOWN_ID) {
             setItemId(UNKNOWN_ID);
         }
-        if (getSetItemId() < UNKNOWN_ID) {
-            setSetItemId(UNKNOWN_ID);
-        }
 
         statement.setLong(ndx++, getItemId());
-        statement.setLong(ndx++, getSetItemId());
         statement.setInt(ndx++, getMatch());
         statement.setLong(ndx++, getPcbItemId());
 
@@ -140,22 +116,9 @@ public class PcbItemItemLink extends DbObject {
 
         copyBaseFields(cpy);
         cpy.setItemId(getItemId());
-        cpy.setSetItemId(getSetItemId());
         cpy.setMatch(getMatch());
 
         return cpy;
-    }
-
-    public String getPrettyName() {
-        if (isSetItem()) {
-            if (getSetItem().getValue().hasValue()) {
-                return getItem().toString() + " - " + getSetItem().getValue().toString();
-            } else {
-                return getItem().toString() + " - " + getSetItem().toString();
-            }
-        } else {
-            return getItem().toString();
-        }
     }
 
     public boolean hasNameMatch() {
@@ -171,19 +134,10 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public String getName() {
-        if (isSetItem()) {
-            return getItem().getName() + "/" + getSetItem().toString();
-        } else {
+        if (getItem() != null) {
             return getItem().getName();
         }
-    }
-
-    public int getAmount() {
-        if (isSetItem()) {
-            return getSetItem().getAmount();
-        } else {
-            return getItem().getAmount();
-        }
+        return "";
     }
 
 
@@ -196,44 +150,21 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public Item getItem() {
-        if (isSetItem()) {
-            return getSetItem().getItem();
-        }
         if (item == null) {
             item = SearchManager.sm().findItemById(itemId);
         }
         return item;
     }
 
-
-    public SetItem getSetItem() {
-        if (setItem == null) {
-            setItem = SearchManager.sm().findSetItemById(setItemId);
-        }
-        return setItem;
-    }
-
-    public boolean isSetItem() {
-        return (getSetItemId() > UNKNOWN_ID);
-    }
-
     public void setItemId(long id) {
+        if (item != null && item.getId() != id) {
+            item = null;
+        }
         this.itemId = id;
     }
 
     public long getItemId() {
-        if (isSetItem()) {
-            itemId = getItem().getId();
-        }
         return itemId;
-    }
-
-    public void setSetItemId(long id) {
-        this.setItemId = id;
-    }
-
-    public long getSetItemId() {
-        return setItemId;
     }
 
     public long getPcbItemId() {
@@ -252,20 +183,11 @@ public class PcbItemItemLink extends DbObject {
         return pcbItem;
     }
 
-    public void setMatchedItem(@NotNull DbObject matchedItem) {
+    public void setMatchedItem(@NotNull Item matchedItem) {
         this.match = matchedItem.getObjectMatch().getMatchPercent();
 
-        if (matchedItem instanceof Item) {
-            this.setItem = null;
-            this.setItemId = -1;
-            this.item = (Item) matchedItem;
-            this.itemId = item.getId();
-        } else if (matchedItem instanceof SetItem) {
-            this.setItem = (SetItem) matchedItem;
-            this.setItemId = setItem.getId();
-            this.item = setItem.getItem();
-            this.itemId = item.getId();
-        }
+        this.item = matchedItem;
+        this.itemId = item.getId();
     }
 
 
@@ -274,18 +196,16 @@ public class PcbItemItemLink extends DbObject {
     // Helpers
     //
     public String getLinkedItemName() {
-        if (isSetItem()) {
-            return getSetItem().toString();
-        } else {
-            return getItem().toString();
+        if (getItem() != null) {
+            return item.toString();
         }
+        return "";
     }
 
     public int getLinkedItemAmount() {
-        if (isSetItem()) {
-            return getSetItem().getAmount();
-        } else {
-            return getItem().getAmount();
+        if (getItem() != null) {
+            return item.getAmount();
         }
+        return 0;
     }
 }

@@ -172,7 +172,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() >= 2) {
-                    EditItemDialog dialog = new EditItemDialog(application, "Edit item", selectedItem);
+                    EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Edit item", selectedItem);
                     Object source = e.getSource();
                     if (source.equals(remarksTp)) {
                         dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_REMARK);

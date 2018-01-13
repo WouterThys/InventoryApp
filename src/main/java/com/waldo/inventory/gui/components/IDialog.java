@@ -285,6 +285,10 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
         }
     }
 
+    public boolean isUpdating() {
+        return application != null && application.isUpdating();
+    }
+
     @Override
     public void windowOpened(WindowEvent e) {
 
@@ -364,5 +368,9 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     protected ILabel getTitleIconLabel() {
         return titleIconLabel;
+    }
+
+    protected void setInfoIcon(ImageIcon infoIcon) {
+        titleInfoLabel.setIcon(infoIcon);
     }
 }

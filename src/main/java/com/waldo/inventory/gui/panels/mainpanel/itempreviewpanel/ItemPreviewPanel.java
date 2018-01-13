@@ -49,7 +49,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     private ITextArea remarksTa;
 
     private ISetItemTableModel setItemModel;
-    private ITable<SetItem> setItemITable;
+    //private ITable<SetItem> setItemITable;
     //private ILocationMapPanel locationMapPnl;
 
     private AbstractAction dataSheetAa;
@@ -124,22 +124,14 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         if (item.getLocationId() > DbObject.UNKNOWN_ID) {
             Location l = SearchManager.sm().findLocationById(item.getLocationId());
             if (l != null && !l.isUnknown()) {
-                if (item.isSet()) {
-                    locationLbl.setText(l.getLocationType().getName().substring(0,3));
-                } else {
-                    locationLbl.setText(l.getPrettyString());
-                }
+                locationLbl.setText(l.getPrettyString());
             }
         } else {
             locationLbl.setText("");
         }
 
-        if (item.isSet()) {
-            setItemModel.setItemList(SearchManager.sm().findSetItemsByItemId(item.getId()));
-            setItemPanel.setVisible(true);
-        } else {
-            setItemPanel.setVisible(false);
-        }
+        setItemPanel.setVisible(false);
+
     }
 
     private JPanel createIconPanel() {
@@ -293,10 +285,10 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     private JPanel createSetItemPanel() {
         setItemPanel = new JPanel(new BorderLayout());
 
-        JScrollPane pane = new JScrollPane(setItemITable);
-        pane.setPreferredSize(new Dimension(50, 300));
+//        JScrollPane pane = new JScrollPane(setItemITable);
+//        pane.setPreferredSize(new Dimension(50, 300));
 
-        setItemPanel.add(pane, BorderLayout.CENTER);
+//        setItemPanel.add(pane, BorderLayout.CENTER);
 
         return setItemPanel;
     }
@@ -341,7 +333,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         remarksTa.setOpaque(false);
 
         setItemModel = new ISetItemTableModel(null);
-        setItemITable = new ITable<>(setItemModel);
+//        setItemITable = new ITable<>(setItemModel);
 
         // Actions
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {

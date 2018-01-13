@@ -6,6 +6,8 @@ import com.waldo.inventory.gui.components.actions.*;
 
 import javax.swing.*;
 
+import java.awt.event.ActionEvent;
+
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class PcbItemPopup extends JPopupMenu {
@@ -26,18 +28,18 @@ public abstract class PcbItemPopup extends JPopupMenu {
     private void init(final PcbItemProjectLink itemProjectLink) {
 
         // Actions
-        EditItemAction editItemAction = new EditItemAction() {
+        EditAction editAction = new EditAction("Edit item") {
             @Override
-            public void onEditItem() {
+            public void onEdit(ActionEvent e) {
                 if (itemProjectLink.hasMatchedItem()) {
-                    PcbItemPopup.this.onEditItem(itemProjectLink.getPcbItemItemLink());
+                    onEditItem(itemProjectLink.getPcbItemItemLink());
                 }
             }
         };
 
-        EditPcbItemAction editPcbItemAction = new EditPcbItemAction() {
+        EditAction editPcbItemAction = new EditAction("Edit pcb item") {
             @Override
-            public void onEditPcbItem() {
+            public void onEdit(ActionEvent e) {
                 onPcbItemEdit(itemProjectLink);
             }
         };
@@ -49,7 +51,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
             iconPanel.add(new ILabel(linked));
             addHeader = true;
         } else {
-            editItemAction.setEnabled(false);
+            editAction.setEnabled(false);
         }
         if (pcbItem.isOrdered()) {
             iconPanel.add(new ILabel(ordered));
@@ -64,7 +66,7 @@ public abstract class PcbItemPopup extends JPopupMenu {
             add(iconPanel);
             addSeparator();
         }
-        add(editItemAction);
+        add(editAction);
         addSeparator();
         add(editPcbItemAction);
     }

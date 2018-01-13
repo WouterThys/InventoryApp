@@ -38,13 +38,13 @@ public abstract class DbObject {
     public static final int TYPE_PROJECT = 12;
     public static final int TYPE_PROJECT_TYPE = 14;
     public static final int TYPE_ORDER_FILE_FORMAT = 15;
-    public static final int TYPE_SET_ITEM = 16;
-
     public static final int TYPE_LOCATION_TYPE = 18;
     public static final int TYPE_PROJECT_CODE = 19;
     public static final int TYPE_PROJECT_PCB = 20;
     public static final int TYPE_PROJECT_OTHER = 21;
     public static final int TYPE_PARSER_ITEM_LINK = 22;
+    public static final int TYPE_SET = 23;
+    public static final int TYPE_SET_ITEM_LINK = 24;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -85,6 +85,7 @@ public abstract class DbObject {
     }
 
     public static int getType(DbObject dbObject) {
+        if (dbObject instanceof Set) return TYPE_SET;
         if (dbObject instanceof Item) return TYPE_ITEM;
         if (dbObject instanceof Category) return TYPE_CATEGORY;
         if (dbObject instanceof Product) return TYPE_PRODUCT;
@@ -99,8 +100,6 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
         if (dbObject instanceof OrderFileFormat) return TYPE_ORDER_FILE_FORMAT;
         if (dbObject instanceof Package) return TYPE_PACKAGE;
-        if (dbObject instanceof SetItem) return TYPE_SET_ITEM;
-
         if (dbObject instanceof PcbItem) return TYPE_KC_COMPONENT;
         if (dbObject instanceof PcbItemItemLink) return TYPE_KC_ITEM_LINK;
         if (dbObject instanceof LocationType) return TYPE_LOCATION_TYPE;
@@ -110,6 +109,7 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectPcb) return  TYPE_PROJECT_PCB;
         if (dbObject instanceof ProjectOther) return TYPE_PROJECT_OTHER;
         if (dbObject instanceof ParserItemLink) return TYPE_PARSER_ITEM_LINK;
+        if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
 
         return TYPE_UNKNOWN;
     }

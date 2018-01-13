@@ -40,7 +40,7 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                 case 0: // Amount label
                     return link;
                 case 1: // Name
-                    return link.getPrettyName();
+                    return link.getLinkedItemName();
                 case 2: // Manufacturer
                     Manufacturer m = link.getItem().getManufacturer();
                     if (m != null && !m.isUnknown()) {
@@ -73,19 +73,15 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
 
                     ILabel lbl;
 
-                    int amount = 0;
-                    int orderState = 0;
+                    int amount;
+                    int orderState;
                     Item item;
 
                     PcbItemItemLink link = (PcbItemItemLink) value;
                     item = link.getItem();
                     orderState = item.getOrderState();
+                    amount = item.getAmount();
 
-                    if (link.isSetItem()) {
-                        amount = link.getSetItem().getAmount();
-                    } else {
-                        amount = item.getAmount();
-                    }
 
                     if (orderState == Statics.ItemOrderStates.ORDERED) {
                         lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, String.valueOf(amount));

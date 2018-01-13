@@ -58,25 +58,16 @@ public class UsedPcbItemsDialog extends UsedPcbItemsDialogLayout {
         List<PcbItemProjectLink> usedItems = usedPnl.getItemsToProcess();
         for (PcbItemProjectLink link : usedItems) {
             PcbItemItemLink itemLink = link.getPcbItemItemLink();
-            if (itemLink.isSetItem()) {
-                SetItem setItem = itemLink.getSetItem();
-                int newAmount = setItem.getAmount() - link.getUsedCount();
-                if (newAmount < 0) {
-                    // todo: Warning?
-                    newAmount = 0;
-                }
-                setItem.setAmount(newAmount);
-                setItem.save();
-            } else {
-                Item item = itemLink.getItem();
-                int newAmount = item.getAmount() - link.getUsedCount();
-                if (newAmount < 0) {
-                    // todo: Warning?
-                    newAmount = 0;
-                }
-                item.setAmount(newAmount);
-                item.save();
+
+            Item item = itemLink.getItem();
+            int newAmount = item.getAmount() - link.getUsedCount();
+            if (newAmount < 0) {
+                // todo: Warning?
+                newAmount = 0;
             }
+            item.setAmount(newAmount);
+            item.save();
+
             link.setUsed(true);
             link.setProcessed(true);
             link.save();

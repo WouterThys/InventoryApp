@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -41,8 +42,12 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void updateIcon(Item item) {
         try {
-            Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-            iconLbl.setIcon(path.toString());
+            if (!item.getIconPath().isEmpty()) {
+                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+                iconLbl.setIcon(path.toString());
+            } else {
+                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
+            }
         } catch (Exception e) {
             Status().setError("Failed to set item icon");
         }

@@ -615,7 +615,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     void onEditItem(OrderItem orderItem) {
         if (orderItem != null) {
-            EditItemDialog dialog = new EditItemDialog(application, "Edit item", orderItem.getItem());
+            EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Edit item", orderItem.getItem());
             dialog.showDialog();
         }
     }
@@ -733,7 +733,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
         }
         if (e.getClickCount() == 2) {
-            EditItemDialog dialog = new EditItemDialog(application, "Item", selectedOrderItem.getItem());
+            EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", selectedOrderItem.getItem());
             dialog.showDialog();
         }
     }

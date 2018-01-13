@@ -133,17 +133,11 @@ public class PcbItemParser {
             if (projectLink.getPcbItemId() > DbObject.UNKNOWN_ID) {
                 PcbItem pcbItem = projectLink.getPcbItem();
 
-                for (PcbItemItemLink link : pcbItem.getKnownItemLinks()) {
-                    if (link.isSetItem()) {
-                        if (PcbItem.matchesValue(pcbItem.getValue(), link.getSetItem().getValue())) {
-                            projectLink.setPcbItemItemLinkId(link.getId());
-                            break;
-                        }
-                    } else {
-                        projectLink.setPcbItemItemLinkId(link.getId());
-                        break;
-                    }
-                }
+//                for (PcbItemItemLink link : pcbItem.getKnownItemLinks()) {
+//                    // TODO: check stuff
+////                    projectLink.setPcbItemItemLinkId(link.getId());
+////                    break;
+//                }
             }
         }
     }

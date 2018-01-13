@@ -354,25 +354,6 @@ public class SearchManager {
         return null;
     }
 
-    public SetItem findSetItemById(long id) {
-        for (SetItem si : cache().getSetItems()) {
-            if (si.getId() == id) {
-                return si;
-            }
-        }
-        return null;
-    }
-
-    public List<SetItem> findSetItemsByItemId(long id) {
-        List<SetItem> setItems = new ArrayList<>();
-        for (SetItem si : cache().getSetItems()) {
-            if (si.getItemId() == id) {
-                setItems.add(si);
-            }
-        }
-        return setItems;
-    }
-
     public PcbItem findPcbItemById(long id) {
         for (PcbItem component : cache().getPcbItems()) {
             if (component.getId() == id) {
@@ -388,28 +369,6 @@ public class SearchManager {
                     component.getPartName().equals(part)) {
 
                 return component;
-            }
-        }
-        return null;
-    }
-
-    public PcbItemItemLink findPcbItemLinkWithItem(long itemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : cache().getPcbItemItemLinks()) {
-            if (!pcbItemItemLink.isSetItem()) {
-                if(pcbItemItemLink.getItemId() == itemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
-                    return pcbItemItemLink;
-                }
-            }
-        }
-        return null;
-    }
-
-    public PcbItemItemLink findPcbItemLinkWithSetItem(long setItemId, long pcbItemId) {
-        for (PcbItemItemLink pcbItemItemLink : cache().getPcbItemItemLinks()) {
-            if (pcbItemItemLink.isSetItem()) {
-                if(pcbItemItemLink.getSetItemId() == setItemId && pcbItemItemLink.getPcbItemId() == pcbItemId) {
-                    return pcbItemItemLink;
-                }
             }
         }
         return null;
@@ -605,4 +564,86 @@ public class SearchManager {
         return logList;
     }
 
+    public Set findSetById(long setId) {
+        if (setId > 0) {
+            for (Set set : cache().getSets()) {
+                if (set.getId() == setId) {
+                    return set;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Set findSetByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Set set : cache().getSets()) {
+                if (set.getName().equals(name)) {
+                    return set;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Set> findSetsByItemId(long itemId) {
+        List<Set> setList = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (Set set : cache().getSets()) {
+                for (Item item : findSetItemsBySetId(set.getId())) {
+                    if (item.getId() == itemId) {
+                        setList.add(set);
+                        break;
+                    }
+                }
+            }
+        }
+        return setList;
+    }
+
+    public SetItemLink findSetItemLinkById(long setItemLinkId) {
+        if (setItemLinkId > 0) {
+            for (SetItemLink sil : cache().getSetItemLinks()) {
+                if (sil.getId() == setItemLinkId) {
+                    return sil;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Item> findSetItemsBySetId(long setId) {
+        List<Item> setItems = new ArrayList<>();
+        if (setId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink sil : cache().getSetItemLinks()) {
+                if (sil.getSetId() == setId) {
+                    setItems.add(sil.getItem());
+                }
+            }
+        }
+        return setItems;
+    }
+
+    public SetItemLink findSetItemLinkBySetAndItem(long setId, long itemId) {
+        if (setId > DbObject.UNKNOWN_ID && itemId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink link : cache().getSetItemLinks()) {
+                if (link.getSetId() == setId && link.getItemId() == itemId) {
+                    return link;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<SetItemLink> findSetItemLinksByItemId(long itemId) {
+        List<SetItemLink> setItemLinks = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (SetItemLink link : cache().getSetItemLinks()) {
+                if (link.getItemId() == itemId) {
+                    setItemLinks.add(link);
+                }
+            }
+        }
+        return setItemLinks;
+    }
 }

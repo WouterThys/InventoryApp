@@ -1,25 +1,30 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
+import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.DeleteAction;
+import com.waldo.inventory.gui.components.actions.EditAction;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-public class EditItemStockPanel extends JPanel implements GuiInterface {
+public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
 
     private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
 
-    private final Item newItem;
+    private final T selectedItem;
     private final Application application;
 
     // Listener
@@ -31,12 +36,23 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     private ITextField locationTypeTf;
     private ITextField rowTf;
     private ITextField colTf;
-    private JButton setLocationBtn;
+    private EditAction editAction;
+    private DeleteAction deleteAction;
 
-    public EditItemStockPanel(Application application, Item newItem, IEditedListener editedListener) {
+    public EditItemStockPanel(Application application, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
         this.application = application;
-        this.newItem = newItem;
+        this.selectedItem = selectedItem;
         this.editedListener = editedListener;
+    }
+
+    public void setValuesForSet(Set set) {
+        selectedItem.setAmountType(set.getAmountType());
+        selectedItem.setAmount(set.getAmount());
+        selectedItem.setLocationId(set.getLocationId());
+
+        amountTypeCb.setSelectedIndex(set.getAmountType());
+        amountSpinner.setValue(set.getAmount());
+        updateLocationFields(set.getLocation());
     }
 
     private void updateLocationFields(Location location) {
@@ -102,6 +118,18 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         // Border
         TitledBorder amountBorder = GuiUtils.createTitleBorder("Location");
 
+        // Toolbar
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        toolBar.add(editAction);
+        toolBar.add(deleteAction);
+
+        // Helper panel
+        JPanel locPnl = new JPanel(new BorderLayout());
+        locPnl.add(locationTypeTf, BorderLayout.CENTER);
+        locPnl.add(toolBar, BorderLayout.EAST);
+
         // Grid bags
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -118,7 +146,7 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
-        locationPanel.add(locationTypeTf, gbc);
+        locationPanel.add(locPnl, gbc);
 
         // - Row
         gbc.gridx = 1; gbc.weightx = 0;
@@ -146,14 +174,6 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
         locationPanel.add(colTf, gbc);
-
-        // - Button
-
-        gbc.gridx = 2; gbc.weightx = 1;
-        gbc.gridy = 3; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        locationPanel.add(setLocationBtn, gbc);
 
         // Add
         locationPanel.setBorder(amountBorder);
@@ -197,25 +217,51 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
         locationTypeTf = new ITextField("Location");
         locationTypeTf.setEnabled(false);
 
-        setLocationBtn = new JButton("Set");
-        setLocationBtn.addActionListener(e -> {
+        editAction = new EditAction() {
+            @Override
+            public void onEdit(ActionEvent e) {
                 EditItemLocation dialog;
                 dialog = new EditItemLocation(application,
                         "Select",
-                        newItem.getLocation());
+                        selectedItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {
                     Location newLocation = dialog.getItemLocation();
                     if (newLocation != null) {
-                        newItem.setLocationId(newLocation.getId());
+                        selectedItem.setLocationId(newLocation.getId());
                         newLocation.updateItems();
                     } else {
-                        newItem.setLocationId(DbObject.UNKNOWN_ID);
+                        selectedItem.setLocationId(DbObject.UNKNOWN_ID);
                     }
                     updateLocationFields(newLocation);
-                    editedListener.onValueChanged(null, "", 0, 0);
+                    editedListener.onValueChanged(
+                            EditItemStockPanel.this,
+                            "locationId",
+                            0,
+                            0);
                 }
+            }
+        };
 
-        });
+        deleteAction = new DeleteAction() {
+            @Override
+            public void onDelete() {
+                int res = JOptionPane.showConfirmDialog(
+                        EditItemStockPanel.this,
+                        "Are you sure you want to delete the location?",
+                        "Delete location",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (res == JOptionPane.YES_OPTION) {
+                    selectedItem.setLocationId(-1);
+                    updateLocationFields(null);
+                    editedListener.onValueChanged(
+                            EditItemStockPanel.this,
+                            "locationId",
+                            0,
+                            -1);
+                }
+            }
+        };
     }
 
     @Override
@@ -230,11 +276,10 @@ public class EditItemStockPanel extends JPanel implements GuiInterface {
     public void updateComponents(Object... object) {
         application.beginWait();
         try {
-            if (newItem != null) {
-                amountTypeCb.setSelectedIndex(newItem.getAmountType());
-                amountSpinner.setValue(newItem.getAmount());
-
-                updateLocationFields(newItem.getLocation());
+            if (selectedItem != null) {
+                amountTypeCb.setSelectedIndex(selectedItem.getAmountType());
+                amountSpinner.setValue(selectedItem.getAmount());
+                updateLocationFields(selectedItem.getLocation());
             }
         } finally {
             application.endWait();

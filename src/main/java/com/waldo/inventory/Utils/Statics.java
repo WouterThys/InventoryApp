@@ -40,7 +40,7 @@ public class Statics {
         public static final int n = -9;
         public static final int µ = -6;
         public static final int m = -3;
-        public static final int _ = 1;
+        public static final int x = 1;
         public static final int k = 3;
         public static final int M = 6;
         public static final int G = 9;
@@ -54,25 +54,25 @@ public class Statics {
 
         public static String toMultiplier(int mul) {
             switch (mul) {
-                case -15:
+                case f:
                     return "f";
-                case -12:
+                case p:
                     return "p";
-                case -9:
+                case n:
                     return "n";
-                case -6:
+                case µ:
                     return "µ";
-                case -3:
+                case m:
                     return "m";
-                case 1:
+                case x:
                     return " ";
-                case 3:
+                case k:
                     return "k";
-                case 6:
+                case M:
                     return "M";
-                case 9:
+                case G:
                     return "G";
-                case 12:
+                case T:
                     return "T";
                 default:
                     return "";

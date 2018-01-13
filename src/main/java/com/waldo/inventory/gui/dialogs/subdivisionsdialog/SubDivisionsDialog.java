@@ -51,7 +51,19 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     //
     // Dialog
     //
-
+    @Override
+    protected void onOK() {
+        // Undo rename
+        switch (divisionType) {
+            case Unknown:
+                // TODO
+                break;
+            case Category: category.save(); break;
+            case Product: product.save(); break;
+            case Type: type.save(); break;
+        }
+        super.onOK();
+    }
 
     @Override
     protected void onCancel() {

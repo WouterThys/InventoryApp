@@ -129,6 +129,10 @@ public class PcbItem extends DbObject {
         return (pcbName.length() > 2 && itemName.length() > 2) && (itemName.contains(pcbName) || pcbName.contains(itemName));
     }
 
+    public static boolean matchesAlias(String pcbName, String alias) {
+        return (pcbName.contains(alias) || alias.contains(pcbName));
+    }
+
     public static boolean matchesValue(String pcbValue, Value value) {
         Value pcbVal = Value.tryFindValue(pcbValue);
         if (pcbVal != null) {

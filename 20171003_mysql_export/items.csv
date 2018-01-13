@@ -122,8 +122,8 @@
 132;"MCT06030C1000FP500 ";"Thin Film Resistors - SMD .1W 100ohm  1% 0603 50ppm Auto";0.0;3;31;43;"";"http://www.mouser.com/ds/2/427/mcx0x0xpro-223600.pdf";"MCA-MCU.jpg";35;1;50;3;0;36;0.0;0;"";0;3
 133;"MCT06030C1001FP500 ";"Thin Film Resistors - SMD .1W  1Kohm 1% 0603 50ppm Auto";0.0;3;31;43;"";"http://www.mouser.com/ds/2/427/mcx0x0xpro-223600.pdf";"MCA-MCU.jpg";35;1;50;3;0;36;0.0;0;"";0;3
 134;"MCT06030C1002FP500";"Thin Film Resistors - SMD .1W  10Kohms 1% 0603 50ppm Auto";0.0;3;31;43;"";"http://www.mouser.com/ds/2/427/mcx0x0xpro-223600.pdf";"MCA-MCU.jpg";35;1;50;3;0;1;0.0;0;"";0;3
-135;"Through hole R set";"Through hole resistor set 5% 1/4W";0.0;3;31;34;"";"";"";1;73;1;0;0;39;0.0;0;"";1;10
-136;"SMD R set 0805";"SMD resistor set 0805 5% 1/4W";0.0;3;31;1;"";"";"";1;273;1;0;0;39;0.0;0;"";1;10
+135;"Through hole R selectedSet";"Through hole resistor selectedSet 5% 1/4W";0.0;3;31;34;"";"";"";1;73;1;0;0;39;0.0;0;"";1;10
+136;"SMD R selectedSet 0805";"SMD resistor selectedSet 0805 5% 1/4W";0.0;3;31;1;"";"";"";1;273;1;0;0;39;0.0;0;"";1;10
 137;"Ceramic capacitor kit ";"Capacitor kit through hole ";0.0;3;11;35;"";"";"";45;3;1;0;0;39;0.0;0;"";1;10
 138;"REA022M2CBK-0511P";"Aluminium Electrolytic Capacitors - Leaded 160V 2.2uF 20% 5x11mm";0.0;3;11;12;"";"";"";13;12;5;0;0;53;0.0;0;"";0;10
 139;"REA047M2CBK-0511P";"Aluminium Electrolytic Capacitors - Leaded 160V 4.7uF 20% 5x11mm";0.0;3;11;12;"";"";"";13;18;8;0;0;53;0.0;0;"";0;1

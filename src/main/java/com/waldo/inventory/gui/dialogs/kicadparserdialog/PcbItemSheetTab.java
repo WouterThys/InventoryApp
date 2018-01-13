@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.Application;
@@ -87,7 +88,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
                                 PcbItemPopup popup = new PcbItemPopup(pcbItemProjectLink) {
                                     @Override
                                     public void onEditItem(PcbItemItemLink itemLink) {
-                                        EditItemDialog dialog = new EditItemDialog(application, "Item", itemLink.getItem());
+                                        EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", itemLink.getItem());
                                         dialog.showDialog();
                                     }
 

@@ -26,8 +26,8 @@ public class Location extends DbObject {
     private LocationLayout layout = new LocationLayout();
 
 
-    // Items or SetItems for this location
-    private List<DbObject> items;
+    // Items for this location
+    private List<Item> items;
 
     public Location() {
         super(TABLE_NAME);
@@ -174,7 +174,7 @@ public class Location extends DbObject {
         return getItems().size() > 0;
     }
 
-    public List<DbObject> getItems() {
+    public List<Item> getItems() {
         if (items == null) {
             items = new ArrayList<>();
             List<Item> itemList = cache().getItems();
@@ -182,14 +182,6 @@ public class Location extends DbObject {
                 // If locationId < UNKNOWN_ID, the item has no location or the location is derived from the SetItems
                 if (item.getLocationId() == getId()) {
                     items.add(item);
-                } else {
-                    if (item.isSet()) {
-                        for (SetItem setItem : item.getSetItems()) {
-                            if (setItem.getLocationId() == getId()) {
-                                items.add(setItem);
-                            }
-                        }
-                    }
                 }
             }
         }

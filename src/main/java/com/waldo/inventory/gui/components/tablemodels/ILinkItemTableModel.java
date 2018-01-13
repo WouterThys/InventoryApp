@@ -67,12 +67,7 @@ public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
 
                     ILabel lbl;
                     PcbItemItemLink link = (PcbItemItemLink) value;
-                    int amount;
-                    if (link.isSetItem()) {
-                        amount = link.getSetItem().getAmount();
-                    } else {
-                        amount = link.getItem().getAmount();
-                    }
+                    int amount = link.getItem().getAmount();
 
                     if (amount > 0) {
                         lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, String.valueOf(amount));

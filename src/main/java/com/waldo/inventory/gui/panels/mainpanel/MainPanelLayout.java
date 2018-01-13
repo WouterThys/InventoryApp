@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
@@ -30,7 +31,11 @@ abstract class MainPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.OnItemDetailListener {
+        ItemDetailPanelLayout.OnItemDetailListener,
+        TableOptionsPopup.TableOptionsListener {
+
+    private static final String TREE_ITEMS = "Items";
+    private static final String TREE_SETS = "Sets";
 
     /*
      *                  COMPONENTS
@@ -38,9 +43,9 @@ abstract class MainPanelLayout extends JPanel implements
     ITablePanel<Item> itemTable;
     IItemTableModel tableModel;
 
-    ITree subDivisionTree;
+    ITree selectionTree;
     IDbObjectTreeModel<DbObject> treeModel;
-    IdBToolBar divisionTb;
+    IdBToolBar selectionTb;
 
     ItemDetailPanel detailPanel;
 
@@ -50,9 +55,16 @@ abstract class MainPanelLayout extends JPanel implements
     final Application application;
 
     Item selectedItem;
-    DbObject selectedDivision;
+    DbObject selectedDivision; // Category, Product, Type or Set
 
-    Category virtualRoot;
+    private final Category invisibleRoot = new Category("");
+    private final Item itemRoot = new Item(TREE_ITEMS);
+    private final Set setRoot = new Set(TREE_SETS);
+    private final DefaultMutableTreeNode iRoot = new DefaultMutableTreeNode(itemRoot, true);
+    private final DefaultMutableTreeNode sRoot = new DefaultMutableTreeNode(setRoot, true);
+
+    boolean showSets = true;
+    boolean showSetItems = false;
 
     /*
      *                  CONSTRUCTOR
@@ -68,14 +80,15 @@ abstract class MainPanelLayout extends JPanel implements
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
 
+        // Divisions
         enabled = selectedDivision != null && selectedDivision.canBeSaved();
-        divisionTb.setEditActionEnabled(enabled);
-        divisionTb.setDeleteActionEnabled(enabled);
+        selectionTb.setEditActionEnabled(enabled);
+        selectionTb.setDeleteActionEnabled(enabled);
         if (enabled) {
             if (DbObject.getType(selectedDivision) == DbObject.TYPE_TYPE) {
-                divisionTb.setAddActionEnabled(false);
+                selectionTb.setAddActionEnabled(false);
             } else {
-                divisionTb.setAddActionEnabled(true);
+                selectionTb.setAddActionEnabled(true);
             }
         }
     }
@@ -88,33 +101,64 @@ abstract class MainPanelLayout extends JPanel implements
     //
     public void tableInitialize(DbObject selectedObject) {
         java.util.List<Item> itemList = new ArrayList<>();
-        if (selectedObject == null || selectedObject.getName().equals("All")) {
-            itemList = new ArrayList<>(cache().getItems());
-            for (Item item : itemList) {
-                if (item.getId() == DbObject.UNKNOWN_ID) {
-                    itemList.remove(item);
-                    break;
-                }
+        if (selectedObject == null || selectedObject.getName().equals(TREE_ITEMS)) {
+            itemList = filterItems(cache().getItems(), showSets, showSetItems);
+        } else if (selectedObject.getName().equals(TREE_SETS)) {
+            for (Set set : cache().getSets()) {
+                itemList.addAll(set.getSetItems());
             }
         } else {
             switch (DbObject.getType(selectedObject)) {
                 case DbObject.TYPE_CATEGORY:
                     Category c = (Category)selectedObject;
-                    itemList = sm().findItemListForCategory(c);
+                    itemList = filterItems(sm().findItemListForCategory(c), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_PRODUCT:
                     Product p = (Product)selectedObject;
-                    itemList = sm().findItemListForProduct(p);
+                    itemList = filterItems(sm().findItemListForProduct(p), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_TYPE:
                     Type t = (Type)selectedObject;
-                    itemList = sm().findItemListForType(t);
+                    itemList = filterItems(sm().findItemListForType(t), showSets, showSetItems);
                     break;
+                case DbObject.TYPE_SET:
+                    itemList = ((Set) selectedObject).getSetItems();
                 default:
                     break;
             }
         }
         tableModel.setItemList(itemList);
+    }
+
+    private List<Item> filterItems(List<Item> itemList, boolean showSets, boolean showSetItems) {
+        List<Item> filtered = new ArrayList<>();
+        if (itemList != null && itemList.size() > 0) {
+            if (showSets && showSetItems) { // Both true
+                filtered = new ArrayList<>(itemList);
+            } else if (!showSets && !showSetItems){ // Both false
+                for (Item item : itemList) {
+                    if (!item.isSet() && !item.isSetItem()) {
+                        filtered.add(item);
+                    }
+                }
+            } else { // One is true
+                if (!showSets) {
+                    for (Item item : itemList) {
+                        if (!item.isSet()) {
+                            filtered.add(item);
+                        }
+                    }
+                }
+                if (!showSetItems) {
+                    for (Item item : itemList) {
+                        if (!item.isSetItem()) {
+                            filtered.add(item);
+                        }
+                    }
+                }
+            }
+        }
+        return filtered;
     }
 
     long tableUpdate() {
@@ -166,12 +210,23 @@ abstract class MainPanelLayout extends JPanel implements
         treeModel.setSelectedObject(selectedDivision);
     }
 
+    void treeSelectDivision(DbObject division) {
+        if (division != null) {
+            treeModel.setSelectedObject(division);
+        }
+    }
+
     private void createNodes(DefaultMutableTreeNode rootNode) {
+        rootNode.add(iRoot);
+        rootNode.add(sRoot);
+
+        // Divisions
         cache().getCategories().sort(new ComparatorUtils.DbObjectNameComparator<>());
-        for (Category category : cache().getCategories()) {
+        List<Category> categories = cache().getCategories();
+        for (Category category : categories) {
             if (!category.isUnknown()) {
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode(category, true);
-                rootNode.add(cNode);
+                iRoot.add(cNode);
 
                 List<Product> productList = sm().findProductListForCategory(category.getId());
                 productList.sort(new ComparatorUtils.DbObjectNameComparator<>());
@@ -188,6 +243,16 @@ abstract class MainPanelLayout extends JPanel implements
                 }
             }
         }
+
+        // Sets
+        List<Set> setList = cache().getSets();
+        if (setList.size() > 0) {
+            setList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            for (Set set : cache().getSets()) {
+                DefaultMutableTreeNode sNode = new DefaultMutableTreeNode(set, false);
+                sRoot.add(sNode);
+            }
+        }
     }
 
     void treeRecreateNodes() {
@@ -196,21 +261,45 @@ abstract class MainPanelLayout extends JPanel implements
         createNodes(rootNode);
     }
 
+    DbObject treeGetItemRoot() {
+        return itemRoot;
+    }
+
+    // Other
+
+    boolean setsSelected() {
+        return (selectedDivision != null && selectedDivision instanceof Set);
+    }
+
+    private JPanel createItemDivisionPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JScrollPane pane = new JScrollPane(selectionTree);
+        pane.setPreferredSize(new Dimension(300, 400));
+        panel.add(pane, BorderLayout.CENTER);
+        panel.add(selectionTb, BorderLayout.PAGE_END);
+        panel.setMinimumSize(new Dimension(200,200));
+
+
+        return panel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Sub division tree
-        virtualRoot = new Category("All");
-        virtualRoot.setCanBeSaved(false);
+        // Divisions
+        invisibleRoot.setCanBeSaved(false);
+        itemRoot.setCanBeSaved(false);
+        setRoot.setCanBeSaved(false);
 
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRoot, true);
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(invisibleRoot, true);
         createNodes(rootNode);
         treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
             switch (DbObject.getType(child)) {
                 case DbObject.TYPE_CATEGORY:
-                    return rootNode;
+                    return iRoot;
 
                 case DbObject.TYPE_PRODUCT: {
                     Product p = (Product) child;
@@ -223,31 +312,36 @@ abstract class MainPanelLayout extends JPanel implements
                     Product p = sm().findProductById(t.getProductId()); // The parent object
                     return treeModel.findNode(p);
                 }
+
+                case DbObject.TYPE_SET:
+                    return sRoot;
             }
             return null;
         });
 
-        subDivisionTree = new ITree(treeModel);
-        subDivisionTree.addTreeSelectionListener(this);
-        subDivisionTree.setExpandsSelectedPaths(true);
-        subDivisionTree.setScrollsOnExpand(true);
-        subDivisionTree.addMouseListener(new MouseAdapter() {
+        selectionTree = new ITree(treeModel);
+        selectionTree.addTreeSelectionListener(this);
+        selectionTree.setCellRenderer(ITree.getItemsRenderer());
+        selectionTree.setExpandsSelectedPaths(true);
+        selectionTree.setScrollsOnExpand(true);
+        selectionTree.setRootVisible(false);
+        selectionTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    int row = subDivisionTree.getClosestRowForLocation(e.getX(), e.getY());
-                    subDivisionTree.setSelectionRow(row);
+                    int row = selectionTree.getClosestRowForLocation(e.getX(), e.getY());
+                    selectionTree.setSelectionRow(row);
                     onTreeRightClick(e);
                 }
             }
         });
-        treeModel.setTree(subDivisionTree);
+        treeModel.setTree(selectionTree);
+        treeModel.expandNode(iRoot);
+        treeModel.expandNode(sRoot);
 
-        // Division tool bar
-        divisionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
+        selectionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
-
-        // Item table
+        // Items
         tableModel = new IItemTableModel();
         itemTable = new ITablePanel<>(tableModel, this, true);
         itemTable.setDbToolBar(this);
@@ -257,10 +351,11 @@ abstract class MainPanelLayout extends JPanel implements
                 onTableRowClicked(e);
             }
         });
-        itemTable.addSortOption(new ComparatorUtils.ItemDivisionComparator());
-        itemTable.addSortOption(new ComparatorUtils.DbObjectNameComparator());
-        itemTable.addSortOption(new ComparatorUtils.ItemManufacturerComparator());
-        itemTable.addSortOption(new ComparatorUtils.ItemLocationComparator());
+        itemTable.addSortOption(new ComparatorUtils.ItemDivisionComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.DbObjectNameComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.ItemManufacturerComparator(), null);
+        itemTable.addSortOption(new ComparatorUtils.ItemLocationComparator(), null);
+        itemTable.addTableOptionsListener(this);
         tableInitialize(null);
 
         // Details
@@ -274,24 +369,18 @@ abstract class MainPanelLayout extends JPanel implements
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel divisionPanel = createItemDivisionPanel();
 
         // Panel them together
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //panel.add(previewPanel, BorderLayout.EAST);
 
-        JScrollPane pane = new JScrollPane(subDivisionTree);
-        pane.setPreferredSize(new Dimension(300, 200));
-        westPanel.add(pane, BorderLayout.CENTER);
-        westPanel.add(divisionTb, BorderLayout.PAGE_END);
-        westPanel.setMinimumSize(new Dimension(200,200));
-
         // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
-        splitPane.setOneTouchExpandable(true);
-        add(splitPane, BorderLayout.CENTER);
+        JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, divisionPanel, centerPanel);
+        centerSplitPane.setOneTouchExpandable(true);
+        add(centerSplitPane, BorderLayout.CENTER);
     }
 
     @Override

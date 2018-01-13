@@ -5,19 +5,19 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class AddDivisionAction extends AbstractAction {
+public abstract class DoItAction extends AbstractAction {
 
-    private static final String name = "Add division";
+    private static final String name = "Create series";
 
-    protected AddDivisionAction() {
-        super(name, imageResource.readImage("Actions.DivisionAdd"));
+    public DoItAction() {
+        super(name, imageResource.readImage("Actions.SetItemCreateSeries"));
         putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
-    public abstract void onAddDivision();
+    public abstract void onDoIt();
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onAddDivision();
+        onDoIt();
     }
 }

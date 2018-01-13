@@ -23,7 +23,7 @@ public class IPcbItemUsedTableModel extends IAbstractTableModel<PcbItemProjectLi
                     return FileUtils.getLastPathPart(link.getProjectPcb().getDirectory());
                 case 1: // Item name
                     if (link.hasMatchedItem()) {
-                        return link.getPcbItemItemLink().getPrettyName();
+                        return link.getPcbItemItemLink().getLinkedItemName();
                     }
                     return "";
                 case 2: // Amount
