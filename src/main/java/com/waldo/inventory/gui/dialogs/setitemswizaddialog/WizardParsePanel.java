@@ -24,6 +24,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -282,6 +284,19 @@ class WizardParsePanel extends JPanel implements
         setItemTable = new ITable<>(tableModel);
         setItemTable.getSelectionModel().addListSelectionListener(this);
         setItemTable.setRowSorter(null);
+        setItemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    if (selectedItem != null) {
+                        EditItemDialog dialog = new EditItemDialog<>(application, "Edit set item", selectedItem);
+                        dialog.setAllowSave(false);
+                        dialog.showDialog();
+                        tableModel.updateTable();
+                    }
+                }
+            }
+        });
 
         numberOfItemsLbl = new ILabel();
         numberOfLocationsLbl = new ILabel();

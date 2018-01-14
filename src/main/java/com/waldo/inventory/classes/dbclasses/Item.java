@@ -26,18 +26,18 @@ public class Item extends DbObject {
     protected String description = "";
     protected double price = 0;
 
-    protected long categoryId = -1;
+    protected long categoryId = UNKNOWN_ID;
     protected Category category;
-    protected long productId = -1;
+    protected long productId = UNKNOWN_ID;
     protected Product product;
-    protected long typeId = -1;
+    protected long typeId = UNKNOWN_ID;
     protected Type type;
     protected boolean isSet = false;
 
     protected String localDataSheet = "";
     protected String onlineDataSheet = "";
 
-    protected long manufacturerId = -1;
+    protected long manufacturerId = UNKNOWN_ID;
     protected Manufacturer manufacturer;
     protected long locationId = UNKNOWN_ID;
     protected Location location;

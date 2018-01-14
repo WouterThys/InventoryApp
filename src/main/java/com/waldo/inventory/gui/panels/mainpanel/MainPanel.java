@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.DivisionPopup;
 import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
+import com.waldo.inventory.gui.components.popups.MultiItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
@@ -67,45 +68,69 @@ public class MainPanel extends MainPanelLayout {
     void onTableRowClicked(MouseEvent e) {
         if (e.getClickCount() == 1) {
             if (SwingUtilities.isRightMouseButton(e)) {
-                tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
+                List<Item> selectedItems = itemTable.getAllSelectedItems();
+                JPopupMenu popup = null;
+                if (selectedItems == null || selectedItems.size() < 2) {
+                    tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
+                    if (selectedItem != null) {
+                        popup = new ItemPopup(selectedItem) {
+                            @Override
+                            public void onEditItem() {
+                                MainPanel.this.onEditItem();
+                            }
 
-                if (selectedItem != null) {
-                    ItemPopup popup = new ItemPopup(selectedItem) {
-                        @Override
-                        public void onEditItem() {
-                            MainPanel.this.onEditItem();
-                        }
+                            @Override
+                            public void onDeleteItem() {
+                                MainPanel.this.onDeleteItem();
+                            }
 
-                        @Override
-                        public void onDeleteItem() {
-                            MainPanel.this.onDeleteItem();
-                        }
+                            @Override
+                            public void onOpenLocalDataSheet(Item item) {
+                                application.openDataSheet(item, false);
+                            }
 
-                        @Override
-                        public void onOpenLocalDataSheet(Item item) {
-                            application.openDataSheet(item, false);
-                        }
+                            @Override
+                            public void onOpenOnlineDataSheet(Item item) {
+                                application.openDataSheet(item, true);
+                            }
 
-                        @Override
-                        public void onOpenOnlineDataSheet(Item item) {
-                            application.openDataSheet(item, true);
-                        }
+                            @Override
+                            public void onOrderItem(Item item) {
+                                MainPanel.this.onOrderItem(item);
+                            }
 
-                        @Override
-                        public void onOrderItem(Item item) {
-                            MainPanel.this.onOrderItem(item);
-                        }
+                            @Override
+                            public void onShowHistory(Item item) {
+                                MainPanel.this.onShowHistory(item);
+                            }
 
-                        @Override
-                        public void onShowHistory(Item item) {
-                            MainPanel.this.onShowHistory(item);
-                        }
+                            @Override
+                            public void onAddToSet(Set set, Item item) {
+                                MainPanel.this.onAddItemToSet(set, item);
+                            }
+                        };
+                    }
+                } else {
+                   popup = new MultiItemPopup(selectedItems) {
+                       @Override
+                       public void onDeleteItems(List<Item> itemList) {
+                           MainPanel.this.onDeleteItem();
+                       }
 
-                        @Override
-                        public void onAddToSet(Set set, Item item) {
-                            MainPanel.this.onAddItemToSet(set, item);
-                        }
-                    };
+                       @Override
+                       public void onOrderItems(List<Item> itemList) {
+                           application.orderItems(itemList);
+                       }
+
+                       @Override
+                       public void onAddToSet(Set set, List<Item> itemList) {
+                            for (Item item : itemList) {
+                                MainPanel.this.onAddItemToSet(set, item);
+                            }
+                       }
+                   };
+                }
+                if (popup != null) {
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             } else {
@@ -152,6 +177,7 @@ public class MainPanel extends MainPanelLayout {
             @Override
             public void onInserted(Item item) {
                 selectedItem = item;
+                detailPanel.updateComponents(selectedItem);
 
                 if (setsSelected()) {
                     ((Set) selectedDivision).addSetItem(item);
@@ -164,7 +190,6 @@ public class MainPanel extends MainPanelLayout {
                 tableAddItem(item);
                 // Select in table
                 tableSelectItem(item);
-                detailPanel.updateComponents(selectedItem);
                 updateEnabledComponents();
             }
 
@@ -642,6 +667,7 @@ public class MainPanel extends MainPanelLayout {
         if (set != null && item != null) {
             selectedItem = item;
             selectedDivision = set;
+            detailPanel.updateComponents(selectedItem);
 
             // Add to table
             treeSelectDivision(selectedDivision);
@@ -651,7 +677,6 @@ public class MainPanel extends MainPanelLayout {
             }
             // Select in table
             tableSelectItem(item);
-            detailPanel.updateComponents(selectedItem);
             updateEnabledComponents();
         }
     }

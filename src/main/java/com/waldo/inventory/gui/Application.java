@@ -462,6 +462,27 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
     }
 
+    public void orderItems(List<Item> itemList) {
+        for (Item item : new ArrayList<>(itemList)) {
+            if (item.isDiscourageOrder()) {
+                int result = JOptionPane.showConfirmDialog(
+                        this,
+                        "This item is marked to discourage new orders, \n do you really want to order it?",
+                        "Discouraged to order",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+                if (result == JOptionPane.NO_OPTION) {
+                    itemList.remove(item);
+                }
+            }
+        }
+        if (itemList.size() > 0) {
+            OrderItemDialog dialog = new OrderItemDialog(this, "Order items", itemList, true);
+            dialog.showDialog();
+        }
+    }
+
     public void showHistory(Item item) {
         HistoryDialog dialog = new HistoryDialog(this, item);
         dialog.showDialog();

@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 import org.jdesktop.swingx.JXTable;
 
+import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -68,8 +69,9 @@ public class ITable<T> extends JXTable {
         if (item != null) {
             int row = model.getModelIndex(item);
             if (row >= 0) {
-                int real = convertRowIndexToView(row);
+                final int real = convertRowIndexToView(row);
                 setRowSelectionInterval(real, real);
+                SwingUtilities.invokeLater(() -> scrollRectToVisible(new Rectangle(getCellRect(real, 0, true))));
             }
         } else {
             clearSelection();

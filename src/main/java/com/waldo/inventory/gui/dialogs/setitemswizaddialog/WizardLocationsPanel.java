@@ -98,6 +98,18 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         numberPerLocationSp.setEnabled(enabled);
     }
 
+    private void updateLocationType(LocationType locationType, Location startLocation) {
+        if (locationType != null && !locationType.isUnknown()) {
+            this.locationType = locationType;
+            this.startLocation = startLocation;
+
+            locationTypeCb.setSelectedItem(locationType);
+            startLocationPnl.setLocations(locationType.getLocations());
+            startLocationPnl.setHighlighted(startLocation, ILocationMapPanel.GREEN);
+            parent.pack();
+        }
+    }
+
     private LocationComputeType getComputeType() {
         return (LocationComputeType) locationComputeTypeCb.getSelectedItem();
     }
@@ -206,6 +218,17 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         });
 
         locationTypeCb = new IComboBox<>(CacheManager.cache().getLocationTypes(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        locationTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                LocationType locationType = (LocationType) locationTypeCb.getSelectedItem();
+                Location startLocation = null;
+                if (locationType != null && locationType.getLocations().size() > 0) {
+                    startLocation = locationType.getLocations().get(0);
+                }
+                updateLocationType(locationType, startLocation);
+                updateEnabledComponents();
+            }
+        });
         startLocationPnl = new ILocationMapPanel(application, this, true);
 
         leftRightCb = new JCheckBox("", true);
@@ -263,12 +286,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
             }
         }
         locationComputeTypeCb.setSelectedItem(LocationComputeType.Custom);
-        if (locationType != null && !locationType.isUnknown()) {
-            locationTypeCb.setSelectedItem(locationType);
-            startLocationPnl.setLocations(locationType.getLocations());
-            startLocationPnl.setHighlighted(startLocation, ILocationMapPanel.GREEN);
-            parent.pack();
-        }
+        updateLocationType(locationType, startLocation);
     }
 
     @Override

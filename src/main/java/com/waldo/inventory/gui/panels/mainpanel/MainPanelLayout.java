@@ -122,7 +122,7 @@ abstract class MainPanelLayout extends JPanel implements
                     itemList = filterItems(sm().findItemListForType(t), showSets, showSetItems);
                     break;
                 case DbObject.TYPE_SET:
-                    itemList = ((Set) selectedObject).getSetItems();
+                    itemList.addAll(((Set) selectedObject).getSetItems());
                 default:
                     break;
             }

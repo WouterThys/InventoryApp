@@ -29,14 +29,14 @@ public abstract class ItemPopup extends JPopupMenu {
         EditAction editAction = new EditAction("Edit item") {
             @Override
             public void onEdit(ActionEvent e) {
-                ItemPopup.this.onEditItem();
+                onEditItem();
             }
         };
 
         DeleteAction deleteAction = new DeleteAction("Delete item") {
             @Override
             public void onDelete() {
-                ItemPopup.this.onDeleteItem();
+                onDeleteItem();
             }
         };
 
