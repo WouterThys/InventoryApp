@@ -1,8 +1,6 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
-import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -44,7 +42,6 @@ class WizardParsePanel extends JPanel implements
     // Item actions
     private IdBToolBar toolBar;
     private ReplaceAction replaceAction;
-    private RenameAction renameAction;
     private DoItAction importSeriesAction;
 
     private ILabel numberOfItemsLbl;
@@ -88,7 +85,7 @@ class WizardParsePanel extends JPanel implements
         }
     }
 
-    public void renameItems() {
+    private void renameItems() {
         List<Item> itemsList = tableModel.getItemList();
         if (itemsList.size() > 0) {
             int res = JOptionPane.showConfirmDialog(
@@ -110,7 +107,7 @@ class WizardParsePanel extends JPanel implements
         }
     }
 
-    public void saveAllSetItems() {
+    private void saveAllSetItems() {
         if (wizardSettings != null) {
             parent.beginWait();
             try {
@@ -135,58 +132,6 @@ class WizardParsePanel extends JPanel implements
     private void updateInfo() {
         numberOfItemsLbl.setText(String.valueOf(tableModel.getItemList().size()));
         //numberOfLocationsLbl.setText();
-    }
-
-    private Item findByValue(List<Item> itemList, Value value) {
-        if (itemList != null && value != null) {
-            for (Item item : itemList) {
-                if (item.getValue().equals(value)) {
-                    return item;
-                }
-            }
-        }
-        return null;
-    }
-
-    private List<Item> createItemsFromSettings(WizardSettings settings) {
-        List<Item> newSetItems = new ArrayList<>();
-        if (settings != null) {
-
-            if (settings.isKeepOldSetItems()) {
-                newSetItems.addAll(settings.getSelectedSet().getSetItems());
-            }
-
-            int nameCnt = 0;
-            for (Value value : settings.getValues()) {
-                Item item;
-                nameCnt++;
-                if (settings.isKeepOldSetItems() && settings.isReplaceValues()) {
-                    item = findByValue(newSetItems, value);
-                    if (item != null) {
-                        if (settings.isOverWriteLocations()) {
-                            item.setLocationId(settings.getLocation(value).getId());
-                        }
-                        continue;
-                    }
-                }
-                String name = createItemName(settings, nameCnt);
-                item = new Item(
-                        name,
-                        settings.getTypeName(),
-                        value,
-                        settings.getManufacturer(),
-                        settings.getPackageType(),
-                        settings.getPins(),
-                        settings.getAmount(),
-                        settings.getLocation(value),
-                        settings.getSelectedSet());
-
-
-                newSetItems.add(item);
-            }
-        }
-        newSetItems.sort(new ComparatorUtils.ItemValueComparator());
-        return newSetItems;
     }
 
     private String createItemName(WizardSettings settings, int count) {
@@ -236,7 +181,7 @@ class WizardParsePanel extends JPanel implements
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
         if (wizardSettings != null) {
-            List<Item> setItems = createItemsFromSettings(wizardSettings);
+            List<Item> setItems = new ArrayList<>(wizardSettings.getItems());
             tableModel.setItemList(setItems);
         }
     }
@@ -307,7 +252,7 @@ class WizardParsePanel extends JPanel implements
                 replace(selectedItem);
             }
         };
-        renameAction = new RenameAction() {
+        RenameAction renameAction = new RenameAction() {
             @Override
             public void onRename() {
                 renameItems();
@@ -368,8 +313,7 @@ class WizardParsePanel extends JPanel implements
     public void updateComponents(Object... args) {
         if (args.length > 0 && args[0] != null) {
             wizardSettings = (WizardSettings) args[0];
-            List<Item> setItems = createItemsFromSettings(wizardSettings);
-            tableModel.setItemList(setItems);
+            tableModel.setItemList(new ArrayList<>(wizardSettings.getItems()));
 
             numberOfItemsLbl.setText(String.valueOf(wizardSettings.getNumberOfItems()));
             numberOfLocationsLbl.setText(String.valueOf(wizardSettings.getNumberOfLocations()));

@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
@@ -46,6 +46,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
 
     private JCheckBox leftRightCb;
     private JCheckBox upDownCb;
+    private JCheckBox startDirectionCb;
     private JCheckBox overWriteCb;
 
     private JSpinner numberPerLocationSp;
@@ -74,14 +75,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
     void updateSettings(WizardSettings settings) {
         if (settings != null) {
             if (startLocation != null && !startLocation.isUnknown()) {
-                computeLocations(
-                        settings,
-                        getComputeType(),
-                        getLeftToRight(),
-                        getUpDown(),
-                        getOverWrite(),
-                        getNumberPerLocation(),
-                        startLocation);
+                computeLocations(settings, getComputeType());
             }
         }
     }
@@ -94,6 +88,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         locationTypeCb.setEnabled(enabled);
         leftRightCb.setEnabled(enabled);
         upDownCb.setEnabled(enabled);
+        startDirectionCb.setEnabled(enabled);
         overWriteCb.setEnabled(enabled);
         numberPerLocationSp.setEnabled(enabled);
     }
@@ -122,6 +117,10 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         return upDownCb.isSelected();
     }
 
+    private boolean getStartDirection() {
+        return startDirectionCb.isSelected();
+    }
+
     private boolean getOverWrite() {
         return overWriteCb.isSelected();
     }
@@ -132,12 +131,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
 
     private void computeLocations(
             WizardSettings settings,
-            LocationComputeType computeType,
-            boolean leftRight,
-            boolean upDown,
-            boolean overWrite,
-            int numberPerLocation,
-            Location startLocation) {
+            LocationComputeType computeType) {
 
         switch (computeType) {
             case None:
@@ -147,13 +141,19 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
                 setLocationCompute(settings);
                 break;
             case Custom:
-                customLocationCompute(settings, leftRight, upDown, overWrite, numberPerLocation, startLocation);
+                customLocationCompute(settings,
+                        getLeftToRight(),
+                        getUpDown(),
+                        getStartDirection(),
+                        getOverWrite(),
+                        getNumberPerLocation(),
+                        startLocation);
                 break;
         }
     }
 
     private void noneLocationCompute(WizardSettings settings) {
-        for (Value value : settings.getValues()) {
+        for (Item value : settings.getItems()) {
             settings.setLocation(value, Location.unknownLocation());
         }
         settings.setOverWriteLocations(false);
@@ -165,21 +165,35 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         if (setLocation == null) {
             setLocation = Location.unknownLocation();
         }
-        for (Value value : settings.getValues()) {
-            settings.setLocation(value, setLocation);
+        for (Item item : settings.getItems()) {
+            settings.setLocation(item, setLocation);
         }
         settings.setOverWriteLocations(false);
         settings.setNumberOfLocations(1);
     }
 
-    private void customLocationCompute(WizardSettings settings, boolean leftRight, boolean upDown, boolean overWrite, int numberPerLocation, Location startLocation) {
+    private void customLocationCompute(WizardSettings settings, boolean leftRight, boolean upDown, boolean startHorizontal, boolean overWrite, int numberPerLocation, Location startLocation) {
         LocationType locationType = startLocation.getLocationType();
-        LocationType.LocationNeighbour direction = leftRight ? LocationType.LocationNeighbour.Right : LocationType.LocationNeighbour.Left;
+
+        LocationType.LocationNeighbour direction;
+        if (startHorizontal) {
+            if (leftRight) {
+                direction = LocationType.LocationNeighbour.Right;
+            } else {
+                direction = LocationType.LocationNeighbour.Left;
+            }
+        } else {
+            if (upDown) {
+                direction = LocationType.LocationNeighbour.Lower;
+            } else {
+                direction = LocationType.LocationNeighbour.Upper;
+            }
+        }
 
         Location newLocation = startLocation;
         int count = 0;
         int total = 0;
-        for (Value value : settings.getValues()) {
+        for (Item value : settings.getItems()) {
             //if (setItem.getLocationId() <= DbObject.UNKNOWN_ID || overWrite) {
             // Set location
             settings.setLocation(value, newLocation);
@@ -233,6 +247,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
 
         leftRightCb = new JCheckBox("", true);
         upDownCb = new JCheckBox("", true);
+        startDirectionCb = new JCheckBox("", true);
         overWriteCb = new JCheckBox("", true);
 
         SpinnerNumberModel numberModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
@@ -250,14 +265,26 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         typePanel.add(new ILabel("Compute type: "), BorderLayout.WEST);
         typePanel.add(locationComputeTypeCb, BorderLayout.CENTER);
 
-        JPanel settingPnl = new JPanel();
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingPnl);
+        JPanel settingPnl = new JPanel(new BorderLayout());
+        JPanel eastPnl = new JPanel();
+        JPanel westPnl = new JPanel();
+        JPanel southPnl = new JPanel();
 
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(westPnl);
         gbc.addLine("Left -> Right ", leftRightCb);
         gbc.addLine("Up -> Down ", upDownCb);
-        gbc.addLine("Over-write known locations ", overWriteCb);
+
+        gbc = new GuiUtils.GridBagHelper(eastPnl);
+        gbc.addLine("Start horizontal ", startDirectionCb);
+        gbc.addLine("Over-write ", overWriteCb);
+
+        gbc = new GuiUtils.GridBagHelper(southPnl);
         gbc.addLine("# per location", numberPerLocationSp);
         gbc.addLine("Start location: ", locationTypeCb);
+
+        settingPnl.add(westPnl, BorderLayout.WEST);
+        settingPnl.add(eastPnl, BorderLayout.EAST);
+        settingPnl.add(southPnl, BorderLayout.SOUTH);
 
         customPanel.add(settingPnl, BorderLayout.NORTH);
         customPanel.add(startLocationPnl, BorderLayout.CENTER);

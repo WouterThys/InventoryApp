@@ -493,6 +493,11 @@ public class Item extends DbObject {
         return locationId;
     }
 
+    public void putLocation(Location location) {
+        this.locationId = location.getId();
+        this.location = location;
+    }
+
     public void setLocationId(long locationId) {
         if (location != null && location.getId() != locationId) {
             location = null;

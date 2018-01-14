@@ -94,6 +94,9 @@ public class LocationType extends DbObject {
             int maxColsForThisRow = getNumberOfColumnsInRow(newRow)-1;
             int maxRow = getNumberOfRows()-1;
 
+            int maxRowsForThisCol = getNumberOfRowsInCol(newCol) - 1;
+            int maxCol = getNumberOfCols();
+
             switch (direction) {
                 case Right:
                     newCol++;
@@ -134,9 +137,41 @@ public class LocationType extends DbObject {
                     break;
 
                 case Upper:
+                    newRow--;
+                    if (newRow < 0) {
+                        newRow = maxRowsForThisCol;
+                        if (leftToRight) {
+                            newCol++;
+                            if (newCol > maxCol) {
+                                newCol = 0;
+                                newRow = maxRowsForThisCol;
+                            }
+                        } else {
+                            newCol--;
+                            if (newCol < 0) {
+                                newCol = maxCol;
+                            }
+                        }
+                    }
                     break;
 
                 case Lower:
+                    newRow++;
+                    if (newRow > maxRowsForThisCol) {
+                        newRow = 0;
+                        if (leftToRight) {
+                            newCol++;
+                            if (newCol > maxCol) {
+                                newRow = 0;
+                                newCol = 0;
+                            }
+                        } else {
+                            newCol--;
+                            if (newCol < 0) {
+                                newCol = maxCol;
+                            }
+                        }
+                    }
                     break;
             }
 
@@ -149,6 +184,10 @@ public class LocationType extends DbObject {
         return getLocationsInRow(row).size();
     }
 
+    private int getNumberOfRowsInCol(int col) {
+        return getLocationsInCol(col).size();
+    }
+
     private int getNumberOfRows() {
         int maxRow = 0;
         for (Location location : getLocations()) {
@@ -157,6 +196,16 @@ public class LocationType extends DbObject {
             }
         }
         return maxRow;
+    }
+
+    private int getNumberOfCols() {
+        int maxCol = 0;
+        for (Location location : getLocations()) {
+            if (location.getCol() > maxCol) {
+                maxCol = location.getCol();
+            }
+        }
+        return maxCol;
     }
 
     private List<Location> getLocationsInRow(int row) {
@@ -169,6 +218,18 @@ public class LocationType extends DbObject {
             }
         }
         return rowLocations;
+    }
+
+    private List<Location> getLocationsInCol(int col) {
+        List<Location> colLocations = new ArrayList<>();
+        if (col >= 0) {
+            for (Location location : getLocations()) {
+                if (location.getCol() == col) {
+                    colLocations.add(location);
+                }
+            }
+        }
+        return colLocations;
     }
 
     public List<Location> getLocations() {

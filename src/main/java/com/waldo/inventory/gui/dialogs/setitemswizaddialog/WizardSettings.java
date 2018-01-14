@@ -1,21 +1,16 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.classes.dbclasses.Set;
+import com.waldo.inventory.classes.dbclasses.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class WizardSettings {
 
     private final Set selectedSet;
 
-    private Map<Value, Location> valueLocationMap = new TreeMap<>(new ComparatorUtils.ValueComparator());
+    private List<Item> itemList = new ArrayList<>();
     private int numberOfLocations;
 
     private Manufacturer manufacturer;
@@ -33,31 +28,35 @@ public class WizardSettings {
         this.selectedSet = selectedSet;
     }
 
-    public void setValues(List<Value> valueList) {
-        valueLocationMap.clear();
-        for (Value value : valueList) {
-            valueLocationMap.put(value, null);
-        }
+    public void setItems(List<Item> itemList) {
+        this.itemList.clear();
+        this.itemList.addAll(itemList);
+        this.itemList.sort(new ComparatorUtils.ItemValueComparator());
     }
 
-    public java.util.Set<Value> getValues() {
-        return valueLocationMap.keySet();
+    public List<Item> getItems() {
+        return itemList;
     }
 
-    public void setLocation(Value value, Location location) {
-        if (valueLocationMap.containsKey(value)) {
-            valueLocationMap.put(value, location);
+    public void setLocation(Item item, Location location) {
+        int ndx = itemList.indexOf(item);
+        if (ndx >= 0) {
+            itemList.get(ndx).putLocation(location);
         }
     }
 
     public int getNumberOfItems() {
-        return valueLocationMap.size();
+        return itemList.size();
     }
 
 
 
-    public Location getLocation(Value value) {
-        return valueLocationMap.get(value);
+    public Location getLocation(Item item) {
+        int ndx = itemList.indexOf(item);
+        if (ndx >= 0) {
+            itemList.get(ndx).getLocation();
+        }
+        return null;
     }
 
     public Set getSelectedSet() {

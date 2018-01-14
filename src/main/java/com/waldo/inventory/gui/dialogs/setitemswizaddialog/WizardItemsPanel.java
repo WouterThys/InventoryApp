@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
@@ -91,7 +92,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
             settings.setTypeName((String) typeCb.getSelectedItem());
             settings.setKeepOldSetItems(keepOldValuesCb.isSelected());
             settings.setReplaceValues(replaceValuesCb.isSelected());
-            settings.setValues(createValues());
+            settings.setItems(createItemsFromSettings(settings));
         }
     }
 
@@ -267,7 +268,9 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         }
 
         if (ok) {
-            if (max < min) {
+            double dMin = min * Math.pow(10, Statics.UnitMultipliers.toMultiplier(String.valueOf(minUnitCb.getSelectedItem())));
+            double dMax = max * Math.pow(10, Statics.UnitMultipliers.toMultiplier(String.valueOf(maxUnitCb.getSelectedItem())));
+            if (dMax < dMin) {
                 maxTf.setError("Max value can't be smaller than min value..");
                 ok = false;
             }
@@ -313,6 +316,65 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         return valueList;
     }
 
+    private Item findByValue(List<Item> itemList, Value value) {
+        if (itemList != null && value != null) {
+            for (Item item : itemList) {
+                if (item.getValue().equals(value)) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Item> createItemsFromSettings(WizardSettings settings) {
+        List<Item> newSetItems = new ArrayList<>();
+        if (settings != null) {
+
+            if (settings.isKeepOldSetItems()) {
+                newSetItems.addAll(settings.getSelectedSet().getSetItems());
+            }
+
+            int nameCnt = 0;
+            for (Value value : createValues()) {
+                Item item;
+                nameCnt++;
+                if (settings.isKeepOldSetItems() && settings.isReplaceValues()) {
+                    item = findByValue(newSetItems, value);
+                    if (item != null) {
+                        if (settings.isOverWriteLocations()) {
+                            item.setLocationId(settings.getLocation(item).getId());
+                        }
+                        continue;
+                    }
+                }
+                String name = createItemName(settings, nameCnt);
+                item = new Item(
+                        name,
+                        settings.getTypeName(),
+                        value,
+                        settings.getManufacturer(),
+                        settings.getPackageType(),
+                        settings.getPins(),
+                        settings.getAmount(),
+                        null,
+                        settings.getSelectedSet());
+
+
+                newSetItems.add(item);
+            }
+        }
+        newSetItems.sort(new ComparatorUtils.ItemValueComparator());
+        return newSetItems;
+    }
+
+    private String createItemName(WizardSettings settings, int count) {
+        return settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(count);
+    }
+
+    //
+    // Panels
+    //
     private JPanel createOldValuesPnl() {
         JPanel oldValuesPnl = new JPanel();
 
