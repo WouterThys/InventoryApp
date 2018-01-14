@@ -1,25 +1,29 @@
 package com.waldo.inventory.gui.components;
 
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class IAutoTextField extends ITextField {
 
-
     class AutoDocument extends PlainDocument {
 
-        public void replace(int i, int j, String s, AttributeSet attributeset)
-                throws BadLocationException {
+        public void replace(int i, int j, String s, AttributeSet attributeset) throws BadLocationException {
             super.remove(i, j);
             insertString(i, s, attributeset);
         }
 
-        public void insertString(int i, String s, AttributeSet attributeset)
-                throws BadLocationException {
+        public void insertString(int i, String s, AttributeSet attributeset) throws BadLocationException {
             if (s == null || "".equals(s))
                 return;
+
             String s1 = getText(0, i);
             String s2 = getMatch(s1 + s);
             int j = (i + s.length()) - 1;
@@ -55,13 +59,40 @@ public class IAutoTextField extends ITextField {
                 setSelectionStart(k);
                 setSelectionEnd(getLength());
             } catch (Exception exception) {
-                exception.printStackTrace();
             }
         }
 
     }
 
+    private List dataList;
+    private boolean isCaseSensitive;
+    private boolean isStrict;
+    private IAutoComboBox autoComboBox;
+
+    public IAutoTextField(List list) {
+        this(null, "", list);
+    }
+
+    public IAutoTextField(IEditedListener listener, String fieldName, List list) {
+        super(listener, fieldName);
+
+        isCaseSensitive = false;
+        isStrict = true;
+        autoComboBox = null;
+        if (list == null) {
+            throw new IllegalArgumentException("values can not be null");
+        } else {
+            dataList = list;
+            init();
+        }
+    }
+
     IAutoTextField(List list, IAutoComboBox b) {
+        this(list, b, null, "");
+    }
+
+    IAutoTextField(List list, IAutoComboBox b, IEditedListener listener, String fieldName) {
+        super(listener, fieldName);
         isCaseSensitive = false;
         isStrict = true;
         autoComboBox = null;
@@ -72,20 +103,49 @@ public class IAutoTextField extends ITextField {
             autoComboBox = b;
             init();
         }
+
+        setPreferredSize(new Dimension(100, 24));
+
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                SwingUtilities.invokeLater(() -> autoComboBox.showPopup());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                SwingUtilities.invokeLater(() -> autoComboBox.hidePopup());
+            }
+        });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                if (autoComboBox.isPopupVisible()) {
+                    autoComboBox.hidePopup();
+                } else {
+                    autoComboBox.showPopup();
+                }
+            }
+        });
     }
 
     private void init() {
         setDocument(new AutoDocument());
-        if (isStrict && dataList.size() > 0)
+        if (isStrict && dataList.size() > 0) {
             setText(dataList.get(0).toString());
+        }
     }
 
     private String getMatch(String s) {
-        for (Object aDataList : dataList) {
-            String s1 = aDataList.toString();
+        for (int i = 0; i < dataList.size(); i++) {
+            String s1 = dataList.get(i).toString();
             if (s1 != null) {
-                if (!isCaseSensitive
-                        && s1.toLowerCase().startsWith(s.toLowerCase()))
+                if (!isCaseSensitive && s1.toLowerCase().startsWith(s.toLowerCase()))
                     return s1;
                 if (isCaseSensitive && s1.startsWith(s))
                     return s1;
@@ -103,44 +163,36 @@ public class IAutoTextField extends ITextField {
                 int j = Math.max(getCaret().getDot(), getCaret().getMark());
                 _lb.replace(i, j - i, s, null);
             } catch (Exception exception) {
-                exception.printStackTrace();
             }
     }
 
-    boolean isCaseSensitive() {
+    public boolean isCaseSensitive() {
         return isCaseSensitive;
     }
 
-    void setCaseSensitive(boolean flag) {
+    public void setCaseSensitive(boolean flag) {
         isCaseSensitive = flag;
     }
 
-    boolean isStrict() {
+    public boolean isStrict() {
         return isStrict;
     }
 
-    void setStrict(boolean flag) {
+    public void setStrict(boolean flag) {
         isStrict = flag;
     }
 
-    List getDataList() {
+    public List getDataList() {
         return dataList;
     }
 
-    void setDataList(List list) {
+    public void setDataList(List list) {
         if (list == null) {
             throw new IllegalArgumentException("values can not be null");
         } else {
             dataList = list;
+            return;
         }
     }
-
-    private List dataList;
-
-    private boolean isCaseSensitive;
-
-    private boolean isStrict;
-
-    private IAutoComboBox autoComboBox;
 }
 

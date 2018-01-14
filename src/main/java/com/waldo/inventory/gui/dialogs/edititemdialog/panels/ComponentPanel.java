@@ -323,6 +323,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         // Identification
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
         aliasTf = new ITextField(editedListener, "alias");
+//        aliasTf = new IAutoComboBox(cache().getAliasList(), editedListener, "alias");
+//        aliasTf.setCaseSensitive(false);
+//        aliasTf.setStrict(false);
 
         descriptionTa = new ITextArea();
         descriptionTa.setLineWrap(true); // Go to next line when area is full
@@ -543,6 +546,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     @Override
     public void updateComponents(Object... object) {
         aliasTf.setText(selectedItem.getAlias().trim());
+        //aliasTf.setSelectedItem(selectedItem.getAlias().trim());
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
         nameValuePnl.setValue(selectedItem.getValue());
         descriptionTa.setText(selectedItem.getDescription().trim());

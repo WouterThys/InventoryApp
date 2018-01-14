@@ -80,7 +80,7 @@ public class Value {
 //            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
 //                return true;
 //            }
-            return v.toString().equals(toString());
+            return v.getRealValue().equals(getRealValue()) && v.getUnit().equals(getUnit());
         }
         return false;
     }

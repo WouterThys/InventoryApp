@@ -163,8 +163,7 @@ public class GuiUtils {
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
-            lbl.setMinimumSize(new Dimension(140,20));
-            lbl.setPreferredSize(new Dimension(120, 20));
+            lbl.setPreferredSize(new Dimension(140, 20));
             panel.add(lbl, this);
 
             gridwidth = oldGw;
@@ -608,13 +607,15 @@ public class GuiUtils {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (value != null) {
-                SwingUtilities.invokeLater(() -> {
-                    double val = valueModel.getNumber().doubleValue();
-                    value.setDoubleValue(val);
-                    if (listener != null) {
-                        listener.onValueChanged(this, "value:doubleValue", 0, 0);
-                    }
-                });
+                if (e.getSource().equals(valueSp)) {
+                    SwingUtilities.invokeLater(() -> {
+                        double val = valueModel.getNumber().doubleValue();
+                        value.setDoubleValue(val);
+                        if (listener != null) {
+                            listener.onValueChanged(this, "value:doubleValue", 0, val);
+                        }
+                    });
+                }
             }
         }
 

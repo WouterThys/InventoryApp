@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -12,6 +13,7 @@ import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.DoItAction;
+import com.waldo.inventory.gui.components.actions.RenameAction;
 import com.waldo.inventory.gui.components.actions.ReplaceAction;
 import com.waldo.inventory.gui.components.tablemodels.IWizardSetItemsTableModel;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
@@ -40,6 +42,7 @@ class WizardParsePanel extends JPanel implements
     // Item actions
     private IdBToolBar toolBar;
     private ReplaceAction replaceAction;
+    private RenameAction renameAction;
     private DoItAction importSeriesAction;
 
     private ILabel numberOfItemsLbl;
@@ -83,6 +86,28 @@ class WizardParsePanel extends JPanel implements
         }
     }
 
+    public void renameItems() {
+        List<Item> itemsList = tableModel.getItemList();
+        if (itemsList.size() > 0) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "Also rename old items?",
+                    "Rename",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            int count = 1;
+            for (Item item : itemsList) {
+                if (item.getId() <= DbObject.UNKNOWN_ID || res == JOptionPane.YES_OPTION) {
+                    item.setName(createItemName(wizardSettings, count));
+                    count++;
+                }
+            }
+            tableModel.updateTable();
+        }
+    }
+
     public void saveAllSetItems() {
         if (wizardSettings != null) {
             parent.beginWait();
@@ -103,6 +128,11 @@ class WizardParsePanel extends JPanel implements
         toolBar.setEditActionEnabled(enabled);
         toolBar.setDeleteActionEnabled(enabled);
         replaceAction.setEnabled(enabled);
+    }
+
+    private void updateInfo() {
+        numberOfItemsLbl.setText(String.valueOf(tableModel.getItemList().size()));
+        //numberOfLocationsLbl.setText();
     }
 
     private Item findByValue(List<Item> itemList, Value value) {
@@ -137,7 +167,7 @@ class WizardParsePanel extends JPanel implements
                         continue;
                     }
                 }
-                String name = settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(nameCnt);
+                String name = createItemName(settings, nameCnt);
                 item = new Item(
                         name,
                         settings.getTypeName(),
@@ -155,6 +185,10 @@ class WizardParsePanel extends JPanel implements
         }
         newSetItems.sort(new ComparatorUtils.ItemValueComparator());
         return newSetItems;
+    }
+
+    private String createItemName(WizardSettings settings, int count) {
+        return settings.getSelectedSet().getName() + " - " + settings.getTypeName() + String.valueOf(count);
     }
 
     /*
@@ -214,13 +248,18 @@ class WizardParsePanel extends JPanel implements
             if (dialog.showDialog() == IDialog.OK) {
                 tableModel.addItem(dialog.getItem());
             }
+            updateInfo();
         }
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (selectedItem != null) {
-            tableModel.removeItem(selectedItem);
+        List<Item> selectedItems = new ArrayList<>(setItemTable.getSelectedItems());
+        if (selectedItems.size() > 0) {
+            for (Item item : selectedItems) {
+                tableModel.removeItem(item);
+            }
+            updateInfo();
         }
     }
 
@@ -253,6 +292,12 @@ class WizardParsePanel extends JPanel implements
                 replace(selectedItem);
             }
         };
+        renameAction = new RenameAction() {
+            @Override
+            public void onRename() {
+                renameItems();
+            }
+        };
         importSeriesAction = new DoItAction() {
             @Override
             public void onDoIt() {
@@ -261,6 +306,7 @@ class WizardParsePanel extends JPanel implements
         };
 
         toolBar = new IdBToolBar(this);
+        toolBar.addSeparateAction(renameAction);
         toolBar.addAction(replaceAction);
     }
 

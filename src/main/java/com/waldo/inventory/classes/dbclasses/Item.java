@@ -32,6 +32,7 @@ public class Item extends DbObject {
     protected Product product;
     protected long typeId = -1;
     protected Type type;
+    protected boolean isSet = false;
 
     protected String localDataSheet = "";
     protected String onlineDataSheet = "";
@@ -272,6 +273,7 @@ public class Item extends DbObject {
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarksFile(getRemarksFile());
+        item.setIsSet(isSet());
 
         return item;
     }
@@ -600,7 +602,11 @@ public class Item extends DbObject {
     }
 
     public boolean isSet() {
-        return false;
+        return isSet;
+    }
+
+    public void setIsSet(boolean isSet) {
+        this.isSet = isSet;
     }
 
     public Value getValue() {

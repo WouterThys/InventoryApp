@@ -89,6 +89,9 @@ public class CacheManager {
     private final CacheList<Set> sets = new CacheList<>();
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
 
+    // Other
+    private List<String> aliasList = null;
+
     // Listeners
     private final Map<Class<? extends DbObject>, List<CacheChangedListener<? extends DbObject>>> changedListenerMap = new HashMap<>();
 
@@ -196,6 +199,21 @@ public class CacheManager {
             items.setList(db().updateItems(), (System.nanoTime() - start));
         }
         return items;
+    }
+
+    public synchronized List<String> getAliasList() {
+        if (aliasList == null) {
+            aliasList = new ArrayList<>();
+            for (Item item : getItems()) {
+                if (!item.getAlias().isEmpty()) {
+                    if (!aliasList.contains(item.getAlias())) {
+                        aliasList.add(item.getAlias());
+                    }
+                }
+            }
+            aliasList.sort(String::compareTo);
+        }
+        return aliasList;
     }
 
     public synchronized CacheList<Category> getCategories() {

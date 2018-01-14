@@ -21,8 +21,8 @@ import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearc
 public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Name", "Footprint", "Manufacturer", "Match"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, ILabel.class};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Footprint", "Manufacturer", "Match"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class, ILabel.class};
 
     private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
     private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
@@ -41,8 +41,8 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
     @Override
     public int getColumnCount() {
         switch (searchType) {
-            case SearchWord: return 4;
-            case PcbItem: return 5;
+            case SearchWord: return 5;
+            case PcbItem: return 6;
         }
         return super.getColumnCount();
     }
@@ -58,7 +58,15 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                     return setItem;
                 case 1: // Name
                     return setItem.toString();
-                case 2: // Footprint
+                case 2: // Value
+                    String result;
+                    if (setItem.getValue().hasValue()) {
+                        result = setItem.getValue().toString();
+                    } else {
+                        result = setItem.getAlias();
+                    }
+                    return result;
+                case 3: // Footprint
                     PackageType packageType = setItem.getPackageType();
                     if (packageType != null) {
                         if (packageType.getPackageId() > DbObject.UNKNOWN_ID) {
@@ -69,13 +77,13 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                     } else {
                         return "";
                     }
-                case 3: // Manufacturer
+                case 4: // Manufacturer
                     Manufacturer m = setItem.getManufacturer();
                     if (m != null && !m.isUnknown()) {
                         return m.toString();
                     }
                     return "";
-                case 4: // Match
+                case 5: // Match
                     return setItem.getObjectMatch();
             }
         }

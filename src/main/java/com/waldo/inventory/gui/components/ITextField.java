@@ -56,8 +56,10 @@ public class ITextField extends JTextField implements FocusListener {
 
     public ITextField(IEditedListener listener, String fieldName) {
         this();
-        addEditedListener(listener, fieldName);
-        documentListener.setEnabled(true);
+        if (listener != null) {
+            addEditedListener(listener, fieldName);
+            documentListener.setEnabled(true);
+        }
     }
 
     @Override

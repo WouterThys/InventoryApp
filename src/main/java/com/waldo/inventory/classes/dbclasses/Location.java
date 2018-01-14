@@ -109,6 +109,13 @@ public class Location extends DbObject {
         return location;
     }
 
+    public static Location unknownLocation() {
+        Location unknown = createLocation("UNKNOWN", 0, 0, 1);
+        unknown.setId(DbObject.UNKNOWN_ID);
+        unknown.setCanBeSaved(false);
+        return unknown;
+    }
+
 
     @Override
     protected int findMatch(String searchTerm) {

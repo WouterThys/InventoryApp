@@ -2,10 +2,10 @@ package com.waldo.inventory.gui.components;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.event.ItemEvent;
 
-public class IAutoComboBox extends JComboBox {
-
+public class IAutoComboBox<T> extends IComboBox<T> {
 
     private class AutoTextFieldEditor extends BasicComboBoxEditor {
 
@@ -13,22 +13,28 @@ public class IAutoComboBox extends JComboBox {
             return (IAutoTextField) editor;
         }
 
-        AutoTextFieldEditor(java.util.List list) {
-            editor = new IAutoTextField(list, IAutoComboBox.this);
+        AutoTextFieldEditor(java.util.List list, IEditedListener listener, String fieldName) {
+            editor = new IAutoTextField(list, IAutoComboBox.this, listener, fieldName);
         }
     }
 
-    public IAutoComboBox(java.util.List list) {
+    private AutoTextFieldEditor autoTextFieldEditor;
+    private boolean isFired;
+
+    public IAutoComboBox(java.util.List<T> list) {
+        this(list, null, "");
+    }
+
+    public IAutoComboBox(java.util.List<T> list, IEditedListener listener, String fieldName) {
         isFired = false;
-        autoTextFieldEditor = new AutoTextFieldEditor(list);
+        autoTextFieldEditor = new AutoTextFieldEditor(list, listener, fieldName);
         setEditable(true);
-        setModel(new DefaultComboBoxModel(list.toArray()) {
-
+        setModel(new DefaultComboBoxModel<T>((T[]) list.toArray()) {
             protected void fireContentsChanged(Object obj, int i, int j) {
-                if (!isFired)
+                if (!isFired) {
                     super.fireContentsChanged(obj, i, j);
+                }
             }
-
         });
         setEditor(autoTextFieldEditor);
     }
@@ -53,21 +59,17 @@ public class IAutoComboBox extends JComboBox {
         return autoTextFieldEditor.getAutoTextFieldEditor().getDataList();
     }
 
-    public void setDataList(java.util.List list) {
+    public void setDataList(java.util.List<T> list) {
         autoTextFieldEditor.getAutoTextFieldEditor().setDataList(list);
-        setModel(new DefaultComboBoxModel(list.toArray()));
+        setModel(new DefaultComboBoxModel<T>((T[]) list.toArray()));
     }
 
-    public void setSelectedValue(Object obj) {
-        if (isFired) {
-            return;
-        } else {
+    void setSelectedValue(Object obj) {
+        if (!isFired) {
             isFired = true;
             setSelectedItem(obj);
-            fireItemStateChanged(new ItemEvent(this, 701, selectedItemReminder,
-                    1));
+            fireItemStateChanged(new ItemEvent(this, 701, selectedItemReminder, 1));
             isFired = false;
-            return;
         }
     }
 
@@ -76,8 +78,21 @@ public class IAutoComboBox extends JComboBox {
             super.fireActionEvent();
     }
 
-    private final AutoTextFieldEditor autoTextFieldEditor;
 
-    private boolean isFired;
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        UIManager.put("ComboBox.squareButton", Boolean.FALSE);
+        setUI(new BasicComboBoxUI() {
+            @Override protected JButton createArrowButton() {
+                JButton b = new JButton();
+                b.setBorder(BorderFactory.createEmptyBorder());
+                b.setVisible(false);
+                return b;
+            }
+        });
+        //setBorder(BorderFactory.createLineBorder(java.awt.Color.gray));
+    }
 
 }

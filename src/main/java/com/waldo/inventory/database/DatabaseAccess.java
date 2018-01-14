@@ -569,6 +569,7 @@ public class DatabaseAccess {
                         i.setRating(rs.getFloat("rating"));
                         i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                         i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
+                        i.setIsSet(rs.getBoolean("isSet"));
 
                         if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                             i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
@@ -1541,6 +1542,7 @@ public class DatabaseAccess {
                     s.setRating(rs.getFloat("rating"));
                     s.setDiscourageOrder(rs.getBoolean("discourageOrder"));
                     s.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
+                    s.setIsSet(true);
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         s.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
