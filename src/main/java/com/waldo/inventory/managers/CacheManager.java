@@ -216,6 +216,10 @@ public class CacheManager {
         return aliasList;
     }
 
+    public synchronized void clearAliases() {
+        aliasList = null;
+    }
+
     public synchronized CacheList<Category> getCategories() {
         if (!categories.isFetched()) {
             long start = System.nanoTime();

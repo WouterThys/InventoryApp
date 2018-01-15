@@ -9,6 +9,8 @@ import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.SearchAction;
+import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
@@ -48,14 +50,13 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     // Basic info
     private GuiUtils.INameValuePanel nameValuePnl;
-    private ITextField aliasTf;
+    //private ITextField aliasTf;
+    private ITextFieldActionPanel aliasPnl;
     private ITextArea descriptionTa;
     private ITextField priceTf;
     private IComboBox<Category> categoryCb;
     private IComboBox<Product> productCb;
     private IComboBox<Type> typeCb;
-//    private ITextField localDataSheetTf;
-//    private JButton localDataSheetBtn;
     private GuiUtils.IBrowseFilePanel localDataSheetPnl;
     private GuiUtils.IBrowseWebPanel onlineDataSheetPnl;
 
@@ -320,10 +321,19 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private void initializeBasicComponents() {
         // Identification
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
-        aliasTf = new ITextField(editedListener, "alias");
-//        aliasTf = new IAutoComboBox(cache().getAliasList(), editedListener, "alias");
-//        aliasTf.setCaseSensitive(false);
-//        aliasTf.setStrict(false);
+        aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new SearchAction() {
+            @Override
+            public void onSearch() {
+                AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasPnl.getText());
+                if (dialog.showDialog() == IDialog.OK) {
+                    String selectedAlias = dialog.getSelectedAlias();
+                    if (selectedAlias != null && !selectedAlias.isEmpty()) {
+                        aliasPnl.setText(selectedAlias);
+                        aliasPnl.fireValueChanged();
+                    }
+                }
+            }
+        });
 
         descriptionTa = new ITextArea();
         descriptionTa.setLineWrap(true); // Go to next line when area is full
@@ -391,7 +401,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
                 new String[] {"Name: ", "Alias: "},
-                new JComponent[] {nameValuePnl, aliasTf}
+                new JComponent[] {nameValuePnl, aliasPnl}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -516,8 +526,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     @Override
     public void updateComponents(Object... object) {
-        aliasTf.setText(selectedItem.getAlias().trim());
-        //aliasTf.setSelectedItem(selectedItem.getAlias().trim());
+        aliasPnl.setText(selectedItem.getAlias().trim());
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
         nameValuePnl.setValue(selectedItem.getValue());
         descriptionTa.setText(selectedItem.getDescription().trim());

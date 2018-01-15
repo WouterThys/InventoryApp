@@ -292,28 +292,29 @@ public class Item extends DbObject {
                 return false;
             } else {
                 Item ref = (Item) obj;
-                if (!(ref.getAlias().equals(getAlias()))) {System.out.println("Alias differs"); return false; }
-                if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
-                if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
-                if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
-                if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
-                if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
-                if (!(ref.getProductId() == getProductId())) { System.out.println("Product differs"); return false; }
-                if (!(ref.getTypeId() == getTypeId())) { System.out.println("Type differs"); return false; }
-                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { System.out.println("Local datasheet differs"); return false; }
-                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { System.out.println("Online datasheet differs"); return false; }
-                if (!(ref.getManufacturerId() == getManufacturerId())) { System.out.println("Manufacturer differs"); return false; }
-                if (!(ref.getLocationId() == getLocationId())) { System.out.println("Location differs"); return false; }
-                if (!(ref.getAmount() == getAmount())) { System.out.println("Amount differs"); return false; }
-                if (!(ref.getAmountType() == getAmountType())) { System.out.println("Amount type differs"); return false; }
-                if (!(ref.getOrderState() == getOrderState())) { System.out.println("Order state differs"); return false; }
-                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
-                    System.out.println("Package type differs: " + ref.getPackageTypeId() + "<->" + getPackageTypeId());
-                    return false; }
-                if (!(ref.getPins() == getPins())) { System.out.println("Pins differ"); return false; }
-                if (!(ref.getRating() == getRating())) { System.out.println("Rating differs"); return false; }
-                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { System.out.println("Discourage differs"); return false; }
-                if (!(ref.isSet() == isSet())) { System.out.println("IsSet differs"); return false; }
+                if (!(ref.getAlias().equals(getAlias()))) {
+                    cache().clearAliases();
+                    return false;
+                }
+                if (!(ref.getValue().equals(getValue()))) { return false; }
+                if (!(ref.getIconPath().equals(getIconPath()))) { return false; }
+                if (!(ref.getDescription().equals(getDescription()))) {  return false; }
+                if (!(ref.getPrice() == getPrice())) { return false; }
+                if (!(ref.getCategoryId() == getCategoryId())) { return false; }
+                if (!(ref.getProductId() == getProductId())) { return false; }
+                if (!(ref.getTypeId() == getTypeId())) { return false; }
+                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { return false; }
+                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { return false; }
+                if (!(ref.getManufacturerId() == getManufacturerId())) {return false; }
+                if (!(ref.getLocationId() == getLocationId())) {  return false; }
+                if (!(ref.getAmount() == getAmount())) { return false; }
+                if (!(ref.getAmountType() == getAmountType())) { return false; }
+                if (!(ref.getOrderState() == getOrderState())) { return false; }
+                if (!(ref.getPackageTypeId() == getPackageTypeId())) { return false; }
+                if (!(ref.getPins() == getPins())) { return false; }
+                if (!(ref.getRating() == getRating())) { return false; }
+                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { return false; }
+                if (!(ref.isSet() == isSet())) { return false; }
             }
         }
         return result;

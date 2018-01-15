@@ -95,6 +95,10 @@ public class ITextFieldActionPanel extends JPanel implements GuiInterface {
         }
     }
 
+    public void fireValueChanged() {
+        textField.fireValueChanged();
+    }
+
     public void setText(String text) {
         this.text = text;
         textField.setText(text);
