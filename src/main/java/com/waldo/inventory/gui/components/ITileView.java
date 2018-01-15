@@ -92,11 +92,35 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiIn
     @Override
     public void updateComponents(Object... object) {
         ProjectIDE ide = projectObject.getProjectIDE();
+        Path path;
         if (ide != null) {
-            Path path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
+            path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
             setIcon(path.toString(), projectObject.isValid());
         } else {
-            setIcon("", projectObject.isValid());
+            String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
+            String iconPath = "";
+            switch (extension) {
+                case "ods": iconPath = "ods.png"; break;
+                case "pdf": iconPath = "pdf.png"; break;
+                case "avi": iconPath = "avi-icon.png"; break;
+                case "csv": iconPath = "csv-icon.png"; break;
+                case "xls": iconPath = "excel-xls-icon.png"; break;
+                case "jpg": iconPath = "jpg-icon.png"; break;
+                case "mp3": iconPath = "mp3-icon.png"; break;
+                case "png": iconPath = "png-icon.png"; break;
+                case "ppt": iconPath = "ppt-icon.png"; break;
+                case "rar": iconPath = "rar-icon.png"; break;
+                case "txt": iconPath = "txt-icon.png"; break;
+                case "zip": iconPath = "zip-icon.png"; break;
+                default:
+                    break;
+            }
+            if (!iconPath.isEmpty()) {
+                path = Paths.get(settings().getFileSettings().getImgIdesPath(), iconPath);
+                setIcon(path.toString(), projectObject.isValid());
+            } else  {
+                setIcon("", projectObject.isValid());
+            }
         }
 
 

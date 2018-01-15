@@ -36,12 +36,11 @@ public class EditProjectPcbDialog extends EditProjectPcbDialogLayout {
                     projectPcb.createName();
                     projectPcb.save();
                     projectPcb = originalProjectPcb.createCopy();
-                    dispose();
+                    super.onOK();
                 }
             }
         } else {
-            dialogResult = OK;
-            dispose();
+            super.onOK();
         }
         canClose = true;
     }

@@ -439,11 +439,11 @@ public class SearchManager {
 
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();
-//        for (ProjectOther po : CacheManager.cache().getProjectOthers()) {
-//            if (po.getProjectId() == projectId) {
-//                projectOthers.add(pc);
-//            }
-//        }
+        for (ProjectOther po : cache().getProjectOthers()) {
+            if (po.getProjectId() == projectId) {
+                projectOthers.add(po);
+            }
+        }
         return projectOthers;
     }
 

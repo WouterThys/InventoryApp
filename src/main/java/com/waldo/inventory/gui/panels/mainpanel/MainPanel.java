@@ -215,8 +215,8 @@ public class MainPanel extends MainPanelLayout {
 
             @Override
             public void onCacheCleared() {
-                treeRecreateNodes();
-                updateComponents(selectedDivision);
+                //treeRecreateNodes();
+                //updateComponents(selectedDivision);
             }
         };
     }
@@ -583,10 +583,15 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
         if (source.equals(selectionTb)) {
+            cache().getCategories().clear();
+            cache().getProducts().clear();
+            cache().getTypes().clear();
             treeRecreateNodes();
         } else {
             application.beginWait();
             try {
+                cache().getItems().clear();
+                tableInitialize(selectedDivision);
                 for (Item item : getTableModel().getItemList()) {
                     item.updateOrderState();
                 }
@@ -594,11 +599,8 @@ public class MainPanel extends MainPanelLayout {
                 application.endWait();
             }
 
-            tableInitialize(selectedDivision);
-            updateEnabledComponents();
-
             detailPanel.updateComponents(selectedItem);
-            //previewPanel.updateComponents(selectedItem);
+            updateEnabledComponents();
         }
     }
 

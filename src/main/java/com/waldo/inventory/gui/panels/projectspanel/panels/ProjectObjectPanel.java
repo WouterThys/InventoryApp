@@ -123,18 +123,34 @@ public abstract class ProjectObjectPanel <T extends ProjectObject> extends JPane
         projectObjectNameLbl.setFont(18, Font.BOLD);
         runIdeBtn = new JButton(imageResource.readImage("Common.Execute", 24));
         runIdeBtn.addActionListener(e -> {
-            if (selectedProjectObject != null && selectedProjectObject.getProjectIDEId() > DbObject.UNKNOWN_ID) {
-                ProjectIDE ide = selectedProjectObject.getProjectIDE();
-                try {
-                    ide.launch(new File(selectedProjectObject.getDirectory()));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Failed to open IDE",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+            if (selectedProjectObject != null) {
+                if (selectedProjectObject.getProjectIDEId() > DbObject.UNKNOWN_ID) {
+                    ProjectIDE ide = selectedProjectObject.getProjectIDE();
+                    try {
+                        ide.launch(new File(selectedProjectObject.getDirectory()));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Failed to open IDE",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } else {
+                    if (selectedProjectObject.isValid()) {
+                        try {
+                            ProjectIDE.tryLaunch(new File(selectedProjectObject.getDirectory()));
+                        } catch (IOException e2) {
+                            e2.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    this,
+                                    "Failed to open IDE",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
                 }
             }
         });

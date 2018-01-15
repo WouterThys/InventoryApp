@@ -211,6 +211,13 @@ public class CacheManager {
                     }
                 }
             }
+            for (Location location : getLocations()) {
+                if (!location.getAlias().isEmpty()) {
+                    if (!aliasList.contains(location.getAlias())){
+                        aliasList.add(location.getAlias());
+                    }
+                }
+            }
             aliasList.sort(String::compareTo);
         }
         return aliasList;
@@ -348,6 +355,14 @@ public class CacheManager {
             projectPcbs.setList(db().updateProjectPcbs(), (System.nanoTime() - start));
         }
         return projectPcbs;
+    }
+
+    public synchronized CacheList<ProjectOther> getProjectOthers() {
+        if (!projectOthers.isFetched()) {
+            long start = System.nanoTime();
+            projectOthers.setList(db().updateProjectOthers(), (System.nanoTime() - start));
+        }
+        return projectOthers;
     }
 
     public synchronized CacheList<PcbItemProjectLink> getPcbItemProjectLinks() {

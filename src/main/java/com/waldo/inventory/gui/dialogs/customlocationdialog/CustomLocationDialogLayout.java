@@ -5,7 +5,8 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.EditAction;
+import com.waldo.inventory.gui.components.actions.SaveAction;
+import com.waldo.inventory.gui.components.actions.SearchAction;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -28,8 +29,12 @@ abstract class CustomLocationDialogLayout extends IDialog implements
     JButton convertBtn;
 
     // Extra
-    ITextFieldActionPanel namePanel;
-    ITextFieldActionPanel aliasPanel;
+    ITextField nameTf;
+    SaveAction saveNameAction;
+
+    ITextField aliasTf;
+    SearchAction searchAliasAction;
+    SaveAction saveAliasAction;
 
 
      /*
@@ -52,17 +57,22 @@ abstract class CustomLocationDialogLayout extends IDialog implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
         boolean enabled = selectedLocationButton != null;
-        namePanel.setEnabled(enabled);
-        namePanel.setEnabled(enabled);
+
+        nameTf.setEnabled(enabled);
+        saveNameAction.setEnabled(enabled);
+
+        aliasTf.setEnabled(enabled);
+        saveAliasAction.setEnabled(enabled);
+        searchAliasAction.setEnabled(enabled);
     }
 
     void setButtonDetails(Location location) {
         if (location != null) {
-            namePanel.setText(location.getName());
-            aliasPanel.setText(location.getAlias());
+            nameTf.setText(location.getName());
+            aliasTf.setText(location.getAlias());
         } else {
-            namePanel.clearText();
-            aliasPanel.clearText();
+            nameTf.clearText();
+            nameTf.clearText();
         }
     }
 
@@ -106,8 +116,8 @@ abstract class CustomLocationDialogLayout extends IDialog implements
         TitledBorder resultBorder = GuiUtils.createTitleBorder("Result");
 
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(detailPanel);
-        gbh.addLine("Name: ", namePanel);
-        gbh.addLine("Alias: ", aliasPanel);
+        gbh.addLine("Name: ", GuiUtils.createComponentWithActions(nameTf, saveNameAction));
+        gbh.addLine("Alias: ", GuiUtils.createComponentWithActions(aliasTf, searchAliasAction, saveAliasAction));
 
         centerPanel.add(locationMapPanel, BorderLayout.CENTER);
         centerPanel.add(detailPanel, BorderLayout.SOUTH);
@@ -151,21 +161,30 @@ abstract class CustomLocationDialogLayout extends IDialog implements
         convertBtn.addActionListener(this);
 
         // Extra
-        namePanel = new ITextFieldActionPanel("Name", new EditAction() {
+        nameTf = new ITextField();
+        saveNameAction = new SaveAction() {
             @Override
-            public void onEdit(ActionEvent e) {
-                e.setSource(namePanel);
+            public void onSave(ActionEvent e) {
+                e.setSource(saveNameAction);
                 CustomLocationDialogLayout.this.actionPerformed(e);
             }
-        });
-        aliasPanel = new ITextFieldActionPanel("Alias", new EditAction() {
-            @Override
-            public void onEdit(ActionEvent e) {
-                e.setSource(aliasPanel);
-                CustomLocationDialogLayout.this.actionPerformed(e);
-            }
-        });
+        };
 
+        aliasTf = new ITextField();
+        saveAliasAction = new SaveAction() {
+            @Override
+            public void onSave(ActionEvent e) {
+                e.setSource(saveAliasAction);
+                CustomLocationDialogLayout.this.actionPerformed(e);
+            }
+        };
+        searchAliasAction = new SearchAction() {
+            @Override
+            public void onSearch(ActionEvent e) {
+                e.setSource(searchAliasAction);
+                CustomLocationDialogLayout.this.actionPerformed(e);
+            }
+        };
     }
 
     @Override

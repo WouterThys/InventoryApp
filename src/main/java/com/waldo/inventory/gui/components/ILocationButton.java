@@ -58,8 +58,7 @@ public class ILocationButton extends JButton {
 
     private void addItemsToPopup(JPopupMenu popupMenu, Application application) {
         for (Item item : location.getItems()) {
-
-            JMenuItem menu = new JMenuItem(item.getName());
+            JMenuItem menu = new JMenuItem(item.getPrettyName());
                 menu.addActionListener(e -> {
                         EditItemDialog dialog = new EditItemDialog<>(application, "Item", item);
                         dialog.showDialog();

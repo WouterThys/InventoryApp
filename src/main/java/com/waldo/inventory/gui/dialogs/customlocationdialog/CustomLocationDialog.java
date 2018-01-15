@@ -3,6 +3,8 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -210,15 +212,25 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             selectedLocationButton = null;
             newLocationList = convertInput(input);
             locationMapPanel.setLocations(newLocationList);
-        } else if (e.getSource().equals(namePanel)) {
+        } else if (e.getSource().equals(saveNameAction)) {
             if (selectedLocationButton != null) {
-                selectedLocationButton.getTheLocation().setName(namePanel.getText());
+                selectedLocationButton.getTheLocation().setName(nameTf.getText());
                 locationMapPanel.updateButtons();
             }
-        } else if (e.getSource().equals(aliasPanel)) {
+        } else if (e.getSource().equals(saveAliasAction)) {
             if (selectedLocationButton != null) {
-                selectedLocationButton.getTheLocation().setAlias(aliasPanel.getText());
+                selectedLocationButton.getTheLocation().setAlias(aliasTf.getText());
                 locationMapPanel.updateButtons();
+            }
+        } else if (e.getSource().equals(searchAliasAction)) {
+            if (selectedLocationButton != null) {
+                AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasTf.getText());
+                if (dialog.showDialog() == IDialog.OK) {
+                    String selectedAlias = dialog.getSelectedAlias();
+                    if (selectedAlias != null && !selectedAlias.isEmpty()) {
+                        aliasTf.setText(selectedAlias);
+                    }
+                }
             }
         }
         getButtonNeutral().setEnabled(!compareLocations());

@@ -13,10 +13,10 @@ public abstract class ProjectObject extends DbObject {
     // Variables
     private String directory;
 
-    private long projectId;
+    private long projectId = UNKNOWN_ID;
     private Project project;
 
-    private long projectIDEId;
+    private long projectIDEId = UNKNOWN_ID;
     private ProjectIDE projectIDE;
 
     private String remarksFile;
@@ -39,6 +39,13 @@ public abstract class ProjectObject extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+
+        if (getProjectId() < UNKNOWN_ID) {
+            projectId = UNKNOWN_ID;
+        }
+        if (getProjectIDEId() < UNKNOWN_ID) {
+            projectIDEId = UNKNOWN_ID;
+        }
 
         // Add parameters
         statement.setString(ndx++, getDirectory());

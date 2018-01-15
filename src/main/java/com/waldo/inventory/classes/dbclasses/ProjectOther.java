@@ -2,6 +2,10 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DatabaseAccess;
 
+import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
+
 public class ProjectOther extends ProjectObject {
 
     public static final String TABLE_NAME = "projectothers";
@@ -35,31 +39,22 @@ public class ProjectOther extends ProjectObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DatabaseAccess.OBJECT_INSERT: {
-
+                List<ProjectOther> list = cache().getProjectOthers();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
-
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
-
+                List<ProjectOther> list = cache().getProjectOthers();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
                 break;
             }
         }
-    }
-
-    public static ProjectOther getUnknownProjectOther() {
-        ProjectOther u = new ProjectOther();
-        u.setName(UNKNOWN_NAME);
-        u.setId(UNKNOWN_ID);
-        u.setCanBeSaved(false);
-        return u;
-    }
-
-    // Getters and setters
-    @Override
-    public long getProjectId() {
-        return super.getProjectId();
     }
 }

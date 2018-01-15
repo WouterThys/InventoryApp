@@ -46,6 +46,10 @@ public class ProjectIDE extends DbObject {
         }
     }
 
+    public static void tryLaunch(File file) throws IOException {
+        Desktop.getDesktop().open(file);
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);

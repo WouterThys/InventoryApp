@@ -20,6 +20,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -50,7 +51,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     // Basic info
     private GuiUtils.INameValuePanel nameValuePnl;
-    //private ITextField aliasTf;
     private ITextFieldActionPanel aliasPnl;
     private ITextArea descriptionTa;
     private ITextField priceTf;
@@ -323,7 +323,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
         aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new SearchAction() {
             @Override
-            public void onSearch() {
+            public void onSearch(ActionEvent e) {
                 AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasPnl.getText());
                 if (dialog.showDialog() == IDialog.OK) {
                     String selectedAlias = dialog.getSelectedAlias();

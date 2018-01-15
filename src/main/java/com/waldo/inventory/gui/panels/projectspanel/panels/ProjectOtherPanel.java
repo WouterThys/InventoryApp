@@ -6,7 +6,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
-import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog.EditProjectObjectDialog;
+import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog.EditProjectOtherDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +89,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     public void onToolBarAdd(IdBToolBar source) {
         if (selectedProject != null) {
             ProjectOther newProjectOther = new ProjectOther(selectedProject.getId());
-            EditProjectObjectDialog dialog = new EditProjectObjectDialog<>(application, "Add", newProjectOther);
+            EditProjectOtherDialog dialog = new EditProjectOtherDialog(application, "Add", newProjectOther);
             dialog.showDialog();
         }
     }
@@ -97,7 +97,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProjectObject != null) {
-            EditProjectObjectDialog dialog = new EditProjectObjectDialog<>(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
+            EditProjectOtherDialog dialog = new EditProjectOtherDialog(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
             dialog.showDialog();
         }
     }

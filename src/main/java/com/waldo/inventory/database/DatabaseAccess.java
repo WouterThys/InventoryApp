@@ -1200,6 +1200,48 @@ public class DatabaseAccess {
         return projectPcbs;
     }
 
+    public List<ProjectOther> updateProjectOthers()    {
+        List<ProjectOther> projectOthers = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return projectOthers;
+        }
+        Status().setMessage("Fetching ProjectOther from DB");
+        ProjectOther p = null;
+        String sql = scriptResource.readString(ProjectOther.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new ProjectOther();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconpath"));
+                    p.setDirectory(rs.getString("directory"));
+                    p.setProjectId(rs.getLong("projectId"));
+                    p.setProjectIDEId(rs.getLong("projectIDEId"));
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+                    } else {
+                        p.setRemarksFile(null);
+                    }
+
+                    p.setInserted(true);
+                    projectOthers.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return projectOthers;
+    }
+
     public List<PcbItemProjectLink> updatePcbItemLinks()    {
         List<PcbItemProjectLink> pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {

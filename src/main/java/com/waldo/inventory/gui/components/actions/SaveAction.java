@@ -5,19 +5,20 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class SearchAction extends AbstractAction {
+public abstract class SaveAction extends AbstractAction {
 
-    private static final String name = "Search";
+    private static final String name = "Save";
 
-    protected SearchAction() {
-        super(name, imageResource.readImage("Actions.Search"));
+    protected SaveAction() {
+        super(name, imageResource.readImage("Actions.Save"));
         putValue(AbstractAction.SHORT_DESCRIPTION, name);
     }
 
-    public abstract void onSearch(ActionEvent e);
+    public abstract void onSave(ActionEvent e);
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        onSearch(e);
+        onSave(e);
     }
 }
+
