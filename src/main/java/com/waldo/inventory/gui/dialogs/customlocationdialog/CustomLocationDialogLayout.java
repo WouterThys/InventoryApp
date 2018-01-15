@@ -5,15 +5,15 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.EditAction;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 abstract class CustomLocationDialogLayout extends IDialog implements
         ILocationMapPanel.LocationClickListener,
@@ -28,8 +28,8 @@ abstract class CustomLocationDialogLayout extends IDialog implements
     JButton convertBtn;
 
     // Extra
-    ITextFieldButtonPanel namePanel;
-    ITextFieldButtonPanel aliasPanel;
+    ITextFieldActionPanel namePanel;
+    ITextFieldActionPanel aliasPanel;
 
 
      /*
@@ -151,8 +151,20 @@ abstract class CustomLocationDialogLayout extends IDialog implements
         convertBtn.addActionListener(this);
 
         // Extra
-        namePanel = new ITextFieldButtonPanel("Name", imageResource.readImage("Locations.Edit", 16), this);
-        aliasPanel = new ITextFieldButtonPanel("Alias",imageResource.readImage("Locations.Edit", 16), this );
+        namePanel = new ITextFieldActionPanel("Name", new EditAction() {
+            @Override
+            public void onEdit(ActionEvent e) {
+                e.setSource(namePanel);
+                CustomLocationDialogLayout.this.actionPerformed(e);
+            }
+        });
+        aliasPanel = new ITextFieldActionPanel("Alias", new EditAction() {
+            @Override
+            public void onEdit(ActionEvent e) {
+                e.setSource(aliasPanel);
+                CustomLocationDialogLayout.this.actionPerformed(e);
+            }
+        });
 
     }
 

@@ -88,9 +88,10 @@ public class Value {
     public boolean equalsIgnoreUnits(Object obj) {
         if (obj != null && obj instanceof Value) {
             Value v = (Value) obj;
-            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier()) {
-                return true;
-            }
+            return v.getRealValue().equals(getRealValue());
+//            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier()) {
+//                return true;
+//            }
         }
         return false;
     }

@@ -126,11 +126,15 @@ public class PcbItem extends DbObject {
     }
 
     public static boolean matchesName(String pcbName, String itemName) {
-        return (pcbName.length() > 2 && itemName.length() > 2) && (itemName.contains(pcbName) || pcbName.contains(itemName));
+        String pName = pcbName.toUpperCase();
+        String iName = itemName.toUpperCase();
+        return (pName.length() > 2 && iName.length() > 2) && (iName.contains(pName) || pName.contains(iName));
     }
 
     public static boolean matchesAlias(String pcbName, String alias) {
-        return (pcbName.contains(alias) || alias.contains(pcbName));
+        String pName = pcbName.toUpperCase();
+        String aName = alias.toUpperCase();
+        return (pName.contains(aName) || aName.contains(pName));
     }
 
     public static boolean matchesValue(String pcbValue, Value value) {
@@ -143,24 +147,13 @@ public class PcbItem extends DbObject {
         return false;
     }
 
-    public static boolean matchesValue(String pcbValue, Value value, String itemName) {
-        boolean res = matchesValue(pcbValue, value);
-
-        if (!res) { // Try to match with name
-            if (pcbValue.contains(itemName) || itemName.contains(pcbValue)) {
-                res = true;
-            }
-        }
-
-        return res;
-    }
-
     public static boolean matchesFootprint(String pcbFp, PackageType packageType) {
         if (pcbFp != null && !pcbFp.isEmpty() && packageType != null) {
             String pkName = packageType.getPackage().getName().toUpperCase();
             String ptName = packageType.getName().toUpperCase();
+            String pcbName = pcbFp.toUpperCase();
 
-            if (pcbFp.contains(pkName) || pkName.contains(pcbFp) || pcbFp.contains(ptName) || ptName.contains(pcbFp)) {
+            if (pcbName.contains(pkName) || pkName.contains(pcbName) || pcbName.contains(ptName) || ptName.contains(pcbName)) {
                 return true;
             }
         }

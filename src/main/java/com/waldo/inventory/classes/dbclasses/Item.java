@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Value;
@@ -235,7 +236,7 @@ public class Item extends DbObject {
 
                 if(PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
                 if (getValue().hasValue()) {
-                    if (PcbItem.matchesValue(pcbValue, getValue(), itemName)) match++;
+                    if (PcbItem.matchesValue(pcbValue, getValue())) match++;
                 } else {
                     if(PcbItem.matchesName(pcbName, itemName)) match++;
                 }
@@ -363,6 +364,20 @@ public class Item extends DbObject {
         if (currentState != getOrderState()) {
             save();
         }
+    }
+
+    public String getPrettyName() {
+        String result = getName();
+        if (!getAlias().isEmpty()) {
+            result = alias;
+        }
+        if (getValue().hasValue()) {
+            result += " " + value.toString();
+        }
+        if (Main.DEBUG_MODE) {
+            result += " (" + id + ")";
+        }
+        return result;
     }
 
     public String getAlias() {

@@ -118,18 +118,6 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         // Border
         TitledBorder amountBorder = GuiUtils.createTitleBorder("Location");
 
-        // Toolbar
-        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        toolBar.setFloatable(false);
-        toolBar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        toolBar.add(editAction);
-        toolBar.add(deleteAction);
-
-        // Helper panel
-        JPanel locPnl = new JPanel(new BorderLayout());
-        locPnl.add(locationTypeTf, BorderLayout.CENTER);
-        locPnl.add(toolBar, BorderLayout.EAST);
-
         // Grid bags
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
@@ -146,7 +134,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
-        locationPanel.add(locPnl, gbc);
+        locationPanel.add(GuiUtils.createComponentWithActions(locationTypeTf, editAction, deleteAction), gbc);
 
         // - Row
         gbc.gridx = 1; gbc.weightx = 0;

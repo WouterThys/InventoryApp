@@ -127,16 +127,27 @@ class OrderPcbItemPanel extends JPanel implements GuiInterface {
 
     private void onAddAll() {
         for (PcbItemProjectLink link : pcbTableGetItemList()) {
-            PcbItem item = link.getPcbItem();
-            if (!item.isOrdered()) {
-                item.setOrderAmount(link.getNumberOfItems());
+            PcbItem pcbItem = link.getPcbItem();
+            if (!pcbItem.isOrdered()) {
+                pcbItem.setOrderAmount(link.getNumberOfItems());
             }
         }
         pcbTableUpdate();
     }
 
     private void onCalculate() {
-
+        for (PcbItemProjectLink link : pcbTableGetItemList()) {
+            PcbItem pcbItem = link.getPcbItem();
+            PcbItemItemLink itemLink = link.getPcbItemItemLink();
+            if (itemLink != null) {
+                int inStock = itemLink.getItem().getAmount();
+                int needed = link.getNumberOfItems();
+                if (inStock < needed) {
+                    pcbItem.setOrderAmount(needed - inStock);
+                }
+            }
+        }
+        pcbTableUpdate();
     }
 
     private void onAddToOrder() {

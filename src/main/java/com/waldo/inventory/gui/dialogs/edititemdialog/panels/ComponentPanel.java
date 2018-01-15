@@ -18,7 +18,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -30,8 +29,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 
-import static com.waldo.inventory.Utils.GuiUtils.createFieldConstraints;
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -57,9 +54,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private IComboBox<Category> categoryCb;
     private IComboBox<Product> productCb;
     private IComboBox<Type> typeCb;
-    private ITextField localDataSheetTf;
-    private JButton localDataSheetBtn;
-    private GuiUtils.IBrowseWebPanel onlineDataSheetTf;
+//    private ITextField localDataSheetTf;
+//    private JButton localDataSheetBtn;
+    private GuiUtils.IBrowseFilePanel localDataSheetPnl;
+    private GuiUtils.IBrowseWebPanel onlineDataSheetPnl;
 
     // Details
     private GuiUtils.IPackagePanel packagePnl;
@@ -89,9 +87,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
         // DATA SHEETS
         selectedItem.setLocalDataSheet(set.getLocalDataSheet());
-        localDataSheetTf.setText(set.getLocalDataSheet());
+        localDataSheetPnl.setText(set.getLocalDataSheet());
         selectedItem.setOnlineDataSheet(set.getOnlineDataSheet());
-        onlineDataSheetTf.setText(set.getOnlineDataSheet());
+        onlineDataSheetPnl.setText(set.getOnlineDataSheet());
 
         // PACKAGE
         selectedItem.setPackageTypeId(set.getPackageTypeId());
@@ -348,26 +346,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         createProductCb();
         createTypeCb();
 
-        // Local data sheet
-        localDataSheetTf = new ITextField();
-        localDataSheetTf.addEditedListener(editedListener, "localDataSheet");
-        localDataSheetBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
-        localDataSheetBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("."));
-                fileChooser.setDialogTitle("Select the data sheet");
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (fileChooser.showOpenDialog(ComponentPanel.this) == JFileChooser.APPROVE_OPTION) {
-                    setLocalDataSheetFieldValue(fileChooser.getSelectedFile().getAbsolutePath());
-                }
-            }
-        });
-
-        // Online data sheet
-        onlineDataSheetTf = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
-        //onlineDataSheetTf.addEditedListener(editedListener, "onlineDataSheet");
+        // Data sheets
+        localDataSheetPnl = new GuiUtils.IBrowseFilePanel("", "/home", editedListener, "localDataSheet");
+        onlineDataSheetPnl = new GuiUtils.IBrowseWebPanel("","onlineDataSheet", editedListener);
     }
 
     private void initializeDetailsComponents() {
@@ -407,16 +388,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private JPanel createBasicPanel() {
         JPanel basicPanel = new JPanel();
         basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
-        // Additional stuff
-        JPanel local = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = createFieldConstraints(0,0);
-        constraints.gridwidth = 1;
-        local.add(localDataSheetTf, constraints);
-        constraints = createFieldConstraints(1,0);
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.1;
-        local.add(localDataSheetBtn, constraints);
-
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
                 new String[] {"Name: ", "Alias: "},
@@ -427,15 +398,15 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
                 "Sub divisions",
                 new String[] {"Category: ", "Product: ", "Type: "},
                 new JComponent[] {
-                        GuiUtils.createComboBoxWithButton(categoryCb, createAddCategoryListener()),
-                        GuiUtils.createComboBoxWithButton(productCb, createAddProductListener()),
-                        GuiUtils.createComboBoxWithButton(typeCb, createAddTypeListener())}
+                        GuiUtils.createComponentWithAddAction(categoryCb, createAddCategoryListener()),
+                        GuiUtils.createComponentWithAddAction(productCb, createAddProductListener()),
+                        GuiUtils.createComponentWithAddAction(typeCb, createAddTypeListener())}
         ));
 
         basicPanel.add(new ITitledEditPanel(
                 "Data sheets",
                 new String[] {"Local: ", "Online: "},
-                new JComponent[] {local, onlineDataSheetTf}
+                new JComponent[] {localDataSheetPnl, onlineDataSheetPnl}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -468,7 +439,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
         // MANUFACTURER
         gbc = new GuiUtils.GridBagHelper(manufacturerPanel);
-        gbc.addLine("Name: ", GuiUtils.createComboBoxWithButton(manufacturerCb, createManufacturerAddListener()));
+        gbc.addLine("Name: ", GuiUtils.createComponentWithAddAction(manufacturerCb, createManufacturerAddListener()));
         gbc.add(manufacturerIconLbl, 2,0,1,1);
 
         // REMARKS
@@ -558,8 +529,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         typeCb.setSelectedItem(selectedItem.getType());
 
         // DATA SHEETS
-        localDataSheetTf.setText(selectedItem.getLocalDataSheet());
-        onlineDataSheetTf.setText(selectedItem.getOnlineDataSheet());
+        localDataSheetPnl.setText(selectedItem.getLocalDataSheet());
+        onlineDataSheetPnl.setText(selectedItem.getOnlineDataSheet());
 
         // PACKAGE
         packagePnl.setPackageType(selectedItem.getPackageType(), selectedItem.getPins());
@@ -602,10 +573,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     public void setPriceFieldError(String error) {
         priceTf.setError(error);
-    }
-
-    private void setLocalDataSheetFieldValue(String localDataSheetFieldValue) {
-        localDataSheetTf.setText(localDataSheetFieldValue);
     }
 
     public IComboBox getProductCb() {

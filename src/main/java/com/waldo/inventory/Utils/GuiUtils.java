@@ -7,6 +7,9 @@ import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.AddAction;
+import com.waldo.inventory.gui.components.actions.BrowseFileAction;
+import com.waldo.inventory.gui.components.actions.BrowseWebAction;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
@@ -42,6 +45,7 @@ public class GuiUtils {
         return constraints;
     }
 
+    @Deprecated
     public static JPanel createFileOpenPanel(ITextField fileTf, JButton openBtn) {
         JPanel iconPathPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = createFieldConstraints(0,0);
@@ -54,16 +58,42 @@ public class GuiUtils {
         return iconPathPanel;
     }
 
+    @Deprecated
     public static JPanel createComboBoxWithButton(JComboBox comboBox, ActionListener listener) {
-        JButton button = new JButton(imageResource.readImage("Toolbar.Db.AddIcon", 16));
-        button.addActionListener(listener);
-        return createComboBoxWithButton(comboBox, button);
+        AddAction addAction = new AddAction() {
+            @Override
+            public void onAdd(ActionEvent e) {
+                listener.actionPerformed(e);
+            }
+        };
+        return createComboBoxWithAction(comboBox, addAction);
+
     }
 
-    public static JPanel createComboBoxWithButton(JComboBox comboBox, JButton button) {
+    @Deprecated
+    public static JPanel createComboBoxWithAction(JComboBox comboBox, Action action) {
         JPanel boxPanel = new JPanel(new BorderLayout());
+        JToolBar toolBar = createNewToolbar(action);
         boxPanel.add(comboBox, BorderLayout.CENTER);
-        boxPanel.add(button, BorderLayout.EAST);
+        boxPanel.add(toolBar, BorderLayout.EAST);
+        return boxPanel;
+    }
+
+    public static JPanel createComponentWithAddAction(JComponent component, ActionListener listener) {
+        AddAction addAction = new AddAction() {
+            @Override
+            public void onAdd(ActionEvent e) {
+                listener.actionPerformed(e);
+            }
+        };
+        return createComponentWithActions(component, addAction);
+    }
+
+    public static JPanel createComponentWithActions(JComponent component, Action... actions) {
+        JPanel boxPanel = new JPanel(new BorderLayout());
+        JToolBar toolBar = createNewToolbar(actions);
+        boxPanel.add(component, BorderLayout.CENTER);
+        boxPanel.add(toolBar, BorderLayout.EAST);
         return boxPanel;
     }
 
@@ -235,27 +265,28 @@ public class GuiUtils {
         }
     }
 
-    public static class IBrowseFilePanel extends ITextFieldButtonPanel implements ActionListener {
+    public static class IBrowseFilePanel extends ITextFieldActionPanel implements ActionListener {
 
         private String defaultPath = "";
         private int fileType = JFileChooser.DIRECTORIES_ONLY;
 
         public IBrowseFilePanel() {
-            super("", imageResource.readImage("Common.FileBrowse", 20));
-            this.defaultPath = "";
-            addButtonActionListener(this);
+            this("", "");
         }
 
         public IBrowseFilePanel(String hint, String defaultPath) {
-            super(hint, imageResource.readImage("Common.FileBrowse", 20));
-            this.defaultPath = defaultPath;
-            addButtonActionListener(this);
+            this(hint, defaultPath, null, "");
         }
 
         public IBrowseFilePanel(String hint, String defaultPath, IEditedListener listener, String fieldName) {
-            super(hint, fieldName, listener, imageResource.readImage("Common.FileBrowse", 20));
+            super(hint, fieldName, listener);
             this.defaultPath = defaultPath;
-            addButtonActionListener(this);
+            this.setAction(new BrowseFileAction() {
+                @Override
+                public void onBrowseFile(ActionEvent e) {
+                    IBrowseFilePanel.this.actionPerformed(e);
+                }
+            });
         }
 
         @Override
@@ -293,10 +324,6 @@ public class GuiUtils {
             textField.setWarning(warning);
         }
 
-        public void setFileType(int fileType) {
-            this.fileType = fileType;
-        }
-
         public void setDefaultPath(String defaultPath) {
             this.defaultPath = defaultPath;
         }
@@ -306,27 +333,34 @@ public class GuiUtils {
         }
     }
 
-    public static class IBrowseWebPanel extends ITextFieldButtonPanel implements ActionListener {
+    public static class IBrowseWebPanel extends ITextFieldActionPanel implements ActionListener {
 
         public IBrowseWebPanel(String hint, String fieldName, IEditedListener editedListener) {
-            super(hint, fieldName, editedListener, imageResource.readImage("Common.WebBrowse", 20));
-
-            addButtonActionListener(this);
-            setButtonToolTip();
+            super(hint, fieldName, editedListener);
+            this.setAction(new BrowseWebAction() {
+                @Override
+                public void onBrowseWeb(ActionEvent e) {
+                    IBrowseWebPanel.this.actionPerformed(e);
+                }
+            });
+            setActionToolTip();
             setTextFieldToolTip();
         }
 
-        private void setButtonToolTip() {
-            String tooltip = "Browse ";
-            if (!hint.isEmpty() && getText().isEmpty()) {
-                String firstChar = String.valueOf(hint.charAt(0));
-                if (firstChar.equals(firstChar.toUpperCase())) {
-                    tooltip += firstChar.toLowerCase() + hint.substring(1, hint.length());
+        private void setActionToolTip() {
+            if (action != null) {
+                String tooltip = "Browse ";
+                if (!hint.isEmpty() && getText().isEmpty()) {
+                    String firstChar = String.valueOf(hint.charAt(0));
+                    if (firstChar.equals(firstChar.toUpperCase())) {
+                        tooltip += firstChar.toLowerCase() + hint.substring(1, hint.length());
+                    }
+                } else {
+                    tooltip += getText();
                 }
-            } else {
-                tooltip += getText();
+
+                action.putValue(AbstractAction.SHORT_DESCRIPTION, tooltip);
             }
-            button.setToolTipText(tooltip);
         }
 
         private void setTextFieldToolTip() {
@@ -356,19 +390,24 @@ public class GuiUtils {
         @Override
         public void setText(String text) {
             super.setText(text);
-            setButtonToolTip();
+            setActionToolTip();
             setTextFieldToolTip();
         }
     }
 
-    public static class IBrowseImagePanel extends ITextFieldButtonPanel implements ActionListener {
+    public static class IBrowseImagePanel extends ITextFieldActionPanel implements ActionListener {
 
         private String defaultPath = "";
 
         public IBrowseImagePanel(String defaultPath, IEditedListener listener, String fieldName) {
-            super("", fieldName, listener, imageResource.readImage("Common.FileBrowse", 20));
+            super("", fieldName, listener);
+            this.setAction(new BrowseFileAction() {
+                @Override
+                public void onBrowseFile(ActionEvent e) {
+                    IBrowseImagePanel.this.actionPerformed(e);
+                }
+            });
             this.defaultPath = defaultPath;
-            addButtonActionListener(this);
         }
 
         @Override
@@ -638,22 +677,22 @@ public class GuiUtils {
         }
 
         private void multiplierCbChanged() {
-                String mTxt = (String) multiplierCb.getSelectedItem();
+            String mTxt = (String) multiplierCb.getSelectedItem();
 
-                int mInt = Statics.UnitMultipliers.toMultiplier(mTxt);
-                value.setMultiplier(mInt);
-                if (listener != null) {
-                    listener.onValueChanged(this, "value:multiplier", 0, 0);
-                }
+            int mInt = Statics.UnitMultipliers.toMultiplier(mTxt);
+            value.setMultiplier(mInt);
+            if (listener != null) {
+                listener.onValueChanged(this, "value:multiplier", 0, 0);
+            }
 
         }
 
         private void unitCbChanged() {
-                String uTxt = (String) unitCb.getSelectedItem();
-                value.setUnit(uTxt);
-                if (listener != null) {
-                    listener.onValueChanged(this, "value:unit", 0, 0);
-                }
+            String uTxt = (String) unitCb.getSelectedItem();
+            value.setUnit(uTxt);
+            if (listener != null) {
+                listener.onValueChanged(this, "value:unit", 0, 0);
+            }
 
         }
     }
@@ -743,8 +782,8 @@ public class GuiUtils {
             JPanel panel = new JPanel();
 
             GridBagHelper gbc = new GridBagHelper(panel);
-            gbc.addLine("Package: ", GuiUtils.createComboBoxWithButton(packageCb, this));
-            gbc.addLine("Type: ", GuiUtils.createComboBoxWithButton(typeCb, this));
+            gbc.addLine("Package: ", GuiUtils.createComponentWithAddAction(packageCb, this));
+            gbc.addLine("Type: ", GuiUtils.createComponentWithAddAction(typeCb, this));
             gbc.addLine("Pins: ", pinsSp);
 
             add(panel, BorderLayout.CENTER);

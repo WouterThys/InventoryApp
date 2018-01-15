@@ -58,7 +58,7 @@ public class DbPanel extends JPanel implements
     private JButton testBtn;
 
     // Backups and cache settings
-    private ITextFieldButtonPanel backupPathPnl;
+    private ITextFieldActionPanel backupPathPnl;
     private JButton createBackupBtn;
 
 

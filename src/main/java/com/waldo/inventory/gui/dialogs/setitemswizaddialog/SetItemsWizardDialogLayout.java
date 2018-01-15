@@ -20,6 +20,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private ProgressPanel progressPanel;
     private JPanel cardsPnl;
     private CardLayout cardLayout;
 
@@ -53,6 +54,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
                 wizardItemsPanel.updateSettings(wizardSettings);
 
                 // Gui
+                progressPanel.updateComponents(ProgressPanel.Progress.LocationsBusy);
                 currentTab = PANEL_LOCS;
                 getButtonNeutral().setEnabled(true);
                 getButtonOK().setText("Next");
@@ -65,6 +67,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
                 wizardLocationsPanel.updateSettings(wizardSettings);
 
                 // Gui
+                progressPanel.updateComponents(ProgressPanel.Progress.ParseBusy);
                 currentTab = PANEL_PARSE;
                 getButtonNeutral().setEnabled(true);
                 getButtonOK().setText("Ok");
@@ -82,12 +85,14 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
             case PANEL_ITEMS:
                 break;
             case PANEL_LOCS:
+                progressPanel.updateComponents(ProgressPanel.Progress.ItemsBusy);
                 currentTab = PANEL_ITEMS;
                 getButtonNeutral().setEnabled(false);
                 getButtonOK().setText("Next");
                 cardLayout.previous(cardsPnl);
                 break;
             case PANEL_PARSE:
+                progressPanel.updateComponents(ProgressPanel.Progress.LocationsBusy);
                 currentTab = PANEL_LOCS;
                 getButtonNeutral().setEnabled(true);
                 getButtonOK().setText("Next");
@@ -110,9 +115,9 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
         setResizable(true);
 
         // This
+        progressPanel = new ProgressPanel();
         cardLayout = new CardLayout();
         cardsPnl = new JPanel(cardLayout);
-
 
         wizardItemsPanel = new WizardItemsPanel(application, this, selectedSet);
         wizardLocationsPanel = new WizardLocationsPanel(application, this, selectedSet.getLocation());
@@ -128,6 +133,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
         cardsPnl.add(PANEL_PARSE, wizardParsePanel);
 
         cardLayout.show(cardsPnl, PANEL_ITEMS);
+        getContentPanel().add(progressPanel, BorderLayout.PAGE_START);
         getContentPanel().add(cardsPnl, BorderLayout.CENTER);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
