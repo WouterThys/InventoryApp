@@ -25,7 +25,6 @@ public class Item extends DbObject {
     protected String alias;
     protected Value value;
     protected String description = "";
-    protected double price = 0;
 
     protected long categoryId = UNKNOWN_ID;
     protected Category category;
@@ -100,7 +99,6 @@ public class Item extends DbObject {
         statement.setString(ndx++, name);
         statement.setString(ndx++, alias);
         statement.setString(ndx++, description);
-        statement.setDouble(ndx++, price);
         if (categoryId < UNKNOWN_ID) {
             categoryId = UNKNOWN_ID;
         }
@@ -258,7 +256,6 @@ public class Item extends DbObject {
         item.setAlias(getAlias());
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
-        item.setPrice(getPrice());
         item.setCategoryId(getCategoryId());
         item.setProductId(getProductId());
         item.setTypeId(getTypeId());
@@ -299,7 +296,6 @@ public class Item extends DbObject {
                 if (!(ref.getValue().equals(getValue()))) { return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { return false; }
                 if (!(ref.getDescription().equals(getDescription()))) {  return false; }
-                if (!(ref.getPrice() == getPrice())) { return false; }
                 if (!(ref.getCategoryId() == getCategoryId())) { return false; }
                 if (!(ref.getProductId() == getProductId())) { return false; }
                 if (!(ref.getTypeId() == getTypeId())) { return false; }
@@ -401,14 +397,6 @@ public class Item extends DbObject {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public long getCategoryId() {

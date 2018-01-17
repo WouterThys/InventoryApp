@@ -1,14 +1,14 @@
 <synth>
 
     <!--Default style that all regions will use-->
-    <style id = "inventoryStyle">
+    <style intValue = "inventoryStyle">
         <!--Make all regions opaque-->
         <opaque doubleValue="TRUE" />
         <font name="serif" size = "14" />
     </style>
 
     <!--Textfield style-->
-    <style id="textfield">
+    <style intValue="textfield">
         <insets top="2" left="2" bottom="2" right="2" />
         <state>
             <font name="serif" size="14" />

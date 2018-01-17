@@ -133,4 +133,38 @@ public class Statics {
 
         public static final String[] All = {Unknown, Online, Local};
     }
+
+    public enum PriceUnits {
+        Euro    (0),
+        Dollar  (1),
+        Pound   (2);
+
+        private int intValue;
+        PriceUnits(int intValue) {
+            this.intValue = intValue;
+        }
+
+        @Override
+        public String toString() {
+            switch (intValue) {
+                case 0: return "€";
+                case 1: return "$";
+                case 2: return "£";
+                default: return "";
+            }
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public static PriceUnits fromInt(int intValue) {
+            switch (intValue) {
+                default:
+                case 0: return Euro;
+                case 1: return Dollar;
+                case 2: return Pound;
+            }
+        }
+    }
 }

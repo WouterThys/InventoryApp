@@ -1,6 +1,8 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -21,6 +23,7 @@ public class DistributorPartLink extends DbObject {
     private Item item;
 
     private String itemRef;
+    private Price price;
 
     public DistributorPartLink() {
         super(TABLE_NAME);
@@ -28,7 +31,6 @@ public class DistributorPartLink extends DbObject {
 
     public DistributorPartLink(long itemId) {
         super(TABLE_NAME);
-
         setItemId(itemId);
     }
 
@@ -44,6 +46,8 @@ public class DistributorPartLink extends DbObject {
         statement.setLong(ndx++, getDistributorId());
         statement.setLong(ndx++, getItemId());
         statement.setString(ndx++, getItemRef());
+        statement.setDouble(ndx++, getPrice().getPrice());
+        statement.setInt(ndx++, getPrice().getPriceUnits().getIntValue());
         return ndx;
     }
 
@@ -70,6 +74,7 @@ public class DistributorPartLink extends DbObject {
         distributorPartLink.setDistributorId(getDistributorId());
         distributorPartLink.setItemId(getItemId());
         distributorPartLink.setItemRef(getItemRef());
+        distributorPartLink.setPrice(getPrice().getPrice(), getPrice().getPriceUnits());
         return distributorPartLink;
     }
 
@@ -150,5 +155,20 @@ public class DistributorPartLink extends DbObject {
 
     public void setItemRef(String itemRef) {
         this.itemRef = itemRef;
+    }
+
+    public Price getPrice() {
+        if (price == null) {
+            price = new Price(0, Statics.PriceUnits.Euro);
+        }
+        return price;
+    }
+
+    public void setPrice(double price, Statics.PriceUnits priceUnits) {
+        this.price = new Price(price, priceUnits);
+    }
+
+    public void setPrice(double price, int priceUnits) {
+        this.price = new Price(price, Statics.PriceUnits.fromInt(priceUnits));
     }
 }

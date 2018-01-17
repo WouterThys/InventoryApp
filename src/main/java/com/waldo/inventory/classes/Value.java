@@ -77,9 +77,6 @@ public class Value {
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof Value) {
             Value v = (Value) obj;
-//            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier() && v.getUnit().equals(getUnit())) {
-//                return true;
-//            }
             return v.getRealValue().equals(getRealValue()) && v.getUnit().equals(getUnit());
         }
         return false;
@@ -89,9 +86,6 @@ public class Value {
         if (obj != null && obj instanceof Value) {
             Value v = (Value) obj;
             return v.getRealValue().equals(getRealValue());
-//            if (v.getDoubleValue() == getDoubleValue() && v.getMultiplier() == getMultiplier()) {
-//                return true;
-//            }
         }
         return false;
     }

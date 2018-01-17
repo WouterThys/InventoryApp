@@ -553,7 +553,6 @@ public class DatabaseAccess {
                         i.setIconPath(rs.getString("iconPath"));
                         i.setAlias(rs.getString("alias"));
                         i.setDescription(rs.getString("description"));
-                        i.setPrice(rs.getDouble("price"));
                         i.setCategoryId(rs.getInt("categoryId"));
                         i.setProductId(rs.getInt("productId"));
                         i.setTypeId(rs.getInt("typeId"));
@@ -986,6 +985,7 @@ public class DatabaseAccess {
                     pn.setDistributorId(rs.getLong("distributorId"));
                     pn.setItemId(rs.getLong("itemId"));
                     pn.setItemRef(rs.getString("distributorPartName"));
+                    pn.setPrice(rs.getDouble("price"), rs.getInt("priceUnits"));
 
                     pn.setInserted(true);
                     if (pn.getId() != DbObject.UNKNOWN_ID) {
@@ -1547,8 +1547,6 @@ public class DatabaseAccess {
         return dbHistoryList;
     }
 
-
-
     public List<Set> updateSets()    {
         List<Set> sets = new ArrayList<>();
         if (Main.CACHE_ONLY) {
@@ -1568,7 +1566,6 @@ public class DatabaseAccess {
                     s.setIconPath(rs.getString("iconPath"));
                     s.setAlias(rs.getString("alias"));
                     s.setDescription(rs.getString("description"));
-                    s.setPrice(rs.getDouble("price"));
                     s.setCategoryId(rs.getInt("categoryId"));
                     s.setProductId(rs.getInt("productId"));
                     s.setTypeId(rs.getInt("typeId"));
