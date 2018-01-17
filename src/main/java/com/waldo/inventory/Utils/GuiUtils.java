@@ -141,10 +141,16 @@ public class GuiUtils {
     public static class GridBagHelper extends GridBagConstraints {
 
         private JPanel panel;
+        private int preferredWidth = 100;
 
         public GridBagHelper(JPanel panel) {
+            this(panel, 100);
+        }
+
+        public GridBagHelper(JPanel panel, int preferredLabelWidth) {
             this.panel = panel;
             this.panel.setLayout(new GridBagLayout());
+            this.preferredWidth = preferredLabelWidth;
 
             insets = new Insets(2,2,2,2);
             anchor = GridBagConstraints.EAST;
@@ -193,7 +199,7 @@ public class GuiUtils {
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
-            lbl.setPreferredSize(new Dimension(140, 20));
+            lbl.setPreferredSize(new Dimension(preferredWidth, 20));
             panel.add(lbl, this);
 
             gridwidth = oldGw;

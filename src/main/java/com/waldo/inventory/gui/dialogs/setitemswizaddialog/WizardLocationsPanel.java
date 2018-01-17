@@ -270,15 +270,15 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
         JPanel westPnl = new JPanel();
         JPanel southPnl = new JPanel();
 
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(westPnl);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(westPnl, 120);
         gbc.addLine("Left -> Right ", leftRightCb);
         gbc.addLine("Up -> Down ", upDownCb);
 
-        gbc = new GuiUtils.GridBagHelper(eastPnl);
+        gbc = new GuiUtils.GridBagHelper(eastPnl, 120);
         gbc.addLine("Start horizontal ", startDirectionCb);
         gbc.addLine("Over-write ", overWriteCb);
 
-        gbc = new GuiUtils.GridBagHelper(southPnl);
+        gbc = new GuiUtils.GridBagHelper(southPnl, 100);
         gbc.addLine("# per location", numberPerLocationSp);
         gbc.addLine("Start location: ", locationTypeCb);
 

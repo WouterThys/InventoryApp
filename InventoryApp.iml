@@ -23,6 +23,7 @@
     <orderEntry type="library" name="EagleParser" level="project" />
     <orderEntry type="library" name="KiCadParser" level="project" />
     <orderEntry type="library" name="swingx-all-1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.swinglabs.swingx:swingx-all:1.6.5-1" level="project" />
     <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.4" level="project" />
     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:4.1.1" level="project" />

@@ -378,7 +378,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     private JPanel createOldValuesPnl() {
         JPanel oldValuesPnl = new JPanel();
 
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(oldValuesPnl);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(oldValuesPnl, 140);
         gbc.addLine("Keep old values: ", keepOldValuesCb);
         gbc.addLine("Replace values: ", replaceValuesCb);
 
@@ -442,13 +442,6 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
                     updateMinUnitCb();
                     updateMaxUnitCb();
                 }
-//            else if (source.equals(seriesCb)) {
-//
-//            } else if (source.equals(minUnitCb)) {
-//
-//            } else if (source.equals(maxUnitCb)) {
-//
-//            }
             }
         }
     }
@@ -487,9 +480,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         valueSkipSp = new ISpinner(valueSpModel);
 
         keepOldValuesCb = new ICheckBox("", true);
-        keepOldValuesCb.addActionListener(e -> {
-            replaceValuesCb.setEnabled(keepOldValuesCb.isSelected());
-        });
+        keepOldValuesCb.addActionListener(e -> replaceValuesCb.setEnabled(keepOldValuesCb.isSelected()));
         replaceValuesCb = new ICheckBox("", false);
 
         // Items
