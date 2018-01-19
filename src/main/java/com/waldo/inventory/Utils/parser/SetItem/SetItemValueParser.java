@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils.parser.SetItem;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.ValueUtils;
 import com.waldo.inventory.classes.Value;
 
@@ -49,7 +50,7 @@ public abstract class SetItemValueParser {
 
     public abstract List<Value> crop(int value);
 
-    public abstract String getUnit();
+    public abstract Statics.ValueUnits getUnit();
 
     public List<String> getParseValues(String series) throws IOException {
         List<String> parseValues = new ArrayList<>();
@@ -67,16 +68,16 @@ public abstract class SetItemValueParser {
         return parseValues;
     }
 
-    public void setMinValue(double value, String unit) {
-        minValue = ValueUtils.parse(String.valueOf(value)+unit);
+    public void setMinValue(double value, Statics.ValueMultipliers unit) {
+        minValue = ValueUtils.parse(String.valueOf(value)+unit.toString());
     }
 
     public BigDecimal getMinValue() {
         return minValue;
     }
 
-    public void setMaxValue(double value, String unit) {
-        maxValue = ValueUtils.parse(String.valueOf(value)+unit);
+    public void setMaxValue(double value, Statics.ValueMultipliers unit) {
+        maxValue = ValueUtils.parse(String.valueOf(value)+unit.toString());
     }
 
     public BigDecimal getMaxValue() {

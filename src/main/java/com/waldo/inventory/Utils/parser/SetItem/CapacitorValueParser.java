@@ -10,8 +10,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.Utils.Statics.Units.C_UNIT;
-
 public class CapacitorValueParser extends SetItemValueParser {
 
     CapacitorValueParser() {}
@@ -51,8 +49,8 @@ public class CapacitorValueParser extends SetItemValueParser {
     }
 
     @Override
-    public String getUnit() {
-        return C_UNIT;
+    public Statics.ValueUnits getUnit() {
+        return Statics.ValueUnits.C;
     }
 
     private List<Value> createValues(List<String> stringValues) {
@@ -67,7 +65,7 @@ public class CapacitorValueParser extends SetItemValueParser {
                 if (decimal.compareTo(getMinValue()) >= 0 && decimal.compareTo(getMaxValue()) <= 0) {
 
                     Value value = new Value(decimal);
-                    value.setUnit(Statics.Units.C_UNIT);
+                    value.setUnit(Statics.ValueUnits.C);
 
                     values.add(value);
                 }

@@ -14,7 +14,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorPartLink extends DbObject {
 
-    public static final String TABLE_NAME = "distributorParts";
+    public static final String TABLE_NAME = "distributorPartLinks";
 
     private long distributorId;
     private Distributor distributor;
@@ -46,7 +46,7 @@ public class DistributorPartLink extends DbObject {
         statement.setLong(ndx++, getDistributorId());
         statement.setLong(ndx++, getItemId());
         statement.setString(ndx++, getItemRef());
-        statement.setDouble(ndx++, getPrice().getPrice());
+        statement.setDouble(ndx++, getPrice().getValue());
         statement.setInt(ndx++, getPrice().getPriceUnits().getIntValue());
         return ndx;
     }
@@ -68,13 +68,24 @@ public class DistributorPartLink extends DbObject {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            if (obj instanceof DistributorPartLink) {
+                DistributorPartLink dpl = (DistributorPartLink) obj;
+                return dpl.getItemId() == getItemId() && dpl.getDistributorId() == getDistributorId();
+            }
+        }
+        return false;
+    }
+
+    @Override
     public DistributorPartLink createCopy(DbObject copyInto) {
         DistributorPartLink distributorPartLink = (DistributorPartLink) copyInto;
         copyBaseFields(distributorPartLink);
         distributorPartLink.setDistributorId(getDistributorId());
         distributorPartLink.setItemId(getItemId());
         distributorPartLink.setItemRef(getItemRef());
-        distributorPartLink.setPrice(getPrice().getPrice(), getPrice().getPriceUnits());
+        distributorPartLink.setPrice(getPrice().getValue(), getPrice().getPriceUnits());
         return distributorPartLink;
     }
 

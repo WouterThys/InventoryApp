@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils.parser.SetItem;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.ValueUtils;
 import com.waldo.inventory.classes.Value;
 
@@ -8,8 +9,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.waldo.inventory.Utils.Statics.Units;
 
 public class ResistorValueParser extends SetItemValueParser {
 
@@ -55,8 +54,8 @@ public class ResistorValueParser extends SetItemValueParser {
     }
 
     @Override
-    public String getUnit() {
-        return Units.R_UNIT;
+    public Statics.ValueUnits getUnit() {
+        return Statics.ValueUnits.R;
     }
 
     private List<Value> createValues(List<String> stringValues) {
@@ -72,7 +71,7 @@ public class ResistorValueParser extends SetItemValueParser {
                 if (decimal.compareTo(getMinValue()) >= 0 && decimal.compareTo(getMaxValue()) <= 0) {
 
                     Value value = new Value(decimal);
-                    value.setUnit(Units.R_UNIT);
+                    value.setUnit(Statics.ValueUnits.R);
 
                     values.add(value);
                 }

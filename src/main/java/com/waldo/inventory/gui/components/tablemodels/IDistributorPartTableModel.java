@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.components.tablemodels;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 
 public class IDistributorPartTableModel extends IAbstractTableModel<DistributorPartLink> {
-    private static final String[] COLUMN_NAMES = {"Distributor", "Reference"};
-    private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"Distributor", "Reference", "Price"};
+    private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class, String.class};
 
     public IDistributorPartTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -21,6 +21,8 @@ public class IDistributorPartTableModel extends IAbstractTableModel<DistributorP
                     return distributorPartLink.getDistributor().toString();
                 case 1: // Reference
                     return distributorPartLink.toString();
+                case 2:
+                    return distributorPartLink.getPrice().toString();
             }
         }
         return null;

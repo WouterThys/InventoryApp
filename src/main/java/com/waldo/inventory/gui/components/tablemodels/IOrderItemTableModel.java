@@ -16,7 +16,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
-    private static final Class[] COLUMN_CLASSES = {ITableIcon.class, Integer.class, String.class, String.class, String.class, Double.class, Double.class};
+    private static final Class[] COLUMN_CLASSES = {ITableIcon.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
 
     private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
     private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
@@ -70,9 +70,9 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
                         return "";
                     }
                 case 5: // Price
-                    return orderItem.getItem().getPrice();
+                    return orderItem.getPrice();
                 case 6: // Total
-                    return orderItem.getAmount() * orderItem.getItem().getPrice(); // Amount * price
+                    return orderItem.getTotalPrice(); // Amount * price
             }
         }
         return null;

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 
@@ -166,5 +167,16 @@ public class OrderItem extends DbObject {
             item = sm().findItemById(itemId);
         }
         return item;
+    }
+
+    public Price getPrice() {
+        if (getDistributorPartLink() != null) {
+            return distributorPartLink.getPrice();
+        }
+        return new Price();
+    }
+
+    public Price getTotalPrice() {
+        return Price.multiply(getPrice(), getAmount());
     }
 }

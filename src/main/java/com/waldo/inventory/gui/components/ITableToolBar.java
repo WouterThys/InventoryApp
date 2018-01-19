@@ -20,8 +20,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiInterface {
 
-
-
+    private Comparator sortOrder;
     private TableOptionsAction tableOptionsAction;
     private TableOptionsPopup tableOptionsPopup;
 
@@ -86,6 +85,7 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
             public void onSortBy(Comparator comparator) {
                 if (table.getModel() instanceof IAbstractTableModel) {
                     IAbstractTableModel tm = (IAbstractTableModel) table.getModel();
+                    sortOrder = comparator;
                     tm.setSortOrder(comparator);
                     tm.sort();
                 }

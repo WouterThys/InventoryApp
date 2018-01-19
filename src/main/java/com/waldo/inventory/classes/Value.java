@@ -11,18 +11,19 @@ public class Value {
 
     // Double value
     private double doubleValue;
-    private int multiplier; // Real doubleValue is doubleValue *10^multiplier
-    private String unit;
+    private Statics.ValueMultipliers multiplier; // Real doubleValue is doubleValue *10^multiplier
+    private Statics.ValueUnits unit;
 
     public Value() {
         doubleValue = 0.0;
-        multiplier = 0;
-        unit = "";
+        multiplier = Statics.ValueMultipliers.x;
+        unit = Statics.ValueUnits.Unknown;
     }
 
     public Value(BigDecimal bigDecimal) {
-        multiplier = bigDecimal.precision() - bigDecimal.scale() - 1;
-        doubleValue = bigDecimal.scaleByPowerOfTen(-multiplier).doubleValue();
+        int m = bigDecimal.precision() - bigDecimal.scale() - 1;
+        double v = bigDecimal.scaleByPowerOfTen(-m).doubleValue();
+        createValues(v, m);
     }
 
     public Value (double doubleValue, int multiplier, String unit) {
@@ -30,11 +31,21 @@ public class Value {
         createValues(doubleValue, multiplier);
     }
 
-    public Value(String stringValue) {
-        this.doubleValue = 0;
-        this.multiplier = 0;
-        this.unit = "";
+    public Value (double doubleValue, int multiplier, Statics.ValueUnits unit) {
+        setUnit(unit);
+        createValues(doubleValue, multiplier);
     }
+
+    public Value (double doubleValue, Statics.ValueMultipliers multiplier, String unit) {
+        setUnit(unit);
+        createValues(doubleValue, multiplier.getMultiplier());
+    }
+
+    public Value (double doubleValue, Statics.ValueMultipliers multiplier, Statics.ValueUnits unit) {
+        setUnit(unit);
+        createValues(doubleValue, multiplier.getMultiplier());
+    }
+
 
     private void createValues(double doubleValue, int multiplier) {
         if (multiplier != 0) {
@@ -52,14 +63,14 @@ public class Value {
 
             this.doubleValue = doubleValue;
             if (positive) {
-                this.multiplier = m;
+                this.multiplier = Statics.ValueMultipliers.fromInt(m);
             } else {
-                this.multiplier = -m;
+                this.multiplier = Statics.ValueMultipliers.fromInt(-m);
             }
 
         } else {
             this.doubleValue = doubleValue;
-            this.multiplier = multiplier;
+            this.multiplier = Statics.ValueMultipliers.fromInt(multiplier);
         }
     }
 
@@ -98,51 +109,39 @@ public class Value {
         this.doubleValue = doubleValue;
     }
 
-    public int getMultiplier() {
+    public Statics.ValueMultipliers getMultiplier() {
         return multiplier;
     }
 
     public void setMultiplier(int multiplier) {
+        this.multiplier = Statics.ValueMultipliers.fromInt(multiplier);
+    }
+
+    public void setMultiplier(Statics.ValueMultipliers multiplier) {
         this.multiplier = multiplier;
     }
 
-    public String getUnit() {
+    public Statics.ValueUnits getUnit() {
         if (unit == null) {
-            unit = "";
+            unit = Statics.ValueUnits.Unknown;
         }
         return unit;
     }
 
     public BigDecimal getRealValue() {
-        return new BigDecimal(String.valueOf(doubleValue * Math.pow(10, multiplier)));
-    }
-
-    public String getDbUnit() {
-        if (unit == null) {
-            unit = "";
-        } else {
-            if (unit.equals(Statics.Units.R_UNIT)) {
-                return "O";
-            }
-        }
-
-        return unit;
+        return new BigDecimal(String.valueOf(doubleValue * Math.pow(10, multiplier.getMultiplier())));
     }
 
     public void setUnit(String unit) {
-        if (unit == null) {
-            this.unit = "";
-        } else {
-            if (unit.equals("O")) {
-                this.unit = Statics.Units.R_UNIT;
-            } else {
-                this.unit = unit;
-            }
-        }
+        this.unit = Statics.ValueUnits.fromString(unit);
+    }
+
+    public void setUnit(Statics.ValueUnits unit) {
+        this.unit = unit;
     }
 
     public boolean hasValue() {
-        return (getDoubleValue() != 0) || (getMultiplier() != 0) || !(getUnit().isEmpty());
+        return (getDoubleValue() != 0) || (getUnit() != Statics.ValueUnits.Unknown);
     }
 
     public static Value tryFindValue(String valueTxt) {

@@ -116,7 +116,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
             footprintLbl.setText("");
         }
 
-        priceLbl.setText(String.valueOf(item.getPrice()));
+        //priceLbl.setText(String.valueOf(item.getValue()));
         starRater.setRating(item.getRating());
         discourageOrderCb.setSelected(item.isDiscourageOrder());
         //remarksTp.setText(item.getRemarksFile());

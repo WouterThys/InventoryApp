@@ -2,12 +2,10 @@ package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.ValueMultipliers;
 import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.classes.dbclasses.Set;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
@@ -24,6 +22,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.ValueMultipliers.valuesFromTo;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListener {
@@ -37,13 +36,13 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     // Values
     private DefaultComboBoxModel<String> typeCbModel;
     private DefaultComboBoxModel<String> seriesCbModel;
-    private DefaultComboBoxModel<String> minUnitCbModel;
-    private DefaultComboBoxModel<String> maxUnitCbModel;
+    private DefaultComboBoxModel<ValueMultipliers> minUnitCbModel;
+    private DefaultComboBoxModel<ValueMultipliers> maxUnitCbModel;
 
     private JComboBox<String> typeCb;
     private JComboBox<String> seriesCb;
-    private JComboBox<String> minUnitCb;
-    private JComboBox<String> maxUnitCb;
+    private JComboBox<ValueMultipliers> minUnitCb;
+    private JComboBox<ValueMultipliers> maxUnitCb;
 
     private CheckItOutAction checkItOutAction;
 
@@ -130,52 +129,58 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
 
     private void updateMinUnitCb() {
         minUnitCbModel.removeAllElements();
+        ValueMultipliers[] multipliers;
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemValueParser.R:
-                for (int i = 3; i < 10; i++) {
-                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.m, ValueMultipliers.T);
+                for (ValueMultipliers m : multipliers) {
+                    minUnitCbModel.addElement(m);
                 }
-                minUnitCb.setSelectedIndex(2);
+                minUnitCb.setSelectedItem(ValueMultipliers.x);
                 break;
             case SetItemValueParser.C:
-                for (int i = 0; i < 6; i++) {
-                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.f, ValueMultipliers.m);
+                for (ValueMultipliers m : multipliers) {
+                    minUnitCbModel.addElement(m);
                 }
-                minUnitCbModel.setSelectedItem(Statics.UnitMultipliers.p);
+                minUnitCb.setSelectedItem(ValueMultipliers.p);
                 break;
             case SetItemValueParser.L:
-                for (int i = 0; i < 6; i++) {
-                    minUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.f, ValueMultipliers.x);
+                for (ValueMultipliers m : multipliers) {
+                    minUnitCbModel.addElement(m);
                 }
-                minUnitCbModel.setSelectedItem(Statics.UnitMultipliers.m);
+                minUnitCb.setSelectedItem(ValueMultipliers.m);
                 break;
         }
-        minUnitCb.setSelectedIndex(1);
     }
 
     private void updateMaxUnitCb() {
         maxUnitCbModel.removeAllElements();
+        ValueMultipliers[] multipliers;
         switch ((String) typeCbModel.getSelectedItem()) {
             case SetItemValueParser.R:
-                for (int i = 3; i < 10; i++) {
-                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.m, ValueMultipliers.T);
+                for (ValueMultipliers m : multipliers) {
+                    maxUnitCbModel.addElement(m);
                 }
-                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.M);
+                maxUnitCb.setSelectedItem(ValueMultipliers.M);
                 break;
             case SetItemValueParser.C:
-                for (int i = 0; i < 6; i++) {
-                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.f, ValueMultipliers.m);
+                for (ValueMultipliers m : multipliers) {
+                    maxUnitCbModel.addElement(m);
                 }
-                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.M);
+                maxUnitCb.setSelectedItem(ValueMultipliers.u);
                 break;
             case SetItemValueParser.L:
-                for (int i = 0; i < 6; i++) {
-                    maxUnitCbModel.addElement(Statics.UnitMultipliers.get(i));
+                multipliers = valuesFromTo(ValueMultipliers.f, ValueMultipliers.x);
+                for (ValueMultipliers m : multipliers) {
+                    maxUnitCbModel.addElement(m);
                 }
-                maxUnitCbModel.setSelectedItem(Statics.UnitMultipliers.x);
+                maxUnitCb.setSelectedItem(ValueMultipliers.m);
                 break;
         }
-        maxUnitCb.setSelectedIndex(2);
     }
 
     private void updateValues() {
@@ -268,11 +273,15 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         }
 
         if (ok) {
-            double dMin = min * Math.pow(10, Statics.UnitMultipliers.toMultiplier(String.valueOf(minUnitCb.getSelectedItem())));
-            double dMax = max * Math.pow(10, Statics.UnitMultipliers.toMultiplier(String.valueOf(maxUnitCb.getSelectedItem())));
-            if (dMax < dMin) {
-                maxTf.setError("Max value can't be smaller than min value..");
-                ok = false;
+            ValueMultipliers mMin = (ValueMultipliers) minUnitCb.getSelectedItem();
+            ValueMultipliers mMax = (ValueMultipliers) maxUnitCb.getSelectedItem();
+            if (mMin != null && mMax != null) {
+                double dMin = min * Math.pow(10, mMin.getMultiplier());
+                double dMax = max * Math.pow(10, mMax.getMultiplier());
+                if (dMax < dMin) {
+                    maxTf.setError("Max value can't be smaller than min value..");
+                    ok = false;
+                }
             }
         }
 
@@ -288,8 +297,8 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
 
             String type = (String) typeCb.getSelectedItem();
             String series = (String) seriesCb.getSelectedItem();
-            String minUnit = (String) minUnitCb.getSelectedItem();
-            String maxUnit = (String) maxUnitCb.getSelectedItem();
+            ValueMultipliers minUnit = (ValueMultipliers) minUnitCb.getSelectedItem();
+            ValueMultipliers maxUnit = (ValueMultipliers) maxUnitCb.getSelectedItem();
             double min = Double.valueOf(minTf.getText());
             double max = Double.valueOf(maxTf.getText());
             int skip = Integer.valueOf(valueSkipSp.getValue().toString());
@@ -343,7 +352,12 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
                     item = findByValue(newSetItems, value);
                     if (item != null) {
                         if (settings.isOverWriteLocations()) {
-                            item.setLocationId(settings.getLocation(item).getId());
+                            Location location = settings.getLocation(item);
+                            if (location != null) {
+                                item.setLocationId(location.getId());
+                            } else {
+                                item.setLocationId(DbObject.UNKNOWN_ID);
+                            }
                         }
                         continue;
                     }
@@ -420,7 +434,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         JPanel itemPanel = new JPanel();
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(itemPanel);
-        gbc.addLine("Manufacturer: ", GuiUtils.createComboBoxWithButton(manufacturerCb, createManufacturerListener()));
+        gbc.addLine("Manufacturer: ", GuiUtils.createComponentWithAddAction(manufacturerCb, createManufacturerListener()));
         gbc.addLine("Amount / item: ", amountSpinner);
 
         return itemPanel;

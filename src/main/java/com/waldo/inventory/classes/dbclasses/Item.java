@@ -59,7 +59,7 @@ public class Item extends DbObject {
 
     public Item(String name) {
         super(TABLE_NAME);
-        matchCount = 13;
+        matchCount = 11;
         setName(name);
     }
 
@@ -98,7 +98,7 @@ public class Item extends DbObject {
         int ndx = 1;
         statement.setString(ndx++, name);
         statement.setString(ndx++, alias);
-        statement.setString(ndx++, description);
+        statement.setNString(ndx++, description);
         if (categoryId < UNKNOWN_ID) {
             categoryId = UNKNOWN_ID;
         }
@@ -145,8 +145,8 @@ public class Item extends DbObject {
 
         // Value
         statement.setDouble(ndx++, getValue().getDoubleValue());
-        statement.setInt(ndx++, getValue().getMultiplier());
-        statement.setString(ndx++, getValue().getDbUnit());
+        statement.setInt(ndx++, getValue().getMultiplier().getMultiplier());
+        statement.setNString(ndx++, getValue().getUnit().toString());
 
         // Aud
         statement.setString(ndx++, getAud().getInsertedBy());
@@ -163,7 +163,6 @@ public class Item extends DbObject {
         getObjectMatch().setMatchCount(matchCount);
         int match = super.findMatch(searchTerm);
 
-
         // Local objects
         if (getAlias().toUpperCase().contains(searchTerm)) match ++;
         if (getDescription().toUpperCase().contains(searchTerm)) match++;
@@ -172,23 +171,12 @@ public class Item extends DbObject {
         if (getValue().toString().equals(searchTerm)) match++;
 
         // Covert category, product, type, ...
-        Category c = sm().findCategoryById(categoryId);
-        if (c != null && c.hasMatch(searchTerm)) match++;
-
-        Product p = sm().findProductById(productId);
-        if (p != null && p.hasMatch(searchTerm)) match++;
-
-        Type t = sm().findTypeById(typeId);
-        if (t != null && t.hasMatch(searchTerm)) match++;
-
-        Manufacturer m = sm().findManufacturerById(manufacturerId);
-        if (m != null && m.hasMatch(searchTerm)) match++;
-
-        Location l = sm().findLocationById(locationId);
-        if (l != null && l.hasMatch(searchTerm)) match++;
-
-        PackageType pa = sm().findPackageTypeById(packageTypeId);
-        if (pa != null && pa.hasMatch(searchTerm)) match++;
+        if (getCategory() != null && category.hasMatch(searchTerm)) match++;
+        if (getProduct() != null && product.hasMatch(searchTerm)) match++;
+        if (getType() != null && type.hasMatch(searchTerm)) match++;
+        if (getManufacturer() != null && manufacturer.hasMatch(searchTerm)) match++;
+        if (getLocation() != null && location.hasMatch(searchTerm)) match++;
+        if (getPackageType() != null && packageType.hasMatch(searchTerm)) match++;
 
         return match;
     }
@@ -396,6 +384,9 @@ public class Item extends DbObject {
     }
 
     public void setDescription(String description) {
+//        if (description != null && !description.isEmpty() && description.contains("?")) {
+//            description = description.replace("?", Statics.ValueUnits.R.toString());
+//        }
         this.description = description;
     }
 

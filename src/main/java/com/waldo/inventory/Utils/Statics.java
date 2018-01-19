@@ -1,6 +1,8 @@
 package com.waldo.inventory.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Statics {
 
@@ -34,76 +36,105 @@ public class Statics {
         return Arrays.asList(Alphabet).indexOf(letter);
     }
 
-    public static class UnitMultipliers {
-        public static final int f = -15;
-        public static final int p = -12;
-        public static final int n = -9;
-        public static final int µ = -6;
-        public static final int m = -3;
-        public static final int x = 1;
-        public static final int k = 3;
-        public static final int M = 6;
-        public static final int G = 9;
-        public static final int T = 12;
 
-        public static final String[] ALL = {"f","p","n", "µ", "m", " ", "k", "M", "G", "T"};
+    public enum ValueMultipliers {
+        f("f", -15),
+        p("p", -12),
+        n("n", -9),
+        u("µ", -6),
+        m("m", -3),
+        x("",  0),
+        k("k", 3),
+        M("M", 6),
+        G("G", 9),
+        T("T", 12);
 
-        public static String get(int i) {
-            return ALL[i];
+        private final String string;
+        private final int multiplier;
+        ValueMultipliers(String string, int multiplier) {
+            this.string = string;
+            this.multiplier = multiplier;
         }
 
-        public static String toMultiplier(int mul) {
-            switch (mul) {
-                case f:
-                    return "f";
-                case p:
-                    return "p";
-                case n:
-                    return "n";
-                case µ:
-                    return "µ";
-                case m:
-                    return "m";
-                case x:
-                    return " ";
-                case k:
-                    return "k";
-                case M:
-                    return "M";
-                case G:
-                    return "G";
-                case T:
-                    return "T";
-                default:
-                    return "";
+        @Override
+        public String toString() {
+            return string;
+        }
+
+
+        public int getMultiplier() {
+            return multiplier;
+        }
+
+        public static ValueMultipliers fromInt(int multiplier) {
+            switch (multiplier) {
+                case -15: return f;
+                case -12: return p;
+                case -9 : return n;
+                case -6 : return u;
+                case -3 : return m;
+                default :
+                case 0  : return x;
+                case 3  : return k;
+                case 6  : return M;
+                case 9  : return G;
+                case 12:  return T;
             }
         }
 
-        public static int toMultiplier(String mul) {
-            switch (mul) {
-                case "f": return f;
-                case "p": return p;
-                case "n": return n;
-                case "µ": return µ;
-                case "m": return m;
-                case " ": return 0;
-                case "k": return k;
-                case "M": return M;
-                case "G": return G;
-                case "T": return T;
-                default:return 0;
+        public static ValueMultipliers[] valuesFromTo(ValueMultipliers m1, ValueMultipliers m2) {
+            List<ValueMultipliers> multipliers = new ArrayList<>();
+            for (ValueMultipliers m : values()) {
+                if (m.multiplier >= m1.multiplier && m.multiplier <= m2.multiplier) {
+                    multipliers.add(m);
+                }
             }
+            ValueMultipliers[] multiplierArray = new ValueMultipliers[multipliers.size()];
+            return multipliers.toArray(multiplierArray);
         }
     }
 
-    public static class Units {
-        public static final String R_UNIT = "\u2126"; // Ohm
-        public static final String C_UNIT = "F"; // Farad
-        public static final String L_UNIT = "H"; // Henry
-        public static final String V_UNIT = "V"; // Volt
-        public static final String I_UNIT = "A"; // Amperes
+    public enum ValueUnits {
+        Unknown (""),
+        R ("\u2126"),
+        C ("F"),
+        L ("H"),
+        V ("V"),
+        I ("A");
 
-        public static final String[] ALL = {R_UNIT, C_UNIT, L_UNIT, V_UNIT, I_UNIT};
+        private final String unitString;
+        ValueUnits(String unitString) {
+            this.unitString = unitString;
+        }
+
+        @Override
+        public String toString() {
+            return unitString;
+        }
+
+        public static ValueUnits fromString(String unit) {
+            if (unit != null) {
+                switch (unit.toUpperCase()) {
+                    default:
+                    case "U":
+                    case "UNKNOWN":
+                    case "": return Unknown;
+                    case "O":
+                    case "OHM":
+                    case "\u2126": return R;
+                    case "FARAD":
+                    case "F": return C;
+                    case "HENRY":
+                    case "H": return L;
+                    case "VOLT":
+                    case "VOLTAGE":
+                    case "V": return V;
+                    case "AMPERES":
+                    case "A": return I;
+                }
+            }
+            return Unknown;
+        }
     }
 
     public static class CodeLanguage {

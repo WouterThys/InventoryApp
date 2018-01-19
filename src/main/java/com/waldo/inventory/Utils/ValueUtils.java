@@ -1,11 +1,8 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.classes.Value;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ValueUtils {
@@ -93,7 +90,7 @@ public class ValueUtils {
                 if (gotChar) throw new NumberFormatException("Can only have minus symbol at the start");
                 if (gotMinus) throw new NumberFormatException("Too many minus symbols");
                 gotMinus = true;
-                continue CharLoop;
+                continue;
             }
 
             gotChar = true;
@@ -106,7 +103,7 @@ public class ValueUtils {
                 value = value.multiply(BigDecimal.TEN);
                 value = value.add(BigDecimal.valueOf(chars[c] - '0'));
                 gotDigit = true;
-                continue CharLoop;
+                continue;
             }
 
             // Check for a decimal place
@@ -115,7 +112,7 @@ public class ValueUtils {
                 if (gotDP) throw new NumberFormatException("Too many decimal points");
                 if (gotPrefix) throw new NumberFormatException("Cannot have decimal point after prefix");
                 gotDP = true;
-                continue CharLoop;
+                continue;
             }
 
             // Check for a match with a prefix character
@@ -144,45 +141,43 @@ public class ValueUtils {
     }
 
 
-    public static Value findValue(String valueTxt) {
-        valueTxt = valueTxt.replaceAll("\\s+","");
-
-        // Value parts
-        double value = 0.0;
-        int multiplier = getMultiplier(valueTxt);
-        String unit = getUnit(valueTxt);
-
-        // Remove last characters
-        int lastNdx = valueTxt.length()-1;
-        while (Character.isAlphabetic(valueTxt.charAt(lastNdx))) {
-            valueTxt = valueTxt.substring(0, valueTxt.length()-1);
-            lastNdx = valueTxt.length()-1;
-        }
-
-        // Replace any non-digit with a "."
-        valueTxt = valueTxt.replaceAll("\\D+", ".");
-        value = Double.valueOf(valueTxt);
-
-        return new Value(value, multiplier, unit);
-    }
+//    public static Value findValue(String valueTxt) {
+//        valueTxt = valueTxt.replaceAll("\\s+","");
+//
+//        // Value parts
+//        double value = 0.0;
+//        int multiplier = getMultiplier(valueTxt);
+//        String unit = getUnit(valueTxt);
+//
+//        // Remove last characters
+//        int lastNdx = valueTxt.length()-1;
+//        while (Character.isAlphabetic(valueTxt.charAt(lastNdx))) {
+//            valueTxt = valueTxt.substring(0, valueTxt.length()-1);
+//            lastNdx = valueTxt.length()-1;
+//        }
+//
+//        // Replace any non-digit with a "."
+//        valueTxt = valueTxt.replaceAll("\\D+", ".");
+//        value = Double.valueOf(valueTxt);
+//
+//        return new Value(value, multiplier, unit);
+//    }
 
     public static String getUnit(String valueTxt) {
         char last = valueTxt.charAt(valueTxt.length()-1);
-        if (Character.isAlphabetic(last)) {
-            if (Arrays.asList(Statics.Units.ALL).contains(String.valueOf(last))) {
-                return String.valueOf(last);
-            }
-        }
-        return "";
+        Statics.ValueUnits unit = Statics.ValueUnits.fromString(String.valueOf(last));
+        return unit.toString();
     }
 
-    public static int getMultiplier(String valueTxt) {
-        for (String s : Statics.UnitMultipliers.ALL) {
-            if (valueTxt.contains(s)) {
-                return Statics.UnitMultipliers.toMultiplier(s);
+    public static Statics.ValueMultipliers getMultiplier(String valueTxt) {
+        for (Statics.ValueMultipliers multiplier : Statics.ValueMultipliers.values()) {
+            String knownValue = multiplier.toString();
+            String searchValue = valueTxt.trim();
+            if (searchValue.contains(knownValue)) {
+                return multiplier;
             }
         }
-        return 0;
+        return Statics.ValueMultipliers.x;
     }
 
     public static List<Integer> exponents(BigDecimal minValue, BigDecimal maxValue) {

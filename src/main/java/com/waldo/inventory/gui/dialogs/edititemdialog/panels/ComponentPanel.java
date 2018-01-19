@@ -53,7 +53,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private GuiUtils.INameValuePanel nameValuePnl;
     private ITextFieldActionPanel aliasPnl;
     private ITextArea descriptionTa;
-    private ITextField priceTf;
     private IComboBox<Category> categoryCb;
     private IComboBox<Product> productCb;
     private IComboBox<Type> typeCb;
@@ -348,8 +347,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         formatter.setMaximum(Double.MAX_VALUE);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true); // Commit on every key press
-        priceTf = new ITextField();
-        priceTf.addEditedListener(editedListener, "price", double.class);
 
         // Combo boxes
         createCategoryCb();
@@ -400,8 +397,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
         basicPanel.add(new ITitledEditPanel(
                 "Identification",
-                new String[] {"Name: ", "Alias: "},
-                new JComponent[] {nameValuePnl, aliasPnl}
+                new String[] {"Name: ", "Alias: ", "Description: "},
+                new JComponent[] {nameValuePnl, aliasPnl, new JScrollPane(descriptionTa)}
         ));
 
         basicPanel.add(new ITitledEditPanel(
@@ -419,11 +416,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
                 new JComponent[] {localDataSheetPnl, onlineDataSheetPnl}
         ));
 
-        basicPanel.add(new ITitledEditPanel(
-                "Info",
-                new String[] {"Price: ", "Description: "},
-                new JComponent[] {priceTf, new JScrollPane(descriptionTa)}
-        ));
+//        basicPanel.add(new ITitledEditPanel(
+//                "Info",
+//                new String[] {"Description: "},
+//                new JComponent[] {new JScrollPane(descriptionTa)}
+//        ));
         return basicPanel;
     }
 
@@ -530,7 +527,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
         nameValuePnl.setValue(selectedItem.getValue());
         descriptionTa.setText(selectedItem.getDescription().trim());
-        priceTf.setText(String.valueOf(selectedItem.getPrice()));
 
         // Combo boxes
         categoryCb.setSelectedItem(selectedItem.getCategory());
@@ -574,14 +570,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     public void setNameFieldError(String error) {
         nameValuePnl.setError(error);
-    }
-
-    public String getPriceFieldValue() {
-        return priceTf.getText();
-    }
-
-    public void setPriceFieldError(String error) {
-        priceTf.setError(error);
     }
 
     public IComboBox getProductCb() {

@@ -68,7 +68,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
         DistributorPartLink link = linkTable.getSelectedItem();
         if (link != null) {
             int res = JOptionPane.showConfirmDialog(EditItemOrderPanel.this,
-                    "Do you realy want to delete this link?",
+                    "Do you really want to delete this link?",
                     "Delete link",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
@@ -108,8 +108,8 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
 
     @Override
     public void onDeleted(DistributorPartLink link) {
-        linkTable.selectItem(null);
         tableModel.removeItem(link);
+        linkTable.selectItem(null);
         updateEnabledComponents();
     }
 

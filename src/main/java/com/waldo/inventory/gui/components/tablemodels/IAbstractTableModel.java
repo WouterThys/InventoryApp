@@ -142,10 +142,13 @@ public abstract class IAbstractTableModel<T> extends AbstractTableModel {
         this.comparator = comparator;
     }
 
+    public Comparator<? super T> getSortOrder() {
+        return comparator;
+    }
+
     public void sort() {
         if (comparator != null) {
             itemList.sort(comparator);
-            //tableInitialize();
         }
     }
 

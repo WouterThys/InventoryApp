@@ -2,19 +2,20 @@ package com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +29,14 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
     private IComboBox<Distributor> distributorCb;
     ITextField referenceTf;
 
+    private IFormattedTextField priceTf;
+    private JComboBox<Statics.PriceUnits> priceUnitsCb;
+
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     DistributorPartLink distributorPartLink;
+    DistributorPartLink originalPartLink;
 
 
     /*
@@ -45,7 +50,7 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    void updateComboBox(DistributorPartLink link) {
+    void updateDistributorCb(DistributorPartLink link) {
         if (link != null && link.getItemId() > DbObject.UNKNOWN_ID) {
             List<Distributor> distributors = new ArrayList<>(cache().getDistributors());
 
@@ -64,6 +69,19 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
         }
     }
 
+    void setPrice(DistributorPartLink partLink) {
+        if (partLink != null) {
+            try {
+                Object obj = priceTf.getValue();
+                double val = Double.valueOf(obj.toString());
+                Statics.PriceUnits unit = (Statics.PriceUnits) priceUnitsCb.getSelectedItem();
+                partLink.setPrice(val, unit);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -72,22 +90,35 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
         // Dialog
         showTitlePanel(false);
 
-        // Combo box
+        // This
         distributorCb = new IComboBox<>(new ArrayList<>(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
-        // Reference
         referenceTf = new ITextField(this, "itemRef");
+
+        NumberFormat format = DecimalFormat.getInstance();
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(3);
+        format.setRoundingMode(RoundingMode.HALF_UP);
+
+        priceTf = new IFormattedTextField(format);
+        priceUnitsCb = new JComboBox<>(Statics.PriceUnits.values());
+        priceUnitsCb.setPreferredSize(new Dimension(60, 20));
     }
 
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
+        JPanel pricePnl = new JPanel(new BorderLayout());
+        pricePnl.add(priceTf, BorderLayout.CENTER);
+        pricePnl.add(priceUnitsCb, BorderLayout.EAST);
+
         JPanel panel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
-        gbc.addLine("Distributor: ", GuiUtils.createComboBoxWithButton(distributorCb, this));
+        gbc.addLine("Distributor: ", GuiUtils.createComponentWithAddAction(distributorCb, this));
         gbc.addLine("Reference: ", referenceTf);
+        gbc.addLine("Price: ", pricePnl);
 
         getContentPanel().add(panel, BorderLayout.CENTER);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
@@ -99,10 +130,14 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
     public void updateComponents(Object... args) {
         if (args.length > 0 && args[0] != null) {
             distributorPartLink  = (DistributorPartLink) args[0];
-            updateComboBox(distributorPartLink);
+            originalPartLink = distributorPartLink.createCopy();
+            updateDistributorCb(distributorPartLink);
 
             distributorCb.setSelectedItem(distributorPartLink.getDistributor());
             referenceTf.setText(distributorPartLink.getItemRef());
+
+            priceTf.setValue(distributorPartLink.getPrice().getValue());
+            priceUnitsCb.setSelectedItem(distributorPartLink.getPrice().getPriceUnits());
         }
     }
 }

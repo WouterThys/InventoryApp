@@ -3,6 +3,7 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
@@ -12,8 +13,6 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -279,15 +278,16 @@ public class Order extends DbObject {
         }
     }
 
-    public double getTotalPrice() {
-        double total = 0;
+    public Price getTotalPrice() {
+        Price total = new Price();
         for (OrderItem oi : getOrderItems()) {
-            total += ((double) oi.getAmount() * oi.getItem().getPrice());
+            total = Price.add(total, oi.getTotalPrice());
         }
 
-        BigDecimal bd = new BigDecimal(total);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+//        BigDecimal bd = new BigDecimal(total);
+//        bd = bd.setScale(2, RoundingMode.HALF_UP);
+//        return bd.doubleValue();
+        return total;
     }
 
     public void updateItemStates() {

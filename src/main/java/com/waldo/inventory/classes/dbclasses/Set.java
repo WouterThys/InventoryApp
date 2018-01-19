@@ -33,7 +33,6 @@ public class Set extends Item {
 
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
-        item.setPrice(getPrice());
         item.setCategoryId(getCategoryId());
         item.setProductId(getProductId());
         item.setTypeId(getTypeId());
@@ -69,7 +68,6 @@ public class Set extends Item {
                 if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
-                if (!(ref.getPrice() == getPrice())) { System.out.println("Price differs"); return false; }
                 if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
                 if (!(ref.getProductId() == getProductId())) { System.out.println("Product differs"); return false; }
                 if (!(ref.getTypeId() == getTypeId())) { System.out.println("Type differs"); return false; }

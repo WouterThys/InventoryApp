@@ -48,8 +48,16 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
     @Override
     protected void onOK() {
         if (verify()) {
+            setPrice(distributorPartLink);
             super.onOK();
         }
+    }
+
+    @Override
+    protected void onCancel() {
+        originalPartLink.createCopy(distributorPartLink);
+        distributorPartLink.setCanBeSaved(true);
+        super.onCancel();
     }
 
     //
@@ -76,7 +84,7 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
         DistributorsDialog distributorsDialog = new DistributorsDialog(application, "Distributors");
         distributorsDialog.showDialog();
 
-        updateComboBox(distributorPartLink);
+        updateDistributorCb(distributorPartLink);
     }
 
 

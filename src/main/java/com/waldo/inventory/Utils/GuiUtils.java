@@ -567,8 +567,8 @@ public class GuiUtils {
         private SpinnerNumberModel valueModel;
         private JSpinner valueSp;
 
-        private JComboBox<String> multiplierCb;
-        private JComboBox<String> unitCb;
+        private JComboBox<Statics.ValueMultipliers> multiplierCb;
+        private JComboBox<Statics.ValueUnits> unitCb;
 
         private Value value;
         private IEditedListener listener;
@@ -606,14 +606,11 @@ public class GuiUtils {
             valueSp.addChangeListener(this);
             valueSp.setPreferredSize(new Dimension(80, 0));
 
-            DefaultComboBoxModel<String> multiplierModel = new DefaultComboBoxModel<>(Statics.UnitMultipliers.ALL);
-            multiplierCb = new JComboBox<>(multiplierModel);
-            multiplierCb.setSelectedIndex(5);
+            multiplierCb = new JComboBox<>(Statics.ValueMultipliers.values());
+            multiplierCb.setSelectedItem(Statics.ValueMultipliers.x);
             multiplierCb.addItemListener(this);
 
-            DefaultComboBoxModel<String> unitModel = new DefaultComboBoxModel<>(Statics.Units.ALL);
-            unitCb = new JComboBox<>(unitModel);
-            unitCb.insertItemAt("", 0);
+            unitCb = new JComboBox<>(Statics.ValueUnits.values());
             unitCb.setSelectedIndex(0);
             unitCb.addItemListener(this);
         }
@@ -636,8 +633,7 @@ public class GuiUtils {
                 Value v = (Value) object[0];
 
                 valueModel.setValue(v.getDoubleValue());
-                String m = Statics.UnitMultipliers.toMultiplier(v.getMultiplier());
-                multiplierCb.setSelectedItem(m);
+                multiplierCb.setSelectedItem(v.getMultiplier());
                 unitCb.setSelectedItem(v.getUnit());
             } else {
                 valueModel.setValue(0);
@@ -683,10 +679,7 @@ public class GuiUtils {
         }
 
         private void multiplierCbChanged() {
-            String mTxt = (String) multiplierCb.getSelectedItem();
-
-            int mInt = Statics.UnitMultipliers.toMultiplier(mTxt);
-            value.setMultiplier(mInt);
+            value.setMultiplier((Statics.ValueMultipliers) multiplierCb.getSelectedItem());
             if (listener != null) {
                 listener.onValueChanged(this, "value:multiplier", 0, 0);
             }
@@ -694,12 +687,10 @@ public class GuiUtils {
         }
 
         private void unitCbChanged() {
-            String uTxt = (String) unitCb.getSelectedItem();
-            value.setUnit(uTxt);
+            value.setUnit((Statics.ValueUnits) unitCb.getSelectedItem());
             if (listener != null) {
                 listener.onValueChanged(this, "value:unit", 0, 0);
             }
-
         }
     }
 

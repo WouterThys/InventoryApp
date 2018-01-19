@@ -195,17 +195,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
                 }
             }
         }
-
-        String price = componentPanel.getPriceFieldValue();
-        try {
-            double d = Double.valueOf(price);
-            if (d < 0) {
-                ok = false;
-            }
-        } catch (Exception e) {
-            componentPanel.setPriceFieldError("This should be a number");
-            ok = false;
-        }
         return ok;
     }
 

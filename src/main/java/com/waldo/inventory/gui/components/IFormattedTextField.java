@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultEditorKit;
 import java.text.Format;
 
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+
 public class IFormattedTextField extends JFormattedTextField {
 
     private final Object beforeEditValue = null;
@@ -67,19 +69,17 @@ public class IFormattedTextField extends JFormattedTextField {
     @Override
     public void setValue(Object value) {
         if (documentListener != null) {
+            documentListener.setEnabled(false);
+        }
+        try {
+            super.setValue(value);
+        } catch (Exception e) {
+            Status().setError("Error setting text." , e);
+        }
+        if (documentListener != null) {
             documentListener.setEnabled(true);
         }
-        super.setValue(value);
-//        if (documentListener != null) {
-//            documentListener.setEnabled(true);
-//        }
     }
-
-    //    @Deprecated
-//    public void setValueBeforeEdit(Object valueBeforeEdit) {
-//        beforeEditValue = valueBeforeEdit;
-//        super.setDoubleValue(valueBeforeEdit);
-//    }
 
     public void setError(String errorText) {
         if (errorText != null) {
