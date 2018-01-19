@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
@@ -69,16 +68,16 @@ public class ISystemLogTableModel extends IAbstractTableModel<Log> {
                     ILabel lbl;
                     Log log = (Log) value;
                     switch (log.getLogType()) {
-                        case Statics.LogTypes.INFO:
+                        case Info:
                             lbl = new ITableIcon(c.getBackground(), row, isSelected, infoIcon);
                             break;
-                        case Statics.LogTypes.DEBUG:
+                        case Debug:
                             lbl = new ITableIcon(c.getBackground(), row, isSelected, debugIcon);
                             break;
-                        case Statics.LogTypes.WARN:
+                        case Warn:
                             lbl = new ITableIcon(c.getBackground(), row, isSelected, warnIcon);
                             break;
-                        case Statics.LogTypes.ERROR:
+                        case Error:
                             lbl = new ITableIcon(c.getBackground(), row, isSelected, errorIcon);
                             break;
                         default:

@@ -2,6 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 
 import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.Statics.LogTypes;
 import com.waldo.inventory.database.DatabaseAccess;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -12,40 +13,39 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.waldo.inventory.Utils.Statics.LogTypes.*;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Log extends DbObject {
 
     public static final String TABLE_NAME = "logs";
 
-    private int logType;
+    private LogTypes logType;
     private Date logTime;
     private String logClass;
     private String logMessage;
     private String logException;
 
     public Log() {
-        this(INFO, "Log", "", "");
+        this(LogTypes.Info, "Log", "", "");
     }
 
     public Log(String logMessage) {
-        this(INFO, "Log", logMessage, "");
+        this(LogTypes.Info, "Log", logMessage, "");
     }
 
-    public Log(int logType, String logClass, String logMessage) {
+    public Log(LogTypes logType, String logClass, String logMessage) {
         this(logType, logClass, logMessage, "");
     }
 
-    public Log(int logType, String logClass, String logMessage, Throwable logException) {
+    public Log(LogTypes logType, String logClass, String logMessage, Throwable logException) {
         this(logType, logClass, logMessage, ExceptionUtils.getStackTrace(logException));
     }
 
-    public Log(int logType, String logClass, String logMessage, String logException) {
+    public Log(LogTypes logType, String logClass, String logMessage, String logException) {
         this(logType, DateUtils.now(), logClass, logMessage, logException);
     }
 
-    public Log(int logType, Date logTime, String logClass, String logMessage, String logException) {
+    public Log(LogTypes logType, Date logTime, String logClass, String logMessage, String logException) {
         super(TABLE_NAME);
         this.logType = logType;
         this.logTime = logTime;
@@ -58,10 +58,10 @@ public class Log extends DbObject {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         switch (logType) {
-            case INFO: builder.append(" - INFO "); break;
-            case DEBUG: builder.append(" - DEBUG "); break;
-            case WARN: builder.append(" - WARNING "); break;
-            case ERROR: builder.append(" - ERROR "); break;
+            case Info: builder.append(" - INFO "); break;
+            case Debug: builder.append(" - DEBUG "); break;
+            case Warn: builder.append(" - WARNING "); break;
+            case Error: builder.append(" - ERROR "); break;
         }
 
         builder.append("(").append(getLogClass()).append(") ");
@@ -76,11 +76,11 @@ public class Log extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
-        statement.setInt(ndx++, logType);
-        statement.setTimestamp(ndx++, new Timestamp(logTime.getTime()));
-        statement.setString(ndx++,logClass);
-        statement.setString(ndx++, logMessage);
-        statement.setString(ndx++, logException);
+        statement.setInt(ndx++, getLogType().getValue());
+        statement.setTimestamp(ndx++, new Timestamp(getLogTime().getTime()));
+        statement.setString(ndx++, getLogClass());
+        statement.setString(ndx++, getLogMessage());
+        statement.setString(ndx++, getLogException());
         return ndx;
     }
 
@@ -93,98 +93,6 @@ public class Log extends DbObject {
     public DbObject createCopy() {
         return null;
     }
-
-//    @Override
-//    protected void doSave() throws SQLException {
-//        // TODO
-////        setOnDbTableChangedListener(DatabaseAccess.db());
-////
-////        try (Connection connection = DatabaseAccess.getConnection()) {
-////            if (!connection.isValid(5)) {
-////                throw new SQLException("Conenction invalid, timed out after 5s...");
-////            }
-////            if (id == -1) { // Save
-////                try (PreparedStatement statement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-////                    insert(statement);
-////
-////                    try (ResultSet rs = statement.getGeneratedKeys()) {
-////                        rs.next();
-////                        id = rs.getLong(1);
-////                    }
-////                }
-////            } else { // Update
-////                // Save new object
-////                try (PreparedStatement statement = connection.prepareStatement(sqlUpdate)) {
-////                    update(statement);
-////                }
-////            }
-////        }
-//    }
-
-//    @Override
-//    public void save() {
-//        SwingWorker worker = new SwingWorker() {
-//            @Override
-//            protected Object doInBackground() throws Exception {
-//                try {
-//                    doSave();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void done() {
-//                // Ok
-//            }
-//        };
-//        worker.execute();
-//        try {
-//            worker.get(10, TimeUnit.SECONDS);
-//        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
-//    @Override
-//    protected void doDelete() throws SQLException {
-////        if (id != -1) {
-////            try (Connection connection = DatabaseAccess.getConnection(); PreparedStatement statement = connection.prepareStatement(sqlDelete)) {
-////                statement.setLong(1, id);
-////                statement.execute();
-////                id = -1; // Not in database anymore
-////            }
-////        }
-//    }
-
-//    @Override
-//    public void delete() {
-//        if (canBeSaved) {
-////            SwingWorker worker = new SwingWorker() {
-////                @Override
-////                protected Object doInBackground() throws Exception {
-//            try {
-//                doDelete();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-////                    return null;
-////                }
-//
-////                @Override
-////                protected void done() {
-////                    try {
-////                        get(10, TimeUnit.SECONDS);
-////                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-////            };
-////            worker.execute();
-//        }
-//    }
 
     //
     // DatabaseAccess tells the object is updated
@@ -213,12 +121,16 @@ public class Log extends DbObject {
     }
 
 
-    public int getLogType() {
+    public LogTypes getLogType() {
         return logType;
     }
 
-    public void setLogType(int logType) {
+    public void setLogType(LogTypes logType) {
         this.logType = logType;
+    }
+
+    public void setLogType(int logType) {
+        this.logType = LogTypes.fromInt(logType);
     }
 
     public Date getLogTime() {

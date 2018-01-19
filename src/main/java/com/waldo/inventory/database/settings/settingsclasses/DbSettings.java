@@ -11,7 +11,7 @@ public class DbSettings extends DbSettingsObject {
     private String dbName = "";
     private String dbUserName = "waldo";
     private String dbUserPw = "";
-    private String dbType; // Online, Local, ...
+    private Statics.DbTypes dbType; // Online, Local, ...
 
     public DbSettings() {
         super(TABLE_NAME);
@@ -119,15 +119,19 @@ public class DbSettings extends DbSettingsObject {
         this.dbUserPw = dbUserPw;
     }
 
-    public String getDbType() {
+    public Statics.DbTypes getDbType() {
         if (dbType == null) {
             dbType = Statics.DbTypes.Unknown;
         }
         return dbType;
     }
 
-    public void setDbType(String dbType) {
+    public void setDbType(Statics.DbTypes dbType) {
         this.dbType = dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = Statics.DbTypes.fromString(dbType);
     }
 
 }

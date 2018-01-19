@@ -74,7 +74,7 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                     ILabel lbl;
 
                     int amount;
-                    int orderState;
+                    Statics.ItemOrderStates orderState;
                     Item item;
 
                     PcbItemItemLink link = (PcbItemItemLink) value;
@@ -83,9 +83,9 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                     amount = item.getAmount();
 
 
-                    if (orderState == Statics.ItemOrderStates.ORDERED) {
+                    if (orderState == Statics.ItemOrderStates.Ordered) {
                         lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, String.valueOf(amount));
-                    } else if (orderState== Statics.ItemOrderStates.PLANNED) {
+                    } else if (orderState== Statics.ItemOrderStates.Planned) {
                         lbl = new ITableIcon(component.getBackground(), row, isSelected, yellowBall, String.valueOf(amount));
                     } else {
                         if (amount > 0) {

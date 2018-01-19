@@ -3,6 +3,7 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
@@ -265,7 +266,7 @@ public class Order extends DbObject {
                 setDateModified(new Date(System.currentTimeMillis()));
                 // Update the item of the order item
                 SwingUtilities.invokeLater(() -> {
-                    item.getItem().setOrderState(Statics.ItemOrderStates.NONE);
+                    item.getItem().setOrderState(ItemOrderStates.NoOrder);
                     item.getItem().save();
                 });
             }
@@ -300,7 +301,7 @@ public class Order extends DbObject {
         for (OrderItem oi : getOrderItems()) {
             Item item = oi.getItem();
             int current = item.getAmount();
-            item.setAmountType(Statics.ItemAmountTypes.EXACT);
+            item.setAmountType(Statics.ItemAmountTypes.Exact);
             if (increment) {
                 item.setAmount(current + oi.getAmount());
             } else {
@@ -418,15 +419,15 @@ public class Order extends DbObject {
         return (dateOrdered == null && dateReceived == null);
     }
 
-    public int getOrderState() {
+    public ItemOrderStates getOrderState() {
         if (!isOrdered() && !isReceived()) {
-            return Statics.ItemOrderStates.PLANNED;
+            return ItemOrderStates.Planned;
         } else if (isOrdered() && !isReceived()) {
-            return Statics.ItemOrderStates.ORDERED;
+            return ItemOrderStates.Ordered;
         } else if (isOrdered() && isReceived()) {
-            return Statics.ItemOrderStates.RECEIVED;
+            return ItemOrderStates.Received;
         } else {
-            return Statics.ItemOrderStates.NONE;
+            return ItemOrderStates.NoOrder;
         }
     }
 

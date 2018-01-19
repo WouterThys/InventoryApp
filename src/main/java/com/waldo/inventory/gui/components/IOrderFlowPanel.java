@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -131,7 +130,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
             Order order = (Order) object[0];
 
             switch (order.getOrderState()) {
-                case Statics.ItemOrderStates.PLANNED:
+                case Planned:
                     dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
                     dateOrderedLbl.setText("");
                     dateReceivedLbl.setText("");
@@ -144,7 +143,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
                     receivedIcon.setEnabled(false);
                     break;
 
-                case Statics.ItemOrderStates.ORDERED:
+                case Ordered:
                     dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
                     dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
                     dateReceivedLbl.setText("");
@@ -157,7 +156,7 @@ public class IOrderFlowPanel extends JPanel implements GuiInterface {
                     receivedIcon.setEnabled(false);
                     break;
 
-                case Statics.ItemOrderStates.RECEIVED:
+                case Received:
                     dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
                     dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
                     dateReceivedLbl.setText(DateUtils.formatDate(order.getDateReceived()));

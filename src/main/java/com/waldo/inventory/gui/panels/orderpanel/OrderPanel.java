@@ -393,9 +393,8 @@ public class OrderPanel extends OrderPanelLayout {
             if (order.getDistributor() == null) {
                 errorList.add(" - Order had no distributor..");
             } else {
-                if (order.getDistributor().getOrderFileFormat() == null || order.getDistributor().getOrderFileFormat().isUnknown()) {
-                    errorList.add(" - Order's distributor had no selected file format");
-                } else {
+                if (order.getDistributor().getOrderFileFormat() != null && !order.getDistributor().getOrderFileFormat().isUnknown()) {
+
                     if (order.getOrderItems().size() < 1) {
                         errorList.add(" - Order has no items..");
                     } else {
@@ -475,7 +474,7 @@ public class OrderPanel extends OrderPanelLayout {
 
                     // Do this after delete: items will not be updated in change listener for orders
                     for (OrderItem orderItem : orderItems) {
-                        orderItem.getItem().setOrderState(Statics.ItemOrderStates.NONE);
+                        orderItem.getItem().setOrderState(Statics.ItemOrderStates.NoOrder);
                         orderItem.getItem().save();
                     }
                 });
@@ -836,7 +835,7 @@ public class OrderPanel extends OrderPanelLayout {
                     if (itemsToOrder != null) {
                         // Update item
                         for (Item item : itemsToOrder) {
-                            item.setOrderState(Statics.ItemOrderStates.PLANNED);
+                            item.setOrderState(Statics.ItemOrderStates.Planned);
                             item.save();
                         }
 

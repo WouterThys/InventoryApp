@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
@@ -147,13 +146,13 @@ abstract class OrderConfirmDialogLayout extends IDialog implements ActionListene
                 break;
             case TAB_ORDER_DETAILS:
                 switch (order.getOrderState()) {
-                    case Statics.ItemOrderStates.PLANNED:
+                    case Planned:
                         getButtonOK().setText("order");
                         break;
-                    case Statics.ItemOrderStates.ORDERED:
+                    case Ordered:
                         getButtonOK().setText("received");
                         break;
-                    case Statics.ItemOrderStates.RECEIVED:
+                    case Received:
                         getButtonOK().setText("ok");
                         break;
                     default:

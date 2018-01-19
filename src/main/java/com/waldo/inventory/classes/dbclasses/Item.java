@@ -2,7 +2,8 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
+import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
@@ -42,8 +43,8 @@ public class Item extends DbObject {
     protected long locationId = UNKNOWN_ID;
     protected Location location;
     protected int amount = 0;
-    protected int amountType = Statics.ItemAmountTypes.NONE;
-    protected int orderState = Statics.ItemOrderStates.NONE;
+    protected ItemAmountTypes amountType = ItemAmountTypes.Unknown;
+    protected ItemOrderStates orderState = ItemOrderStates.NoOrder;
 
     protected long packageTypeId = UNKNOWN_ID;
     protected PackageType packageType;
@@ -96,9 +97,9 @@ public class Item extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
-        statement.setString(ndx++, name);
-        statement.setString(ndx++, alias);
-        statement.setNString(ndx++, description);
+        statement.setString(ndx++, getName());
+        statement.setString(ndx++, getAlias());
+        statement.setNString(ndx++, getDescription());
         if (categoryId < UNKNOWN_ID) {
             categoryId = UNKNOWN_ID;
         }
@@ -123,8 +124,8 @@ public class Item extends DbObject {
         }
         statement.setLong(ndx++, locationId);
         statement.setInt( ndx++, amount);
-        statement.setInt( ndx++, amountType);
-        statement.setInt( ndx++, orderState);
+        statement.setInt( ndx++, getAmountType().getValue());
+        statement.setInt( ndx++, getOrderState().getValue());
         if (packageTypeId < UNKNOWN_ID) {
             packageTypeId = UNKNOWN_ID;
         }
@@ -336,15 +337,15 @@ public class Item extends DbObject {
     }
 
     public void updateOrderState() {
-        int currentState = getOrderState();
+        ItemOrderStates currentState = getOrderState();
         Order lastOrderForItem = SearchManager.sm().findLastOrderForItem(id);
         if (lastOrderForItem == null) {
-            orderState = Statics.ItemOrderStates.NONE;
+            orderState = ItemOrderStates.NoOrder;
         } else {
-            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.NONE;
-            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.ORDERED;
-            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = Statics.ItemOrderStates.PLANNED;
-            else orderState = Statics.ItemOrderStates.NONE;
+            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = ItemOrderStates.NoOrder;
+            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = ItemOrderStates.Ordered;
+            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = ItemOrderStates.Planned;
+            else orderState = ItemOrderStates.NoOrder;
         }
         if (currentState != getOrderState()) {
             save();
@@ -515,20 +516,28 @@ public class Item extends DbObject {
         this.amount = amount;
     }
 
-    public int getAmountType() {
+    public ItemAmountTypes getAmountType() {
         return amountType;
     }
 
-    public void setAmountType(int amountType) {
+    public void setAmountType(ItemAmountTypes amountType) {
         this.amountType = amountType;
     }
 
-    public int getOrderState() {
+    public void setAmountType(int amountType) {
+        this.amountType = ItemAmountTypes.fromInt(amountType);
+    }
+
+    public ItemOrderStates getOrderState() {
         return orderState;
     }
 
-    public void setOrderState(int orderState) {
+    public void setOrderState(ItemOrderStates orderState) {
         this.orderState = orderState;
+    }
+
+    public void setOrderState(int orderState) {
+        this.orderState = ItemOrderStates.fromInt(orderState);
     }
 
     public float getRating() {

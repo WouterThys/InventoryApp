@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
@@ -149,19 +148,19 @@ public class SystemLogsDetailPanel extends JPanel implements GuiInterface {
                 selectedLog = (Log) object[0];
 
                 switch (selectedLog.getLogType()) {
-                    case Statics.LogTypes.INFO:
+                    case Info:
                         iconLabel.setIcon(infoIcon);
                         typeLabel.setText("Info");
                         break;
-                    case Statics.LogTypes.DEBUG:
+                    case Debug:
                         iconLabel.setIcon(debugIcon);
                         typeLabel.setText("Debug");
                         break;
-                    case Statics.LogTypes.WARN:
+                    case Warn:
                         iconLabel.setIcon(warnIcon);
                         typeLabel.setText("Warning");
                         break;
-                    case Statics.LogTypes.ERROR:
+                    case Error:
                         iconLabel.setIcon(errorIcon);
                         typeLabel.setText("Error");
                         break;

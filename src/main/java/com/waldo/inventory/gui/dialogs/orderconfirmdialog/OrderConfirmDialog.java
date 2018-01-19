@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -44,9 +43,9 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
     protected void onOK() {
         if (currentPanel.equals(TAB_ORDER_DETAILS)) {
             switch(order.getOrderState()) {
-                case Statics.ItemOrderStates.PLANNED: doOrder(); break;
-                case Statics.ItemOrderStates.ORDERED: setReceived(); break;
-                case Statics.ItemOrderStates.RECEIVED: super.onOK(); break;
+                case Planned: doOrder(); break;
+                case Ordered: setReceived(); break;
+                case Received: super.onOK(); break;
                 default: break;
             }
             updateComponents(order);

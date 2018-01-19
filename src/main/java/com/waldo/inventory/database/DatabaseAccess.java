@@ -4,6 +4,7 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.DbTypes;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
@@ -66,10 +67,10 @@ public class DatabaseAccess {
             loggedUser = s.getDbUserName();
             if (!Main.CACHE_ONLY) {
                 switch (s.getDbType()) {
-                    case Statics.DbTypes.Online:
+                    case Online:
                         initMySql(s);
                         break;
-                    case Statics.DbTypes.Local:
+                    case Local:
                         initSqLite(s);
                         break;
                 }
@@ -77,11 +78,11 @@ public class DatabaseAccess {
                 // Test
                 initialized = testConnection(dataSource);
                 switch (s.getDbType()) {
-                    case Statics.DbTypes.Online:
+                    case Online:
                         TableManager.dbTm().init(dataSource, s);
                         Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                         break;
-                    case Statics.DbTypes.Local:
+                    case Local:
                         Status().setDbConnectionText(initialized, "DB BACKUP", s.getDbName(), s.getDbUserName());
                         break;
                 }

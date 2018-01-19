@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.Utils.Statics.CodeLanguages;
 import com.waldo.inventory.database.DatabaseAccess;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -15,7 +16,7 @@ public class ProjectCode extends ProjectObject {
     public static final String TABLE_NAME = "projectcodes";
 
     // Variables
-    private String language;
+    private CodeLanguages language;
 
     public ProjectCode() {
         super(TABLE_NAME);
@@ -35,7 +36,7 @@ public class ProjectCode extends ProjectObject {
         int ndx = addBaseParameters(statement);
 
         // Add parameters
-        statement.setString(ndx++, getLanguage());
+        statement.setString(ndx++, getLanguage().toString());
         statement.setString(ndx++, getDirectory());
         statement.setLong(ndx++, getProjectId());
         statement.setLong(ndx++, getProjectIDEId());
@@ -117,16 +118,19 @@ public class ProjectCode extends ProjectObject {
     }
 
     // Getters and setters
-
-    public String getLanguage() {
+    public CodeLanguages getLanguage() {
         if (language == null) {
-            language = "";
+            language = CodeLanguages.Unknown;
         }
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(CodeLanguages language) {
         this.language = language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = CodeLanguages.fromString(language);
     }
 
     @Override

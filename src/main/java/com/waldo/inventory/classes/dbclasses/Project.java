@@ -1,7 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.FileUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -183,10 +182,10 @@ public class Project extends DbObject {
     private ProjectObject createProjectObject(String projectDirectory, ProjectIDE projectIDE) {
         ProjectObject projectObject;
         switch (projectIDE.getProjectType()) {
-            case Statics.ProjectTypes.Code:
+            case Code:
                 projectObject = new ProjectCode(getId());
                 break;
-            case Statics.ProjectTypes.Pcb:
+            case Pcb:
                 projectObject = new ProjectPcb(getId());
                 break;
             default:

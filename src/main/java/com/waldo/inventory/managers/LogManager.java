@@ -1,5 +1,6 @@
 package com.waldo.inventory.managers;
 
+import com.waldo.inventory.Utils.Statics.LogTypes;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
@@ -7,7 +8,6 @@ import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.waldo.inventory.Utils.Statics.LogTypes.*;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 
@@ -16,14 +16,14 @@ public class LogManager implements DbSettingsListener<LogSettings> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogManager.class);
 
     public static LogManager LOG (Class logClass) {
-        return new LogManager(logClass, ERROR);
+        return new LogManager(logClass, LogTypes.Error);
     }
 
-    public static LogManager LOG (Class logClass, int level) {
+    public static LogManager LOG (Class logClass, LogTypes level) {
         return new LogManager(logClass, level);
     }
 
-    private int level;
+    private LogTypes level;
     private final Class logClass;
 
     private boolean logInfo;
@@ -31,7 +31,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
     private boolean logWarn;
     private boolean logErrors;
 
-    private LogManager(Class logCLass, int level) {
+    private LogManager(Class logCLass, LogTypes level) {
         this.logClass = logCLass;
 
         settings().addLogSettingsListener(this);
@@ -55,28 +55,28 @@ public class LogManager implements DbSettingsListener<LogSettings> {
         }
     }
 
-    public void setLogLevel(int level) {
+    private void setLogLevel(LogTypes level) {
         this.level = level;
         switch (level) {
-            case INFO:
+            case Info:
                 logInfo &= true;
                 logDebug &= false;
                 logWarn &= false;
                 logErrors &= false;
                 break;
-            case DEBUG:
+            case Debug:
                 logInfo &= true;
                 logDebug &= true;
                 logWarn &= false;
                 logErrors &= false;
                 break;
-            case WARN:
+            case Warn:
                 logInfo &= true;
                 logDebug &= true;
                 logWarn &= true;
                 logErrors &= false;
                 break;
-            case ERROR:
+            case Error:
                 logInfo &= true;
                 logDebug &= true;
                 logWarn &= true;
@@ -95,7 +95,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(INFO, logClass.getSimpleName(), info);
+                    Log log = new Log(LogTypes.Info, logClass.getSimpleName(), info);
                     log.save();
                 }
 
@@ -112,7 +112,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(DEBUG, logClass.getSimpleName(), debug);
+                    Log log = new Log(LogTypes.Debug, logClass.getSimpleName(), debug);
                     log.save();
                 }
 
@@ -129,7 +129,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(DEBUG, logClass.getSimpleName(), debug, throwable);
+                    Log log = new Log(LogTypes.Debug, logClass.getSimpleName(), debug, throwable);
                     log.save();
                 }
 
@@ -146,7 +146,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(WARN, logClass.getSimpleName(), warning);
+                    Log log = new Log(LogTypes.Warn, logClass.getSimpleName(), warning);
                     log.save();
                 }
 
@@ -163,7 +163,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(WARN, logClass.getSimpleName(), warning, throwable);
+                    Log log = new Log(LogTypes.Warn, logClass.getSimpleName(), warning, throwable);
                     log.save();
                 }
 
@@ -180,7 +180,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(ERROR, logClass.getSimpleName(), error);
+                    Log log = new Log(LogTypes.Error, logClass.getSimpleName(), error);
                     log.save();
                 }
 
@@ -197,7 +197,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
             try {
                 // Database
                 if (DatabaseAccess.db().isInitialized()) {
-                    Log log = new Log(ERROR, logClass.getSimpleName(), error, throwable);
+                    Log log = new Log(LogTypes.Error, logClass.getSimpleName(), error, throwable);
                     log.save();
                 }
 

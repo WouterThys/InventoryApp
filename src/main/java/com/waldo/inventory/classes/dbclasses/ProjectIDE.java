@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.Statics.ProjectTypes;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.database.DatabaseAccess;
@@ -18,7 +19,7 @@ public class ProjectIDE extends DbObject {
     private static final LogManager LOG = LogManager.LOG(ProjectIDE.class);
     public static final String TABLE_NAME = "projectides";
 
-    private String projectType; // Statics.ProjectTypes
+    private ProjectTypes projectType;
 
     // Launcher
     private boolean useDefaultLauncher;
@@ -53,14 +54,14 @@ public class ProjectIDE extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
-        statement.setString(ndx++, projectType);
-        statement.setString(ndx++, extension);
-        statement.setBoolean(ndx++, openAsFolder);
-        statement.setBoolean(ndx++, useDefaultLauncher);
-        statement.setString(ndx++, launcherPath);
-        statement.setBoolean(ndx++, matchExtension);
-        statement.setBoolean(ndx++, useParentFolder);
-        statement.setString(ndx++, parserName);
+        statement.setString(ndx++, getProjectType().toString());
+        statement.setString(ndx++, getExtension());
+        statement.setBoolean(ndx++, isOpenAsFolder());
+        statement.setBoolean(ndx++, isUseDefaultLauncher());
+        statement.setString(ndx++, getLauncherPath());
+        statement.setBoolean(ndx++, isMatchExtension());
+        statement.setBoolean(ndx++, isUseParentFolder());
+        statement.setString(ndx++, getParserName());
         return ndx;
     }
 
@@ -157,15 +158,19 @@ public class ProjectIDE extends DbObject {
         }
     }
 
-    public String getProjectType() {
+    public ProjectTypes getProjectType() {
         if (projectType == null) {
-            projectType = "";
+            projectType = ProjectTypes.Unknown;
         }
         return projectType;
     }
 
-    public void setProjectType(String projectType) {
+    public void setProjectType(ProjectTypes projectType) {
         this.projectType = projectType;
+    }
+
+    public void setProjectType(String projectType) {
+        this.projectType = ProjectTypes.fromString(projectType);
     }
 
     public String getExtension() {

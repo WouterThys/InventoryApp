@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedial
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.CodeLanguages;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.gui.Application;
@@ -21,7 +22,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IComboBox<String> languageCb;
+    private IComboBox<CodeLanguages> languageCb;
     GuiUtils.IBrowseFilePanel directoryPnl;
     private IComboBox<ProjectIDE> projectIdeCb;
 
@@ -57,8 +58,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         getButtonNeutral().setEnabled(false);
 
         // Language
-        DefaultComboBoxModel<String> languageModel = new DefaultComboBoxModel<>(Statics.CodeLanguage.All);
-        languageCb = new IComboBox<>(languageModel);
+        languageCb = new IComboBox<>(CodeLanguages.values());
         languageCb.addEditedListener(this, "language", String.class);
 
         // Directory

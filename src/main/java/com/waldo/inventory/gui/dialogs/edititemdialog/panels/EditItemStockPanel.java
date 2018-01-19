@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
@@ -22,8 +23,6 @@ import java.awt.event.ItemEvent;
 
 public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
 
-    private static final String[] amountTypes = {"", "Max", "Min", "Exact", "Approximate"};
-
     private final T selectedItem;
     private final Application application;
 
@@ -31,7 +30,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
     private final IEditedListener editedListener;
 
     private ISpinner amountSpinner;
-    private JComboBox<String> amountTypeCb;
+    private JComboBox<ItemAmountTypes> amountTypeCb;
 
     private ITextField locationTypeTf;
     private ITextField rowTf;
@@ -50,7 +49,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         selectedItem.setAmount(set.getAmount());
         selectedItem.setLocationId(set.getLocationId());
 
-        amountTypeCb.setSelectedIndex(set.getAmountType());
+        amountTypeCb.setSelectedItem(set.getAmountType());
         amountSpinner.setValue(set.getAmount());
         updateLocationFields(set.getLocation());
     }
@@ -175,8 +174,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         amountSpinner = new ISpinner(spinnerModel);
         amountSpinner.addEditedListener(editedListener, "amount");
 
-        DefaultComboBoxModel<String> cbModel = new DefaultComboBoxModel<>(amountTypes);
-        amountTypeCb = new JComboBox<>(cbModel);
+        amountTypeCb = new JComboBox<>(ItemAmountTypes.values());
         amountTypeCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 if (editedListener != null) {
@@ -265,7 +263,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         application.beginWait();
         try {
             if (selectedItem != null) {
-                amountTypeCb.setSelectedIndex(selectedItem.getAmountType());
+                amountTypeCb.setSelectedItem(selectedItem.getAmountType());
                 amountSpinner.setValue(selectedItem.getAmount());
                 updateLocationFields(selectedItem.getLocation());
             }

@@ -31,6 +31,10 @@ public class IComboBox<E> extends JComboBox<E> {
         super(comboBoxModel);
     }
 
+    public IComboBox(E[] values) {
+        super(values);
+    }
+
     public IComboBox(List<E> itemList, Comparator<E> comparator, boolean showUnknown) {
         super();
 

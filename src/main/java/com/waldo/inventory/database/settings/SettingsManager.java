@@ -591,7 +591,7 @@ public class SettingsManager {
                 stmt.setString(3, set.getDbIp());
                 stmt.setString(4, set.getDbUserName());
                 stmt.setString(5, set.getDbUserPw());
-                stmt.setString(6, set.getDbType());
+                stmt.setString(6, set.getDbType().toString());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -647,7 +647,7 @@ public class SettingsManager {
                 stmt.setString(2, set.getDbIp());
                 stmt.setString(3, set.getDbUserName());
                 stmt.setString(4, set.getDbUserPw());
-                stmt.setString(5, set.getDbType());
+                stmt.setString(5, set.getDbType().toString());
 
                 stmt.setString(6, set.getName()); // Where name
 

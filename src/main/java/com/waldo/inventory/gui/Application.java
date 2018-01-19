@@ -4,7 +4,6 @@ import com.mysql.jdbc.MysqlErrorNumbers;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.ResourceManager;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.waldo.inventory.Utils.Statics.ItemOrderStates.Planned;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -240,7 +240,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             setSelectedTab(TAB_ORDERS);
             // Update items
             for (Item item : itemsToOrder) {
-                item.setOrderState(Statics.ItemOrderStates.PLANNED);
+                item.setOrderState(Planned);
                 item.save();
             }
         } finally {
@@ -260,7 +260,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             setSelectedTab(TAB_ORDERS);
             // Update items
             for (OrderItem orderItem : itemsToOrder) {
-                orderItem.getItem().setOrderState(Statics.ItemOrderStates.PLANNED);
+                orderItem.getItem().setOrderState(Planned);
                 orderItem.getItem().save();
             }
         } finally {

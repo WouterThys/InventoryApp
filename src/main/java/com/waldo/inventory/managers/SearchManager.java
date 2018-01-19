@@ -302,10 +302,10 @@ public class SearchManager {
         return null;
     }
 
-    public List<ProjectIDE> findProjectIDEsByType(String type) {
+    public List<ProjectIDE> findProjectIDEsByType(Statics.ProjectTypes type) {
         List<ProjectIDE> projectIDES = new ArrayList<>();
         for (ProjectIDE pi : cache().getProjectIDES()) {
-            if (pi.getProjectType().isEmpty() || pi.getProjectType().equals(type)) {
+            if (pi.getProjectType().equals(type)) {
                 projectIDES.add(pi);
             }
         }
@@ -547,16 +547,16 @@ public class SearchManager {
         List<Log> logList = new ArrayList<>();
         for (Log log : cache().getLogs()) {
             switch (log.getLogType()) {
-                case Statics.LogTypes.INFO:
+                case Info:
                     if (info) logList.add(log);
                     break;
-                case Statics.LogTypes.DEBUG:
+                case Debug:
                     if (debug) logList.add(log);
                     break;
-                case Statics.LogTypes.WARN:
+                case Warn:
                     if (warn) logList.add(log);
                     break;
-                case Statics.LogTypes.ERROR:
+                case Error:
                     if (error) logList.add(log);
                     break;
             }

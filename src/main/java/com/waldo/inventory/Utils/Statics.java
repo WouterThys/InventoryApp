@@ -1,41 +1,100 @@
 package com.waldo.inventory.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Statics {
-
-    public static class ItemAmountTypes {
-        public static final int NONE = 0;
-        public static final int MAX = 1;
-        public static final int MIN = 2;
-        public static final int EXACT = 3;
-        public static final int APPROXIMATE = 4;
-    }
-
-    public static class ItemOrderStates {
-        public static final int NONE = 0;
-        public static final int ORDERED = 1;
-        public static final int RECEIVED = 2;
-        public static final int PLANNED = 3;
-    }
-
-    public static class LogTypes {
-        public static final int INFO = 0;
-        public static final int DEBUG = 1;
-        public static final int WARN = 2;
-        public static final int ERROR = 3;
-    }
 
     public static final String[] Alphabet = {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    public static int indexOfAlphabet(String letter) {
-        return Arrays.asList(Alphabet).indexOf(letter);
+    public enum ItemAmountTypes {
+        Unknown (0),
+        Max     (1),
+        Min     (2),
+        Exact   (3),
+        Approximate (4);
+
+        private final int value;
+        ItemAmountTypes(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static ItemAmountTypes fromInt(int value) {
+            switch (value) {
+                default:
+                case 0: return Unknown;
+                case 1: return Max;
+                case 2: return Min;
+                case 3: return Exact;
+                case 4: return Approximate;
+            }
+        }
     }
 
+    public enum ItemOrderStates {
+        NoOrder  (0, "Not ordered"),
+        Ordered  (1, "Ordered"),
+        Received (2, "Received"),
+        Planned  (3, "Planned");
+
+        private final int value;
+        private final String string;
+        ItemOrderStates(int value, String string) {
+            this.value = value;
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static ItemOrderStates fromInt(int value) {
+            switch (value) {
+                default:
+                case 0: return NoOrder;
+                case 1: return Ordered;
+                case 2: return Received;
+                case 3: return Planned;
+            }
+        }
+    }
+
+    public enum LogTypes {
+        Info    (0),
+        Debug   (1),
+        Warn    (2),
+        Error   (3);
+
+        private final int value;
+        LogTypes(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static LogTypes fromInt(int value) {
+            switch (value) {
+                default:
+                case 0: return Info;
+                case 1: return Debug;
+                case 2: return Warn;
+                case 3: return Error;
+            }
+        }
+    }
 
     public enum ValueMultipliers {
         f("f", -15),
@@ -137,32 +196,97 @@ public class Statics {
         }
     }
 
-    public static class CodeLanguage {
-        public static final String Unknown = "";
-        public static final String C = "C";
-        public static final String Cs = "C#";
-        public static final String Cpp = "C++";
-        public static final String Java = "Java";
-        public static final String Python = "Python";
+    public enum CodeLanguages {
+        Unknown (""),
+        C       ("C"),
+        Cs      ("C#"),
+        Cpp     ("C++"),
+        Java    ("Java"),
+        Python  ("Python");
 
-        public static final String[] All = {Unknown, C, Cs, Cpp, Java, Python };
+        private final String string;
+        CodeLanguages(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static CodeLanguages fromString(String language) {
+            if (language != null) {
+                switch (language) {
+                    default:
+                    case "": return Unknown;
+                    case "C": return C;
+                    case "C#": return Cs;
+                    case "C++": return Cpp;
+                    case "Java": return Java;
+                    case "Python": return Python;
+                }
+            } else {
+                return Unknown;
+            }
+        }
     }
 
-    public static class ProjectTypes {
-        public static final String Unknown = "";
-        public static final String Code = "Code";
-        public static final String Pcb = "Pcb";
-        public static final String Other = "Other";
+    public enum ProjectTypes {
+        Unknown (""),
+        Code    ("Code"),
+        Pcb     ("Pcb"),
+        Other   ("Other");
 
-        public static final String[] All  = {Unknown, Code, Pcb, Other };
+        private final String string;
+        ProjectTypes(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static ProjectTypes fromString(String type) {
+            if (type != null) {
+                switch (type) {
+                    default:
+                    case "": return Unknown;
+                    case "Code": return Code;
+                    case "Pcb": return Pcb;
+                    case "Other": return Other;
+                }
+            }
+            return Unknown;
+        }
     }
 
-    public static class DbTypes {
-        public static final String Unknown = "Unknown";
-        public static final String Online = "Online (MySQL)";
-        public static final String Local = "Local (SqLite)";
+    public enum DbTypes {
+        Unknown (""),
+        Online  ("Online (MySQL)"),
+        Local   ("Local (SqLite)");
 
-        public static final String[] All = {Unknown, Online, Local};
+        private final String string;
+        DbTypes(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static DbTypes fromString(String type) {
+            if (type != null) {
+                switch (type) {
+                    default:
+                    case "": return Unknown;
+                    case "Online (MySQL)": return Online;
+                    case "Local (SqLite)": return Local;
+                }
+            }
+            return Unknown;
+        }
     }
 
     public enum PriceUnits {

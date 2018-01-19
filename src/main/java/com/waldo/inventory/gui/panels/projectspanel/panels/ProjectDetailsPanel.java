@@ -93,7 +93,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiInterface {
                 } else {
                     codeIdeTf.setText("");
                 }
-                languageTf.setText(((ProjectCode)project).getLanguage());
+                languageTf.setText(((ProjectCode)project).getLanguage().toString());
                 layout.show(cardPanel, PNL_CODE);
             } else if (project instanceof ProjectPcb) {
                 ProjectPcb pcb = (ProjectPcb) project;

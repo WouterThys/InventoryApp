@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -123,20 +122,62 @@ public abstract class OrderPanelLayout extends JPanel implements
                 DefaultMutableTreeNode oNode = new DefaultMutableTreeNode(o, false);
 
                 switch (o.getOrderState()) {
-                    case Statics.ItemOrderStates.PLANNED:
+                    case Planned:
                         plannedNode.add(oNode);
                         break;
-                    case Statics.ItemOrderStates.ORDERED:
+                    case Ordered:
                         orderedNode.add(oNode);
                         break;
-                    case Statics.ItemOrderStates.RECEIVED:
+                    case Received:
                         receivedNode.add(oNode);
                         break;
-                    case Statics.ItemOrderStates.NONE:
+                    case NoOrder:
                         break; // Should not happen
                 }
             }
         }
+    }
+
+    public void sortTree(DefaultMutableTreeNode rootNode) {
+        treeModel.reload(sort(rootNode));
+    }
+
+    public DefaultMutableTreeNode sort(DefaultMutableTreeNode node) {
+        //sort alphabetically
+        for(int i = 0; i < node.getChildCount() - 1; i++) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+            String nt = child.getUserObject().toString();
+
+            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
+                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
+                String np = prevNode.getUserObject().toString();
+
+                System.out.println(nt + " " + np);
+                if(nt.compareToIgnoreCase(np) > 0) {
+                    node.insert(child, j);
+                    node.insert(prevNode, i);
+                }
+            }
+            if(child.getChildCount() > 0) {
+                sort(child);
+            }
+        }
+
+        //put folders first - normal on Windows and some flavors of Linux but not on Mac OS X.
+        for(int i = 0; i < node.getChildCount() - 1; i++) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
+                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
+
+                if(!prevNode.isLeaf() && child.isLeaf()) {
+                    node.insert(child, j);
+                    node.insert(prevNode, i);
+                }
+            }
+        }
+
+        return node;
+
     }
 
     void treeRecreateNodes() {

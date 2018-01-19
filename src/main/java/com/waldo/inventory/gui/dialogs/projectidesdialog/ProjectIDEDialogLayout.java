@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.ProjectTypes;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.search.Search;
@@ -41,7 +41,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     private JList<Project> detailProjectList;
     DefaultListModel<Project> detailProjectModel;
 
-    IComboBox<String> projectTypeCb;
+    IComboBox<ProjectTypes> projectTypeCb;
 
     JButton detailLauncherBtn;
     JButton detailDetectionBtn;
@@ -178,7 +178,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        List<String> types = Arrays.asList(Statics.ProjectTypes.All);
+        List<ProjectTypes> types = Arrays.asList(ProjectTypes.values());
         projectTypeCb = new IComboBox<>(types, null, true);
         projectTypeCb.addEditedListener(this, "projectType", String.class);
 
