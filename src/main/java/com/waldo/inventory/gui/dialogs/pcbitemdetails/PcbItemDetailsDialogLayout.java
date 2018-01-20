@@ -40,8 +40,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     // References
     private ITableIcon matchedItemLbl;
     private ITextField matchedItemTf;
-    private EditAction editAction;
-    private DeleteAction deleteAction;
+    private IActions.EditAction editAction;
+    private IActions.DeleteAction deleteAction;
     private ViewAllLinksAction viewAllLinksAction;
 
     private ITableIcon orderLbl;
@@ -273,15 +273,15 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         // References
         matchedItemTf = new ITextField(false);
         matchedItemLbl = new ITableIcon(matchedItemTf.getBackground());
-        editAction = new EditAction() {
+        editAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onSelectNewItem();
             }
         };
-        deleteAction = new DeleteAction() {
+        deleteAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 onDeleteMatchedItem();
             }
         };

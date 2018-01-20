@@ -28,21 +28,23 @@ public abstract class PcbItemPopup extends JPopupMenu {
     private void init(final PcbItemProjectLink itemProjectLink) {
 
         // Actions
-        EditAction editAction = new EditAction("Edit item") {
+        IActions.EditAction editAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 if (itemProjectLink.hasMatchedItem()) {
                     onEditItem(itemProjectLink.getPcbItemItemLink());
                 }
             }
         };
+        editAction.setName("Edit item");
 
-        EditAction editPcbItemAction = new EditAction("Edit pcb item") {
+        IActions.EditAction editPcbItemAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onPcbItemEdit(itemProjectLink);
             }
         };
+        editPcbItemAction.setName("Edit pcb item");
 
        PcbItem pcbItem = itemProjectLink.getPcbItem();
        boolean addHeader = false;

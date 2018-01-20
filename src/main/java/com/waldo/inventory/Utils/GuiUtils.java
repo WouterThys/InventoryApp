@@ -7,9 +7,9 @@ import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.AddAction;
 import com.waldo.inventory.gui.components.actions.BrowseFileAction;
 import com.waldo.inventory.gui.components.actions.BrowseWebAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
@@ -60,9 +60,9 @@ public class GuiUtils {
 
     @Deprecated
     public static JPanel createComboBoxWithButton(JComboBox comboBox, ActionListener listener) {
-        AddAction addAction = new AddAction() {
+        IActions.AddAction addAction = new IActions.AddAction() {
             @Override
-            public void onAdd(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 listener.actionPerformed(e);
             }
         };
@@ -80,9 +80,9 @@ public class GuiUtils {
     }
 
     public static JPanel createComponentWithAddAction(JComponent component, ActionListener listener) {
-        AddAction addAction = new AddAction() {
+        IActions.AddAction addAction = new IActions.AddAction() {
             @Override
-            public void onAdd(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 listener.actionPerformed(e);
             }
         };

@@ -24,19 +24,21 @@ public abstract class OrderPopup extends JPopupMenu {
 
 
     private void init(Order order) {
-        EditAction editOrderAction = new EditAction("Edit order") {
+        IActions.EditAction editOrderAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onEditOrder(order);
             }
         };
+        editOrderAction.setName("Edit order");
 
-        DeleteAction deleteOrderAction = new DeleteAction("Delete order") {
+        IActions.DeleteAction deleteOrderAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 onDeleteOrder(order);
             }
         };
+        deleteOrderAction.setName("Delete order");
 
         OrderDetailsAction orderDetailsAction = new OrderDetailsAction() {
             @Override

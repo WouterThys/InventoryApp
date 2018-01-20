@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.querydialog;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.statics.SqlKeyWords;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -29,7 +29,6 @@ class QueryPanel extends JPanel {
 
     QueryPanel(Application app) {
         this.setLayout(new BorderLayout());
-        Application app1 = app;
         initActions();
         initComponents();
     }
@@ -107,7 +106,7 @@ class QueryPanel extends JPanel {
 
                 while (wordR <= after) {
                     if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                        if (text.substring(wordL, wordR).toUpperCase().matches("(\\W)*("+ SqlKeyWords.sqlKeyWords+")")) {
+                        if (text.substring(wordL, wordR).toUpperCase().matches("(\\W)*("+ Statics.sqlKeyWords+")")) {
                             setCharacterAttributes(wordL, wordR - wordL, blueSet, false); // SQL words
                         } else if (text.substring(wordL, wordR).toUpperCase().matches("(\\W)*("+ finalTableNamesString+")")) {
                             setCharacterAttributes(wordL, wordR - wordL, darkGreenSet, false); // Table names
@@ -128,7 +127,7 @@ class QueryPanel extends JPanel {
                 if (before < 0) before = 0;
                 int after = findFirstNonWordChar(text, offs);
 
-                if (text.substring(before, after).matches("(\\W)*("+ SqlKeyWords.sqlKeyWords+")")) {
+                if (text.substring(before, after).matches("(\\W)*("+ Statics.sqlKeyWords+")")) {
                     setCharacterAttributes(before, after - before, blueSet, false);
                 } else {
                     setCharacterAttributes(before, after - before, blackSet, false);

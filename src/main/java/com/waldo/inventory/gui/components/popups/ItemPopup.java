@@ -26,19 +26,21 @@ public abstract class ItemPopup extends JPopupMenu {
 
     private void init(final Item item) {
 
-        EditAction editAction = new EditAction("Edit item") {
+        IActions.EditAction editAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onEditItem();
             }
         };
+        editAction.setName("Edit item");
 
-        DeleteAction deleteAction = new DeleteAction("Delete item") {
+        IActions.DeleteAction deleteAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 onDeleteItem();
             }
         };
+        deleteAction.setName("Delete item");
 
         OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new OpenItemDataSheetLocalAction() {
             @Override

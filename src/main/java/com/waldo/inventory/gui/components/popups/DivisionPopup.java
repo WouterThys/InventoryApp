@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.gui.components.actions.AddAction;
-import com.waldo.inventory.gui.components.actions.DeleteAction;
-import com.waldo.inventory.gui.components.actions.EditAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.actions.WizardAction;
 
 import javax.swing.*;
@@ -53,23 +51,23 @@ public abstract class DivisionPopup extends JPopupMenu {
 
     private void init(DivisionType divisionType) {
 
-        AddAction addDivisionAction = new AddAction() {
+        IActions.AddAction addDivisionAction = new IActions.AddAction() {
             @Override
-            public void onAdd(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onAddDivision();
             }
         };
 
-        EditAction editDivisionAction = new EditAction() {
+        IActions.EditAction editDivisionAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onEditDivision();
             }
         };
 
-        DeleteAction deleteDivisionAction = new DeleteAction() {
+        IActions.DeleteAction deleteDivisionAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 onDeleteDivision();
             }
         };

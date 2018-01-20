@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.components.popups;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.components.actions.AddItemToSetAction;
-import com.waldo.inventory.gui.components.actions.DeleteAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.actions.OrderItemAction;
 import com.waldo.inventory.managers.CacheManager;
 
@@ -25,12 +25,13 @@ public abstract class MultiItemPopup extends JPopupMenu {
 
     private void init(final List<Item> itemList) {
 
-        DeleteAction deleteAction = new DeleteAction("Delete items") {
+        IActions.DeleteAction deleteAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 onDeleteItems(itemList);
             }
         };
+        deleteAction.setName("Delete items");
 
         OrderItemAction orderItemAction = new OrderItemAction("Order items") {
             @Override

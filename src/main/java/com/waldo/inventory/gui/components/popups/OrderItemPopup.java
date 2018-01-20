@@ -26,12 +26,13 @@ public abstract class OrderItemPopup extends JPopupMenu {
 
     private void init(OrderItem orderItem) {
         // Order item
-        DeleteAction deleteOrderItemAction = new DeleteAction("Delete order item") {
+        IActions.DeleteAction deleteOrderItemAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 OrderItemPopup.this.onDeleteOrderItem(orderItem);
             }
         };
+        deleteOrderItemAction.setName("Delete order item");
 
         EditReferenceAction editReferenceAction = new EditReferenceAction() {
             @Override
@@ -41,12 +42,13 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
 
         // Item
-        EditAction editAction = new EditAction("Edit order item") {
+        IActions.EditAction editAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 OrderItemPopup.this.onEditItem(orderItem);
             }
         };
+        editAction.setName("Edit order item");
 
         OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new OpenItemDataSheetLocalAction() {
             @Override

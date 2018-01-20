@@ -11,8 +11,7 @@ import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.DeleteAction;
-import com.waldo.inventory.gui.components.actions.EditAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 
 import javax.swing.*;
@@ -35,8 +34,8 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
     private ITextField locationTypeTf;
     private ITextField rowTf;
     private ITextField colTf;
-    private EditAction editAction;
-    private DeleteAction deleteAction;
+    private IActions.EditAction editAction;
+    private IActions.DeleteAction deleteAction;
 
     public EditItemStockPanel(Application application, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
         this.application = application;
@@ -203,9 +202,9 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
         locationTypeTf = new ITextField("Location");
         locationTypeTf.setEnabled(false);
 
-        editAction = new EditAction() {
+        editAction = new IActions.EditAction() {
             @Override
-            public void onEdit(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 EditItemLocation dialog;
                 dialog = new EditItemLocation(application,
                         "Select",
@@ -228,9 +227,9 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
             }
         };
 
-        deleteAction = new DeleteAction() {
+        deleteAction = new IActions.DeleteAction() {
             @Override
-            public void onDelete() {
+            public void actionPerformed(ActionEvent e) {
                 int res = JOptionPane.showConfirmDialog(
                         EditItemStockPanel.this,
                         "Are you sure you want to delete the location?",
