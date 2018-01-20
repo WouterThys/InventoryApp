@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -314,7 +315,7 @@ public class FilesPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
 
         gbc.addLine("Distributor images: ", distributorsPathPnl);
         gbc.addLine("Division images: ", divisionsPathPnl);
@@ -348,7 +349,7 @@ public class FilesPanel extends JPanel implements
                 fileSettingsCbModel.addElement(settings);
             }
 
-            selectedFileSettings = (FileSettings) object[0];
+            selectedFileSettings = ((SettingsManager) object[0]).getFileSettings();
 
             if (selectedFileSettings != null) {
                 fileSettingsComboBox.setSelectedItem(selectedFileSettings);

@@ -3,6 +3,7 @@ package com.waldo.inventory.managers;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.CacheLog;
 import com.waldo.inventory.classes.cache.CacheList;
+import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.DatabaseAccess;
@@ -88,6 +89,7 @@ public class CacheManager {
     private final CacheList<ParserItemLink> parserItemLinks = new CacheList<>();
     private final CacheList<Set> sets = new CacheList<>();
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
+    private final CacheList<DbEvent> dbEvents = new CacheList<>();
 
     // Other
     private List<String> aliasList = null;
@@ -443,5 +445,13 @@ public class CacheManager {
             setItemLinks.setList(db().updateSetItemLinks(), (System.nanoTime() - start));
         }
         return setItemLinks;
+    }
+
+    public synchronized CacheList<DbEvent> getDbEvents() {
+        if (!dbEvents.isFetched()) {
+            long start = System.nanoTime();
+            dbEvents.setList(db().updateDbEvents(), (System.nanoTime() - start));
+        }
+        return dbEvents;
     }
 }

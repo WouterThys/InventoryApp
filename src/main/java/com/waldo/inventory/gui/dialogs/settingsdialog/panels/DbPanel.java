@@ -6,6 +6,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -335,8 +336,7 @@ public class DbPanel extends JPanel implements
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel);
-
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
         gbc.addLine("Db type: ", dbTypeCb);
         gbc.addLine("Db file name: ", dbNameTf);
         gbc.addLine("Db ip address: ", dbIpTf);
@@ -435,7 +435,7 @@ public class DbPanel extends JPanel implements
         JPanel settings = createDbSettingsPanel();
         JPanel backup = createDbBackupPanel();
 
-        settings.setBorder(GuiUtils.createTitleBorder("Settings"));
+        //settings.setBorder(GuiUtils.createTitleBorder("Settings"));
         backup.setBorder(GuiUtils.createTitleBorder("Backups and Cache"));
 
         add(settings);
@@ -451,7 +451,7 @@ public class DbPanel extends JPanel implements
                 dbSettingsCbModel.addElement(settings);
             }
 
-            selectedDbSettings = (DbSettings) object[0];
+            selectedDbSettings = ((SettingsManager) object[0]).getDbSettings();
 
             if (selectedDbSettings != null) {
                 dbSettingsComboBox.setSelectedItem(selectedDbSettings);

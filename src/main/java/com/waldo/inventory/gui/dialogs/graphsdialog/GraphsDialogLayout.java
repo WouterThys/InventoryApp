@@ -150,6 +150,8 @@ abstract class GraphsDialogLayout extends IDialog {
         dbHistoryChart.setPreferredSize(new Dimension(500,300));
         dbHistoryChart.setMouseWheelEnabled(true);
         dbHistoryChart.setMouseZoomable(true, true);
+        dbHistoryChart.setRangeZoomable(true);
+        dbHistoryChart.setDomainZoomable(true);
     }
 
     private TreeMap<Date, List<DbHistory>> createHistoryMap() {

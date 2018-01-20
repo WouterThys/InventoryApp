@@ -4,13 +4,14 @@ import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.Statics.DbTypes;
+import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
+import com.waldo.inventory.database.interfaces.DbExecuteListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
@@ -35,6 +36,7 @@ public class DatabaseAccess {
     public static final int OBJECT_DELETE = 2;
     public static final int OBJECT_SELECT = 3;
     public static final int OBJECT_CACHE_CLEAR = 4;
+    public static final int EXECUTE_SQL = 5;
 
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
@@ -45,7 +47,6 @@ public class DatabaseAccess {
         return INSTANCE;
     }
     private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
-    private List<String> tableNames;
     private boolean initialized = false;
     private String loggedUser = "";
     private long cacheOnlyFakedId = 2;
@@ -54,6 +55,8 @@ public class DatabaseAccess {
     private DbQueue<DbErrorObject> nonoList;
     private DbQueueWorker dbQueueWorker;
     private DbErrorWorker dbErrorWorker;
+
+    private List<DbExecuteListener> executeListenerList = new ArrayList<>();
 
     // Events
     private DbErrorListener errorListener;
@@ -189,6 +192,30 @@ public class DatabaseAccess {
 
     public void addErrorListener(DbErrorListener errorListener) {
         this.errorListener = errorListener;
+    }
+
+    public void addExecuteListener(DbExecuteListener listener) {
+        if (!executeListenerList.contains(listener)) {
+            executeListenerList.add(listener);
+        }
+    }
+
+    public void removeExecuteListener(DbExecuteListener listener) {
+        if (executeListenerList.contains(listener)) {
+            executeListenerList.remove(listener);
+        }
+    }
+
+    private void onExecuted(String sql) {
+        for(DbExecuteListener listener : executeListenerList) {
+            SwingUtilities.invokeLater(() -> listener.onExecuted(sql));
+        }
+    }
+
+    private void onExecuteError(String sql, Throwable throwable) {
+        for (DbExecuteListener listener : executeListenerList) {
+            SwingUtilities.invokeLater(() -> listener.onExecuteError(sql, throwable));
+        }
     }
 
 
@@ -347,7 +374,7 @@ public class DatabaseAccess {
                                         }
                                         break;
                                     }
-                                    case OBJECT_DELETE:
+                                    case OBJECT_DELETE: {
                                         String sql = dbo.getScript(DbObject.SQL_DELETE);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             delete(stmt, dbo);
@@ -359,6 +386,17 @@ public class DatabaseAccess {
                                             }
                                         }
                                         break;
+                                    }
+                                    case EXECUTE_SQL: {
+                                        String sql = queueObject.getSql();
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            stmt.execute();
+                                            onExecuted(sql);
+                                        } catch (SQLException e) {
+                                            onExecuteError(sql, e);
+                                        }
+                                        break;
+                                    }
                                 }
 
                                 if (workList.size() > 0) {
@@ -433,6 +471,10 @@ public class DatabaseAccess {
                                 errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
                             }
                             break;
+                        case EXECUTE_SQL:
+                            if (errorListener != null) {
+
+                            }
                     }
                 }
             }
@@ -457,30 +499,12 @@ public class DatabaseAccess {
         return db().getDataSource().getConnection();
     }
 
-    public List<String> getTableNames() throws SQLException {
-        if (tableNames == null) {
-            tableNames = new ArrayList<>();
-
-            String sql = "SELECT * FROM main.sqlite_master WHERE type='table'";
-            try (Connection connection = getConnection()) {
-                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                    ResultSet rs = stmt.executeQuery();
-
-                    while (rs.next()) {
-                        tableNames.add(rs.getString("name"));
-                    }
-                }
-            }
-        }
-        return tableNames;
-    }
-
     public boolean isInitialized() {
         return initialized;
     }
 
 
-    public void insert(DbObject object) {
+    public void insert(final DbObject object) {
         object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
@@ -499,7 +523,7 @@ public class DatabaseAccess {
         }
     }
 
-    public void update(DbObject object) {
+    public void update(final DbObject object) {
         object.getAud().setUpdated(loggedUser);
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
@@ -516,7 +540,7 @@ public class DatabaseAccess {
         }
     }
 
-    public void delete(DbObject object) {
+    public void delete(final DbObject object) {
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
                 DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
@@ -529,6 +553,19 @@ public class DatabaseAccess {
         } else {
             // Just delete
             object.tableChanged(OBJECT_DELETE);
+        }
+    }
+
+    public void execute(final String sql) {
+        if (!Main.CACHE_ONLY && sql != null && !sql.isEmpty()) {
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject dbQueueObject = new DbQueueObject(sql);
+                try {
+                    workList.put(dbQueueObject);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
@@ -1642,5 +1679,49 @@ public class DatabaseAccess {
         }
 
         return setItemLinks;
+    }
+
+    public List<DbEvent> updateDbEvents() {
+        List<DbEvent> dbEvents = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return dbEvents;
+        }
+        Status().setMessage("Fetching events from DB");
+        DbEvent e = null;
+        String sql = scriptResource.readString("dbevents.sqlSelect.all");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    e = new DbEvent();
+                    e.setName(rs.getString("EVENT_NAME"));
+                    e.setDefiner(rs.getString("DEFINER"));
+                    e.setDefinition(rs.getString("EVENT_DEFINITION"));
+                    e.setType(rs.getString("EVENT_TYPE"));
+                    e.setExecuteAt(rs.getTimestamp("EXECUTE_AT"));
+                    e.setIntervalValue(rs.getInt("INTERVAL_VALUE"));
+                    e.setIntervalField(rs.getString("INTERVAL_FIELD"));
+                    e.setIntervalStarts(rs.getTimestamp("STARTS"));
+                    e.setIntervalEnds(rs.getTimestamp("ENDS"));
+                    e.setEnabled(rs.getString("STATUS").equals("ENABLED"));
+                    e.setCreated(rs.getTimestamp("CREATED"));
+                    e.setAltered(rs.getTimestamp("LAST_ALTERED"));
+                    e.setLastExecuted(rs.getTimestamp("LAST_EXECUTED"));
+                    e.setComment(rs.getString("EVENT_COMMENT"));
+
+                    dbEvents.add(e);
+                }
+            }
+        } catch (SQLException ex) {
+            DbErrorObject object = new DbErrorObject(null, ex, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return dbEvents;
     }
 }

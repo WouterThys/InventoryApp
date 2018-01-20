@@ -5,6 +5,7 @@ import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -31,7 +32,7 @@ public class ITable<T> extends JXTable {
         if (model.hasTableCellRenderer()) {
             setDefaultRenderer(Object.class, model.getTableCellRenderer());
         }
-        setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+        //setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public ITable(IAbstractTableModel<T> model, boolean autoSetHeight) {
@@ -45,7 +46,7 @@ public class ITable<T> extends JXTable {
 
         setPreferredScrollableViewportSize(getPreferredSize());
         setAutoCreateRowSorter(true);
-        setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+        //setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     }
 
     @Override
@@ -103,15 +104,15 @@ public class ITable<T> extends JXTable {
         if ((model != null) &&
                 (model.getColumnHeaderToolTips() != null) &&
                 (model.getColumnHeaderToolTips().length == model.getColumnCount())) {
-             return new JTableHeader(columnModel) {
-                 @Override
-                 public String getToolTipText(MouseEvent event) {
-                     Point p = event.getPoint();
-                     int ndx = columnModel.getColumnIndexAtX(p.x);
-                     int realNdx = columnModel.getColumn(ndx).getModelIndex();
-                     return model.getColumnHeaderToolTips()[realNdx];
-                 }
-             };
+            return new JTableHeader(columnModel) {
+                @Override
+                public String getToolTipText(MouseEvent event) {
+                    Point p = event.getPoint();
+                    int ndx = columnModel.getColumnIndexAtX(p.x);
+                    int realNdx = columnModel.getColumn(ndx).getModelIndex();
+                    return model.getColumnHeaderToolTips()[realNdx];
+                }
+            };
         }
         return super.createDefaultTableHeader();
     }
@@ -121,6 +122,34 @@ public class ITable<T> extends JXTable {
         if (tableColumn != null) {
             tableColumn.setMaxWidth(width);
             tableColumn.setMinWidth(width);
+        }
+    }
+
+    public void resizeColumns() {
+        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        for (int column = 0; column < getColumnCount(); column++) {
+            TableColumn tableColumn = getColumnModel().getColumn(column);
+            int preferredWidth = tableColumn.getMinWidth();
+            int maxWidth = tableColumn.getMaxWidth();
+            if (maxWidth > 500) {
+                maxWidth = 500;
+            }
+
+            for (int row = 0; row < getRowCount(); row++) {
+                TableCellRenderer cellRenderer = getCellRenderer(row, column);
+                Component c = prepareRenderer(cellRenderer, row, column);
+                int width = c.getPreferredSize().width + getIntercellSpacing().width;
+                preferredWidth = Math.max(preferredWidth, width);
+
+                //  We've exceeded the maximum width, no need to check other rows
+                if (preferredWidth >= maxWidth) {
+                    preferredWidth = maxWidth;
+                    break;
+                }
+            }
+
+            tableColumn.setPreferredWidth( preferredWidth );
         }
     }
 }

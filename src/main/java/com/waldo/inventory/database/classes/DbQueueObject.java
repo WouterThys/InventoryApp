@@ -1,11 +1,13 @@
 package com.waldo.inventory.database.classes;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.database.DatabaseAccess;
 
 public class DbQueueObject {
 
     private final int how;
     private final DbObject object;
+    private final String sql;
 
     // Extras
     private long insertTime;
@@ -14,6 +16,13 @@ public class DbQueueObject {
     public DbQueueObject(DbObject object, int how) {
         this.object = object;
         this.how = how;
+        this.sql = "";
+    }
+
+    public DbQueueObject(String sql) {
+        this.object = null;
+        this.how = DatabaseAccess.EXECUTE_SQL;
+        this.sql = sql;
     }
 
     public int getHow() {
@@ -22,6 +31,10 @@ public class DbQueueObject {
 
     public DbObject getObject() {
         return object;
+    }
+
+    public String getSql() {
+        return sql;
     }
 
     public void setInsertTime(long insertTime) {

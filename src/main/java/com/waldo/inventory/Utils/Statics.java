@@ -386,4 +386,66 @@ public class Statics {
             }
         }
     }
+
+    public enum EventType {
+        OneTime     ("One time", "AT"),
+        Recurring   ("Recurring", "EVERY");
+
+        private final String string;
+        private final String sqlParam;
+        EventType(String string, String sqlParam) {
+            this.string = string;
+            this.sqlParam = sqlParam;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public String getSqlParam() {
+            return sqlParam;
+        }
+
+        public static EventType fromString(String string) {
+            if (string != null) {
+                switch (string) {
+                    default:
+                    case "ONE TIME": return OneTime;
+                    case "RECURRING": return Recurring;
+                }
+            }
+            return OneTime;
+        }
+    }
+
+    public enum EventIntervalField {
+        Unknown,
+        Year,
+        Quarter,
+        Month,
+        Day,
+        Hour,
+        Minute,
+        Week,
+        Second;
+
+        public static EventIntervalField fromString(String value) {
+            if (value != null) {
+                switch (value) {
+                    default:
+                    case "": return Unknown;
+                    case "YEAR": return Year;
+                    case "QUARTER": return Quarter;
+                    case "MONTH": return Month;
+                    case "DAY": return Day;
+                    case "HOUR": return Hour;
+                    case "MINUTE": return Minute;
+                    case "WEEK": return Week;
+                    case "SECOND": return Second;
+                }
+            }
+            return Unknown;
+        }
+    }
 }

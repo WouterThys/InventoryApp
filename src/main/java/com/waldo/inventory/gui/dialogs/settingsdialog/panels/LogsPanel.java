@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
@@ -331,7 +332,7 @@ public class LogsPanel extends JPanel implements
                 logSettingsCbModel.addElement(settings);
             }
 
-            selectedLogSettings = (LogSettings) object[0];
+            selectedLogSettings = ((SettingsManager) object[0]).getLogSettings();
 
             if (selectedLogSettings != null) {
                 logSettingsComboBox.setSelectedItem(selectedLogSettings);

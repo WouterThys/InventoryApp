@@ -82,15 +82,15 @@ class QueryPanel extends JPanel {
 
         List<String> tableNames;
         StringBuilder tableNamesString = new StringBuilder();
-        try {
-            tableNames = DatabaseAccess.db().getTableNames();
-            for(String name : tableNames) {
-                tableNamesString.append(name.toUpperCase()).append("|");
-            }
-            tableNamesString = new StringBuilder(tableNamesString.substring(0, tableNamesString.length() - 2)); // remove last | again
-        } catch (SQLException e) {
-            Status().setError("Error initializing.", e);
-        }
+//        try {
+//            tableNames = DatabaseAccess.db().getTableNames();
+//            for(String name : tableNames) {
+//                tableNamesString.append(name.toUpperCase()).append("|");
+//            }
+//            tableNamesString = new StringBuilder(tableNamesString.substring(0, tableNamesString.length() - 2)); // remove last | again
+//        } catch (SQLException e) {
+//            Status().setError("Error initializing.", e);
+//        }
 
         final String finalTableNamesString = tableNamesString.toString();
         DefaultStyledDocument doc = new DefaultStyledDocument() {

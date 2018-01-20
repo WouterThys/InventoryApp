@@ -22,6 +22,8 @@ public class DateUtils {
     private static final SimpleDateFormat longDateAndTime = new SimpleDateFormat("ddd MMM, yyyy HH:mm");
     private static final SimpleDateFormat longDate = new SimpleDateFormat("ddd MMM, yyyy");
 
+    private static final SimpleDateFormat mySqlDateTime = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+
     public static String formatDateTime(Date date) {
         if (date != null && !date.equals(minDate())) {
             return shortDateAndTime.format(date);
@@ -67,6 +69,14 @@ public class DateUtils {
             return detailTime.format(date);
         } else {
             return detailTimeStr;
+        }
+    }
+
+    public static String formatMySqlDateTime(Date date) {
+        if (date != null) {
+            return mySqlDateTime.format(date);
+        } else {
+            return "";
         }
     }
 

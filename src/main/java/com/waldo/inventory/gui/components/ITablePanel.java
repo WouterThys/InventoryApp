@@ -90,6 +90,12 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         table.addMouseListener(listener);
     }
 
+    public void resizeColumns() {
+        if (table != null) {
+            table.resizeColumns();
+        }
+    }
+
     public T getItemAtRow(int row) {
         return table.getValueAtRow(row);
     }

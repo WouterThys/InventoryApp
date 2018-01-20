@@ -8,9 +8,7 @@ import java.util.List;
 public class DbTable {
 
     private String tableName;
-
-    private List<ForeignKey> foreignKeys;
-
+    private List<DbForeignKey> dbForeignKeys;
 
     public DbTable(String tableName) {
         this.tableName = tableName;
@@ -21,18 +19,18 @@ public class DbTable {
         return getTableName();
     }
 
-    public void addForeignKey(ForeignKey key) {
-        if (foreignKeys == null) {
-            foreignKeys = new ArrayList<>();
+    public void addForeignKey(DbForeignKey key) {
+        if (dbForeignKeys == null) {
+            dbForeignKeys = new ArrayList<>();
         }
 
-        if (!getForeignKeys().contains(key)) {
-            foreignKeys.add(key);
+        if (!getDbForeignKeys().contains(key)) {
+            dbForeignKeys.add(key);
         }
     }
 
-    public ForeignKey findForeignKey(String keyName) {
-        for (ForeignKey fk : getForeignKeys()) {
+    public DbForeignKey findForeignKey(String keyName) {
+        for (DbForeignKey fk : getDbForeignKeys()) {
             if (fk.getConstraintName().equals(keyName)) {
                 return fk;
             }
@@ -40,11 +38,11 @@ public class DbTable {
         return null;
     }
 
-    private List<ForeignKey> getForeignKeys() {
-        if (foreignKeys == null) {
+    private List<DbForeignKey> getDbForeignKeys() {
+        if (dbForeignKeys == null) {
             TableManager.dbTm().loadTableData(this);
         }
-        return foreignKeys;
+        return dbForeignKeys;
     }
 
 

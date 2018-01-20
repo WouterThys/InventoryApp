@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.database.DbTable;
-import com.waldo.inventory.classes.database.ForeignKey;
+import com.waldo.inventory.classes.database.DbForeignKey;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -57,7 +57,7 @@ public class TableManager {
         }
     }
 
-    public DbTable getDbTable(String tableName) {
+    DbTable getDbTable(String tableName) {
         if (!initSuccess) return null;
 
         for (DbTable table : dbTableList) {
@@ -68,13 +68,8 @@ public class TableManager {
         return null;
     }
 
-    public void loadTableData(String tableName) {
-        if (!initSuccess) return;
-
-        DbTable table = getDbTable(tableName);
-        if (table != null) {
-            loadTableData(table);
-        }
+    public List<DbTable> getDbTableList() {
+        return dbTableList;
     }
 
     public void loadTableData(DbTable table) {
@@ -95,7 +90,7 @@ public class TableManager {
                         String constraintName = rs.getString("CONSTRAINT_NAME");
                         String refColumn = rs.getString("REFERENCED_COLUMN_NAME");
 
-                        ForeignKey fk = new ForeignKey(table, columnName, constraintName, refTable, refColumn);
+                        DbForeignKey fk = new DbForeignKey(table, columnName, constraintName, refTable, refColumn);
                         table.addForeignKey(fk);
                     }
                 }
@@ -105,7 +100,7 @@ public class TableManager {
         }
     }
 
-    public List<DbObject> getForeignKeyReferences(DbObject object, ForeignKey fk) {
+    public List<DbObject> getForeignKeyReferences(DbObject object, DbForeignKey fk) {
         List<DbObject> objectList = new ArrayList<>();
         String sql = "select name, id from " + fk.getFromTable().getTableName() + " where " + fk.getFromColumn() + " = " + object.getId() + ";";
 

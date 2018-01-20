@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.classes.database.DbTable;
-import com.waldo.inventory.classes.database.ForeignKey;
+import com.waldo.inventory.classes.database.DbForeignKey;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +38,7 @@ public class ErrorManager {
             switch (sqlException.getErrorCode()) {
 
                 case MYSQL_DELETE_FK_ERROR: {
-                    ForeignKey fk = handleFkDeleteError(sqlException);
+                    DbForeignKey fk = handleFkDeleteError(sqlException);
                     if (fk != null) {
                         showFkDeleteError(object, fk);
                         handled = true;
@@ -47,7 +47,7 @@ public class ErrorManager {
                 break;
 
                 case MYSQL_UPDATE_FK_ERROR: {
-                    ForeignKey fk = handleFkAddUpdateError(sqlException);
+                    DbForeignKey fk = handleFkAddUpdateError(sqlException);
                     if (fk != null) {
                         showFkAddUpdateError(object, fk);
                         handled = true;
@@ -63,7 +63,7 @@ public class ErrorManager {
         return handled;
     }
 
-    private ForeignKey handleFkDeleteError(SQLException sqlException) {
+    private DbForeignKey handleFkDeleteError(SQLException sqlException) {
         String msg = sqlException.getMessage();
 
         int first = msg.indexOf("(");
@@ -96,7 +96,7 @@ public class ErrorManager {
         return null;
     }
 
-    private ForeignKey handleFkAddUpdateError(SQLException sqlException) {
+    private DbForeignKey handleFkAddUpdateError(SQLException sqlException) {
         String msg = sqlException.getMessage();
 
         int first = msg.indexOf("(");
@@ -132,11 +132,11 @@ public class ErrorManager {
     //
     // Message boxes
     //
-    private void showFkAddUpdateError(DbObject object, ForeignKey foreignKey) {
+    private void showFkAddUpdateError(DbObject object, DbForeignKey dbForeignKey) {
 
         String id = "";
         try {
-            String variableName = Character.toUpperCase(foreignKey.getFromColumn().charAt(0)) + foreignKey.getFromColumn().substring(1);
+            String variableName = Character.toUpperCase(dbForeignKey.getFromColumn().charAt(0)) + dbForeignKey.getFromColumn().substring(1);
             String getter = "get" + variableName;
 
             Method get = object.getClass().getDeclaredMethod(getter);
@@ -149,7 +149,7 @@ public class ErrorManager {
                 "Could not delete/insert %s \"%s\" because the link %s (= %s) does not exist..",
                 object.getClass().getSimpleName(),
                 object.getName(),
-                foreignKey.getFromColumn(),
+                dbForeignKey.getFromColumn(),
                 id);
 
         JOptionPane.showMessageDialog(
@@ -160,12 +160,12 @@ public class ErrorManager {
         );
     }
 
-    private void showFkDeleteError(DbObject object, ForeignKey foreignKey) {
+    private void showFkDeleteError(DbObject object, DbForeignKey dbForeignKey) {
         String message = String.format(
                 "Could not delete %s \"%s\" because there are still %s connected to it..",
                 object.getClass().getSimpleName(),
                 object.getName(),
-                foreignKey.getFromTable());
+                dbForeignKey.getFromTable());
 
         Object[] options = {"Show affected", "Ok", "Cancel"};
         int res = JOptionPane.showOptionDialog(
@@ -180,14 +180,14 @@ public class ErrorManager {
         );
 
         if (res == JOptionPane.YES_OPTION) {
-            List<DbObject> references = TableManager.dbTm().getForeignKeyReferences(object, foreignKey);
+            List<DbObject> references = TableManager.dbTm().getForeignKeyReferences(object, dbForeignKey);
 
             StringBuilder m = new StringBuilder();
             for (DbObject obj : references) {
                 m.append(" - ").append(obj.getName()).append("\r\n");
             }
 
-            JLabel lbl = new JLabel("The following " + foreignKey.getFromTable() + " are linked to this " + object.getClass().getSimpleName() + ":");
+            JLabel lbl = new JLabel("The following " + dbForeignKey.getFromTable() + " are linked to this " + object.getClass().getSimpleName() + ":");
             JTextArea textArea = new JTextArea(m.toString(), 10, 20);
             textArea.setEnabled(false);
             JScrollPane scrollPane = new JScrollPane(textArea);
@@ -199,7 +199,7 @@ public class ErrorManager {
             JOptionPane.showMessageDialog(
                     null,
                     panel,
-                    "Affected " + foreignKey.getFromTable(),
+                    "Affected " + dbForeignKey.getFromTable(),
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }

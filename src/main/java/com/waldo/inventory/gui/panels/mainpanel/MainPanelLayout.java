@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -57,8 +56,6 @@ abstract class MainPanelLayout extends JPanel implements
 
     Item selectedItem;
     DbObject selectedDivision; // Category, Product, Type or Set
-
-    private Comparator sortOrder = null;
 
     private final Category invisibleRoot = new Category("");
     private final Item itemRoot = new Item(TREE_ITEMS);
@@ -132,6 +129,7 @@ abstract class MainPanelLayout extends JPanel implements
         }
 
         tableModel.setItemList(itemList);
+        itemTable.resizeColumns();
     }
 
     private List<Item> filterItems(List<Item> itemList, boolean showSets, boolean showSetItems) {

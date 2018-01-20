@@ -215,6 +215,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     public void tableInitialize(Order order) {
         if (order != null && !order.getName().equals("All")) {
             tableModel.setItemList(order.getOrderItems());
+            orderItemTable.resizeColumns();
         }
     }
 
