@@ -10,9 +10,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.actions.DoItAction;
-import com.waldo.inventory.gui.components.actions.RenameAction;
-import com.waldo.inventory.gui.components.actions.ReplaceAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.IWizardSetItemsTableModel;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout;
@@ -22,6 +20,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -41,8 +40,8 @@ class WizardParsePanel extends JPanel implements
 
     // Item actions
     private IdBToolBar toolBar;
-    private ReplaceAction replaceAction;
-    private DoItAction importSeriesAction;
+    private IActions.ReplaceAction replaceAction;
+    private IActions.DoItAction importSeriesAction;
 
     private ILabel numberOfItemsLbl;
     private ILabel numberOfLocationsLbl;
@@ -246,21 +245,21 @@ class WizardParsePanel extends JPanel implements
         numberOfItemsLbl = new ILabel();
         numberOfLocationsLbl = new ILabel();
 
-        replaceAction = new ReplaceAction() {
+        replaceAction = new IActions.ReplaceAction() {
             @Override
-            public void onReplace() {
+            public void actionPerformed(ActionEvent e) {
                 replace(selectedItem);
             }
         };
-        RenameAction renameAction = new RenameAction() {
+        IActions.RenameAction renameAction = new IActions.RenameAction() {
             @Override
-            public void onRename() {
+            public void actionPerformed(ActionEvent e) {
                 renameItems();
             }
         };
-        importSeriesAction = new DoItAction() {
+        importSeriesAction = new IActions.DoItAction() {
             @Override
-            public void onDoIt() {
+            public void actionPerformed(ActionEvent e) {
                 saveAllSetItems();
             }
         };

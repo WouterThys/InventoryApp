@@ -34,9 +34,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
         deleteOrderItemAction.setName("Delete order item");
 
-        EditReferenceAction editReferenceAction = new EditReferenceAction() {
+        IActions.EditReferenceAction editReferenceAction = new IActions.EditReferenceAction() {
             @Override
-            public void onEditReference() {
+            public void actionPerformed(ActionEvent e) {
                 OrderItemPopup.this.onEditReference(orderItem);
             }
         };
@@ -50,31 +50,31 @@ public abstract class OrderItemPopup extends JPopupMenu {
         };
         editAction.setName("Edit order item");
 
-        OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new OpenItemDataSheetLocalAction() {
+        IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
             @Override
-            public void onOpenLocalDataSheet() {
-                OrderItemPopup.this.onOpenLocalDataSheet(orderItem.getItem());
+            public void actionPerformed(ActionEvent e) {
+                onOpenLocalDataSheet(orderItem.getItem());
             }
         };
 
-        OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new OpenItemDataSheetOnlineAction() {
+        IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
             @Override
-            public void onOpenOnlineDataSheet() {
-                OrderItemPopup.this.onOpenOnlineDataSheet(orderItem.getItem());
+            public void actionPerformed(ActionEvent e) {
+                onOpenOnlineDataSheet(orderItem.getItem());
             }
         };
 
-        OrderItemAction orderItemAction = new OrderItemAction() {
+        IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
             @Override
-            public void onOrderItem() {
-                OrderItemPopup.this.onOrderItem(orderItem.getItem());
+            public void actionPerformed(ActionEvent e) {
+                onOrderItem(orderItem.getItem());
             }
         };
 
-        ShowItemHistoryAction showItemHistoryAction = new ShowItemHistoryAction() {
+        IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
             @Override
-            public void onShowHistory() {
-                OrderItemPopup.this.onShowHistory(orderItem.getItem());
+            public void actionPerformed(ActionEvent e) {
+                onShowHistory(orderItem.getItem());
             }
         };
 

@@ -42,31 +42,31 @@ public abstract class ItemPopup extends JPopupMenu {
         };
         deleteAction.setName("Delete item");
 
-        OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new OpenItemDataSheetLocalAction() {
+        IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
             @Override
-            public void onOpenLocalDataSheet() {
-                ItemPopup.this.onOpenLocalDataSheet(item);
+            public void actionPerformed(ActionEvent e) {
+                onOpenLocalDataSheet(item);
             }
         };
 
-        OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new OpenItemDataSheetOnlineAction() {
+        IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
             @Override
-            public void onOpenOnlineDataSheet() {
-                ItemPopup.this.onOpenOnlineDataSheet(item);
+            public void actionPerformed(ActionEvent e) {
+                onOpenOnlineDataSheet(item);
             }
         };
 
-        OrderItemAction orderItemAction = new OrderItemAction() {
+        IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
             @Override
-            public void onOrderItem() {
-                ItemPopup.this.onOrderItem(item);
+            public void actionPerformed(ActionEvent e) {
+                onOrderItem(item);
             }
         };
 
-        ShowItemHistoryAction showItemHistoryAction = new ShowItemHistoryAction() {
+        IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
             @Override
-            public void onShowHistory() {
-                ItemPopup.this.onShowHistory(item);
+            public void actionPerformed(ActionEvent e) {
+                onShowHistory(item);
             }
         };
 
@@ -81,7 +81,7 @@ public abstract class ItemPopup extends JPopupMenu {
         // Sets
         JMenu setMenu = new JMenu("Add to set");
         for (Set set : CacheManager.cache().getSets()) {
-            setMenu.add(new JMenuItem(new AddItemToSetAction(set) {
+            setMenu.add(new JMenuItem(new IActions.AddItemToSetAction(set) {
                 @Override
                 public void onAddToSet(ActionEvent e, Set set) {
                     ItemPopup.this.onAddToSet(set, item);

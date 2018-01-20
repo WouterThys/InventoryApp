@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.inventory.gui.components.actions.WizardAction;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -72,9 +71,9 @@ public abstract class DivisionPopup extends JPopupMenu {
             }
         };
 
-        WizardAction setItemsWizardAction = new WizardAction() {
+        IActions.WizardAction setItemsWizardAction = new IActions.WizardAction() {
             @Override
-            public void onMagic() {
+            public void actionPerformed(ActionEvent e) {
                 onSetWizardAction();
             }
         };

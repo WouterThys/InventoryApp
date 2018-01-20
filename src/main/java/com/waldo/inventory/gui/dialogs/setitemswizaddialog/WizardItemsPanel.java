@@ -9,11 +9,12 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.CheckItOutAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -44,7 +45,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     private JComboBox<ValueMultipliers> minUnitCb;
     private JComboBox<ValueMultipliers> maxUnitCb;
 
-    private CheckItOutAction checkItOutAction;
+    private IActions.CheckItOutAction checkItOutAction;
 
     private ITextField minTf;
     private ITextField maxTf;
@@ -478,9 +479,9 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         minUnitCb.addItemListener(this);
         maxUnitCb.addItemListener(this);
 
-        checkItOutAction = new CheckItOutAction() {
+        checkItOutAction = new IActions.CheckItOutAction() {
             @Override
-            public void onCheckItOut() {
+            public void actionPerformed(ActionEvent e) {
                showSelectedSeries();
             }
         };

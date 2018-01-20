@@ -10,8 +10,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.actions.BrowseFileAction;
-import com.waldo.inventory.gui.components.actions.DoItAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,8 +36,8 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ProjectGridPanel<T> gridPanel;
     private IdBToolBar objectToolBar;
-    private DoItAction runIdeAction;
-    private BrowseFileAction openProjectAction;
+    private IActions.DoItAction runIdeAction;
+    private IActions.BrowseFileAction openProjectAction;
     private ILabel projectObjectNameLbl;
 
     final JPanel eastPanel = new JPanel(new BorderLayout());
@@ -58,7 +57,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ProjectObjectPanel(Application application, ProjectObjectListener objectListener) {
+    ProjectObjectPanel(Application application, ProjectObjectListener objectListener) {
         this.application = application;
         this.objectListener = objectListener;
 
@@ -188,17 +187,17 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         projectObjectNameLbl = new ILabel("", ILabel.CENTER);
         projectObjectNameLbl.setFont(18, Font.BOLD);
 
-        runIdeAction = new DoItAction() {
+        runIdeAction = new IActions.DoItAction() {
             @Override
-            public void onDoIt() {
+            public void actionPerformed(ActionEvent e) {
                 runIde();
             }
         };
         runIdeAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.Execute"));
 
-        openProjectAction = new BrowseFileAction() {
+        openProjectAction = new IActions.BrowseFileAction() {
             @Override
-            public void onBrowseFile(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 browseProjectObject();
             }
         };

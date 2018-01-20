@@ -7,8 +7,6 @@ import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.BrowseFileAction;
-import com.waldo.inventory.gui.components.actions.BrowseWebAction;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
@@ -287,9 +285,9 @@ public class GuiUtils {
         public IBrowseFilePanel(String hint, String defaultPath, IEditedListener listener, String fieldName) {
             super(hint, fieldName, listener);
             this.defaultPath = defaultPath;
-            this.setAction(new BrowseFileAction() {
+            this.setAction(new IActions.BrowseFileAction() {
                 @Override
-                public void onBrowseFile(ActionEvent e) {
+                public void actionPerformed(ActionEvent e) {
                     IBrowseFilePanel.this.actionPerformed(e);
                 }
             });
@@ -343,9 +341,9 @@ public class GuiUtils {
 
         public IBrowseWebPanel(String hint, String fieldName, IEditedListener editedListener) {
             super(hint, fieldName, editedListener);
-            this.setAction(new BrowseWebAction() {
+            this.setAction(new IActions.BrowseWebAction() {
                 @Override
-                public void onBrowseWeb(ActionEvent e) {
+                public void actionPerformed(ActionEvent e) {
                     IBrowseWebPanel.this.actionPerformed(e);
                 }
             });
@@ -407,9 +405,9 @@ public class GuiUtils {
 
         public IBrowseImagePanel(String defaultPath, IEditedListener listener, String fieldName) {
             super("", fieldName, listener);
-            this.setAction(new BrowseFileAction() {
+            this.setAction(new IActions.BrowseFileAction() {
                 @Override
-                public void onBrowseFile(ActionEvent e) {
+                public void actionPerformed(ActionEvent e) {
                     IBrowseImagePanel.this.actionPerformed(e);
                 }
             });

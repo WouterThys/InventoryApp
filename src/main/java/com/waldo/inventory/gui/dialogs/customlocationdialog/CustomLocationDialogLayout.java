@@ -5,8 +5,7 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.SaveAction;
-import com.waldo.inventory.gui.components.actions.SearchAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,11 +29,11 @@ abstract class CustomLocationDialogLayout extends IDialog implements
 
     // Extra
     ITextField nameTf;
-    SaveAction saveNameAction;
+    IActions.SaveAction saveNameAction;
 
     ITextField aliasTf;
-    SearchAction searchAliasAction;
-    SaveAction saveAliasAction;
+    IActions.SearchAction searchAliasAction;
+    IActions.SaveAction saveAliasAction;
 
 
      /*
@@ -162,27 +161,27 @@ abstract class CustomLocationDialogLayout extends IDialog implements
 
         // Extra
         nameTf = new ITextField();
-        saveNameAction = new SaveAction() {
+        saveNameAction = new IActions.SaveAction() {
             @Override
-            public void onSave(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 e.setSource(saveNameAction);
-                CustomLocationDialogLayout.this.actionPerformed(e);
+                actionPerformed(e);
             }
         };
 
         aliasTf = new ITextField();
-        saveAliasAction = new SaveAction() {
+        saveAliasAction = new IActions.SaveAction() {
             @Override
-            public void onSave(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 e.setSource(saveAliasAction);
-                CustomLocationDialogLayout.this.actionPerformed(e);
+                actionPerformed(e);
             }
         };
-        searchAliasAction = new SearchAction() {
+        searchAliasAction = new IActions.SearchAction() {
             @Override
-            public void onSearch(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 e.setSource(searchAliasAction);
-                CustomLocationDialogLayout.this.actionPerformed(e);
+                actionPerformed(e);
             }
         };
     }

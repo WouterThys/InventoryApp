@@ -9,7 +9,7 @@ import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.SearchAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
@@ -320,9 +320,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private void initializeBasicComponents() {
         // Identification
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
-        aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new SearchAction() {
+        aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new IActions.SearchAction() {
             @Override
-            public void onSearch(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasPnl.getText());
                 if (dialog.showDialog() == IDialog.OK) {
                     String selectedAlias = dialog.getSelectedAlias();

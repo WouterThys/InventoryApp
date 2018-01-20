@@ -40,38 +40,38 @@ public abstract class OrderPopup extends JPopupMenu {
         };
         deleteOrderAction.setName("Delete order");
 
-        OrderDetailsAction orderDetailsAction = new OrderDetailsAction() {
+        IActions.OrderDetailsAction orderDetailsAction = new IActions.OrderDetailsAction() {
             @Override
-            public void onOrderDetails() {
-                OrderPopup.this.onOrderDetails(order);
+            public void actionPerformed(ActionEvent e) {
+                onOrderDetails(order);
             }
         };
 
-        MoveToOrderedAction moveToOrderedAction = new MoveToOrderedAction() {
+        IActions.MoveToOrderedAction moveToOrderedAction = new IActions.MoveToOrderedAction() {
             @Override
-            public void onMoveToOrdered() {
-                OrderPopup.this.onMoveToOrdered(order);
+            public void actionPerformed(ActionEvent e) {
+                onMoveToOrdered(order);
             }
         };
 
-        MoveToReceivedAction moveToReceivedAction = new MoveToReceivedAction() {
+        IActions.MoveToReceivedAction moveToReceivedAction = new IActions.MoveToReceivedAction() {
             @Override
-            public void onMoveToReceived() {
-                OrderPopup.this.onMoveToReceived(order);
+            public void actionPerformed(ActionEvent e) {
+                onMoveToReceived(order);
             }
         };
 
-        BackToOrderedAction backToOrderedAction = new BackToOrderedAction() {
+        IActions.BackToOrderedAction backToOrderedAction = new IActions.BackToOrderedAction() {
             @Override
-            public void onBackToOrdered() {
-                OrderPopup.this.onBackToOrdered(order);
+            public void actionPerformed(ActionEvent e) {
+                onBackToOrdered(order);
             }
         };
 
-        BackToPlannedAction backToPlannedAction = new BackToPlannedAction() {
+        IActions.BackToPlannedAction backToPlannedAction = new IActions.BackToPlannedAction() {
             @Override
-            public void onBackToPlanned() {
-                OrderPopup.this.onBackToPlanned(order);
+            public void actionPerformed(ActionEvent e) {
+                onBackToPlanned(order);
             }
         };
 

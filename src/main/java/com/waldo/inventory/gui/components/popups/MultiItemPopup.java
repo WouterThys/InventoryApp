@@ -2,9 +2,7 @@ package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
-import com.waldo.inventory.gui.components.actions.AddItemToSetAction;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.inventory.gui.components.actions.OrderItemAction;
 import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
@@ -33,17 +31,18 @@ public abstract class MultiItemPopup extends JPopupMenu {
         };
         deleteAction.setName("Delete items");
 
-        OrderItemAction orderItemAction = new OrderItemAction("Order items") {
+        IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
             @Override
-            public void onOrderItem() {
+            public void actionPerformed(ActionEvent e) {
                 onOrderItems(itemList);
             }
         };
+        orderItemAction.setName("Order item");
 
         // Sets
         JMenu setMenu = new JMenu("Add to set");
         for (Set set : CacheManager.cache().getSets()) {
-            setMenu.add(new JMenuItem(new AddItemToSetAction(set) {
+            setMenu.add(new JMenuItem(new IActions.AddItemToSetAction(set) {
                 @Override
                 public void onAddToSet(ActionEvent e, Set set) {
                     MultiItemPopup.this.onAddToSet(set, itemList);

@@ -42,15 +42,15 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITextField matchedItemTf;
     private IActions.EditAction editAction;
     private IActions.DeleteAction deleteAction;
-    private ViewAllLinksAction viewAllLinksAction;
+    private IActions.ViewAllLinksAction viewAllLinksAction;
 
     private ITableIcon orderLbl;
     private ITextField orderTf;
-    private OrderItemAction orderItemAction;
+    private IActions.OrderItemAction orderItemAction;
 
     private SpinnerNumberModel spinnerNumberModel;
     ISpinner usedSpinner;
-    private AutoCalculateUsedAction autoCalculateUsedAction;
+    private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
 
      /*
      *                  VARIABLES
@@ -285,26 +285,26 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
                 onDeleteMatchedItem();
             }
         };
-        viewAllLinksAction = new ViewAllLinksAction() {
+        viewAllLinksAction = new IActions.ViewAllLinksAction() {
             @Override
-            public void onViewAllLinks() {
+            public void actionPerformed(ActionEvent e) {
                 onViewAllItemLinks();
             }
         };
         orderTf = new ITextField(false);
         orderLbl = new ITableIcon(orderTf.getBackground());
-        orderItemAction = new OrderItemAction() {
+        orderItemAction = new IActions.OrderItemAction() {
             @Override
-            public void onOrderItem() {
+            public void actionPerformed(ActionEvent e) {
                 onSelectNewOrder();
             }
         };
         spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
         usedSpinner = new ISpinner(spinnerNumberModel);
         usedSpinner.addEditedListener(this, "usedCount");
-        autoCalculateUsedAction = new AutoCalculateUsedAction() {
+        autoCalculateUsedAction = new IActions.AutoCalculateUsedAction() {
             @Override
-            public void onAutoSetUsed() {
+            public void actionPerformed(ActionEvent e) {
                 onMatchedItemAutoSetUsed();
             }
         };

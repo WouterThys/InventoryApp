@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.GuiInterface;
-import com.waldo.inventory.gui.components.actions.TableOptionsAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
 
@@ -21,7 +21,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiInterface {
 
     private Comparator sortOrder;
-    private TableOptionsAction tableOptionsAction;
+    private IActions.TableOptionsAction tableOptionsAction;
     private TableOptionsPopup tableOptionsPopup;
 
     private AbstractAction filterAa;
@@ -74,9 +74,9 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiIn
         setFloatable(false);
         setBorder(new EmptyBorder(5,5,5,5));
 
-        tableOptionsAction = new TableOptionsAction() {
+        tableOptionsAction = new IActions.TableOptionsAction() {
             @Override
-            public void onTableOptions(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 tableOptionsPopup.show(ITableToolBar.this, 0,0);
             }
         };
