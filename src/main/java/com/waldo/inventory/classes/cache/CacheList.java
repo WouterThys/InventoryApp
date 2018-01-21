@@ -10,13 +10,14 @@ import java.util.Collection;
 public class CacheList<T> extends ArrayList<T> {
 
     private boolean isFetched = false;
+
     // Extra info
     private Date initialisationTime = null;
     private long fetchTimeInNanos;
 
     public CacheList() {
         super();
-        isFetched = false;
+        this.isFetched = false;
     }
 
     public void setList(@NotNull Collection<? extends T> collection, long fetchTimeInNanos) {
@@ -31,7 +32,7 @@ public class CacheList<T> extends ArrayList<T> {
 
     @Override
     public void clear() {
-//        if (size() > 0) {
+//        if (size() > 0 && T. instanceof DbObject) {
 //            CacheManager.cache().notifyListeners(DatabaseAccess.OBJECT_CACHE_CLEAR, get(0));
 //        }
         isFetched = false;

@@ -51,6 +51,7 @@ public abstract class DbObject {
 
     public static final int TYPE_LOG = 100;
     public static final int TYPE_DB_HISTORY = 101;
+    public static final int TYPE_STATISTICS = 102;
 
     protected final String TABLE_NAME;
     protected boolean isInserted = false;
@@ -110,6 +111,7 @@ public abstract class DbObject {
         if (dbObject instanceof ProjectOther) return TYPE_PROJECT_OTHER;
         if (dbObject instanceof ParserItemLink) return TYPE_PARSER_ITEM_LINK;
         if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
+        if (dbObject instanceof Statistics) return TYPE_STATISTICS;
 
         return TYPE_UNKNOWN;
     }

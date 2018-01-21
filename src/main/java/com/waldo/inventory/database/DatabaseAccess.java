@@ -1687,7 +1687,7 @@ public class DatabaseAccess {
             return dbEvents;
         }
         Status().setMessage("Fetching events from DB");
-        DbEvent e = null;
+        DbEvent e;
         String sql = scriptResource.readString("dbevents.sqlSelect.all");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -1723,5 +1723,46 @@ public class DatabaseAccess {
         }
 
         return dbEvents;
+    }
+
+    public List<Statistics> updateStatistics() {
+        List<Statistics> statistics = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return statistics;
+        }
+        Status().setMessage("Fetching Statistics from DB");
+        Statistics s = null;
+        String sql = scriptResource.readString(Statistics.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    s = new Statistics(
+                        rs.getTimestamp("creationTime"),
+                            rs.getInt("itemsCount"),
+                            rs.getInt("locationsCount"),
+                            rs.getInt("manufacturersCount"),
+                            rs.getInt("distributorsCount"),
+                            rs.getInt("packagesCount"),
+                            rs.getInt("ordersCount"),
+                            rs.getInt("projectsCount")
+                    );
+                    s.setId(rs.getLong("id"));
+
+                    s.setInserted(true);
+                    statistics.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return statistics;
     }
 }

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITableIcon;
 
@@ -13,21 +13,21 @@ import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
+public class ICacheLogTableModel extends IAbstractTableModel<ObjectLog> {
 
-    private static final String[] COLUMN_NAMES = {"", "Size", "List", "Fetched", "Fetch time(ns)"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, Long.class};
+    private static final String[] COLUMN_NAMES = {"", "Size", "List", "Fetched"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class};
 
     private static final ImageIcon fetchedIcon = imageResource.readImage("Ball.green");
     private static final ImageIcon notFetchedIcon = imageResource.readImage("Ball.red");
 
-    public ICacheLogTableModel(Comparator<? super CacheLog> comparator) {
+    public ICacheLogTableModel(Comparator<? super ObjectLog> comparator) {
         super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        CacheLog log = getItemAt(rowIndex);
+        ObjectLog log = getItemAt(rowIndex);
         if (log != null) {
             switch (columnIndex) {
                 case -1: // Return object itself
@@ -47,11 +47,6 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
                         return DateUtils.formatDetailTime(log.getCacheList().getInitialisationTime());
                     }
                     return null;
-                case 4:
-                    if (log.getCacheList().isFetched()) {
-                        return log.getCacheList().getFetchTimeInNanos();
-                    }
-                    return null;
             }
         }
         return null;
@@ -68,7 +63,7 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof CacheLog) {
+                if (value instanceof ObjectLog) {
                     if (row == 0) {
                         TableColumn tableColumn = table.getColumnModel().getColumn(column);
                         tableColumn.setMaxWidth(32);
@@ -76,7 +71,7 @@ public class ICacheLogTableModel extends IAbstractTableModel<CacheLog> {
                     }
 
                     ILabel lbl;
-                    CacheLog log = (CacheLog) value;
+                    ObjectLog log = (ObjectLog) value;
                     if (log.getCacheList().isFetched()) {
                         lbl = new ITableIcon(component.getBackground(), row, isSelected, fetchedIcon, "");
                     } else {

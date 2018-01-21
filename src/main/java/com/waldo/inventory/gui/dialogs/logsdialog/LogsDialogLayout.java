@@ -4,7 +4,7 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
@@ -58,7 +58,8 @@ abstract class LogsDialogLayout extends IDialog implements
     private ILabel maxMemoryLbl;
     private ILabel totalMemoryLbl;
     private ICacheLogTableModel cacheLogTableModel;
-    private ITable<CacheLog> cacheLogTable;
+    private ITable<ObjectLog> cacheLogTable;
+    private ObjectLogsDetailPanel objectLogsDetailPanel;
     private AbstractAction clearCacheListAa;
 
     /*
@@ -86,7 +87,7 @@ abstract class LogsDialogLayout extends IDialog implements
     }
 
     void updateCacheLogTable() {
-        List<CacheLog> logList = CacheManager.cache().getCacheLogList();
+        List<ObjectLog> logList = CacheManager.cache().getObjectLogList();
         cacheLogTableModel.setItemList(logList);
     }
 
@@ -177,6 +178,11 @@ abstract class LogsDialogLayout extends IDialog implements
         cacheLogTableModel = new ICacheLogTableModel(new ComparatorUtils.CacheLogComparator());
         cacheLogTable = new ITable<>(cacheLogTableModel);
         cacheLogTable.setExactColumnWidth(1, 60); // Size column
+        cacheLogTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                objectLogsDetailPanel.updateComponents(cacheLogTable.getSelectedItem());
+            }
+        });
 
         initTimeLbl = new ILabel(DateUtils.formatDateTime(CacheManager.cache().getInitTime()));
         Runtime r = Runtime.getRuntime();
@@ -188,13 +194,15 @@ abstract class LogsDialogLayout extends IDialog implements
         clearCacheListAa = new AbstractAction("Clear cache", imageResource.readImage("Cache.Clear")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CacheLog log = cacheLogTable.getSelectedItem();
+                ObjectLog log = cacheLogTable.getSelectedItem();
                 if (log != null) {
                     log.getCacheList().clear();
                     cacheLogTableModel.updateTable();
                 }
             }
         };
+
+        objectLogsDetailPanel = new ObjectLogsDetailPanel();
 
     }
 
@@ -217,7 +225,6 @@ abstract class LogsDialogLayout extends IDialog implements
         toolbar.setFloatable(false);
         toolbar.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
         toolbar.add(clearCacheListAa);
-
 
         panel.add(timePnl, BorderLayout.WEST);
         panel.add(memoryPnl, BorderLayout.CENTER);
@@ -270,6 +277,7 @@ abstract class LogsDialogLayout extends IDialog implements
 
         cacheLogPnl.add(createCacheHeaderPanel(), BorderLayout.PAGE_START);
         cacheLogPnl.add(cacheLogPane, BorderLayout.CENTER);
+        cacheLogPnl.add(objectLogsDetailPanel, BorderLayout.EAST);
 
 
         // Bring it all together

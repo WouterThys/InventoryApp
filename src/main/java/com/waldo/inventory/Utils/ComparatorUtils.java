@@ -1,6 +1,6 @@
 package com.waldo.inventory.Utils;
 
-import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.classes.cache.CacheList;
@@ -216,9 +216,9 @@ public class ComparatorUtils {
     //
     // Cache logs
     //
-    public static class CacheLogComparator implements Comparator<CacheLog> {
+    public static class CacheLogComparator implements Comparator<ObjectLog> {
         @Override
-        public int compare(CacheLog o1, CacheLog o2) {
+        public int compare(ObjectLog o1, ObjectLog o2) {
             CacheList cacheList1 = o1.getCacheList();
             CacheList cacheList2 = o2.getCacheList();
 

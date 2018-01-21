@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.classes.CacheLog;
+import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -21,7 +21,7 @@ import static com.waldo.inventory.database.DatabaseAccess.db;
 public class CacheManager {
 
     private static final LogManager LOG = LogManager.LOG(CacheManager.class);
-    private final List<CacheLog> cacheLogList;
+    private final List<ObjectLog> objectLogList;
     private final Date initTime;
 
     private static final CacheManager INSTANCE = new CacheManager();
@@ -31,33 +31,33 @@ public class CacheManager {
     }
 
     private CacheManager() {
-        cacheLogList = new ArrayList<>();
-        cacheLogList.add(new CacheLog("Items", items));
-        cacheLogList.add(new CacheLog("Categories", categories));
-        cacheLogList.add(new CacheLog("Products", products));
-        cacheLogList.add(new CacheLog("Types", types));
-        cacheLogList.add(new CacheLog("Manufacturers", manufacturers));
-        cacheLogList.add(new CacheLog("Locations", locations));
-        cacheLogList.add(new CacheLog("Location types", locationTypes));
-        cacheLogList.add(new CacheLog("Orders", orders));
-        cacheLogList.add(new CacheLog("Order items", orderItems));
-        cacheLogList.add(new CacheLog("Distributors", distributors));
-        cacheLogList.add(new CacheLog("Distributor part links", distributorPartLinks));
-        cacheLogList.add(new CacheLog("Packages", packages));
-        cacheLogList.add(new CacheLog("Package types", packageTypes));
-        cacheLogList.add(new CacheLog("Projects", projects));
-        cacheLogList.add(new CacheLog("Project IDEs", projectIDES));
-        cacheLogList.add(new CacheLog("Order file formats", orderFileFormats));
-        cacheLogList.add(new CacheLog("PCB items", pcbItems));
-        cacheLogList.add(new CacheLog("PCB item links", pcbItemItemLinks));
-        cacheLogList.add(new CacheLog("PCB item project links", pcbItemProjectLinks));
-        cacheLogList.add(new CacheLog("Database history", dbHistoryList));
-        cacheLogList.add(new CacheLog("Project codes", projectCodes));
-        cacheLogList.add(new CacheLog("Project PCBs", projectPcbs));
-        cacheLogList.add(new CacheLog("Project others", projectOthers));
-        cacheLogList.add(new CacheLog("Project item links", pcbItemProjectLinks));
-        cacheLogList.add(new CacheLog("Sets", sets));
-        cacheLogList.add(new CacheLog("Set item links", setItemLinks));
+        objectLogList = new ArrayList<>();
+        objectLogList.add(new ObjectLog("Items", items, "itemsCount"));
+        objectLogList.add(new ObjectLog("Categories", categories));
+        objectLogList.add(new ObjectLog("Products", products));
+        objectLogList.add(new ObjectLog("Types", types));
+        objectLogList.add(new ObjectLog("Manufacturers", manufacturers, "manufacturersCount"));
+        objectLogList.add(new ObjectLog("Locations", locations, "locationsCount"));
+        objectLogList.add(new ObjectLog("Location types", locationTypes));
+        objectLogList.add(new ObjectLog("Orders", orders, "ordersCount"));
+        objectLogList.add(new ObjectLog("Order items", orderItems));
+        objectLogList.add(new ObjectLog("Distributors", distributors, "distributorsCount"));
+        objectLogList.add(new ObjectLog("Distributor part links", distributorPartLinks));
+        objectLogList.add(new ObjectLog("Packages", packages, "packagesCount"));
+        objectLogList.add(new ObjectLog("Package types", packageTypes));
+        objectLogList.add(new ObjectLog("Projects", projects, "projectsCount"));
+        objectLogList.add(new ObjectLog("Project IDEs", projectIDES));
+        objectLogList.add(new ObjectLog("Order file formats", orderFileFormats));
+        objectLogList.add(new ObjectLog("PCB items", pcbItems));
+        objectLogList.add(new ObjectLog("PCB item links", pcbItemItemLinks));
+        objectLogList.add(new ObjectLog("PCB item project links", pcbItemProjectLinks));
+        objectLogList.add(new ObjectLog("Database history", dbHistoryList));
+        objectLogList.add(new ObjectLog("Project codes", projectCodes));
+        objectLogList.add(new ObjectLog("Project PCBs", projectPcbs));
+        objectLogList.add(new ObjectLog("Project others", projectOthers));
+        objectLogList.add(new ObjectLog("Project item links", pcbItemProjectLinks));
+        objectLogList.add(new ObjectLog("Sets", sets));
+        objectLogList.add(new ObjectLog("Set item links", setItemLinks));
         initTime = DateUtils.now();
     }
 
@@ -90,6 +90,7 @@ public class CacheManager {
     private final CacheList<Set> sets = new CacheList<>();
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
     private final CacheList<DbEvent> dbEvents = new CacheList<>();
+    private final CacheList<Statistics> statistics = new CacheList<>();
 
     // Other
     private List<String> aliasList = null;
@@ -156,8 +157,8 @@ public class CacheManager {
         }
     }
 
-    public List<CacheLog> getCacheLogList() {
-        return cacheLogList;
+    public List<ObjectLog> getObjectLogList() {
+        return objectLogList;
     }
 
     public Date getInitTime() {
@@ -453,5 +454,13 @@ public class CacheManager {
             dbEvents.setList(db().updateDbEvents(), (System.nanoTime() - start));
         }
         return dbEvents;
+    }
+
+    public synchronized CacheList<Statistics> getStatistics() {
+        if (!statistics.isFetched()) {
+            long start = System.nanoTime();
+            statistics.setList(db().updateStatistics(), (System.nanoTime() - start));
+        }
+        return statistics;
     }
 }

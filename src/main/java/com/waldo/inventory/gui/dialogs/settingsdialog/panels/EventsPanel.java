@@ -14,6 +14,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -28,9 +30,6 @@ public class EventsPanel extends JPanel implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private IdBToolBar toolBar;
-    private ILabel currentEventLbl;
-    private IToggleButton enableBtn;
-
     private IEventTableModel tableModel;
     private ITable<DbEvent> eventTable;
 
@@ -69,7 +68,6 @@ public class EventsPanel extends JPanel implements
 
         toolBar.setDeleteActionEnabled(enabled);
         toolBar.setEditActionEnabled(enabled);
-        enableBtn.setEnabled(enabled);
     }
 
     private void setEventDetails(DbEvent event) {
@@ -82,7 +80,6 @@ public class EventsPanel extends JPanel implements
             createdTf.setText(DateUtils.formatDateTime(event.getCreated()));
             alteredTf.setText(DateUtils.formatDateTime(event.getAltered()));
             lastExecutedTf.setText(DateUtils.formatDateTime(event.getLastExecuted()));
-            enableBtn.setSelected(event.isEnabled());
         } else {
             nameTf.clearText();
             definerTf.clearText();
@@ -92,7 +89,6 @@ public class EventsPanel extends JPanel implements
             createdTf.clearText();
             alteredTf.clearText();
             lastExecutedTf.clearText();
-            enableBtn.setSelected(false);
         }
     }
 
@@ -141,37 +137,30 @@ public class EventsPanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        // Lbl
-        currentEventLbl = new ILabel();
-        currentEventLbl.setAlignmentX(CENTER_ALIGNMENT);
-        currentEventLbl.setForeground(Color.gray);
-        Font f = currentEventLbl.getFont();
-        Font newFont = new Font(f.getName(), Font.BOLD, f.getSize() + 3);
-        currentEventLbl.setFont(newFont);
-
         // Tool bar
         toolBar = new IdBToolBar(this);
-
-        // Enable
-        enableBtn = new IToggleButton("On", "Off");
-        enableBtn.addActionListener(e -> {
-            if (selectedEvent != null && !parent.isUpdating()) {
-                parent.beginWait();
-                try {
-                    String sql = DbEvent.sqlEnable(selectedEvent, enableBtn.isSelected());
-                    DatabaseAccess.db().execute(sql);
-                    selectedEvent.setEnabled(enableBtn.isSelected());
-                } finally {
-                    parent.endWait();
-                }
-            }
-        });
 
         // Table
         tableModel = new IEventTableModel();
         eventTable = new ITable<>(tableModel);
         eventTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         eventTable.getSelectionModel().addListSelectionListener(this);
+        eventTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1 && selectedEvent != null) {
+                    int row = eventTable.rowAtPoint(e.getPoint());
+                    int col = eventTable.columnAtPoint(e.getPoint());
+                    int realCol = eventTable.convertColumnIndexToModel(col);
+                    if (row >= 0 && realCol == 0) {
+                        boolean enabled = selectedEvent.isEnabled();
+                        String sql = DbEvent.sqlEnable(selectedEvent, !enabled);
+                        selectedEvent.setEnabled(!enabled);
+                        DatabaseAccess.db().execute(sql);
+                    }
+                }
+            }
+        });
 
         // Details
         nameTf = new ITextField(false);
@@ -189,14 +178,7 @@ public class EventsPanel extends JPanel implements
         setLayout(new BorderLayout());
         JPanel eventsPanel = new JPanel(new BorderLayout());
 
-        JPanel currentPanel = new JPanel(new BorderLayout());
-        currentPanel.add(new ILabel("Current event: "), BorderLayout.NORTH);
-        currentPanel.add(currentEventLbl, BorderLayout.CENTER);
-        currentPanel.setBorder(BorderFactory.createEmptyBorder(2,15,2,15));
-
         JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.add(enableBtn, BorderLayout.WEST);
-        headerPanel.add(currentPanel, BorderLayout.CENTER);
         headerPanel.add(toolBar, BorderLayout.EAST);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 
@@ -292,11 +274,6 @@ public class EventsPanel extends JPanel implements
             try {
                 selectedEvent = eventTable.getSelectedItem();
                 setEventDetails(selectedEvent);
-                if (selectedEvent != null) {
-                    currentEventLbl.setText(selectedEvent.getName());
-                } else {
-                    currentEventLbl.setText("");
-                }
                 updateEnabledComponents();
             } finally {
                 parent.endWait();

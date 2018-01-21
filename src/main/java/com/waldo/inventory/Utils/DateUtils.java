@@ -13,9 +13,9 @@ public class DateUtils {
     private static final String longDateStr = "--- ---, ----";
     private static final String detailTimeStr = "--:--:--.---";
 
-    private static final SimpleDateFormat shortDateAndTime = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+    public static final SimpleDateFormat shortDateAndTime = new SimpleDateFormat("dd/MM/YYYY HH:mm");
     private static final SimpleDateFormat sqlDateAndTime = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat shortDate = new SimpleDateFormat("dd/MM/YYYY");
+    public static final SimpleDateFormat shortDate = new SimpleDateFormat("dd/MM/YYYY");
     private static final SimpleDateFormat shortTime = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat detailTime = new SimpleDateFormat("HH:mm:ss.SSS");
 
@@ -129,5 +129,23 @@ public class DateUtils {
         calendar.add(Calendar.DATE, days);
         long time = calendar.getTimeInMillis();
         return new Date(time);
+    }
+
+    public static int getDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.MONTH) + 1;
+    }
+
+    public static int getYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
     }
 }
