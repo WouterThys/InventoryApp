@@ -115,12 +115,12 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
         if (projectPcb != null) {
             originalProjectPcb = projectPcb.createCopy();
 
-            application.beginWait();
+            beginWait();
             try {
                 directoryTf.setText(projectPcb.getDirectory());
                 projectIdeCb.setSelectedItem(projectPcb.getProjectIDE());
             } finally {
-                application.endWait();
+                endWait();
             }
         }
     }

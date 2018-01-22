@@ -170,7 +170,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(application, "New Location type", new LocationType());
+        DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(this, "New Location type", new LocationType());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             LocationType type = dialog.getDbObject();
             type.save();
@@ -190,7 +190,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedLocationType != null) {
-            DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(application, "Update " + selectedLocationType.getName(), selectedLocationType);
+            DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(this, "Update " + selectedLocationType.getName(), selectedLocationType);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedLocationType.save();
                 originalLocationType = selectedLocationType.createCopy();
@@ -227,7 +227,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     //
     @Override
     public void valueChanged(ListSelectionEvent ev) {
-        if (!ev.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!ev.getValueIsAdjusting() && !isUpdating()) {
             SwingUtilities.invokeLater(() -> {
                 JList list = (JList) ev.getSource();
                 Object selected = list.getSelectedValue();
@@ -252,7 +252,7 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     @Override
     public void actionPerformed(ActionEvent e) {
         if (selectedLocationType != null) {
-            CustomLocationDialog dialog = new CustomLocationDialog(application, "Custom", selectedLocationType);
+            CustomLocationDialog dialog = new CustomLocationDialog(this, "Custom", selectedLocationType);
             if (dialog.showDialog() == IDialog.OK) {
                 selectedLocationType.updateLocations();
                 setDetails();

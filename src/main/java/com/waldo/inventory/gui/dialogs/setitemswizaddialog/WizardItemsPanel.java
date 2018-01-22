@@ -61,8 +61,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
-    private final IDialog parent;
+    private final Window parent;
     private SetItemValueParser parser;
 
     private Set selectedSet;
@@ -70,8 +69,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    WizardItemsPanel(Application application, IDialog parent, Set selectedSet) {
-        this.application = application;
+    WizardItemsPanel(Window parent, Set selectedSet) {
         this.parent = parent;
         this.selectedSet = selectedSet;
 
@@ -245,7 +243,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
 
     private ActionListener createManufacturerListener() {
         return e -> {
-            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(application, "Manufacturers");
+            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent, "Manufacturers");
             if (manufacturersDialog.showDialog() == IDialog.OK) {
                 updateManufacturerCbValues();
             }
@@ -449,7 +447,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-            if (!parent.isUpdating()) {
+            if (!Application.isUpdating(WizardItemsPanel.this)) {
                 Object source = e.getSource();
 
                 if (source.equals(typeCb)) {
@@ -499,7 +497,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
         replaceValuesCb = new ICheckBox("", false);
 
         // Items
-        packagePnl = new GuiUtils.IPackagePanel(application);
+        packagePnl = new GuiUtils.IPackagePanel(parent);
         manufacturerCb = new IComboBox<>(cache().getManufacturers(), new ComparatorUtils.DbObjectNameComparator<>(), true);
 
         SpinnerModel amountSpModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
@@ -531,7 +529,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
 
     @Override
     public void updateComponents(Object... object) {
-        parent.beginWait();
+        Application.beginWait(this);
         try {
             updateTypeCb();
             updateSeriesTb();
@@ -540,7 +538,7 @@ public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListen
 
             updateValues();
         } finally {
-            parent.endWait();
+            Application.endWait(this);
         }
     }
 

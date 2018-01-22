@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITable;
@@ -29,10 +28,10 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
     private boolean first = true;
 
     // Listener
-    private final Application application;
+    private final Window parent;
 
-    public EditItemOrderPanel(Application application, T newItem) {
-        this.application = application;
+    public EditItemOrderPanel(Window parent, T newItem) {
+        this.parent = parent;
         this.newItem = newItem;
 
         cache().addListener(DistributorPartLink.class, this);
@@ -57,7 +56,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         DistributorPartLink link = new DistributorPartLink(newItem.getId());
-        EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, "Add link", link);
+        EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, "Add link", link);
         if (dialog.showDialog() == IDialog.OK) {
             link.save();
         }
@@ -82,7 +81,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
     public void onToolBarEdit(IdBToolBar source) {
         DistributorPartLink link = linkTable.getSelectedItem();
         if (link != null) {
-            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, "Edit link", link);
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, "Edit link", link);
             if (dialog.showDialog() == IDialog.OK) {
                 link.save();
             }

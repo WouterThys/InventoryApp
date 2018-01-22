@@ -119,9 +119,9 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
         cardLayout = new CardLayout();
         cardsPnl = new JPanel(cardLayout);
 
-        wizardItemsPanel = new WizardItemsPanel(application, this, selectedSet);
-        wizardLocationsPanel = new WizardLocationsPanel(application, this, selectedSet.getLocation());
-        wizardParsePanel = new WizardParsePanel(application, this);
+        wizardItemsPanel = new WizardItemsPanel(this, selectedSet);
+        wizardLocationsPanel = new WizardLocationsPanel(this, selectedSet.getLocation());
+        wizardParsePanel = new WizardParsePanel(this);
     }
 
     @Override

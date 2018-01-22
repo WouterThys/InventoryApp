@@ -55,17 +55,13 @@ public class FilesPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
-
     private FileSettings selectedFileSettings;
     private FileSettings originalFileSettings;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public FilesPanel(Application application) {
-        this.application = application;
-
+    public FilesPanel() {
         initializeComponents();
         initializeLayouts();
 
@@ -147,11 +143,11 @@ public class FilesPanel extends JPanel implements
         new SwingWorker<FileSettings, Object>() {
             @Override
             protected FileSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(FilesPanel.this);
                 try {
                     settings().saveSettings(toSave);
                 } finally {
-                    application.endWait();
+                    Application.endWait(FilesPanel.this);
                 }
                 return toSave;
             }
@@ -171,11 +167,11 @@ public class FilesPanel extends JPanel implements
         new SwingWorker<FileSettings, Object>() {
             @Override
             protected FileSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(FilesPanel.this);
                 try {
                     settings().selectNewSettings(toUse);
                 } finally {
-                    application.endWait();
+                    Application.endWait(FilesPanel.this);
                 }
                 return settings().getFileSettings();
             }
@@ -201,11 +197,11 @@ public class FilesPanel extends JPanel implements
             new SwingWorker<FileSettings, Object>() {
                 @Override
                 protected FileSettings doInBackground() throws Exception {
-                    application.beginWait();
+                    Application.beginWait(FilesPanel.this);
                     try {
                         settings().deleteSetting(toDelete);
                     } finally {
-                        application.endWait();
+                        Application.endWait(FilesPanel.this);
                     }
                     return settings().getFileSettings();
                 }
@@ -342,7 +338,7 @@ public class FilesPanel extends JPanel implements
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        Application.beginWait(FilesPanel.this);
         try {
             fileSettingsCbModel.removeAllElements();
             for (FileSettings settings : settings().getFileSettingsList()) {
@@ -361,7 +357,7 @@ public class FilesPanel extends JPanel implements
             setDefaultPaths();
             updateEnabledComponents();
         } finally {
-            application.endWait();
+            Application.endWait(FilesPanel.this);
         }
     }
 
@@ -370,14 +366,14 @@ public class FilesPanel extends JPanel implements
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(FilesPanel.this)) {
             updateEnabledComponents();
         }
     }
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(FilesPanel.this)) {
             return selectedFileSettings;
         }
         return null;
@@ -388,7 +384,7 @@ public class FilesPanel extends JPanel implements
     //
     @Override
     public void onSettingsChanged(FileSettings newSettings) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(FilesPanel.this)) {
             updateComponents(newSettings);
         }
     }
@@ -456,7 +452,7 @@ public class FilesPanel extends JPanel implements
     //
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(FilesPanel.this)) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object o = e.getItem();
                 if (o instanceof FileSettings) {

@@ -2,16 +2,16 @@ package com.waldo.inventory.gui.dialogs.edititemlocationdialog;
 
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 
 public class EditItemLocation extends EditItemLocationLayout {
 
 
-    public EditItemLocation(Application application, String title, Location location) {
-        super(application, title);
+    public EditItemLocation(Window parent, String title, Location location) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();
@@ -34,7 +34,7 @@ public class EditItemLocation extends EditItemLocationLayout {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED && !application.isUpdating()) {
+        if (e.getStateChange() == ItemEvent.SELECTED && !isUpdating()) {
             SwingUtilities.invokeLater(() -> {
                 LocationType type = (LocationType) locationTypeCb.getSelectedItem();
                 if (type != null && (location == null || location.getLocationTypeId() != type.getId())) {

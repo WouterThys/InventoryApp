@@ -3,11 +3,11 @@ package com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ public class EditReceivedItemsLocationDialog extends EditReceivedItemsLocationDi
 
     private List<ItemLocationUpdate> itemLocationUpdates;
 
-    public EditReceivedItemsLocationDialog(Application application, String title, List<Item> itemsWithoutLocation) {
-        super(application, title);
+    public EditReceivedItemsLocationDialog(Window parent, String title, List<Item> itemsWithoutLocation) {
+        super(parent, title);
 
         this.itemsWithoutLocation = itemsWithoutLocation;
         createItemLocationUpdateList(itemsWithoutLocation);
@@ -153,7 +153,7 @@ public class EditReceivedItemsLocationDialog extends EditReceivedItemsLocationDi
     //
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED && !application.isUpdating()) {
+        if (e.getStateChange() == ItemEvent.SELECTED && !isUpdating()) {
             SwingUtilities.invokeLater(() -> {
                 LocationType type = (LocationType) locationTypeCb.getSelectedItem();
                 if (type != null) {

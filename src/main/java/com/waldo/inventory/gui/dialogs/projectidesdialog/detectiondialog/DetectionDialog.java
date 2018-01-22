@@ -1,18 +1,17 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog;
 
-import com.waldo.inventory.gui.Application;
-
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class DetectionDialog extends DetectionDialogLayout {
 
 
-    public DetectionDialog(Application application, String title,
+    public DetectionDialog(Window parent, String title,
                            String extension,
                            boolean openAsFolder,
                            boolean matchExtension,
                            boolean useParentFolder) {
-        super(application, title, extension, openAsFolder, matchExtension, useParentFolder);
+        super(parent, title, extension, openAsFolder, matchExtension, useParentFolder);
 
         initializeComponents();
         initializeLayouts();

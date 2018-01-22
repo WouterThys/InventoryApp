@@ -49,16 +49,14 @@ class WizardParsePanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
-    private final IDialog parent;
+    private final Window parent;
     private Item selectedItem;
     private WizardSettings wizardSettings;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    WizardParsePanel(Application application, IDialog parent) {
-        this.application = application;
+    WizardParsePanel(IDialog parent) {
         this.parent = parent;
 
         parent.addCacheListener(Item.class, this);
@@ -72,7 +70,7 @@ class WizardParsePanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void replace(Item selectedItem) {
         if (selectedItem != null) {
-            AdvancedSearchDialog dialog = new AdvancedSearchDialog(application, "Search", AdvancedSearchDialogLayout.SearchType.SearchWord);
+            AdvancedSearchDialog dialog = new AdvancedSearchDialog(parent, "Search", AdvancedSearchDialogLayout.SearchType.SearchWord);
             if (dialog.showDialog() == IDialog.OK) {
                 Item newItem = dialog.getSelectedItem();
 
@@ -108,13 +106,13 @@ class WizardParsePanel extends JPanel implements
 
     private void saveAllSetItems() {
         if (wizardSettings != null) {
-            parent.beginWait();
+            Application.beginWait(this);
             try {
                 for (Item item : tableModel.getItemList()) {
                     item.save();
                 }
             } finally {
-                parent.endWait();
+                Application.endWait(this);
             }
         }
     }
@@ -188,7 +186,7 @@ class WizardParsePanel extends JPanel implements
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (wizardSettings != null) {
-            EditItemDialog dialog = new EditItemDialog<>(application, "Add set item", new Item());
+            EditItemDialog dialog = new EditItemDialog<>(parent, "Add set item", new Item());
             dialog.setValuesForSet(wizardSettings.getSelectedSet());
             dialog.setAllowSave(false);
             if (dialog.showDialog() == IDialog.OK) {
@@ -212,7 +210,7 @@ class WizardParsePanel extends JPanel implements
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedItem != null) {
-            EditItemDialog dialog = new EditItemDialog<>(application, "Edit set item", selectedItem);
+            EditItemDialog dialog = new EditItemDialog<>(parent, "Edit set item", selectedItem);
             dialog.setAllowSave(false);
             dialog.showDialog();
             tableModel.updateTable();
@@ -233,7 +231,7 @@ class WizardParsePanel extends JPanel implements
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     if (selectedItem != null) {
-                        EditItemDialog dialog = new EditItemDialog<>(application, "Edit set item", selectedItem);
+                        EditItemDialog dialog = new EditItemDialog<>(parent, "Edit set item", selectedItem);
                         dialog.setAllowSave(false);
                         dialog.showDialog();
                         tableModel.updateTable();

@@ -15,14 +15,16 @@ import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout implements CacheChangedListener<Order> {
 
+
+    private final Application application;
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
     private boolean orderList = false;
     private boolean createOnConfirm = true;
 
-    public OrderItemDialog(Application application, String title, Item itemToOrder, boolean createOnConfirm) {
-        super(application, title);
-
+    public OrderItemDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm) {
+        super(parent, title);
+        this.application = parent;
         this.itemToOrder = itemToOrder;
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
@@ -34,9 +36,9 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         updateComponents();
     }
 
-    public OrderItemDialog(Application application, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
-        super(application, title);
-
+    public OrderItemDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
+        super(parent, title);
+        this.application = parent;
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;

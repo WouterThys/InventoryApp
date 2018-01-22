@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.distributorsdialog.DistributorsDialog;
 
 import javax.swing.*;
@@ -12,8 +11,8 @@ import java.awt.event.ActionEvent;
 public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialogLayout {
 
 
-    public EditDistributorPartLinkDialog(Application application, String title, DistributorPartLink distributorPartLink) {
-        super(application, title);
+    public EditDistributorPartLinkDialog(Window parent, String title, DistributorPartLink distributorPartLink) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();
@@ -81,7 +80,7 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        DistributorsDialog distributorsDialog = new DistributorsDialog(application, "Distributors");
+        DistributorsDialog distributorsDialog = new DistributorsDialog(EditDistributorPartLinkDialog.this, "Distributors");
         distributorsDialog.showDialog();
 
         updateDistributorCb(distributorPartLink);

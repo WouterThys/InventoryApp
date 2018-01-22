@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.editorderfileformatdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITextField;
@@ -25,8 +24,8 @@ abstract class EditOrderFileFormatDialogLayout extends IDialog implements IEdite
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditOrderFileFormatDialogLayout(Application application, String title) {
-        super(application, title);
+    EditOrderFileFormatDialogLayout(Window parent, String title) {
+        super(parent, title);
         showTitlePanel(false);
     }
 

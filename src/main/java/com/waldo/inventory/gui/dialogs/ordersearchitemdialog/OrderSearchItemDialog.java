@@ -70,7 +70,7 @@ public class OrderSearchItemDialog extends OrderSearchItemDialogLayout {
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!e.getValueIsAdjusting() && !isUpdating()) {
             int row = resultTable.getSelectedRow();
             if (row >= 0) {
                 //itemToOrder = resultTableModel.getItem(row);

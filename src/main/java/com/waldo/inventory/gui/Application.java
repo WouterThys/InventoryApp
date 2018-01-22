@@ -51,8 +51,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     private OrderPanel orderPanel;
     private ProjectsPanel projectPanel;
 
-    private boolean updating = false;
-
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
         // Status
@@ -234,7 +232,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
-        beginWait();
+        Application.beginWait(Application.this);
         try {
             // Switch tab
             setSelectedTab(TAB_ORDERS);
@@ -244,7 +242,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 item.save();
             }
         } finally {
-            endWait();
+            endWait(this);
         }
         // Add
         Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
@@ -254,7 +252,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     }
 
     public void addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
-        beginWait();
+        beginWait(this);
         try {
             // Switch tab
             setSelectedTab(TAB_ORDERS);
@@ -264,7 +262,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 orderItem.getItem().save();
             }
         } finally {
-            endWait();
+            endWait(this);
         }
         // Add
         Map<String, Item> failedItems = orderPanel.addOrderItemsToOrder(itemsToOrder, order);
@@ -273,34 +271,20 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
     }
 
-    public boolean isUpdating() {
-        return updating;
+    public static boolean isUpdating(Component component) {
+        return component.getCursor().getType() == Cursor.WAIT_CURSOR;
     }
 
-    public void beginWait() {
-        beginWait(this);
-    }
-
-    public void beginWait(Component component) {
-        updating = true;
+    public static void beginWait(Component component) {
         component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
-    public void endWait() {
-        endWait(this);
-    }
-
-    public void endWait(Component component) {
+    public static void endWait(Component component) {
         component.setCursor(Cursor.getDefaultCursor());
-        updating = false;
     }
 
     private void setSelectedTab(int tab) {
         tabbedPane.setSelectedIndex(tab);
-    }
-
-    int getSelectedTab() {
-        return tabbedPane.getSelectedIndex();
     }
 
 

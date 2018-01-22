@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.edititemdialog;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
@@ -56,8 +55,8 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
     T selectedItem;
     T originalItem;
 
-    EditItemDialogLayout(Application application, String title) {
-        super(application, title);
+    EditItemDialogLayout(Window parent, String title) {
+        super(parent, title);
     }
 
     /*
@@ -88,15 +87,15 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
         renderer.setHorizontalTextAlignment(SwingConstants.TRAILING);
 
         // Panels
-        componentPanel = new ComponentPanel<>(application, selectedItem,this);
+        componentPanel = new ComponentPanel<>(this, selectedItem,this);
 //        componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.Y_AXIS));
         componentPanel.initializeComponents();
 
-        editItemStockPanel = new EditItemStockPanel<>(application, selectedItem,this);
+        editItemStockPanel = new EditItemStockPanel<>(this, selectedItem,this);
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel<>(application, selectedItem);
+        editItemOrderPanel = new EditItemOrderPanel<>(this, selectedItem);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 
@@ -131,7 +130,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        beginWait();
         try {
             if (!selectedItem.getIconPath().isEmpty()) {
                 try {
@@ -151,7 +150,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
 
             ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 

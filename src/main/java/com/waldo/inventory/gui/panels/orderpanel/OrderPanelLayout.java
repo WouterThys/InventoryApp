@@ -138,9 +138,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         }
     }
 
-    public void sortTree(DefaultMutableTreeNode rootNode) {
-        treeModel.reload(sort(rootNode));
-    }
 
     public DefaultMutableTreeNode sort(DefaultMutableTreeNode node) {
         //sort alphabetically
@@ -409,7 +406,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tbDistributorCb.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 if (selectedOrder != null) {
-                    application.beginWait();
+                    application.beginWait(OrderPanelLayout.this);
                     try {
                         Distributor d = (Distributor) tbDistributorCb.getSelectedItem();
                         if (d != null && selectedOrder.getDistributorId() != d.getId()) {
@@ -418,7 +415,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                             SwingUtilities.invokeLater(() -> selectedOrder.save());
                         }
                     } finally {
-                        application.endWait();
+                        application.endWait(OrderPanelLayout.this);
                     }
                 }
             }
@@ -477,10 +474,10 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     @Override
     public void updateComponents(Object... object) { // Has last selected order
-        if (application.isUpdating()) {
+        if (application.isUpdating(OrderPanelLayout.this)) {
             return;
         }
-        application.beginWait();
+        application.beginWait(OrderPanelLayout.this);
         try {
             // Update table if needed
             if (object.length != 0 && object[0] != null) {
@@ -503,7 +500,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             updateVisibleComponents();
             updateEnabledComponents();
         } finally {
-            application.endWait();
+            application.endWait(OrderPanelLayout.this);
         }
     }
 }

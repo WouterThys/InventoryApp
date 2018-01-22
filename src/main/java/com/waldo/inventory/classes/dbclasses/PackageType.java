@@ -105,6 +105,14 @@ public class PackageType extends DbObject {
         }
     }
 
+    public String getPrettyString() {
+        String result = toString();
+        if (packageId > DbObject.UNKNOWN_ID) {
+            result += " - " + getPackage().toString();
+        }
+        return result;
+    }
+
     public long getPackageId() {
         return packageId;
     }

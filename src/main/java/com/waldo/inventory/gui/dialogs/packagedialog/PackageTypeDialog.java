@@ -4,7 +4,6 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -23,8 +22,8 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     private boolean canClose = true;
 
-    public PackageTypeDialog(Application application, String title) {
-        super(application, title);
+    public PackageTypeDialog(Window parent, String title) {
+        super(parent, title);
         initializeComponents();
         initializeLayouts();
 
@@ -199,7 +198,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     //
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        beginWait();
         try {
 
             // Get all packages
@@ -225,13 +224,13 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
             updateEnabledComponents();
 
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 
 
     private void listTbAdd() {
-        DbObjectDialog<Package> dialog = new DbObjectDialog<>(application, "New Package", new Package());
+        DbObjectDialog<Package> dialog = new DbObjectDialog<>(this, "New Package", new Package());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             Package p = dialog.getDbObject();
             p.save();
@@ -251,7 +250,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     private void listTbEdit() {
         if (selectedPackage != null) {
-            DbObjectDialog<Package> dialog = new DbObjectDialog<>(application, "Update " + selectedPackage.getName(), selectedPackage);
+            DbObjectDialog<Package> dialog = new DbObjectDialog<>(this, "Update " + selectedPackage.getName(), selectedPackage);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedPackage.save();
                 originalPackage = selectedPackage.createCopy();
@@ -263,7 +262,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     private void detailTbAdd() {
         if (selectedPackage != null && !selectedPackage.isUnknown()) {
             PackageType type = new PackageType(selectedPackage.getId());
-            EditPackageTypeDialog dialog = new EditPackageTypeDialog(application, "Add type", type);
+            EditPackageTypeDialog dialog = new EditPackageTypeDialog(this, "Add type", type);
             if (dialog.showDialog() == IDialog.OK) {
                 type.save();
             }
@@ -276,7 +275,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
 
     private void detailTbEdit() {
         if (selectedPackageType != null) {
-            EditPackageTypeDialog dialog = new EditPackageTypeDialog(application, "Edit " + selectedPackageType.getName(), selectedPackageType);
+            EditPackageTypeDialog dialog = new EditPackageTypeDialog(this, "Edit " + selectedPackageType.getName(), selectedPackageType);
             if (dialog.showDialog() == IDialog.OK) {
                 selectedPackageType.save();
             }
@@ -370,7 +369,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!e.getValueIsAdjusting() && !isUpdating()) {
             if (e.getSource().equals(packageList)) {
                 Object selected = packageList.getSelectedValue();
 

@@ -1,15 +1,17 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
 
-import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.classes.dbclasses.Category;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.ParserItemLink;
+import com.waldo.inventory.classes.dbclasses.Product;
 
 import java.awt.*;
 
 public class EditParserItemLinkDialog extends EditParserItemLinkDialogLayout {
 
 
-    public EditParserItemLinkDialog(Application application, String title, ParserItemLink link) {
-        super(application, title);
+    public EditParserItemLinkDialog(Window parent, String title, ParserItemLink link) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();

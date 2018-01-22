@@ -5,13 +5,13 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
+import java.awt.*;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -34,8 +34,8 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditParserItemLinkDialogLayout(Application application, String title) {
-        super(application, title);
+    EditParserItemLinkDialogLayout(Window parent, String title) {
+        super(parent, title);
 
     }
 
@@ -51,7 +51,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
         categoryCb = new IComboBox<>(cache().getCategories(), new DbObjectNameComparator<>(), false);
         categoryCb.insertItemAt(null, 0);
         categoryCb.addActionListener(e -> {
-            if (!application.isUpdating()) {
+            if (!isUpdating()) {
                 JComboBox jbc = (JComboBox) e.getSource();
                 Category c = (Category) jbc.getSelectedItem();
                 if (c == null) {
@@ -70,7 +70,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
         productCb.insertItemAt(null, 0);
         productCb.setEnabled(false);
         productCb.addActionListener(e -> {
-            if (!application.isUpdating()) {
+            if (!isUpdating()) {
                 JComboBox jbc = (JComboBox) e.getSource();
                 Product p = (Product) jbc.getSelectedItem();
                 if (p == null) {
@@ -138,7 +138,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
 
             pcbItemNameTf.setText(parserItemLink.getPcbItemName());
 
-            application.beginWait();
+            beginWait();
             try {
                 Category c = parserItemLink.getCategory();
                 if (c != null && !c.isUnknown()) {
@@ -168,7 +168,7 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
                 }
 
             } finally {
-                application.endWait();
+                endWait();
             }
 
             updateEnabledComponents();

@@ -179,12 +179,12 @@ public class PcbItemPanel extends JPanel implements
             setVisible(true);
             projectPcb = (ProjectPcb) object[0];
 
-            application.beginWait();
+            application.beginWait(PcbItemPanel.this);
             try {
                 clearComponentTable();
                 updateComponentTable(projectPcb.getPcbItemMap());
             } finally {
-                application.endWait();
+                application.endWait(PcbItemPanel.this);
             }
 
         } else {

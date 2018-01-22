@@ -1,13 +1,14 @@
 package com.waldo.inventory.gui.dialogs.alllinkeditemsdialog;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.gui.Application;
+
+import java.awt.*;
 
 public class AllLinkedItemsDialog extends AllLinkedItemsDialogLayout {
 
 
-    public AllLinkedItemsDialog(Application application, PcbItem pcbItem) {
-        super(application, pcbItem);
+    public AllLinkedItemsDialog(Window parent, PcbItem pcbItem) {
+        super(parent, pcbItem);
 
         initializeComponents();
         initializeLayouts();

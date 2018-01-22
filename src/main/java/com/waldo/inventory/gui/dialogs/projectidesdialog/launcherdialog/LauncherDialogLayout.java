@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog;
 
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICheckBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -33,8 +32,8 @@ public abstract class LauncherDialogLayout extends IDialog {
       /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    LauncherDialogLayout(Application application, String title, boolean useDefaultLauncher, String launcherPath) {
-        super(application, title);
+    LauncherDialogLayout(Window parent, String title, boolean useDefaultLauncher, String launcherPath) {
+        super(parent, title);
         showTitlePanel(false);
 
         this.useDefaultLauncher = useDefaultLauncher;

@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -42,8 +41,8 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditDistributorPartLinkDialogLayout(Application application, String title) {
-        super(application, title);
+    EditDistributorPartLinkDialogLayout(Window parent, String title) {
+        super(parent, title);
 
     }
 

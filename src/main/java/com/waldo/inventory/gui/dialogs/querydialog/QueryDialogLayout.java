@@ -23,7 +23,7 @@ abstract class QueryDialogLayout extends IDialog {
         getTitleNameLabel().setText("Query");
 
         // Panel
-        queryPanel = new QueryPanel(application);
+        queryPanel = new QueryPanel();
     }
 
     @Override

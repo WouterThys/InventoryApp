@@ -72,7 +72,7 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
 
     void updateComponentTable(HashMap<String, List<PcbItem>> componentMap) {
         for (String sheet : componentMap.keySet()) {
-            PcbItemSheetTab tab = new PcbItemSheetTab(application);
+            PcbItemSheetTab tab = new PcbItemSheetTab(this);
             tab.updateComponents(componentMap.get(sheet));
             sheetTabs.addTab(sheet, tab);
         }
@@ -125,7 +125,7 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
 //        componentTable.setAutoResizeMode(ITable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Details panel
-        detailPanel = new KiCadDetailPanel(application);
+        detailPanel = new KiCadDetailPanel();
     }
 
     @Override
@@ -148,7 +148,7 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        beginWait();
         try {
             PcbItem selectedComponent;
             if (object.length != 0 && object[0] != null) {
@@ -163,7 +163,7 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
             // Details
             detailPanel.updateComponents(selectedComponent);
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 }

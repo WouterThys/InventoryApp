@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.alllinkeditemsdialog;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedItemsTableModel;
@@ -26,8 +25,8 @@ abstract class AllLinkedItemsDialogLayout extends IDialog {
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AllLinkedItemsDialogLayout(Application application, PcbItem pcbItem) {
-        super(application, pcbItem.getPartName());
+    AllLinkedItemsDialogLayout(Window parent, PcbItem pcbItem) {
+        super(parent, pcbItem.getPartName());
 
         this.pcbItem = pcbItem;
 

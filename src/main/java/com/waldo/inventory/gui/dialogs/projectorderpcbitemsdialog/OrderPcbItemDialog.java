@@ -13,9 +13,11 @@ import java.util.ArrayList;
 
 public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements CacheChangedListener<Order> {
 
+    private final Application application;
+
     public OrderPcbItemDialog(Application application, String title, ProjectPcb projectPcb) {
         super(application, title);
-
+        this.application = application;
         selectedPcb = projectPcb;
 
         initializeComponents();

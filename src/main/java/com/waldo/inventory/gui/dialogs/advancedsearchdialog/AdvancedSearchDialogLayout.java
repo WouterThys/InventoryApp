@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
@@ -52,8 +51,8 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AdvancedSearchDialogLayout(Application application, String title, SearchType searchType, Object... args) {
-        super(application, title);
+    AdvancedSearchDialogLayout(Window parent, String title, SearchType searchType, Object... args) {
+        super(parent, title);
         this.searchType = searchType;
         switch (searchType) {
             case SearchWord:

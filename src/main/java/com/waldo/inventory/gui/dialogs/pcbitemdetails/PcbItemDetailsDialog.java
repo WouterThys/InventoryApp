@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.alllinkeditemsdialog.AllLinkedItemsDialog;
@@ -16,8 +15,8 @@ import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearc
 public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements CacheChangedListener<PcbItemItemLink> {
 
 
-    public PcbItemDetailsDialog(Application application, String title, PcbItemProjectLink itemProjectLink) {
-        super(application, title, itemProjectLink);
+    public PcbItemDetailsDialog(Window parent, String title, PcbItemProjectLink itemProjectLink) {
+        super(parent, title, itemProjectLink);
 
         addCacheListener(PcbItemItemLink.class, this);
 
@@ -29,7 +28,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     @Override
     void onSelectNewItem() {
         AdvancedSearchDialog dialog = new AdvancedSearchDialog(
-                application,
+                this,
                 "Search item",
                 SearchType.PcbItem,
                 pcbItemProjectLink);
@@ -82,7 +81,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     @Override
     void onViewAllItemLinks() {
         if (pcbItemProjectLink != null) {
-            AllLinkedItemsDialog dialog = new AllLinkedItemsDialog(application, pcbItemProjectLink.getPcbItem());
+            AllLinkedItemsDialog dialog = new AllLinkedItemsDialog(this, pcbItemProjectLink.getPcbItem());
             dialog.showDialog();
         }
     }

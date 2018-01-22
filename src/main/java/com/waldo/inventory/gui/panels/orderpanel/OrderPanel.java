@@ -501,11 +501,11 @@ public class OrderPanel extends OrderPanelLayout {
             if (validateOrderlines(order)) {
                 // Do order
                 order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-                application.beginWait();
+                application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                 } finally {
-                    application.endWait();
+                    application.endWait(OrderPanel.this);
                 }
                 order.save();
 
@@ -535,12 +535,12 @@ public class OrderPanel extends OrderPanelLayout {
         if (order != null && order.canBeSaved() && !order.isReceived()) {
             // Do receive
             order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-            application.beginWait();
+            application.beginWait(OrderPanel.this);
             try {
                 order.updateItemStates();
                 order.updateItemAmounts(true);
             } finally {
-                application.endWait();
+                application.endWait(OrderPanel.this);
             }
             order.save();
         }
@@ -558,12 +558,12 @@ public class OrderPanel extends OrderPanelLayout {
             );
             if (res == JOptionPane.YES_OPTION) {
                 order.setDateReceived((Date) null);
-                application.beginWait();
+                application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                     order.updateItemAmounts(false);
                 } finally {
-                    application.endWait();
+                    application.endWait(OrderPanel.this);
                 }
                 order.save();
             }
@@ -583,11 +583,11 @@ public class OrderPanel extends OrderPanelLayout {
             if (res == JOptionPane.YES_OPTION) {
                 order.setDateReceived((Date) null);
                 order.setDateOrdered((Date) null);
-                application.beginWait();
+                application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                 } finally {
-                    application.endWait();
+                    application.endWait(OrderPanel.this);
                 }
                 order.save();
             }
@@ -742,7 +742,7 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!application.isUpdating()) {
+        if (!application.isUpdating(OrderPanel.this)) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
 
             if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved()) {
@@ -805,7 +805,7 @@ public class OrderPanel extends OrderPanelLayout {
             });
         } else {
             try {
-                application.beginWait();
+                application.beginWait(OrderPanel.this);
                 tableInitialize(selectedOrder);
                 treeRecreateNodes();
                 final long orderId = treeUpdate();
@@ -818,7 +818,7 @@ public class OrderPanel extends OrderPanelLayout {
                     updateEnabledComponents();
                 });
             } finally {
-                application.endWait();
+                application.endWait(OrderPanel.this);
             }
         }
     }

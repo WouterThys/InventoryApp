@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.awt.*;
@@ -10,8 +9,8 @@ import java.awt.*;
 public class EditPackageTypeDialog extends EditPackageTypeDialogLayout {
 
 
-    public EditPackageTypeDialog(Application application, String title, PackageType packageType) {
-        super(application, title);
+    public EditPackageTypeDialog(Window parent, String title, PackageType packageType) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();

@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.edititemlocationdialog;
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
@@ -30,8 +29,8 @@ abstract class EditItemLocationLayout extends IDialog implements ItemListener {
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditItemLocationLayout(Application application, String title) {
-        super(application, title);
+    EditItemLocationLayout(Window parent, String title) {
+        super(parent, title);
 
         showTitlePanel(false);
     }
@@ -50,7 +49,7 @@ abstract class EditItemLocationLayout extends IDialog implements ItemListener {
     public void initializeComponents() {
         setResizable(true);
         // Panel
-        locationMapPanel = new ILocationMapPanel(application, null, (e, location) -> {
+        locationMapPanel = new ILocationMapPanel(this, null, (e, location) -> {
             this.location = location;
             locationMapPanel.clearHighlights();
             locationMapPanel.setHighlighted(location, ILocationMapPanel.GREEN);
@@ -71,7 +70,7 @@ abstract class EditItemLocationLayout extends IDialog implements ItemListener {
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        beginWait();
         try {
             if (object.length != 0 && object[0] != null) {
                 location = (Location) object[0];
@@ -86,7 +85,7 @@ abstract class EditItemLocationLayout extends IDialog implements ItemListener {
                 locationTypeCb.setSelectedItem(null);
             }
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 }

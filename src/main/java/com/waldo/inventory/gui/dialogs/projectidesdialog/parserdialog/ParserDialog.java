@@ -3,13 +3,13 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog.EditParserItemLinkDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
@@ -18,8 +18,8 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class ParserDialog extends ParserDialogLayout implements CacheChangedListener<ParserItemLink> {
 
 
-    public ParserDialog(Application application, String title, boolean useParser, PcbParser parser) {
-        super(application, title, useParser, parser);
+    public ParserDialog(Window parent, String title, boolean useParser, PcbParser parser) {
+        super(parent, title, useParser, parser);
 
         initializeComponents();
         initializeLayouts();
@@ -70,7 +70,7 @@ public class ParserDialog extends ParserDialogLayout implements CacheChangedList
     public void onToolBarAdd(IdBToolBar source) {
         if (selectedParser != null) {
             ParserItemLink newLink = new ParserItemLink(selectedParser.getName());
-            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(application, "Add link", newLink);
+            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this, "Add link", newLink);
 
             if (dialog.showDialog() == IDialog.OK) {
                 newLink.save();
@@ -91,7 +91,7 @@ public class ParserDialog extends ParserDialogLayout implements CacheChangedList
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedLink != null) {
-            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(application, "Edit link", selectedLink);
+            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this, "Edit link", selectedLink);
 
             if (dialog.showDialog() == IDialog.OK) {
                 selectedLink.save();

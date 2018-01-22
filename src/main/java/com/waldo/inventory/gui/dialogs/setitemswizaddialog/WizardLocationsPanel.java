@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
@@ -50,17 +49,14 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
     private JCheckBox overWriteCb;
 
     private JSpinner numberPerLocationSp;
-
-    private final Application application;
-    private final IDialog parent;
+    private final Window parent;
 
     private LocationType locationType;
     private Location startLocation;
 
-    WizardLocationsPanel(Application application, IDialog parent, Location location) {
+    WizardLocationsPanel(Window parent, Location location) {
         super();
 
-        this.application = application;
         this.parent = parent;
 
         if (location != null) {
@@ -243,7 +239,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
                 updateEnabledComponents();
             }
         });
-        startLocationPnl = new ILocationMapPanel(application, this, true);
+        startLocationPnl = new ILocationMapPanel(parent, this, true);
 
         leftRightCb = new JCheckBox("", true);
         upDownCb = new JCheckBox("", true);
@@ -300,7 +296,7 @@ class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapP
     @Override
     public void updateComponents(Object... object) {
         if (locationType == null || locationType.isUnknown()) {
-            EditItemLocation dialog = new EditItemLocation(application,
+            EditItemLocation dialog = new EditItemLocation(parent,
                     "Select new location",
                     startLocation);
 

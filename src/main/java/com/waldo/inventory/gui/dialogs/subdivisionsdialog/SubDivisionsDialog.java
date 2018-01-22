@@ -4,7 +4,6 @@ package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.gui.Application;
 
 import java.awt.*;
 
@@ -13,16 +12,16 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     private String originalName = "";
 
     // Unknown
-    public SubDivisionsDialog(Application application, String title) {
-        super(application, title, null, SubDivisionType.Unknown);
+    public SubDivisionsDialog(Window parent, String title) {
+        super(parent, title, null, SubDivisionType.Unknown);
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
     // Category
-    public SubDivisionsDialog(Application application, String title, Category category) {
-        super(application, title, category, SubDivisionType.Category);
+    public SubDivisionsDialog(Window parent, String title, Category category) {
+        super(parent, title, category, SubDivisionType.Category);
         this.originalName = category.getName();
         initializeComponents();
         initializeLayouts();
@@ -30,8 +29,8 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     // Product
-    public SubDivisionsDialog(Application application, String title, Product product) {
-        super(application, title, product, SubDivisionType.Product);
+    public SubDivisionsDialog(Window parent, String title, Product product) {
+        super(parent, title, product, SubDivisionType.Product);
         this.originalName = product.getName();
         initializeComponents();
         initializeLayouts();
@@ -39,8 +38,8 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     }
 
     // Type
-    public SubDivisionsDialog(Application application, String title, com.waldo.inventory.classes.dbclasses.Type type) {
-        super(application, title, type, SubDivisionType.Type);
+    public SubDivisionsDialog(Window parent, String title, com.waldo.inventory.classes.dbclasses.Type type) {
+        super(parent, title, type, SubDivisionType.Type);
         this.originalName = type.getName();
         initializeComponents();
         initializeLayouts();

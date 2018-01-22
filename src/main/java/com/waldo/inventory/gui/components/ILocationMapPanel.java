@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
@@ -30,7 +29,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private List<ILocationButton> buttonList = new ArrayList<>();
-    private final Application application;
+    private final Window parent;
     private final LocationClickListener locationClickListener;
     private final boolean showPopup;
 
@@ -38,8 +37,8 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ILocationMapPanel(Application application, List<Location> locations, LocationClickListener locationClickListener, boolean showPopup) {
-        this.application = application;
+    public ILocationMapPanel(Window parent, List<Location> locations, LocationClickListener locationClickListener, boolean showPopup) {
+        this.parent = parent;
         this.locationClickListener = locationClickListener;
         this.showPopup = showPopup;
 
@@ -49,8 +48,8 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
         updateComponents();
     }
 
-    public ILocationMapPanel(Application application, LocationClickListener locationClickListener, boolean showPopup) {
-        this.application = application;
+    public ILocationMapPanel(Window parent, LocationClickListener locationClickListener, boolean showPopup) {
+        this.parent = parent;
         this.locationClickListener = locationClickListener;
         this.showPopup = showPopup;
         createButtonsFromLocations(null, showPopup);
@@ -80,7 +79,7 @@ public class ILocationMapPanel extends JPanel implements GuiInterface {
                         button.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
-                                button.showPopup(e, application);
+                                button.showPopup(e, parent);
                             }
                         });
                     }

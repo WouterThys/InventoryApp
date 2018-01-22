@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.popups.PcbItemPopup;
@@ -30,14 +29,14 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
+    private final Window parent;
     private PcbItemProjectLink pcbItemProjectLink;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public PcbItemSheetTab(Application application) {
-        this.application = application;
+    public PcbItemSheetTab(Window parent) {
+        this.parent = parent;
         initializeComponents();
         initializeLayouts();
     }
@@ -88,14 +87,14 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
                                 PcbItemPopup popup = new PcbItemPopup(pcbItemProjectLink) {
                                     @Override
                                     public void onEditItem(PcbItemItemLink itemLink) {
-                                        EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", itemLink.getItem());
+                                        EditItemDialog<Item> dialog = new EditItemDialog<>(parent, "Item", itemLink.getItem());
                                         dialog.showDialog();
                                     }
 
                                     @Override
                                     public void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink) {
                                         PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(
-                                                application,
+                                                parent,
                                                 pcbItemProjectLink.getPrettyName(),
                                                 pcbItemProjectLink);
                                         dialog.showDialog();
@@ -108,7 +107,7 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
 
                 } else if (e.getClickCount() == 2) {
                     PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(
-                            application,
+                            parent,
                             pcbItemProjectLink.getPrettyName(),
                             pcbItemProjectLink);
                     dialog.showDialog();

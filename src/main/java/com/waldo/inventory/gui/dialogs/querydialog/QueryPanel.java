@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.querydialog;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DatabaseAccess;
-import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -27,7 +26,7 @@ class QueryPanel extends JPanel {
     private Action executeAllAction;
     private Action clearAction;
 
-    QueryPanel(Application app) {
+    QueryPanel() {
         this.setLayout(new BorderLayout());
         initActions();
         initComponents();

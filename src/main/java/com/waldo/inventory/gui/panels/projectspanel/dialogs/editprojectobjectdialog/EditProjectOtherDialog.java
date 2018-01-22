@@ -124,7 +124,7 @@ public class EditProjectOtherDialog extends EditProjectOtherDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!isUpdating()) {
             return projectOther;
         }
         return null;

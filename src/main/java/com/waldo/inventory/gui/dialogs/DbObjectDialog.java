@@ -3,13 +3,13 @@ package com.waldo.inventory.gui.dialogs;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
@@ -30,14 +30,14 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
     }
 
     public int showDialog() {
-        setLocationRelativeTo(application);
+        setLocationRelativeTo(getParent());
         pack();
         setVisible(true);
         return dialogResult;
     }
 
-    private DbObjectDialog(Application application, String title) {
-        super(application, title);
+    private DbObjectDialog(Window parent, String title) {
+        super(parent, title);
 
         setResizable(false);
         showTitlePanel(false);
@@ -46,8 +46,8 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         initLayouts();
     }
 
-    public DbObjectDialog(Application application, String title,  T object) {
-        this(application, title);
+    public DbObjectDialog(Window parent, String title, T object) {
+        this(parent, title);
         dbObject = object;
         determineInitialPath();
         updateComponents();

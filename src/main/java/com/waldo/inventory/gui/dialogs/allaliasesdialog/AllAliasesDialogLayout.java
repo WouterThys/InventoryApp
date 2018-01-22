@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.allaliasesdialog;
 
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.managers.CacheManager;
 
@@ -23,8 +22,8 @@ abstract class AllAliasesDialogLayout extends IDialog implements ListSelectionLi
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AllAliasesDialogLayout(Application application, String title, String currentAlias) {
-        super(application, title);
+    AllAliasesDialogLayout(Window parent, String title, String currentAlias) {
+        super(parent, title);
         this.currentAlias = currentAlias;
 
     }

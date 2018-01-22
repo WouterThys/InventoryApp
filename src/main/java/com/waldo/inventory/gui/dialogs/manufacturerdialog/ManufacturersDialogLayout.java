@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
@@ -46,8 +45,8 @@ abstract class ManufacturersDialogLayout extends IDialog implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ManufacturersDialogLayout(Application application, String title) {
-        super(application, title);
+    ManufacturersDialogLayout(Window parent, String title) {
+        super(parent, title);
     }
 
     /*

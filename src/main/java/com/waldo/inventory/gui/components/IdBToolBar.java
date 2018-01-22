@@ -23,68 +23,88 @@ public class IdBToolBar extends JToolBar {
     private Action editAction;
     private IdbToolBarListener toolBarListener;
 
+    private final boolean hasRefresh;
+    private final boolean hasAdd;
+    private final boolean hasDelete;
+    private final boolean hasEdit;
+
     public IdBToolBar(IdbToolBarListener listener) {
-        super();
-        init(listener);
+        this(listener, JToolBar.HORIZONTAL);
     }
 
     public IdBToolBar(IdbToolBarListener listener, int orientation) {
+        this(listener, orientation, true, true,true, true);
+    }
+
+    public IdBToolBar(IdbToolBarListener listener, boolean hasRefresh, boolean hasAdd, boolean hasDelete, boolean hasEdit) {
+        this(listener, JToolBar.HORIZONTAL, hasRefresh, hasAdd, hasDelete, hasEdit);
+    }
+
+    public IdBToolBar(IdbToolBarListener listener, int orientation, boolean hasRefresh, boolean hasAdd, boolean hasDelete, boolean hasEdit) {
         super(orientation);
+        this.hasRefresh = hasRefresh;
+        this.hasAdd = hasAdd;
+        this.hasDelete = hasDelete;
+        this.hasEdit = hasEdit;
         init(listener);
     }
 
-    public IdBToolBar(IdbToolBarListener listener, String name) {
-        super(name);
-        init(listener);
-    }
-
-    public IdBToolBar(IdbToolBarListener listener, String name, int orientation) {
-        super(name, orientation);
-        init(listener);
-    }
 
     private void init(IdbToolBarListener listener) {
         this.toolBarListener = listener;
 
         // Actions
-        refreshAction = new AbstractAction("Refresh", imageResource.readImage("Toolbar.Db.RefreshIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarRefresh(IdBToolBar.this);
-            }
-        };
-        refreshAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Refresh");
+        if (hasRefresh) {
+            refreshAction = new AbstractAction("Refresh", imageResource.readImage("Toolbar.Db.RefreshIcon")) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toolBarListener.onToolBarRefresh(IdBToolBar.this);
+                }
+            };
+            refreshAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Refresh");
+            add(refreshAction);
+        }
 
-        addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.Db.AddIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarAdd(IdBToolBar.this);
-            }
-        };
-        addAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Add");
+        if (hasAdd) {
+            addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.Db.AddIcon")) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toolBarListener.onToolBarAdd(IdBToolBar.this);
+                }
+            };
+            addAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Add");
 
-        deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.Db.DeleteIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarDelete(IdBToolBar.this);
-            }
-        };
-        deleteAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Delete");
+            if (hasRefresh) addSeparator();
 
-        editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.Db.EditIcon")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toolBarListener.onToolBarEdit(IdBToolBar.this);
-            }
-        };
-        editAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit");
+            add(addAction);
+        }
 
-        add(refreshAction);
-        addSeparator();
-        add(addAction);
-        add(deleteAction);
-        addSeparator();
-        add(editAction);
+        if (hasDelete) {
+            deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.Db.DeleteIcon")) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toolBarListener.onToolBarDelete(IdBToolBar.this);
+                }
+            };
+            deleteAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Delete");
+            add(deleteAction);
+        }
+
+        if (hasEdit) {
+            editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.Db.EditIcon")) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toolBarListener.onToolBarEdit(IdBToolBar.this);
+                }
+            };
+            editAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit");
+
+            if (hasRefresh || hasAdd) {
+                addSeparator();
+            }
+
+            add(editAction);
+        }
 
         setOpaque(false);
         setFloatable(false);
@@ -99,19 +119,27 @@ public class IdBToolBar extends JToolBar {
     }
 
     public void setRefreshActionEnabled(boolean enabled) {
-        refreshAction.setEnabled(enabled);
+        if (hasRefresh) {
+            refreshAction.setEnabled(enabled);
+        }
     }
 
     public void setAddActionEnabled(boolean enabled) {
-        addAction.setEnabled(enabled);
+        if (hasAdd) {
+            addAction.setEnabled(enabled);
+        }
     }
 
     public void setDeleteActionEnabled(boolean enabled) {
-        deleteAction.setEnabled(enabled);
+        if (hasDelete) {
+            deleteAction.setEnabled(enabled);
+        }
     }
 
     public void setEditActionEnabled(boolean enabled) {
-        editAction.setEnabled(enabled);
+        if (hasEdit) {
+            editAction.setEnabled(enabled);
+        }
     }
 
     public void addSeparateAction(Action action) {
@@ -126,9 +154,9 @@ public class IdBToolBar extends JToolBar {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        refreshAction.setEnabled(enabled);
-        addAction.setEnabled(enabled);
-        deleteAction.setEnabled(enabled);
-        editAction.setEnabled(enabled);
+        setRefreshActionEnabled(enabled);
+        setAddActionEnabled(enabled);
+        setDeleteActionEnabled(enabled);
+        setEditActionEnabled(enabled);
     }
 }

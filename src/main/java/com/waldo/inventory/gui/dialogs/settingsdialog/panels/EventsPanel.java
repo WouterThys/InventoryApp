@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbExecuteListener;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IEventTableModel;
@@ -45,15 +46,14 @@ public class EventsPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IDialog parent;
+    private final Window parent;
     private DbEvent selectedEvent;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public EventsPanel(IDialog parent) {
+    public EventsPanel(Window parent) {
         this.parent = parent;
-
         DatabaseAccess.db().addExecuteListener(this);
 
         initializeComponents();
@@ -196,7 +196,7 @@ public class EventsPanel extends JPanel implements
 
     @Override
     public void updateComponents(Object... args) {
-        parent.beginWait();
+        Application.beginWait(EventsPanel.this);
         try {
             tableInitialize();
             if (selectedEvent == null && tableModel.getItemList().size() > 0) {
@@ -206,7 +206,7 @@ public class EventsPanel extends JPanel implements
             }
             updateEnabledComponents();
         } finally {
-            parent.endWait();
+            Application.endWait(EventsPanel.this);
         }
     }
 
@@ -270,13 +270,13 @@ public class EventsPanel extends JPanel implements
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            parent.beginWait();
+            Application.beginWait(EventsPanel.this);
             try {
                 selectedEvent = eventTable.getSelectedItem();
                 setEventDetails(selectedEvent);
                 updateEnabledComponents();
             } finally {
-                parent.endWait();
+                Application.endWait(EventsPanel.this);
             }
         }
     }

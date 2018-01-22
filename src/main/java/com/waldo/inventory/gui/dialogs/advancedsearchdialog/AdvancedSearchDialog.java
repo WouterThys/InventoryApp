@@ -3,10 +3,10 @@ package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
 
     private Search.SearchListener<Item> itemSearchListener;
 
-    public AdvancedSearchDialog(Application application, String title, SearchType searchType, Object... args) {
-        super(application, title, searchType, args);
+    public AdvancedSearchDialog(Window parent, String title, SearchType searchType, Object... args) {
+        super(parent, title, searchType, args);
 
         initializeComponents();
         initializeLayouts();
@@ -43,7 +43,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
             DbObject object = getSelectedItem();
             if (object != null) {
                 Item item = (Item) object;
-                EditItemDialog editItemDialog = new EditItemDialog<>(application, "Edit item", item);
+                EditItemDialog editItemDialog = new EditItemDialog<>(this, "Edit item", item);
                 editItemDialog.showDialog();
                 tableUpdate();
             }

@@ -4,7 +4,6 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 
@@ -22,8 +21,8 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
 
     private boolean canClose = true;
 
-    public DistributorsDialog(Application application, String title) {
-        super(application, title);
+    public DistributorsDialog(Window parent, String title) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();
@@ -142,7 +141,7 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!e.getValueIsAdjusting() && !isUpdating()) {
             JList list = (JList) e.getSource();
             Object selected = list.getSelectedValue();
 
@@ -219,7 +218,7 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "New Distributor", new Distributor());
+        DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(this, "New Distributor", new Distributor());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             Distributor d = dialog.getDbObject();
             d.save();
@@ -239,7 +238,7 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedDistributor != null) {
-            DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(application, "Update " + selectedDistributor.getName(), selectedDistributor);
+            DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(this, "Update " + selectedDistributor.getName(), selectedDistributor);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedDistributor.save();
                 originalDistributor = selectedDistributor.createCopy();

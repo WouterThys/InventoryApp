@@ -59,7 +59,7 @@ public class EditProjectDialog extends EditProjectDialogLayout implements CacheC
         SwingUtilities.invokeLater(() -> {
             if (selectedProject != null && selectedProject.isValidDirectory()) {
                 List<ProjectIDE> ideList = ideTypeCcb.getSelectedElements();
-                application.beginWait();
+                beginWait();
                 try {
                     List<ProjectObject> projectObjectList = selectedProject.findProjectsInDirectory(
                             selectedProject.getMainDirectory(),
@@ -89,7 +89,7 @@ public class EditProjectDialog extends EditProjectDialogLayout implements CacheC
 
                     tableInit(newProjectCodes, newProjectPcbs, newProjectOthers);
                 } finally {
-                    application.endWait();
+                    endWait();
                 }
             }
         });

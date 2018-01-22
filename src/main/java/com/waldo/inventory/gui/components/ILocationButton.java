@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
@@ -39,7 +38,7 @@ public class ILocationButton extends JButton {
         return location.getItems();
     }
 
-    void showPopup(MouseEvent e, Application application) {
+    void showPopup(MouseEvent e, Window parent) {
         if (location.getItems().size() > 0) {
             Component component = e.getComponent();
             JPopupMenu popupMenu = new JPopupMenu();
@@ -51,16 +50,16 @@ public class ILocationButton extends JButton {
                 popupMenu.addSeparator();
             }
 
-            addItemsToPopup(popupMenu, application);
+            addItemsToPopup(popupMenu, parent);
             popupMenu.show(component, 0, component.getHeight());
         }
     }
 
-    private void addItemsToPopup(JPopupMenu popupMenu, Application application) {
+    private void addItemsToPopup(JPopupMenu popupMenu, Window parent) {
         for (Item item : location.getItems()) {
             JMenuItem menu = new JMenuItem(item.getPrettyName());
                 menu.addActionListener(e -> {
-                        EditItemDialog dialog = new EditItemDialog<>(application, "Item", item);
+                        EditItemDialog dialog = new EditItemDialog<>(parent, "Item", item);
                         dialog.showDialog();
 
                 });

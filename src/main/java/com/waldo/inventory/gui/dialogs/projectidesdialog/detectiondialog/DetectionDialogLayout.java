@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog;
 
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
@@ -44,12 +43,12 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
      /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     DetectionDialogLayout(Application application, String title,
+     DetectionDialogLayout(Window parent, String title,
                            String extension,
                            boolean openAsFolder,
                            boolean matchExtension,
                            boolean useParentFolder) {
-         super(application, title);
+         super(parent, title);
          showTitlePanel(false);
 
          this.extension = extension;

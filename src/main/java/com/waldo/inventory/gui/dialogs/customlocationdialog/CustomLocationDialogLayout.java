@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 
@@ -46,8 +45,8 @@ abstract class CustomLocationDialogLayout extends IDialog implements
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    CustomLocationDialogLayout(Application application, String title) {
-        super(application, title);
+    CustomLocationDialogLayout(Window parent, String title) {
+        super(parent, title);
 
     }
 
@@ -152,7 +151,7 @@ abstract class CustomLocationDialogLayout extends IDialog implements
         getButtonNeutral().setText("Save");
 
         // West panel
-        locationMapPanel = new ILocationMapPanel(application, this, true);
+        locationMapPanel = new ILocationMapPanel(this, this, true);
         locationMapPanel.setPreferredSize(new Dimension(300,300));
 
         inputTa = new ITextArea();

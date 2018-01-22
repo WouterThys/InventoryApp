@@ -100,14 +100,14 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         if (projectCode != null) {
             originalProjectCode = projectCode.createCopy();
 
-            application.beginWait();
+            beginWait();
             try {
                 languageCb.setSelectedItem(projectCode.getLanguage());
                 directoryPnl.setText(projectCode.getDirectory());
                 projectIdeCb.setSelectedItem(projectCode.getProjectIDE());
                 //remarksTa.setText(projectCode.getRemarksFile());
             } finally {
-                application.endWait();
+                endWait();
             }
         }
     }

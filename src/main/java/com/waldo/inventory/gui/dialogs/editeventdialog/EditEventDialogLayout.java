@@ -43,8 +43,8 @@ abstract class EditEventDialogLayout extends IDialog {
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditEventDialogLayout(Dialog dialog, String title, DbEvent selectedEvent) {
-        super(dialog, title);
+    EditEventDialogLayout(Window parent, String title, DbEvent selectedEvent) {
+        super(parent, title);
 
         this.selectedEvent = selectedEvent;
 

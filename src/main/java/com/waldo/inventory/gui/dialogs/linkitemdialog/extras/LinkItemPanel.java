@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
@@ -41,13 +40,13 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
+    private final Window parent;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LinkItemPanel(Application application) {
-        this.application = application;
+    public LinkItemPanel(Window parent) {
+        this.parent = parent;
 
         initializeComponents();
         initializeLayouts();
@@ -148,7 +147,7 @@ public class LinkItemPanel extends JPanel implements GuiInterface {
                 if (e.getClickCount() == 2) {
                     Item item = getSelectedItem().getItem();
                     if (item != null) {
-                        EditItemDialog<Item> itemDialog = new EditItemDialog<>(application, "Edit " + item.getName(), item);
+                        EditItemDialog<Item> itemDialog = new EditItemDialog<>(parent, "Edit " + item.getName(), item);
                         if (itemDialog.showDialog() == IDialog.OK) {
                             tableModel.updateTable();
                         }

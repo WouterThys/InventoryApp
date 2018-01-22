@@ -5,7 +5,6 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.managers.SearchManager;
@@ -24,8 +23,8 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
     private boolean canClose = true;
 
-    public ManufacturersDialog(Application application, String title) {
-        super(application, title);
+    public ManufacturersDialog(Window parent, String title) {
+        super(parent, title);
         initializeComponents();
         initializeLayouts();
 
@@ -144,7 +143,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     @Override
     public void updateComponents(Object... object) {
         try {
-            application.beginWait();
+            beginWait();
             // Get all menus
             manufacturerDefaultListModel.removeAllElements();
             for (Manufacturer m : cache().getManufacturers()) {
@@ -164,7 +163,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
                 originalManufacturer = null;
             }
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 
@@ -220,7 +219,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!e.getValueIsAdjusting() && !isUpdating()) {
             JList list = (JList) e.getSource();
             Object selected = list.getSelectedValue();
 
@@ -248,7 +247,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "New Manufacturer", new Manufacturer());
+        DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(ManufacturersDialog.this, "New Manufacturer", new Manufacturer());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             Manufacturer m = dialog.getDbObject();
             m.save();
@@ -270,7 +269,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedManufacturer != null) {
-            DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(application, "Update " + selectedManufacturer.getName(), selectedManufacturer);
+            DbObjectDialog<Manufacturer> dialog = new DbObjectDialog<>(ManufacturersDialog.this, "Update " + selectedManufacturer.getName(), selectedManufacturer);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedManufacturer.save();
                 originalManufacturer = selectedManufacturer.createCopy();

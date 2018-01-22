@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog;
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
@@ -35,8 +34,8 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditReceivedItemsLocationDialogLayout(Application application, String title) {
-        super(application, title);
+    EditReceivedItemsLocationDialogLayout(Window parent, String title) {
+        super(parent, title);
 
     }
 
@@ -73,7 +72,7 @@ abstract class EditReceivedItemsLocationDialogLayout extends IDialog implements
         itemList.addListSelectionListener(this);
 
         // Location
-        locationMapPanel = new ILocationMapPanel(application, null,this , true);
+        locationMapPanel = new ILocationMapPanel(this, null,this , true);
 
         locationTypeCb = new IComboBox<>(CacheManager.cache().getLocationTypes(), new DbObjectNameComparator<>(), true);
         locationTypeCb.addItemListener(this);

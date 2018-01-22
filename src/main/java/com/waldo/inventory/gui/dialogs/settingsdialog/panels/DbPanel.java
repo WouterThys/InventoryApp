@@ -66,17 +66,13 @@ public class DbPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
-
     private DbSettings selectedDbSettings;
     private DbSettings originalDbSettings;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public DbPanel(Application application) {
-        this.application = application;
-
+    public DbPanel() {
         initializeComponents();
         initializeLayouts();
 
@@ -152,11 +148,11 @@ public class DbPanel extends JPanel implements
         new SwingWorker<DbSettings, Object>() {
             @Override
             protected DbSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(DbPanel.this);
                 try {
                     settings().saveSettings(toSave);
                 } finally {
-                    application.endWait();
+                    Application.endWait(DbPanel.this);
                 }
                 return toSave;
             }
@@ -176,12 +172,12 @@ public class DbPanel extends JPanel implements
         new SwingWorker<DbSettings, Object>() {
             @Override
             protected DbSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(DbPanel.this);
                 try {
                     settings().selectNewSettings(toUse);
                     DatabaseAccess.db().init();
                 } finally {
-                    application.endWait();
+                    Application.endWait(DbPanel.this);
                 }
                 return settings().getDbSettings();
             }
@@ -213,11 +209,11 @@ public class DbPanel extends JPanel implements
             new SwingWorker<DbSettings, Object>() {
                 @Override
                 protected DbSettings doInBackground() throws Exception {
-                    application.beginWait();
+                    Application.beginWait(DbPanel.this);
                     try {
                         settings().deleteSetting(toDelete);
                     } finally {
-                        application.endWait();
+                        Application.endWait(DbPanel.this);
                     }
                     return settings().getDbSettings();
                 }
@@ -444,7 +440,7 @@ public class DbPanel extends JPanel implements
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        Application.beginWait(DbPanel.this);
         try {
             dbSettingsCbModel.removeAllElements();
             for (DbSettings settings : settings().getDbSettingsList()) {
@@ -462,7 +458,7 @@ public class DbPanel extends JPanel implements
             }
             updateEnabledComponents();
         } finally {
-            application.endWait();
+            Application.endWait(DbPanel.this);
         }
 
     }
@@ -472,7 +468,7 @@ public class DbPanel extends JPanel implements
     //
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(DbPanel.this)) {
             if (e.getSource().equals(dbTypeCb)) {
 
             } else {
@@ -491,14 +487,14 @@ public class DbPanel extends JPanel implements
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(DbPanel.this)) {
             updateEnabledComponents();
         }
     }
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(DbPanel.this)) {
             return selectedDbSettings;
         }
         return null;

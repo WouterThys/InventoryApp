@@ -4,13 +4,13 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITextField;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +41,8 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
     final SubDivisionType divisionType;
 
 
-    SubDivisionsDialogLayout(Application application, String title, DbObject division, SubDivisionType type) {
-        super(application, title);
+    SubDivisionsDialogLayout(Window parent, String title, DbObject division, SubDivisionType type) {
+        super(parent, title);
 
         this.divisionType = type;
         switch (type) {

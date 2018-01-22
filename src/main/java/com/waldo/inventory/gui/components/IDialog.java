@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.managers.CacheManager;
 
@@ -36,8 +35,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     protected JButton buttonCancel;
     protected JButton buttonNeutral;
 
-    protected Application application;
-    protected boolean updating;
+    //protected Application application;
 
     protected boolean isShown = false;
 
@@ -45,63 +43,74 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
 
     private List<CacheChangedListener> changedListenerList = null;
 
-    public IDialog() {
+    public IDialog(Window parent) {
+        super(parent);
         initializeDialog();
     }
 
-    public IDialog(Frame owner) {
-        super(owner);
-        if (owner instanceof Application) {
-            this.application = (Application) owner;
-        }
+    public IDialog(Window parent, String title) {
+        super(parent, title);
         initializeDialog();
     }
 
-    public IDialog(Frame owner, String title) {
-        super(owner, title);
-        if (owner instanceof Application) {
-            this.application = (Application) owner;
-        }
-        initializeDialog();
-    }
-
-    public IDialog(Dialog owner) {
-        super(owner);
-        initializeDialog();
-    }
-
-    public IDialog(Dialog owner, String title) {
-        super(owner, title);
-        initializeDialog();
-    }
-
-    public IDialog(Window owner) {
-        super(owner);
-        initializeDialog();
-    }
-
-    public IDialog(Window owner, ModalityType modalityType) {
-        super(owner, modalityType);
-        initializeDialog();
-    }
-
-    public IDialog(Window owner, String title) {
-        super(owner, title);
-        initializeDialog();
-    }
-
-    public IDialog(Window owner, String title, ModalityType modalityType) {
-        super(owner, title, modalityType);
-        initializeDialog();
-    }
-
-    public IDialog(Window owner, String title, ModalityType modalityType, GraphicsConfiguration gc) {
-        super(owner, title, modalityType, gc);
-        initializeDialog();
-    }
+//
+//    public IDialog() {
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Frame owner) {
+//        super(owner);
+//        if (owner instanceof Application) {
+//            this.application = (Application) owner;
+//        }
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Frame owner, String title) {
+//        super(owner, title);
+//        if (owner instanceof Application) {
+//            this.application = (Application) owner;
+//        }
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Dialog owner) {
+//        super(owner);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Dialog owner, String title) {
+//        super(owner, title);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Window owner) {
+//        super(owner);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Window owner, ModalityType modalityType) {
+//        super(owner, modalityType);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Window owner, String title) {
+//        super(owner, title);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Window owner, String title, ModalityType modalityType) {
+//        super(owner, title, modalityType);
+//        initializeDialog();
+//    }
+//
+//    public IDialog(Window owner, String title, ModalityType modalityType, GraphicsConfiguration gc) {
+//        super(owner, title, modalityType, gc);
+//        initializeDialog();
+//    }
 
     public int showDialog() {
-        setLocationRelativeTo(application);
+        setLocationRelativeTo(getParent());
         pack();
         setMinimumSize(getSize());
         setVisible(true);
@@ -109,7 +118,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     }
 
     public int showDialog(String focusComponent) {
-        setLocationRelativeTo(application);
+        setLocationRelativeTo(getParent());
         pack();
         setMinimumSize(getSize());
         setFocusComponent(focusComponent);
@@ -118,7 +127,7 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     }
 
     public int showDialog(String focusTab, String focusComponent) {
-        setLocationRelativeTo(application);
+        setLocationRelativeTo(getParent());
         pack();
         setMinimumSize(getSize());
         setFocusTab(focusTab);
@@ -274,20 +283,34 @@ public abstract class IDialog extends JDialog implements GuiInterface, WindowLis
     }
 
     public void beginWait() {
-        if (application != null) {
-            application.beginWait(this);
-        }
+        beginWait(IDialog.this);
+    }
+
+    public void beginWait(Component component) {
+        component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     public void endWait() {
-        if (application != null) {
-            application.endWait(this);
-        }
+        endWait(IDialog.this);
+    }
+
+    public void endWait(Component component) {
+        component.setCursor(Cursor.getDefaultCursor());
     }
 
     public boolean isUpdating() {
-        return application != null && application.isUpdating();
+        return isUpdating(IDialog.this);
     }
+
+    public boolean isUpdating(Component component) {
+        return component.getCursor().getType() == Cursor.WAIT_CURSOR;
+    }
+
+
+
+
+
+
 
     @Override
     public void windowOpened(WindowEvent e) {

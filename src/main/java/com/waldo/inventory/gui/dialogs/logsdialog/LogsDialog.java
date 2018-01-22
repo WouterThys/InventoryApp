@@ -27,7 +27,7 @@ public class LogsDialog extends LogsDialogLayout {
     }
 
     private void deleteAllLogs() {
-        application.beginWait();
+        beginWait();
         try {
             List<Log> allLogs = cache().getLogs();
 
@@ -35,7 +35,7 @@ public class LogsDialog extends LogsDialogLayout {
                 allLogs.get(i).delete();
             }
         } finally {
-            application.endWait();
+            endWait();
         }
 
         updateSystemLogTable(

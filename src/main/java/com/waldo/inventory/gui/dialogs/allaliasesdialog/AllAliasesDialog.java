@@ -1,14 +1,13 @@
 package com.waldo.inventory.gui.dialogs.allaliasesdialog;
 
-import com.waldo.inventory.gui.Application;
-
 import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
 
 public class AllAliasesDialog extends AllAliasesDialogLayout {
 
 
-    public AllAliasesDialog(Application application, String title, String currentAlias) {
-        super(application, title, currentAlias);
+    public AllAliasesDialog(Window parent, String title, String currentAlias) {
+        super(parent, title, currentAlias);
 
         initializeComponents();
         initializeLayouts();

@@ -304,10 +304,10 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         if (object.length == 0) {
             return;
         }
-        if (application.isUpdating()) {
+        if (application.isUpdating(ProjectsPanelLayout.this)) {
             return;
         }
-        application.beginWait();
+        application.beginWait(ProjectsPanelLayout.this);
         try {
             selectedProject = (Project) object[0];
             selectTreeTab(TAB_CODE, selectedProject);
@@ -318,7 +318,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             updateEnabledComponents();
             updateVisibleComponents();
         } finally {
-            application.endWait();
+            application.endWait(ProjectsPanelLayout.this);
         }
     }
 

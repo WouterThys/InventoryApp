@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IPackageTypeTableModel;
 import com.waldo.inventory.managers.SearchManager;
@@ -55,8 +54,8 @@ abstract class PackageTypeDialogLayout extends IDialog implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    PackageTypeDialogLayout(Application application, String title) {
-        super(application, title);
+    PackageTypeDialogLayout(Window parent, String title) {
+        super(parent, title);
     }
 
     /*

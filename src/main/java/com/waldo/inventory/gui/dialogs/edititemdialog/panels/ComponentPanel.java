@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -40,7 +39,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     public static final int TAB_BASIC = 0;
     public static final int TAB_DETAILS = 1;
 
-    private final Application application;
+    private final Window parent;
     private final T selectedItem;
 
     // Listener
@@ -68,8 +67,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private ITextEditor remarksTe;
 
 
-    public ComponentPanel(Application application, T selectedItem, @NotNull IEditedListener listener) {
-        this.application = application;
+    public ComponentPanel(Window parent, T selectedItem, @NotNull IEditedListener listener) {
+        this.parent = parent;
         this.selectedItem = selectedItem;
         this.editedListener = listener;
     }
@@ -238,7 +237,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
     private ActionListener createAddCategoryListener() {
         return e -> {
             Category newCategory = new Category();
-            SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add category", newCategory);
+            SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(parent, "Add category", newCategory);
             if (subDivisionsDialog.showDialog() == IDialog.OK) {
                 newCategory.save();
                 SwingUtilities.invokeLater(() -> {
@@ -258,7 +257,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         return e -> {
             if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID) {
                 Product newProduct = new Product(selectedItem.getCategoryId());
-                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add product", newProduct);
+                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(parent, "Add product", newProduct);
                 if (subDivisionsDialog.showDialog() == IDialog.OK) {
                     newProduct.save();
                     SwingUtilities.invokeLater(() -> {
@@ -285,7 +284,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         return e -> {
             if (selectedItem.getCategoryId() > DbObject.UNKNOWN_ID && selectedItem.getProductId() > DbObject.UNKNOWN_ID) {
                 Type newType = new Type(selectedItem.getProductId());
-                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(application, "Add type", newType);
+                SubDivisionsDialog subDivisionsDialog = new SubDivisionsDialog(parent, "Add type", newType);
                 if (subDivisionsDialog.showDialog() == IDialog.OK) {
                     newType.save();
                     SwingUtilities.invokeLater(() -> {
@@ -310,7 +309,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     private ActionListener createManufacturerAddListener() {
         return e -> {
-            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(application, "Manufacturers");
+            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent, "Manufacturers");
             if (manufacturersDialog.showDialog() == IDialog.OK) {
                 updateManufacturerCbValues();
             }
@@ -323,7 +322,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
         aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new IActions.SearchAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasPnl.getText());
+                AllAliasesDialog dialog = new AllAliasesDialog(parent, "Alias", aliasPnl.getText());
                 if (dialog.showDialog() == IDialog.OK) {
                     String selectedAlias = dialog.getSelectedAlias();
                     if (selectedAlias != null && !selectedAlias.isEmpty()) {
@@ -360,7 +359,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiInterfa
 
     private void initializeDetailsComponents() {
         // Package
-        packagePnl = new GuiUtils.IPackagePanel(application, editedListener, "packageTypeId", "pins");
+        packagePnl = new GuiUtils.IPackagePanel(parent, editedListener, "packageTypeId", "pins");
 
         // Manufacturer
         createManufacturerCb();

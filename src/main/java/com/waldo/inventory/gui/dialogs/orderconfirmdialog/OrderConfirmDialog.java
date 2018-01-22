@@ -84,11 +84,11 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
     private void doOrder() {
         // Do order
         order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
+        beginWait();
         try {
             order.updateItemStates();
         } finally {
-            application.endWait();
+            endWait();
         }
         order.save();
         originalOrder = order.createCopy();
@@ -101,12 +101,12 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
     private void setReceived() {
         // Do receive
         order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-        application.beginWait();
+        beginWait();
         try {
             order.updateItemStates();
             order.updateItemAmounts(true);
         } finally {
-            application.endWait();
+            endWait();
         }
         order.save();
         originalOrder = order.createCopy();
@@ -133,7 +133,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
                 );
 
                 if (res == JOptionPane.YES_OPTION) {
-                    EditReceivedItemsLocationDialog dialog = new EditReceivedItemsLocationDialog(application, "Set location", itemsWithoutLocation);
+                    EditReceivedItemsLocationDialog dialog = new EditReceivedItemsLocationDialog(this, "Set location", itemsWithoutLocation);
                     dialog.showDialog();
                 }
             }

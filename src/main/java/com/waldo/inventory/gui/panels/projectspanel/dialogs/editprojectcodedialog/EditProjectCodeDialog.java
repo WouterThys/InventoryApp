@@ -127,7 +127,7 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!isUpdating()) {
             return projectCode;
         }
         return null;

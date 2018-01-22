@@ -50,7 +50,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
 
     private void updateOrder(Order order) {
         // Combo box
-        application.beginWait();
+        beginWait();
         try {
             selectedOrder = order;
 
@@ -62,7 +62,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
             orderCb.updateList(planned);
             orderCb.setSelectedItem(selectedOrder);
         } finally {
-            application.endWait();
+            endWait();
         }
 
 //        // Find items already in order
@@ -95,7 +95,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
         // Order
         orderCb = new IComboBox<>(new ArrayList<>(), new DbObjectNameComparator<>(), true);
         orderCb.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED && !application.isUpdating()) {
+            if (e.getStateChange() == ItemEvent.SELECTED && !isUpdating()) {
                 updateOrder((Order) orderCb.getSelectedItem());
             }
         });
@@ -112,7 +112,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
 
         // North
         JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(GuiUtils.createComboBoxWithButton(orderCb, onChangeOrder()), BorderLayout.EAST);
+        northPanel.add(GuiUtils.createComponentWithAddAction(orderCb, onChangeOrder()), BorderLayout.EAST);
 
         // Center
         JPanel centerPanel = new JPanel();

@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
@@ -30,14 +29,12 @@ public class KiCadDetailPanel extends JPanel implements GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
     private PcbItem selectedComponent;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public KiCadDetailPanel(Application application) {
-        this.application = application;
+    public KiCadDetailPanel() {
 
         initializeComponents();
         initializeLayouts();

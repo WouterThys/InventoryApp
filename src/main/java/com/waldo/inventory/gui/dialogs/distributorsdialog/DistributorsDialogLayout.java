@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 
@@ -49,8 +48,8 @@ abstract class DistributorsDialogLayout extends IDialog implements
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    DistributorsDialogLayout(Application application, String title) {
-        super(application, title);
+    DistributorsDialogLayout(Window parent, String title) {
+        super(parent, title);
     }
 
     /*
@@ -189,7 +188,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
 
             @Override
             public void onToolBarAdd(IdBToolBar source) {
-                EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Add format", new OrderFileFormat());
+                EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialogLayout.this, "Add format", new OrderFileFormat());
                 if (dialog.showDialog() == IDialog.OK) {
                     OrderFileFormat off = dialog.getOrderFileFormat();
                     off.save();
@@ -215,7 +214,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
             public void onToolBarEdit(IdBToolBar source) {
                 OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
                 if (off != null) {
-                    EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(application, "Edit format", off);
+                    EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialogLayout.this, "Edit format", off);
                     if (dialog.showDialog() == IDialog.OK) {
                         off.save();
                     }
@@ -239,10 +238,10 @@ abstract class DistributorsDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object... object) {
-        if (application.isUpdating()) {
+        if (isUpdating()) {
             return;
         }
-        application.beginWait();
+        beginWait();
         try {
             // Get all
             distributorDefaultListModel.removeAllElements();
@@ -262,7 +261,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
                 originalDistributor = null;
             }
         } finally {
-            application.endWait();
+            endWait();
         }
 
     }

@@ -7,8 +7,8 @@ import java.awt.*;
 public class EditEventDialog extends EditEventDialogLayout {
 
 
-    public EditEventDialog(Dialog owner, String title, DbEvent dbEvent) {
-        super(owner, title, dbEvent);
+    public EditEventDialog(Window parent, String title, DbEvent dbEvent) {
+        super(parent, title, dbEvent);
 
         initializeComponents();
         initializeLayouts();

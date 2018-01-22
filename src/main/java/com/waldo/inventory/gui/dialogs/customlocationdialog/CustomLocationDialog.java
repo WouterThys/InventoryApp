@@ -2,12 +2,12 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,8 +17,8 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
 
     private boolean canClose = true;
 
-    public CustomLocationDialog(Application application, String title, LocationType locationType) {
-        super(application, title);
+    public CustomLocationDialog(Window parent, String title, LocationType locationType) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();
@@ -224,7 +224,7 @@ public class CustomLocationDialog extends CustomLocationDialogLayout {
             }
         } else if (e.getSource().equals(searchAliasAction)) {
             if (selectedLocationButton != null) {
-                AllAliasesDialog dialog = new AllAliasesDialog(application, "Alias", aliasTf.getText());
+                AllAliasesDialog dialog = new AllAliasesDialog(CustomLocationDialog.this, "Alias", aliasTf.getText());
                 if (dialog.showDialog() == IDialog.OK) {
                     String selectedAlias = dialog.getSelectedAlias();
                     if (selectedAlias != null && !selectedAlias.isEmpty()) {

@@ -4,7 +4,6 @@ import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 
@@ -22,10 +21,10 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
     private boolean canClose = true;
     private boolean allowSave = true;
 
-    public EditItemDialog(Application application, String title, @NotNull T item)  {
-        super(application, title);
-        if (application != null) {
-            setLocationRelativeTo(application);
+    public EditItemDialog(Window parent, String title, @NotNull T item)  {
+        super(parent, title);
+        if (parent != null) {
+            setLocationRelativeTo(parent);
         } else {
             setLocationByPlatform(true);
         }

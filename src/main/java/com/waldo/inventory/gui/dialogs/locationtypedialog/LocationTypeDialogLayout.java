@@ -140,7 +140,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         detailCustomBtn = new JButton(imageResource.readImage("Locations.Edit"));
         detailCustomBtn.addActionListener(this);
 
-        ILocationMapPanel = new ILocationMapPanel(application, null, true);
+        ILocationMapPanel = new ILocationMapPanel(this, null, true);
     }
 
     @Override
@@ -159,11 +159,11 @@ abstract class LocationTypeDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object... object) {
-        if (application.isUpdating()) {
+        if (isUpdating()) {
             return;
         }
 
-        application.beginWait();
+        beginWait();
         try {
             // Get all
             locationTypeModel.removeAllElements();
@@ -184,7 +184,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
             }
 
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 }

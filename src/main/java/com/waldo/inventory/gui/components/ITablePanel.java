@@ -40,6 +40,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     // Panels
     private JPanel centerPanel;
     private JPanel westPanel;
+    private JPanel detailsPanel;
 
     /*
      *                  VARIABLES
@@ -51,14 +52,15 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public ITablePanel(IAbstractTableModel<T> tableModel, ListSelectionListener listSelectionListener) {
-        this(tableModel, listSelectionListener, false);
+        this(tableModel, null, listSelectionListener, false);
     }
 
-    public ITablePanel(IAbstractTableModel<T> tableModel, ListSelectionListener listSelectionListener, boolean hasSortOption) {
+    public ITablePanel(IAbstractTableModel<T> tableModel, JPanel detailsPanel, ListSelectionListener listSelectionListener, boolean hasSortOption) {
         super(new BorderLayout());
 
         this.tableModel = tableModel;
         this.hasSortOption = hasSortOption;
+        this.detailsPanel = detailsPanel;
 
         initializeComponents();
         initializeLayouts();
@@ -136,10 +138,14 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     // Tool bars
     public void setDbToolBar(IdBToolBar.IdbToolBarListener listener) {
-        addToolBar(new IdBToolBar(listener, IdBToolBar.HORIZONTAL));
+        addToolBar(new IdBToolBar(listener, true, true, true, true));
     }
 
-    public void addToolBar(JToolBar toolBar) {
+    public void setDbToolBar(IdBToolBar.IdbToolBarListener listener, boolean hasRefresh, boolean hasAdd, boolean hasDelete, boolean hasEdit) {
+        addToolBar(new IdBToolBar(listener, hasRefresh, hasAdd, hasDelete, hasEdit));
+    }
+
+    private void addToolBar(JToolBar toolBar) {
         this.toolBar = toolBar;
         if (!dbToolBarAdded) {
             westPanel.add(this.toolBar);
@@ -197,6 +203,10 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         return centerPanel;
     }
 
+    public void setDetailsPanel(JPanel detailsPanel) {
+        this.detailsPanel = detailsPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -226,8 +236,11 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         headerPanel.add(centerPanel, BorderLayout.CENTER);
         headerPanel.add(westPanel, BorderLayout.WEST);
 
-        add(headerPanel, BorderLayout.NORTH);
+        add(headerPanel, BorderLayout.PAGE_START);
         add(new JScrollPane(table), BorderLayout.CENTER);
+        if (detailsPanel != null) {
+            add(detailsPanel, BorderLayout.EAST);
+        }
     }
 
     @Override

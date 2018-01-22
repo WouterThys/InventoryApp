@@ -150,7 +150,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     @Override
     public void updateComponents(Object... object) {
         try {
-            application.beginWait();
+            beginWait();
             // Get all menus
             projectTypeModel.removeAllElements();
             for (ProjectIDE pt : cache().getProjectIDES()) {
@@ -170,7 +170,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
                 originalProjectIDE = null;
             }
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 
@@ -226,7 +226,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     //
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !application.isUpdating()) {
+        if (!e.getValueIsAdjusting() && !isUpdating()) {
             JList list = (JList) e.getSource();
             Object selected = list.getSelectedValue();
 
@@ -254,7 +254,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(application, "New Project Type", new ProjectIDE());
+        DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(this, "New Project Type", new ProjectIDE());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             ProjectIDE pt = dialog.getDbObject();
             pt.save();
@@ -276,7 +276,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProjectIDE != null) {
-            DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(application, "Update " + selectedProjectIDE.getName(), selectedProjectIDE);
+            DbObjectDialog<ProjectIDE> dialog = new DbObjectDialog<>(this, "Update " + selectedProjectIDE.getName(), selectedProjectIDE);
             if (dialog.showDialog() == DbObjectDialog.OK) {
                 selectedProjectIDE.save();
                 originalProjectIDE = selectedProjectIDE.createCopy();
@@ -306,7 +306,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
 
         if (selectedProjectIDE != null) {
             if (source == detailLauncherBtn) {
-                LauncherDialog dialog = new LauncherDialog(application, "Launcher",
+                LauncherDialog dialog = new LauncherDialog(this, "Launcher",
                         selectedProjectIDE.isUseDefaultLauncher(),
                         selectedProjectIDE.getLauncherPath());
 
@@ -317,7 +317,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
                 }
             }
             if (source == detailDetectionBtn) {
-                DetectionDialog dialog = new DetectionDialog(application, "Detection",
+                DetectionDialog dialog = new DetectionDialog(this, "Detection",
                         selectedProjectIDE.getExtension(),
                         selectedProjectIDE.isOpenAsFolder(),
                         selectedProjectIDE.isMatchExtension(),
@@ -332,7 +332,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
                 }
             }
             if (source == detailParserBtn) {
-                ParserDialog dialog = new ParserDialog(application, "Parser", selectedProjectIDE.hasParser(), selectedProjectIDE.getPcbItemParser());
+                ParserDialog dialog = new ParserDialog(this, "Parser", selectedProjectIDE.hasParser(), selectedProjectIDE.getPcbItemParser());
 
                 if (dialog.showDialog() == IDialog.OK) {
                     if (selectedProjectIDE != null) {

@@ -23,7 +23,7 @@ import java.awt.event.ItemEvent;
 public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
 
     private final T selectedItem;
-    private final Application application;
+    private final Window parent;
 
     // Listener
     private final IEditedListener editedListener;
@@ -37,8 +37,8 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
     private IActions.EditAction editAction;
     private IActions.DeleteAction deleteAction;
 
-    public EditItemStockPanel(Application application, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
-        this.application = application;
+    public EditItemStockPanel(Window parent, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
+        this.parent = parent;
         this.selectedItem = selectedItem;
         this.editedListener = editedListener;
     }
@@ -206,7 +206,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditItemLocation dialog;
-                dialog = new EditItemLocation(application,
+                dialog = new EditItemLocation(parent,
                         "Select",
                         selectedItem.getLocation());
                 if (dialog.showDialog() == IDialog.OK) {
@@ -259,7 +259,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        Application.beginWait(EditItemStockPanel.this);
         try {
             if (selectedItem != null) {
                 amountTypeCb.setSelectedItem(selectedItem.getAmountType());
@@ -267,7 +267,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInt
                 updateLocationFields(selectedItem.getLocation());
             }
         } finally {
-            application.endWait();
+            Application.endWait(EditItemStockPanel.this);
         }
     }
 }

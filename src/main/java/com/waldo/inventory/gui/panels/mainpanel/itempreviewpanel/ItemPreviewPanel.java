@@ -2,20 +2,16 @@ package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.classes.dbclasses.Package;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.tablemodels.ISetItemTableModel;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
-import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -26,37 +22,34 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ItemPreviewPanel extends JPanel implements GuiInterface {
+public class ItemPreviewPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILabel iconLbl;
 
-    // TODO value
-
-    private ILabel nameLbl;
-    private JTree divisionTr;
-
+    private ITextField nameTf;
+    private ILabel aliasLbl;
     private ITextArea descriptionTa;
-    private ILabel manufacturerLbl;
-    private ILabel footprintLbl;
-    private ILabel priceLbl;
-    private ILabel locationLbl;
+
+    private ITextField manufacturerTf;
+    private ITextField footprintTf;
+    private ITextField locationTf;
+
+    private ITextField categoryTf;
+    private ITextField productTf;
+    private ITextField typeTf;
 
     private IStarRater starRater;
-    private ICheckBox discourageOrderCb;
-    private ITextArea remarksTa;
-
-    private ISetItemTableModel setItemModel;
-    //private ITable<SetItem> setItemITable;
-    //private ILocationMapPanel locationMapPnl;
+    private ITextPane remarksTp;
 
     private AbstractAction dataSheetAa;
     private AbstractAction orderAa;
     private AbstractAction historyAa;
 
-    private JPanel setItemPanel;
+    private IdBToolBar dbToolbar;
+
 
     /*
      *                  VARIABLES
@@ -76,92 +69,72 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private void updateToolbar(Item item) {
+        aliasLbl.setText(item.getAlias());
+
+        if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
+            dataSheetAa.setEnabled(false);
+        } else {
+            dataSheetAa.setEnabled(true);
+        }
+    }
+
     private void updateHeader(Item item) {
-        if (!item.getIconPath().isEmpty()) {
-            try {
+        try {
+            if (!item.getIconPath().isEmpty()) {
                 Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
                 iconLbl.setIcon(path.toString());
-            } catch (Exception e) {
-                Status().setError("Failed to set item icon");
+            } else {
+                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
             }
-            iconLbl.setVisible(true);
-        } else {
-            iconLbl.setVisible(false);
+        } catch (Exception e) {
+            Status().setError("Failed to set item icon");
         }
-
-        nameLbl.setText(item.getName());
-        updateTree(item);
-
-        dataSheetAa.setEnabled(!item.getLocalDataSheet().isEmpty() || !item.getOnlineDataSheet().isEmpty());
+        nameTf.setText(item.toString());
+        descriptionTa.setText(item.getDescription());
+        starRater.setRating(item.getRating());
     }
 
     private void updateData(Item item) {
-        descriptionTa.setText(item.getDescription());
+        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+            categoryTf.setText(item.getCategory().toString());
+        } else {
+            categoryTf.setText("");
+        }
+
+        if (item.getProductId() > DbObject.UNKNOWN_ID) {
+            productTf.setText(item.getProduct().toString());
+        } else {
+            productTf.setText("");
+        }
+
+        if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+            typeTf.setText(item.getType().toString());
+        } else {
+            typeTf.setText("");
+        }
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-            manufacturerLbl.setText(item.getManufacturer().toString());
+            manufacturerTf.setText(item.getManufacturer().toString());
         } else {
-            manufacturerLbl.setText("");
+            manufacturerTf.setText("");
         }
 
         if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
-            PackageType packageType = item.getPackageType();
-            Package itemPackage = packageType.getPackage();
-            if (itemPackage != null) {
-                footprintLbl.setText(packageType.toString() + " - " + itemPackage.toString());
-            } else {
-                footprintLbl.setText(packageType.toString());
-            }
+            footprintTf.setText(item.getPackageType().getPrettyString());
         } else {
-            footprintLbl.setText("");
+            footprintTf.setText("");
         }
-
-        //priceLbl.setText(String.valueOf(item.getValue()));
-        starRater.setRating(item.getRating());
-        discourageOrderCb.setSelected(item.isDiscourageOrder());
-        //remarksTp.setText(item.getRemarksFile());
 
         if (item.getLocationId() > DbObject.UNKNOWN_ID) {
-            Location l = SearchManager.sm().findLocationById(item.getLocationId());
-            if (l != null && !l.isUnknown()) {
-                locationLbl.setText(l.getPrettyString());
-            }
+            locationTf.setText(item.getLocation().getPrettyString());
         } else {
-            locationLbl.setText("");
+            locationTf.setText("");
         }
-
-        setItemPanel.setVisible(false);
-
     }
 
-    private JPanel createIconPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        return panel;
-    }
-
-    private void updateTree(Item item) {
-        DefaultMutableTreeNode root;
-        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            root = new DefaultMutableTreeNode(item.getCategory(), true);
-            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                DefaultMutableTreeNode pNode = new DefaultMutableTreeNode(item.getProduct(), true);
-                if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                    DefaultMutableTreeNode tNode = new DefaultMutableTreeNode(item.getType(), false);
-                    pNode.add(tNode);
-                }
-                root.add(pNode);
-            }
-        } else {
-            root = new DefaultMutableTreeNode();
-        }
-        DefaultTreeModel model = new DefaultTreeModel(root);
-        divisionTr.setModel(model);
-
-        for(int i=0;i<divisionTr.getRowCount();++i){
-            divisionTr.expandRow(i);
-        }
+    private void updateRemarks(Item item) {
+        remarksTp.setFile(item.getRemarksFile());
     }
 
     private void openDataSheet(Item item) {
@@ -216,81 +189,136 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         dialog.showDialog();
     }
 
+    private JPanel createToolBarPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
 
-    private JToolBar createToolbar() {
-        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        toolBar.setFloatable(false);
+        JToolBar eastTb = GuiUtils.createNewToolbar(dataSheetAa, orderAa, historyAa);
 
-        toolBar.add(dataSheetAa);
-        toolBar.add(orderAa);
-        toolBar.add(historyAa);
+        panel.add(dbToolbar, BorderLayout.WEST);
+        panel.add(aliasLbl, BorderLayout.CENTER);
+        panel.add(eastTb, BorderLayout.EAST);
 
-        toolBar.setBorderPainted(false);
-        toolBar.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-
-        return toolBar;
+        return panel;
     }
 
     private JPanel createHeaderPanel() {
         JPanel headerPnl = new JPanel(new BorderLayout());
-        JPanel centerPnl = new JPanel(new BorderLayout());
 
-        //centerPnl.add(nameLbl, BorderLayout.PAGE_START);
-        centerPnl.add(divisionTr, BorderLayout.CENTER);
-        centerPnl.add(createToolbar(), BorderLayout.SOUTH);
+        iconLbl.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1),
+                BorderFactory.createEmptyBorder(2,2,2,2)
+        ));
 
-        headerPnl.add(nameLbl, BorderLayout.NORTH);
-        //headerPnl.add(iconPnl, BorderLayout.WEST);
-        headerPnl.add(centerPnl, BorderLayout.CENTER);
+        JPanel raterPnl = new JPanel();
+        raterPnl.add(starRater);
+
+        JScrollPane scrollPane = new JScrollPane(descriptionTa);
+        scrollPane.setBorder(null);
+
+//        JPanel iconPnl = new JPanel(new BorderLayout());
+//        iconPnl.add(iconLbl, BorderLayout.CENTER);
+//        //iconPnl.add(raterPnl, BorderLayout.PAGE_END);
+//
+//        JPanel dataPnl = new JPanel(new BorderLayout());
+//        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(dataPnl, 0);
+//        gbc.addLine("", nameTf);
+//        gbc.weightx = 1;
+//        gbc.weighty = 1;
+//        gbc.addLine("", new JScrollPane(descriptionTa), GridBagConstraints.BOTH);
+//
+//        headerPnl.add(iconPnl, BorderLayout.WEST);
+//        headerPnl.add(dataPnl, BorderLayout.CENTER);
+//        headerPnl.add(raterPnl, BorderLayout.PAGE_END);
+
+
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(headerPnl);
+        // Label
+        gbc.gridx = 0; gbc.weightx = 0;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.gridwidth = 1; gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        headerPnl.add(iconLbl, gbc);
+
+        // Name
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 0; gbc.weighty = 0;
+        gbc.gridwidth = 1; gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        headerPnl.add(nameTf, gbc);
+
+        // Name
+        gbc.gridx = 1; gbc.weightx = 1;
+        gbc.gridy = 1; gbc.weighty = 1;
+        gbc.gridwidth = 1; gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        headerPnl.add(scrollPane, gbc);
+
+        // Rater
+        gbc.gridx = 0; gbc.weightx = 1;
+        gbc.gridy = 2; gbc.weighty = 0;
+        gbc.gridwidth = 2; gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        headerPnl.add(raterPnl, gbc);
 
         return headerPnl;
     }
 
-    //Items.Preview.Manufacturer
-    //Items.Preview.Location
-    //Items.Preview.Footprint
-    //Items.Preview.Price
+//    private JPanel createDivisionPanel() {
+//        JPanel divisionPnl = new JPanel();
+//        divisionPnl.setLayout(new BoxLayout(divisionPnl, BoxLayout.X_AXIS));
+//
+//        JPanel cPnl = new JPanel(new BorderLayout());
+//        JPanel pPnl = new JPanel(new BorderLayout());
+//        JPanel tPnl = new JPanel(new BorderLayout());
+//
+//        cPnl.add(new ILabel(imageResource.readImage("Items.Tree.Category")), BorderLayout.WEST);
+//        cPnl.add(categoryTf, BorderLayout.CENTER);
+//        pPnl.add(new ILabel(imageResource.readImage("Items.Tree.Product")), BorderLayout.WEST);
+//        pPnl.add(productTf, BorderLayout.CENTER);
+//        tPnl.add(new ILabel(imageResource.readImage("Items.Tree.Type")), BorderLayout.WEST);
+//        tPnl.add(typeTf, BorderLayout.CENTER);
+//
+//        divisionPnl.add(cPnl);
+//        divisionPnl.add(pPnl);
+//        divisionPnl.add(tPnl);
+//
+//        return divisionPnl;
+//    }
 
     private JPanel createDataPanel() {
-        JPanel dataPnl = new JPanel(new BorderLayout());
-        JPanel dataRows = new JPanel();
-        JPanel remarkPnl = new JPanel(new BorderLayout());
-        JPanel remarkTopPnl = new JPanel();
-        JPanel iconPnl = createIconPanel();
+        JPanel dataPnl = new JPanel();
+        dataPnl.setLayout(new BoxLayout(dataPnl, BoxLayout.Y_AXIS));
 
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(dataRows);
-        gbc.addLine(imageResource.readImage("Items.Preview.Manufacturer"), manufacturerLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Footprint"), footprintLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Price"), priceLbl);
-        gbc.addLine(imageResource.readImage("Items.Preview.Location"), locationLbl);
+        GuiUtils.GridBagHelper gbc;
 
-        remarkTopPnl.add(starRater);
-        remarkTopPnl.add(discourageOrderCb);
-        remarkPnl.add(remarkTopPnl, BorderLayout.NORTH);
-        remarkPnl.add(new JScrollPane(remarksTa));
+        JPanel divisionPanel = new JPanel();
+        divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
+        gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
+        gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
+        gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
+        gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-        centerPanel.add(iconPnl);
-        centerPanel.add(dataRows);
+        JPanel infoPnl = new JPanel();
+        infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
+        gbc = new GuiUtils.GridBagHelper(infoPnl);
+        gbc.addLine("Manufacturers", imageResource.readImage("Manufacturers.Menu"), manufacturerTf);
+        gbc.addLine("Footprint", imageResource.readImage("Packages.Menu"), footprintTf);
+        gbc.addLine("Location", imageResource.readImage("Locations.Menu"), locationTf);
 
-        dataPnl.add(new JScrollPane(descriptionTa), BorderLayout.NORTH);
-        dataPnl.add(centerPanel, BorderLayout.CENTER);
-        dataPnl.add(remarkPnl, BorderLayout.SOUTH);
-        dataPnl.setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
+        //dataPnl.add(createDivisionPanel());
+        dataPnl.add(divisionPanel);
+        dataPnl.add(infoPnl);
 
         return dataPnl;
     }
 
-    private JPanel createSetItemPanel() {
-        setItemPanel = new JPanel(new BorderLayout());
+    private JPanel createRemarksPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
 
-//        JScrollPane pane = new JScrollPane(setItemITable);
-//        pane.setPreferredSize(new Dimension(50, 300));
+        JScrollPane scrollPane = new JScrollPane(remarksTp);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
-//        setItemPanel.add(pane, BorderLayout.CENTER);
-
-        return setItemPanel;
+        return panel;
     }
 
      /*
@@ -301,6 +329,8 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
     public void initializeComponents() {
         // Label
         iconLbl = new ILabel();
+        iconLbl.setBackground(Color.WHITE);
+        iconLbl.setOpaque(true);
         iconLbl.setHorizontalAlignment(ILabel.CENTER);
         iconLbl.setVerticalAlignment(ILabel.CENTER);
         iconLbl.setPreferredSize(new Dimension(150,150));
@@ -308,32 +338,32 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
         iconLbl.setMinimumSize(new Dimension(150,150));
 
         // Data
-        nameLbl = new ILabel("", ILabel.CENTER);
-        nameLbl.setFont(20, Font.BOLD);
-
-        divisionTr = new JTree();
-        divisionTr.setEnabled(false);
-        divisionTr.setOpaque(false);
-
+        nameTf = new ITextField(false);
+        aliasLbl = new ILabel();
+        aliasLbl.setHorizontalAlignment(ILabel.CENTER);
+        aliasLbl.setVerticalAlignment(ILabel.CENTER);
+        aliasLbl.setFont(20, Font.BOLD);
+        manufacturerTf = new ITextField(false);
+        footprintTf = new ITextField(false);
+        locationTf = new ITextField(false);
+        categoryTf = new ITextField(false);
+        productTf = new ITextField(false);
+        typeTf = new ITextField(false);
         descriptionTa = new ITextArea(false);
+        descriptionTa.setBorder(nameTf.getBorder());
+        descriptionTa.setEnabled(false);
         descriptionTa.setLineWrap(true);
         descriptionTa.setWrapStyleWord(true);
-        descriptionTa.setOpaque(false);
-        manufacturerLbl = new ILabel();
-        footprintLbl = new ILabel();
-        priceLbl = new ILabel();
-        locationLbl = new ILabel();
+
         starRater = new IStarRater();
         starRater.setEnabled(false);
-        discourageOrderCb = new ICheckBox("Discourage order ");
-        discourageOrderCb.setEnabled(false);
-        remarksTa = new ITextArea(false);
-        remarksTa.setLineWrap(true);
-        remarksTa.setWrapStyleWord(true);
-        remarksTa.setOpaque(false);
 
-        setItemModel = new ISetItemTableModel(null);
-//        setItemITable = new ITable<>(setItemModel);
+        remarksTp = new ITextPane();
+        //remarksTp.setPreferredSize(new Dimension(300, 50));
+        remarksTp.setEditable(false);
+        remarksTp.setEnabled(false);
+
+        dbToolbar = new IdBToolBar(this, false, false, true, true);
 
         // Actions
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {
@@ -368,33 +398,80 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface {
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BorderLayout());
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
+        JPanel panel1 = new JPanel(new BorderLayout());
+        JPanel panel2 = new JPanel(new BorderLayout());
+        JPanel toolbarsPanel = createToolBarPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel dataPanel = createDataPanel();
-        JPanel setItemPnl = createSetItemPanel();
+        JPanel remarksPanel = createRemarksPanel();
 
-        panel.add(headerPanel);
-        panel.add(dataPanel);
-        panel.add(setItemPnl);
+//        JPanel mainPanel = new JPanel();
+//        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+//
+//        mainPanel.add(toolbarsPanel);
+//        mainPanel.add(headerPanel);
+//        mainPanel.add(dataPanel);
+//
+//        panel.add(mainPanel, BorderLayout.CENTER);
+//        panel.add(createRemarksPanel(), BorderLayout.SOUTH);
+//
+//        setMinimumSize(new Dimension(400, 400));
+//        add(panel);
 
-        add(panel);
-        //setBorder(BorderFactory.createEmptyBorder(5,5,20,5));
+        setLayout(new BorderLayout());
+
+        panel1.add(headerPanel, BorderLayout.NORTH);
+        panel1.add(dataPanel, BorderLayout.CENTER);
+
+        panel2.add(toolbarsPanel, BorderLayout.PAGE_START);
+        panel2.add(panel1, BorderLayout.CENTER);
+
+        add(panel2, BorderLayout.NORTH);
+        add(remarksPanel, BorderLayout.CENTER);
+        setPreferredSize(new Dimension(500, 500));
     }
 
     @Override
     public void updateComponents(Object... args) {
         if (args.length > 0 && args[0] != null) {
-            selectedItem = (Item) args[0];
+            Item newItem = (Item) args[0];
 
-            updateHeader(selectedItem);
-            updateData(selectedItem);
+            if (isVisible() && selectedItem != null && newItem.equals(selectedItem)) {
+                setVisible(false);
+            } else {
+                updateToolbar(newItem);
+                updateHeader(newItem);
+                updateData(newItem);
+                updateRemarks(newItem);
 
-            setVisible(true);
+                setVisible(true);
+                selectedItem = newItem;
+            }
         } else {
             setVisible(false);
         }
+    }
+
+    //
+    // Toolbar
+    //
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+
     }
 }

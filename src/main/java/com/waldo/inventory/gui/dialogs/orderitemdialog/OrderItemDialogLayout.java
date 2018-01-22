@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -26,8 +25,8 @@ abstract class OrderItemDialogLayout extends IDialog implements
     /*
     *                  CONSTRUCTOR
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    OrderItemDialogLayout(Application application, String title) {
-        super(application, title);
+    OrderItemDialogLayout(Window parent, String title) {
+        super(parent, title);
         showTitlePanel(false);
     }
 

@@ -2,9 +2,8 @@ package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.components.actions.*;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,8 +63,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    PcbItemDetailsDialogLayout(Application application, String title, PcbItemProjectLink pcbItemProjectLink) {
-        super(application, title);
+    PcbItemDetailsDialogLayout(Window parent, String title, PcbItemProjectLink pcbItemProjectLink) {
+        super(parent, title);
 
         this.pcbItemProjectLink = pcbItemProjectLink;
         this.originalProjectLink = pcbItemProjectLink.createCopy();

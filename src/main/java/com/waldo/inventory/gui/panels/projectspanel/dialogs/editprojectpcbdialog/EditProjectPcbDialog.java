@@ -123,7 +123,7 @@ public class EditProjectPcbDialog extends EditProjectPcbDialogLayout {
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!isUpdating()) {
             return projectPcb;
         }
         return null;

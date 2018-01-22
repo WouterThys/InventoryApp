@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 
 import javax.swing.*;
@@ -26,8 +25,8 @@ public abstract class EditPackageTypeDialogLayout extends IDialog implements IEd
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditPackageTypeDialogLayout(Application application, String title) {
-        super(application, title);
+    EditPackageTypeDialogLayout(Window parent, String title) {
+        super(parent, title);
 
     }
 

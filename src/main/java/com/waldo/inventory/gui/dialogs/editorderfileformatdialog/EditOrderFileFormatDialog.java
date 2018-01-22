@@ -3,15 +3,14 @@ package com.waldo.inventory.gui.dialogs.editorderfileformatdialog;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.inventory.gui.Application;
 
 import java.awt.*;
 
 public class EditOrderFileFormatDialog extends EditOrderFileFormatDialogLayout {
 
 
-    public EditOrderFileFormatDialog(Application application, String title, OrderFileFormat orderFileFormat) {
-        super(application, title);
+    public EditOrderFileFormatDialog(Window parent, String title, OrderFileFormat orderFileFormat) {
+        super(parent, title);
 
         initializeComponents();
         initializeLayouts();

@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -150,13 +149,19 @@ public class GuiUtils {
             this.panel.setLayout(new GridBagLayout());
             this.preferredWidth = preferredLabelWidth;
 
+            panel.setOpaque(false);
+            reset();
+        }
+
+        public void reset() {
             insets = new Insets(2,2,2,2);
             anchor = GridBagConstraints.EAST;
 
             gridx = 0;
             gridy = 0;
 
-            panel.setOpaque(false);
+            weighty = 0;
+            weightx = 1;
         }
 
         public void addLineVertical(String labelText, JComponent component) {
@@ -185,6 +190,14 @@ public class GuiUtils {
             gridy += 1;
         }
 
+        private ILabel newLbl(String text, ImageIcon icon) {
+            ILabel lbl = new ILabel(icon);
+            lbl.setVerticalTextPosition(JLabel.CENTER);
+            lbl.setHorizontalTextPosition(JLabel.RIGHT);
+            lbl.setToolTipText(text);
+            return lbl;
+        }
+
         public void addLine(String labelText, JComponent component) {
             addLine(labelText, component, GridBagConstraints.HORIZONTAL);
         }
@@ -192,17 +205,23 @@ public class GuiUtils {
         public void addLine(String labelText, JComponent component, int fill) {
             int oldGw = gridwidth;
             int oldGh = gridheight;
+            double oldWx = weightx;
+            double oldWy = weighty;
 
             weightx = 0; weighty = 0;
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             ILabel lbl = new ILabel(labelText, ILabel.RIGHT);
-            lbl.setPreferredSize(new Dimension(preferredWidth, 20));
+            if (preferredWidth > 1) {
+                lbl.setPreferredSize(new Dimension(preferredWidth, 20));
+            }
             panel.add(lbl, this);
 
             gridwidth = oldGw;
             gridheight = oldGh;
-            gridx = 1; weightx = 1;
+            gridx = 1;
+            weightx = oldWx;
+            weighty = oldWy;
             this.fill = fill;
             if (component != null) {
                 panel.add(component, this);
@@ -224,6 +243,31 @@ public class GuiUtils {
             gridwidth = 1;
             this.fill = GridBagConstraints.NONE;
             panel.add(new ILabel(labelIcon, ILabel.RIGHT), this);
+
+            gridwidth = oldGw;
+            gridheight = oldGh;
+            gridx = 1; weightx = 1;
+            this.fill = fill;
+            if (component != null) {
+                panel.add(component, this);
+            }
+
+
+            gridx = 0; gridy++;
+        }
+
+        public void addLine(String toolTip, ImageIcon labelIcon, JComponent component) {
+            addLine(toolTip, labelIcon, component, GridBagConstraints.HORIZONTAL);
+        }
+
+        public void addLine(String toolTip, ImageIcon labelIcon, JComponent component, int fill) {
+            int oldGw = gridwidth;
+            int oldGh = gridheight;
+
+            weightx = 0; weighty = 0;
+            gridwidth = 1;
+            this.fill = GridBagConstraints.HORIZONTAL;
+            panel.add(newLbl(toolTip, labelIcon), this);
 
             gridwidth = oldGw;
             gridheight = oldGh;
@@ -694,7 +738,7 @@ public class GuiUtils {
 
     public static class IPackagePanel extends JPanel implements GuiInterface, ActionListener, ItemListener {
 
-        private final Application application;
+        private final Window parent;
 
         private IComboBox<Package> packageCb;
         private IComboBox<PackageType> typeCb;
@@ -702,14 +746,14 @@ public class GuiUtils {
 
         private PackageType packageType;
 
-        public IPackagePanel(Application application) {
-            this(application, null, "", "");
+        public IPackagePanel(Window parent) {
+            this(parent, null, "", "");
         }
 
-        public IPackagePanel(Application application, IEditedListener listener, String typeField, String pinsField) {
+        public IPackagePanel(Window parent, IEditedListener listener, String typeField, String pinsField) {
             super();
 
-            this.application = application;
+            this.parent = parent;
 
             initializeComponents();
             initializeLayouts();
@@ -835,7 +879,7 @@ public class GuiUtils {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                if (!application.isUpdating()) {
+                //if (!parent.isUpdating((Component)e.getSource())) {
                     SwingUtilities.invokeLater(() -> {
                         if (e.getSource().equals(packageCb)) {
                             packageCbChanged();
@@ -843,7 +887,7 @@ public class GuiUtils {
                             typeCbChanged();
                         }
                     });
-                }
+                //}
             }
         }
 
@@ -852,7 +896,7 @@ public class GuiUtils {
         //
         @Override
         public void actionPerformed(ActionEvent e) {
-            PackageTypeDialog dialog = new PackageTypeDialog(application, "Packages");
+            PackageTypeDialog dialog = new PackageTypeDialog(parent, "Packages");
             dialog.showDialog();
 
             // TODO update comboboxes

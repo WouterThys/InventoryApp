@@ -50,17 +50,13 @@ public class LogsPanel extends JPanel implements
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
-
     private LogSettings selectedLogSettings;
     private LogSettings originalLogSettings;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LogsPanel(Application application) {
-        this.application = application;
-
+    public LogsPanel() {
         initializeComponents();
         initializeLayouts();
 
@@ -139,11 +135,11 @@ public class LogsPanel extends JPanel implements
         new SwingWorker<LogSettings, Object>() {
             @Override
             protected LogSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(LogsPanel.this);
                 try {
                     settings().saveSettings(toSave);
                 } finally {
-                    application.endWait();
+                    Application.endWait(LogsPanel.this);
                 }
                 return toSave;
             }
@@ -163,11 +159,11 @@ public class LogsPanel extends JPanel implements
         new SwingWorker<LogSettings, Object>() {
             @Override
             protected LogSettings doInBackground() throws Exception {
-                application.beginWait();
+                Application.beginWait(LogsPanel.this);
                 try {
                     settings().selectNewSettings(toUse);
                 } finally {
-                    application.endWait();
+                    Application.endWait(LogsPanel.this);
                 }
                 return settings().getLogSettings();
             }
@@ -193,11 +189,11 @@ public class LogsPanel extends JPanel implements
             new SwingWorker<LogSettings, Object>() {
                 @Override
                 protected LogSettings doInBackground() throws Exception {
-                    application.beginWait();
+                    Application.beginWait(LogsPanel.this);
                     try {
                         settings().deleteSetting(toDelete);
                     } finally {
-                        application.endWait();
+                        Application.endWait(LogsPanel.this);
                     }
                     return settings().getLogSettings();
                 }
@@ -324,15 +320,21 @@ public class LogsPanel extends JPanel implements
     }
 
     @Override
-    public void updateComponents(Object... object) {
-        application.beginWait();
+    public void updateComponents(Object... args) {
+        Application.beginWait(LogsPanel.this);
         try {
             logSettingsCbModel.removeAllElements();
             for (LogSettings settings : settings().getLogSettingsList()) {
                 logSettingsCbModel.addElement(settings);
             }
 
-            selectedLogSettings = ((SettingsManager) object[0]).getLogSettings();
+            if (args.length > 0) {
+                if (args[0] instanceof SettingsManager) {
+                    selectedLogSettings = ((SettingsManager) args[0]).getLogSettings();
+                } else {
+                    selectedLogSettings = (LogSettings) args[0];
+                }
+            }
 
             if (selectedLogSettings != null) {
                 logSettingsComboBox.setSelectedItem(selectedLogSettings);
@@ -343,7 +345,7 @@ public class LogsPanel extends JPanel implements
             }
             updateEnabledComponents();
         } finally {
-            application.endWait();
+            Application.endWait(LogsPanel.this);
         }
 
     }
@@ -353,7 +355,7 @@ public class LogsPanel extends JPanel implements
     //
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(LogsPanel.this)) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Object o = e.getItem();
                 if (o instanceof LogSettings) {
@@ -368,14 +370,14 @@ public class LogsPanel extends JPanel implements
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(LogsPanel.this)) {
             updateEnabledComponents();
         }
     }
 
     @Override
     public DbObject getGuiObject() {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(LogsPanel.this)) {
             return selectedLogSettings;
         }
         return null;
@@ -453,7 +455,7 @@ public class LogsPanel extends JPanel implements
 
     @Override
     public void onSettingsChanged(LogSettings newSettings) {
-        if (!application.isUpdating()) {
+        if (!Application.isUpdating(LogsPanel.this)) {
             updateComponents(newSettings);
         }
     }

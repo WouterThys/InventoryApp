@@ -291,7 +291,7 @@ abstract class LogsDialogLayout extends IDialog implements
 
     @Override
     public void updateComponents(Object... object) {
-        application.beginWait();
+        beginWait();
         try {
 
             Log selectedLog;
@@ -304,7 +304,7 @@ abstract class LogsDialogLayout extends IDialog implements
             // Details
             systemDetailPanel.updateComponents(selectedLog);
         } finally {
-            application.endWait();
+            endWait();
         }
     }
 }

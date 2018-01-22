@@ -1,12 +1,12 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog;
 
-import com.waldo.inventory.gui.Application;
+import java.awt.*;
 
 public class LauncherDialog extends LauncherDialogLayout {
 
 
-    public LauncherDialog(Application application, String title, boolean useDefaultLauncher, String launcherPath) {
-        super(application, title, useDefaultLauncher, launcherPath);
+    public LauncherDialog(Window parent, String title, boolean useDefaultLauncher, String launcherPath) {
+        super(parent, title, useDefaultLauncher, launcherPath);
 
         initializeComponents();
         initializeLayouts();

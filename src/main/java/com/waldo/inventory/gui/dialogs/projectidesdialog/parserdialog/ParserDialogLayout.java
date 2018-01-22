@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IParserItemLinkTableModel;
 import com.waldo.inventory.managers.SearchManager;
@@ -45,8 +44,8 @@ public abstract class ParserDialogLayout extends IDialog implements
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ParserDialogLayout(Application application, String title, boolean useParser, PcbParser selectedParser) {
-        super(application, title);
+    ParserDialogLayout(Window parent, String title, boolean useParser, PcbParser selectedParser) {
+        super(parent, title);
 
         this.useParser = useParser;
         this.selectedParser = selectedParser;
