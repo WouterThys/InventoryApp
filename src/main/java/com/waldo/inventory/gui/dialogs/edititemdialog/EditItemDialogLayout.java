@@ -125,6 +125,8 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
         separator.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
         separator.setMaximumSize(new Dimension(1000000,1));
         getContentPanel().add(separator);
+
+        //getContentPanel().setPreferredSize(new Dimension(600, 500));
         pack();
     }
 
