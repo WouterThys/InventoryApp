@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,8 +13,12 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
 
-    public ItemDetailPanel(OnItemDetailListener detailListener) {
-        super(detailListener);
+    public ItemDetailPanel(ItemDetailListener detailListener) {
+        super(detailListener, null);
+    }
+
+    public ItemDetailPanel(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+        super(itemDetailListener, orderDetailListener);
     }
 
     @Override
@@ -22,16 +27,18 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
             setVisible(false);
             selectedItem = null;
         } else {
+            setVisible(true);
             if (object[0] instanceof Item) {
-                setVisible(true);
-
                 selectedItem = (Item) object[0];
-
-                updateHeader(selectedItem);
-                updateData(selectedItem);
-                updateRemarks(selectedItem);
-                updateButtons(selectedItem);
+                selectedOrderItem = null;
+            } else {
+                selectedOrderItem = (OrderItem) object[0];
+                selectedItem = selectedOrderItem.getItem();
             }
+            updateHeader(selectedItem);
+            updateData(selectedItem, selectedOrderItem);
+            updateRemarks(selectedItem);
+            updateButtons(selectedItem);
         }
     }
 
@@ -51,23 +58,36 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         starRater.setRating(item.getRating());
     }
 
-    private void updateData(Item item) {
-        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            categoryTf.setText(item.getCategory().toString());
+    private void updateData(Item item, OrderItem orderItem) {
+        if (isOrderType) {
+            amountTf.setText(String.valueOf(orderItem.getAmount()));
+            if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                priceTf.setText(orderItem.getPrice().toString());
+                referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+            }
+            boolean locked = orderItem.isLocked();
+            editPriceAction.setEnabled(!locked);
+            editReferenceAction.setEnabled(!locked);
+            plusOneAction.setEnabled(!locked);
+            minOneAction.setEnabled(!locked);
         } else {
-            categoryTf.setText("");
-        }
+            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+                categoryTf.setText(item.getCategory().toString());
+            } else {
+                categoryTf.setText("");
+            }
 
-        if (item.getProductId() > DbObject.UNKNOWN_ID) {
-            productTf.setText(item.getProduct().toString());
-        } else {
-            productTf.setText("");
-        }
+            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+                productTf.setText(item.getProduct().toString());
+            } else {
+                productTf.setText("");
+            }
 
-        if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-            typeTf.setText(item.getType().toString());
-        } else {
-            typeTf.setText("");
+            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+                typeTf.setText(item.getType().toString());
+            } else {
+                typeTf.setText("");
+            }
         }
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
@@ -91,6 +111,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void updateRemarks(Item item) {
         remarksTp.setFile(item.getRemarksFile());
+        discourageOrderCb.setSelected(item.isDiscourageOrder());
     }
 
     private void updateButtons(Item item) {

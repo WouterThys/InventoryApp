@@ -644,13 +644,6 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
-    public void onShowDataSheet(Item item, boolean online) {
-        if (item != null) {
-            application.openDataSheet(item, online);
-        }
-    }
-
-    @Override
     public void onOrderItem(Item item) {
         if (item != null) {
             application.orderItem(item);

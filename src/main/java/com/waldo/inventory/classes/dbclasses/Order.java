@@ -39,7 +39,18 @@ public class Order extends DbObject {
     private String orderReference;
     private String trackingNumber;
 
+    // Runtime variables
+    private boolean isLocked;
     private final List<OrderItem> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+
+    public Order() {
+        super(TABLE_NAME);
+    }
+
+    public Order(String name) {
+        super(TABLE_NAME);
+        this.name = name;
+    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -217,16 +228,6 @@ public class Order extends DbObject {
         o.setId(UNKNOWN_ID);
         o.setCanBeSaved(false);
         return o;
-    }
-
-
-    public Order() {
-        super(TABLE_NAME);
-    }
-
-    public Order(String name) {
-        super(TABLE_NAME);
-        this.name = name;
     }
 
     public boolean containsItemId(long id) {
@@ -471,16 +472,11 @@ public class Order extends DbObject {
         tempOrderItems.clear();
     }
 
-    //
-    // Override to work with edited listener
-    //
-    @Override
-    public void setName(String name) {
-        super.setName(name);
+    public boolean isLocked() {
+        return isLocked;
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

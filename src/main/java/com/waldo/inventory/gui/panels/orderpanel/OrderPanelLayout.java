@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -34,7 +35,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.OnItemDetailListener {
+        ItemDetailPanelLayout.ItemDetailListener,
+        ItemDetailPanelLayout.OrderDetailListener {
 
     /*
      *                  COMPONENTS
@@ -77,8 +79,6 @@ public abstract class OrderPanelLayout extends JPanel implements
     abstract void onTreeRightClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
 
-    abstract void onSetOrderItemAmount(OrderItem orderItem, int amount);
-
     abstract void onAddOrder();
     abstract void onEditOrder(Order order);
     abstract void onDeleteOrder(Order order);
@@ -90,7 +90,6 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     abstract void onDeleteOrderItem(OrderItem orderItem);
     abstract void onEditItem(OrderItem orderItem);
-    abstract void onEditReference(OrderItem orderItem);
 
 
     public Order getSelectedOrder() {
@@ -262,22 +261,30 @@ public abstract class OrderPanelLayout extends JPanel implements
             if (order.getDistributor() != null) {
                 tbDistributorCb.setSelectedItem(order.getDistributor());
             }
+
+            if (order.getOrderState() != Statics.ItemOrderStates.Planned && !order.isLocked()) {
+                orderItemTable.setHeaderPanelBackground(Color.red);
+            } else {
+                orderItemTable.setHeaderPanelBackground(null);
+            }
         } else {
             tbOrderNameLbl.setText("");
             tbDistributorCb.setSelectedItem(null);
+            orderItemTable.setHeaderPanelBackground(null);
         }
     }
 
     void updateEnabledComponents() {
         boolean orderSelected = (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved());
         boolean itemSelected = (selectedOrderItem != null && !selectedOrderItem.isUnknown());
+        boolean locked = orderSelected && selectedOrder.isLocked();
 
-        treeToolBar.setEditActionEnabled(orderSelected);
-        treeToolBar.setDeleteActionEnabled(orderSelected);
+        treeToolBar.setEditActionEnabled(!locked);
+        treeToolBar.setDeleteActionEnabled(!locked);
 
         if (orderSelected) {
             orderItemTable.setDbToolBarEnabled(true);
-            orderItemTable.setDbToolBarEditDeleteEnabled(itemSelected);
+            orderItemTable.setDbToolBarEditDeleteEnabled(itemSelected && !locked);
         } else {
             orderItemTable.setDbToolBarEnabled(true);
         }
@@ -316,6 +323,9 @@ public abstract class OrderPanelLayout extends JPanel implements
         orderTbPanel = new JPanel();
         orderTbPanel.add(makeOrderPanel);
         orderTbPanel.setVisible(false);
+
+        tbOrderFilePanel.setOpaque(false);
+        orderTbPanel.setOpaque(false);
 
         return orderTbPanel;
     }
@@ -396,7 +406,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 //        };
 
         // Details
-        itemDetailPanel = new ItemDetailPanel(this);
+        itemDetailPanel = new ItemDetailPanel(this, this);
 
         // Tool bar
         tbOrderNameLbl = new ILabel();

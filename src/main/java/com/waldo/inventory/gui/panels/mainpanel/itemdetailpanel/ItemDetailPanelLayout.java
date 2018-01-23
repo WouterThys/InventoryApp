@@ -2,21 +2,29 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
-    public interface OnItemDetailListener {
+    public interface ItemDetailListener {
         void onShowDataSheet(Item item);
-        void onShowDataSheet(Item item, boolean online);
         void onOrderItem(Item item);
         void onShowHistory(Item item);
+    }
+
+    public interface OrderDetailListener {
+        void onSetOrderItemAmount(OrderItem orderItem, int amount);
+        void onEditReference(OrderItem orderItem);
+        void onEditPrice(OrderItem orderItem);
     }
 
     /*
@@ -31,6 +39,15 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     ITextField productTf;
     ITextField typeTf;
 
+    ITextField amountTf;
+    ITextField priceTf;
+    ITextField referenceTf;
+
+    IActions.EditAction editPriceAction;
+    IActions.PlusOneAction plusOneAction;
+    IActions.MinOneAction minOneAction;
+    IActions.EditAction editReferenceAction;
+
     ITextField manufacturerTf;
     ITextField footprintTf;
     ITextField locationTf;
@@ -43,19 +60,25 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     private JButton orderBtn;
     private JButton historyBtn;
 
-    JPanel remarksPnl;
+    private JPanel remarksPnl;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item selectedItem;
-    private final OnItemDetailListener detailListener;
+    OrderItem selectedOrderItem;
+
+    private final ItemDetailListener itemDetailListener;
+    private final OrderDetailListener orderDetailListener;
+    final boolean isOrderType;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ItemDetailPanelLayout(OnItemDetailListener detailListener) {
-        this.detailListener = detailListener;
+    ItemDetailPanelLayout(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+        this.itemDetailListener = itemDetailListener;
+        this.orderDetailListener = orderDetailListener;
+        this.isOrderType = orderDetailListener != null;
 
         initializeComponents();
         initializeLayouts();
@@ -74,7 +97,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         ));
 
         panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        panel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
         return panel;
     }
 
@@ -90,53 +113,55 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         return panel;
     }
 
-    private JPanel createComponentInfoPanel() {
-        JPanel dataPnl = new JPanel();
-        dataPnl.setLayout(new BoxLayout(dataPnl, BoxLayout.X_AXIS));
-
-        GuiUtils.GridBagHelper gbc;
-
+    private JPanel createItemDetailPanel() {
         JPanel divisionPanel = new JPanel();
-        divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
         gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
         gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
         gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
 
+        return divisionPanel;
+    }
+
+    private JPanel createOrderDetailPanel() {
         JPanel infoPnl = new JPanel();
-        infoPnl.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        gbc = new GuiUtils.GridBagHelper(infoPnl);
+
+        JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
+        JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
+        JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
+
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
+        gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
+        gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
+        gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+
+        return infoPnl;
+    }
+
+    private JPanel createDataPanel() {
+        JPanel dataPnl = new JPanel();
+        dataPnl.setLayout(new BoxLayout(dataPnl, BoxLayout.X_AXIS));
+
+        GuiUtils.GridBagHelper gbc;
+        JPanel sharePnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(sharePnl);
         gbc.addLine("Manufacturers", imageResource.readImage("Manufacturers.Menu"), manufacturerTf);
         gbc.addLine("Footprint", imageResource.readImage("Packages.Menu"), footprintTf);
         gbc.addLine("Location", imageResource.readImage("Locations.Menu"), locationTf);
 
+        JPanel infoPnl;
+        if (isOrderType) {
+            infoPnl = createOrderDetailPanel();
+        } else {
+            infoPnl = createItemDetailPanel();
+        }
+        infoPnl.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+
         //dataPnl.add(createDivisionPanel());
+        dataPnl.add(sharePnl);
         dataPnl.add(infoPnl);
-        dataPnl.add(divisionPanel);
 
         return dataPnl;
-    }
-
-    private JPanel createDivisionPanel() {
-        JPanel divisionPnl = new JPanel();
-        divisionPnl.setLayout(new BoxLayout(divisionPnl, BoxLayout.X_AXIS));
-
-        JPanel cPnl = new JPanel(new BorderLayout());
-        JPanel pPnl = new JPanel(new BorderLayout());
-        JPanel tPnl = new JPanel(new BorderLayout());
-
-        cPnl.add(new ILabel(imageResource.readImage("Items.Tree.Category")), BorderLayout.WEST);
-        cPnl.add(categoryTf, BorderLayout.CENTER);
-        pPnl.add(new ILabel(imageResource.readImage("Items.Tree.Product")), BorderLayout.WEST);
-        pPnl.add(productTf, BorderLayout.CENTER);
-        tPnl.add(new ILabel(imageResource.readImage("Items.Tree.Type")), BorderLayout.WEST);
-        tPnl.add(typeTf, BorderLayout.CENTER);
-
-        divisionPnl.add(cPnl);
-        divisionPnl.add(pPnl);
-        divisionPnl.add(tPnl);
-
-        return divisionPnl;
     }
 
     private JPanel createButtonsPanel() {
@@ -192,7 +217,6 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         iconLbl.setMaximumSize(new Dimension(150,150));
         iconLbl.setMinimumSize(new Dimension(150,150));
 
-
         nameTf = new ITextField(false);
         manufacturerTf = new ITextField(false);
         footprintTf = new ITextField(false);
@@ -200,6 +224,10 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         categoryTf = new ITextField(false);
         productTf = new ITextField(false);
         typeTf = new ITextField(false);
+
+        amountTf = new ITextField(false);
+        priceTf = new ITextField(false, 6);
+        referenceTf = new ITextField(false);
 
         descriptionTa = new ITextField(false);
 //        descriptionTa.setBorder(nameTf.getBorder());
@@ -216,13 +244,52 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         remarksTp.setEditable(false);
         remarksTp.setEnabled(false);
 
+        plusOneAction = new IActions.PlusOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount + 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        minOneAction = new IActions.MinOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount - 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editReferenceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editPriceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+
         dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));
         historyBtn = new JButton(imageResource.readImage("Items.Buttons.History"));
 
-        dataSheetBtn.addActionListener(e -> detailListener.onShowDataSheet(selectedItem));
-        orderBtn.addActionListener(e -> detailListener.onOrderItem(selectedItem));
-        historyBtn.addActionListener(e -> detailListener.onShowHistory(selectedItem));
+        dataSheetBtn.addActionListener(e -> itemDetailListener.onShowDataSheet(selectedItem));
+        orderBtn.addActionListener(e -> itemDetailListener.onOrderItem(selectedItem));
+        historyBtn.addActionListener(e -> itemDetailListener.onShowHistory(selectedItem));
 
         dataSheetBtn.setToolTipText("Data sheets");
         orderBtn.setToolTipText("Order");
@@ -236,7 +303,7 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
         setLayout(new BorderLayout());
 
         JPanel idPanel = createIdentificationPanel();
-        JPanel infoPanel = createComponentInfoPanel();
+        JPanel infoPanel = createDataPanel();
         JPanel remarksPanel = createRemarksPanel();
 
         JPanel panel1 = new JPanel(new BorderLayout());

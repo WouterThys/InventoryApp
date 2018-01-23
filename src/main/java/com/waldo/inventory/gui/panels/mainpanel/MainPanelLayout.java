@@ -31,7 +31,7 @@ abstract class MainPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.OnItemDetailListener,
+        ItemDetailPanelLayout.ItemDetailListener,
         TableOptionsPopup.TableOptionsListener {
 
     private static final String TREE_ITEMS = "Items";

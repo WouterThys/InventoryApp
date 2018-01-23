@@ -430,7 +430,7 @@ public class OrderPanel extends OrderPanelLayout {
     // Actions
     //
     @Override
-    void onSetOrderItemAmount(OrderItem orderItem, int amount) {
+    public void onSetOrderItemAmount(OrderItem orderItem, int amount) {
         Order order = getSelectedOrder();
         if (order != null && order.canBeSaved() && order.isPlanned()) {
             if (orderItem != null) {
@@ -501,11 +501,12 @@ public class OrderPanel extends OrderPanelLayout {
             if (validateOrderlines(order)) {
                 // Do order
                 order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-                application.beginWait(OrderPanel.this);
+                order.setLocked(true);
+                Application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                 } finally {
-                    application.endWait(OrderPanel.this);
+                    Application.endWait(OrderPanel.this);
                 }
                 order.save();
 
@@ -535,12 +536,13 @@ public class OrderPanel extends OrderPanelLayout {
         if (order != null && order.canBeSaved() && !order.isReceived()) {
             // Do receive
             order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-            application.beginWait(OrderPanel.this);
+            order.setLocked(true);
+            Application.beginWait(OrderPanel.this);
             try {
                 order.updateItemStates();
                 order.updateItemAmounts(true);
             } finally {
-                application.endWait(OrderPanel.this);
+                Application.endWait(OrderPanel.this);
             }
             order.save();
         }
@@ -558,12 +560,13 @@ public class OrderPanel extends OrderPanelLayout {
             );
             if (res == JOptionPane.YES_OPTION) {
                 order.setDateReceived((Date) null);
-                application.beginWait(OrderPanel.this);
+                order.setLocked(true);
+                Application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                     order.updateItemAmounts(false);
                 } finally {
-                    application.endWait(OrderPanel.this);
+                    Application.endWait(OrderPanel.this);
                 }
                 order.save();
             }
@@ -583,14 +586,23 @@ public class OrderPanel extends OrderPanelLayout {
             if (res == JOptionPane.YES_OPTION) {
                 order.setDateReceived((Date) null);
                 order.setDateOrdered((Date) null);
-                application.beginWait(OrderPanel.this);
+                order.setLocked(false);
+                Application.beginWait(OrderPanel.this);
                 try {
                     order.updateItemStates();
                 } finally {
-                    application.endWait(OrderPanel.this);
+                    Application.endWait(OrderPanel.this);
                 }
                 order.save();
             }
+        }
+    }
+
+    private void onSetOrderLocked(Order order, boolean locked) {
+        if (order != null) {
+            order.setLocked(locked);
+            updateToolBar(order);
+            updateEnabledComponents();
         }
     }
 
@@ -620,7 +632,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onEditReference(OrderItem orderItem) {
+    public void onEditReference(OrderItem orderItem) {
         if (orderItem != null) {
             OrderEditReferenceDialog dialog = new OrderEditReferenceDialog(application, "Reference", orderItem);
             if (dialog.showDialog() == IDialog.OK) {
@@ -676,6 +688,11 @@ public class OrderPanel extends OrderPanelLayout {
                     public void onBackToPlanned(Order order) {
                         OrderPanel.this.onBackToPlanned(order);
                     }
+
+                    @Override
+                    public void onLocked(Order order, boolean locked) {
+                        OrderPanel.this.onSetOrderLocked(order, locked);
+                    }
                 };
 
             } else {
@@ -710,22 +727,22 @@ public class OrderPanel extends OrderPanelLayout {
 
                     @Override
                     public void onOpenLocalDataSheet(Item item) {
-                        OrderPanel.this.onShowDataSheet(item, false);
+                        application.openDataSheet(item, false);
                     }
 
                     @Override
                     public void onOpenOnlineDataSheet(Item item) {
-                        OrderPanel.this.onShowDataSheet(item, true);
+                        application.openDataSheet(item, true);
                     }
 
                     @Override
                     public void onOrderItem(Item item) {
-                        OrderPanel.this.onOrderItem(item);
+                        application.orderItem(item);
                     }
 
                     @Override
                     public void onShowHistory(Item item) {
-                        OrderPanel.this.onShowHistory(item);
+                        application.showHistory(item);
                     }
                 };
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -742,7 +759,7 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!application.isUpdating(OrderPanel.this)) {
+        if (!Application.isUpdating(OrderPanel.this)) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
 
             if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved()) {
@@ -775,7 +792,7 @@ public class OrderPanel extends OrderPanelLayout {
             SwingUtilities.invokeLater(() -> {
                 selectedOrderItem = tableGetSelectedItem();
                 if (selectedOrderItem != null) {
-                    itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                    itemDetailPanel.updateComponents(selectedOrderItem);
                 } else {
                     itemDetailPanel.updateComponents();
                 }
@@ -804,8 +821,8 @@ public class OrderPanel extends OrderPanelLayout {
                 tableSelectOrderItem(selectedOrderItem);
             });
         } else {
+            Application.beginWait(OrderPanel.this);
             try {
-                application.beginWait(OrderPanel.this);
                 tableInitialize(selectedOrder);
                 treeRecreateNodes();
                 final long orderId = treeUpdate();
@@ -818,7 +835,7 @@ public class OrderPanel extends OrderPanelLayout {
                     updateEnabledComponents();
                 });
             } finally {
-                application.endWait(OrderPanel.this);
+                Application.endWait(OrderPanel.this);
             }
         }
     }
@@ -868,31 +885,30 @@ public class OrderPanel extends OrderPanelLayout {
     // Detail panel
     //
     @Override
-    public void onShowDataSheet(Item item) {
-        if (item != null) {
-            application.openDataSheet(item);
+    public void onShowDataSheet(Item orderItem) {
+        if (orderItem != null) {
+            application.openDataSheet(orderItem);
         }
     }
 
     @Override
-    public void onShowDataSheet(Item item, boolean online) {
-        if (item != null) {
-            application.openDataSheet(item, online);
+    public void onOrderItem(Item orderItem) {
+        if (orderItem != null) {
+            application.orderItem(orderItem);
         }
     }
 
     @Override
-    public void onOrderItem(Item item) {
-        if (item != null) {
-            application.orderItem(item);
+    public void onShowHistory(Item orderItem) {
+        if (orderItem != null) {
+            application.showHistory(orderItem);
         }
     }
 
     @Override
-    public void onShowHistory(Item item) {
-        if (item != null) {
-            application.showHistory(item);
+    public void onEditPrice(OrderItem orderItem) {
+        if (orderItem != null) {
+
         }
     }
-
 }
