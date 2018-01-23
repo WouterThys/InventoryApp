@@ -345,7 +345,13 @@ public class FilesPanel extends JPanel implements
                 fileSettingsCbModel.addElement(settings);
             }
 
-            selectedFileSettings = ((SettingsManager) object[0]).getFileSettings();
+            if (object.length > 0) {
+                if (object[0] instanceof SettingsManager) {
+                    selectedFileSettings = ((SettingsManager) object[0]).getFileSettings();
+                } else {
+                    selectedFileSettings = (FileSettings) object[0];
+                }
+            }
 
             if (selectedFileSettings != null) {
                 fileSettingsComboBox.setSelectedItem(selectedFileSettings);

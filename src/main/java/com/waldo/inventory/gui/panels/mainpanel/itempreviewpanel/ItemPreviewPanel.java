@@ -400,6 +400,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface, IdBToolBar
     public void initializeLayouts() {
         JPanel panel1 = new JPanel(new BorderLayout());
         JPanel panel2 = new JPanel(new BorderLayout());
+
         JPanel toolbarsPanel = createToolBarPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel dataPanel = createDataPanel();

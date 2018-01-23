@@ -10,8 +10,8 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
+import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
-import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -47,8 +47,8 @@ abstract class MainPanelLayout extends JPanel implements
     IDbObjectTreeModel<DbObject> treeModel;
     IdBToolBar selectionTb;
 
-    //ItemDetailPanel detailPanel;
-    ItemPreviewPanel detailPanel;
+    ItemDetailPanel detailPanel;
+    //ItemPreviewPanel detailPanel;
 
     /*
      *                  VARIABLES
@@ -345,15 +345,15 @@ abstract class MainPanelLayout extends JPanel implements
         selectionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
         // Preview
-        detailPanel = new ItemPreviewPanel(application);
-        detailPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(2, -1, -1, -1),
-                BorderFactory.createLineBorder(Color.lightGray, 1)
-        ));
+//        detailPanel = new ItemPreviewPanel(application);
+//        detailPanel.setBorder(BorderFactory.createCompoundBorder(
+//                BorderFactory.createEmptyBorder(2, -1, -1, -1),
+//                BorderFactory.createLineBorder(Color.lightGray, 1)
+//        ));
 
         // Items
         tableModel = new IItemTableModel();
-        itemTable = new ITablePanel<>(tableModel, detailPanel, this, true);
+        itemTable = new ITablePanel<>(tableModel, null, this, true);
         itemTable.setDbToolBar(this, true, true, false, false);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -369,7 +369,7 @@ abstract class MainPanelLayout extends JPanel implements
         tableInitialize(null);
 
         // Details
-        //detailPanel = new ItemDetailPanel(application, this);
+        detailPanel = new ItemDetailPanel(this);
     }
 
     @Override
@@ -381,7 +381,7 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Panel them together
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
-        //centerPanel.add(detailPanel, BorderLayout.SOUTH);
+        centerPanel.add(detailPanel, BorderLayout.SOUTH);
         //centerPanel.add(detailPanel, BorderLayout.EAST);
 
         // Add
