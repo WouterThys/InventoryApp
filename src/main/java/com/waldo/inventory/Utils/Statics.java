@@ -448,4 +448,30 @@ public class Statics {
             return Unknown;
         }
     }
+
+    public enum GuiDetailsView {
+        VerticalSplit ("Vertical split"),
+        HorizontalSplit("Horizontal split");
+
+        private final String string;
+        GuiDetailsView(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static GuiDetailsView fromString(String string) {
+            if (string != null) {
+                switch (string) {
+                    case "":
+                    case "Vertical split": return VerticalSplit;
+                    case "Horizontal split": return HorizontalSplit;
+                }
+            }
+            return VerticalSplit;
+        }
+    }
 }

@@ -42,13 +42,17 @@ public class Main {
 
         readArguments(args);
 
+        for (UIManager.LookAndFeelInfo lf : UIManager.getInstalledLookAndFeels()) {
+            System.out.println(lf.getName());
+        }
+
         SwingUtilities.invokeLater(() -> {
             setLookAndFeel();
 
             Application app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setPreferredSize(new Dimension(1500, 800));
+            app.setPreferredSize(new Dimension(1600, 800));
             app.setMinimumSize(new Dimension(1000, 600));
             if (FULL_SCREEN) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);

@@ -1,11 +1,8 @@
 package com.waldo.inventory.database.settings;
 
+import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
-import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
-import com.waldo.inventory.database.settings.settingsclasses.FileSettings;
-import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -38,6 +35,10 @@ public class SettingsManager {
 
     private BasicDataSource dataSource;
 
+    // General settings
+    private String selectedGeneralSettings = DEFAULT;
+    private List<GeneralSettings> generalSettingsList = null;
+
     // Db settings
     private String selectedDbSettings = DEFAULT;
     private List<DbSettings> dbSettingsList = null;
@@ -54,6 +55,7 @@ public class SettingsManager {
     private final List<DbSettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
     private final List<DbSettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
     private final List<DbSettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
+    private final List<DbSettingsListener<GeneralSettings>> onGeneralSettingsChangedList = new ArrayList<>();
 
     /*
      *                  MAIN STUFF
@@ -117,6 +119,12 @@ public class SettingsManager {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void addGeneralSettingsListener(DbSettingsListener<GeneralSettings> listener) {
+        if (!onGeneralSettingsChangedList.contains(listener)) {
+            onGeneralSettingsChangedList.add(listener);
+        }
+    }
+
     public void addLogSettingsListener(DbSettingsListener<LogSettings> listener) {
         if (!onLogSettingsChangedList.contains(listener)) {
             onLogSettingsChangedList.add(listener);
@@ -139,16 +147,11 @@ public class SettingsManager {
         for (DbSettingsListener<T> l : listeners) {
             l.onSettingsChanged(newSettings);
         }
-//        System.out.println(
-//                "Log settings changed to: " + getLogSettings().getNameText() + "\r\n " +
-//                        "\t log info: " + Boolean.toString(getLogSettings().isLogInfo())  + "\r\n " +
-//                        "\t log debug: " + Boolean.toString(getLogSettings().isLogDebug())  + "\r\n " +
-//                        "\t log warnings: " + Boolean.toString(getLogSettings().isLogWarn())  + "\r\n " +
-//                        "\t log errors: " + Boolean.toString(getLogSettings().isLogError()));
     }
 
     private void notifyAllListeners() {
         SwingUtilities.invokeLater(() -> {
+            notifyListeners(getGeneralSettings(), onGeneralSettingsChangedList);
             notifyListeners(getLogSettings(), onLogSettingsChangedList);
             notifyListeners(getDbSettings(), onDbSettingsChangedList);
             notifyListeners(getFileSettings(), onFileSettingsChangedList);
@@ -158,6 +161,15 @@ public class SettingsManager {
     /*
      *                  GETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public GeneralSettings getGeneralSettings() {
+        for (GeneralSettings settings : getGeneralSettingsList()) {
+            if (settings.getName().equals(getSelectedGeneralSettingsName())) {
+                return settings;
+            }
+        }
+        return null;
+    }
+
     public DbSettings getDbSettings() {
         for (DbSettings settings : getDbSettingsList()) {
             if (settings.getName().equals(getSelectedDbSettingsName())) {
@@ -185,6 +197,18 @@ public class SettingsManager {
         return null;
     }
 
+
+    public String getSelectedGeneralSettingsName() {
+        if (selectedGeneralSettings == null || selectedGeneralSettings.isEmpty()) {
+            try {
+                readSelectedSettingsFromDb();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                selectedGeneralSettings = DEFAULT;
+            }
+        }
+        return selectedGeneralSettings;
+    }
 
     public String getSelectedDbSettingsName() {
         if (selectedDbSettings == null || selectedDbSettings.isEmpty()) {
@@ -223,6 +247,13 @@ public class SettingsManager {
     }
 
 
+    public List<GeneralSettings> getGeneralSettingsList() {
+        if (generalSettingsList == null) {
+            readGeneralSettingsFromDb();
+        }
+        return generalSettingsList;
+    }
+
     public List<DbSettings> getDbSettingsList() {
         if (dbSettingsList == null) {
             readDbSettingsFromDb();
@@ -244,6 +275,15 @@ public class SettingsManager {
         return fileSettingsList;
     }
 
+
+    public GeneralSettings getGeneralSettingsByName(String name) {
+        for (GeneralSettings settings : getGeneralSettingsList()) {
+            if (settings.getName().equals(name)) {
+                return settings;
+            }
+        }
+        return null;
+    }
 
     public LogSettings getLogSettingsByName(String name) {
         for (LogSettings settings : getLogSettingsList()) {
@@ -285,6 +325,10 @@ public class SettingsManager {
         }
     }
 
+    public void updateGeneralSettings() {
+        generalSettingsList = null;
+    }
+
     public void updateLogSettings() {
         logSettingsList = null; // This will update the list when fetched next time
     }
@@ -306,6 +350,9 @@ public class SettingsManager {
         if (!toDelete.isDefault()) {
             // Set back default value
             switch (DbSettingsObject.getType(toDelete)) {
+                case SETTINGS_TYPE_GENERAL:
+                    selectNewSettings(getGeneralSettingsByName(DEFAULT));
+                    break;
                 case SETTINGS_TYPE_LOG:
                     selectNewSettings(getLogSettingsByName(DEFAULT));
                     break;
@@ -341,6 +388,9 @@ public class SettingsManager {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void saveSettings(DbSettingsObject settings) {
         switch (getType(settings)) {
+            case SETTINGS_TYPE_GENERAL:
+                saveGeneralSettings((GeneralSettings) settings);
+                break;
             case SETTINGS_TYPE_LOG:
                 saveLogSettings((LogSettings) settings);
                 break;
@@ -352,6 +402,20 @@ public class SettingsManager {
                 break;
         }
         settings.setSaved(true);
+    }
+
+    private void saveGeneralSettings(GeneralSettings generalSettings) {
+        if (generalSettings.isSaved()) {
+            // Update
+            updateGeneralSetting(generalSettings);
+            readGeneralSettingsFromDb();
+            notifyListeners(getGeneralSettings(), onGeneralSettingsChangedList);
+        } else {
+            // Insert
+            insertGeneralSetting(generalSettings);
+            readGeneralSettingsFromDb();
+
+        }
     }
 
     private void saveLogSettings(LogSettings logSettings) {
@@ -400,6 +464,9 @@ public class SettingsManager {
     public void selectNewSettings(DbSettingsObject settings) {
         String sql = "";
         switch (getType(settings)) {
+            case SETTINGS_TYPE_GENERAL:
+                sql = scriptResource.readString("settings.sqlUpdateGeneral");
+                break;
             case SETTINGS_TYPE_LOG:
                 sql = scriptResource.readString("settings.sqlUpdateLog");
                 break;
@@ -418,6 +485,10 @@ public class SettingsManager {
         }
 
         switch (getType(settings)) {
+            case SETTINGS_TYPE_GENERAL:
+                selectedGeneralSettings = settings.getName();
+                notifyListeners((GeneralSettings) settings, onGeneralSettingsChangedList);
+                break;
             case SETTINGS_TYPE_LOG:
                 selectedLogSettings = settings.getName();
                 notifyListeners((LogSettings) settings, onLogSettingsChangedList);
@@ -447,6 +518,7 @@ public class SettingsManager {
                     selectedDbSettings = rs.getString("dbsettings");
                     selectedFileSettings = rs.getString("filesettings");
                     selectedLogSettings = rs.getString("logsettings");
+                    selectedGeneralSettings = rs.getString("generalsettings");
                 }
             }
         }
@@ -461,6 +533,31 @@ public class SettingsManager {
         }
     }
 
+
+    private void readGeneralSettingsFromDb() {
+        generalSettingsList = new ArrayList<>();
+
+        String sql = scriptResource.readString("generalsettings.sqlSelectAll");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    GeneralSettings gs = new GeneralSettings();
+                    gs.setName(rs.getString("name"));
+                    gs.setGuiDetailsView(rs.getString("guiDetailsView"));
+                    gs.setGuiLookAndFeel(rs.getString("guiLookAndFeel"));
+                    gs.setGuiStartUpFullScreen(rs.getBoolean("guiStartUpFullScreen"));
+
+                    gs.setSaved(true);
+
+                    generalSettingsList.add(gs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void readDbSettingsFromDb() {
         dbSettingsList = new ArrayList<>();
@@ -547,6 +644,21 @@ public class SettingsManager {
     }
 
 
+    private void insertGeneralSetting(GeneralSettings general) {
+        String sql = scriptResource.readString("generalsettings.sqlInsert");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, general.getName());
+                stmt.setString(2, general.getGuiDetailsView().toString());
+                stmt.setString(3, general.getGuiLookAndFeel());
+                stmt.setBoolean(4, general.isGuiStartUpFullScreen());
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void insertLogSetting(LogSettings set) {
         String sql = scriptResource.readString("logsettings.sqlInsert");
         try (Connection connection = getConnection()) {
@@ -599,6 +711,22 @@ public class SettingsManager {
         }
     }
 
+
+    private void updateGeneralSetting(GeneralSettings general) {
+        String sql = scriptResource.readString("generalsettings.sqlUpdate");
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, general.getGuiDetailsView().toString());
+                stmt.setString(2, general.getGuiLookAndFeel());
+                stmt.setBoolean(3, general.isGuiStartUpFullScreen());
+
+                stmt.setString(4, general.getName()); // Where name
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void updateLogSetting(LogSettings set) {
         String sql = scriptResource.readString("logsettings.sqlUpdate");
