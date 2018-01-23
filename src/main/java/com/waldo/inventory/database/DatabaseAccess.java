@@ -885,6 +885,7 @@ public class DatabaseAccess {
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
+                    o.setLocked(o.getOrderState() != Statics.ItemOrderStates.Planned);
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {

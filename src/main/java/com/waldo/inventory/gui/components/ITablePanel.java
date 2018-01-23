@@ -41,11 +41,13 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
     private JPanel centerPanel;
     private JPanel westPanel;
     private JPanel detailsPanel;
+    private JPanel headerPanel;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final boolean hasSortOption;
+    private Color headerPanelBackground = null;
 
     /*
      *                  CONSTRUCTOR
@@ -203,6 +205,22 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
         return centerPanel;
     }
 
+    public void setHeaderPanelBackground(Color background) {
+        if (headerPanel != null) {
+            if (headerPanelBackground == null) {
+                headerPanelBackground = headerPanel.getBackground();
+            }
+
+            if (background != null) {
+                headerPanel.setBackground(background);
+                headerPanel.setOpaque(true);
+            } else {
+                headerPanel.setBackground(headerPanelBackground);
+                headerPanel.setOpaque(false);
+            }
+        }
+    }
+
     public void setDetailsPanel(JPanel detailsPanel) {
         this.detailsPanel = detailsPanel;
     }
@@ -230,7 +248,10 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiInterf
 
     @Override
     public void initializeLayouts() {
-        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        centerPanel.setOpaque(false);
+        westPanel.setOpaque(false);
 
         headerPanel.add(tableToolBar, BorderLayout.EAST);
         headerPanel.add(centerPanel, BorderLayout.CENTER);

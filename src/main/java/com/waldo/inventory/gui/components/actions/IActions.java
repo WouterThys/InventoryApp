@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components.actions;
 
 import com.waldo.inventory.classes.dbclasses.Set;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -106,6 +107,37 @@ public class IActions {
         }
     }
 
+    public static abstract class LockAction extends IAbstractAction {
+        private static final ImageIcon lockedIcon = imageResource.readImage("Actions.Locked");
+        private static final ImageIcon unlockedIcon = imageResource.readImage("Actions.Unlocked");
+
+        private boolean locked;
+        protected LockAction(boolean locked) {
+            super("Lock", lockedIcon);
+            this.locked = locked;
+            setView(locked);
+        }
+
+        private void setView(boolean locked) {
+            if (locked) {
+                setIcon(lockedIcon);
+                setName("Unlock");
+            } else {
+                setIcon(unlockedIcon);
+                setName("Lock");
+            }
+        }
+
+        public abstract void actionPerformed(ActionEvent e, boolean locked);
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            locked = !locked;
+            setView(locked);
+            actionPerformed(e, locked);
+        }
+    }
+
 
     public static abstract class OpenItemDataSheetLocalAction extends IAbstractAction {
         protected OpenItemDataSheetLocalAction() {
@@ -201,6 +233,18 @@ public class IActions {
     public static abstract class WizardAction  extends IAbstractAction {
         protected WizardAction() {
             super("Wizard", imageResource.readImage("Actions.Wizard"));
+        }
+    }
+
+    public static abstract class PlusOneAction extends IAbstractAction {
+        protected PlusOneAction() {
+            super("Plus one", imageResource.readImage("Actions.AddOne"));
+        }
+    }
+
+    public static abstract class MinOneAction  extends IAbstractAction {
+        protected MinOneAction() {
+            super("Minus one", imageResource.readImage("Actions.RemOne"));
         }
     }
 

@@ -1,25 +1,30 @@
 package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
-import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
 
-    public interface OnItemDetailListener {
+    public interface ItemDetailListener {
         void onShowDataSheet(Item item);
-        void onShowDataSheet(Item item, boolean online);
         void onOrderItem(Item item);
         void onShowHistory(Item item);
+    }
+
+    public interface OrderDetailListener {
+        void onSetOrderItemAmount(OrderItem orderItem, int amount);
+        void onEditReference(OrderItem orderItem);
+        void onEditPrice(OrderItem orderItem);
     }
 
     /*
@@ -28,9 +33,24 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     ILabel iconLbl;
 
     ITextField nameTf;
-    ITextArea divisionTa;
+    ITextField descriptionTa;
+
+    ITextField categoryTf;
+    ITextField productTf;
+    ITextField typeTf;
+
+    ITextField amountTf;
+    ITextField priceTf;
+    ITextField referenceTf;
+
+    IActions.EditAction editPriceAction;
+    IActions.PlusOneAction plusOneAction;
+    IActions.MinOneAction minOneAction;
+    IActions.EditAction editReferenceAction;
+
     ITextField manufacturerTf;
-    ITextArea descriptionTa;
+    ITextField footprintTf;
+    ITextField locationTf;
 
     IStarRater starRater;
     ICheckBox discourageOrderCb;
@@ -40,26 +60,28 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     private JButton orderBtn;
     private JButton historyBtn;
 
-    JPanel remarksPnl;
+    private JPanel remarksPnl;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final Application application;
     Item selectedItem;
-    private final OnItemDetailListener detailListener;
+    OrderItem selectedOrderItem;
+
+    private final ItemDetailListener itemDetailListener;
+    private final OrderDetailListener orderDetailListener;
+    final boolean isOrderType;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ItemDetailPanelLayout(Application application, OnItemDetailListener detailListener) {
-        this.application = application;
-        this.detailListener = detailListener;
+    ItemDetailPanelLayout(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+        this.itemDetailListener = itemDetailListener;
+        this.orderDetailListener = orderDetailListener;
+        this.isOrderType = orderDetailListener != null;
 
         initializeComponents();
         initializeLayouts();
-
-
     }
 
     /*
@@ -68,56 +90,78 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
     private JPanel createIconPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+
+        iconLbl.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1),
+                BorderFactory.createEmptyBorder(2,2,2,2)
+        ));
+
         panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        panel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
         return panel;
     }
 
-    private JPanel createComponentInfoPanel() {
-        JPanel componentPanel = new JPanel(new GridBagLayout());
+    private JPanel createIdentificationPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
 
-        ILabel nameLabel = new ILabel("Name: ", ILabel.RIGHT);
-        nameLabel.setStatusInfo("Item name");
-        ILabel divisionLabel = new ILabel("Division: ", ILabel.RIGHT);
-        divisionLabel.setStatusInfo("Item division");
-        ILabel manufacturerLabel = new ILabel("Manufacturer: ", ILabel.RIGHT);
-        manufacturerLabel.setStatusInfo("Item manufacturer");
-        ILabel descriptionLabel = new ILabel("Description: ", ILabel.RIGHT);
-        descriptionLabel.setStatusInfo("Item description");
+        JScrollPane scrollPane = new JScrollPane(descriptionTa);
+        scrollPane.setBorder(null);
 
-        // Helping lists
-        JComponent[] labels = new JComponent[] {nameLabel, divisionLabel, manufacturerLabel};
-        JComponent[] fields = new JComponent[] {nameTf, new JScrollPane(divisionTa), manufacturerTf};
+        panel.add(nameTf, BorderLayout.NORTH);
+        panel.add(descriptionTa, BorderLayout.CENTER);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        return panel;
+    }
 
-        for (int i = 0; i < labels.length; i++) {
-            //  - Label
-            gbc.gridx = 0; gbc.weightx = 0;
-            gbc.gridy = i; gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            componentPanel.add(labels[i], gbc);
-            //  - Field
-            gbc.gridx = 1; gbc.weightx = 1;
-            gbc.gridy = i; gbc.weighty = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            componentPanel.add(fields[i], gbc);
+    private JPanel createItemDetailPanel() {
+        JPanel divisionPanel = new JPanel();
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
+        gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
+        gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
+        gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
+
+        return divisionPanel;
+    }
+
+    private JPanel createOrderDetailPanel() {
+        JPanel infoPnl = new JPanel();
+
+        JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
+        JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
+        JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
+
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
+        gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
+        gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
+        gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+
+        return infoPnl;
+    }
+
+    private JPanel createDataPanel() {
+        JPanel dataPnl = new JPanel();
+        dataPnl.setLayout(new BoxLayout(dataPnl, BoxLayout.X_AXIS));
+
+        GuiUtils.GridBagHelper gbc;
+        JPanel sharePnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(sharePnl);
+        gbc.addLine("Manufacturers", imageResource.readImage("Manufacturers.Menu"), manufacturerTf);
+        gbc.addLine("Footprint", imageResource.readImage("Packages.Menu"), footprintTf);
+        gbc.addLine("Location", imageResource.readImage("Locations.Menu"), locationTf);
+
+        JPanel infoPnl;
+        if (isOrderType) {
+            infoPnl = createOrderDetailPanel();
+        } else {
+            infoPnl = createItemDetailPanel();
         }
+        infoPnl.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 
-        // Description
-        //  - Label
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy++; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        componentPanel.add(descriptionLabel, gbc);
-        //  - Field
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        componentPanel.add(new JScrollPane(descriptionTa), gbc);
+        //dataPnl.add(createDivisionPanel());
+        dataPnl.add(sharePnl);
+        dataPnl.add(infoPnl);
 
-        return componentPanel;
+        return dataPnl;
     }
 
     private JPanel createButtonsPanel() {
@@ -163,68 +207,89 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
 
     @Override
     public void initializeComponents() {
+        // Label
         iconLbl = new ILabel();
+        iconLbl.setBackground(Color.WHITE);
+        iconLbl.setOpaque(true);
         iconLbl.setHorizontalAlignment(ILabel.CENTER);
         iconLbl.setVerticalAlignment(ILabel.CENTER);
         iconLbl.setPreferredSize(new Dimension(150,150));
-
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() >= 2) {
-                    EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Edit item", selectedItem);
-                    Object source = e.getSource();
-                    if (source.equals(remarksTp)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_REMARK);
-                    } else if (source.equals(descriptionTa)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DESCRIPTION);
-                    } else if (source.equals(nameTf)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_NAME);
-                    } else if (source.equals(divisionTa)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMPONENTS, EditItemDialog.COMP_DIVISION);
-                    } else if (source.equals(manufacturerTf)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_MANUFACTURER);
-                    } else if (source.equals(starRater)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_RATING);
-                    } else if (source.equals(discourageOrderCb)) {
-                        dialog.showDialog(EditItemDialog.TAB_COMP_DETAILS, EditItemDialog.COMP_DISCOURAGE);
-                    } else {
-                        dialog.showDialog();
-                    }
-                }
-            }
-        };
+        iconLbl.setMaximumSize(new Dimension(150,150));
+        iconLbl.setMinimumSize(new Dimension(150,150));
 
         nameTf = new ITextField(false);
-        nameTf.addMouseListener(mouseAdapter);
-        divisionTa = new ITextArea(false);
-        divisionTa.setLineWrap(true);
-        divisionTa.setWrapStyleWord(true);
-        divisionTa.addMouseListener(mouseAdapter);
         manufacturerTf = new ITextField(false);
-        manufacturerTf.addMouseListener(mouseAdapter);
-        descriptionTa = new ITextArea(false);
-        descriptionTa.setLineWrap(true);
-        descriptionTa.setWrapStyleWord(true);
-        descriptionTa.addMouseListener(mouseAdapter);
+        footprintTf = new ITextField(false);
+        locationTf = new ITextField(false);
+        categoryTf = new ITextField(false);
+        productTf = new ITextField(false);
+        typeTf = new ITextField(false);
+
+        amountTf = new ITextField(false);
+        priceTf = new ITextField(false, 6);
+        referenceTf = new ITextField(false);
+
+        descriptionTa = new ITextField(false);
+//        descriptionTa.setBorder(nameTf.getBorder());
+//        descriptionTa.setEnabled(false);
+//        descriptionTa.setLineWrap(true);
+//        descriptionTa.setWrapStyleWord(true);
 
         starRater = new IStarRater(5);
         starRater.setEnabled(false);
-        starRater.addMouseListener(mouseAdapter);
         discourageOrderCb = new ICheckBox("Discourage order ");
         discourageOrderCb.setEnabled(false);
         discourageOrderCb.setHorizontalAlignment(SwingConstants.RIGHT);
-        discourageOrderCb.addMouseListener(mouseAdapter);
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
+        remarksTp.setEnabled(false);
+
+        plusOneAction = new IActions.PlusOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount + 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        minOneAction = new IActions.MinOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount - 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editReferenceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editPriceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
 
         dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
         orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));
         historyBtn = new JButton(imageResource.readImage("Items.Buttons.History"));
 
-        dataSheetBtn.addActionListener(e -> detailListener.onShowDataSheet(selectedItem));
-        orderBtn.addActionListener(e -> detailListener.onOrderItem(selectedItem));
-        historyBtn.addActionListener(e -> detailListener.onShowHistory(selectedItem));
+        dataSheetBtn.addActionListener(e -> itemDetailListener.onShowDataSheet(selectedItem));
+        orderBtn.addActionListener(e -> itemDetailListener.onOrderItem(selectedItem));
+        historyBtn.addActionListener(e -> itemDetailListener.onShowHistory(selectedItem));
 
         dataSheetBtn.setToolTipText("Data sheets");
         orderBtn.setToolTipText("Order");
@@ -237,13 +302,21 @@ public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterfa
     public void initializeLayouts() {
         setLayout(new BorderLayout());
 
-        JPanel helper = new JPanel(new BorderLayout());
-        helper.add(createComponentInfoPanel(), BorderLayout.CENTER);
-        helper.add(createRemarksPanel(), BorderLayout.EAST);
+        JPanel idPanel = createIdentificationPanel();
+        JPanel infoPanel = createDataPanel();
+        JPanel remarksPanel = createRemarksPanel();
 
+        JPanel panel1 = new JPanel(new BorderLayout());
+        JPanel panel2 = new JPanel(new BorderLayout());
+
+        panel1.add(idPanel, BorderLayout.NORTH);
+        panel1.add(infoPanel, BorderLayout.CENTER);
+
+        panel2.add(panel1, BorderLayout.CENTER);
+        panel2.add(remarksPanel, BorderLayout.EAST);
 
         add(createIconPanel(), BorderLayout.WEST);
-        add(helper, BorderLayout.CENTER);
+        add(panel2, BorderLayout.CENTER);
         add(createButtonsPanel(), BorderLayout.EAST);
     }
 }

@@ -179,4 +179,8 @@ public class OrderItem extends DbObject {
     public Price getTotalPrice() {
         return Price.multiply(getPrice(), getAmount());
     }
+
+    public boolean isLocked() {
+        return getOrder() != null && order.isLocked();
+    }
 }
