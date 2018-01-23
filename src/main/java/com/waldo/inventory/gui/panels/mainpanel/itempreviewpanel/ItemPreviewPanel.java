@@ -428,7 +428,7 @@ public class ItemPreviewPanel extends JPanel implements GuiInterface, IdBToolBar
 
         add(panel2, BorderLayout.NORTH);
         add(remarksPanel, BorderLayout.CENTER);
-        setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(400, 100));
     }
 
     @Override
