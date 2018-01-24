@@ -15,7 +15,7 @@ public abstract class DbSettingsObject extends DbObject {
 
     private boolean isSaved = false;
 
-    protected DbSettingsObject(String tableName) {
+    public DbSettingsObject(String tableName) {
         super(tableName);
     }
 

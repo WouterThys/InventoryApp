@@ -32,6 +32,10 @@ public class IActions {
             super("Save", imageResource.readImage("Actions.Save"));
             setTooltip("Save");
         }
+        protected SaveAction(ImageIcon icon) {
+            super("Save", icon);
+            setTooltip("Save");
+        }
     }
 
     public static abstract class SearchAction extends IAbstractAction {
@@ -245,6 +249,26 @@ public class IActions {
     public static abstract class MinOneAction  extends IAbstractAction {
         protected MinOneAction() {
             super("Minus one", imageResource.readImage("Actions.RemOne"));
+        }
+    }
+
+    public static abstract class UseAction extends IAbstractAction {
+        protected UseAction() {
+            super("Use this", imageResource.readImage("Actions.Use"));
+        }
+        protected UseAction(ImageIcon icon) {
+            super("Use this", icon);
+            setTooltip("Use this");
+        }
+    }
+
+    public static abstract class TestAction extends IAbstractAction {
+        protected TestAction() {
+            super("Test", imageResource.readImage("Actions.Test"));
+        }
+        protected TestAction(ImageIcon icon) {
+            super("Test", icon);
+            setTooltip("Test");
         }
     }
 

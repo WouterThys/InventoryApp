@@ -59,9 +59,9 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
         setTitleName("Settings");
 
         // Panels
-        dbPanel = new DbPanel();
-        filesPanel = new FilesPanel();
-        logsPanel = new LogsPanel();
+        dbPanel = new DbPanel(this);
+        filesPanel = new FilesPanel(this);
+        logsPanel = new LogsPanel(this);
         eventsPanel = new EventsPanel(this);
 
         // Tabbed pane
