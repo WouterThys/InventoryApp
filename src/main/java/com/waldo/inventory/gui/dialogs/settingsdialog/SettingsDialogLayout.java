@@ -31,13 +31,14 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    private final boolean onError;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    SettingsDialogLayout(Application application, String title) {
+    SettingsDialogLayout(Application application, String title, boolean onError) {
         super(application, title);
+        this.onError = onError;
     }
 
     /*
@@ -57,11 +58,13 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
         setTitleName("Settings");
 
         // Panels
-        generalPanel = new GeneralPanel(this);
         dbPanel = new DbPanel(this);
-        filesPanel = new FilesPanel(this);
-        logsPanel = new LogsPanel(this);
-        eventsPanel = new EventsPanel(this);
+        if (!onError) {
+            generalPanel = new GeneralPanel(this);
+            filesPanel = new FilesPanel(this);
+            logsPanel = new LogsPanel(this);
+            eventsPanel = new EventsPanel(this);
+        }
 
         // Tabbed pane
         tabbedPane = new ITabbedPane(ITabbedPane.LEFT);
@@ -74,11 +77,15 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
     public void initializeLayouts() {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
         // Add tabs
-        tabbedPane.addTab("General ", imageResource.readImage("Settings.Tab.General"), generalPanel, "General settings");
+        if (!onError) {
+            tabbedPane.addTab("General ", imageResource.readImage("Settings.Tab.General"), generalPanel, "General settings");
+        }
         tabbedPane.addTab("Database ", imageResource.readImage("Settings.Tab.Db"), dbPanel, "Database settings");
-        tabbedPane.addTab("Files ", imageResource.readImage("Settings.Tab.File"), filesPanel, "File settings");
-        tabbedPane.addTab("Logs ", imageResource.readImage("Settings.Tab.Log"), logsPanel, "Log settings");
-        tabbedPane.addTab("Events ", imageResource.readImage("Settings.Tab.Events"), eventsPanel, "Events settings");
+        if (!onError) {
+            tabbedPane.addTab("Files ", imageResource.readImage("Settings.Tab.File"), filesPanel, "File settings");
+            tabbedPane.addTab("Logs ", imageResource.readImage("Settings.Tab.Log"), logsPanel, "Log settings");
+            tabbedPane.addTab("Events ", imageResource.readImage("Settings.Tab.Events"), eventsPanel, "Events settings");
+        }
         tabbedPane.addChangeListener(this);
 
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
@@ -94,7 +101,11 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
 
     @Override
     public void updateComponents(Object... object) {
-        generalPanel.updateComponents(settings());
+        if (!onError) {
+            generalPanel.updateComponents(settings());
+        } else {
+            dbPanel.updateComponents(settings());
+        }
     }
 
     @Override

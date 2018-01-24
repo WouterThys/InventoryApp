@@ -98,7 +98,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener settingsSelected() {
         return e -> {
-            SettingsDialog dialog = new SettingsDialog(application, "Settings");
+            SettingsDialog dialog = new SettingsDialog(application, "Settings", false);
             dialog.showDialog();
         };
     }

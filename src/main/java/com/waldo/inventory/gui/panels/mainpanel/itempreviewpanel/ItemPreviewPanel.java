@@ -5,11 +5,11 @@ import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ItemPreviewPanel extends JPanel implements GuiInterface, IdBToolBar.IdbToolBarListener {
+public class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.IdbToolBarListener {
 
     /*
     *                  COMPONENTS

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.GuiInterface;
@@ -12,6 +13,7 @@ import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
+import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -23,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -47,8 +50,7 @@ abstract class MainPanelLayout extends JPanel implements
     IDbObjectTreeModel<DbObject> treeModel;
     IdBToolBar selectionTb;
 
-    ItemDetailPanel detailPanel;
-    //ItemPreviewPanel detailPanel;
+    AbstractDetailPanel detailPanel;
 
     /*
      *                  VARIABLES
@@ -345,15 +347,18 @@ abstract class MainPanelLayout extends JPanel implements
         selectionTb = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
 
         // Preview
-//        detailPanel = new ItemPreviewPanel(application);
-//        detailPanel.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createEmptyBorder(2, -1, -1, -1),
-//                BorderFactory.createLineBorder(Color.lightGray, 1)
-//        ));
+        boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
+        if (vertical) {
+            detailPanel = new ItemPreviewPanel(application);
+            detailPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(2, -1, -1, -1),
+                    BorderFactory.createLineBorder(Color.lightGray, 1)
+            ));
+        }
 
         // Items
         tableModel = new IItemTableModel();
-        itemTable = new ITablePanel<>(tableModel, null, this, true);
+        itemTable = new ITablePanel<>(tableModel, detailPanel, this, true);
         itemTable.setDbToolBar(this, true, true, false, false);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -369,7 +374,9 @@ abstract class MainPanelLayout extends JPanel implements
         tableInitialize(null);
 
         // Details
-        detailPanel = new ItemDetailPanel(this);
+        if (!vertical) {
+            detailPanel = new ItemDetailPanel(this);
+        }
     }
 
     @Override
@@ -381,7 +388,10 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Panel them together
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
-        centerPanel.add(detailPanel, BorderLayout.SOUTH);
+        boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
+        if (!vertical) {
+            centerPanel.add(detailPanel, BorderLayout.SOUTH);
+        }
         //centerPanel.add(detailPanel, BorderLayout.EAST);
 
         // Add

@@ -72,9 +72,9 @@ public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelecti
         pcbItemTableModel = new IPcbItemModel();
         pcbItemTable = new ITable<>(pcbItemTableModel);
         pcbItemTable.getSelectionModel().addListSelectionListener(this);
-        pcbItemTable.setExactColumnWidth(3, 20);
-        pcbItemTable.setExactColumnWidth(4, 20);
-        pcbItemTable.setExactColumnWidth(5, 20);
+        pcbItemTable.setExactColumnWidth(3, 24);
+        pcbItemTable.setExactColumnWidth(4, 24);
+        pcbItemTable.setExactColumnWidth(5, 24);
 
         pcbItemTable.addMouseListener(new MouseAdapter() {
             @Override

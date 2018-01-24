@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class ItemDetailPanelLayout extends JPanel implements GuiInterface {
+public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
 
     public interface ItemDetailListener {
         void onShowDataSheet(Item item);

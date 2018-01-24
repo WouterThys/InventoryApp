@@ -79,7 +79,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         result = initDatabases();
 
         if (!result) {
-            SettingsDialog dialog = new SettingsDialog(this, "Settings");
+            SettingsDialog dialog = new SettingsDialog(this, "Settings", true);
             if (dialog.showDialog() == IDialog.OK) {
                 // Try again
                 if (initDatabases()) {

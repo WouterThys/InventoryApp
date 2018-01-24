@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
+import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
@@ -11,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ITable<T> extends JTable {
+public class ITable<T> extends JXTable {
 
     private final IAbstractTableModel<T> model;
     private final boolean autoAdaptHeight;
