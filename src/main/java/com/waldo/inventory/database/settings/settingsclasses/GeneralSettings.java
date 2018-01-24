@@ -60,6 +60,9 @@ public class GeneralSettings extends DbSettingsObject {
     }
 
     public Statics.GuiDetailsView getGuiDetailsView() {
+        if (guiDetailsView == null) {
+            guiDetailsView = Statics.GuiDetailsView.VerticalSplit;
+        }
         return guiDetailsView;
     }
 

@@ -83,7 +83,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             if (dialog.showDialog() == IDialog.OK) {
                 // Try again
                 if (initDatabases()) {
-                    initComponents();
+                    //initComponents();
                 } else {
                     System.exit(-1);
                 }
@@ -91,7 +91,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 System.exit(-1);
             }
         } else {
-            initComponents();
+            //initComponents();
         }
     }
 
@@ -123,7 +123,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         return result;
     }
 
-    private void initComponents() {
+    public void initComponents() {
         setLayout(new BorderLayout());
         // Status bar
         add(Status(), BorderLayout.PAGE_END);

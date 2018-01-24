@@ -7,7 +7,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -156,12 +155,8 @@ public class FilesPanel extends SettingsPnl<FileSettings> {
         gbc.addLine("Project images: ", projectsPathPnl);
         gbc.addLine("Order file images: ", orderFilesPathPnl);
 
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("File options");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                titledBorder,
+                GuiUtils.createTitleBorder("File options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 

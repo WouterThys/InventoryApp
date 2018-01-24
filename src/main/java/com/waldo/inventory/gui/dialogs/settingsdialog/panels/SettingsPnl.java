@@ -69,7 +69,7 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
 
         toolBar.setDeleteActionEnabled(enabled);
         toolBar.setEditActionEnabled(false);
-        saveAction.setEnabled(selectedSettings != null && !selectedSettings.equals(originalSettings));
+        saveAction.setEnabled(selectedSettings != null && (!selectedSettings.isSaved() || !selectedSettings.equals(originalSettings)));
         useAction.setEnabled(selectedSettings != null && !selectedSettings.getName().equals(currentSettings.getName()));
 
         return enabled;
@@ -87,7 +87,15 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
         settingsCb.setSelectedItem(settings);
     }
 
-    void addNewSettings() {
+    private void cbAddSetting(T settings) {
+        ComboBoxModel<T> m = settingsCb.getModel();
+        if (m != null && m instanceof DefaultComboBoxModel) {
+            DefaultComboBoxModel<T> model = (DefaultComboBoxModel<T>) m;
+            model.addElement(settings);
+        }
+    }
+
+    private void addNewSettings() {
         String newName = JOptionPane.showInputDialog(
                 this,
                 "New settings name?");
@@ -97,10 +105,11 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
         }
     }
 
-    void addNewSettings(String newName) {
+    private void addNewSettings(String newName) {
         if (getSettingsByName(newName) == null) {
             T t = createNew(newName);
             getAllSettingsList().add(t);
+            cbAddSetting(t);
             updateComponents(t);
         } else {
             JOptionPane.showMessageDialog(
@@ -112,7 +121,7 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
         }
     }
 
-    void saveSettings(T toSave) {
+    private void saveSettings(T toSave) {
         new SwingWorker<T, Object>() {
             @Override
             protected T doInBackground() throws Exception {
@@ -136,7 +145,7 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
         }.execute();
     }
 
-    void useSettings(T toUse) {
+    private void useSettings(T toUse) {
         new SwingWorker<T, Object>() {
             @Override
             protected T doInBackground() throws Exception {
@@ -161,7 +170,7 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
         }.execute();
     }
 
-    void deleteSetting(T toDelete) {
+    private void deleteSetting(T toDelete) {
         int res = JOptionPane.showConfirmDialog(parent,
                 "Are you sure you want to delete " + toDelete.getName() + "?",
                 "Delete setting",

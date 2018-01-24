@@ -13,7 +13,6 @@ import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
@@ -219,12 +218,8 @@ public class DbPanel extends SettingsPnl<DbSettings> {
         gbc.addLine("Db user name: ", userNameTf);
         gbc.addLine("Db user password: ", userPwTf);
 
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Db options");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                titledBorder,
+                GuiUtils.createTitleBorder("Database options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 

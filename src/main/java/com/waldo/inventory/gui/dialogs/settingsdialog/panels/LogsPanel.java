@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
@@ -7,7 +8,6 @@ import com.waldo.inventory.gui.components.ICheckBox;
 import com.waldo.inventory.gui.components.IDialog;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -131,12 +131,8 @@ public class LogsPanel extends SettingsPnl<LogSettings> {
         gbc.anchor = GridBagConstraints.WEST;
         settingsPanel.add(logErrorCb, gbc);
 
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Log options");
-        titledBorder.setTitleJustification(TitledBorder.RIGHT);
-        titledBorder.setTitleColor(Color.gray);
-
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                titledBorder,
+                GuiUtils.createTitleBorder("Log options"),
                 BorderFactory.createEmptyBorder(5,5,5,5)
         ));
 

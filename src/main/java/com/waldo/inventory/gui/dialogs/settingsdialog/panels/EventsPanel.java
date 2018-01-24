@@ -163,14 +163,14 @@ public class EventsPanel extends JPanel implements
         });
 
         // Details
-        nameTf = new ITextField(false);
-        definerTf = new ITextField(false);
-        commentTf = new ITextField(false);
-        typeTf = new ITextField(false);
+        nameTf = new ITextField(false, 10);
+        definerTf = new ITextField(false, 10);
+        commentTf = new ITextField(false, 10);
+        typeTf = new ITextField(false, 10);
         definitionTa = new ITextArea(false);
-        createdTf = new ITextField(false);
-        alteredTf = new ITextField(false);
-        lastExecutedTf = new ITextField(false);
+        createdTf = new ITextField(false, 10);
+        alteredTf = new ITextField(false, 10);
+        lastExecutedTf = new ITextField(false, 10);
     }
 
     @Override
