@@ -432,7 +432,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onSetOrderItemAmount(OrderItem orderItem, int amount) {
         Order order = getSelectedOrder();
-        if (order != null && order.canBeSaved() && order.isPlanned()) {
+        if (order != null && order.canBeSaved() && (order.isPlanned() || !order.isLocked())) {
             if (orderItem != null) {
                 orderItem.setAmount(amount);
                 orderItem.save();
@@ -765,6 +765,10 @@ public class OrderPanel extends OrderPanelLayout {
             if (node == null || ((Order) node.getUserObject()).isUnknown() || !((Order) node.getUserObject()).canBeSaved()) {
                 selectedOrder = null;
                 return; // Nothing selected
+            }
+
+            if (selectedOrder != null) {
+                selectedOrder.setLocked(!selectedOrder.isPlanned());
             }
 
             treeSelectNewOrder((Order) node.getUserObject());

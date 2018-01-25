@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -14,7 +15,6 @@ import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -305,12 +305,15 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         // Distributor
         ILabel distributorLabel = new ILabel("Order by: ", ILabel.RIGHT);
-        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        toolBar.setOpaque(false); toolBar.setFloatable(false);
-        toolBar.setBorder(new EmptyBorder(2,2,2,2));
+        JToolBar toolBar = GuiUtils.createNewToolbar();
+
+        distributorLabel.setOpaque(false);
+        toolBar.setOpaque(false);
 
         JPanel makeOrderPanel = new JPanel(new BorderLayout());
         JPanel distributorPanel = new JPanel(new BorderLayout());
+        distributorPanel.setOpaque(false);
+        makeOrderPanel.setOpaque(false);
 
         distributorPanel.add(distributorLabel, BorderLayout.WEST);
         distributorPanel.add(tbDistributorCb, BorderLayout.CENTER);

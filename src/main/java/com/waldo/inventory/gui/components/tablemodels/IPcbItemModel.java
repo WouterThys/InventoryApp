@@ -18,7 +18,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
 
     private static final String[] COLUMN_NAMES = {"", "Part", "Reference", "", "", ""};
     private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "PCB Reference", "Is linked", "Is ordered", "Is used"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, ImageIcon.class, ImageIcon.class, ImageIcon.class};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, Icon.class, Icon.class, Icon.class};
 
     private static final ImageIcon linked = imageResource.readImage("Projects.Pcb.Linked");
     private static final ImageIcon ordered = imageResource.readImage("Projects.Pcb.Ordered");
@@ -101,7 +101,10 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
 
                     return lbl;
                 }
-                return c;
+                if (value instanceof ImageIcon) {
+                    return new ITableIcon(c.getBackground(), row, isSelected, (ImageIcon) value);
+                }
+                return this;
             }
         };
     }

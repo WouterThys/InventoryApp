@@ -34,7 +34,7 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
         if (itemList.size() > 0) {
             Order order = itemList.get(0).getOrder();
-            isEditable = order != null && order.isPlanned();
+            isEditable = order != null && (order.isPlanned() || !order.isLocked());
         }
     }
 

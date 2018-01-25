@@ -86,6 +86,9 @@ public abstract class OrderItemPopup extends JPopupMenu {
         openItemDataSheetOnlineAction.setEnabled(!orderItem.getItem().getOnlineDataSheet().isEmpty());
         openItemDataSheetLocalAction.setEnabled(!orderItem.getItem().getLocalDataSheet().isEmpty());
 
+        deleteOrderItemAction.setEnabled(!orderItem.isLocked());
+        editReferenceAction.setEnabled(!orderItem.isLocked());
+
         add(deleteOrderItemAction);
         add(editReferenceAction);
         addSeparator();
