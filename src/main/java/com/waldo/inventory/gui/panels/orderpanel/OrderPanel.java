@@ -77,7 +77,7 @@ public class OrderPanel extends OrderPanelLayout {
 //                    orderItem.setDistributorPartId(distributorPartLink.getId());
 //                }
 
-                orderItem.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
+                orderItem.save();
             } else {
                 OrderItem orderItem = order.findOrderItemInOrder(item.getId());
                 orderItem.setAmount(orderItem.getAmount() + 1);
@@ -694,9 +694,6 @@ public class OrderPanel extends OrderPanelLayout {
                         OrderPanel.this.onSetOrderLocked(order, locked);
                     }
                 };
-
-            } else {
-                // TODO special popup for order nodes??
             }
 
             if (popupMenu != null) {
