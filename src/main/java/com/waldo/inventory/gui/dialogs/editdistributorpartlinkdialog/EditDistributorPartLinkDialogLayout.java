@@ -81,6 +81,10 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
         }
     }
 
+    void enableDistributorSelect(boolean enable) {
+        distributorCb.setEnabled(enable);
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

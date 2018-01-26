@@ -9,10 +9,10 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.OrderItemPopup;
 import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
+import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
-import com.waldo.inventory.gui.dialogs.ordereditreferencedialog.OrderEditReferenceDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 import com.waldo.inventory.managers.SearchManager;
@@ -634,8 +634,14 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onEditReference(OrderItem orderItem) {
         if (orderItem != null) {
-            OrderEditReferenceDialog dialog = new OrderEditReferenceDialog(application, "Reference", orderItem);
+            DistributorPartLink link = orderItem.getDistributorPartLink();
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(
+                    application,
+                    "Reference & price",
+                    link);
+            dialog.enableDistributor(false);
             if (dialog.showDialog() == IDialog.OK) {
+                link.save();
                 tableUpdate();
             }
         }
@@ -909,7 +915,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onEditPrice(OrderItem orderItem) {
         if (orderItem != null) {
-
+            onEditReference(orderItem);
         }
     }
 }
