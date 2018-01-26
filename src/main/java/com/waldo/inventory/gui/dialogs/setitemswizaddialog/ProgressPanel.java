@@ -1,14 +1,13 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 
 import javax.swing.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ProgressPanel extends JPanel implements GuiInterface {    
+public class ProgressPanel extends JPanel implements GuiUtils.GuiInterface {
 
     public enum Progress {
         ItemsBusy,

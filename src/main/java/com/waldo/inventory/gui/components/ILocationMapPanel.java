@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Location;
-import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ILocationMapPanel extends JPanel implements GuiInterface {
+public class ILocationMapPanel extends JPanel implements GuiUtils.GuiInterface {
 
     public interface LocationClickListener {
         void onLocationClicked(ActionEvent e, Location location);

@@ -1,8 +1,6 @@
 package com.waldo.inventory.database;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -15,6 +13,8 @@ import com.waldo.inventory.database.interfaces.DbExecuteListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
+import com.waldo.utils.DateUtils;
+import com.waldo.utils.FileUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;

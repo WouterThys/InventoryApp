@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiInterface, Search.SearchListener<T> {
+public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface, Search.SearchListener<T> {
 
     private final Search.DbObjectSearch<T> searchManager;
 

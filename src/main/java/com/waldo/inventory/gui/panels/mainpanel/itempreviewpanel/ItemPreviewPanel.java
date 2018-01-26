@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
@@ -10,6 +9,7 @@ import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
+import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
 import java.awt.*;

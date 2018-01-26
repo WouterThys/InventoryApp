@@ -1,11 +1,11 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
+import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;

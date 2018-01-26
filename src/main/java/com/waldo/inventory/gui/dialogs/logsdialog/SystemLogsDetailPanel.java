@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class SystemLogsDetailPanel extends JPanel implements GuiInterface {
+public class SystemLogsDetailPanel extends JPanel implements GuiUtils.GuiInterface {
 
     private final ImageIcon infoIcon = imageResource.readImage("Log.InfoL");
     private final ImageIcon debugIcon = imageResource.readImage("Log.DebugL");

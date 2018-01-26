@@ -2,17 +2,16 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -34,7 +33,7 @@ import java.text.NumberFormat;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class ComponentPanel<T extends Item> extends JPanel implements GuiInterface {
+public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.GuiInterface {
 
     public static final int TAB_BASIC = 0;
     public static final int TAB_DETAILS = 1;

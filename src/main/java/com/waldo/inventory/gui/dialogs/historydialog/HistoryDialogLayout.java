@@ -1,19 +1,18 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IOrderHistoryTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +22,7 @@ import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-abstract class HistoryDialogLayout extends IDialog implements GuiInterface {
+abstract class HistoryDialogLayout extends IDialog implements GuiUtils.GuiInterface {
 
     private JScrollPane orderPane;
     private JScrollPane pcbPane;

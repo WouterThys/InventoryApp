@@ -1,13 +1,13 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.DateUtils;
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
+import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
 import java.awt.*;

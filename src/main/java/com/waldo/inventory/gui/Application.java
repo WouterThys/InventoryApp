@@ -2,8 +2,7 @@ package com.waldo.inventory.gui;
 
 import com.mysql.jdbc.MysqlErrorNumbers;
 import com.waldo.inventory.Main;
-import com.waldo.inventory.Utils.OpenUtils;
-import com.waldo.inventory.Utils.ResourceManager;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
@@ -17,6 +16,8 @@ import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.utils.OpenUtils;
+import com.waldo.utils.ResourceManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -290,7 +291,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
+        ((GuiUtils.GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
     }
 
     //

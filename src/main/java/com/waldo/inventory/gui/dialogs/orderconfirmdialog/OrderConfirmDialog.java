@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -8,6 +7,7 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
+import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
 import java.awt.*;

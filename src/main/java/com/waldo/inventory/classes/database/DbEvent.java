@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes.database;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics.EventIntervalField;
 import com.waldo.inventory.Utils.Statics.EventType;
+import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;

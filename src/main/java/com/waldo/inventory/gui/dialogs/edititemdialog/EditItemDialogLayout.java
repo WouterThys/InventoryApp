@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ITabbedPane;
@@ -150,7 +150,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
             }
             setTitleName(selectedItem.getName().trim());
 
-            ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
+            ((GuiUtils.GuiInterface) tabbedPane.getSelectedComponent()).updateComponents();
         } finally {
             endWait();
         }

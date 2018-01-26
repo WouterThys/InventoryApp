@@ -7,7 +7,6 @@ import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel implements
-        GuiInterface,
+        GuiUtils.GuiInterface,
         ActionListener,
         IdBToolBar.IdbToolBarListener,
         CacheChangedListener<T> {

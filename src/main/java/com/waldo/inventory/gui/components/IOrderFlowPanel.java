@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
+import org.apache.http.client.utils.DateUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderFlowPanel extends JPanel implements GuiInterface {
+public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
 
     /*
      *                  COMPONENTS

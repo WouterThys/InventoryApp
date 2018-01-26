@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;

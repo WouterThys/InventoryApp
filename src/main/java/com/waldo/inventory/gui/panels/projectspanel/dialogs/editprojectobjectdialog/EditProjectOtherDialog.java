@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectOther;
 import com.waldo.inventory.gui.Application;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;

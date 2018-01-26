@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.dialogs.settingsdialog.panels.*;
 
@@ -110,6 +110,6 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        ((GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(settings());
+        ((GuiUtils.GuiInterface) tabbedPane.getSelectedComponent()).updateComponents(settings());
     }
 }

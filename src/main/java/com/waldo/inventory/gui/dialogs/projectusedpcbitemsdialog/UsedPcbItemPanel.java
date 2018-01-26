@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
@@ -23,7 +23,7 @@ import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.AmountType;
 
-class UsedPcbItemPanel extends JPanel implements GuiInterface {
+class UsedPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
 
     interface PcbItemListener {
         void onAdd();

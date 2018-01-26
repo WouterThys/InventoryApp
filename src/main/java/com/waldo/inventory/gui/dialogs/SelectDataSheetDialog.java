@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs;
 
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.gui.Application;
+import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
 import java.awt.*;

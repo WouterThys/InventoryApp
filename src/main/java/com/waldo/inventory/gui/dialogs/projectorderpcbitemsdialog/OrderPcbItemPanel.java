@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-class OrderPcbItemPanel extends JPanel implements GuiInterface {
+class OrderPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
 
     interface PcbItemListener {
         void onAdd();

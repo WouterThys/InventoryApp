@@ -1,6 +1,5 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.database.DbEvent;
@@ -8,6 +7,7 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.sql.Date;

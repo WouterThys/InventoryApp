@@ -5,7 +5,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
@@ -18,7 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-class WizardLocationsPanel extends JPanel implements GuiInterface, ILocationMapPanel.LocationClickListener {
+class WizardLocationsPanel extends JPanel implements GuiUtils.GuiInterface, ILocationMapPanel.LocationClickListener {
 
 
     private enum LocationComputeType {

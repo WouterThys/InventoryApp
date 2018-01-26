@@ -1,12 +1,12 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.managers.LogManager;
-import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class IStatusStrip extends JPanel implements GuiInterface {
+public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
 
     private static final LogManager LOG = LogManager.LOG(IStatusStrip.class);
     private static final IStatusStrip INSTANCE = new IStatusStrip();

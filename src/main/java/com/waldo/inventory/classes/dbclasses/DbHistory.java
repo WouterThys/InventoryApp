@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.CacheManager;
+import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

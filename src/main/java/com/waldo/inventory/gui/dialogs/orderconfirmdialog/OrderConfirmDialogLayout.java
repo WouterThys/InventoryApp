@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -9,6 +8,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

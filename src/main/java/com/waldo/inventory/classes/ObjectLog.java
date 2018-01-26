@@ -1,9 +1,9 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.Statistics;
 import com.waldo.inventory.managers.CacheManager;
+import com.waldo.utils.DateUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

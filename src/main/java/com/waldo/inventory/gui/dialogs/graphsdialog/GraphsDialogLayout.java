@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.graphsdialog;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.dbclasses.DbHistory;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.utils.DateUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

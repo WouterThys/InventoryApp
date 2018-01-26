@@ -1,15 +1,14 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITextPane;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +19,7 @@ import java.nio.file.Paths;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ProjectDetailsPanel extends JPanel implements GuiInterface {    
+public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface {
 
     private final static String PNL_CODE = "CODE";
     private final static String PNL_PCB = "PCB";

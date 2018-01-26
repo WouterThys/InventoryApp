@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;

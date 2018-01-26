@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.utils.FileUtils;
 
 public class IPcbHistoryTableModel extends IAbstractTableModel<ProjectPcb> {
 

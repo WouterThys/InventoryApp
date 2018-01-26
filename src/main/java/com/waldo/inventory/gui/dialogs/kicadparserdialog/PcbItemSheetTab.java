@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.popups.PcbItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
@@ -18,7 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class PcbItemSheetTab extends JPanel implements GuiInterface, ListSelectionListener {
+public class PcbItemSheetTab extends JPanel implements GuiUtils.GuiInterface, ListSelectionListener {
     
     /*
      *                  COMPONENTS

@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.dbclasses.Log;
@@ -15,6 +14,7 @@ import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.ICacheLogTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ISystemLogTableModel;
 import com.waldo.inventory.managers.CacheManager;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
@@ -26,7 +26,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class PcbItemPanel extends JPanel implements
-        GuiInterface, ChangeListener {
+        GuiUtils.GuiInterface, ChangeListener {
 
 
     /*

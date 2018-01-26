@@ -1,9 +1,9 @@
 package com.waldo.inventory.classes.dbclasses;
 
 
-import com.waldo.inventory.Utils.DateUtils;
 import com.waldo.inventory.Utils.Statics.LogTypes;
 import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.utils.DateUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.sql.Date;

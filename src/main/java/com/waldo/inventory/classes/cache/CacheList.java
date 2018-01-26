@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes.cache;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
