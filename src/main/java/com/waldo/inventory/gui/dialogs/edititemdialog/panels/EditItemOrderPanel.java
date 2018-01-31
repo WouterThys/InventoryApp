@@ -4,12 +4,12 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IDistributorPartTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;

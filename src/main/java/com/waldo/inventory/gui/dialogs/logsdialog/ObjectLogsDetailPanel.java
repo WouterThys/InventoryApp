@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.ObjectLog;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.ILabel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;

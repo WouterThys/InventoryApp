@@ -7,11 +7,17 @@ import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IOrderFlowPanel;
+import com.waldo.inventory.gui.components.ITablePanel;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableEditors;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

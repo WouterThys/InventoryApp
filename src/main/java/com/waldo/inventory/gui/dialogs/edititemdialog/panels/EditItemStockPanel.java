@@ -9,9 +9,13 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ISpinner;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -177,7 +181,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 if (editedListener != null) {
                     try {
-                        DbObject guiObject = editedListener.getGuiObject();
+                        DbObject guiObject = (DbObject) editedListener.getGuiObject();
                         if (guiObject != null) {
                             String newVal = String.valueOf(e.getItem());
                             Item i = (Item) guiObject;

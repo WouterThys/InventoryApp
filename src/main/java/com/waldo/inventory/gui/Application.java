@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
@@ -18,6 +17,7 @@ import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.utils.OpenUtils;
 import com.waldo.utils.ResourceManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -3,12 +3,12 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
-import com.waldo.inventory.gui.components.ITextPane;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
+import com.waldo.utils.icomponents.ITextPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,7 +73,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
         try {
             Project p = project.getProject();
             Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), p.getIconPath());
-            iconLbl.setIcon(path.toString(), 120, 120);
+            iconLbl.setIcon(imageResource.readImage(path, 120, 120));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,12 +4,13 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.utils.OpenUtils;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +84,7 @@ public class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.
         try {
             if (!item.getIconPath().isEmpty()) {
                 Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-                iconLbl.setIcon(path.toString());
+                iconLbl.setIcon(imageResource.readImage(path));
             } else {
                 iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
             }

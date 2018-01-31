@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
-import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.waldo.utils.icomponents.*;
 
 public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface {
     

@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;

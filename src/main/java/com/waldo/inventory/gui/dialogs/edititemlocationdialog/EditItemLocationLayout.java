@@ -3,9 +3,8 @@ package com.waldo.inventory.gui.dialogs.edititemlocationdialog;
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
+import com.waldo.utils.icomponents.*;
 
 import java.awt.*;
 import java.awt.event.ItemListener;

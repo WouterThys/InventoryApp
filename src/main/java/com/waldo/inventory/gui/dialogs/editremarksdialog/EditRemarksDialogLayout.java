@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.editremarksdialog;
 
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITextEditor;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;

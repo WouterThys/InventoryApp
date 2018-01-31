@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemUsedTableModel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

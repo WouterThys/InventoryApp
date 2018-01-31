@@ -4,7 +4,9 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
-import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
+import com.waldo.utils.icomponents.IAbstractTableModel;
+import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

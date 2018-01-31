@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.allaliasesdialog;
 
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.managers.CacheManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

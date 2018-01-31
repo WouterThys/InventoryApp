@@ -5,13 +5,13 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import com.waldo.utils.icomponents.*;
 
 public class OrderItemDialog extends OrderItemDialogLayout implements CacheChangedListener<Order> {
 

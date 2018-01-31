@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.utils.icomponents.*;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.alllinkeditemsdialog.AllLinkedItemsDialog;
 import com.waldo.inventory.managers.SearchManager;

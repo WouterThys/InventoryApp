@@ -6,7 +6,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;

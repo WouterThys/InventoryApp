@@ -2,11 +2,11 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog;
 
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.gui.components.ICheckBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ShellFileChooser;
+import com.waldo.utils.icomponents.ICheckBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

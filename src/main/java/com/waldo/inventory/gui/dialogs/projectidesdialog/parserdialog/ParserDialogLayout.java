@@ -3,9 +3,13 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 import com.waldo.inventory.Utils.parser.PcbItemParser;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IParserItemLinkTableModel;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.ICheckBox;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

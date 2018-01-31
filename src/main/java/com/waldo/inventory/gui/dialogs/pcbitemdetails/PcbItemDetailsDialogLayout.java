@@ -2,8 +2,9 @@ package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -96,7 +97,11 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             if (project != null) {
                 if (!project.getIconPath().isEmpty()) {
                     Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), project.getIconPath());
-                    projectIconLbl.setIcon(path.toString(), 48, 48);
+                    try {
+                        projectIconLbl.setIcon(imageResource.readImage(path, 48,48));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 projectTf.setText(project.toString());
             }

@@ -6,10 +6,10 @@ import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.utils.OpenUtils;
+import com.waldo.utils.icomponents.*;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;

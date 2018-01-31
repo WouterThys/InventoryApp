@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.PackageType;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 public class IPackageTypeTableModel extends IAbstractTableModel<PackageType> {
 

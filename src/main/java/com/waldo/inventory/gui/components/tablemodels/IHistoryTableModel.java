@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
 import java.util.ArrayList;

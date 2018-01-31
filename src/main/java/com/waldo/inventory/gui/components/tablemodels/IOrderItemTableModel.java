@@ -1,9 +1,10 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITableIcon;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IAbstractTableModel;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

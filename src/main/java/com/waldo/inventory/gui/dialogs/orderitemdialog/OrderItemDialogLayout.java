@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;

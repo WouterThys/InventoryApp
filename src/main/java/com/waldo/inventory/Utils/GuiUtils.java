@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
+import com.waldo.utils.icomponents.*;
 
 public class GuiUtils extends com.waldo.utils.GuiUtils {
 

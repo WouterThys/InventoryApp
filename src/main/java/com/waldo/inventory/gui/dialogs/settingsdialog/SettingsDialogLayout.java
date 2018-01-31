@@ -2,16 +2,16 @@ package com.waldo.inventory.gui.dialogs.settingsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.panels.*;
+import com.waldo.utils.icomponents.ITabbedPane;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.awt.*;
 
-import static com.waldo.inventory.database.settings.SettingsManager.*;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 

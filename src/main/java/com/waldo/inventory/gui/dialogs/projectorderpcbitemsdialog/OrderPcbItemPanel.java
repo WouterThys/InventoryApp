@@ -2,11 +2,11 @@ package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedPcbItemTableModel.AmountType;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;

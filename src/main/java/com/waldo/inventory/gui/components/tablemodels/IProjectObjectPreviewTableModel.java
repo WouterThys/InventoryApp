@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.ProjectObjectPreview;
 import com.waldo.utils.FileUtils;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
 import java.io.File;

@@ -46,7 +46,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         try {
             if (!item.getIconPath().isEmpty()) {
                 Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-                iconLbl.setIcon(path.toString());
+                iconLbl.setIcon(imageResource.readImage(path));
             } else {
                 iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
             }

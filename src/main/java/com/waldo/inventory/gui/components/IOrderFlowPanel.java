@@ -3,6 +3,8 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
+import com.waldo.utils.icomponents.IImageButton;
+import com.waldo.utils.icomponents.ILabel;
 import org.apache.http.client.utils.DateUtils;
 
 import javax.swing.*;

@@ -3,13 +3,13 @@ package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import com.waldo.utils.icomponents.*;
 
 public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements CacheChangedListener<Order> {
 
