@@ -138,7 +138,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiInt
         JPanel distributorPanel = new JPanel(new BorderLayout());
 
         JScrollPane pane = new JScrollPane(linkTable);
-        pane.setPreferredSize(new Dimension(300, 300));
+        //pane.setPreferredSize(new Dimension(300, 300));
 
         distributorPanel.add(pane, BorderLayout.CENTER);
         distributorPanel.add(toolBar, BorderLayout.EAST);
