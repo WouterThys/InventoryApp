@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.filechooserdialog;
 
-import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 

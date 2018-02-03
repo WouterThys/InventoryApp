@@ -1,16 +1,16 @@
 package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.utils.DateUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class KiCadDetailPanel extends JPanel implements GuiInterface {
+public class KiCadDetailPanel extends JPanel implements GuiUtils.GuiInterface {
 
     /*
      *                  COMPONENTS

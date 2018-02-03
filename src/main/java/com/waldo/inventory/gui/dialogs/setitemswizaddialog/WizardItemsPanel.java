@@ -7,7 +7,6 @@ import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
@@ -26,7 +25,7 @@ import java.util.List;
 import static com.waldo.inventory.Utils.Statics.ValueMultipliers.valuesFromTo;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class WizardItemsPanel extends JPanel implements GuiInterface, ItemListener {
+public class WizardItemsPanel extends JPanel implements GuiUtils.GuiInterface, ItemListener {
 
     /*
      *                  COMPONENTS

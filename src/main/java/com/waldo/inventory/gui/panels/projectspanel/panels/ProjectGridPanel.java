@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITileView;
 
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
-        GuiInterface,
+        GuiUtils.GuiInterface,
         ITileView.TileClickListener<P> {
 
     private int rows = -1;

@@ -18,7 +18,6 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
         initializeLayouts();
 
         updateComponents(distributorPartLink);
-
     }
 
     private boolean verify() {
@@ -39,6 +38,10 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
         }
 
         return ok;
+    }
+
+    public void enableDistributor(boolean enable) {
+        enableDistributorSelect(enable);
     }
 
     //

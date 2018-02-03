@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.inventory.Utils.GuiUtils.GuiInterface;
 import com.waldo.inventory.gui.Application;
 
 import javax.swing.*;

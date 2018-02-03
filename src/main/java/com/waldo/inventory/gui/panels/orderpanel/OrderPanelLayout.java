@@ -7,7 +7,6 @@ import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
@@ -31,7 +30,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class OrderPanelLayout extends JPanel implements
-        GuiInterface,
+        GuiUtils.GuiInterface,
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,

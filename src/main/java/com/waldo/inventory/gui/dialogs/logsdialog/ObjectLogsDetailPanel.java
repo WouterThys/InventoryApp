@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.logsdialog;
 
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.ObjectLog;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.utils.DateUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -21,7 +21,7 @@ import java.util.TreeMap;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ObjectLogsDetailPanel extends JPanel implements GuiInterface {
+public class ObjectLogsDetailPanel extends JPanel implements GuiUtils.GuiInterface {
 
     private final ImageIcon objectLogIcon = imageResource.readImage("Log.Object");
 

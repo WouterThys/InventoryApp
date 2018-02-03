@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;

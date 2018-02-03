@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.ProjectObjectPreview;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 import java.io.File;

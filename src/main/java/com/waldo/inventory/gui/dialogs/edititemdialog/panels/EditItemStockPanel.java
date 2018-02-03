@@ -9,7 +9,6 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
@@ -20,7 +19,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-public class EditItemStockPanel<T extends Item> extends JPanel implements GuiInterface {
+public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUtils.GuiInterface {
 
     private final T selectedItem;
     private final Window parent;

@@ -61,8 +61,6 @@ public class Main {
             app.initComponents();
             app.pack();
 
-
-
             app.setVisible(true);
         });
     }

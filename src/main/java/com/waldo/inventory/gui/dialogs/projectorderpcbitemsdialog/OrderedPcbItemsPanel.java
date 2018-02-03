@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemOrderTableModel;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-class OrderedPcbItemsPanel extends JPanel implements GuiInterface {
+class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
 
     interface OrderListener {
         void onDoOrder();

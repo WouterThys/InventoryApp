@@ -118,14 +118,16 @@ public class IComboBox<E> extends JComboBox<E> {
                         DbObject guiObject = editedListener.getGuiObject();
                         if (guiObject != null) {
 
-                            String newVal;
-                            if (e.getItem() instanceof DbObject) {
-                                newVal = String.valueOf(((DbObject) e.getItem()).getId());
-                            } else {
-                                newVal = String.valueOf(e.getItem());
-                            }
-                            String oldVal;
                             if (!fieldName.isEmpty()) {
+
+                                String newVal;
+                                if (e.getItem() instanceof DbObject) {
+                                    newVal = String.valueOf(((DbObject) e.getItem()).getId());
+                                } else {
+                                    newVal = String.valueOf(e.getItem());
+                                }
+                                String oldVal;
+
                                 Method setMethod = guiObject.getClass().getMethod("set" + fieldName, fieldClass);
                                 Method getMethod = guiObject.getClass().getMethod("get" + fieldName);
 

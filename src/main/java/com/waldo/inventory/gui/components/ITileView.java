@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.Utils.FileUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.inventory.gui.GuiInterface;
+import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView<IT extends ProjectObject> extends JPanel implements GuiInterface, ActionListener {
+public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, ActionListener {
 
     public interface TileClickListener<IT extends ProjectObject> {
         void onTileClick(IT projectObject);

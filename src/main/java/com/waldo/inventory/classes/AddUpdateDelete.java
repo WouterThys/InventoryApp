@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.DateUtils;
+import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;

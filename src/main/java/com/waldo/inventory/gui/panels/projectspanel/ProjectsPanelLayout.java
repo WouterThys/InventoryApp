@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.panels.projectspanel;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITree;
@@ -22,7 +22,7 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class ProjectsPanelLayout extends JPanel implements
-        GuiInterface,
+        GuiUtils.GuiInterface,
         TreeSelectionListener,
         IdBToolBar.IdbToolBarListener,
         ChangeListener,

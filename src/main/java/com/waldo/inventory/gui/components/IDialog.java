@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public abstract class IDialog extends JDialog implements GuiInterface, WindowListener {
+public abstract class IDialog extends JDialog implements GuiUtils.GuiInterface, WindowListener {
 
     public static final int OK = 1;
     public static final int NEUTRAL = 0;

@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IEditedListener;
@@ -22,7 +21,7 @@ import java.awt.event.ActionListener;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class OrdersDialogLayout extends IDialog
-        implements GuiInterface, ActionListener, IEditedListener {
+        implements GuiUtils.GuiInterface, ActionListener, IEditedListener {
 
     /*
     *                  COMPONENTS

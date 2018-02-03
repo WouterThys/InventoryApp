@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.Utils.Statics.CodeLanguages;
 import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.PreparedStatement;

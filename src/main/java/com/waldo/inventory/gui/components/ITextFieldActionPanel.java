@@ -1,12 +1,11 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.gui.GuiInterface;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ITextFieldActionPanel extends JPanel implements GuiInterface {
+public class ITextFieldActionPanel extends JPanel implements GuiUtils.GuiInterface {
 
     protected final String hint;
     protected String text;

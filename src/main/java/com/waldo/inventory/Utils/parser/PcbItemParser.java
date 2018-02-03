@@ -1,11 +1,11 @@
 package com.waldo.inventory.Utils.parser;
 
 import com.waldo.eagleparser.EagleParser;
-import com.waldo.inventory.Utils.FileUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.kicadparser.KiCadParser;
 import com.waldo.kicadparser.classes.Component;
+import com.waldo.utils.FileUtils;
 
 import java.io.File;
 import java.sql.Date;

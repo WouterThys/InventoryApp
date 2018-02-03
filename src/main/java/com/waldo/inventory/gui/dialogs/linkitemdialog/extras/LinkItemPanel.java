@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.ITable;
@@ -24,7 +23,7 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class LinkItemPanel extends JPanel implements GuiInterface {
+public class LinkItemPanel extends JPanel implements GuiUtils.GuiInterface {
     
     /*
      *                  COMPONENTS

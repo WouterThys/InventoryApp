@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.OpenUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.settings.SettingsManager;
@@ -10,6 +9,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.utils.OpenUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.swing.*;

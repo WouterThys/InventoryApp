@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemUsedTableModel;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-class UsedConfirmedPanel extends JPanel implements GuiInterface {
+class UsedConfirmedPanel extends JPanel implements GuiUtils.GuiInterface {
 
     interface UsedListener {
         void onSetUsed();

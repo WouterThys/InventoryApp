@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.gui.GuiInterface;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IAbstractTableModel;
@@ -18,7 +18,7 @@ import java.util.regex.PatternSyntaxException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiInterface {
+public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUtils.GuiInterface {
 
     private Comparator sortOrder;
     private IActions.TableOptionsAction tableOptionsAction;
