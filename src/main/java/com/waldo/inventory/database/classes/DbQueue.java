@@ -1,6 +1,7 @@
 package com.waldo.inventory.database.classes;
 
 import com.waldo.inventory.Main;
+import com.waldo.utils.StringUtils;
 
 import javax.swing.*;
 import java.util.Calendar;
@@ -27,6 +28,9 @@ public class DbQueue<T extends DbQueueObject> {
             if (Main.DEBUG_MODE) logFull();
             wait();
         }
+
+        StringUtils.RandomString randomString = new StringUtils.RandomString();
+        randomString.nextString();
 
         if (!stopped) {
             if (Main.DEBUG_MODE) {
