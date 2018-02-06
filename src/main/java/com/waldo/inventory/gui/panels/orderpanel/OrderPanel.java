@@ -53,7 +53,7 @@ public class OrderPanel extends OrderPanelLayout {
         updateComponents();
     }
 
-    public OrderItem getSelectedOrderItem() {
+    private OrderItem getSelectedOrderItem() {
         return selectedOrderItem;
     }
 
@@ -65,27 +65,23 @@ public class OrderPanel extends OrderPanelLayout {
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         for (Item item : itemsToOrder) {
-            if (!order.containsItemId(item.getId())) {
-                OrderItem orderItem = new OrderItem();
-                orderItem.setItemId(item.getId());
-                orderItem.setOrderId(order.getId());
-                orderItem.setName(item.toString() + " - " + order.toString());
-
-//                // Part number
-//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), item.getId());
-//                if (distributorPartLink != null) {
-//                    orderItem.setDistributorPartId(distributorPartLink.getId());
-//                }
-
-                orderItem.save();
-            } else {
-                OrderItem orderItem = order.findOrderItemInOrder(item.getId());
-                orderItem.setAmount(orderItem.getAmount() + 1);
-                orderItem.save();
-//                if (failedItems == null) {
-//                    failedItems = new HashMap<>();
-//                }
-//                failedItems.put("Item " + item.getNameText() + " was already in the list..", item);
+            try {
+                if (!order.containsItemId(item.getId())) {
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setItemId(item.getId());
+                    orderItem.setOrderId(order.getId());
+                    orderItem.setName(item.toString() + " - " + order.toString());
+                    orderItem.save();
+                } else {
+                    OrderItem orderItem = order.findOrderItemInOrder(item.getId());
+                    orderItem.setAmount(orderItem.getAmount() + 1);
+                    orderItem.save();
+                }
+            } catch (Exception e) {
+                if (failedItems == null) {
+                    failedItems = new HashMap<>();
+                }
+                failedItems.put("Failed to add item " + item.toString(), item);
             }
         }
         return failedItems;
@@ -94,21 +90,20 @@ public class OrderPanel extends OrderPanelLayout {
     public Map<String, Item> addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         for (OrderItem oi : itemsToOrder) {
-            if (!order.containsItemId(oi.getItemId())) {
-
-//                // Part number
-//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), oi.getId());
-//                if (distributorPartLink != null) {
-//                    oi.setDistributorPartId(distributorPartLink.getId());
-//                }
-
-                oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
-            } else {
+            try {
+                if (!order.containsItemId(oi.getItemId())) {
+                    oi.save();
+                } else {
+                    oi.setAmount(oi.getAmount() + 1);
+                    oi.save();
+                }
+            } catch (Exception e) {
                 if (failedItems == null) {
                     failedItems = new HashMap<>();
                 }
-                failedItems.put("Item " + oi.getName() + " was already in the list..", oi.getItem());
+                failedItems.put("Failed to add item " + oi.toString(), oi.getItem());
             }
+
         }
         return failedItems;
     }
@@ -782,7 +777,6 @@ public class OrderPanel extends OrderPanelLayout {
         selectedOrder = newOrder;
         selectedOrderItem = null;
 
-        application.clearSearch();
         tableInitialize(selectedOrder);
         updateToolBar(selectedOrder);
 

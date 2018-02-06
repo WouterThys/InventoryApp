@@ -445,7 +445,7 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onOrderDetails(selectedOrder);
             }
         };
-        tbOrderFlowPanel = new IOrderFlowPanel(application);
+        tbOrderFlowPanel = new IOrderFlowPanel();
 
         // Tool bars
         treeToolBar = new IdBToolBar(this);
