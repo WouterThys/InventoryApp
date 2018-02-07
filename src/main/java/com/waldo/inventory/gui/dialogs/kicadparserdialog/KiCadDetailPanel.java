@@ -2,10 +2,10 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextArea;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextArea;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

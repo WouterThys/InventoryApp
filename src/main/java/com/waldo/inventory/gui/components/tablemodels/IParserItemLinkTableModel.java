@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 public class IParserItemLinkTableModel extends IAbstractTableModel<ParserItemLink> {
 

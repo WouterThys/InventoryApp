@@ -2,8 +2,9 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.gui.Application;
-import org.apache.http.client.utils.DateUtils;
+import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IImageButton;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,13 +31,12 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    final Application application;
+
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public IOrderFlowPanel(Application application) {
-        this.application = application;
+    public IOrderFlowPanel() {
 
         initializeComponents();
         initializeLayouts();

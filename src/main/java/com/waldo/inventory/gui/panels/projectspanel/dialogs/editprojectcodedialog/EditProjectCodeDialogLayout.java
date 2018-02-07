@@ -7,9 +7,9 @@ import com.waldo.inventory.Utils.Statics.CodeLanguages;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
 
 import javax.swing.*;
 import java.awt.*;

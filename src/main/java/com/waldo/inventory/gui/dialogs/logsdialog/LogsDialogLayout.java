@@ -7,14 +7,14 @@ import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.ICheckBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.ICacheLogTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ISystemLogTableModel;
 import com.waldo.inventory.managers.CacheManager;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.ICheckBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

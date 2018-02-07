@@ -6,13 +6,13 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IOrderHistoryTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;

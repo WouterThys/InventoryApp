@@ -2,11 +2,11 @@ package com.waldo.inventory.gui.dialogs;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.utils.FileUtils;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

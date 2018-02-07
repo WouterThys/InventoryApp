@@ -5,9 +5,9 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IComboBox;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IComboBox;
 
 import javax.swing.*;
 import java.awt.*;

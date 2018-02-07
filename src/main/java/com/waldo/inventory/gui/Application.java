@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
@@ -18,6 +17,7 @@ import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.utils.OpenUtils;
 import com.waldo.utils.ResourceManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -36,21 +36,17 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class Application extends JFrame implements ChangeListener, DbErrorListener {
 
     private static final LogManager LOG = LogManager.LOG(Application.class);
-    static final int TAB_ITEMS = 0;
-    static final int TAB_ORDERS = 1;
+    private static final int TAB_ITEMS = 0;
+    private static final int TAB_ORDERS = 1;
     private static final int TAB_PROJECTS = 2;
 
     public static String startUpPath;
     public static ResourceManager imageResource;
-    public static ResourceManager stringResource;
     public static ResourceManager scriptResource;
     public static ResourceManager colorResource;
 
     private JTabbedPane tabbedPane;
-
-    private MainPanel mainPanel;
     private OrderPanel orderPanel;
-    private ProjectsPanel projectPanel;
 
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
@@ -61,7 +57,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Resource manager
         try {
             imageResource = new ResourceManager("settings/", "IconSettings.properties");
-            stringResource = new ResourceManager("settings/", "Strings.properties");
+            ResourceManager stringResource = new ResourceManager("settings/", "Strings.properties");
             scriptResource = new ResourceManager("db/scripts/", "scripts.properties");
             colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
@@ -83,16 +79,12 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             SettingsDialog dialog = new SettingsDialog(this, "Settings", true);
             if (dialog.showDialog() == IDialog.OK) {
                 // Try again
-                if (initDatabases()) {
-                    //initComponents();
-                } else {
+                if (!initDatabases()) {
                     System.exit(-1);
                 }
             } else {
                 System.exit(-1);
             }
-        } else {
-            //initComponents();
         }
     }
 
@@ -143,9 +135,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // Main view
         // - Create components
-        mainPanel = new MainPanel(this);
+        MainPanel mainPanel = new MainPanel(this);
         orderPanel = new OrderPanel(this);
-        projectPanel = new ProjectsPanel(this);
+        ProjectsPanel projectPanel = new ProjectsPanel(this);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
@@ -157,79 +149,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
-    }
-
-    public Item getSelectedItem() {
-        return mainPanel.getSelectedItem();
-    }
-
-    OrderItem getSelectedOrderItem() {
-        return orderPanel.getSelectedOrderItem();
-    }
-
-    public void setSelectedItem(Item selectedItem) {
-        mainPanel.tableSelectItem(selectedItem);
-    }
-
-    void setSelectedOrderItem(OrderItem selectedOrderItem) {
-        orderPanel.tableSelectOrderItem(selectedOrderItem);
-    }
-
-    void setTableItems(java.util.List<DbObject> foundObject) {
-        switch (tabbedPane.getSelectedIndex()) {
-            case TAB_ITEMS:
-                if (foundObject == null) {
-                    mainPanel.tableInitialize(mainPanel.getLastSelectedDivision());
-                } else {
-                    java.util.List<Item> foundItems = new ArrayList<>(foundObject.size());
-                    for (DbObject object : foundObject) {
-                        foundItems.add((Item) object);
-                    }
-                    mainPanel.getTableModel().setItemList(foundItems);
-                }
-                break;
-
-            case TAB_ORDERS:
-                if (foundObject == null) {
-                    orderPanel.tableInitialize(orderPanel.getSelectedOrder());
-                } else {
-                    java.util.List<OrderItem> foundItems = new ArrayList<>(foundObject.size());
-                    for (DbObject object : foundObject) {
-                        foundItems.add((OrderItem) object);
-                    }
-                    orderPanel.getTableModel().setItemList(foundItems);
-                }
-                break;
-
-            case TAB_PROJECTS:
-                if (foundObject == null) {
-                    // TODO: update project panel
-                } else {
-                    List<Project> foundProjects = new ArrayList<>(foundObject.size());
-                    for (DbObject object : foundObject) {
-                        foundProjects.add((Project) object);
-                    }
-                    // TODO: update project panel
-                }
-
-            default:
-                break;
-        }
-    }
-
-    public void clearSearch() {
-        switch (tabbedPane.getSelectedIndex()) {
-            case TAB_ITEMS:
-                //mainPanel.getToolBar().clearSearch();
-                break;
-            case TAB_ORDERS:
-                //orderPanel.getToolBar().clearSearch();
-                break;
-            case TAB_PROJECTS:
-                projectPanel.getToolBar().clearSearch();
-                break;
-        }
-
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
@@ -248,7 +167,17 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Add
         Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
-            // TODO Show error message
+            StringBuilder builder = new StringBuilder();
+            for (String er : failedItems.keySet()) {
+                builder.append(er).append("\n");
+            }
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to order: \n " + builder.toString(),
+                    "Order error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -268,7 +197,17 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Add
         Map<String, Item> failedItems = orderPanel.addOrderItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
-            // TODO Show error message
+            StringBuilder builder = new StringBuilder();
+            for (String er : failedItems.keySet()) {
+                builder.append(er).append("\n");
+            }
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to order: \n " + builder.toString(),
+                    "Order error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

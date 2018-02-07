@@ -3,6 +3,9 @@ package com.waldo.inventory.gui.components;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.search.Search;
+import com.waldo.utils.icomponents.IImageButton;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

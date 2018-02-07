@@ -1,8 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITableIcon;
+import com.waldo.utils.icomponents.IAbstractTableModel;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -26,10 +27,10 @@ public class ILinkPcbItemTableModel extends IAbstractTableModel<PcbItem> {
         super(COLUMN_NAMES, COLUMN_CLASSES);
 
         this.type = type;
-        if (type == ORDER_COMPONENTS) {
-            columnNames[3] = "O";
-            fireTableStructureChanged();
-        }
+//        if (type == ORDER_COMPONENTS) {
+//            columnNames[3] = "O";
+//            fireTableStructureChanged();
+//        }
     }
 
     @Override

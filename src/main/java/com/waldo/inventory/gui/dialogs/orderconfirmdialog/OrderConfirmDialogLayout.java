@@ -5,10 +5,10 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

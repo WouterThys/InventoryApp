@@ -4,11 +4,11 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.tablemodels.IFoundItemsTableModel;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

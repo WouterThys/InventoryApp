@@ -1,5 +1,7 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.utils.icomponents.ITextPane;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.CaretEvent;

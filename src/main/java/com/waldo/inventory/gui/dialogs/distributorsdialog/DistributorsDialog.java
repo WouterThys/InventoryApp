@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -79,7 +80,11 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
 
             if (!selectedDistributor.getIconPath().isEmpty()) {
                 Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), selectedDistributor.getIconPath());
-                detailLogo.setIcon(path.toString());
+                try {
+                    detailLogo.setIcon(imageResource.readImage(path));
+                } catch (IOException e) {
+                    detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
+                }
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }

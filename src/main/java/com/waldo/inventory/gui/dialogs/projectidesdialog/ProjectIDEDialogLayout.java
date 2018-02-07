@@ -6,7 +6,9 @@ import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IObjectSearchPanel;
+import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

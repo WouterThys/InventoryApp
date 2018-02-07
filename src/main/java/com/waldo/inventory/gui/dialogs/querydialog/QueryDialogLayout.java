@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.querydialog;
 
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import java.awt.*;
 

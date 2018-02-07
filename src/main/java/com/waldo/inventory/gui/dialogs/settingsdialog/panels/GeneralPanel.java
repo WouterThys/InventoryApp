@@ -5,9 +5,9 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.GeneralSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.ICheckBox;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.utils.icomponents.ICheckBox;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;

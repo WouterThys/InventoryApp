@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.dialogs.logsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Log;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITextArea;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextArea;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.editorderfileformatdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITextField;
 
 import java.awt.*;
 

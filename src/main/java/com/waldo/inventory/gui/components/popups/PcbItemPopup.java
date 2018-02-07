@@ -1,11 +1,12 @@
 package com.waldo.inventory.gui.components.popups;
 
-import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.actions.*;
+import com.waldo.inventory.classes.dbclasses.PcbItem;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;

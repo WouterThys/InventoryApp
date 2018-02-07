@@ -4,9 +4,9 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.ITableEditors;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemOrderTableModel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

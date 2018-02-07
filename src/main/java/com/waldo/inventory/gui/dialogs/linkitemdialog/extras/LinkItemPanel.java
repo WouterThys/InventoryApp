@@ -6,12 +6,12 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.search.Search;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
-import com.waldo.inventory.gui.components.ITable;
-import com.waldo.inventory.gui.components.ITextField;
 import com.waldo.inventory.gui.components.tablemodels.ILinkItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

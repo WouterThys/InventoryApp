@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.dialogs.edititemdialog;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.utils.FileUtils;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
 public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
@@ -141,7 +142,7 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
                         if (!iconPath.isEmpty()) {
                             selectedItem.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
                             try {
-                                lbl.setIcon(iconPath, 48,48);
+                                lbl.setIcon(imageResource.readImage(iconPath, 48,48));
                                 onValueChanged(lbl, "iconPath", "", iconPath);
                             } catch (Exception e2) {
                                 e2.printStackTrace();

@@ -4,8 +4,12 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
