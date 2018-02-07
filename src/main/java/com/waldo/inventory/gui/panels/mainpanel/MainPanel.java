@@ -318,7 +318,7 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!application.isUpdating(MainPanel.this)) {
+        if (!Application.isUpdating(MainPanel.this)) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
 
             if (node == null) {
@@ -587,7 +587,7 @@ public class MainPanel extends MainPanelLayout {
             cache().getTypes().clear();
             treeRecreateNodes();
         } else {
-            application.beginWait(MainPanel.this);
+            Application.beginWait(MainPanel.this);
             try {
                 cache().getItems().clear();
                 tableInitialize(selectedDivision);
@@ -595,7 +595,7 @@ public class MainPanel extends MainPanelLayout {
                     item.updateOrderState();
                 }
             } finally {
-                application.endWait(MainPanel.this);
+                Application.endWait(MainPanel.this);
             }
 
             detailPanel.updateComponents(selectedItem);

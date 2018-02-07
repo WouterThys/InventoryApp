@@ -22,7 +22,7 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.IdbToolBarListener {
+public abstract class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.IdbToolBarListener {
 
     /*
     *                  COMPONENTS
@@ -463,16 +463,6 @@ public class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-
-    }
-
-    @Override
-    public void onToolBarDelete(IdBToolBar source) {
-
-    }
-
-    @Override
-    public void onToolBarEdit(IdBToolBar source) {
 
     }
 }

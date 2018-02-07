@@ -507,7 +507,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         }
 
         public int getPins() {
-            return ((SpinnerNumberModel)pinsSp.getModel()).getNumber().intValue();
+            return ((SpinnerNumberModel) pinsSp.getModel()).getNumber().intValue();
         }
 
         public void setPackageType(PackageType packageType, int pins) {
@@ -515,26 +515,22 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         }
 
         private void packageCbChanged() {
-
-                Package p = (Package) packageCb.getSelectedItem();
-                if (p != null) {
-                    typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
-                    typeCb.setEnabled(true);
-                    pinsSp.setEnabled(false);
-                }
-
+            Package p = (Package) packageCb.getSelectedItem();
+            if (p != null) {
+                typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                typeCb.setEnabled(true);
+                pinsSp.setEnabled(false);
+            }
         }
 
         private void typeCbChanged() {
-
-                packageType = (PackageType) typeCb.getSelectedItem();
-                if (packageType != null && !packageType.isUnknown()) {
-                    pinsSp.setEnabled(packageType.isAllowOtherPinNumbers());
-                    pinsSp.setTheValue(packageType.getDefaultPins());
-                } else {
-                    pinsSp.setEnabled(false);
-                }
-
+            packageType = (PackageType) typeCb.getSelectedItem();
+            if (packageType != null && !packageType.isUnknown()) {
+                pinsSp.setEnabled(packageType.isAllowOtherPinNumbers());
+                pinsSp.setTheValue(packageType.getDefaultPins());
+            } else {
+                pinsSp.setEnabled(false);
+            }
         }
 
         @Override
@@ -585,22 +581,22 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             if (packageType != null && !packageType.isUnknown()) {
                 Package p = packageType.getPackage();
                 if (p != null) {
-                        packageCb.selectItem(p);
-                        typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
-                        if (packageType.isAllowOtherPinNumbers()) {
-                            pinsSp.setEnabled(true);
-                            int itemPins = (int) args[1];
-                            if (itemPins > 0) {
-                                pinsSp.setTheValue(itemPins);
-                            } else {
-                                pinsSp.setTheValue(packageType.getDefaultPins());
-                            }
+                    packageCb.selectItem(p);
+                    typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                    if (packageType.isAllowOtherPinNumbers()) {
+                        pinsSp.setEnabled(true);
+                        int itemPins = (int) args[1];
+                        if (itemPins > 0) {
+                            pinsSp.setTheValue(itemPins);
                         } else {
                             pinsSp.setTheValue(packageType.getDefaultPins());
-                            pinsSp.setEnabled(false);
                         }
-                        typeCb.selectItem(packageType);
-                        typeCb.setEnabled(true);
+                    } else {
+                        pinsSp.setTheValue(packageType.getDefaultPins());
+                        pinsSp.setEnabled(false);
+                    }
+                    typeCb.selectItem(packageType);
+                    typeCb.setEnabled(true);
 
                 } else {
                     typeCb.setEnabled(false);
@@ -619,13 +615,13 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 //if (!parent.isUpdating((Component)e.getSource())) {
-                    SwingUtilities.invokeLater(() -> {
-                        if (e.getSource().equals(packageCb)) {
-                            packageCbChanged();
-                        } else {
-                            typeCbChanged();
-                        }
-                    });
+                SwingUtilities.invokeLater(() -> {
+                    if (e.getSource().equals(packageCb)) {
+                        packageCbChanged();
+                    } else {
+                        typeCbChanged();
+                    }
+                });
                 //}
             }
         }

@@ -123,9 +123,9 @@ public class Item extends DbObject {
             locationId = UNKNOWN_ID;
         }
         statement.setLong(ndx++, locationId);
-        statement.setInt( ndx++, amount);
-        statement.setInt( ndx++, getAmountType().getValue());
-        statement.setInt( ndx++, getOrderState().getValue());
+        statement.setInt(ndx++, amount);
+        statement.setInt(ndx++, getAmountType().getValue());
+        statement.setInt(ndx++, getOrderState().getValue());
         if (packageTypeId < UNKNOWN_ID) {
             packageTypeId = UNKNOWN_ID;
         }
@@ -165,7 +165,7 @@ public class Item extends DbObject {
         int match = super.findMatch(searchTerm);
 
         // Local objects
-        if (getAlias().toUpperCase().contains(searchTerm)) match ++;
+        if (getAlias().toUpperCase().contains(searchTerm)) match++;
         if (getDescription().toUpperCase().contains(searchTerm)) match++;
         if (getLocalDataSheet().toUpperCase().contains(searchTerm)) match++;
         if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) match++;
@@ -218,20 +218,20 @@ public class Item extends DbObject {
                 }
             }
 
-                String itemName = getName().toUpperCase();
-                String itemAlias = getAlias().toUpperCase();
+            String itemName = getName().toUpperCase();
+            String itemAlias = getAlias().toUpperCase();
 
-                if(PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
-                if (getValue().hasValue()) {
-                    if (PcbItem.matchesValue(pcbValue, getValue())) match++;
-                } else {
-                    if(PcbItem.matchesName(pcbName, itemName)) match++;
-                }
+            if (PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
+            if (getValue().hasValue()) {
+                if (PcbItem.matchesValue(pcbValue, getValue())) match++;
+            } else {
+                if (PcbItem.matchesName(pcbName, itemName)) match++;
+            }
 
-                // Only check footprint match if there is already a match
-                if (match > 0 && getPackageTypeId() > UNKNOWN_ID) {
-                    if(PcbItem.matchesFootprint(pcbFp, getPackageType())) match++;
-                }
+            // Only check footprint match if there is already a match
+            if (match > 0 && getPackageTypeId() > UNKNOWN_ID) {
+                if (PcbItem.matchesFootprint(pcbFp, getPackageType())) match++;
+            }
 
         }
         return match;
@@ -272,7 +272,7 @@ public class Item extends DbObject {
 
     @Override
     public boolean equals(Object obj) {
-        boolean result =  super.equals(obj);
+        boolean result = super.equals(obj);
         if (result) {
             if (!(obj instanceof Item)) {
                 return false;
@@ -280,26 +280,81 @@ public class Item extends DbObject {
                 Item ref = (Item) obj;
                 if (!(ref.getAlias().equals(getAlias()))) {
                     cache().clearAliases();
+                    if (Main.DEBUG_MODE) System.out.println(ref.getAlias() + " != " + getAlias());
                     return false;
                 }
-                if (!(ref.getValue().equals(getValue()))) { return false; }
-                if (!(ref.getIconPath().equals(getIconPath()))) { return false; }
-                if (!(ref.getDescription().equals(getDescription()))) {  return false; }
-                if (!(ref.getCategoryId() == getCategoryId())) { return false; }
-                if (!(ref.getProductId() == getProductId())) { return false; }
-                if (!(ref.getTypeId() == getTypeId())) { return false; }
-                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { return false; }
-                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { return false; }
-                if (!(ref.getManufacturerId() == getManufacturerId())) {return false; }
-                if (!(ref.getLocationId() == getLocationId())) {  return false; }
-                if (!(ref.getAmount() == getAmount())) { return false; }
-                if (!(ref.getAmountType() == getAmountType())) { return false; }
-                if (!(ref.getOrderState() == getOrderState())) { return false; }
-                if (!(ref.getPackageTypeId() == getPackageTypeId())) { return false; }
-                if (!(ref.getPins() == getPins())) { return false; }
-                if (!(ref.getRating() == getRating())) { return false; }
-                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) { return false; }
-                if (!(ref.isSet() == isSet())) { return false; }
+                if (!(ref.getValue().equals(getValue()))) {
+                    if (Main.DEBUG_MODE) System.out.println(ref.getValue() + " != " + getValue());
+                    return false;
+                }
+                if (!(ref.getIconPath().equals(getIconPath()))) {
+                    if (Main.DEBUG_MODE) System.out.println(ref.getIconPath() + " != " + getIconPath());
+                    return false;
+                }
+                if (!(ref.getDescription().equals(getDescription()))) {
+                    if (Main.DEBUG_MODE) System.out.println(ref.getDescription() + " != " + getDescription());
+                    return false;
+                }
+                if (!(ref.getCategoryId() == getCategoryId())) {
+                    if (Main.DEBUG_MODE) System.out.println("CategoryId: " + ref.getCategoryId() + " != " + getCategoryId());
+                    return false;
+                }
+                if (!(ref.getProductId() == getProductId())) {
+                    if (Main.DEBUG_MODE) System.out.println("ProductId: " + ref.getProductId() + " != " + getProductId());
+                    return false;
+                }
+                if (!(ref.getTypeId() == getTypeId())) {
+                    if (Main.DEBUG_MODE) System.out.println("TypeId: " + ref.getTypeId() + " != " + getTypeId());
+                    return false;
+                }
+                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) {
+                    if (Main.DEBUG_MODE) System.out.println(ref.getLocalDataSheet() + " != " + getLocalDataSheet());
+                    return false;
+                }
+                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) {
+                    if (Main.DEBUG_MODE) System.out.println(ref.getOnlineDataSheet() + " != " + getOnlineDataSheet());
+                    return false;
+                }
+                if (!(ref.getManufacturerId() == getManufacturerId())) {
+                    if (Main.DEBUG_MODE) System.out.println("Manuf. Id: " + ref.getManufacturerId() + " != " + getManufacturerId());
+                    return false;
+                }
+                if (!(ref.getLocationId() == getLocationId())) {
+                    if (Main.DEBUG_MODE) System.out.println("LocationId: " + ref.getLocationId() + " != " + getLocationId());
+                    return false;
+                }
+                if (!(ref.getAmount() == getAmount())) {
+                    if (Main.DEBUG_MODE) System.out.println("Amount: " + ref.getAmount() + " != " + getAmount());
+                    return false;
+                }
+                if (!(ref.getAmountType() == getAmountType())) {
+                    if (Main.DEBUG_MODE) System.out.println("Amount type: " + ref.getAmountType() + " != " + getAmountType());
+                    return false;
+                }
+                if (!(ref.getOrderState() == getOrderState())) {
+                    if (Main.DEBUG_MODE) System.out.println("Order st: " + ref.getOrderState() + " != " + getOrderState());
+                    return false;
+                }
+                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
+                    if (Main.DEBUG_MODE) System.out.println("PackageTypeId: " + ref.getPackageTypeId() + " != " + getPackageTypeId());
+                    return false;
+                }
+                if (!(ref.getPins() == getPins())) {
+                    if (Main.DEBUG_MODE) System.out.println("Pins: " + ref.getPins() + " != " + getPins());
+                    return false;
+                }
+                if (!(ref.getRating() == getRating())) {
+                    if (Main.DEBUG_MODE) System.out.println("Rating: " + ref.getRating() + " != " + getRating());
+                    return false;
+                }
+                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) {
+                    if (Main.DEBUG_MODE) System.out.println("Discourage: " + ref.isDiscourageOrder() + " != " + isDiscourageOrder());
+                    return false;
+                }
+                if (!(ref.isSet() == isSet())) {
+                    if (Main.DEBUG_MODE) System.out.println("Set: " + ref.isSet() + " != " + isSet());
+                    return false;
+                }
             }
         }
         return result;
@@ -316,20 +371,20 @@ public class Item extends DbObject {
     public void tableChanged(int changedHow) {
         switch (changedHow) {
             case DatabaseAccess.OBJECT_INSERT: {
-                    List<Item> list = cache().getItems();
-                    if (!list.contains(this)) {
-                        list.add(this);
-                    }
+                List<Item> list = cache().getItems();
+                if (!list.contains(this)) {
+                    list.add(this);
+                }
                 break;
             }
             case DatabaseAccess.OBJECT_UPDATE: {
                 break;
             }
             case DatabaseAccess.OBJECT_DELETE: {
-                    List<Item> list = cache().getItems();
-                    if (list.contains(this)) {
-                        list.remove(this);
-                    }
+                List<Item> list = cache().getItems();
+                if (list.contains(this)) {
+                    list.remove(this);
+                }
 
                 break;
             }
@@ -343,8 +398,10 @@ public class Item extends DbObject {
             orderState = ItemOrderStates.NoOrder;
         } else {
             if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = ItemOrderStates.NoOrder;
-            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = ItemOrderStates.Ordered;
-            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived()) orderState = ItemOrderStates.Planned;
+            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived())
+                orderState = ItemOrderStates.Ordered;
+            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived())
+                orderState = ItemOrderStates.Planned;
             else orderState = ItemOrderStates.NoOrder;
         }
         if (currentState != getOrderState()) {

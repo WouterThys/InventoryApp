@@ -349,7 +349,17 @@ abstract class MainPanelLayout extends JPanel implements
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (vertical) {
-            detailPanel = new ItemPreviewPanel(application);
+            detailPanel = new ItemPreviewPanel(application) {
+                @Override
+                public void onToolBarDelete(IdBToolBar source) {
+                    MainPanelLayout.this.onToolBarDelete(source);
+                }
+
+                @Override
+                public void onToolBarEdit(IdBToolBar source) {
+                    MainPanelLayout.this.onToolBarEdit(source);
+                }
+            };
             detailPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(2, -1, -1, -1),
                     BorderFactory.createLineBorder(Color.lightGray, 1)
