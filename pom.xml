@@ -56,14 +56,6 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.lazyluke</groupId>
             <artifactId>log4jdbc-remix</artifactId>
@@ -98,12 +90,6 @@
             <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-all</artifactId>
             <version>1.6.5-1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.waldo.utils</groupId>
-            <artifactId>Utilities</artifactId>
-            <version>1.0</version>
         </dependency>
 
 

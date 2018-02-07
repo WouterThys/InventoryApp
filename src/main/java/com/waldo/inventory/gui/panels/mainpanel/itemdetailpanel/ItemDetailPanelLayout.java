@@ -5,6 +5,8 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.OrderDetailListener;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -15,30 +17,24 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
 
-    public interface ItemDetailListener {
-        void onShowDataSheet(Item item);
-        void onOrderItem(Item item);
-        void onShowHistory(Item item);
-    }
-
-    public interface OrderDetailListener {
-        void onSetOrderItemAmount(OrderItem orderItem, int amount);
-        void onEditReference(OrderItem orderItem);
-        void onEditPrice(OrderItem orderItem);
-    }
-
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+   // Item
     ILabel iconLbl;
-
     ITextField nameTf;
     ITextField descriptionTa;
-
     ITextField categoryTf;
     ITextField productTf;
     ITextField typeTf;
+    ITextField manufacturerTf;
+    ITextField footprintTf;
+    ITextField locationTf;
+    IStarRater starRater;
+    ICheckBox discourageOrderCb;
+    ITextPane remarksTp;
 
+    // Order
     ITextField amountTf;
     ITextField priceTf;
     ITextField referenceTf;
@@ -48,18 +44,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     IActions.MinOneAction minOneAction;
     IActions.EditAction editReferenceAction;
 
-    ITextField manufacturerTf;
-    ITextField footprintTf;
-    ITextField locationTf;
-
-    IStarRater starRater;
-    ICheckBox discourageOrderCb;
-    ITextPane remarksTp;
-
     JButton dataSheetBtn;
     private JButton orderBtn;
     private JButton historyBtn;
-
     private JPanel remarksPnl;
 
     /*
@@ -230,10 +217,6 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         referenceTf = new ITextField(false);
 
         descriptionTa = new ITextField(false);
-//        descriptionTa.setBorder(nameTf.getBorder());
-//        descriptionTa.setEnabled(false);
-//        descriptionTa.setLineWrap(true);
-//        descriptionTa.setWrapStyleWord(true);
 
         starRater = new IStarRater(5);
         starRater.setEnabled(false);

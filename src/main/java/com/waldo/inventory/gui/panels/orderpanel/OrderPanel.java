@@ -170,14 +170,14 @@ public class OrderPanel extends OrderPanelLayout {
                         tableUpdate();
                     }
                     if (selectedOrderItem != null) {
-                        itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                        detailPanel.updateComponents(selectedOrderItem.getItem());
                     }
                 }
             }
 
             @Override
             public void onDeleted(Item item) {
-                itemDetailPanel.updateComponents();
+                detailPanel.updateComponents();
             }
 
             @Override
@@ -793,9 +793,9 @@ public class OrderPanel extends OrderPanelLayout {
             SwingUtilities.invokeLater(() -> {
                 selectedOrderItem = tableGetSelectedItem();
                 if (selectedOrderItem != null) {
-                    itemDetailPanel.updateComponents(selectedOrderItem);
+                    detailPanel.updateComponents(selectedOrderItem);
                 } else {
-                    itemDetailPanel.updateComponents();
+                    detailPanel.updateComponents();
                 }
                 updateToolBar(selectedOrder);
                 updateVisibleComponents();

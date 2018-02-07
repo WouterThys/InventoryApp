@@ -3,19 +3,17 @@ package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
-import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
-import com.waldo.utils.OpenUtils;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.OrderDetailListener;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -33,15 +31,12 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private ITextField nameTf;
     private ILabel aliasLbl;
     private ITextArea descriptionTa;
-
     private ITextField manufacturerTf;
     private ITextField footprintTf;
     private ITextField locationTf;
-
     private ITextField categoryTf;
     private ITextField productTf;
     private ITextField typeTf;
-
     private IStarRater starRater;
     private ITextPane remarksTp;
 
@@ -49,20 +44,36 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private AbstractAction orderAa;
     private AbstractAction historyAa;
 
+    // Order
+    private ITextField amountTf;
+    private ITextField priceTf;
+    private ITextField referenceTf;
+
+    private IActions.EditAction editPriceAction;
+    private IActions.PlusOneAction plusOneAction;
+    private IActions.MinOneAction minOneAction;
+    private IActions.EditAction editReferenceAction;
+
     private IdBToolBar dbToolbar;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    final Application application;
-    Item selectedItem;
+    private Item selectedItem;
+    private OrderItem selectedOrderItem;
+
+    private final ItemDetailListener itemDetailListener;
+    private final OrderDetailListener orderDetailListener;
+    private final boolean isOrderType;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ItemPreviewPanel(Application application) {
-        this.application = application;
+    public ItemPreviewPanel(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+        this.itemDetailListener = itemDetailListener;
+        this.orderDetailListener = orderDetailListener;
+        this.isOrderType = orderDetailListener != null;
         initializeComponents();
         initializeLayouts();
     }
@@ -96,23 +107,36 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         starRater.setRating(item.getRating());
     }
 
-    private void updateData(Item item) {
-        if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-            categoryTf.setText(item.getCategory().toString());
-        } else {
-            categoryTf.setText("");
-        }
+    private void updateData(Item item, OrderItem orderItem) {
+        if (!isOrderType) {
+            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+                categoryTf.setText(item.getCategory().toString());
+            } else {
+                categoryTf.setText("");
+            }
 
-        if (item.getProductId() > DbObject.UNKNOWN_ID) {
-            productTf.setText(item.getProduct().toString());
-        } else {
-            productTf.setText("");
-        }
+            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+                productTf.setText(item.getProduct().toString());
+            } else {
+                productTf.setText("");
+            }
 
-        if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-            typeTf.setText(item.getType().toString());
+            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+                typeTf.setText(item.getType().toString());
+            } else {
+                typeTf.setText("");
+            }
         } else {
-            typeTf.setText("");
+            amountTf.setText(String.valueOf(orderItem.getAmount()));
+            if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                priceTf.setText(orderItem.getPrice().toString());
+                referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+            }
+            boolean locked = orderItem.isLocked();
+            editPriceAction.setEnabled(!locked);
+            editReferenceAction.setEnabled(!locked);
+            plusOneAction.setEnabled(!locked);
+            minOneAction.setEnabled(!locked);
         }
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
@@ -136,58 +160,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     private void updateRemarks(Item item) {
         remarksTp.setFile(item.getRemarksFile());
-    }
-
-    private void openDataSheet(Item item) {
-        if (item != null) {
-            String local = item.getLocalDataSheet();
-            String online = item.getOnlineDataSheet();
-            if (local != null && !local.isEmpty() && online != null && !online.isEmpty()) {
-                SelectDataSheetDialog.showDialog(application, online, local);
-            } else if (local != null && !local.isEmpty()) {
-                try {
-                    OpenUtils.openPdf(local);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(application,
-                            "Error opening the file: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-            } else if (online != null && !online.isEmpty()) {
-                try {
-                    OpenUtils.browseLink(online);
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(application,
-                            "Error opening the file: " + e1.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void orderItem(Item item) {
-        int result = JOptionPane.YES_OPTION;
-        if (item.isDiscourageOrder()) {
-            result = JOptionPane.showConfirmDialog(
-                    application,
-                    "This item is marked to discourage new orders, \n do you really want to order it?",
-                    "Discouraged to order",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
-        }
-        if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(application, "Order " + item.getName(), item, true);
-            dialog.showDialog();
-        }
-    }
-
-    private void showHistory(Item item) {
-        HistoryDialog dialog = new HistoryDialog(application, item);
-        dialog.showDialog();
     }
 
     private JPanel createToolBarPanel() {
@@ -215,22 +187,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         JScrollPane scrollPane = new JScrollPane(descriptionTa);
         scrollPane.setBorder(null);
-
-//        JPanel iconPnl = new JPanel(new BorderLayout());
-//        iconPnl.add(iconLbl, BorderLayout.CENTER);
-//        //iconPnl.add(raterPnl, BorderLayout.PAGE_END);
-//
-//        JPanel dataPnl = new JPanel(new BorderLayout());
-//        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(dataPnl, 0);
-//        gbc.addLine("", nameTf);
-//        gbc.weightx = 1;
-//        gbc.weighty = 1;
-//        gbc.addLine("", new JScrollPane(descriptionTa), GridBagConstraints.BOTH);
-//
-//        headerPnl.add(iconPnl, BorderLayout.WEST);
-//        headerPnl.add(dataPnl, BorderLayout.CENTER);
-//        headerPnl.add(raterPnl, BorderLayout.PAGE_END);
-
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(headerPnl);
         // Label
@@ -264,28 +220,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         return headerPnl;
     }
 
-//    private JPanel createDivisionPanel() {
-//        JPanel divisionPnl = new JPanel();
-//        divisionPnl.setLayout(new BoxLayout(divisionPnl, BoxLayout.X_AXIS));
-//
-//        JPanel cPnl = new JPanel(new BorderLayout());
-//        JPanel pPnl = new JPanel(new BorderLayout());
-//        JPanel tPnl = new JPanel(new BorderLayout());
-//
-//        cPnl.add(new ILabel(imageResource.readImage("Items.Tree.Category")), BorderLayout.WEST);
-//        cPnl.add(categoryTf, BorderLayout.CENTER);
-//        pPnl.add(new ILabel(imageResource.readImage("Items.Tree.Product")), BorderLayout.WEST);
-//        pPnl.add(productTf, BorderLayout.CENTER);
-//        tPnl.add(new ILabel(imageResource.readImage("Items.Tree.Type")), BorderLayout.WEST);
-//        tPnl.add(typeTf, BorderLayout.CENTER);
-//
-//        divisionPnl.add(cPnl);
-//        divisionPnl.add(pPnl);
-//        divisionPnl.add(tPnl);
-//
-//        return divisionPnl;
-//    }
-
     private JPanel createDataPanel() {
         JPanel dataPnl = new JPanel();
         dataPnl.setLayout(new BoxLayout(dataPnl, BoxLayout.Y_AXIS));
@@ -295,9 +229,18 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         JPanel divisionPanel = new JPanel();
         divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
         gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-        gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
-        gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
-        gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
+        if (!isOrderType) {
+            gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
+            gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
+            gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
+        } else {
+            JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
+            JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
+            JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
+            gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
+            gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
+            gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+        }
 
         JPanel infoPnl = new JPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
@@ -356,11 +299,14 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         descriptionTa.setLineWrap(true);
         descriptionTa.setWrapStyleWord(true);
 
+        amountTf = new ITextField(false);
+        priceTf = new ITextField(false, 6);
+        referenceTf = new ITextField(false);
+
         starRater = new IStarRater();
         starRater.setEnabled(false);
 
         remarksTp = new ITextPane();
-        //remarksTp.setPreferredSize(new Dimension(300, 50));
         remarksTp.setEditable(false);
         remarksTp.setEnabled(false);
 
@@ -370,8 +316,8 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    openDataSheet(selectedItem);
+                if (selectedItem != null && itemDetailListener != null) {
+                    itemDetailListener.onShowDataSheet(selectedItem);
                 }
             }
         };
@@ -379,8 +325,8 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         orderAa = new AbstractAction("Order", imageResource.readImage("Items.Buttons.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    orderItem(selectedItem);
+                if (selectedItem != null && itemDetailListener != null) {
+                    itemDetailListener.onOrderItem(selectedItem);
                 }
             }
         };
@@ -388,13 +334,53 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         historyAa = new AbstractAction("History", imageResource.readImage("Items.Buttons.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedItem != null) {
-                    showHistory(selectedItem);
+                if (selectedItem != null && itemDetailListener != null) {
+                    itemDetailListener.onShowHistory(selectedItem);
                 }
             }
         };
         historyAa.putValue(AbstractAction.SHORT_DESCRIPTION, "History");
 
+
+        // Order
+        plusOneAction = new IActions.PlusOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount + 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        minOneAction = new IActions.MinOneAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderItem.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount - 1);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editReferenceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
+        editPriceAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedOrderItem != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedOrderItem);
+                    updateComponents(selectedOrderItem);
+                }
+            }
+        };
     }
 
     @Override
@@ -407,19 +393,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         JPanel dataPanel = createDataPanel();
         JPanel remarksPanel = createRemarksPanel();
 
-//        JPanel mainPanel = new JPanel();
-//        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-//
-//        mainPanel.add(toolbarsPanel);
-//        mainPanel.add(headerPanel);
-//        mainPanel.add(dataPanel);
-//
-//        panel.add(mainPanel, BorderLayout.CENTER);
-//        panel.add(createRemarksPanel(), BorderLayout.SOUTH);
-//
-//        setMinimumSize(new Dimension(400, 400));
-//        add(panel);
-
         setLayout(new BorderLayout());
 
         panel1.add(headerPanel, BorderLayout.NORTH);
@@ -430,27 +403,27 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         add(panel2, BorderLayout.NORTH);
         add(remarksPanel, BorderLayout.CENTER);
-        //setPreferredSize(new Dimension(400, 100));
     }
 
     @Override
     public void updateComponents(Object... args) {
-        if (args.length > 0 && args[0] != null) {
-            Item newItem = (Item) args[0];
-
-            if (isVisible() && selectedItem != null && newItem.equals(selectedItem)) {
-                setVisible(false);
-            } else {
-                updateToolbar(newItem);
-                updateHeader(newItem);
-                updateData(newItem);
-                updateRemarks(newItem);
-
-                setVisible(true);
-                selectedItem = newItem;
-            }
-        } else {
+        if (args.length == 0 || args[0] == null) {
             setVisible(false);
+            selectedItem = null;
+            selectedOrderItem = null;
+        } else {
+            setVisible(true);
+            if (args[0] instanceof Item) {
+                selectedItem = (Item) args[0];
+                selectedOrderItem = null;
+            } else {
+                selectedOrderItem = (OrderItem) args[0];
+                selectedItem = selectedOrderItem.getItem();
+            }
+            updateToolbar(selectedItem);
+            updateHeader(selectedItem);
+            updateData(selectedItem, selectedOrderItem);
+            updateRemarks(selectedItem);
         }
     }
 

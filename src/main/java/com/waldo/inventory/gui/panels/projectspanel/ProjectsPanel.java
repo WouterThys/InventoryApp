@@ -150,8 +150,8 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!application.isUpdating(ProjectsPanel.this)) {
-            application.beginWait(ProjectsPanel.this);
+        if (!Application.isUpdating(ProjectsPanel.this)) {
+            Application.beginWait(ProjectsPanel.this);
             try {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) projectsTree.getLastSelectedPathComponent();
 
@@ -187,7 +187,6 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
                         break;
                 }
 
-                application.clearSearch();
                 selectTreeTab(tabToSelect, selectedProject);
                 selectTab(tabToSelect, selectedProject);
 
@@ -195,7 +194,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
                 updateVisibleComponents();
                 updateEnabledComponents();
             } finally {
-                application.endWait(ProjectsPanel.this);
+                Application.endWait(ProjectsPanel.this);
             }
         }
     }
@@ -206,8 +205,8 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource().equals(tabbedPane)) {
-            if (!application.isUpdating(ProjectsPanel.this)) {
-                application.beginWait(ProjectsPanel.this);
+            if (!Application.isUpdating(ProjectsPanel.this)) {
+                Application.beginWait(ProjectsPanel.this);
                 try {
                     if (selectedProject != null) {
                         int tab = tabbedPane.getSelectedIndex();
@@ -217,7 +216,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
                         updateVisibleComponents();
                     }
                 } finally {
-                    application.endWait(ProjectsPanel.this);
+                    Application.endWait(ProjectsPanel.this);
                 }
             }
         }

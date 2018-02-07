@@ -4,13 +4,13 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.OpenUtils;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
-import com.waldo.utils.icomponents.*;
 
 public class GuiUtils extends com.waldo.utils.GuiUtils {
 
@@ -579,34 +578,42 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
                 packageType = pt;
             }
 
-            if (packageType != null && !packageType.isUnknown()) {
-                Package p = packageType.getPackage();
-                if (p != null) {
-                    packageCb.selectItem(p);
-                    typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
-                    if (packageType.isAllowOtherPinNumbers()) {
-                        pinsSp.setEnabled(true);
-                        int itemPins = (int) args[1];
-                        if (itemPins > 0) {
-                            pinsSp.setTheValue(itemPins);
+            packageCb.setSelecting(true);
+            typeCb.setSelecting(true);
+            try {
+                if (packageType != null && !packageType.isUnknown()) {
+                    Package p = packageType.getPackage();
+                    if (p != null) {
+                        packageCb.setSelectedItem(p);
+                        typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                        if (packageType.isAllowOtherPinNumbers()) {
+                            pinsSp.setEnabled(true);
+                            int itemPins = (int) args[1];
+                            if (itemPins > 0) {
+                                pinsSp.setTheValue(itemPins);
+                            } else {
+                                pinsSp.setTheValue(packageType.getDefaultPins());
+                            }
                         } else {
                             pinsSp.setTheValue(packageType.getDefaultPins());
+                            pinsSp.setEnabled(false);
                         }
+                        typeCb.setSelectedItem(packageType);
+                        typeCb.setEnabled(true);
+
                     } else {
-                        pinsSp.setTheValue(packageType.getDefaultPins());
+                        typeCb.setEnabled(false);
                         pinsSp.setEnabled(false);
                     }
-                    typeCb.selectItem(packageType);
-                    typeCb.setEnabled(true);
-
                 } else {
                     typeCb.setEnabled(false);
                     pinsSp.setEnabled(false);
                 }
-            } else {
-                typeCb.setEnabled(false);
-                pinsSp.setEnabled(false);
+            } finally {
+                packageCb.setSelecting(false);
+                typeCb.setSelecting(false);
             }
+
         }
 
         //
@@ -614,7 +621,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         //
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED && !typeCb.isSelecting() && !packageCb.isSelecting()) {
                 //if (!parent.isUpdating((Component)e.getSource())) {
                 SwingUtilities.invokeLater(() -> {
                     if (e.getSource().equals(packageCb)) {
