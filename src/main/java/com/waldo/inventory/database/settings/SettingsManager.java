@@ -4,7 +4,7 @@ import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.gui.Application;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
 import javax.swing.*;
@@ -70,10 +70,8 @@ public class SettingsManager {
         dataSource.setUsername("waldo");
         dataSource.setPassword("");
         dataSource.setMaxIdle(10);
-        dataSource.setMaxActive(10);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setLogAbandoned(false);
-        dataSource.setRemoveAbandoned(true);
         dataSource.setInitialSize(5);
         dataSource.setRemoveAbandonedTimeout(60);
 

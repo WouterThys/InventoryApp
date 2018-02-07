@@ -10,7 +10,7 @@ import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.utils.OpenUtils;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
 import java.awt.*;

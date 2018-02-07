@@ -15,7 +15,7 @@ import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.FileUtils;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
 import java.sql.*;
@@ -110,10 +110,8 @@ public class DatabaseAccess {
             dataSource.setUsername(settings.getDbUserName());
             dataSource.setPassword("");
             dataSource.setMaxIdle(10);
-            dataSource.setMaxActive(10);
             dataSource.setPoolPreparedStatements(true);
             dataSource.setLogAbandoned(false);
-            dataSource.setRemoveAbandoned(true);
             dataSource.setInitialSize(5);
             dataSource.setRemoveAbandonedTimeout(60);
 
