@@ -2,6 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -18,8 +19,8 @@ public class PendingOrder extends DbObject {
     private long itemId;
     private Item item;
 
-    private long manufacturerId;
-    private Manufacturer manufacturer;
+    private long distributorId;
+    private Distributor distributor;
 
     private Date orderDate;
 
@@ -27,18 +28,20 @@ public class PendingOrder extends DbObject {
         super(TABLE_NAME);
     }
 
-    public PendingOrder(Item item, Manufacturer manufacturer) {
+    public PendingOrder(Item item, Distributor distributor) {
         this();
 
         this.item = item;
-        this.manufacturer = manufacturer;
+        this.distributor = distributor;
 
         if (item != null) {
             itemId = item.getId();
         }
-        if (manufacturer != null) {
-            manufacturerId = manufacturer.getId();
+        if (distributor != null) {
+            distributorId = distributor.getId();
         }
+
+        orderDate = DateUtils.now();
     }
 
 
@@ -49,12 +52,12 @@ public class PendingOrder extends DbObject {
         if (getItemId() < UNKNOWN_ID) {
             setItemId(UNKNOWN_ID);
         }
-        if (getManufacturerId() < UNKNOWN_ID) {
-            setManufacturerId(UNKNOWN_ID);
+        if (getDistributorId() < UNKNOWN_ID) {
+            setDistributorId(UNKNOWN_ID);
         }
 
         statement.setLong(ndx++, getItemId());
-        statement.setLong(ndx++, getManufacturerId());
+        statement.setLong(ndx++, getDistributorId());
         if (orderDate != null) {
             statement.setTimestamp(ndx++, new Timestamp(orderDate.getTime()));
         } else {
@@ -70,7 +73,7 @@ public class PendingOrder extends DbObject {
         copyBaseFields(cpy);
 
         cpy.setItemId(getItemId());
-        cpy.setManufacturerId(getManufacturerId());
+        cpy.setDistributorId(getDistributorId());
         cpy.setOrderDate(getOrderDate());
 
         return cpy;
@@ -125,22 +128,22 @@ public class PendingOrder extends DbObject {
         return item;
     }
 
-    public long getManufacturerId() {
-        return manufacturerId;
+    public long getDistributorId() {
+        return distributorId;
     }
 
-    public void setManufacturerId(long manufacturerId) {
-        if (manufacturer != null && manufacturer.getId() != manufacturerId) {
-            manufacturer = null;
+    public void setDistributorId(long distributorId) {
+        if (distributor != null && distributor.getId() != distributorId) {
+            distributor = null;
         }
-        this.manufacturerId = manufacturerId;
+        this.distributorId = distributorId;
     }
 
-    public Manufacturer getManufacturer() {
-        if (manufacturer == null) {
-            manufacturer = SearchManager.sm().findManufacturerById(manufacturerId);
+    public Distributor getDistributor() {
+        if (distributor == null) {
+            distributor = SearchManager.sm().findDistributorById(distributorId);
         }
-        return manufacturer;
+        return distributor;
     }
 
     public Date getOrderDate() {

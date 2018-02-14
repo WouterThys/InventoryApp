@@ -14,6 +14,7 @@ import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceiv
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -491,7 +492,8 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     void onViewPendingOrders() {
-
+        PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+        dialog.showDialog();
     }
 
     @Override

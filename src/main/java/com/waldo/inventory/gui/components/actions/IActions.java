@@ -187,6 +187,12 @@ public class IActions {
         }
     }
 
+    public static abstract class GoAction extends IAbstractAction {
+        public GoAction() {
+            super("Go", imageResource.readImage("Actions.M.Go"));
+        }
+    }
+
     public static abstract class EditReferenceAction extends IAbstractAction {
         protected EditReferenceAction() {
             super("Edit reference", imageResource.readImage("Actions.OrderReference"));

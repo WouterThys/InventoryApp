@@ -452,7 +452,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         };
         orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
 
-        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readImage("Orders.Tree.Pending")) {
+        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readImage("Actions.M.Pending")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onViewPendingOrders();

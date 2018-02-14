@@ -1783,7 +1783,7 @@ public class DatabaseAccess {
                     p = new PendingOrder();
                     p.setId(rs.getLong("id"));
                     p.setItemId(rs.getLong("itemId"));
-                    p.setManufacturerId(rs.getLong("manufacturerId"));
+                    p.setDistributorId(rs.getLong("distributorId"));
                     p.setOrderDate(rs.getTimestamp("orderDate"));
                     p.setInserted(true);
 

@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
+import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.components.actions.IActions.GoAction;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.ILabel;
@@ -10,22 +12,26 @@ import com.waldo.utils.icomponents.ILabel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import static com.waldo.inventory.gui.components.actions.IActions.AddAction;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-abstract class OrderItemDialogLayout extends IDialog implements
-        ActionListener {
+abstract class OrderItemDialogLayout extends IDialog {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel textLabel;
-    private IActions.AddAction addNewOrderAction;
+    // New or existing order
+    private ILabel selectOrderLbl;
     IComboBox<Order> orderCb;
+    private AddAction addNewOrderAa;
+    private GoAction addNowAa;
 
-    private IActions.AddToPendingOrderAction addToPendingOrderAction;
+    // Pending
+    private ILabel pendingOrderLbl;
+    IComboBox<Distributor> distributorCb;
+    private GoAction addPendingAa;
 
     /*
     *                  CONSTRUCTOR
@@ -35,57 +41,62 @@ abstract class OrderItemDialogLayout extends IDialog implements
         showTitlePanel(false);
     }
 
+    abstract void addNewOrder();
+    abstract void addToOrder();
+    abstract void addToPending();
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        textLabel = new ILabel("Select an order, or add a new one.");
+        getButtonOK().setVisible(false);
 
-        addNewOrderAction = new IActions.AddAction() {
+        selectOrderLbl = new ILabel("Select an order, or add a new one.");
+        addNewOrderAa = new AddAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderItemDialogLayout.this.actionPerformed(e);
+                addNewOrder();
             }
         };
-
-        addToPendingOrderAction = new IActions.AddToPendingOrderAction() {
+        addNowAa = new GoAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                addToOrder();
             }
         };
-
         orderCb = new IComboBox<>();
+
+        pendingOrderLbl = new ILabel("Add to pending orders, and order later.");
+        addPendingAa = new GoAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addToPending();
+            }
+        };
+        distributorCb = new IComboBox<>(cache().getDistributors(), new DbObjectNameComparator<>(), false);
     }
 
     @Override
     public void initializeLayouts() {
-        getContentPanel().setLayout(new GridBagLayout());
+        GuiUtils.GridBagHelper gbc;
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        JPanel addNowPanel = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(addNowPanel, 0);
+        gbc.addLine("", selectOrderLbl);
+        gbc.addLine("", GuiUtils.createComponentWithActions(orderCb, addNewOrderAa, addNowAa));
 
-        // Text
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        getContentPanel().add(textLabel, gbc);
+        JPanel addLaterPanel = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(addLaterPanel, 0);
+        gbc.addLine("", pendingOrderLbl);
+        gbc.addLine("", GuiUtils.createComponentWithActions(distributorCb, addPendingAa));
 
-        // Combo box
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        getContentPanel().add(orderCb, gbc);
+        addNowPanel.setBorder(GuiUtils.createTitleBorder("Add now"));
+        addLaterPanel.setBorder(GuiUtils.createTitleBorder("Add later"));
 
-        // Button
-        gbc.gridx = 1; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        getContentPanel().add(GuiUtils.createNewToolbar(addNewOrderAction, addToPendingOrderAction), gbc);
+        getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
+        getContentPanel().add(addNowPanel);
+        getContentPanel().add(addLaterPanel);
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 
