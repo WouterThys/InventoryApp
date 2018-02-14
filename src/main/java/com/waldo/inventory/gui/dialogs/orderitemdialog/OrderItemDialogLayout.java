@@ -2,11 +2,14 @@ package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
@@ -19,8 +22,10 @@ abstract class OrderItemDialogLayout extends IDialog implements
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ILabel textLabel;
-    private JButton addNewOrderButton;
+    private IActions.AddAction addNewOrderAction;
     IComboBox<Order> orderCb;
+
+    private IActions.AddToPendingOrderAction addToPendingOrderAction;
 
     /*
     *                  CONSTRUCTOR
@@ -36,8 +41,21 @@ abstract class OrderItemDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         textLabel = new ILabel("Select an order, or add a new one.");
-        addNewOrderButton = new JButton("Add new");
-        addNewOrderButton.addActionListener(this);
+
+        addNewOrderAction = new IActions.AddAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OrderItemDialogLayout.this.actionPerformed(e);
+            }
+        };
+
+        addToPendingOrderAction = new IActions.AddToPendingOrderAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
         orderCb = new IComboBox<>();
     }
 
@@ -55,7 +73,7 @@ abstract class OrderItemDialogLayout extends IDialog implements
         gbc.fill = GridBagConstraints.BOTH;
         getContentPanel().add(textLabel, gbc);
 
-        // Combobox
+        // Combo box
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.gridwidth = 1;
@@ -67,7 +85,7 @@ abstract class OrderItemDialogLayout extends IDialog implements
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        getContentPanel().add(addNewOrderButton, gbc);
+        getContentPanel().add(GuiUtils.createNewToolbar(addNewOrderAction, addToPendingOrderAction), gbc);
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 

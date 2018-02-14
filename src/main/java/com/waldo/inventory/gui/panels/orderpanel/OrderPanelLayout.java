@@ -64,6 +64,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
     private AbstractAction orderDetailsAa;
+    private AbstractAction pendingOrderAa;
     private JPanel tbOrderFilePanel;
 
     /*
@@ -92,6 +93,8 @@ public abstract class OrderPanelLayout extends JPanel implements
     abstract void onEditOrder(Order order);
     abstract void onDeleteOrder(Order order);
     abstract void onOrderDetails(Order order);
+    abstract void onViewPendingOrders();
+
     abstract void onMoveToOrdered(Order order);
     abstract void onMoveToReceived(Order order);
     abstract void onBackToOrdered(Order order);
@@ -101,7 +104,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     abstract void onEditItem(OrderItem orderItem);
 
 
-    public Order getSelectedOrder() {
+    Order getSelectedOrder() {
         return selectedOrder;
     }
 
@@ -247,7 +250,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tableAddOrderItems(orderItems);
     }
 
-    public void tableSelectOrderItem(OrderItem orderItem) {
+    void tableSelectOrderItem(OrderItem orderItem) {
         orderItemTable.selectItem(orderItem);
     }
 
@@ -447,11 +450,22 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onOrderDetails(selectedOrder);
             }
         };
+        orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
+
+        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readImage("Orders.Tree.Pending")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onViewPendingOrders();
+            }
+        };
+        pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
+
         tbOrderFlowPanel = new IOrderFlowPanel();
 
         // Tool bars
         treeToolBar = new IdBToolBar(this);
         treeToolBar.addSeparateAction(orderDetailsAa);
+        treeToolBar.addAction(pendingOrderAa);
 
     }
 

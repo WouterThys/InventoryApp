@@ -29,7 +29,7 @@ abstract class OrdersDialogLayout extends IDialog
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField nameField;
-    IComboBox<Distributor> distributorCb;
+    private IComboBox<Distributor> distributorCb;
 
     JCheckBox isOrderedCb;
     JDatePickerImpl orderedDatePicker;

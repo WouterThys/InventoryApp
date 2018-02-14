@@ -271,5 +271,15 @@ public class IActions {
             setTooltip("Test");
         }
     }
+    public static abstract class AddToPendingOrderAction extends IAbstractAction {
+        protected AddToPendingOrderAction() {
+            super("AddPending", imageResource.readImage("Actions.M.PendingOrder"));
+        }
+        protected AddToPendingOrderAction(ImageIcon icon) {
+            super("Add to pending", icon);
+            setTooltip("Add to pending");
+        }
+    }
+
 
 }

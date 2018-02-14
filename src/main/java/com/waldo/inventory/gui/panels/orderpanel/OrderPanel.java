@@ -490,6 +490,11 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
+    void onViewPendingOrders() {
+
+    }
+
+    @Override
     void onMoveToOrdered(Order order) {
         if (order != null && order.canBeSaved() && !order.isOrdered()) {
             // Check

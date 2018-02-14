@@ -97,14 +97,4 @@ public class Product extends DbObject {
         }
         return category;
     }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
 }
