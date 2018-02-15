@@ -3,11 +3,11 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog.EditProjectCodeDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;

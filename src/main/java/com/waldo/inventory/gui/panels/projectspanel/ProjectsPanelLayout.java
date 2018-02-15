@@ -4,11 +4,11 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.*;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;

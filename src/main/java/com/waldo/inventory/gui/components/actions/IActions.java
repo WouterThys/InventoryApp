@@ -187,6 +187,12 @@ public class IActions {
         }
     }
 
+    public static abstract class GoAction extends IAbstractAction {
+        public GoAction() {
+            super("Go", imageResource.readImage("Actions.M.Go"));
+        }
+    }
+
     public static abstract class EditReferenceAction extends IAbstractAction {
         protected EditReferenceAction() {
             super("Edit reference", imageResource.readImage("Actions.OrderReference"));
@@ -271,5 +277,15 @@ public class IActions {
             setTooltip("Test");
         }
     }
+    public static abstract class AddToPendingOrderAction extends IAbstractAction {
+        protected AddToPendingOrderAction() {
+            super("AddPending", imageResource.readImage("Actions.M.PendingOrder"));
+        }
+        protected AddToPendingOrderAction(ImageIcon icon) {
+            super("Add to pending", icon);
+            setTooltip("Add to pending");
+        }
+    }
+
 
 }

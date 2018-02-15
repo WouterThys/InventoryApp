@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.packagedialog.editpackagetypedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;

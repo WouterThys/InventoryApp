@@ -1,4 +1,4 @@
-"id";"name";"description";"value";"categoryId";"productId";"typeId";"localDataSheet";"onlineDataSheet";"iconPath";"manufacturerId";"locationId";"amount";"amountType";"orderState";"packageId";"rating";"discourageOrder";"remark";"isSet";"dimensionTypeId"
+"id";"name";"description";"value";"categoryId";"productId";"typeId";"localDataSheet";"onlineDataSheet";"iconPath";"distributorId";"locationId";"amount";"amountType";"orderState";"packageId";"rating";"discourageOrder";"remark";"isSet";"dimensionTypeId"
 1;"Unknown";"";0.0;1;1;1;"";"";"";1;1;0;0;0;1;0.0;0;"";0;0
 2;"PIC16F684-I/P";"8-bit Microcontrollers - MCU 
 3.5KB  128 RAM 12 I/O";1.0;2;2;2;"";"http://www.mouser.com/ds/2/268/41202F-print-49265.pdfhttp://www.mouser.com/ds/2/268/41202F-print-49265.pdf";"PDIP_14_t.jpg";6;286;3;3;0;63;4.0;0;"";0;9

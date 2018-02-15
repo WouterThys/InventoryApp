@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.utils.DateUtils;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import java.util.List;
 

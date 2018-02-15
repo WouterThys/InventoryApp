@@ -1,15 +1,17 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 
+import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(Order.class,this);
+        addCacheListener(Order.class, this);
 
         initializeComponents();
         initializeLayouts();
@@ -43,7 +45,7 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(Order.class,this);
+        addCacheListener(Order.class, this);
 
         initializeComponents();
         initializeLayouts();
@@ -54,33 +56,52 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         return (Order) orderCb.getSelectedItem();
     }
 
-    private boolean verify() {
+    @Override
+    void addToOrder() {
         if (orderCb.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(OrderItemDialog.this, "Selected an order", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return;
         }
-        return true;
-    }
-
-    @Override
-    protected void onOK() {
-        if (verify()) {
-            if (createOnConfirm) {
-                // Add item(s) to list
-                if (orderList) {
-                    application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
-                } else {
-                    itemsToOrderList = new ArrayList<>(1);
-                    itemsToOrderList.add(itemToOrder);
-                    application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
-                }
+        if (createOnConfirm) {
+            // Add item(s) to list
+            if (orderList) {
+                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+            } else {
+                itemsToOrderList = new ArrayList<>(1);
+                itemsToOrderList.add(itemToOrder);
+                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
             }
-            super.onOK();
         }
+        super.onOK();
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    void addToPending() {
+        if (distributorCb.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(OrderItemDialog.this, "Selected a distributor", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Distributor distributor = (Distributor) distributorCb.getSelectedItem();
+        List<Item> itemsToPending = new ArrayList<>();
+        if (orderList) {
+            itemsToPending.addAll(itemsToOrderList);
+        } else {
+            itemsToPending.add(itemToOrder);
+        }
+
+        PendingOrdersDialog dialog = new PendingOrdersDialog(this, "Pending orders");
+
+        for (Item item : itemsToPending) {
+            PendingOrder pendingOrder = new PendingOrder(item, distributor);
+            pendingOrder.save();
+        }
+
+        dialog.showDialog();
+        super.onOK();
+    }
+
+    @Override
+    void addNewOrder() {
         OrdersDialog dialog = new OrdersDialog(this, "New order", new Order(), false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
@@ -94,10 +115,12 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
     }
 
     @Override
-    public void onUpdated(Order newOrder) {} // Should not happen
+    public void onUpdated(Order newOrder) {
+    } // Should not happen
 
     @Override
-    public void onDeleted(Order order) {} // Should not happen
+    public void onDeleted(Order order) {
+    } // Should not happen
 
     @Override
     public void onCacheCleared() {

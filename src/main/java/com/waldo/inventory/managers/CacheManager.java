@@ -58,6 +58,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Project item links", pcbItemProjectLinks));
         objectLogList.add(new ObjectLog("Sets", sets));
         objectLogList.add(new ObjectLog("Set item links", setItemLinks));
+        objectLogList.add(new ObjectLog("Pending orders", pendingOrders));
         initTime = DateUtils.now();
     }
 
@@ -91,6 +92,7 @@ public class CacheManager {
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
     private final CacheList<DbEvent> dbEvents = new CacheList<>();
     private final CacheList<Statistics> statistics = new CacheList<>();
+    private final CacheList<PendingOrder> pendingOrders = new CacheList<>();
 
     // Other
     private List<String> aliasList = null;
@@ -193,6 +195,7 @@ public class CacheManager {
         parserItemLinks.clear();
         sets.clear();
         setItemLinks.clear();
+        pendingOrders.clear();
     }
 
 
@@ -462,5 +465,13 @@ public class CacheManager {
             statistics.setList(db().updateStatistics(), (System.nanoTime() - start));
         }
         return statistics;
+    }
+
+    public synchronized CacheList<PendingOrder> getPendingOrders() {
+        if (!pendingOrders.isFetched()) {
+            long start = System.nanoTime();
+            pendingOrders.setList(db().updatePendingOrders(), (System.nanoTime() - start));
+        }
+        return pendingOrders;
     }
 }

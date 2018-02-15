@@ -7,9 +7,9 @@ import com.waldo.inventory.Utils.parser.SetItem.SetItemValueParser;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;

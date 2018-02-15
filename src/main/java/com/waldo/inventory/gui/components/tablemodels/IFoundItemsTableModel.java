@@ -5,8 +5,9 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.search.DbObjectMatch;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITableIcon;
+import com.waldo.utils.icomponents.IAbstractTableModel;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableIcon;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

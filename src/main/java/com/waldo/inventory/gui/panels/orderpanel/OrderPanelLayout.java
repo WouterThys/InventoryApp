@@ -7,11 +7,20 @@ import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IOrderFlowPanel;
+import com.waldo.inventory.gui.components.ITablePanel;
+import com.waldo.inventory.gui.components.ITree;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
+import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
-import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.OrderDetailListener;
+import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableEditors;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -25,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -34,8 +44,8 @@ public abstract class OrderPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.ItemDetailListener,
-        ItemDetailPanelLayout.OrderDetailListener {
+        ItemDetailListener,
+        OrderDetailListener {
 
     /*
      *                  COMPONENTS
@@ -45,7 +55,7 @@ public abstract class OrderPanelLayout extends JPanel implements
 
     ITree ordersTree;
     private IDbObjectTreeModel<Order> treeModel;
-    ItemDetailPanel itemDetailPanel;
+    AbstractDetailPanel detailPanel;
     //OrderItemDetailPanel orderItemDetailPanel;
 
     IdBToolBar treeToolBar;
@@ -54,6 +64,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
     private AbstractAction orderDetailsAa;
+    private AbstractAction pendingOrderAa;
     private JPanel tbOrderFilePanel;
 
     /*
@@ -82,6 +93,8 @@ public abstract class OrderPanelLayout extends JPanel implements
     abstract void onEditOrder(Order order);
     abstract void onDeleteOrder(Order order);
     abstract void onOrderDetails(Order order);
+    abstract void onViewPendingOrders();
+
     abstract void onMoveToOrdered(Order order);
     abstract void onMoveToReceived(Order order);
     abstract void onBackToOrdered(Order order);
@@ -91,7 +104,7 @@ public abstract class OrderPanelLayout extends JPanel implements
     abstract void onEditItem(OrderItem orderItem);
 
 
-    public Order getSelectedOrder() {
+    Order getSelectedOrder() {
         return selectedOrder;
     }
 
@@ -237,7 +250,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         tableAddOrderItems(orderItems);
     }
 
-    public void tableSelectOrderItem(OrderItem orderItem) {
+    void tableSelectOrderItem(OrderItem orderItem) {
         orderItemTable.selectItem(orderItem);
     }
 
@@ -332,11 +345,6 @@ public abstract class OrderPanelLayout extends JPanel implements
         return orderTbPanel;
     }
 
-    //
-    // Methods
-    //
-
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -370,11 +378,31 @@ public abstract class OrderPanelLayout extends JPanel implements
         });
         treeModel.setTree(ordersTree);
 
+        // Preview
+        boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
+        if (vertical) {
+            detailPanel = new ItemPreviewPanel(this, this) {
+                @Override
+                public void onToolBarDelete(IdBToolBar source) {
+                    OrderPanelLayout.this.onToolBarDelete(source);
+                }
+
+                @Override
+                public void onToolBarEdit(IdBToolBar source) {
+                    OrderPanelLayout.this.onToolBarEdit(source);
+                }
+            };
+            detailPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(2, -1, -1, -1),
+                    BorderFactory.createLineBorder(Color.lightGray, 1)
+            ));
+        }
+
         // Item table
         tableModel = new IOrderItemTableModel();
-        orderItemTable = new ITablePanel<>(tableModel, this);
+        orderItemTable = new ITablePanel<>(tableModel, detailPanel, this, false);
         orderItemTable.setExactColumnWidth(1, 50); // Amount spinner
-        orderItemTable.setDbToolBar(this);
+        orderItemTable.setDbToolBar(this, true, true, false, false);
         orderItemTable.setDbToolBarEnabled(false);
         orderItemTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -388,27 +416,10 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onSetOrderItemAmount(orderItemTable.getSelectedItem(), value);
             }
         });
-//        { TODO: in new ITablePanel something to override the prepareRenderer method
-//            @Override
-//            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-//                Component component = super.prepareRenderer(renderer, row, column);
-//                OrderItem o = (OrderItem) getValueAtRow(row);
-//
-//                if (!isRowSelected(row)) {
-//                    component.setBackground(getBackground());
-//                    if (o.getItem().isDiscourageOrder()) {
-//                        component.setBackground(colorResource.readColor("Red.Light"));
-//                    } else {
-//                        component.setBackground(getBackground());
-//                    }
-//                }
-//
-//                return component;
-//            }
-//        };
 
-        // Details
-        itemDetailPanel = new ItemDetailPanel(this, this);
+        if (!vertical) {
+            detailPanel = new ItemDetailPanel(this);
+        }
 
         // Tool bar
         tbOrderNameLbl = new ILabel();
@@ -439,11 +450,22 @@ public abstract class OrderPanelLayout extends JPanel implements
                 onOrderDetails(selectedOrder);
             }
         };
-        tbOrderFlowPanel = new IOrderFlowPanel(application);
+        orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
+
+        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readImage("Actions.M.Pending")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onViewPendingOrders();
+            }
+        };
+        pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
+
+        tbOrderFlowPanel = new IOrderFlowPanel();
 
         // Tool bars
         treeToolBar = new IdBToolBar(this);
         treeToolBar.addSeparateAction(orderDetailsAa);
+        treeToolBar.addAction(pendingOrderAa);
 
     }
 
@@ -461,12 +483,17 @@ public abstract class OrderPanelLayout extends JPanel implements
 
         centerPanel.add(tablePanel, BorderLayout.CENTER);
 
-        detailPanels.add(itemDetailPanel, BorderLayout.CENTER);
+        //detailPanels.add(itemDetailPanel, BorderLayout.CENTER);
         //detailPanels.add(orderItemDetailPanel, BorderLayout.EAST);
-        detailPanels.setBorder(BorderFactory.createCompoundBorder(
+
+        boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
+        if (!vertical) {
+            detailPanels.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(2, 3, 2, 3),
                 BorderFactory.createLineBorder(Color.GRAY, 1)
-        ));
+                ));
+            centerPanel.add(detailPanel, BorderLayout.SOUTH);
+        }
 
         centerPanel.add(detailPanels, BorderLayout.SOUTH);
         orderItemTable.getTitlePanel().add(createOrderToolbar(), BorderLayout.CENTER);
@@ -505,9 +532,9 @@ public abstract class OrderPanelLayout extends JPanel implements
 
             // Update detail panel
             if (selectedOrderItem != null) {
-                itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                detailPanel.updateComponents(selectedOrderItem.getItem());
             } else {
-                itemDetailPanel.updateComponents();
+                detailPanel.updateComponents();
             }
             updateVisibleComponents();
             updateEnabledComponents();

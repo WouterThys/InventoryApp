@@ -3,8 +3,12 @@ package com.waldo.inventory.gui.dialogs.customlocationdialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.ILocationButton;
+import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITextArea;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

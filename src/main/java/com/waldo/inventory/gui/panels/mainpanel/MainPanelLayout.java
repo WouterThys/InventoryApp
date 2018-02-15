@@ -12,7 +12,7 @@ import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
-import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanelLayout;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ abstract class MainPanelLayout extends JPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
-        ItemDetailPanelLayout.ItemDetailListener,
+        ItemDetailListener,
         TableOptionsPopup.TableOptionsListener {
 
     private static final String TREE_ITEMS = "Items";
@@ -183,7 +183,7 @@ abstract class MainPanelLayout extends JPanel implements
         tableModel.addItem(item);
     }
 
-    public void tableSelectItem(Item item) {
+    void tableSelectItem(Item item) {
         this.selectedItem = item;
         itemTable.selectItem(item);
     }
@@ -349,7 +349,17 @@ abstract class MainPanelLayout extends JPanel implements
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (vertical) {
-            detailPanel = new ItemPreviewPanel(application);
+            detailPanel = new ItemPreviewPanel(this, null) {
+                @Override
+                public void onToolBarDelete(IdBToolBar source) {
+                    MainPanelLayout.this.onToolBarDelete(source);
+                }
+
+                @Override
+                public void onToolBarEdit(IdBToolBar source) {
+                    MainPanelLayout.this.onToolBarEdit(source);
+                }
+            };
             detailPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(2, -1, -1, -1),
                     BorderFactory.createLineBorder(Color.lightGray, 1)

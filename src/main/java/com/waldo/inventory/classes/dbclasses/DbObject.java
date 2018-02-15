@@ -45,6 +45,7 @@ public abstract class DbObject {
     public static final int TYPE_PARSER_ITEM_LINK = 22;
     public static final int TYPE_SET = 23;
     public static final int TYPE_SET_ITEM_LINK = 24;
+    public static final int TYPE_PENDING_ORDER = 25;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -112,6 +113,7 @@ public abstract class DbObject {
         if (dbObject instanceof ParserItemLink) return TYPE_PARSER_ITEM_LINK;
         if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
         if (dbObject instanceof Statistics) return TYPE_STATISTICS;
+        if (dbObject instanceof PendingOrder) return TYPE_PENDING_ORDER;
 
         return TYPE_UNKNOWN;
     }

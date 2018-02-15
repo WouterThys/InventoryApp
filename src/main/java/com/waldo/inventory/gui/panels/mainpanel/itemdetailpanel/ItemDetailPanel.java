@@ -3,6 +3,8 @@ package com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
+import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.OrderDetailListener;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +28,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         if (object.length == 0 || object[0] == null) {
             setVisible(false);
             selectedItem = null;
+            selectedOrderItem = null;
         } else {
             setVisible(true);
             if (object[0] instanceof Item) {
@@ -46,7 +49,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         try {
             if (!item.getIconPath().isEmpty()) {
                 Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-                iconLbl.setIcon(path.toString());
+                iconLbl.setIcon(imageResource.readImage(path));
             } else {
                 iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
             }

@@ -6,13 +6,13 @@ import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog.DetectionDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog.LauncherDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.ParserDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -85,7 +85,11 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
 
             if (!selectedProjectIDE.getIconPath().isEmpty()) {
                 Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), selectedProjectIDE.getIconPath());
-                detailLogo.setIcon(path.toString(), 48,48);
+                try {
+                    detailLogo.setIcon(imageResource.readImage(path, 48, 48));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }

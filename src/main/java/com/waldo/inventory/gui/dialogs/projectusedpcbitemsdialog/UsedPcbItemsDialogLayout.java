@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;

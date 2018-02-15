@@ -4,13 +4,13 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.OpenUtils;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -507,7 +507,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         }
 
         public int getPins() {
-            return ((SpinnerNumberModel)pinsSp.getModel()).getNumber().intValue();
+            return ((SpinnerNumberModel) pinsSp.getModel()).getNumber().intValue();
         }
 
         public void setPackageType(PackageType packageType, int pins) {
@@ -515,26 +515,22 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         }
 
         private void packageCbChanged() {
-
-                Package p = (Package) packageCb.getSelectedItem();
-                if (p != null) {
-                    typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
-                    typeCb.setEnabled(true);
-                    pinsSp.setEnabled(false);
-                }
-
+            Package p = (Package) packageCb.getSelectedItem();
+            if (p != null) {
+                typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
+                typeCb.setEnabled(true);
+                pinsSp.setEnabled(false);
+            }
         }
 
         private void typeCbChanged() {
-
-                packageType = (PackageType) typeCb.getSelectedItem();
-                if (packageType != null && !packageType.isUnknown()) {
-                    pinsSp.setEnabled(packageType.isAllowOtherPinNumbers());
-                    pinsSp.setTheValue(packageType.getDefaultPins());
-                } else {
-                    pinsSp.setEnabled(false);
-                }
-
+            packageType = (PackageType) typeCb.getSelectedItem();
+            if (packageType != null && !packageType.isUnknown()) {
+                pinsSp.setEnabled(packageType.isAllowOtherPinNumbers());
+                pinsSp.setTheValue(packageType.getDefaultPins());
+            } else {
+                pinsSp.setEnabled(false);
+            }
         }
 
         @Override
@@ -582,10 +578,13 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
                 packageType = pt;
             }
 
-            if (packageType != null && !packageType.isUnknown()) {
-                Package p = packageType.getPackage();
-                if (p != null) {
-                        packageCb.selectItem(p);
+            packageCb.setSelecting(true);
+            typeCb.setSelecting(true);
+            try {
+                if (packageType != null && !packageType.isUnknown()) {
+                    Package p = packageType.getPackage();
+                    if (p != null) {
+                        packageCb.setSelectedItem(p);
                         typeCb.updateList(SearchManager.sm().findPackageTypesByPackageId(p.getId()));
                         if (packageType.isAllowOtherPinNumbers()) {
                             pinsSp.setEnabled(true);
@@ -599,17 +598,22 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
                             pinsSp.setTheValue(packageType.getDefaultPins());
                             pinsSp.setEnabled(false);
                         }
-                        typeCb.selectItem(packageType);
+                        typeCb.setSelectedItem(packageType);
                         typeCb.setEnabled(true);
 
+                    } else {
+                        typeCb.setEnabled(false);
+                        pinsSp.setEnabled(false);
+                    }
                 } else {
                     typeCb.setEnabled(false);
                     pinsSp.setEnabled(false);
                 }
-            } else {
-                typeCb.setEnabled(false);
-                pinsSp.setEnabled(false);
+            } finally {
+                packageCb.setSelecting(false);
+                typeCb.setSelecting(false);
             }
+
         }
 
         //
@@ -617,15 +621,15 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         //
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED && !typeCb.isSelecting() && !packageCb.isSelecting()) {
                 //if (!parent.isUpdating((Component)e.getSource())) {
-                    SwingUtilities.invokeLater(() -> {
-                        if (e.getSource().equals(packageCb)) {
-                            packageCbChanged();
-                        } else {
-                            typeCbChanged();
-                        }
-                    });
+                SwingUtilities.invokeLater(() -> {
+                    if (e.getSource().equals(packageCb)) {
+                        packageCbChanged();
+                    } else {
+                        typeCbChanged();
+                    }
+                });
                 //}
             }
         }

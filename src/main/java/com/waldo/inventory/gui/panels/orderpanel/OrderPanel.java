@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.OrderItemPopup;
 import com.waldo.inventory.gui.components.popups.OrderPopup;
@@ -15,7 +14,9 @@ import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceiv
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -53,7 +54,7 @@ public class OrderPanel extends OrderPanelLayout {
         updateComponents();
     }
 
-    public OrderItem getSelectedOrderItem() {
+    private OrderItem getSelectedOrderItem() {
         return selectedOrderItem;
     }
 
@@ -65,27 +66,23 @@ public class OrderPanel extends OrderPanelLayout {
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         for (Item item : itemsToOrder) {
-            if (!order.containsItemId(item.getId())) {
-                OrderItem orderItem = new OrderItem();
-                orderItem.setItemId(item.getId());
-                orderItem.setOrderId(order.getId());
-                orderItem.setName(item.toString() + " - " + order.toString());
-
-//                // Part number
-//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), item.getId());
-//                if (distributorPartLink != null) {
-//                    orderItem.setDistributorPartId(distributorPartLink.getId());
-//                }
-
-                orderItem.save();
-            } else {
-                OrderItem orderItem = order.findOrderItemInOrder(item.getId());
-                orderItem.setAmount(orderItem.getAmount() + 1);
-                orderItem.save();
-//                if (failedItems == null) {
-//                    failedItems = new HashMap<>();
-//                }
-//                failedItems.put("Item " + item.getNameText() + " was already in the list..", item);
+            try {
+                if (!order.containsItemId(item.getId())) {
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setItemId(item.getId());
+                    orderItem.setOrderId(order.getId());
+                    orderItem.setName(item.toString() + " - " + order.toString());
+                    orderItem.save();
+                } else {
+                    OrderItem orderItem = order.findOrderItemInOrder(item.getId());
+                    orderItem.setAmount(orderItem.getAmount() + 1);
+                    orderItem.save();
+                }
+            } catch (Exception e) {
+                if (failedItems == null) {
+                    failedItems = new HashMap<>();
+                }
+                failedItems.put("Failed to add item " + item.toString(), item);
             }
         }
         return failedItems;
@@ -94,21 +91,20 @@ public class OrderPanel extends OrderPanelLayout {
     public Map<String, Item> addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         for (OrderItem oi : itemsToOrder) {
-            if (!order.containsItemId(oi.getItemId())) {
-
-//                // Part number
-//                DistributorPartLink distributorPartLink = sm().findDistributorPartLink(order.getDistributorId(), oi.getId());
-//                if (distributorPartLink != null) {
-//                    oi.setDistributorPartId(distributorPartLink.getId());
-//                }
-
-                oi.save(); // TODO: if more than one item, the Listeners will also fire more than once and gui will update multiple times....
-            } else {
+            try {
+                if (!order.containsItemId(oi.getItemId())) {
+                    oi.save();
+                } else {
+                    oi.setAmount(oi.getAmount() + 1);
+                    oi.save();
+                }
+            } catch (Exception e) {
                 if (failedItems == null) {
                     failedItems = new HashMap<>();
                 }
-                failedItems.put("Item " + oi.getName() + " was already in the list..", oi.getItem());
+                failedItems.put("Failed to add item " + oi.toString(), oi.getItem());
             }
+
         }
         return failedItems;
     }
@@ -175,14 +171,14 @@ public class OrderPanel extends OrderPanelLayout {
                         tableUpdate();
                     }
                     if (selectedOrderItem != null) {
-                        itemDetailPanel.updateComponents(selectedOrderItem.getItem());
+                        detailPanel.updateComponents(selectedOrderItem.getItem());
                     }
                 }
             }
 
             @Override
             public void onDeleted(Item item) {
-                itemDetailPanel.updateComponents();
+                detailPanel.updateComponents();
             }
 
             @Override
@@ -495,6 +491,12 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
+    void onViewPendingOrders() {
+        PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+        dialog.showDialog();
+    }
+
+    @Override
     void onMoveToOrdered(Order order) {
         if (order != null && order.canBeSaved() && !order.isOrdered()) {
             // Check
@@ -782,7 +784,6 @@ public class OrderPanel extends OrderPanelLayout {
         selectedOrder = newOrder;
         selectedOrderItem = null;
 
-        application.clearSearch();
         tableInitialize(selectedOrder);
         updateToolBar(selectedOrder);
 
@@ -799,9 +800,9 @@ public class OrderPanel extends OrderPanelLayout {
             SwingUtilities.invokeLater(() -> {
                 selectedOrderItem = tableGetSelectedItem();
                 if (selectedOrderItem != null) {
-                    itemDetailPanel.updateComponents(selectedOrderItem);
+                    detailPanel.updateComponents(selectedOrderItem);
                 } else {
-                    itemDetailPanel.updateComponents();
+                    detailPanel.updateComponents();
                 }
                 updateToolBar(selectedOrder);
                 updateVisibleComponents();

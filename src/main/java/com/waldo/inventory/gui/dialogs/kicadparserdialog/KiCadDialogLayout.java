@@ -2,9 +2,6 @@ package com.waldo.inventory.gui.dialogs.kicadparserdialog;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 
 import javax.swing.*;
@@ -17,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import com.waldo.utils.icomponents.*;
 
 abstract class KiCadDialogLayout extends IDialog implements ActionListener, ListSelectionListener, ChangeListener {
 

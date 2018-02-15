@@ -80,7 +80,11 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
             if (!selectedManufacturer.getIconPath().isEmpty()) {
                 Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), selectedManufacturer.getIconPath());
-                detailLogo.setIcon(path.toString(), 48,48);
+                try {
+                    detailLogo.setIcon(imageResource.readImage(path, 48,48));
+                } catch (Exception e) {
+                    detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
+                }
             } else {
                 detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
             }
@@ -95,7 +99,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     private void clearDetails() {
         detailName.setText("");
         browsePanel.clearText();
-        detailLogo.setIcon((Icon) null);
+        detailLogo.setIcon(null);
         detailItemDefaultListModel.removeAllElements();
     }
 

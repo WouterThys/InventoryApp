@@ -6,10 +6,10 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IEditedListener;
-import com.waldo.inventory.gui.components.ITextField;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITextField;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.SqlDateModel;
@@ -17,6 +17,8 @@ import net.sourceforge.jdatepicker.impl.SqlDateModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+
+
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -27,7 +29,7 @@ abstract class OrdersDialogLayout extends IDialog
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ITextField nameField;
-    IComboBox<Distributor> distributorCb;
+    private IComboBox<Distributor> distributorCb;
 
     JCheckBox isOrderedCb;
     JDatePickerImpl orderedDatePicker;

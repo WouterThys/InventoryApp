@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.components.tablemodels;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

@@ -5,13 +5,16 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ITextEditor;
+import com.waldo.inventory.gui.components.ITitledEditPanel;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 import com.waldo.utils.FileUtils;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -128,7 +132,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
                 String p = manufacturer.getIconPath();
                 if (!p.isEmpty()) {
                     Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), p);
-                    manufacturerIconLbl.setIcon(path.toString(), 48, 48);
+                    manufacturerIconLbl.setIcon(imageResource.readImage(path, 48,48));
                 } else {
                     manufacturerIconLbl.setIcon((ImageIcon) null);
                 }
@@ -369,7 +373,11 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
                 if (m != null) {
                     if (!m.getIconPath().isEmpty()) {
                         Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                        manufacturerIconLbl.setIcon(path.toString(), 48, 48);
+                        try {
+                            manufacturerIconLbl.setIcon(imageResource.readImage(path, 48,48));
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

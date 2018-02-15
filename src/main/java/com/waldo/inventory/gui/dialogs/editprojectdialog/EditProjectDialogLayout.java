@@ -4,9 +4,13 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.IProjectObjectPreviewTableModel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectGridPanel;
+import com.waldo.utils.icomponents.IComboCheckBox;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

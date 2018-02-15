@@ -6,8 +6,8 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
-import com.waldo.inventory.gui.components.*;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;

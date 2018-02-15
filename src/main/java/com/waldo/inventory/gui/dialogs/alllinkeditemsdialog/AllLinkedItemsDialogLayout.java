@@ -2,9 +2,9 @@ package com.waldo.inventory.gui.dialogs.alllinkeditemsdialog;
 
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.ILinkedItemsTableModel;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;

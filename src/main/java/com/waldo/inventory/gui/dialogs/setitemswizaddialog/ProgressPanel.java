@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.setitemswizaddialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.gui.components.ILabel;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 

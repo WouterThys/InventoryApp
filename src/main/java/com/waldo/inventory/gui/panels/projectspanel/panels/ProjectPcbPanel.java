@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.panels.projectspanel.panels;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

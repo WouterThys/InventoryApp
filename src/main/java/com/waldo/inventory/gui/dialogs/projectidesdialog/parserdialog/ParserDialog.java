@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog;
 import com.waldo.inventory.Utils.parser.PcbParser;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog.EditParserItemLinkDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

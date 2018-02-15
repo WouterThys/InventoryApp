@@ -5,12 +5,12 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.components.IComboBox;
-import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ILabel;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import com.waldo.inventory.managers.CacheManager;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;

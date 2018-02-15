@@ -15,7 +15,7 @@ import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.FileUtils;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
 import java.sql.*;
@@ -43,9 +43,11 @@ public class DatabaseAccess {
 
     // Db
     private static final DatabaseAccess INSTANCE = new DatabaseAccess();
+
     public static DatabaseAccess db() {
         return INSTANCE;
     }
+
     private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
     private boolean initialized = false;
     private String loggedUser = "";
@@ -61,9 +63,10 @@ public class DatabaseAccess {
     // Events
     private DbErrorListener errorListener;
 
-    private DatabaseAccess() {}
+    private DatabaseAccess() {
+    }
 
-    public void init() throws SQLException{
+    public void init() throws SQLException {
         initialized = false;
         DbSettings s = settings().getDbSettings();
         if (s != null) {
@@ -104,27 +107,25 @@ public class DatabaseAccess {
     }
 
     private void initSqLite(DbSettings settings) {
-            dataSource = new BasicDataSource();
-            dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-            dataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
-            dataSource.setUsername(settings.getDbUserName());
-            dataSource.setPassword("");
-            dataSource.setMaxIdle(10);
-            dataSource.setMaxActive(10);
-            dataSource.setPoolPreparedStatements(true);
-            dataSource.setLogAbandoned(false);
-            dataSource.setRemoveAbandoned(true);
-            dataSource.setInitialSize(5);
-            dataSource.setRemoveAbandonedTimeout(60);
+        dataSource = new BasicDataSource();
+        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
+        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
+        dataSource.setUsername(settings.getDbUserName());
+        dataSource.setPassword("");
+        dataSource.setMaxIdle(10);
+        dataSource.setPoolPreparedStatements(true);
+        dataSource.setLogAbandoned(false);
+        dataSource.setInitialSize(5);
+        dataSource.setRemoveAbandonedTimeout(60);
 
-                String sql = "PRAGMA foreign_keys=ON;";
-                try (Connection connection = getConnection()) {
-                    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                        stmt.execute();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        String sql = "PRAGMA foreign_keys=ON;";
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -207,7 +208,7 @@ public class DatabaseAccess {
     }
 
     private void onExecuted(String sql) {
-        for(DbExecuteListener listener : executeListenerList) {
+        for (DbExecuteListener listener : executeListenerList) {
             SwingUtilities.invokeLater(() -> listener.onExecuted(sql));
         }
     }
@@ -220,9 +221,9 @@ public class DatabaseAccess {
 
 
     public void close() {
-        if(dataSource != null) {
+        if (dataSource != null) {
             Status().setMessage("Closing down");
-            if(dbQueueWorker != null) {
+            if (dbQueueWorker != null) {
                 dbQueueWorker.keepRunning = false;
                 workList.stop();
             }
@@ -435,7 +436,7 @@ public class DatabaseAccess {
         }
     }
 
-    private class DbErrorWorker extends  SwingWorker<Integer, String> {
+    private class DbErrorWorker extends SwingWorker<Integer, String> {
 
         volatile boolean keepRunning = true;
         private final String name;
@@ -568,7 +569,6 @@ public class DatabaseAccess {
             });
         }
     }
-
 
 
     public List<Item> updateItems() {
@@ -856,7 +856,7 @@ public class DatabaseAccess {
         return locationTypes;
     }
 
-    public List<Order> updateOrders()    {
+    public List<Order> updateOrders() {
         List<Order> orders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orders;
@@ -907,7 +907,7 @@ public class DatabaseAccess {
         return orders;
     }
 
-    public List<OrderItem> updateOrderItems()    {
+    public List<OrderItem> updateOrderItems() {
         List<OrderItem> orderItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orderItems;
@@ -948,7 +948,7 @@ public class DatabaseAccess {
         if (Main.CACHE_ONLY) {
             return;
         }
-        Status().setMessage("Removing \""+orderItem.getItem().toString()+"\" from \""+orderItem.getOrder().toString());
+        Status().setMessage("Removing \"" + orderItem.getItem().toString() + "\" from \"" + orderItem.getOrder().toString());
 
         String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
         try (Connection connection = getConnection()) {
@@ -965,7 +965,7 @@ public class DatabaseAccess {
         }
     }
 
-    public List<Distributor> updateDistributors()    {
+    public List<Distributor> updateDistributors() {
         List<Distributor> distributors = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributors;
@@ -1004,7 +1004,7 @@ public class DatabaseAccess {
         return distributors;
     }
 
-    public List<DistributorPartLink> updateDistributorParts()    {
+    public List<DistributorPartLink> updateDistributorParts() {
         List<DistributorPartLink> distributorPartLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributorPartLinks;
@@ -1044,7 +1044,7 @@ public class DatabaseAccess {
         return distributorPartLinks;
     }
 
-    public List<Package> updatePackages()    {
+    public List<Package> updatePackages() {
         List<Package> packages = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packages;
@@ -1078,7 +1078,7 @@ public class DatabaseAccess {
         return packages;
     }
 
-    public List<PackageType> updatePackageTypes()    {
+    public List<PackageType> updatePackageTypes() {
         List<PackageType> packageTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packageTypes;
@@ -1112,10 +1112,10 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        return  packageTypes;
+        return packageTypes;
     }
 
-    public List<Project> updateProjects()    {
+    public List<Project> updateProjects() {
         List<Project> projects = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projects;
@@ -1152,7 +1152,7 @@ public class DatabaseAccess {
         return projects;
     }
 
-    public List<ProjectCode> updateProjectCodes()    {
+    public List<ProjectCode> updateProjectCodes() {
         List<ProjectCode> projectCodes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectCodes;
@@ -1195,7 +1195,7 @@ public class DatabaseAccess {
         return projectCodes;
     }
 
-    public List<ProjectPcb> updateProjectPcbs()    {
+    public List<ProjectPcb> updateProjectPcbs() {
         List<ProjectPcb> projectPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectPcbs;
@@ -1239,7 +1239,7 @@ public class DatabaseAccess {
         return projectPcbs;
     }
 
-    public List<ProjectOther> updateProjectOthers()    {
+    public List<ProjectOther> updateProjectOthers() {
         List<ProjectOther> projectOthers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectOthers;
@@ -1281,7 +1281,7 @@ public class DatabaseAccess {
         return projectOthers;
     }
 
-    public List<PcbItemProjectLink> updatePcbItemLinks()    {
+    public List<PcbItemProjectLink> updatePcbItemLinks() {
         List<PcbItemProjectLink> pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemProjectLinks;
@@ -1324,7 +1324,7 @@ public class DatabaseAccess {
         return pcbItemProjectLinks;
     }
 
-    public List<ProjectIDE> updateProjectIDEs()    {
+    public List<ProjectIDE> updateProjectIDEs() {
         List<ProjectIDE> projectIDES = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectIDES;
@@ -1368,7 +1368,7 @@ public class DatabaseAccess {
         return projectIDES;
     }
 
-    public List<ParserItemLink> updateParserItemLinks()    {
+    public List<ParserItemLink> updateParserItemLinks() {
         List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return parserItemLinks;
@@ -1404,7 +1404,7 @@ public class DatabaseAccess {
         return parserItemLinks;
     }
 
-    public List<OrderFileFormat> updateOrderFileFormats()    {
+    public List<OrderFileFormat> updateOrderFileFormats() {
         List<OrderFileFormat> orderFileFormats = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orderFileFormats;
@@ -1437,7 +1437,7 @@ public class DatabaseAccess {
         return orderFileFormats;
     }
 
-    public List<PcbItem> updatePcbItems()    {
+    public List<PcbItem> updatePcbItems() {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItems;
@@ -1471,7 +1471,7 @@ public class DatabaseAccess {
         return pcbItems;
     }
 
-    public List<PcbItemItemLink> updateKcItemLinks()    {
+    public List<PcbItemItemLink> updateKcItemLinks() {
         List<PcbItemItemLink> pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemItemLinks;
@@ -1506,7 +1506,7 @@ public class DatabaseAccess {
         return pcbItemItemLinks;
     }
 
-    public List<Log> updateLogs()    {
+    public List<Log> updateLogs() {
         List<Log> logs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return logs;
@@ -1547,7 +1547,7 @@ public class DatabaseAccess {
     }
 
     public List<DbHistory> updateDbHistoryList() {
-        List<DbHistory>  dbHistoryList = new ArrayList<>();
+        List<DbHistory> dbHistoryList = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return dbHistoryList;
         }
@@ -1586,7 +1586,7 @@ public class DatabaseAccess {
         return dbHistoryList;
     }
 
-    public List<Set> updateSets()    {
+    public List<Set> updateSets() {
         List<Set> sets = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return sets;
@@ -1628,7 +1628,7 @@ public class DatabaseAccess {
                         s.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remark"), s.createRemarksFileName()));
                     } else {
                         s.getAud().setInserted(rs.getString("insertedBy"), DateUtils.sqLiteToDate(rs.getString("insertedDate")));
-                        s.getAud().setUpdated(rs.getString("updatedBy"),  DateUtils.sqLiteToDate(rs.getString("updatedDate")));
+                        s.getAud().setUpdated(rs.getString("updatedBy"), DateUtils.sqLiteToDate(rs.getString("updatedDate")));
                         s.setRemarksFile(null);
                     }
                     s.setInserted(true);
@@ -1647,7 +1647,7 @@ public class DatabaseAccess {
         return sets;
     }
 
-    public List<SetItemLink> updateSetItemLinks()    {
+    public List<SetItemLink> updateSetItemLinks() {
         List<SetItemLink> setItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return setItemLinks;
@@ -1740,7 +1740,7 @@ public class DatabaseAccess {
 
                 while (rs.next()) {
                     s = new Statistics(
-                        rs.getTimestamp("creationTime"),
+                            rs.getTimestamp("creationTime"),
                             rs.getInt("itemsCount"),
                             rs.getInt("locationsCount"),
                             rs.getInt("manufacturersCount"),
@@ -1765,5 +1765,40 @@ public class DatabaseAccess {
         }
 
         return statistics;
+    }
+
+    public List<PendingOrder> updatePendingOrders() {
+        List<PendingOrder> pendingOrders = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return pendingOrders;
+        }
+        Status().setMessage("Fetching Pending orders from DB");
+        PendingOrder p = null;
+        String sql = scriptResource.readString(PendingOrder.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new PendingOrder();
+                    p.setId(rs.getLong("id"));
+                    p.setItemId(rs.getLong("itemId"));
+                    p.setDistributorId(rs.getLong("distributorId"));
+                    p.setOrderDate(rs.getTimestamp("orderDate"));
+                    p.setInserted(true);
+
+                    pendingOrders.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return pendingOrders;
     }
 }

@@ -6,11 +6,14 @@ import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.*;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.utils.OpenUtils;
-import org.apache.commons.dbcp.BasicDataSource;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IPasswordField;
+import com.waldo.utils.icomponents.ITextField;
+import com.waldo.utils.icomponents.ITextFieldActionPanel;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +25,6 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class DbPanel extends SettingsPnl<DbSettings> {
-
-    private static final LogManager LOG = LogManager.LOG(DbPanel.class);
 
     /*
      *                  COMPONENTS

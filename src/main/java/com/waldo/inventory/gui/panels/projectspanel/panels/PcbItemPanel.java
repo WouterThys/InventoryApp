@@ -4,8 +4,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.ILabel;
-import com.waldo.inventory.gui.components.ITable;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
@@ -24,6 +22,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
+import com.waldo.utils.icomponents.*;
 
 public class PcbItemPanel extends JPanel implements
         GuiUtils.GuiInterface, ChangeListener {

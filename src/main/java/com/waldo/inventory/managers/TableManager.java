@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.database.DbTable;
 import com.waldo.inventory.classes.database.DbForeignKey;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

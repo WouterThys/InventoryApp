@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.panels.mainpanel;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.DivisionPopup;
 import com.waldo.inventory.gui.components.popups.ItemPopup;
@@ -14,6 +13,7 @@ import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -51,10 +51,6 @@ public class MainPanel extends MainPanelLayout {
 
     public Item getSelectedItem() {
         return selectedItem;
-    }
-
-    public DbObject getLastSelectedDivision() {
-        return selectedDivision;
     }
 
     public IItemTableModel getTableModel() {
@@ -318,7 +314,7 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!application.isUpdating(MainPanel.this)) {
+        if (!Application.isUpdating(MainPanel.this)) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
 
             if (node == null) {
@@ -327,7 +323,6 @@ public class MainPanel extends MainPanelLayout {
             }
 
             selectedItem = null;
-            application.clearSearch();
 
             updateComponents(node.getUserObject());
         }
@@ -587,7 +582,7 @@ public class MainPanel extends MainPanelLayout {
             cache().getTypes().clear();
             treeRecreateNodes();
         } else {
-            application.beginWait(MainPanel.this);
+            Application.beginWait(MainPanel.this);
             try {
                 cache().getItems().clear();
                 tableInitialize(selectedDivision);
@@ -595,7 +590,7 @@ public class MainPanel extends MainPanelLayout {
                     item.updateOrderState();
                 }
             } finally {
-                application.endWait(MainPanel.this);
+                Application.endWait(MainPanel.this);
             }
 
             detailPanel.updateComponents(selectedItem);
