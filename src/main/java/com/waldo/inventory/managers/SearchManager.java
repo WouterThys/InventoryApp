@@ -192,15 +192,6 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPartLink findDistributorPartLinkById(long id) {
-        for (DistributorPartLink pn : cache().getDistributorPartLinks()) {
-            if (pn.getId() == id) {
-                return  pn;
-            }
-        }
-        return null;
-    }
-
     public List<DistributorPartLink> findDistributorPartLinksForItem(long itemId) {
         List<DistributorPartLink> linkList = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
@@ -447,18 +438,6 @@ public class SearchManager {
         return projectOthers;
     }
 
-    public List<PcbItem> findPcbItemsForProjectPcb(long projectPcbId) {
-        List<PcbItem> pcbItems = new ArrayList<>();
-        if (projectPcbId > 0) {
-            for (PcbItemProjectLink link : cache().getPcbItemProjectLinks()) {
-                if (link.getProjectPcbId() == projectPcbId) {
-                    pcbItems.add(link.getPcbItem());
-                }
-            }
-        }
-        return pcbItems;
-    }
-
     public List<PcbItemProjectLink> findPcbItemProjectLinksWithPcbItem(long pcbItemId) {
         List<PcbItemProjectLink> linkList = new ArrayList<>();
         if (pcbItemId > DbObject.UNKNOWN_ID) {
@@ -493,31 +472,6 @@ public class SearchManager {
             }
         }
         return links;
-    }
-
-    public PcbItemProjectLink findPcbItemProjectLink(long projectPcbId, long pcbItemId) {
-        if (projectPcbId > 0 && pcbItemId > 0) {
-            for (PcbItemProjectLink link : cache().getPcbItemProjectLinks()) {
-                if (link.getProjectPcbId() == projectPcbId && link.getPcbItemId() == pcbItemId) {
-                    return link;
-                }
-            }
-        }
-        return null;
-    }
-
-    public PcbItemProjectLink findPcbItemLink(PcbItem pcbItem, long projectPcbId, String sheet) {
-        if (pcbItem != null && projectPcbId > 0) {
-            for (PcbItemProjectLink pil : cache().getPcbItemProjectLinks()) {
-                if (pil.getPcbItemId() == pcbItem.getId() &&
-                        pil.getProjectPcbId() == projectPcbId &&
-                        pil.getValue().equals(pcbItem.getValue()) &&
-                        pil.getPcbSheetName().equals(sheet)) {
-                    return pil;
-                }
-            }
-        }
-        return null;
     }
 
     public List<ParserItemLink> findParserItemLinksByParserName(String parserName) {
@@ -575,17 +529,6 @@ public class SearchManager {
         return null;
     }
 
-    public Set findSetByName(String name) {
-        if (name != null && !name.isEmpty()) {
-            for (Set set : cache().getSets()) {
-                if (set.getName().equals(name)) {
-                    return set;
-                }
-            }
-        }
-        return null;
-    }
-
     public List<Set> findSetsByItemId(long itemId) {
         List<Set> setList = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
@@ -599,17 +542,6 @@ public class SearchManager {
             }
         }
         return setList;
-    }
-
-    public SetItemLink findSetItemLinkById(long setItemLinkId) {
-        if (setItemLinkId > 0) {
-            for (SetItemLink sil : cache().getSetItemLinks()) {
-                if (sil.getId() == setItemLinkId) {
-                    return sil;
-                }
-            }
-        }
-        return null;
     }
 
     public List<Item> findSetItemsBySetId(long setId) {
@@ -645,5 +577,17 @@ public class SearchManager {
             }
         }
         return setItemLinks;
+    }
+
+    public List<PendingOrder> findPendingOrdersByDistributorId(long distributorId) {
+        List<PendingOrder> pendingOrders = new ArrayList<>();
+        if (distributorId > DbObject.UNKNOWN_ID) {
+            for (PendingOrder po : cache().getPendingOrders()) {
+                if (po.getDistributorId() == distributorId) {
+                    pendingOrders.add(po);
+                }
+            }
+        }
+        return pendingOrders;
     }
 }

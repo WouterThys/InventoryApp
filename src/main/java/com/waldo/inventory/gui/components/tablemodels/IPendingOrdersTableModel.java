@@ -37,10 +37,4 @@ public class IPendingOrdersTableModel extends IAbstractTableModel<PendingOrder> 
         }
         return null;
     }
-
-    @Override
-    public boolean hasTableCellRenderer() {
-        return false;
-    }
-
 }
