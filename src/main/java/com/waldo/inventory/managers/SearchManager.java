@@ -590,4 +590,13 @@ public class SearchManager {
         }
         return pendingOrders;
     }
+
+    public PendingOrder findPendingOrderByItemAndDistributor(long itemId, long distributorId) {
+        for (PendingOrder po : cache().getPendingOrders()) {
+            if (po.getItemId() == itemId && po.getDistributorId() == distributorId) {
+                return po;
+            }
+        }
+        return null;
+    }
 }

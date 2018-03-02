@@ -381,7 +381,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             );
         }
         if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order " + item.getName(), item, true);
+            OrderItemDialog dialog = new OrderItemDialog(this, "Order " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
@@ -402,7 +402,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         }
         if (itemList.size() > 0) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order items", itemList, true);
+            OrderItemDialog dialog = new OrderItemDialog(this, "Order items", itemList, true, true);
             dialog.showDialog();
         }
     }

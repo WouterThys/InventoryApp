@@ -24,8 +24,8 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
     private boolean orderList = false;
     private boolean createOnConfirm = true;
 
-    public OrderItemDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm) {
-        super(parent, title);
+    public OrderItemDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
+        super(parent, title, pendingOption);
         this.application = parent;
         this.itemToOrder = itemToOrder;
         this.orderList = false;
@@ -38,8 +38,8 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         updateComponents();
     }
 
-    public OrderItemDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
-        super(parent, title);
+    public OrderItemDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm, boolean pendingOption) {
+        super(parent, title, pendingOption);
         this.application = parent;
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;

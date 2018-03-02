@@ -1,14 +1,18 @@
 package com.waldo.inventory.gui.dialogs.pendingordersdialog;
 
 import com.waldo.inventory.classes.dbclasses.PendingOrder;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.IPendingOrdersTableModel;
+import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +30,24 @@ abstract class PendingOrdersDialogLayout extends IDialog
 
     private IdBToolBar toolBar;
 
+    private IActions.OrderItemAction orderItemAction;
+
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    PendingOrder selectedPendingOrder;
+    final Application application;
+     PendingOrder selectedPendingOrder;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    PendingOrdersDialogLayout(Window window, String title) {
-        super(window, title);
+    PendingOrdersDialogLayout(Application application, String title) {
+        super(application, title);
+        this.application = application;
 
     }
+
+    abstract void orderItems(List<PendingOrder> pendingOrders);
 
     /*
      *                   METHODS
@@ -67,20 +77,31 @@ abstract class PendingOrdersDialogLayout extends IDialog
         pendingOrderTable.getSelectionModel().addListSelectionListener(this);
 
         toolBar = new IdBToolBar(this);
+
+        orderItemAction = new IActions.OrderItemAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                orderItems(getSelectedPendingOrders());
+            }
+        };
     }
 
     @Override
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        JPanel tbPanel = new JPanel(new BorderLayout());
-        tbPanel.add(toolBar, BorderLayout.EAST);
+        JPanel topTbPanel = new JPanel(new BorderLayout());
+        topTbPanel.add(toolBar, BorderLayout.EAST);
+
+        JPanel btmTbPanel = new JPanel(new BorderLayout());
+        btmTbPanel.add(GuiUtils.createNewToolbar(orderItemAction), BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(pendingOrderTable);
         scrollPane.setPreferredSize(new Dimension(600, 400));
 
-        getContentPanel().add(tbPanel, BorderLayout.PAGE_START);
+        getContentPanel().add(topTbPanel, BorderLayout.PAGE_START);
         getContentPanel().add(scrollPane, BorderLayout.CENTER);
+        getContentPanel().add(btmTbPanel, BorderLayout.PAGE_END);
 
         pack();
     }

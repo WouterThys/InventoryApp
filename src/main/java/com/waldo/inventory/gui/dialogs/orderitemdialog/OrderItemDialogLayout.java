@@ -33,12 +33,14 @@ abstract class OrderItemDialogLayout extends IDialog {
     IComboBox<Distributor> distributorCb;
     private GoAction addPendingAa;
 
+    private boolean pendingOption;
+
     /*
     *                  CONSTRUCTOR
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    OrderItemDialogLayout(Window parent, String title) {
+    OrderItemDialogLayout(Window parent, String title, boolean pendingOption) {
         super(parent, title);
-        showTitlePanel(false);
+        this.pendingOption = pendingOption;
     }
 
     abstract void addNewOrder();
@@ -96,7 +98,9 @@ abstract class OrderItemDialogLayout extends IDialog {
 
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
         getContentPanel().add(addNowPanel);
-        getContentPanel().add(addLaterPanel);
+        if (pendingOption) {
+            getContentPanel().add(addLaterPanel);
+        }
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 

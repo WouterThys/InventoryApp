@@ -4,12 +4,12 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import com.waldo.utils.icomponents.*;
 
 public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements CacheChangedListener<Order> {
 
@@ -29,7 +29,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
 
     private void selectOrder() {
         Order order;
-        OrderItemDialog orderItemDialog = new OrderItemDialog(application, "Order", new ArrayList<>(), false);
+        OrderItemDialog orderItemDialog = new OrderItemDialog(application, "Order", new ArrayList<>(), false, true);
         if (orderItemDialog.showDialog() == IDialog.OK) {
             order = orderItemDialog.getSelectedOrder();
             updateComponents(selectedPcb, order);

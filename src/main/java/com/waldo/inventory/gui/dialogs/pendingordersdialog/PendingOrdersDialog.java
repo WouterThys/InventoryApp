@@ -4,25 +4,26 @@ import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
+import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editpendingorderdialog.EditPendingOrderDialog;
+import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class PendingOrdersDialog extends PendingOrdersDialogLayout implements CacheChangedListener<PendingOrder> {
 
-    public PendingOrdersDialog(Window window, String title) {
-        this(window, title, null);
+    public PendingOrdersDialog(Application application, String title) {
+        this(application, title, null);
     }
 
-    public PendingOrdersDialog(Window window, String title, List<PendingOrder> pendingOrderList) {
-        super(window, title);
+    public PendingOrdersDialog(Application application, String title, List<PendingOrder> pendingOrderList) {
+        super(application, title);
 
         initializeComponents();
         initializeLayouts();
@@ -31,8 +32,22 @@ public class PendingOrdersDialog extends PendingOrdersDialogLayout implements Ca
 
         if (pendingOrderList != null) {
             for (PendingOrder po : pendingOrderList) {
-                po.save();
+                PendingOrder p = SearchManager.sm().findPendingOrderByItemAndDistributor(po.getItemId(), po.getDistributorId());
+                if (p== null) {
+                    po.save();
+                }
             }
+        }
+    }
+
+    @Override
+    void orderItems(List<PendingOrder> pendingOrders) {
+        if (pendingOrders != null && pendingOrders.size() > 0) {
+            // Get distributor
+
+
+            //OrderItemDialog dialog = new OrderItemDialog(application, "Order", ,false);
+
         }
     }
 
@@ -115,7 +130,7 @@ public class PendingOrdersDialog extends PendingOrdersDialogLayout implements Ca
         PendingOrder pendingOrder = new PendingOrder();
         EditPendingOrderDialog dialog = new EditPendingOrderDialog(this, "Add", pendingOrder);
         if (dialog.showDialog() == IDialog.OK) {
-            pendingOrder.save();
+           pendingOrder.save();
         }
     }
 

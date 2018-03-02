@@ -32,7 +32,7 @@ abstract class EditPendingOrderDialogLayout extends IDialog {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private PendingOrder pendingOrder;
+    PendingOrder pendingOrder;
 
     /*
      *                  CONSTRUCTOR
