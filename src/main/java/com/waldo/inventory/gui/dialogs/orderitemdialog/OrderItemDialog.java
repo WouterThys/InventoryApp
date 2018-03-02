@@ -89,14 +89,15 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
             itemsToPending.add(itemToOrder);
         }
 
-        PendingOrdersDialog dialog = new PendingOrdersDialog(this, "Pending orders");
-
+        List<PendingOrder> pendingOrders = new ArrayList<>();
         for (Item item : itemsToPending) {
             PendingOrder pendingOrder = new PendingOrder(item, distributor);
-            pendingOrder.save();
+            pendingOrders.add(pendingOrder);
         }
 
+        PendingOrdersDialog dialog = new PendingOrdersDialog(this, "Pending orders", pendingOrders);
         dialog.showDialog();
+
         super.onOK();
     }
 

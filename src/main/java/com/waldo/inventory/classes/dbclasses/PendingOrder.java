@@ -26,6 +26,7 @@ public class PendingOrder extends DbObject {
 
     public PendingOrder() {
         super(TABLE_NAME);
+        orderDate = DateUtils.now();
     }
 
     public PendingOrder(Item item, Distributor distributor) {
@@ -40,10 +41,17 @@ public class PendingOrder extends DbObject {
         if (distributor != null) {
             distributorId = distributor.getId();
         }
-
-        orderDate = DateUtils.now();
     }
 
+    @Override
+    public String toString() {
+        return "PendingOrder{" +
+                "item=" + item +
+                ", distributor=" + distributor +
+                ", orderDate=" + orderDate +
+                ", id=" + id +
+                '}';
+    }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
@@ -65,6 +73,24 @@ public class PendingOrder extends DbObject {
         }
 
         return ndx;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = super.equals(obj);
+
+        if (result) {
+            if (obj instanceof PendingOrder) {
+                PendingOrder po = (PendingOrder) obj;
+
+                if (po.getItemId() != getItemId()) return false;
+                if (po.getDistributorId() != getDistributorId()) return false;
+
+                return true;
+            }
+        }
+
+        return result;
     }
 
     @Override

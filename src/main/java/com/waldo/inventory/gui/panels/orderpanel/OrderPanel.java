@@ -85,6 +85,7 @@ public class OrderPanel extends OrderPanelLayout {
                 failedItems.put("Failed to add item " + item.toString(), item);
             }
         }
+        checkPendingOrders(order);
         return failedItems;
     }
 
@@ -104,11 +105,29 @@ public class OrderPanel extends OrderPanelLayout {
                 }
                 failedItems.put("Failed to add item " + oi.toString(), oi.getItem());
             }
-
         }
+        checkPendingOrders(order);
         return failedItems;
     }
 
+    private void checkPendingOrders(Order order) {
+        if (order != null && order.getDistributorId() > DbObject.UNKNOWN_ID) {
+            if (SearchManager.sm().findPendingOrdersByDistributorId(order.getDistributorId()).size() > 0) {
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        "There are pending orders for " + order.getDistributor() + ", do you want to add them now?",
+                        "Pending orders",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (res == JOptionPane.YES_OPTION) {
+                    PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+                    dialog.showDialog();
+                }
+            }
+        }
+    }
 
     private void initActions() {
         tbOrderFlowPanel.addOrderClickListener(e -> {
