@@ -70,7 +70,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public ItemPreviewPanel(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+    protected ItemPreviewPanel(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
         this.itemDetailListener = itemDetailListener;
         this.orderDetailListener = orderDetailListener;
         this.isOrderType = orderDetailListener != null;

@@ -8,7 +8,6 @@ import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -95,8 +94,8 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
             pendingOrders.add(pendingOrder);
         }
 
-        PendingOrdersDialog dialog = new PendingOrdersDialog(this, "Pending orders", pendingOrders);
-        dialog.showDialog();
+        //PendingOrdersDialog dialog = new PendingOrdersDialog(this, "Pending orders", pendingOrders);
+        //dialog.showDialog();
 
         super.onOK();
     }
