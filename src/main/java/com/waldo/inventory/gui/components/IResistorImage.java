@@ -1,20 +1,32 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.utils.icomponents.IPanel;
-
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IResistorImage extends IPanel {
+public class IResistorImage extends JPanel {
+
+    private final static double X_SCALE = 0.375;
+    private final static double Y_SCALE = 0.236;
+    private final static double W_SCALE = 0.0375;
+    private final static double H_SCALE = 0.520;
+
+    private final static double X_SPACE_SCALE = 0.0625;
+    private final static double XT_SCALE = 0.8;
+    private final static double YT_SCALE = 0.134;
+    private final static double HT_SCALE = 0.730;
 
     private final BufferedImage resistorTemplate = (BufferedImage) imageResource.readImage("Template.Resistor").getImage();
 
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(resistorTemplate.getWidth(), resistorTemplate.getHeight());
-    }
+    private final ResistorBand band1 = new ResistorBand();
+    private final ResistorBand band2 = new ResistorBand();
+    private final ResistorBand band3 = new ResistorBand();
+
+    private final ResistorBand multiplierBand = new ResistorBand();
+    private final ResistorBand toleranceBand = new ResistorBand();
+    private final ResistorBand ppmBand = new ResistorBand();
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -22,29 +34,50 @@ public class IResistorImage extends IPanel {
 
         Graphics2D g2d = (Graphics2D) g.create();
         if (resistorTemplate != null) {
+            g2d.drawImage(resistorTemplate, 0, 0, getWidth(), getHeight(),this);
 
-            GradientPaint background = new GradientPaint(570f, 173f, Color.BLUE.darker(),
-                    653f, 540f, Color.BLUE.brighter());
+            int x = (int)(getWidth() * X_SCALE);
+            int y = (int)(getHeight() * Y_SCALE);
+            int w = (int)(getWidth() * W_SCALE);
+            int h = (int)(getHeight() * H_SCALE);
+            int s = (int)(getWidth() * X_SPACE_SCALE);
+            int xt = (int)(getWidth() * XT_SCALE);
+            int yt = (int)(getHeight() * YT_SCALE);
+            int ht = (int)(getHeight() * HT_SCALE);
 
+            band1.init(x, y, w, h);
+            band2.init(x + s, y, w, h);
+            band3.init(x + 2*s, y, w, h);
+            multiplierBand.init(x + (int)(3.5*s), y, w, h);
+            toleranceBand.init(xt, yt, w, ht);
 
-            g2d.drawImage(resistorTemplate, 0, 0, this);
-            g2d.setPaint(background);
-            g2d.fillRect(570,173, 83, 367);
+            band1.addToGraphics(g2d, Color.YELLOW);
+            band2.addToGraphics(g2d, Color.MAGENTA);
+            band3.addToGraphics(g2d, Color.BLUE);
+            multiplierBand.addToGraphics(g2d, Color.RED);
+            toleranceBand.addToGraphics(g2d, Color.LIGHT_GRAY);
         }
     }
 
-    @Override
-    public void initializeComponents() {
-        Rectangle rectangle = new Rectangle(10,10, 50,100);
-    }
+    private class ResistorBand {
+        private int x;
+        private int y;
+        private int w;
+        private int h;
 
-    @Override
-    public void initializeLayouts() {
+        void init(int x, int y, int w, int h) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+        }
 
-    }
+        void addToGraphics(Graphics2D g2d, Color color) {
+            GradientPaint background = new GradientPaint(x, y, color.darker(),
+                    x+ w, y+ h, color.brighter());
 
-    @Override
-    public void updateComponents(Object... objects) {
-
+            g2d.setPaint(background);
+            g2d.fillRect(x,y, w, h);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.waldo.inventory.Utils;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -472,6 +474,155 @@ public class Statics {
                 }
             }
             return VerticalSplit;
+        }
+    }
+
+    public enum ResistorBandType {
+        FourBand(4, "4 Band"),
+        FiveBand(5, "5 Band"),
+        SixBand (6, "6 Band");
+
+        private final int bands;
+        private final String string;
+
+        ResistorBandType(int bands, String string) {
+            this.bands = bands;
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public int getBands() {
+            return bands;
+        }
+    }
+
+    public enum ResistorBandValue {
+        Black  (0,  -1, -1, Color.rgb(0, 0, 0)),
+        Brown  (1,   1,100, Color.rgb(127, 78, 15)),
+        Red    (2,   2, 50, Color.rgb(255, 0, 0)),
+        Orange (3,  -1, 15, Color.rgb(255, 144, 0)),
+        Yellow (4,  -1, 25, Color.rgb(255, 255, 0)),
+        Green  (5, 0.5, -1, Color.rgb(20,200,20)),
+        Blue   (6,0.25, 10, Color.rgb(0, 0, 255)),
+        Violet (7, 0.1,  5, Color.rgb(150, 0, 255)),
+        Gray   (8,0.05, -1, Color.rgb(125, 125, 125)),
+        White  (9,  -1, -1, Color.rgb(255, 255, 255)),
+        Gold  (-1,   5, -1, Color.rgb(244, 212, 48)),
+        Silver(-2,  10, -1, Color.rgb(191, 191, 191));
+
+        private final int value;
+        private final double tolerance;
+        private final int ppm;
+        private final Color color;
+
+        ResistorBandValue(int value, double tolerance, int ppm, Color color) {
+            this.value = value;
+            this.tolerance = tolerance;
+            this.ppm = ppm;
+            this.color = color;
+        }
+
+
+        public int getValue() {
+            return value;
+        }
+
+        public double getTolerance() {
+            return tolerance;
+        }
+
+        public int getPpm() {
+            return ppm;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public static ResistorBandValue valueBandFromValue(int value) {
+            switch (value) {
+                case 0: return Black;
+                case 1: return Brown;
+                case 2: return Red;
+                case 3: return Orange;
+                case 4: return Yellow;
+                case 5: return Green;
+                case 6: return Blue;
+                case 7: return Violet;
+                case 8: return Gray;
+                case 9: return White;
+                default: return null;
+            }
+        }
+
+        public static ResistorBandValue multiplierBandFromValue(int multiplier) {
+            switch (multiplier) {
+                case  0: return Black;
+                case  1: return Brown;
+                case  2: return Red;
+                case  3: return Orange;
+                case  4: return Yellow;
+                case  5: return Green;
+                case  6: return Blue;
+                case  7: return Violet;
+                case  8: return Gray;
+                case  9: return White;
+                case -1: return Gold;
+                case -2: return Silver;
+                default: return null;
+            }
+        }
+
+        public static List<ResistorBandValue> getFirstBandValues() {
+            List<ResistorBandValue> values = new ArrayList<>();
+            for (ResistorBandValue v : ResistorBandValue.values()) {
+                if (v.getValue() > 0) {
+                    values.add(v);
+                }
+            }
+            return values;
+        }
+
+        public static List<ResistorBandValue> getSecondBandValues() {
+            List<ResistorBandValue> values = new ArrayList<>();
+            for (ResistorBandValue v : ResistorBandValue.values()) {
+                if (v.getValue() >= 0) {
+                    values.add(v);
+                }
+            }
+            return values;
+        }
+
+        public static List<ResistorBandValue> getThirdBandValues() {
+            return getSecondBandValues();
+        }
+
+        public static List<ResistorBandValue> getMultiplierBandValues() {
+            return getSecondBandValues();
+        }
+
+        public static List<ResistorBandValue> getToleranceBandValues() {
+            List<ResistorBandValue> values = new ArrayList<>();
+            for (ResistorBandValue v : ResistorBandValue.values()) {
+                if (v.getTolerance() > 0) {
+                    values.add(v);
+                }
+            }
+            return values;
+        }
+
+        public static List<ResistorBandValue> getPpmBandValues() {
+            List<ResistorBandValue> values = new ArrayList<>();
+            for (ResistorBandValue v : ResistorBandValue.values()) {
+                if (v.getPpm() > 0) {
+                    values.add(v);
+                }
+            }
+            return values;
         }
     }
 }
