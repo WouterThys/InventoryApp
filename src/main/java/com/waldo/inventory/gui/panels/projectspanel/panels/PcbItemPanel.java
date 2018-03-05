@@ -1,14 +1,17 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
+import com.waldo.inventory.gui.dialogs.editcreatedpcbdialog.EditCreatedPcbDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
-import com.waldo.inventory.gui.dialogs.projectusedpcbitemsdialog.UsedPcbItemsDialog;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +25,6 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
-import com.waldo.utils.icomponents.*;
 
 public class PcbItemPanel extends JPanel implements
         GuiUtils.GuiInterface, ChangeListener {
@@ -178,12 +180,12 @@ public class PcbItemPanel extends JPanel implements
             setVisible(true);
             projectPcb = (ProjectPcb) object[0];
 
-            application.beginWait(PcbItemPanel.this);
+            Application.beginWait(PcbItemPanel.this);
             try {
                 clearComponentTable();
-                updateComponentTable(projectPcb.getPcbItemMap());
+                updateComponentTable(projectPcb.getPcbItemList());
             } finally {
-                application.endWait(PcbItemPanel.this);
+                Application.endWait(PcbItemPanel.this);
             }
 
         } else {
@@ -225,18 +227,8 @@ public class PcbItemPanel extends JPanel implements
     }
 
     private void onUsed() {
-        if (projectPcb.hasLinkedItems()) {
-            // Used dialog
-            UsedPcbItemsDialog dialog = new UsedPcbItemsDialog(application, "Set used", projectPcb);
-            dialog.showDialog();
-        } else {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Items need to be linked with known item..",
-                    "No linked items",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+        EditCreatedPcbDialog dialog = new EditCreatedPcbDialog(application, "Created PCB", projectPcb, new CreatedPcb());
+        dialog.showDialog();
     }
 
     private void onParse() {
@@ -244,7 +236,7 @@ public class PcbItemPanel extends JPanel implements
             if (projectPcb.parseAgain()) {
                 clearComponentTable();
                 //setDetails();
-                updateComponentTable(projectPcb.getPcbItemMap());
+                updateComponentTable(projectPcb.getPcbItemList());
             }
         } catch (Exception ex) {
             Status().setError("Error parsing", ex);

@@ -228,7 +228,7 @@ public class SearchManager {
         List<ProjectPcb> projects = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (ProjectPcb pcb : cache().getProjectPcbs()) {
-                for (PcbItemProjectLink projectLink : pcb.getPcbItemMap()) {
+                for (PcbItemProjectLink projectLink : pcb.getPcbItemList()) {
                     if (projectLink.getPcbItemItemLinkId() > DbObject.UNKNOWN_ID && projectLink.getPcbItemItemLink().getItemId() == itemId) {
                         projects.add(pcb);
                         break;
@@ -428,6 +428,66 @@ public class SearchManager {
         return null;
     }
 
+    public CreatedPcb findCreatedPcbById(long id) {
+        if (id > 0) {
+            for (CreatedPcb cp : cache().getCreatedPcbs()) {
+                if (cp.getId() == id) {
+                    return cp;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Item> findUsedItemsByCreatedPcbId(long createdPcbId) {
+        List<Item> items = new ArrayList<>();
+        if (createdPcbId > 0) {
+            for (CreatedPcbLink cpl : cache().getCreatedPcbLinks()) {
+                if (cpl.getCreatedPcbId() == createdPcbId) {
+                    if (cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
+                        items.add(cpl.getUsedItem());
+                    }
+                }
+            }
+        }
+        return items;
+    }
+
+    public List<CreatedPcbLink> findCreatedPcbLinksByProjectPcbId(long projectPcbId) {
+        List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
+        if (projectPcbId > 0) {
+            for (CreatedPcbLink cpl : cache().getCreatedPcbLinks()) {
+                if (cpl.getProjectPcbId() == projectPcbId) {
+                    createdPcbLinks.add(cpl);
+                }
+            }
+        }
+        return createdPcbLinks;
+    }
+
+    public List<CreatedPcbLink> findCreatedPcbLinks(long projectPcbId, long createdPcbId) {
+        List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
+        if (projectPcbId > 0 && createdPcbId > 0) {
+            for(CreatedPcbLink cpl : findCreatedPcbLinksByProjectPcbId(projectPcbId)) {
+                if (cpl.getCreatedPcbId() == createdPcbId) {
+                    createdPcbLinks.add(cpl);
+                }
+            }
+        }
+        return createdPcbLinks;
+    }
+
+    public CreatedPcbLink findCreatedPcbLink(long projectPcbId, long createdPcbId, long pcbItemId) {
+        if (projectPcbId > 0 && createdPcbId > 0 && pcbItemId > 0) {
+            for (CreatedPcbLink cpl : findCreatedPcbLinks(projectPcbId, createdPcbId)) {
+                if (cpl.getPcbItemId() == pcbItemId) {
+                    return cpl;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();
         for (ProjectOther po : cache().getProjectOthers()) {
@@ -460,6 +520,17 @@ public class SearchManager {
             }
         }
         return links;
+    }
+
+    public PcbItemProjectLink findPcbItemProjectLink(long projectPcbId, long pcbItemId) {
+        if (projectPcbId > 0 && pcbItemId > 0) {
+            for (PcbItemProjectLink pipl : findPcbItemLinksWithProjectPcb(projectPcbId)) {
+                if (pipl.getPcbItemId() == pcbItemId) {
+                    return pipl;
+                }
+            }
+        }
+        return null;
     }
 
     public List<PcbItemItemLink> findPcbItemItemLinksForPcbItem(long pcbItemId) {

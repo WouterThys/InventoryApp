@@ -109,7 +109,7 @@ public class ProjectPcb extends ProjectObject {
     }
 
     public int numberOfComponents() {
-        return getPcbItemMap().size();
+        return getPcbItemList().size();
     }
 
     private List<PcbItemProjectLink> getPcbItemsFromParser(File fileToParse) {
@@ -158,7 +158,7 @@ public class ProjectPcb extends ProjectObject {
         return result;
     }
 
-    public List<PcbItemProjectLink> getPcbItemMap() {
+    public List<PcbItemProjectLink> getPcbItemList() {
         if (pcbItemProjectLinks == null) {
             File file = new File(getDirectory());
             if (lastParsedDate != null) {
@@ -206,8 +206,8 @@ public class ProjectPcb extends ProjectObject {
     }
 
     public boolean hasLinkedItems() {
-        if (getPcbItemMap() != null && getPcbItemMap().size() > 0) {
-            for (PcbItemProjectLink link : getPcbItemMap()) {
+        if (getPcbItemList() != null && getPcbItemList().size() > 0) {
+            for (PcbItemProjectLink link : getPcbItemList()) {
                 if (link.hasMatchedItem()) {
                     return true;
                 }

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class CacheList<T> extends ArrayList<T> {
 
-    private boolean isFetched = false;
+    private boolean isFetched;
 
     // Extra info
     private Date initialisationTime = null;

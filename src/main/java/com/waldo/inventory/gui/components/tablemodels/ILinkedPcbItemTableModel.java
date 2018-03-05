@@ -45,7 +45,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProject
                     switch (amountType) {
                         case ItemAmount: amount = link.getNumberOfItems(); break;
                         case OrderAmount: amount = pcbItem.getOrderAmount(); break;
-                        case UsedAmount: amount = link.getUsedCount(); break;
+                        case UsedAmount: amount = 0; break;// TODO #13 link.getUsedCount(); break;
                     }
                     return amount;
                 case 1: // Pcb item name and value
@@ -74,7 +74,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProject
             case OrderAmount:
                 return ((columnIndex == 0) && !link.getPcbItem().isOrdered());
             case UsedAmount:
-                return ((columnIndex == 0) && !link.isUsed());
+                return ((columnIndex == 0));// TODO #13 && !link.isUsed());
         }
         return false;
     }

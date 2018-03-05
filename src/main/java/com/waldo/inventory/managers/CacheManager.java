@@ -59,6 +59,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Sets", sets));
         objectLogList.add(new ObjectLog("Set item links", setItemLinks));
         objectLogList.add(new ObjectLog("Pending orders", pendingOrders));
+        objectLogList.add(new ObjectLog("Created PCBs", createdPcbs));
         initTime = DateUtils.now();
     }
 
@@ -87,6 +88,8 @@ public class CacheManager {
     private final CacheList<ProjectCode> projectCodes = new CacheList<>();
     private final CacheList<ProjectPcb> projectPcbs = new CacheList<>();
     private final CacheList<ProjectOther> projectOthers = new CacheList<>();
+    private final CacheList<CreatedPcb> createdPcbs = new CacheList<>();
+    private final CacheList<CreatedPcbLink> createdPcbLinks = new CacheList<>();
     private final CacheList<ParserItemLink> parserItemLinks = new CacheList<>();
     private final CacheList<Set> sets = new CacheList<>();
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
@@ -196,6 +199,8 @@ public class CacheManager {
         sets.clear();
         setItemLinks.clear();
         pendingOrders.clear();
+        createdPcbLinks.clear();
+        createdPcbs.clear();
     }
 
 
@@ -361,6 +366,22 @@ public class CacheManager {
             projectPcbs.setList(db().updateProjectPcbs(), (System.nanoTime() - start));
         }
         return projectPcbs;
+    }
+
+    public synchronized CacheList<CreatedPcb> getCreatedPcbs() {
+        if (!createdPcbs.isFetched()) {
+            long start = System.nanoTime();
+            createdPcbs.setList(db().updateCreatedPcbs(), (System.nanoTime() - start));
+        }
+        return createdPcbs;
+    }
+
+    public synchronized CacheList<CreatedPcbLink> getCreatedPcbLinks() {
+        if (!createdPcbLinks.isFetched()) {
+            long start = System.nanoTime();
+            createdPcbLinks.setList(db().updateCreatedPcbLinks(), (System.nanoTime() - start));
+        }
+        return createdPcbLinks;
     }
 
     public synchronized CacheList<ProjectOther> getProjectOthers() {

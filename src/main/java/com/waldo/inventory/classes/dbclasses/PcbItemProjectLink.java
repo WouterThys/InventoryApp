@@ -30,10 +30,6 @@ public class PcbItemProjectLink extends DbObject {
     private String pcbSheetName;
     private List<String> references;
 
-    private int usedCount; // Amount used = amount not available anymore in stock
-    private boolean used;
-    private boolean processed; // Helper variable for used dialog
-
 
     public PcbItemProjectLink() {
         super(TABLE_NAME);
@@ -91,11 +87,6 @@ public class PcbItemProjectLink extends DbObject {
         statement.setLong(ndx++, getPcbItemItemLinkId());
 
         statement.setString(ndx++, getValue());
-        statement.setInt(ndx++, getUsedCount());
-
-        if (getUsedCount() > 0) {
-            setUsed(true);
-        }
 
         // Pcb item variables relevant for project
         statement.setString(ndx++, getReferenceString());
@@ -113,7 +104,6 @@ public class PcbItemProjectLink extends DbObject {
                     ref.getProjectPcbId() == getProjectPcbId() &&
                     ref.getPcbItemItemLinkId() == getPcbItemItemLinkId() &&
                     ref.getValue().equals(getValue()) &&
-                    ref.getUsedCount() == getUsedCount() &&
                     ref.getReferenceString().equals(getReferenceString()) &&
                     ref.getPcbSheetName().equals(getPcbSheetName());
         }
@@ -135,11 +125,8 @@ public class PcbItemProjectLink extends DbObject {
         cpy.setProjectPcbId(getProjectPcbId());
         cpy.setPcbItemItemLinkId(getPcbItemItemLinkId());
         cpy.setValue(getValue());
-        cpy.setUsedCount(getUsedCount());
         cpy.setPcbSheetName(getPcbSheetName());
         cpy.setReferences(getReferences());
-        cpy.setUsed(isUsed());
-        cpy.setProcessed(isProcessed());
 
         return cpy;
     }
@@ -278,22 +265,6 @@ public class PcbItemProjectLink extends DbObject {
         this.value = value;
     }
 
-    public int getUsedCount() {
-        return usedCount;
-    }
-
-    public void setUsedCount(int usedCount) {
-        this.usedCount = usedCount;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;
-    }
-
     public List<String> getReferences() {
         if (references == null) {
             references = new ArrayList<>();
@@ -324,22 +295,5 @@ public class PcbItemProjectLink extends DbObject {
             String two = StringUtils.leftPad(o2, 5, "0");
             return one.compareTo(two);
         }
-    }
-
-
-
-
-
-
-
-
-
-
-    public boolean isProcessed() {
-        return processed;
-    }
-
-    public void setProcessed(boolean processedUsed) {
-        this.processed = processedUsed;
     }
 }

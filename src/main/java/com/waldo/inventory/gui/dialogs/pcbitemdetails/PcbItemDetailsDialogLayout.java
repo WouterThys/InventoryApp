@@ -48,10 +48,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private ITextField orderTf;
     private IActions.OrderItemAction orderItemAction;
 
-    private SpinnerNumberModel spinnerNumberModel;
-    ISpinner usedSpinner;
-    private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
-
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -78,14 +74,9 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     abstract void onSelectNewOrder();
     abstract void onDeleteMatchedItem();
     abstract void onViewAllItemLinks();
-    abstract void onMatchedItemAutoSetUsed();
 
     void updateEnabledComponents() {
         if (pcbItemProjectLink != null) {
-            boolean enabled = pcbItemProjectLink.hasMatchedItem();
-            usedSpinner.setEnabled(enabled);
-            autoCalculateUsedAction.setEnabled(enabled);
-
             deleteAction.setEnabled(pcbItemProjectLink.getPcbItemItemLink() != null);
             viewAllLinksAction.setEnabled(pcbItemProjectLink.getPcbItem().getKnownItemLinks().size() > 0);
         }
@@ -134,8 +125,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             if (pcbItem.getOrderItem() != null) {
                 orderTf.setText(pcbItem.getOrderItem().getOrder().toString());
             }
-
-            usedSpinner.setTheValue(pcbItemProjectLink.getUsedCount());
         }
     }
 
@@ -158,7 +147,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         if (originalItemAmount == -1) {
             newItemAmount = amount;
             originalItemAmount = amount;
-            spinnerNumberModel.setMaximum(amount+1);
         }
         matchedItemLbl.setText(String.valueOf(amount));
         if (amount > 0) {
@@ -231,18 +219,9 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         orderPnl.add(orderTf, BorderLayout.CENTER);
         orderPnl.add(orderBtn, BorderLayout.EAST);
 
-        JPanel usedPnl = new JPanel(new BorderLayout());
-        JToolBar usedTb = new JToolBar();
-        usedTb.setFloatable(false);
-        usedTb.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        usedTb.add(autoCalculateUsedAction);
-        usedPnl.add(usedSpinner, BorderLayout.CENTER);
-        usedPnl.add(usedTb, BorderLayout.EAST);
-
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
         gbc.addLine(imageResource.readImage("Projects.Pcb.Linked"), itemPnl);
         gbc.addLine(imageResource.readImage("Projects.Pcb.Ordered"), orderPnl);
-        gbc.addLine(imageResource.readImage("Projects.Pcb.Used"), usedPnl);
 
         return panel;
     }
@@ -302,15 +281,6 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSelectNewOrder();
-            }
-        };
-        spinnerNumberModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
-        usedSpinner = new ISpinner(spinnerNumberModel);
-        usedSpinner.addEditedListener(this, "usedCount");
-        autoCalculateUsedAction = new IActions.AutoCalculateUsedAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onMatchedItemAutoSetUsed();
             }
         };
     }

@@ -54,9 +54,10 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                     }
                     break;
                 case 5: // Used
-                    if (link.isUsed()) {
-                        return used;
-                    }
+                    // TODO #13
+//                    if (link.isUsed()) {
+//                        return used;
+//                    }
                     break;
             }
         }

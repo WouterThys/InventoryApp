@@ -46,6 +46,8 @@ public abstract class DbObject {
     public static final int TYPE_SET = 23;
     public static final int TYPE_SET_ITEM_LINK = 24;
     public static final int TYPE_PENDING_ORDER = 25;
+    public static final int TYPE_CREATED_PCB = 26;
+    public static final int TYPE_CREATED_PCB_LINK = 27;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
