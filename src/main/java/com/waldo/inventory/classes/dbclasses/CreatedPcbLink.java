@@ -14,15 +14,11 @@ public class CreatedPcbLink  extends DbObject {
     public static final String TABLE_NAME = "createdpcblinks";
 
     // Link between ProjectPcb and CreatedPcb
-    private long projectPcbId;
-    private ProjectPcb projectPcb;
+    private long pcbItemProjectLinkId;
+    private PcbItemProjectLink pcbItemProjectLink;
 
     private long createdPcbId;
     private CreatedPcb createdPcb;
-
-    // Pcb item
-    private long pcbItemId;
-    private PcbItem pcbItem;
 
     // Used item stuff
     private long usedItemId;
@@ -34,12 +30,11 @@ public class CreatedPcbLink  extends DbObject {
         super(TABLE_NAME);
     }
 
-    public CreatedPcbLink(long projectPcbId, long createdPcbId, long pcbItemId, long usedItemId) {
+    public CreatedPcbLink(long pcbItemProjectLinkId, long createdPcbId, long usedItemId) {
         this();
 
-        this.projectPcbId = projectPcbId;
+        this.pcbItemProjectLinkId = pcbItemProjectLinkId;
         this.createdPcbId = createdPcbId;
-        this.pcbItemId = pcbItemId;
         this.usedItemId = usedItemId;
     }
 
@@ -47,8 +42,8 @@ public class CreatedPcbLink  extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
-        if (projectPcbId < UNKNOWN_ID) {
-            setProjectPcbId(UNKNOWN_ID);
+        if (pcbItemProjectLinkId < UNKNOWN_ID) {
+            setPcbItemProjectLinkId(UNKNOWN_ID);
         }
         if (createdPcbId < UNKNOWN_ID) {
             setCreatedPcbId(UNKNOWN_ID);
@@ -56,13 +51,9 @@ public class CreatedPcbLink  extends DbObject {
         if (usedItemId < UNKNOWN_ID) {
             setUsedItemId(UNKNOWN_ID);
         }
-        if (pcbItemId < UNKNOWN_ID) {
-            setPcbItemId(UNKNOWN_ID);
-        }
 
-        statement.setLong(ndx++, getProjectPcbId());
+        statement.setLong(ndx++, getPcbItemProjectLinkId());
         statement.setLong(ndx++, getCreatedPcbId());
-        statement.setLong(ndx++, getPcbItemId());
         statement.setLong(ndx++, getUsedItemId());
         statement.setInt(ndx++, getUsedAmount());
 
@@ -93,34 +84,36 @@ public class CreatedPcbLink  extends DbObject {
     }
 
     @Override
-    public CreatedPcb createCopy() {
-        return createCopy(new CreatedPcb());
+    public CreatedPcbLink createCopy() {
+        return createCopy(new CreatedPcbLink());
     }
 
     @Override
-    public CreatedPcb createCopy(DbObject copyInto) {
-        CreatedPcb cpy = new CreatedPcb();
+    public CreatedPcbLink createCopy(DbObject copyInto) {
+        CreatedPcbLink cpy = new CreatedPcbLink();
         copyBaseFields(cpy);
-        cpy.setProjectPcbId(getProjectPcbId());
+        cpy.setPcbItemProjectLinkId(getPcbItemProjectLinkId());
+        cpy.setCreatedPcbId(getCreatedPcbId());
+        cpy.setUsedItemId(getUsedItemId());
+        cpy.setUsedAmount(getUsedAmount());
         return cpy;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj != null && obj instanceof CreatedPcb) {
-            CreatedPcb ref = (CreatedPcb) obj;
-
-            return ref.getProjectPcbId() == getProjectPcbId();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj != null && obj instanceof CreatedPcb) {
+//            CreatedPcb ref = (CreatedPcb) obj;
+//
+//            return ref.getProjectPcbId() == getProjectPcbId();
+//        }
+//        return false;
+//    }
 
     public PcbItemItemLink getPcbItemItemLink() {
         PcbItemItemLink linkedItem = null;
-        if (pcbItemId > DbObject.UNKNOWN_ID && projectPcbId > DbObject.UNKNOWN_ID) {
-            PcbItemProjectLink projectLink = SearchManager.sm().findPcbItemProjectLink(projectPcbId, pcbItemId);
-            if (projectLink != null) {
-                linkedItem = projectLink.getPcbItemItemLink(); // Can be null!
+        if (pcbItemProjectLinkId > DbObject.UNKNOWN_ID ) {
+            if (getPcbItemProjectLink().getPcbItemId() > DbObject.UNKNOWN_ID) {
+                linkedItem = getPcbItemProjectLink().getPcbItemItemLink();
             }
         }
         return linkedItem;
@@ -128,22 +121,22 @@ public class CreatedPcbLink  extends DbObject {
 
 
 
-    public long getProjectPcbId() {
-        return projectPcbId;
+    public long getPcbItemProjectLinkId() {
+        return pcbItemProjectLinkId;
     }
 
-    public void setProjectPcbId(long projectPcbId) {
-        if (projectPcb != null && projectPcb.getId() != projectPcbId) {
-            projectPcb = null;
+    public void setPcbItemProjectLinkId(long pcbItemProjectLinkId) {
+        if (pcbItemProjectLink != null && pcbItemProjectLink.getId() != pcbItemProjectLinkId) {
+            pcbItemProjectLink = null;
         }
-        this.projectPcbId = projectPcbId;
+        this.pcbItemProjectLinkId = pcbItemProjectLinkId;
     }
 
-    public ProjectPcb getProjectPcb() {
-        if (projectPcb == null) {
-            projectPcb = SearchManager.sm().findProjectPcbById(projectPcbId);
+    public PcbItemProjectLink getPcbItemProjectLink() {
+        if (pcbItemProjectLink == null) {
+            pcbItemProjectLink = SearchManager.sm().findPcbItemProjectLinkById(pcbItemProjectLinkId);
         }
-        return projectPcb;
+        return pcbItemProjectLink;
     }
 
 
@@ -163,24 +156,6 @@ public class CreatedPcbLink  extends DbObject {
             createdPcb = SearchManager.sm().findCreatedPcbById(createdPcbId);
         }
         return createdPcb;
-    }
-
-    public long getPcbItemId() {
-        return pcbItemId;
-    }
-
-    public void setPcbItemId(long pcbItemId) {
-        if (pcbItem != null && pcbItem.getId() != pcbItemId) {
-            pcbItem = null;
-        }
-        this.pcbItemId = pcbItemId;
-    }
-
-    public PcbItem getPcbItem() {
-        if (pcbItem == null) {
-            pcbItem = SearchManager.sm().findPcbItemById(pcbItemId);
-        }
-        return pcbItem;
     }
 
     public long getUsedItemId() {

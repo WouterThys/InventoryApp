@@ -2,9 +2,12 @@ package com.waldo.inventory.gui.dialogs.editcreatedpcbdialog;
 
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbTableModel;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.ISpinner;
 import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,12 +23,28 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
     private ICreatedPcbTableModel tableModel;
     private ITable<CreatedPcbLink> createdPcbTable;
 
+    // Created pcb
+    private ITextField pcbNameTf;
+    private ITextField pcbDateTf;
+
+    // Link panel
+    private ITextField projectPcbTf;
+    private ITextField pcbItemTf;
+    private ITextField linkedItemTf;
+    private ITextField usedItemTf;
+
+    private SpinnerNumberModel usedAmountSpModel;
+    private ISpinner usedAmountSp;
+    private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectPcb projectPcb;
     private CreatedPcb createdPcb;
     private List<CreatedPcbLink> displayList = new ArrayList<>();
+
+    private CreatedPcbLink selectedLink;
 
     /*
      *                  CONSTRUCTOR
@@ -57,7 +76,10 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
             if (link != null) {
                 createdPcbLinkList.remove(link);
             } else {
-                link = new CreatedPcbLink(projectPcb.getId(), createdPcb.getId(), pipl.getPcbItemId(), 0);
+                link = new CreatedPcbLink(pipl.getId(), createdPcb.getId(), 0);
+                if (pipl.getPcbItemItemLinkId() > DbObject.UNKNOWN_ID) {
+                    link.setUsedItemId(pipl.getPcbItemItemLink().getItemId());
+                }
             }
             displayList.add(link);
         }
@@ -65,8 +87,10 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
 
     private CreatedPcbLink findPcbItem(List<CreatedPcbLink> searchList, long pcbItemId) {
         for (CreatedPcbLink cpl : searchList) {
-            if (cpl.getPcbItemId() == pcbItemId) {
-                return cpl;
+            if (cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
+                if (cpl.getPcbItemProjectLink().getPcbItemId() == pcbItemId) {
+                    return cpl;
+                }
             }
         }
         return null;

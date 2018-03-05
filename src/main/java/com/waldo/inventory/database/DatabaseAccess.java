@@ -1375,9 +1375,8 @@ public class DatabaseAccess {
                     p = new CreatedPcbLink();
                     p.setId(rs.getLong("id"));
 
-                    p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    p.setPcbItemProjectLinkId(rs.getLong("pcbItemProjectLinkId"));
                     p.setCreatedPcbId(rs.getLong("createdPcbId"));
-                    p.setPcbItemId(rs.getLong("pcbItemId"));
                     p.setUsedItemId(rs.getLong("usedItemId"));
                     p.setUsedAmount(rs.getInt("usedAmount"));
 

@@ -457,7 +457,7 @@ public class SearchManager {
         List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
         if (projectPcbId > 0) {
             for (CreatedPcbLink cpl : cache().getCreatedPcbLinks()) {
-                if (cpl.getProjectPcbId() == projectPcbId) {
+                if (cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID && cpl.getPcbItemProjectLink().getProjectPcbId() == projectPcbId) {
                     createdPcbLinks.add(cpl);
                 }
             }
@@ -477,16 +477,16 @@ public class SearchManager {
         return createdPcbLinks;
     }
 
-    public CreatedPcbLink findCreatedPcbLink(long projectPcbId, long createdPcbId, long pcbItemId) {
-        if (projectPcbId > 0 && createdPcbId > 0 && pcbItemId > 0) {
-            for (CreatedPcbLink cpl : findCreatedPcbLinks(projectPcbId, createdPcbId)) {
-                if (cpl.getPcbItemId() == pcbItemId) {
-                    return cpl;
-                }
-            }
-        }
-        return null;
-    }
+//    public CreatedPcbLink findCreatedPcbLink(long projectPcbId, long createdPcbId, long pcbItemId) {
+//        if (projectPcbId > 0 && createdPcbId > 0 && pcbItemId > 0) {
+//            for (CreatedPcbLink cpl : findCreatedPcbLinks(projectPcbId, createdPcbId)) {
+//                if (cpl.getPcbItemId() == pcbItemId) {
+//                    return cpl;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();
@@ -520,6 +520,17 @@ public class SearchManager {
             }
         }
         return links;
+    }
+
+    public PcbItemProjectLink findPcbItemProjectLinkById(long pcbItemProjectLinkId) {
+        if (pcbItemProjectLinkId > 0) {
+            for (PcbItemProjectLink pipl : cache().getPcbItemProjectLinks()) {
+                if (pipl.getId() == pcbItemProjectLinkId) {
+                    return pipl;
+                }
+            }
+        }
+        return null;
     }
 
     public PcbItemProjectLink findPcbItemProjectLink(long projectPcbId, long pcbItemId) {
