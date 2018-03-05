@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ITableIcon;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -17,11 +17,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
-    private static final Class[] COLUMN_CLASSES = {ITableIcon.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
-
-    private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
-    private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
-    private static final ImageIcon imageError = imageResource.readImage("Orders.Table.Error");
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
 
     private boolean isEditable = false;
 
@@ -89,39 +85,49 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
         return true;
     }
 
+    private static final Renderer renderer = new Renderer();
     @Override
     public DefaultTableCellRenderer getTableCellRenderer() {
-        return new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof OrderItem) {
-                    if (row == 0) {
-                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                        tableColumn.setMaxWidth(32);
-                        tableColumn.setMinWidth(32);
-                    }
+        return renderer;
+    }
 
-                    ILabel lbl;
-                    OrderItem orderItem = (OrderItem) value;
+    static class Renderer extends DefaultTableCellRenderer {
 
-                    boolean amountOk = orderItem.getAmount() > 0;
-                    boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;
-                    if (amountOk && referenceOk) {
-                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageOk);
-                        lbl.setToolTipText(null);
-                    } else if (!referenceOk) {
-                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageError);
-                        lbl.setToolTipText("Reference is not set..");
-                    } else {
-                        lbl = new ITableIcon(c.getBackground(), row, isSelected, imageWarn);
-                        lbl.setToolTipText("Amount is 0..");
-                    }
+        private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
+        private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
+        private static final ImageIcon imageError = imageResource.readImage("Orders.Table.Error");
 
-                    return lbl;
+        private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, imageOk, "");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof OrderItem) {
+                if (row == 0) {
+                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                    tableColumn.setMaxWidth(32);
+                    tableColumn.setMinWidth(32);
                 }
-                return c;
+
+                label.updateBackground(c.getBackground(), row, isSelected);
+                OrderItem orderItem = (OrderItem) value;
+
+                boolean amountOk = orderItem.getAmount() > 0;
+                boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;
+                if (amountOk && referenceOk) {
+                    label.setIcon(imageOk);
+                    label.setToolTipText(null);
+                } else if (!referenceOk) {
+                    label.setIcon(imageError);
+                    label.setToolTipText("Reference is not set..");
+                } else {
+                    label.setIcon(imageWarn);
+                    label.setToolTipText("Amount is 0..");
+                }
+
+                return label;
             }
-        };
+            return c;
+        }
     }
 }

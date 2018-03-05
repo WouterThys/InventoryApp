@@ -7,7 +7,7 @@ import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ITableIcon;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,9 +24,6 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Footprint", "Manufacturer", "Match"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class, ILabel.class};
-
-    private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
 
     private SearchType searchType;
 
@@ -97,29 +94,38 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
         return true;
     }
 
+    private static final IRenderer renderer = new IRenderer();
     @Override
     public DefaultTableCellRenderer getTableCellRenderer() {
-        return new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof Item) {
-                    if (row == 0) {
-                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                        tableColumn.setMaxWidth(32);
-                        tableColumn.setMinWidth(32);
-                    }
+        return renderer;
+    }
 
-                    Item item = (Item) value;
-                    String txt = String.valueOf(item.getAmount());
+    private static class IRenderer extends DefaultTableCellRenderer {
 
-                    return new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
-                } else if (value instanceof DbObjectMatch) {
-                    return new MatchValue(((DbObjectMatch)value).getMatchPercent());
+        private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
+        private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof Item) {
+                if (row == 0) {
+                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                    tableColumn.setMaxWidth(32);
+                    tableColumn.setMinWidth(32);
                 }
-                return component;
+
+                Item item = (Item) value;
+                String txt = String.valueOf(item.getAmount());
+                label.updateBackground(component.getBackground(), row, isSelected);
+                label.setText(txt);
+
+                return label;
+            } else if (value instanceof DbObjectMatch) {
+                return new MatchValue(((DbObjectMatch)value).getMatchPercent());
             }
-        };
+            return component;
+        }
     }
 
     private static class MatchValue extends ILabel {
@@ -134,7 +140,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
         private int val;
 
-        public MatchValue(int value) {
+        MatchValue(int value) {
             this.val = value;
             setPreferredSize(new Dimension(100, 25));
             setMaximumSize(getPreferredSize());

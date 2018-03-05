@@ -38,13 +38,13 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     private JList<String> referencesList; // TODO: make real pcb items?
 
     // References
-    private ITableIcon matchedItemLbl;
+    private ITableLabel matchedItemLbl;
     private ITextField matchedItemTf;
     private IActions.EditAction editAction;
     private IActions.DeleteAction deleteAction;
     private IActions.ViewAllLinksAction viewAllLinksAction;
 
-    private ITableIcon orderLbl;
+    private ITableLabel orderLbl;
     private ITextField orderTf;
     private IActions.OrderItemAction orderItemAction;
 
@@ -256,7 +256,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
 
         // References
         matchedItemTf = new ITextField(false);
-        matchedItemLbl = new ITableIcon(matchedItemTf.getBackground());
+        matchedItemLbl = new ITableLabel(matchedItemTf.getBackground());
         editAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -276,7 +276,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
             }
         };
         orderTf = new ITextField(false);
-        orderLbl = new ITableIcon(orderTf.getBackground());
+        orderLbl = new ITableLabel(orderTf.getBackground());
         orderItemAction = new IActions.OrderItemAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
