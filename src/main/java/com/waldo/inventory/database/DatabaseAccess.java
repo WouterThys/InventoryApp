@@ -1300,13 +1300,8 @@ public class DatabaseAccess {
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
                     p.setPcbItemItemLinkId(rs.getLong("pcbItemItemLinkId"));
                     p.setValue(rs.getString("value"));
-                    p.setUsedCount(rs.getInt("usedCount"));
                     p.setPcbItemReferences(rs.getString("pcbItemReferences"));
                     p.setPcbSheetName(rs.getString("pcbSheetName"));
-
-                    // Used and processed
-                    p.setUsed(p.getUsedCount() > 0);
-                    p.setProcessed(p.isUsed());
 
                     p.setInserted(true);
                     pcbItemProjectLinks.add(p);
@@ -1322,6 +1317,83 @@ public class DatabaseAccess {
         }
 
         return pcbItemProjectLinks;
+    }
+
+    public List<CreatedPcb> updateCreatedPcbs() {
+        List<CreatedPcb> createdPcbs = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return createdPcbs;
+        }
+        Status().setMessage("Fetching CreatedPcbs from DB");
+        CreatedPcb p = null;
+        String sql = scriptResource.readString(CreatedPcb.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new CreatedPcb();
+                    p.setId(rs.getLong("id"));
+                    p.setName(rs.getString("name"));
+                    p.setIconPath(rs.getString("iconPath"));
+                    p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setDateCreated(rs.getTimestamp("dateCreated"));
+                    } else {
+                        p.setDateCreated(DateUtils.sqLiteToDate(rs.getString("dateCreated")));
+                    }
+
+                    p.setInserted(true);
+                    createdPcbs.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return createdPcbs;
+    }
+
+    public List<CreatedPcbLink> updateCreatedPcbLinks() {
+        List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return createdPcbLinks;
+        }
+        Status().setMessage("Fetching CreatedPcbLinks from DB");
+        CreatedPcbLink p = null;
+        String sql = scriptResource.readString(CreatedPcbLink.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    p = new CreatedPcbLink();
+                    p.setId(rs.getLong("id"));
+
+                    p.setPcbItemProjectLinkId(rs.getLong("pcbItemProjectLinkId"));
+                    p.setCreatedPcbId(rs.getLong("createdPcbId"));
+                    p.setUsedItemId(rs.getLong("usedItemId"));
+                    p.setUsedAmount(rs.getInt("usedAmount"));
+
+                    p.setInserted(true);
+                    createdPcbLinks.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return createdPcbLinks;
     }
 
     public List<ProjectIDE> updateProjectIDEs() {

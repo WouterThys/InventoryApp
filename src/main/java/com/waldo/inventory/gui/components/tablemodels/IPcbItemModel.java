@@ -5,7 +5,7 @@ import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ITableIcon;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -54,9 +54,10 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                     }
                     break;
                 case 5: // Used
-                    if (link.isUsed()) {
-                        return used;
-                    }
+                    // TODO #13
+//                    if (link.isUsed()) {
+//                        return used;
+//                    }
                     break;
             }
         }
@@ -70,43 +71,56 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
         return true;
     }
 
+    private static final Renderer renderer = new Renderer();
     @Override
     public DefaultTableCellRenderer getTableCellRenderer() {
-        return new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof PcbItemProjectLink) {
+        return renderer;
+    }
 
-                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                    PcbItemProjectLink projectLink = (PcbItemProjectLink) value;
-                    ILabel lbl;
-                    if (table.getColumnName(column).equals("Part")) {
-                        if (projectLink.hasMatchedItem()) {
-                            PcbItemItemLink link = projectLink.getPcbItemItemLink();
-                            lbl = new ITableIcon(c.getBackground(), row, isSelected,link.getItem().getPrettyName());
-                            lbl.setForeground(colorResource.readColor("Green"));
-                            lbl.setFont(Font.BOLD);
-                        } else {
-                            lbl = new ITableIcon(c.getBackground(), row, isSelected, projectLink.getPrettyName());
-                        }
+    static class Renderer extends DefaultTableCellRenderer {
+
+        private static final ITableLabel linkLabel = new ITableLabel(Color.gray, 0, false, "");
+        private static final ITableLabel partLabel = new ITableLabel(Color.gray, 0, false, greenBall, "");
+        private static final ITableLabel imageLabel = new ITableLabel(Color.gray, 0, false, greenBall, "");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof PcbItemProjectLink) {
+
+                TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                PcbItemProjectLink projectLink = (PcbItemProjectLink) value;
+
+                if (table.getColumnName(column).equals("Part")) {
+                    linkLabel.updateBackground(c.getBackground(), row, isSelected);
+
+                    if (projectLink.hasMatchedItem()) {
+                        PcbItemItemLink link = projectLink.getPcbItemItemLink();
+                        linkLabel.setText(link.getItem().getPrettyName());
+                        linkLabel.setForeground(colorResource.readColor("Green"));
+                        linkLabel.setFont(Font.BOLD);
                     } else {
-                        if (row == 0) {
-                            tableColumn.setMaxWidth(32);
-                            tableColumn.setMinWidth(32);
-                        }
-
-                        String txt = String.valueOf(projectLink.getNumberOfItems());
-                        lbl = new ITableIcon(c.getBackground(), row, isSelected, greenBall, txt);
+                        linkLabel.setText(projectLink.getPrettyName());
+                    }
+                    return linkLabel;
+                } else {
+                    if (row == 0) {
+                        tableColumn.setMaxWidth(32);
+                        tableColumn.setMinWidth(32);
                     }
 
-                    return lbl;
+                    String txt = String.valueOf(projectLink.getNumberOfItems());
+                    partLabel.updateBackground(c.getBackground(), row, isSelected);
+                    partLabel.setText(txt);
+                    return partLabel;
                 }
-                if (value instanceof ImageIcon) {
-                    return new ITableIcon(c.getBackground(), row, isSelected, (ImageIcon) value);
-                }
-                return this;
             }
-        };
+            if (value instanceof ImageIcon) {
+                imageLabel.setIcon((ImageIcon)value);
+                imageLabel.updateBackground(c.getBackground(), row, isSelected);
+                return imageLabel;
+            }
+            return this;
+        }
     }
 }

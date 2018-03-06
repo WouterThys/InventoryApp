@@ -91,17 +91,6 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     }
 
-    @Override
-    void onMatchedItemAutoSetUsed() {
-        if(pcbItemProjectLink != null) {
-            int amount = pcbItemProjectLink.getNumberOfItems();
-            if (updateItemAmount(0 - amount)) {
-                usedSpinner.setTheValue(amount);
-                getButtonNeutral().setEnabled(checkChange());
-            }
-        }
-    }
-
     private void savePcbItemProjectLink(PcbItemProjectLink projectLink) {
         if (projectLink != null) {
             pcbItemProjectLink.save();
@@ -168,13 +157,7 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
     //
     @Override
     public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        if (component.equals(usedSpinner)) {
-            if (updateItemAmount((int)previousValue - (int)newValue)) {
-                getButtonNeutral().setEnabled(checkChange());
-            }
-        } else {
-            getButtonNeutral().setEnabled(checkChange());
-        }
+        getButtonNeutral().setEnabled(checkChange());
         updateEnabledComponents();
     }
 

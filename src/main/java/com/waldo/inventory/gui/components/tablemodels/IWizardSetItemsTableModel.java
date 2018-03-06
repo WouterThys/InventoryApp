@@ -6,7 +6,7 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ITableIcon;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -21,11 +21,6 @@ public class IWizardSetItemsTableModel extends IAbstractTableModel<Item> {
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Manufacturer", "Location"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class};
-
-    private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon redBall = imageResource.readImage("Ball.red");
-    private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
-    private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
 
     public IWizardSetItemsTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -72,40 +67,52 @@ public class IWizardSetItemsTableModel extends IAbstractTableModel<Item> {
         return true;
     }
 
+    private static final IRenderer renderer = new IRenderer();
     @Override
     public DefaultTableCellRenderer getTableCellRenderer() {
-        return new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (value instanceof Item) {
-                    if (row == 0) {
-                        TableColumn tableColumn = table.getColumnModel().getColumn(column);
-                        tableColumn.setMaxWidth(32);
-                        tableColumn.setMinWidth(32);
-                    }
+        return renderer;
+    }
 
-                    ILabel lbl;
-                    Item item = (Item) value;
-                    String txt = String.valueOf(item.getAmount());
+    private static class IRenderer extends DefaultTableCellRenderer {
 
-                    if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
-                        lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
-                    } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
-                        lbl = new ITableIcon(component.getBackground(), row, isSelected, yellowBall, txt);
-                    } else {
-                        if (item.getAmount() > 0) {
-                            lbl = new ITableIcon(component.getBackground(), row, isSelected, greenBall, txt);
-                        } else {
-                            lbl = new ITableIcon(component.getBackground(), row, isSelected, redBall, txt);
-                        }
-                    }
+        private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
+        private static final ImageIcon redBall = imageResource.readImage("Ball.red");
+        private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
+        private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
 
-                    return lbl;
+        private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof Item) {
+                if (row == 0) {
+                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                    tableColumn.setMaxWidth(32);
+                    tableColumn.setMinWidth(32);
                 }
-                return component;
+
+                label.updateBackground(component.getBackground(), row, isSelected);
+                Item item = (Item) value;
+                String txt = String.valueOf(item.getAmount());
+                label.setText(txt);
+
+                if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
+                    label.setIcon(blueBall);
+                } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
+                    label.setIcon(yellowBall);
+                } else {
+                    if (item.getAmount() > 0) {
+                        label.setIcon(greenBall);
+                    } else {
+                        label.setIcon(redBall);
+                    }
+                }
+
+                return label;
             }
-        };
+            return component;
+        }
     }
 
 }

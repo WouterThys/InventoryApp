@@ -240,7 +240,7 @@ abstract class ResistorDialogLayout extends IDialog implements ItemListener {
         }
         @Override
         String getValueText(ResistorBandValue value) {
-            return value.getMultiplierString();
+            return "";//value.getMultiplierString();
         }
     }
 

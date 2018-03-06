@@ -28,7 +28,8 @@ public class IPcbItemUsedTableModel extends IAbstractTableModel<PcbItemProjectLi
                     }
                     return "";
                 case 2: // Amount
-                    return link.getUsedCount();
+                    // TODO #13
+                    return 0;//link.getUsedCount();
             }
         }
         return null;
@@ -36,10 +37,10 @@ public class IPcbItemUsedTableModel extends IAbstractTableModel<PcbItemProjectLi
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        if (columnIndex == 2) {
-            PcbItemProjectLink link = getItemAt(rowIndex);
-            return !link.isProcessed();
-        }
+//        if (columnIndex == 2) {
+//            PcbItemProjectLink link = getItemAt(rowIndex);
+//            return !link.isProcessed();
+//        } // TODO #13
         return false;
     }
 }

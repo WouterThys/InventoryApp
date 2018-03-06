@@ -131,7 +131,7 @@ public class LinkPcbPanel extends JPanel implements GuiUtils.GuiInterface {
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null) {
             ProjectPcb projectPcb = (ProjectPcb) object[0];
-            updateTable(projectPcb.getPcbItemMap());
+            updateTable(projectPcb.getPcbItemList());
         } else {
             tableModel.clearItemList();
         }

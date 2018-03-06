@@ -1,8 +1,12 @@
 package com.waldo.inventory.Utils;
 
+
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class Statics {
 
@@ -542,25 +546,6 @@ public class Statics {
             return color;
         }
 
-        public String getMultiplierString() {
-            String result = "";
-            switch (this) {
-                case Black: result = "x1 "; break;
-                case Brown: result =  "x10 "; break;
-                case Red: result =  "x100 "; break;
-                case Orange: result =  "x1 k"; break;
-                case Yellow: result =  "x10 k"; break;
-                case Green: result =  "x100 k"; break;
-                case Blue: result =  "x1 M"; break;
-                case Violet: result =  "x10 M"; break;
-                case Gray: result =  "x100 M"; break;
-                case White: result =  "x1 G"; break;
-                case Gold: result =  "x0.1 "; break;
-                case Silver: result =  "x0.01 "; break;
-            }
-            return result + ValueUnits.R.toString();
-        }
-
         public static ResistorBandValue valueBandFromValue(int value) {
             switch (value) {
                 case 0: return Black;
@@ -641,6 +626,49 @@ public class Statics {
                 }
             }
             return values;
+        }
+    }
+
+    public enum CreatedPcbLinkState {
+
+        Ok (imageResource.readImage("Actions.SaveOk"), "Ok", Color.BLACK),
+        Warning(imageResource.readImage("Actions.SaveWarn"), "", Color.ORANGE),
+        Error(imageResource.readImage("Actions.SaveError"), "", Color.RED),
+        NotSaved(imageResource.readImage("Actions.SaveRed"), "Not saved..", Color.GRAY)
+        ;
+
+        private final ImageIcon imageIcon;
+        private final Color messageColor;
+        private final List<String> messages;
+        CreatedPcbLinkState(ImageIcon imageIcon, String defaultMessage, Color messageColor) {
+            this.imageIcon = imageIcon;
+            this.messages = new ArrayList<>();
+            this.messageColor = messageColor;
+            if (!defaultMessage.isEmpty()) {
+                messages.add(defaultMessage);
+            }
+        }
+
+        public ImageIcon getImageIcon() {
+            return imageIcon;
+        }
+
+        public Color getMessageColor() {
+            return messageColor;
+        }
+
+        public List<String> getMessages() {
+            return messages;
+        }
+
+        public void clearMessages() {
+            messages.clear();
+        }
+
+        public void addMessage(String message) {
+            if (message != null && !message.isEmpty() && !messages.contains(message)) {
+                messages.add(message);
+            }
         }
     }
 }

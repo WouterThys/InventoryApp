@@ -205,7 +205,7 @@ class OrderPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
         List<PcbItemProjectLink> linkedItems = new ArrayList<>();
         List<Long> containedItems = new ArrayList<>();
 
-        for (PcbItemProjectLink link : pcb.getPcbItemMap()) {
+        for (PcbItemProjectLink link : pcb.getPcbItemList()) {
             if (link.hasMatchedItem()) {
                 if (!containedItems.contains(link.getPcbItemItemLink().getItemId())) {
                     linkedItems.add(link);

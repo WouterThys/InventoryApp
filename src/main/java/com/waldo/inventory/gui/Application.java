@@ -57,8 +57,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Resource manager
         try {
             imageResource = new ResourceManager("settings/", "Icons.properties");
-            ResourceManager stringResource = new ResourceManager("settings/", "Strings.properties");
-            scriptResource = new ResourceManager("db/scripts/", "scripts.properties");
+            scriptResource = new ResourceManager("settings/", "Scripts.properties");
             colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
             LOG.error("Error initializing resources.", e);
