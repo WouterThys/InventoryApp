@@ -64,6 +64,8 @@ public class CreatePcbDialog extends CreatePcbDialogLayout implements CacheChang
             JOptionPane.showMessageDialog(CreatePcbDialog.this, "Selected a PCB", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        super.onOK();
         EditCreatedPcbLinksDialog dialog = new EditCreatedPcbLinksDialog(
                 parent,
                 "Edit pcb",
@@ -71,7 +73,5 @@ public class CreatePcbDialog extends CreatePcbDialogLayout implements CacheChang
                 createdPcb
         );
         dialog.showDialog();
-
-        super.onOK();
     }
 }

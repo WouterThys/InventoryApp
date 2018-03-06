@@ -15,6 +15,9 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -34,7 +37,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     private ITextField projectPcbTf;
     private ITextField pcbNameTf;
     private ITextField pcbDateTf;
-    private ILabel pcbImageLbl;
+    ILabel pcbImageLbl;
 
 
     // Link panel
@@ -61,7 +64,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectPcb projectPcb;
-    private CreatedPcb createdPcb;
+    CreatedPcb createdPcb;
 
     private CreatedPcbLink selectedLink;
 
@@ -78,6 +81,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    abstract void onImageIconDoubleClicked(CreatedPcb createdPcb, ILabel imageLabel);
     abstract void onAutoCalculateUsed(CreatedPcbLink link);
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
@@ -127,6 +131,17 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         if (createdPcb != null) {
             pcbNameTf.setText(createdPcb.toString());
             pcbDateTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
+            if (!createdPcb.getIconPath().isEmpty()) {
+                Path path = Paths.get(createdPcb.getIconPath());
+                try {
+                    URL url = path.toUri().toURL();
+                    pcbImageLbl.setIcon(imageResource.readImage(url));
+                } catch (Exception e) {
+                    //
+                }
+            } else {
+                pcbImageLbl.setIcon(null);
+            }
         } else {
             pcbNameTf.setText("");
         }
@@ -249,6 +264,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     @Override
     public void initializeComponents() {
         setResizable(true);
+        setModal(false);
         setTitleName(getTitle());
         if (projectPcb != null && projectPcb.getProject() != null && !projectPcb.getProject().getIconPath().isEmpty()) {
             Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), projectPcb.getProject().getIconPath());
@@ -263,8 +279,16 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         pcbNameTf = new ITextField(false);
         pcbDateTf = new ITextField(false);
         pcbImageLbl = new ILabel();
-        pcbImageLbl.setPreferredSize(new Dimension(100, 60));
+        pcbImageLbl.setPreferredSize(new Dimension(200, 90));
         pcbImageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 2));
+        pcbImageLbl.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    onImageIconDoubleClicked(createdPcb, pcbImageLbl);
+                }
+            }
+        });
 
         tableModel = new ICreatedPcbTableModel();
         createdPcbTable = new ITable<>(tableModel);

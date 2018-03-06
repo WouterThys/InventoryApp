@@ -7,14 +7,21 @@ import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
+import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink> {
 
@@ -316,6 +323,27 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 createdPcb.setDateCreated((Date)null);
                 createdPcb.save();
                 updateComponents();
+            }
+        }
+    }
+
+    @Override
+    void onImageIconDoubleClicked(CreatedPcb createdPcb, ILabel imageLabel) {
+        JFileChooser fileChooser = ImageFileChooser.getFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        if (fileChooser.showDialog(parent, "Open") == JFileChooser.APPROVE_OPTION) {
+            String iconPath = fileChooser.getSelectedFile().getPath();
+            if (!iconPath.isEmpty()) {
+                createdPcb.setIconPath(iconPath);
+                createdPcb.save();
+                try {
+                    Path path = Paths.get(createdPcb.getIconPath());
+                    URL url = path.toUri().toURL();
+                    pcbImageLbl.setIcon(imageResource.readImage(url));
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
             }
         }
     }

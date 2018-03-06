@@ -233,6 +233,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
     public void initializeComponents() {
         // Dialog
         setResizable(true);
+        setModal(false);
         setTitleIcon(imageResource.readImage("Projects.Pcb.Title"));
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);
