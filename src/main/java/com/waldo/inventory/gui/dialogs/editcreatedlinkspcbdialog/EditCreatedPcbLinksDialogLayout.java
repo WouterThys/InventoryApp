@@ -1,11 +1,13 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
+import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbTableModel;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
@@ -36,21 +38,25 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     private ITextField pcbDateTf;
     private ILabel pcbImageLbl;
 
+
     // Link panel
     private ILabel stateLbl;
     private ITextField pcbItemTf;
     private ITextField linkedItemTf;
     private ITextField usedItemTf;
-
     private SpinnerNumberModel usedAmountSpModel;
     ISpinner usedAmountSp;
+    private ITextPane remarksTp;
+
+    // Actions
     private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
-
     private IActions.SaveAction saveAllAction;
-
     private IActions.EditAction editItemAction;
     private IActions.SearchAction searchUsedItemAction;
     private IActions.DeleteAction deleteUsedItemAction;
+    private IActions.UseAction createPcbAction;
+    private AbstractAction editRemarksAa;
+    private IActions.WizardAction wizardAction;
 
     /*
      *                  VARIABLES
@@ -78,26 +84,30 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
     abstract void onDeleteUsedItem(CreatedPcbLink link);
-    abstract void onSaveAllAction(CreatedPcb createdPcb);
+    abstract void onSaveAll(CreatedPcb createdPcb);
+    abstract void onCreatePcb(CreatedPcb createdPcb);
+    abstract void onEditRemark(CreatedPcbLink link);
+    abstract void onMagicWizard(CreatedPcb createdPcb);
 
     void updateEnabledComponents() {
         boolean enabled = selectedLink != null;
         boolean hasLink = enabled && selectedLink.getPcbItemItemLink() != null;
         boolean hasUsed = enabled && selectedLink.getUsedItemId() > DbObject.UNKNOWN_ID;
+        boolean isCreated = createdPcb != null && createdPcb.isCreated();
 
         editItemAction.setEnabled(hasLink);
-        searchUsedItemAction.setEnabled(enabled);
-        deleteUsedItemAction.setEnabled(hasUsed);
+        searchUsedItemAction.setEnabled(!isCreated && enabled);
+        deleteUsedItemAction.setEnabled(!isCreated && hasUsed);
 
-        autoCalculateUsedAction.setEnabled(hasUsed);
-        usedAmountSp.setEnabled(hasUsed);
+        autoCalculateUsedAction.setEnabled(!isCreated && hasUsed);
+        usedAmountSp.setEnabled(!isCreated && hasUsed);
+
+        createPcbAction.setEnabled(!isCreated);
+        editRemarksAa.setEnabled(enabled);
     }
 
-    void initTable() {
-        if (projectPcb != null && createdPcb != null) {
-            updateDisplayList(projectPcb, createdPcb);
-            tableModel.setItemList(displayList);
-        }
+    private void initTable() {
+        tableModel.setItemList(createdPcb.getCreatedPcbLinks());
     }
 
     void updateTable() {
@@ -112,7 +122,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         return selectedLink;
     }
 
-    void updateInfo(ProjectPcb projectPcb, CreatedPcb createdPcb, CreatedPcbLink link) {
+    private void updateInfo(ProjectPcb projectPcb, CreatedPcb createdPcb, CreatedPcbLink link) {
         if (projectPcb != null) {
             projectPcbTf.setText(projectPcb.toString());
         } else {
@@ -134,6 +144,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         usedAmountSp.setTheValue(0);
         stateLbl.setText(" ");
         stateLbl.setIcon(null);
+        remarksTp.setFile(null);
         if (link != null) {
             CreatedPcbLinkState state = link.getState();
             if (state != CreatedPcbLinkState.Ok) {
@@ -152,12 +163,10 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 if (builder != null) {
                     stateLbl.setText(builder.toString());
                 }
-            } else {
-                stateLbl.setText("");
-                stateLbl.setIcon(null);
             }
 
             usedAmountSp.setTheValue(link.getUsedAmount());
+            remarksTp.setFile(link.getRemarksFile());
 
             if (link.getPcbItemProjectLink() != null) {
                 pcbItemTf.setText(link.getPcbItemProjectLink().getPrettyName());
@@ -172,38 +181,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         }
     }
 
-    private void updateDisplayList(ProjectPcb projectPcb, CreatedPcb createdPcb) {
-        displayList.clear();
-        List<PcbItemProjectLink> pcbItemList = projectPcb.getPcbItemList();
-        List<CreatedPcbLink> createdPcbLinkList = new ArrayList<>(SearchManager.sm().findCreatedPcbLinks(projectPcb.getId(), createdPcb.getId()));
-
-        for (PcbItemProjectLink pipl : pcbItemList) {
-            CreatedPcbLink link = findPcbItem(createdPcbLinkList, pipl.getPcbItemId());
-            if (link != null) {
-                createdPcbLinkList.remove(link);
-            } else {
-                link = new CreatedPcbLink(pipl.getId(), createdPcb.getId(), 0);
-                if (pipl.getPcbItemItemLinkId() > DbObject.UNKNOWN_ID) {
-                    link.setUsedItemId(pipl.getPcbItemItemLink().getItemId());
-                }
-            }
-            displayList.add(link);
-        }
-    }
-
-    private CreatedPcbLink findPcbItem(List<CreatedPcbLink> searchList, long pcbItemId) {
-        for (CreatedPcbLink cpl : searchList) {
-            if (cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
-                if (cpl.getPcbItemProjectLink().getPcbItemId() == pcbItemId) {
-                    return cpl;
-                }
-            }
-        }
-        return null;
-    }
-
     private JPanel createHeaderPanel() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
 
         JPanel infoPnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
@@ -211,7 +190,15 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine("PCB name: ", pcbNameTf);
         gbc.addLine("Created: ", pcbDateTf);
 
-        panel.add(infoPnl, BorderLayout.CENTER);
+        JPanel mainPnl = new JPanel(new BorderLayout());
+        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, wizardAction, createPcbAction);
+        tb.setOrientation(JToolBar.VERTICAL);
+
+        mainPnl.add(infoPnl, BorderLayout.CENTER);
+        mainPnl.add(tb, BorderLayout.EAST);
+
+        panel.add(pcbImageLbl, BorderLayout.WEST);
+        panel.add(mainPnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
                 BorderFactory.createEmptyBorder(2,5,2,5)
@@ -235,13 +222,17 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine(usedItemLbl, GuiUtils.createComponentWithActions(usedItemTf, searchUsedItemAction, deleteUsedItemAction));
         gbc.addLine("Amount: ", GuiUtils.createComponentWithActions(usedAmountSp, autoCalculateUsedAction));
 
+        JPanel remarksPnl = new JPanel(new BorderLayout());
+        remarksPnl.add(GuiUtils.createNewToolbar(editRemarksAa), BorderLayout.NORTH);
+        remarksPnl.add(new JScrollPane(remarksTp), BorderLayout.CENTER);
+
         stateLbl.setBorder(BorderFactory.createEmptyBorder(3,5,3,5));
 
         infoPnl.add(stateLbl, BorderLayout.NORTH);
         infoPnl.add(pnl, BorderLayout.CENTER);
 
         panel.add(infoPnl, BorderLayout.NORTH);
-        panel.add(pcbImageLbl, BorderLayout.CENTER);
+        panel.add(remarksPnl, BorderLayout.CENTER);
 
         return panel;
     }
@@ -253,22 +244,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         scrollPane.setPreferredSize(new Dimension(600, 400));
 
         panel.add(scrollPane);
-
-        return panel;
-    }
-
-    private JPanel createPcbItemsHeader() {
-        JPanel panel = new JPanel(new BorderLayout());
-
-        ILabel nameLbl = new ILabel("PCB items: ");
-        JToolBar toolBar = GuiUtils.createNewToolbar(saveAllAction);
-
-        panel.add(nameLbl, BorderLayout.WEST);
-        panel.add(toolBar, BorderLayout.EAST);
-
-        panel.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-        panel.setBackground(Color.gray);
-        panel.setOpaque(true);
 
         return panel;
     }
@@ -293,7 +268,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         pcbNameTf = new ITextField(false);
         pcbDateTf = new ITextField(false);
         pcbImageLbl = new ILabel();
-        pcbImageLbl.setPreferredSize(new Dimension(150, 90));
+        pcbImageLbl.setPreferredSize(new Dimension(100, 60));
         pcbImageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 2));
 
         tableModel = new ICreatedPcbTableModel();
@@ -317,6 +292,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         usedAmountSpModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
         usedAmountSp = new ISpinner(usedAmountSpModel);
         usedAmountSp.addEditedListener(this, "usedAmount");
+
+        remarksTp = new ITextPane();
+        remarksTp.setEditable(false);
 
         autoCalculateUsedAction = new IActions.AutoCalculateUsedAction() {
             @Override
@@ -345,7 +323,29 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         saveAllAction = new IActions.SaveAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onSaveAllAction(createdPcb);
+                onSaveAll(createdPcb);
+            }
+        };
+        saveAllAction.setIcon(imageResource.readImage("Actions.M.Save"));
+        createPcbAction = new IActions.UseAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCreatePcb(createdPcb);
+            }
+        };
+        createPcbAction.setIcon(imageResource.readImage("Actions.M.Use"));
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditRemark(selectedLink);
+            }
+        };
+        editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
+        editRemarksAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit remarks");
+        wizardAction = new IActions.WizardAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onMagicWizard(createdPcb);
             }
         };
     }
@@ -357,13 +357,11 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         JPanel infoPanel = createInfoPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel pcbItemsPanel = createPcbItemsPanel();
-        JPanel pcbItemsHeader = createPcbItemsHeader();
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pcbItemsPanel, infoPanel);
         centerSplitPane.setOneTouchExpandable(true);
 
-        mainPanel.add(pcbItemsHeader, BorderLayout.PAGE_START);
         mainPanel.add(centerSplitPane, BorderLayout.CENTER);
 
         getContentPanel().add(headerPanel, BorderLayout.NORTH);

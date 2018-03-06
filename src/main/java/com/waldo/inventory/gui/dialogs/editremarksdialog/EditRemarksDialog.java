@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.editremarksdialog;
 
-import com.waldo.inventory.gui.Application;
 import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import java.io.ObjectOutputStream;
 public class EditRemarksDialog extends EditRemarksDialogLayout {
 
 
-    public EditRemarksDialog(Application application, String title, File file) {
-        super(application, title);
+    public EditRemarksDialog(Window window, String title, File file) {
+        super(window, title);
 
         initializeComponents();
         initializeLayouts();

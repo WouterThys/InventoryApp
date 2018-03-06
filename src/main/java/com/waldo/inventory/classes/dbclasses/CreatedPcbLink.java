@@ -3,7 +3,10 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.FileUtils;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,6 +28,9 @@ public class CreatedPcbLink  extends DbObject {
     private long usedItemId;
     private Item usedItem;
     private int usedAmount;
+
+    // Remarks
+    private String remarksFile;
 
 
     public CreatedPcbLink() {
@@ -57,6 +63,13 @@ public class CreatedPcbLink  extends DbObject {
         statement.setLong(ndx++, getCreatedPcbId());
         statement.setLong(ndx++, getUsedItemId());
         statement.setInt(ndx++, getUsedAmount());
+
+        SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
+        if (blob != null) {
+            statement.setBlob(ndx++, blob);
+        } else {
+            statement.setString(ndx++, null);
+        }
 
         return ndx;
     }
@@ -113,7 +126,7 @@ public class CreatedPcbLink  extends DbObject {
 
     public CreatedPcbLinkState getState() {
         CreatedPcbLinkState state;
-        if (getId() <= DbObject.UNKNOWN_ID) {
+        if (getId() < DbObject.UNKNOWN_ID) {
             state = CreatedPcbLinkState.NotSaved;
         } else {
             state = CreatedPcbLinkState.Ok;
@@ -156,7 +169,6 @@ public class CreatedPcbLink  extends DbObject {
         }
         return linkedItem;
     }
-
 
 
     public long getPcbItemProjectLinkId() {
@@ -220,5 +232,29 @@ public class CreatedPcbLink  extends DbObject {
 
     public void setUsedAmount(int usedAmount) {
         this.usedAmount = usedAmount;
+    }
+
+    public String createRemarksFileName() {
+        return getId() + "_CreadPcbLink_";
+    }
+
+    public File getRemarksFile() {
+        if (remarksFile != null && !remarksFile.isEmpty()) {
+            return new File(remarksFile);
+        }
+        return null;
+    }
+
+    String getRemarksFileName() {
+        if (remarksFile == null) {
+            remarksFile = "";
+        }
+        return remarksFile;
+    }
+
+    public void setRemarksFile(File remarksFile) {
+        if (remarksFile != null && remarksFile.exists()) {
+            this.remarksFile = remarksFile.getAbsolutePath();
+        }
     }
 }

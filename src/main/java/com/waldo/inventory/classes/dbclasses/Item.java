@@ -570,6 +570,9 @@ public class Item extends DbObject {
     }
 
     public void setAmount(int amount) {
+        if (amount < 0) {
+            amount = 0;
+        }
         this.amount = amount;
     }
 
