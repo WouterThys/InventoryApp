@@ -1,9 +1,10 @@
-package com.waldo.inventory.gui.dialogs.editcreatedpcbdialog;
+package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -11,12 +12,15 @@ import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
-public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
+public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink>{
 
 
-    public EditCreatedPcbDialog(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
+    public EditCreatedPcbLinksDialog(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
         super(window, title, projectPcb, createdPcb);
+
+        addCacheListener(CreatedPcbLink.class, this);
 
         initializeComponents();
         initializeLayouts();
@@ -24,10 +28,41 @@ public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
 
     }
 
+    //
+    // Cache listener
+    //
+    @Override
+    public void onInserted(CreatedPcbLink link) {
+        //updateLinkInfo(link);
+        updateTable();
+    }
+
+    @Override
+    public void onUpdated(CreatedPcbLink link) {
+        //updateLinkInfo(link);
+        updateTable();
+    }
+
+    @Override
+    public void onDeleted(CreatedPcbLink link) {
+        // Should not happen
+    }
+
+    @Override
+    public void onCacheCleared() {
+        // Don't care
+    }
+
+    //
+    // Gui events
+    //
     @Override
     void onSaveAllAction(CreatedPcb createdPcb) {
-        if (createdPcb != null) {
-
+        List<CreatedPcbLink> linkList = getDisplayList();
+        if (linkList != null && linkList.size() > 0) {
+            for (CreatedPcbLink link : linkList) {
+                link.save();
+            }
         }
     }
 
@@ -42,7 +77,7 @@ public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
     @Override
     void onEditItem(CreatedPcbLink link) {
         if (link != null && link.getPcbItemItemLink() != null) {
-            EditItemDialog dialog = new EditItemDialog<>(EditCreatedPcbDialog.this, "Item", link.getPcbItemItemLink().getItem());
+            EditItemDialog dialog = new EditItemDialog<>(EditCreatedPcbLinksDialog.this, "Item", link.getPcbItemItemLink().getItem());
             dialog.showDialog();
         }
     }
@@ -51,7 +86,7 @@ public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
     void onSearchUsedItem(CreatedPcbLink link) {
         if (link != null) {
             AdvancedSearchDialog dialog = new AdvancedSearchDialog(
-                    EditCreatedPcbDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Search",
                     SearchType.PcbItem,
                     link.getPcbItemProjectLink());
@@ -71,7 +106,7 @@ public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
     void onDeleteUsedItem(CreatedPcbLink link) {
         if (link != null) {
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Delete used item " + link.getUsedItem() + " from PCB?",
                     "Delete",
                     JOptionPane.YES_NO_OPTION,
@@ -84,5 +119,21 @@ public class EditCreatedPcbDialog extends EditCreatedPcbDialogLayout {
                 updateTable();
             }
         }
+    }
+
+    //
+    // Edited
+    //
+    @Override
+    public void onValueChanged(Component component, String s, Object o, Object o1) {
+        updateTable();
+    }
+
+    @Override
+    public Object getGuiObject() {
+        if (isShown) {
+            return getSelectedLink();
+        }
+        return null;
     }
 }

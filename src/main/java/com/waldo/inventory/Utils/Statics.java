@@ -666,7 +666,7 @@ public class Statics {
         }
 
         public void addMessage(String message) {
-            if (message != null && !message.isEmpty() && !message.contains(message)) {
+            if (message != null && !message.isEmpty() && !messages.contains(message)) {
                 messages.add(message);
             }
         }

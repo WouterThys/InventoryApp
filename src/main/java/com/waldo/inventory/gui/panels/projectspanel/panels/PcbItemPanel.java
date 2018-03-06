@@ -1,12 +1,11 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
-import com.waldo.inventory.gui.dialogs.editcreatedpcbdialog.EditCreatedPcbDialog;
+import com.waldo.inventory.gui.dialogs.createpcbdialog.CreatePcbDialog;
 import com.waldo.inventory.gui.dialogs.kicadparserdialog.PcbItemSheetTab;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.LinkPcbItemDialog;
 import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
@@ -227,8 +226,17 @@ public class PcbItemPanel extends JPanel implements
     }
 
     private void onUsed() {
-        EditCreatedPcbDialog dialog = new EditCreatedPcbDialog(application, "Created PCB", projectPcb, new CreatedPcb());
-        dialog.showDialog();
+        if (projectPcb != null) {
+            CreatePcbDialog dialog = new CreatePcbDialog(application, "PCB", projectPcb);
+            dialog.showDialog();
+        } else {
+            JOptionPane.showMessageDialog(
+                    application,
+                    "No project pcb selected..",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     private void onParse() {

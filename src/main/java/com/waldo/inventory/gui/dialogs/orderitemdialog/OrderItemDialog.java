@@ -16,12 +16,11 @@ import java.util.List;
 
 public class OrderItemDialog extends OrderItemDialogLayout implements CacheChangedListener<Order> {
 
-
     private final Application application;
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
-    private boolean orderList = false;
-    private boolean createOnConfirm = true;
+    private boolean orderList;
+    private boolean createOnConfirm;
 
     public OrderItemDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
         super(parent, title, pendingOption);

@@ -119,7 +119,7 @@ abstract class OrderItemDialogLayout extends IDialog {
         DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>(orders);
         orderCb.setModel(orderCbModel);
         if (object.length != 0 && object[0] != null) {
-            orderCb.setSelectedItem(object);
+            orderCb.setSelectedItem(object[0]);
         }
     }
 }

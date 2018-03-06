@@ -439,6 +439,18 @@ public class SearchManager {
         return null;
     }
 
+    public List<CreatedPcb> findCreatedPcbsByForProjectPcb(long projectPcbId) {
+        List<CreatedPcb> createdPcbList = new ArrayList<>();
+        if (projectPcbId > 0) {
+            for (CreatedPcb cp : cache().getCreatedPcbs()) {
+                if (cp.getProjectPcbId() == projectPcbId) {
+                    createdPcbList.add(cp);
+                }
+            }
+        }
+        return createdPcbList;
+    }
+
     public List<Item> findUsedItemsByCreatedPcbId(long createdPcbId) {
         List<Item> items = new ArrayList<>();
         if (createdPcbId > 0) {

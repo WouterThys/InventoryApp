@@ -26,9 +26,6 @@ public class CreatedPcbLink  extends DbObject {
     private Item usedItem;
     private int usedAmount;
 
-    // State
-    private CreatedPcbLinkState state = CreatedPcbLinkState.NotSaved;
-
 
     public CreatedPcbLink() {
         super(TABLE_NAME);
@@ -115,17 +112,35 @@ public class CreatedPcbLink  extends DbObject {
 
 
     public CreatedPcbLinkState getState() {
+        CreatedPcbLinkState state;
         if (getId() <= DbObject.UNKNOWN_ID) {
             state = CreatedPcbLinkState.NotSaved;
         } else {
             state = CreatedPcbLinkState.Ok;
             if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
                 state = CreatedPcbLinkState.Error;
+                state.clearMessages();
                 state.addMessage("No project found..");
+            } else {
+                if (getPcbItemProjectLink().getPcbItemId() <= DbObject.UNKNOWN_ID) {
+                    state = CreatedPcbLinkState.Warning;
+                    state.addMessage("No PCB item..");
+                }
+                if (getPcbItemItemLink() == null) {
+                    if (state != CreatedPcbLinkState.Warning) {
+                        state = CreatedPcbLinkState.Warning;
+                        state.clearMessages();
+                    }
+                    state.addMessage("No linked item..");
+                }
             }
+
             if (usedItemId <= DbObject.UNKNOWN_ID) {
-                state = CreatedPcbLinkState.Warning;
-                state.addMessage("No used item");
+                if (state != CreatedPcbLinkState.Warning) {
+                    state = CreatedPcbLinkState.Warning;
+                    state.clearMessages();
+                }
+                state.addMessage("No used item..");
             }
             // TODO..
         }

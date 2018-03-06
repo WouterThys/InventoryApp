@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.editcreatedpcbdialog;
+package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.classes.dbclasses.*;
@@ -8,10 +8,7 @@ import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbTableModel;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ISpinner;
-import com.waldo.utils.icomponents.ITable;
-import com.waldo.utils.icomponents.ITextField;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +22,7 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
-abstract class EditCreatedPcbDialogLayout extends IDialog {
+abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEditedListener {
 
     /*
      *                  COMPONENTS
@@ -67,7 +64,7 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditCreatedPcbDialogLayout(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
+    EditCreatedPcbLinksDialogLayout(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
         super(window, title);
 
         this.projectPcb = projectPcb;
@@ -92,7 +89,7 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
         searchUsedItemAction.setEnabled(enabled);
         deleteUsedItemAction.setEnabled(hasUsed);
 
-        autoCalculateUsedAction.setEnabled(enabled);
+        autoCalculateUsedAction.setEnabled(hasUsed);
         usedAmountSp.setEnabled(hasUsed);
     }
 
@@ -105,6 +102,14 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
 
     void updateTable() {
         tableModel.updateTable();
+    }
+
+    List<CreatedPcbLink> getDisplayList() {
+        return displayList;
+    }
+
+    CreatedPcbLink getSelectedLink() {
+        return selectedLink;
     }
 
     void updateInfo(ProjectPcb projectPcb, CreatedPcb createdPcb, CreatedPcbLink link) {
@@ -131,21 +136,28 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
         stateLbl.setIcon(null);
         if (link != null) {
             CreatedPcbLinkState state = link.getState();
-            stateLbl.setIcon(state.getImageIcon());
-            stateLbl.setForeground(state.getMessageColor());
-            StringBuilder builder = null;
-            boolean first = true;
-            for (String m : state.getMessages()) {
-                if (first) {
-                    builder = new StringBuilder(m);
-                    first = false;
-                } else {
-                    builder.append(", ").append(m);
+            if (state != CreatedPcbLinkState.Ok) {
+                stateLbl.setIcon(state.getImageIcon());
+                stateLbl.setForeground(state.getMessageColor());
+                StringBuilder builder = null;
+                boolean first = true;
+                for (String m : state.getMessages()) {
+                    if (first) {
+                        builder = new StringBuilder(m);
+                        first = false;
+                    } else {
+                        builder.append(", ").append(m);
+                    }
                 }
+                if (builder != null) {
+                    stateLbl.setText(builder.toString());
+                }
+            } else {
+                stateLbl.setText("");
+                stateLbl.setIcon(null);
             }
-            if (builder != null) {
-                stateLbl.setText(builder.toString());
-            }
+
+            usedAmountSp.setTheValue(link.getUsedAmount());
 
             if (link.getPcbItemProjectLink() != null) {
                 pcbItemTf.setText(link.getPcbItemProjectLink().getPrettyName());
@@ -157,8 +169,6 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
             if (link.getUsedItem() != null) {
                 usedItemTf.setText(link.getUsedItem().toString());
             }
-
-            usedAmountSp.setTheValue(link.getUsedAmount());
         }
     }
 
@@ -306,6 +316,8 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
 
         usedAmountSpModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
         usedAmountSp = new ISpinner(usedAmountSpModel);
+        usedAmountSp.addEditedListener(this, "usedAmount");
+
         autoCalculateUsedAction = new IActions.AutoCalculateUsedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -366,5 +378,6 @@ abstract class EditCreatedPcbDialogLayout extends IDialog {
 
         updateInfo(projectPcb, createdPcb, selectedLink);
         updateEnabledComponents();
+        createdPcbTable.resizeColumns();
     }
 }

@@ -26,6 +26,15 @@ public class CreatedPcb extends DbObject {
         super(TABLE_NAME);
     }
 
+    public CreatedPcb(String name, ProjectPcb projectPcb) {
+        this();
+        setName(name);
+        this.projectPcb = projectPcb;
+        if (projectPcb != null) {
+            this.projectPcbId = projectPcb.getId();
+        }
+    }
+
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
