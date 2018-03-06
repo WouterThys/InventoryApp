@@ -287,5 +287,15 @@ public class IActions {
         }
     }
 
+    public static abstract class RemoveAllAction extends IAbstractAction {
+        protected RemoveAllAction() {
+            super("Remove all", imageResource.readImage("Actions.M.RemoveAll"));
+        }
+        protected RemoveAllAction(ImageIcon icon) {
+            super("Remove all", icon);
+            setTooltip("Remove all");
+        }
+    }
+
 
 }

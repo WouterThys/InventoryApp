@@ -183,7 +183,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
                 updateEnabledComponents();
             }
         };
-        remAllAa = new AbstractAction("RemAll", imageResource.readImage("Projects.Order.RemAll")) {
+        remAllAa = new AbstractAction("RemAll", imageResource.readImage("Actions.RemoveAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRemAll();

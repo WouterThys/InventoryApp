@@ -17,8 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -57,13 +55,13 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     private IActions.UseAction createPcbAction;
     private AbstractAction editRemarksAa;
     private IActions.WizardAction wizardAction;
+    private IActions.RemoveAllAction removeAllAction;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectPcb projectPcb;
     private CreatedPcb createdPcb;
-    private List<CreatedPcbLink> displayList = new ArrayList<>();
 
     private CreatedPcbLink selectedLink;
 
@@ -88,6 +86,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     abstract void onCreatePcb(CreatedPcb createdPcb);
     abstract void onEditRemark(CreatedPcbLink link);
     abstract void onMagicWizard(CreatedPcb createdPcb);
+    abstract void onRemoveAll(CreatedPcb createdPcb);
 
     void updateEnabledComponents() {
         boolean enabled = selectedLink != null;
@@ -100,10 +99,11 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         deleteUsedItemAction.setEnabled(!isCreated && hasUsed);
 
         autoCalculateUsedAction.setEnabled(!isCreated && hasUsed);
-        usedAmountSp.setEnabled(!isCreated && hasUsed);
+        usedAmountSp.setEnabled(!isCreated && hasLink);
 
         createPcbAction.setEnabled(!isCreated);
         editRemarksAa.setEnabled(enabled);
+        removeAllAction.setEnabled(isCreated);
     }
 
     private void initTable() {
@@ -112,10 +112,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
 
     void updateTable() {
         tableModel.updateTable();
-    }
-
-    List<CreatedPcbLink> getDisplayList() {
-        return displayList;
     }
 
     CreatedPcbLink getSelectedLink() {
@@ -191,11 +187,10 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine("Created: ", pcbDateTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
-        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, wizardAction, createPcbAction);
-        tb.setOrientation(JToolBar.VERTICAL);
+        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, removeAllAction, wizardAction, createPcbAction);
 
         mainPnl.add(infoPnl, BorderLayout.CENTER);
-        mainPnl.add(tb, BorderLayout.EAST);
+        mainPnl.add(tb, BorderLayout.PAGE_START);
 
         panel.add(pcbImageLbl, BorderLayout.WEST);
         panel.add(mainPnl, BorderLayout.CENTER);
@@ -346,6 +341,13 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             @Override
             public void actionPerformed(ActionEvent e) {
                 onMagicWizard(createdPcb);
+            }
+        };
+        wizardAction.setIcon(imageResource.readImage("Actions.M.Wizard"));
+        removeAllAction = new IActions.RemoveAllAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onRemoveAll(createdPcb);
             }
         };
     }

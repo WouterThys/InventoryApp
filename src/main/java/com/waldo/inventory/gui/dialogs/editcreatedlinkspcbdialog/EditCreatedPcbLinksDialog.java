@@ -12,6 +12,8 @@ import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink> {
@@ -75,7 +77,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     pcb.setDateCreated(DateUtils.now());
                     pcb.save();
 
-                    updateEnabledComponents();
+                    updateComponents();
                 }
             }
         }
@@ -145,10 +147,17 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     //
     @Override
     void onSaveAll(CreatedPcb createdPcb) {
-        List<CreatedPcbLink> linkList = getDisplayList();
-        if (linkList != null && linkList.size() > 0) {
-            for (CreatedPcbLink link : linkList) {
-                link.save();
+        if (createdPcb != null) {
+            List<CreatedPcbLink> linkList = createdPcb.getCreatedPcbLinks();
+            if (linkList != null && linkList.size() > 0) {
+                for (CreatedPcbLink link : linkList) {
+                    link.save();
+                }
+
+                JOptionPane.showMessageDialog(
+                        parent,
+                        "Saved!"
+                );
             }
         }
     }
@@ -184,6 +193,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     link.setUsedItemId(newUsedItem.getId());
                 }
                 updateLinkInfo(link);
+                updateEnabledComponents();
                 updateTable();
             }
         }
@@ -203,6 +213,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
             if (res == JOptionPane.YES_OPTION) {
                 link.setUsedItemId(0);
                 updateLinkInfo(link);
+                updateEnabledComponents();
                 updateTable();
             }
         }
@@ -236,8 +247,76 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 );
                 return;
             }
+            JCheckBox usedItemsCb = new JCheckBox("Fill in all used items from linked items ", true);
+            JCheckBox usedAmountCb = new JCheckBox("Enter all used amounts from PCB references ", true);
+            String message = "Select options, this will overwrite all the previously selected work..";
+            Object[] params = {message, usedItemsCb, usedAmountCb};
+            int res = JOptionPane.showConfirmDialog(
+                    EditCreatedPcbLinksDialog.this,
+                    params,
+                    "Wizzard options",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (res == JOptionPane.OK_OPTION) {
+                if (usedItemsCb.isSelected()) {
+                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
+                        if (cpl.getUsedItemId() <= DbObject.UNKNOWN_ID) {
+                            PcbItemItemLink itemItemLink = cpl.getPcbItemItemLink();
+                            if (itemItemLink != null) {
+                                cpl.setUsedItemId(itemItemLink.getItemId());
+                            }
+                        }
+                    }
+                }
 
-            lkjh
+                if (usedAmountCb.isSelected()) {
+                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
+                        Item usedItem = cpl.getUsedItem();
+                        if (usedItem != null && cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
+                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfItems()));
+                        }
+                    }
+                }
+
+                JOptionPane.showMessageDialog(
+                        EditCreatedPcbLinksDialog.this,
+                        "Done!",
+                        "Done",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                updateComponents();
+            }
+        }
+    }
+
+    @Override
+    void onRemoveAll(CreatedPcb createdPcb) {
+        if (createdPcb != null && createdPcb.isCreated()) {
+
+            JCheckBox setBackAmountCb = new JCheckBox("Add used amounts back to item amount ");
+            String message = "This will remove all used items and set the used items back to zero, all data will be removed from the database.";
+            Object[] params = {message, setBackAmountCb};
+            int res = JOptionPane.showConfirmDialog(
+                    EditCreatedPcbLinksDialog.this,
+                    params,
+                    "Remove",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (res == JOptionPane.OK_OPTION) {
+                boolean setBackAmount = setBackAmountCb.isSelected();
+                List<CreatedPcbLink> toDelete = new ArrayList<>(createdPcb.getCreatedPcbLinks());
+                for (CreatedPcbLink cpl : toDelete) {
+                    if (setBackAmount && cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
+                        Item usedItem = cpl.getUsedItem();
+                        usedItem.setAmount(usedItem.getAmount() + cpl.getUsedAmount());
+                        usedItem.save();
+                    }
+                    cpl.delete();
+                }
+                createdPcb.updateCreatedPcbLinks();
+                createdPcb.setDateCreated((Date)null);
+                createdPcb.save();
+                updateComponents();
+            }
         }
     }
 
