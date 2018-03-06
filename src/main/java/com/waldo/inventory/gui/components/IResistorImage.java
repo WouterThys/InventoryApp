@@ -1,12 +1,18 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Resistor;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.IPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IResistorImage extends JPanel {
+public class IResistorImage extends IPanel {
 
     private final static double X_SCALE = 0.375;
     private final static double Y_SCALE = 0.236;
@@ -27,6 +33,62 @@ public class IResistorImage extends JPanel {
     private final ResistorBand multiplierBand = new ResistorBand();
     private final ResistorBand toleranceBand = new ResistorBand();
     private final ResistorBand ppmBand = new ResistorBand();
+
+    private final int originalWidth = resistorTemplate.getWidth();
+    private final int originalHeight = resistorTemplate.getHeight();
+
+    private Resistor resistor;
+
+    public IResistorImage(Resistor resistor) {
+        this.resistor = resistor;
+    }
+
+    public int getOriginalHeight() {
+        return originalHeight;
+    }
+
+    public int getOriginalWidth() {
+        return originalWidth;
+    }
+
+    public JPanel createPrintablePanel() {
+        BufferedImage resistorImage = GuiUtils.resizeImage(GuiUtils.imageFromPanel(this), 80, 36);
+
+        ILabel valueLbl = new ILabel(resistor.getValue().toString(), SwingConstants.CENTER);
+        ILabel imageLbl = new ILabel(new ImageIcon(resistorImage), SwingConstants.CENTER);
+        ILabel smdLbl = new ILabel("2R2", SwingConstants.CENTER);
+
+        valueLbl.setFont(26, Font.BOLD);
+        smdLbl.setFont(18);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(valueLbl, BorderLayout.CENTER);
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(imageLbl, BorderLayout.CENTER);
+        centerPanel.add(smdLbl, BorderLayout.EAST);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(topPanel, BorderLayout.NORTH);
+        panel.add(centerPanel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    @Override
+    public void initializeComponents() {
+
+    }
+
+    @Override
+    public void initializeLayouts() {
+
+    }
+
+    @Override
+    public void updateComponents(Object... objects) {
+        repaint();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -51,11 +113,13 @@ public class IResistorImage extends JPanel {
             multiplierBand.init(x + (int)(3.5*s), y, w, h);
             toleranceBand.init(xt, yt, w, ht);
 
-            band1.addToGraphics(g2d, Color.YELLOW);
-            band2.addToGraphics(g2d, Color.MAGENTA);
-            band3.addToGraphics(g2d, Color.BLUE);
-            multiplierBand.addToGraphics(g2d, Color.RED);
-            toleranceBand.addToGraphics(g2d, Color.LIGHT_GRAY);
+            band1.addToGraphics(g2d, resistor.getFirstBand().getColor());
+            band2.addToGraphics(g2d, resistor.getSecondBand().getColor());
+            if (!resistor.getBandType().equals(Statics.ResistorBandType.FourBand)) {
+                band3.addToGraphics(g2d, resistor.getThirdBand().getColor());
+            }
+            multiplierBand.addToGraphics(g2d, resistor.getMultiplierBand().getColor());
+            toleranceBand.addToGraphics(g2d, resistor.getToleranceBand().getColor());
         }
     }
 

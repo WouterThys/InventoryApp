@@ -1,7 +1,6 @@
 package com.waldo.inventory.Utils;
 
-import javafx.scene.paint.Color;
-
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -501,18 +500,18 @@ public class Statics {
     }
 
     public enum ResistorBandValue {
-        Black  (0,  -1, -1, Color.rgb(0, 0, 0)),
-        Brown  (1,   1,100, Color.rgb(127, 78, 15)),
-        Red    (2,   2, 50, Color.rgb(255, 0, 0)),
-        Orange (3,  -1, 15, Color.rgb(255, 144, 0)),
-        Yellow (4,  -1, 25, Color.rgb(255, 255, 0)),
-        Green  (5, 0.5, -1, Color.rgb(20,200,20)),
-        Blue   (6,0.25, 10, Color.rgb(0, 0, 255)),
-        Violet (7, 0.1,  5, Color.rgb(150, 0, 255)),
-        Gray   (8,0.05, -1, Color.rgb(125, 125, 125)),
-        White  (9,  -1, -1, Color.rgb(255, 255, 255)),
-        Gold  (-1,   5, -1, Color.rgb(244, 212, 48)),
-        Silver(-2,  10, -1, Color.rgb(191, 191, 191));
+        Black  (0,  -1, -1, new Color(0, 0, 0)),
+        Brown  (1,   1,100, new Color(127, 78, 15)),
+        Red    (2,   2, 50, new Color(255, 0, 0)),
+        Orange (3,  -1, 15, new Color(255, 144, 0)),
+        Yellow (4,  -1, 25, new Color(255, 255, 0)),
+        Green  (5, 0.5, -1, new Color(20,200,20)),
+        Blue   (6,0.25, 10, new Color(0, 0, 255)),
+        Violet (7, 0.1,  5, new Color(150, 0, 255)),
+        Gray   (8,0.05, -1, new Color(125, 125, 125)),
+        White  (9,  -1, -1, new Color(255, 255, 255)),
+        Gold  (-1,   5, -1, new Color(244, 212, 48)),
+        Silver(-2,  10, -1, new Color(191, 191, 191));
 
         private final int value;
         private final double tolerance;
@@ -541,6 +540,25 @@ public class Statics {
 
         public Color getColor() {
             return color;
+        }
+
+        public String getMultiplierString() {
+            String result = "";
+            switch (this) {
+                case Black: result = "x1 "; break;
+                case Brown: result =  "x10 "; break;
+                case Red: result =  "x100 "; break;
+                case Orange: result =  "x1 k"; break;
+                case Yellow: result =  "x10 k"; break;
+                case Green: result =  "x100 k"; break;
+                case Blue: result =  "x1 M"; break;
+                case Violet: result =  "x10 M"; break;
+                case Gray: result =  "x100 M"; break;
+                case White: result =  "x1 G"; break;
+                case Gold: result =  "x0.1 "; break;
+                case Silver: result =  "x0.01 "; break;
+            }
+            return result + ValueUnits.R.toString();
         }
 
         public static ResistorBandValue valueBandFromValue(int value) {
