@@ -1,9 +1,12 @@
 package com.waldo.inventory.Utils;
 
-import javafx.scene.paint.Color;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class Statics {
 
@@ -501,18 +504,18 @@ public class Statics {
     }
 
     public enum ResistorBandValue {
-        Black  (0,  -1, -1, Color.rgb(0, 0, 0)),
-        Brown  (1,   1,100, Color.rgb(127, 78, 15)),
-        Red    (2,   2, 50, Color.rgb(255, 0, 0)),
-        Orange (3,  -1, 15, Color.rgb(255, 144, 0)),
-        Yellow (4,  -1, 25, Color.rgb(255, 255, 0)),
-        Green  (5, 0.5, -1, Color.rgb(20,200,20)),
-        Blue   (6,0.25, 10, Color.rgb(0, 0, 255)),
-        Violet (7, 0.1,  5, Color.rgb(150, 0, 255)),
-        Gray   (8,0.05, -1, Color.rgb(125, 125, 125)),
-        White  (9,  -1, -1, Color.rgb(255, 255, 255)),
-        Gold  (-1,   5, -1, Color.rgb(244, 212, 48)),
-        Silver(-2,  10, -1, Color.rgb(191, 191, 191));
+        Black  (0,  -1, -1, new Color(0, 0, 0)),
+        Brown  (1,   1,100, new Color(127, 78, 15)),
+        Red    (2,   2, 50, new Color(255, 0, 0)),
+        Orange (3,  -1, 15, new Color(255, 144, 0)),
+        Yellow (4,  -1, 25, new Color(255, 255, 0)),
+        Green  (5, 0.5, -1, new Color(20,200,20)),
+        Blue   (6,0.25, 10, new Color(0, 0, 255)),
+        Violet (7, 0.1,  5, new Color(150, 0, 255)),
+        Gray   (8,0.05, -1, new Color(125, 125, 125)),
+        White  (9,  -1, -1, new Color(255, 255, 255)),
+        Gold  (-1,   5, -1, new Color(244, 212, 48)),
+        Silver(-2,  10, -1, new Color(191, 191, 191));
 
         private final int value;
         private final double tolerance;
@@ -623,6 +626,49 @@ public class Statics {
                 }
             }
             return values;
+        }
+    }
+
+    public enum CreatedPcbLinkState {
+
+        Ok (imageResource.readImage("Actions.SaveOk"), "Ok", Color.BLACK),
+        Warning(imageResource.readImage("Actions.SaveWarn"), "", Color.ORANGE),
+        Error(imageResource.readImage("Actions.SaveError"), "", Color.RED),
+        NotSaved(imageResource.readImage("Actions.SaveRed"), "Not saved..", Color.GRAY)
+        ;
+
+        private final ImageIcon imageIcon;
+        private final Color messageColor;
+        private final List<String> messages;
+        CreatedPcbLinkState(ImageIcon imageIcon, String defaultMessage, Color messageColor) {
+            this.imageIcon = imageIcon;
+            this.messages = new ArrayList<>();
+            this.messageColor = messageColor;
+            if (!defaultMessage.isEmpty()) {
+                messages.add(defaultMessage);
+            }
+        }
+
+        public ImageIcon getImageIcon() {
+            return imageIcon;
+        }
+
+        public Color getMessageColor() {
+            return messageColor;
+        }
+
+        public List<String> getMessages() {
+            return messages;
+        }
+
+        public void clearMessages() {
+            messages.clear();
+        }
+
+        public void addMessage(String message) {
+            if (message != null && !message.isEmpty() && !message.contains(message)) {
+                messages.add(message);
+            }
         }
     }
 }

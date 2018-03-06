@@ -1,21 +1,24 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableBallPanel;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
 
-    private static final String[] COLUMN_NAMES = {"PCB item", "Linked item", "Used item", "Used amount"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class, Integer.class};
+    private static final String[] COLUMN_NAMES = {"", "PCB item", "Linked item", "Used item", "Used amount"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class, ILabel.class, Integer.class};
 
     public ICreatedPcbTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -28,13 +31,15 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
             switch (columnIndex) {
                 case -1:
                     return link;
-                case 0: // PCB item
+                case 0: // State
+                    return link.getState();
+                case 1: // PCB item
                     return link.getPcbItemProjectLink();
-                case 1: // Linked item
+                case 2: // Linked item
                     return link.getPcbItemItemLink();
-                case 2: // Used item
+                case 3: // Used item
                     return link.getUsedItem();
-                case 3:
+                case 4:
                     return link.getUsedAmount();
             }
         }
@@ -60,12 +65,30 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
         private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
         private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
 
+        private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, greenBall);
         private static final ITableBallPanel pcbPanel = new ITableBallPanel(Color.gray, 0, false, greenBall, "", "");
         private static final ITableBallPanel itemPanel = new ITableBallPanel(Color.gray, 0, false, greenBall, "", "");
 
+        private boolean done = false;
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (value instanceof CreatedPcbLinkState) {
+                if (!done && row == 0) {
+                    TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                    tableColumn.setMaxWidth(32);
+                    tableColumn.setMinWidth(32);
+                    done = true;
+                }
+
+                CreatedPcbLinkState state = (CreatedPcbLinkState) value;
+                stateLabel.updateBackground(component.getBackground(), row, isSelected);
+                stateLabel.setIcon(state.getImageIcon());
+
+                return stateLabel;
+            }
+
             if (value instanceof PcbItemProjectLink) {
                 PcbItemProjectLink pcbItemLink = (PcbItemProjectLink) value;
 

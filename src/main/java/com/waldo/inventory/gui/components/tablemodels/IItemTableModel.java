@@ -82,14 +82,17 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
 
+
+        private boolean done = false;
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (value instanceof Item) {
-                if (row == 0) {
+                if (!done && row == 0) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
                     tableColumn.setMinWidth(32);
+                    done = true;
                 }
 
                 Item item = (Item) value;

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -24,6 +25,9 @@ public class CreatedPcbLink  extends DbObject {
     private long usedItemId;
     private Item usedItem;
     private int usedAmount;
+
+    // State
+    private CreatedPcbLinkState state = CreatedPcbLinkState.NotSaved;
 
 
     public CreatedPcbLink() {
@@ -108,6 +112,25 @@ public class CreatedPcbLink  extends DbObject {
 //        }
 //        return false;
 //    }
+
+
+    public CreatedPcbLinkState getState() {
+        if (getId() <= DbObject.UNKNOWN_ID) {
+            state = CreatedPcbLinkState.NotSaved;
+        } else {
+            state = CreatedPcbLinkState.Ok;
+            if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
+                state = CreatedPcbLinkState.Error;
+                state.addMessage("No project found..");
+            }
+            if (usedItemId <= DbObject.UNKNOWN_ID) {
+                state = CreatedPcbLinkState.Warning;
+                state.addMessage("No used item");
+            }
+            // TODO..
+        }
+        return state;
+    }
 
     public PcbItemItemLink getPcbItemItemLink() {
         PcbItemItemLink linkedItem = null;
