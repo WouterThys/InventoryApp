@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.editremarksdialog;
 
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITextEditor;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -25,8 +24,8 @@ abstract class EditRemarksDialogLayout extends IDialog {
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditRemarksDialogLayout(Application application, String title) {
-        super(application, title);
+    EditRemarksDialogLayout(Window window, String title) {
+        super(window, title);
 
     }
 

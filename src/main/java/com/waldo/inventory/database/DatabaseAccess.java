@@ -1380,6 +1380,12 @@ public class DatabaseAccess {
                     p.setUsedItemId(rs.getLong("usedItemId"));
                     p.setUsedAmount(rs.getInt("usedAmount"));
 
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
+                    } else {
+                        p.setRemarksFile(null);
+                    }
+
                     p.setInserted(true);
                     createdPcbLinks.add(p);
                 }
