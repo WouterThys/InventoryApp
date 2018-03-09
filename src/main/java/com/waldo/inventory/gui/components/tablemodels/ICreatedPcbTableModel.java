@@ -83,7 +83,7 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
                 }
 
                 CreatedPcbLinkState state = (CreatedPcbLinkState) value;
-                stateLabel.updateBackground(component.getBackground(), row, isSelected);
+                stateLabel.updateWithTableComponent(component, row, isSelected);
                 stateLabel.setIcon(state.getImageIcon());
 
                 return stateLabel;
@@ -94,7 +94,7 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
 
                 pcbPanel.updateBallIcon(blueBall);
                 pcbPanel.updateBallText(String.valueOf(pcbItemLink.getNumberOfItems()));
-                pcbPanel.updateBackground(component.getBackground(), row, isSelected);
+                pcbPanel.updateWithTableComponent(component, row, isSelected);
                 pcbPanel.setText(pcbItemLink.getPrettyName());
                 return pcbPanel;
             }
@@ -103,7 +103,7 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
                 Item item = ((PcbItemItemLink)value).getItem();
 
                 String txt = String.valueOf(item.getAmount());
-                itemPanel.updateBackground(component.getBackground(), row, isSelected);
+                itemPanel.updateWithTableComponent(component, row, isSelected);
                 itemPanel.updateBallText(txt);
                 itemPanel.setText(item.toString());
 

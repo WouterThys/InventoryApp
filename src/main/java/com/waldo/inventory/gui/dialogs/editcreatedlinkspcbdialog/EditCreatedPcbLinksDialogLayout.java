@@ -64,7 +64,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectPcb projectPcb;
-    CreatedPcb createdPcb;
+    private CreatedPcb createdPcb;
 
     private CreatedPcbLink selectedLink;
 
@@ -202,10 +202,14 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine("Created: ", pcbDateTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
-        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, removeAllAction, wizardAction, createPcbAction);
+        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, removeAllAction, wizardAction);
+
+        JPanel tbPanel = new JPanel(new BorderLayout());
+        tbPanel.add(tb, BorderLayout.WEST);
+        tbPanel.add(new JButton(createPcbAction), BorderLayout.EAST);
 
         mainPnl.add(infoPnl, BorderLayout.CENTER);
-        mainPnl.add(tb, BorderLayout.PAGE_START);
+        mainPnl.add(tbPanel, BorderLayout.PAGE_START);
 
         panel.add(pcbImageLbl, BorderLayout.WEST);
         panel.add(mainPnl, BorderLayout.CENTER);
@@ -353,6 +357,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             }
         };
         createPcbAction.setIcon(imageResource.readImage("Actions.M.Use"));
+        createPcbAction.setName("Create");
         editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -401,7 +406,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         initTable();
 
         updateInfo(projectPcb, createdPcb, selectedLink);
-        updateEnabledComponents();
         createdPcbTable.resizeColumns();
+        updateEnabledComponents();
     }
 }

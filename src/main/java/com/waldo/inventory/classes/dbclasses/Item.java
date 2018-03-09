@@ -29,30 +29,30 @@ public class Item extends DbObject {
 
     protected long categoryId = UNKNOWN_ID;
     protected Category category;
-    protected long productId = UNKNOWN_ID;
+    private long productId = UNKNOWN_ID;
     protected Product product;
-    protected long typeId = UNKNOWN_ID;
+    private long typeId = UNKNOWN_ID;
     protected Type type;
-    protected boolean isSet = false;
+    private boolean isSet = false;
 
-    protected String localDataSheet = "";
-    protected String onlineDataSheet = "";
+    private String localDataSheet = "";
+    private String onlineDataSheet = "";
 
-    protected long manufacturerId = UNKNOWN_ID;
+    private long manufacturerId = UNKNOWN_ID;
     protected Manufacturer manufacturer;
-    protected long locationId = UNKNOWN_ID;
+    private long locationId = UNKNOWN_ID;
     protected Location location;
     protected int amount = 0;
-    protected ItemAmountTypes amountType = ItemAmountTypes.Unknown;
-    protected ItemOrderStates orderState = ItemOrderStates.NoOrder;
+    private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
+    private ItemOrderStates orderState = ItemOrderStates.NoOrder;
 
     protected long packageTypeId = UNKNOWN_ID;
-    protected PackageType packageType;
+    private PackageType packageType;
     protected int pins;
 
-    protected float rating;
-    protected boolean discourageOrder;
-    protected String remarksFile;
+    private float rating;
+    private boolean discourageOrder;
+    private String remarksFile;
 
     public Item() {
         this("");

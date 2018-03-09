@@ -101,6 +101,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                         linkLabel.setFont(Font.BOLD);
                     } else {
                         linkLabel.setText(projectLink.getPrettyName());
+                        linkLabel.setForeground(c.getForeground());
                     }
                     return linkLabel;
                 } else {

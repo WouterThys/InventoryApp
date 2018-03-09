@@ -12,7 +12,6 @@ public class Set extends Item {
     // Variables
     private List<Item> setItems;
 
-
     public Set() {
 
     }

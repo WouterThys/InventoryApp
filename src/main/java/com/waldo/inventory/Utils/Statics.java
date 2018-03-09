@@ -671,4 +671,20 @@ public class Statics {
             }
         }
     }
+
+    public enum TypeDisplayType {
+        Icon    (0, "Icon"),
+        R_SMD   (1, "Resistor - SMD"),
+        R_THT   (2, "Resistor - Through hole"),
+        C_Elco  (3, "Capacitor"),
+        C_      (4, "Capacitor 2")
+        ;
+
+        private final int intValue;
+        private final String stringValue;
+        TypeDisplayType(int intValue, String stringValue) {
+            this.intValue = intValue;
+            this.stringValue = stringValue;
+        }
+    }
 }

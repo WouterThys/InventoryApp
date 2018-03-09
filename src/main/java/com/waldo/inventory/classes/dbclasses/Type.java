@@ -11,8 +11,12 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class Type extends DbObject {
 
     public static final String TABLE_NAME = "types";
+
     private long productId;
     private Product product;
+
+    private boolean canHaveValue;
+    private
 
     public Type() {
         super(TABLE_NAME);
