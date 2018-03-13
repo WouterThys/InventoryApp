@@ -14,12 +14,8 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public abstract class ItemPreviewPanel extends AbstractDetailPanel implements IdBToolBar.IdbToolBarListener {
 
@@ -92,16 +88,17 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     }
 
     private void updateHeader(Item item) {
-        try {
-            if (!item.getIconPath().isEmpty()) {
-                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-                iconLbl.setIcon(imageResource.readImage(path));
-            } else {
-                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
-            }
-        } catch (Exception e) {
-            Status().setError("Failed to set item icon");
-        }
+//        try {
+//            if (!item.getIconPath().isEmpty()) {
+//                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
+//                iconLbl.setIcon(imageResource.readImage(path));
+//            } else {
+//                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
+//            }
+//        } catch (Exception e) {
+//            Status().setError("Failed to set item icon");
+//        }
+        iconLbl.setIcon(item.getItemIcon());
         nameTf.setText(item.toString());
         descriptionTa.setText(item.getDescription());
         starRater.setRating(item.getRating());

@@ -41,6 +41,10 @@ public class IResistorImage extends IPanel {
 
     public IResistorImage(Resistor resistor) {
         this.resistor = resistor;
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents();
     }
 
     public int getOriginalHeight() {

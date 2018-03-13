@@ -314,6 +314,15 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             }
         }
 
+        public void displayValue(boolean display) {
+            if (valuePnl != null) {
+                valuePnl.setVisible(display);
+            }
+            if (toggleValuePnlBtn != null) {
+                toggleValuePnlBtn.setVisible(display);
+            }
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             setValuePanelVisible(!valuePnl.isVisible());

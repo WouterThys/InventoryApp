@@ -10,6 +10,7 @@ import java.awt.*;
 public class SubDivisionsDialog extends SubDivisionsDialogLayout {
 
     private String originalName = "";
+    private com.waldo.inventory.classes.dbclasses.Type originalType;
 
     // Unknown
     public SubDivisionsDialog(Window parent, String title) {
@@ -41,6 +42,7 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
     public SubDivisionsDialog(Window parent, String title, com.waldo.inventory.classes.dbclasses.Type type) {
         super(parent, title, type, SubDivisionType.Type);
         this.originalName = type.getName();
+        this.originalType = type.createCopy();
         initializeComponents();
         initializeLayouts();
         updateComponents();
@@ -73,7 +75,12 @@ public class SubDivisionsDialog extends SubDivisionsDialogLayout {
                 break;
             case Category: category.setName(originalName); break;
             case Product: product.setName(originalName); break;
-            case Type: type.setName(originalName); break;
+            case Type:
+                if (originalType != null) {
+                    type.createCopy(originalType);
+                    type.setCanBeSaved(true);
+                }
+                break;
         }
 
         super.onCancel();

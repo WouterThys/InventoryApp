@@ -1,21 +1,30 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
+import com.waldo.inventory.classes.Resistor;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.gui.components.IResistorImage;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.swing.*;
 import java.io.File;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -423,6 +432,44 @@ public class Item extends DbObject {
         return result;
     }
 
+    private ImageIcon getIconFromPath(String iconPath) {
+        ImageIcon icon;
+        try {
+            Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), iconPath);
+            URL url = path.toUri().toURL();
+            icon = imageResource.readImage(url, 150, 150);
+        } catch (Exception e) {
+            icon = imageResource.readImage("Items.Edit.Title");
+        }
+        return icon;
+    }
+
+    public ImageIcon getItemIcon() {
+        ImageIcon icon = null;
+        if (getType() != null) {
+            switch (getType().getDisplayType()) {
+                default: break;
+                case R_THT:
+                    if (getValue().hasValue()) {
+                        Resistor r = new Resistor();
+                        try {
+                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getValue(), Statics.ResistorBandValue.Gold);
+                            IResistorImage image = new IResistorImage(r);
+                            icon = new ImageIcon(image.createImage(150, 150));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        if (icon == null) {
+            icon = getIconFromPath(getIconPath());
+        }
+        return icon;
+    }
+
     public String getAlias() {
         if (alias == null) {
             alias = "";
@@ -692,4 +739,6 @@ public class Item extends DbObject {
     public void setValue(double value, int multiplier, String unit) {
         this.value = new Value(value, multiplier, unit);
     }
+
+
 }

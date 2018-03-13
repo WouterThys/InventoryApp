@@ -725,6 +725,8 @@ public class DatabaseAccess {
                     t.setName(rs.getString("name"));
                     t.setIconPath(rs.getString("iconpath"));
                     t.setProductId(rs.getLong("productid"));
+                    t.setCanHaveValue(rs.getBoolean("canHaveValue"));
+                    t.setDisplayType(rs.getInt("displayType"));
 
                     t.setInserted(true);
                     if (t.getId() != 1) {

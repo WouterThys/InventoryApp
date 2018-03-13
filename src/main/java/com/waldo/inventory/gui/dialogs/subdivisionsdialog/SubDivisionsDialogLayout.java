@@ -1,16 +1,16 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.TypeDisplayType;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.utils.icomponents.IComboBox;
-import com.waldo.utils.icomponents.IDialog;
-import com.waldo.utils.icomponents.IEditedListener;
-import com.waldo.utils.icomponents.ITextField;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +30,9 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
     private IComboBox<Product> productCb;
 
     private ITextField nameTf;
+    // Type
+    private ICheckBox canHaveValueCb;
+    private IComboBox<TypeDisplayType> displayTypeCb;
 
     /*
      *                  VARIABLES
@@ -115,12 +118,24 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
 
         // Name
         nameTf = new ITextField(this, "name");
+
+        canHaveValueCb = new ICheckBox();
+        canHaveValueCb.addEditedListener(this, "canHaveValue");
+
+        displayTypeCb = new IComboBox<>(Statics.TypeDisplayType.values());
+        displayTypeCb.addItemListener(e -> {
+            if (SubDivisionsDialogLayout.this.isShown && e.getStateChange() == ItemEvent.SELECTED) {
+                if (type != null) {
+                    type.setDisplayType((TypeDisplayType) displayTypeCb.getSelectedItem());
+                }
+            }
+        });
     }
 
     @Override
     public void initializeLayouts() {
 
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel());
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel(), 120);
 
         switch (divisionType) {
             case Unknown:
@@ -136,8 +151,15 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
                 gbc.addLine("Product:" , productCb);
                 break;
         }
-
+        // Name
         gbc.addLine("Name: ", nameTf);
+
+        switch (divisionType) {
+            case Type:
+                gbc.addLine("Can have value: ", canHaveValueCb);
+                gbc.addLine("Display type: ", displayTypeCb);
+                break;
+        }
 
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
 
@@ -159,6 +181,8 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
                 break;
             case Type:
                 nameTf.setText(type.getName());
+                canHaveValueCb.setSelected(type.isCanHaveValue());
+                displayTypeCb.setSelectedItem(type.getDisplayType());
                 break;
         }
     }

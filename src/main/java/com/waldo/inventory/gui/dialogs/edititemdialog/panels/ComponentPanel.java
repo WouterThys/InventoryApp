@@ -134,7 +134,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
                     Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), p);
                     manufacturerIconLbl.setIcon(imageResource.readImage(path, 48,48));
                 } else {
-                    manufacturerIconLbl.setIcon((ImageIcon) null);
+                    manufacturerIconLbl.setIcon(null);
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -531,7 +531,14 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     public void updateComponents(Object... object) {
         aliasPnl.setText(selectedItem.getAlias().trim());
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
-        nameValuePnl.setValue(selectedItem.getValue());
+        if (selectedItem.getType() != null && selectedItem.getType().isCanHaveValue()) {
+            nameValuePnl.setValue(selectedItem.getValue());
+            nameValuePnl.displayValue(true);
+            nameValuePnl.setValuePanelVisible(false);
+        } else {
+            nameValuePnl.displayValue(false);
+        }
+
         descriptionTa.setText(selectedItem.getDescription().trim());
 
         // Combo boxes

@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.Statics.TypeDisplayType;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -16,7 +17,7 @@ public class Type extends DbObject {
     private Product product;
 
     private boolean canHaveValue;
-    private
+    private TypeDisplayType displayType;
 
     public Type() {
         super(TABLE_NAME);
@@ -30,7 +31,9 @@ public class Type extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
-        statement.setLong(ndx++, productId);
+        statement.setLong(ndx++, getProductId());
+        statement.setBoolean(ndx++, isCanHaveValue());
+        statement.setInt(ndx++, getDisplayType().getIntValue());
         return ndx;
     }
 
@@ -39,6 +42,8 @@ public class Type extends DbObject {
         Type type = (Type) copyInto;
         copyBaseFields(type);
         type.setProductId(getProductId());
+        type.setCanHaveValue(isCanHaveValue());
+        type.setDisplayType(getDisplayType());
         return type;
     }
 
@@ -98,13 +103,26 @@ public class Type extends DbObject {
         return product;
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
+    public boolean isCanHaveValue() {
+        return canHaveValue;
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
+    public void setCanHaveValue(boolean canHaveValue) {
+        this.canHaveValue = canHaveValue;
+    }
+
+    public TypeDisplayType getDisplayType() {
+        if (displayType == null) {
+            displayType = TypeDisplayType.Icon;
+        }
+        return displayType;
+    }
+
+    public void setDisplayType(TypeDisplayType displayType) {
+        this.displayType = displayType;
+    }
+
+    public void setDisplayType(int displayType) {
+        this.displayType = TypeDisplayType.fromInt(displayType);
     }
 }

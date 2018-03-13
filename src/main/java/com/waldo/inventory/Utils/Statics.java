@@ -686,5 +686,25 @@ public class Statics {
             this.intValue = intValue;
             this.stringValue = stringValue;
         }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
+
+        public static TypeDisplayType fromInt(int intValue) {
+            switch (intValue) {
+                default:
+                case 0: return Icon;
+                case 1: return R_SMD;
+                case 2: return R_THT;
+                case 3: return C_Elco;
+                case 4: return C_;
+            }
+        }
     }
 }
