@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog;
+package com.waldo.inventory.gui.dialogs.editprojectobjectdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;

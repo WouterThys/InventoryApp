@@ -13,8 +13,6 @@ import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public class Main {
 
-    // TODO: setting to change look and feel -> create gui tab
-    // TODO: FULL_SCREEN settings in settings object -> create gui tab
     // TODO: smart list in db that clears itself after time -> create cache tab
     // TODO: setting for logging session variables in DbQueue -> in logging tab
     // TODO: setting for logging db history -> logging tab
@@ -52,7 +50,7 @@ public class Main {
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
             app.setPreferredSize(new Dimension(1600, 800));
-            app.setMinimumSize(new Dimension(1000, 600));
+            app.setMinimumSize(new Dimension(800, 400));
             if (FULL_SCREEN || settings().getGeneralSettings().isGuiStartUpFullScreen()) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }

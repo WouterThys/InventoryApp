@@ -4,7 +4,8 @@ import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
+import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
+import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPcbPreviewPanel;
 import com.waldo.utils.icomponents.IDialog;
 
 import java.awt.*;
@@ -51,13 +52,23 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     public void initializeComponents() {
         super.initializeComponents();
         pcbItemPanel = new PcbItemPanel(application);
+        previewPanel = new ProjectPcbPreviewPanel(application) {
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                ProjectPcbPanel.this.onToolBarDelete(source);
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                ProjectPcbPanel.this.onToolBarEdit(source);
+            }
+        };
     }
 
     @Override
     public void initializeLayouts() {
         super.initializeLayouts();
         eastPanel.add(pcbItemPanel, BorderLayout.CENTER);
-        menuPanel.add(pcbItemPanel.getToolbarPanel(), BorderLayout.WEST);
     }
 
     @Override

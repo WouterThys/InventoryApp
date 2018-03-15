@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.*;
+import com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel.ProjectDetailsPanel;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
@@ -291,7 +292,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
-        centerPanel.add(detailsPanel, BorderLayout.SOUTH);
+        //centerPanel.add(detailsPanel, BorderLayout.SOUTH);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
@@ -304,10 +305,10 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         if (object.length == 0) {
             return;
         }
-        if (application.isUpdating(ProjectsPanelLayout.this)) {
+        if (Application.isUpdating(ProjectsPanelLayout.this)) {
             return;
         }
-        application.beginWait(ProjectsPanelLayout.this);
+        Application.beginWait(ProjectsPanelLayout.this);
         try {
             selectedProject = (Project) object[0];
             selectTreeTab(TAB_CODE, selectedProject);
@@ -318,7 +319,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             updateEnabledComponents();
             updateVisibleComponents();
         } finally {
-            application.endWait(ProjectsPanelLayout.this);
+            Application.endWait(ProjectsPanelLayout.this);
         }
     }
 

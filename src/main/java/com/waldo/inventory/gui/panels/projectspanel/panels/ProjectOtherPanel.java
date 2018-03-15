@@ -6,7 +6,8 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
-import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectobjectdialog.EditProjectOtherDialog;
+import com.waldo.inventory.gui.dialogs.editprojectobjectdialog.EditProjectOtherDialog;
+import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectOtherPreviewPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,6 +61,17 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
 
         otherFilesTree = new JTree();
         otherFilesTree.setCellRenderer(ITree.getFilesRenderer());
+        previewPanel = new ProjectOtherPreviewPanel(application) {
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                ProjectOtherPanel.this.onToolBarDelete(source);
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                ProjectOtherPanel.this.onToolBarEdit(source);
+            }
+        };
     }
 
     @Override

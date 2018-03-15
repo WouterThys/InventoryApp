@@ -1,24 +1,18 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
-import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPreviewPanel;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel implements
         GuiUtils.GuiInterface,
@@ -35,14 +29,14 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ProjectGridPanel<T> gridPanel;
     private IdBToolBar objectToolBar;
-    private IActions.DoItAction runIdeAction;
-    private IActions.BrowseFileAction openProjectAction;
     private ILabel projectObjectNameLbl;
 
     final JPanel eastPanel = new JPanel(new BorderLayout());
     private final JPanel centerPanel = new JPanel(new BorderLayout());
     private final JPanel remarksPanel = new JPanel(new BorderLayout());
     final JPanel menuPanel = new JPanel(new BorderLayout());
+
+    ProjectPreviewPanel<T> previewPanel;
 
 
     /*
@@ -76,12 +70,8 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
             objectToolBar.setEnabled(true);
             objectToolBar.setDeleteActionEnabled(objectSelected);
             objectToolBar.setEditActionEnabled(objectSelected);
-            runIdeAction.setEnabled(objectSelected && selectedProjectObject.isValid());
-            openProjectAction.setEnabled(objectSelected && selectedProjectObject.isValid());
         } else {
             objectToolBar.setEnabled(false);
-            runIdeAction.setEnabled(false);
-            openProjectAction.setEnabled(false);
         }
     }
 
@@ -104,6 +94,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         }
 
         updateEnabledComponents();
+        previewPanel.updateComponents(selectedProjectObject);
         return newObjSelected;
     }
 
@@ -115,66 +106,6 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         this.selectedProjectObject = selectedProjectObject;
     }
 
-    private void browseProjectObject() {
-        if (selectedProjectObject != null) {
-            File file = new File(selectedProjectObject.getDirectory());
-            if (file.exists()) {
-                if (file.isFile()) {
-                    file = file.getParentFile();
-                }
-                try {
-                    Desktop.getDesktop().open(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            application,
-                            "Could not open folder..",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(
-                        application,
-                        "Could not folder because it does not exist..",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void runIde() {
-        if (selectedProjectObject != null) {
-            if (selectedProjectObject.getProjectIDEId() > DbObject.UNKNOWN_ID) {
-                ProjectIDE ide = selectedProjectObject.getProjectIDE();
-                try {
-                    ide.launch(new File(selectedProjectObject.getDirectory()));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Failed to open IDE",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            } else {
-                if (selectedProjectObject.isValid()) {
-                    try {
-                        ProjectIDE.tryLaunch(new File(selectedProjectObject.getDirectory()));
-                    } catch (IOException e2) {
-                        e2.printStackTrace();
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "Failed to open IDE",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-                }
-            }
-        }
-    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -182,25 +113,9 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
     public void initializeComponents() {
         // Center
         gridPanel = new ProjectGridPanel<>(this::selectProjectObject);
-        objectToolBar = new IdBToolBar(this);
+        objectToolBar = new IdBToolBar(this, true, true, false, false);
         projectObjectNameLbl = new ILabel("", ILabel.CENTER);
         projectObjectNameLbl.setFont(18, Font.BOLD);
-
-        runIdeAction = new IActions.DoItAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                runIde();
-            }
-        };
-        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.Execute"));
-
-        openProjectAction = new IActions.BrowseFileAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                browseProjectObject();
-            }
-        };
-        openProjectAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.M.BrowseFile"));
     }
 
     @Override
@@ -209,23 +124,28 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
 
         // Panels
         menuPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        JToolBar toolBar = GuiUtils.createNewToolbar(openProjectAction, runIdeAction);
+        JScrollPane scrollPane = new JScrollPane(gridPanel);
 
         // Add stuff to panels
         menuPanel.add(projectObjectNameLbl, BorderLayout.CENTER);
-        menuPanel.add(toolBar, BorderLayout.EAST);
-
-        centerPanel.add(gridPanel, BorderLayout.CENTER);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
         centerPanel.add(objectToolBar, BorderLayout.PAGE_START);
 
-        eastPanel.add(menuPanel, BorderLayout.PAGE_START);
+        //eastPanel.add(menuPanel, BorderLayout.PAGE_START);
         eastPanel.add(remarksPanel, BorderLayout.SOUTH);
         eastPanel.setMinimumSize(new Dimension(300, 0));
 
         // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, centerPanel, eastPanel);
-        splitPane.setResizeWeight(.5d);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, eastPanel);
+        splitPane.setResizeWeight(.3d);
         splitPane.setOneTouchExpandable(true);
+
+        previewPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(2, 2, -1, -1),
+                BorderFactory.createLineBorder(Color.lightGray, 1)
+        ));
+
+        add(previewPanel, BorderLayout.EAST);
         add(splitPane, BorderLayout.CENTER);
     }
 

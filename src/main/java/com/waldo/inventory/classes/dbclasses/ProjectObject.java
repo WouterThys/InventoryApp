@@ -19,6 +19,7 @@ public abstract class ProjectObject extends DbObject {
     private long projectIDEId = UNKNOWN_ID;
     private ProjectIDE projectIDE;
 
+    private String description;
     private String remarksFile;
 
 
@@ -171,5 +172,16 @@ public abstract class ProjectObject extends DbObject {
         if (remarksFile != null && remarksFile.exists()) {
             this.remarksFile = remarksFile.getAbsolutePath();
         }
+    }
+
+    public String getDescription() {
+        if (description == null) {
+            description = "";
+        }
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

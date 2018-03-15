@@ -6,7 +6,8 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
-import com.waldo.inventory.gui.panels.projectspanel.dialogs.editprojectcodedialog.EditProjectCodeDialog;
+import com.waldo.inventory.gui.dialogs.editprojectcodedialog.EditProjectCodeDialog;
+import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectCodePreviewPanel;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -65,6 +66,17 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
 
         codeFilesTree = new JTree();
         codeFilesTree.setCellRenderer(ITree.getFilesRenderer());
+        previewPanel = new ProjectCodePreviewPanel(application) {
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                ProjectCodePanel.this.onToolBarDelete(source);
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                ProjectCodePanel.this.onToolBarEdit(source);
+            }
+        };
     }
 
     @Override
