@@ -65,9 +65,9 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void browseProjectObject() {
-        if (selectedProjectObject != null) {
-            File file = new File(selectedProjectObject.getDirectory());
+    public void browseProjectObject(P projectObject) {
+        if (projectObject != null) {
+            File file = new File(projectObject.getDirectory());
             if (file.exists()) {
                 if (file.isFile()) {
                     file = file.getParentFile();
@@ -92,12 +92,12 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         }
     }
 
-    private void runIde() {
-        if (selectedProjectObject != null) {
-            if (selectedProjectObject.getProjectIDEId() > DbObject.UNKNOWN_ID) {
-                ProjectIDE ide = selectedProjectObject.getProjectIDE();
+    public void runIde(P projectObject) {
+        if (projectObject != null) {
+            if (projectObject.getProjectIDEId() > DbObject.UNKNOWN_ID) {
+                ProjectIDE ide = projectObject.getProjectIDE();
                 try {
-                    ide.launch(new File(selectedProjectObject.getDirectory()));
+                    ide.launch(new File(projectObject.getDirectory()));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(
@@ -108,9 +108,9 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
                     );
                 }
             } else {
-                if (selectedProjectObject.isValid()) {
+                if (projectObject.isValid()) {
                     try {
-                        ProjectIDE.tryLaunch(new File(selectedProjectObject.getDirectory()));
+                        ProjectIDE.tryLaunch(new File(projectObject.getDirectory()));
                     } catch (IOException e2) {
                         e2.printStackTrace();
                         JOptionPane.showMessageDialog(
@@ -282,10 +282,6 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         remarksTp.setEditable(false);
         remarksTp.setEnabled(false);
 
-        dbToolbar = new IdBToolBar(this, false, false, true, true);
-        actionToolBar = GuiUtils.createNewToolbar(openProjectFolderAction, runIdeAction);
-
-        initializeInfoComponents();
 
         // Actions
         editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
@@ -304,18 +300,25 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         runIdeAction = new IActions.DoItAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                runIde();
+                runIde(selectedProjectObject);
             }
         };
-        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.Execute"));
+        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.M.Execute"));
 
         openProjectFolderAction = new IActions.BrowseFileAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                browseProjectObject();
+                browseProjectObject(selectedProjectObject);
             }
         };
         openProjectFolderAction.putValue(Action.SMALL_ICON, imageResource.readImage("Actions.M.BrowseFile"));
+
+        dbToolbar = new IdBToolBar(this, false, false, true, true);
+        actionToolBar = GuiUtils.createNewToolbar(openProjectFolderAction, runIdeAction);
+
+        initializeInfoComponents();
+
+
 
     }
 

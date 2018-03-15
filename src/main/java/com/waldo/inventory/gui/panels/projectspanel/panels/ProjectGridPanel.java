@@ -6,6 +6,7 @@ import com.waldo.inventory.gui.components.ITileView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,16 +17,28 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
     private int rows = -1;
     private int cols = -1;
 
+    private ITileView<P> selectedTile;
+
 
     @Override
-    public void onTileClick(P projectObject) {
+    public void onTileClick(MouseEvent e, P projectObject) {
+        selectTile(projectObject);
         if (gridComponentListener != null) {
-            gridComponentListener.onGridComponentClick(projectObject);
+            gridComponentListener.onGridComponentClick(e, projectObject);
+        }
+    }
+
+    @Override
+    public void onTileRightClick(MouseEvent e, P projectObject) {
+        selectTile(projectObject);
+        if (gridComponentListener != null) {
+            gridComponentListener.onGridComponentRightClick(e, projectObject);
         }
     }
 
     public interface GridComponentClicked<PO extends ProjectObject> {
-        void onGridComponentClick(PO projectObject);
+        void onGridComponentClick(MouseEvent e, PO projectObject);
+        void onGridComponentRightClick(MouseEvent e, PO projectObject);
     }
 
     /*
@@ -44,17 +57,6 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public ProjectGridPanel(GridComponentClicked<P> gridComponentListener) {
         this.gridComponentListener = gridComponentListener;
-
-        initializeComponents();
-        initializeLayouts();
-        updateComponents();
-    }
-
-    public ProjectGridPanel(GridComponentClicked<P> gridComponentListener, int rows, int cols) {
-        this.gridComponentListener = gridComponentListener;
-
-        this.rows = rows;
-        this.cols = cols;
 
         initializeComponents();
         initializeLayouts();
@@ -87,6 +89,17 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         repaint();
     }
 
+    private void selectTile(P projectObject) {
+        if (selectedTile != null) {
+            selectedTile.setSelected(false);
+        }
+
+        selectedTile = getTile(projectObject);
+        if (selectedTile != null) {
+            selectedTile.setSelected(true);
+        }
+    }
+
     public void addTile(P projectObject) {
         tileViews.add(createTile(projectObject));
         redrawTiles();
@@ -103,6 +116,15 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         redrawTiles();
     }
 
+    public ITileView<P> getTile(P projectObject) {
+        for (ITileView<P> tv : tileViews) {
+            if (tv.getProjectObject().equals(projectObject)) {
+                return tv;
+            }
+        }
+        return null;
+    }
+
 
     /*
      *                  LISTENERS
@@ -116,7 +138,6 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
 
     @Override
     public void initializeLayouts() {
-
     }
 
     @Override

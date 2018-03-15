@@ -60,10 +60,6 @@ public abstract class PcbItemPopup extends JPopupMenu {
             iconPanel.add(new ILabel(ordered));
             addHeader = true;
         }
-//        if (itemProjectLink.isUsed()) {
-//            iconPanel.add(new ILabel(used));
-//            addHeader = true;
-//        } // TODO #13
 
         if (addHeader) {
             add(iconPanel);

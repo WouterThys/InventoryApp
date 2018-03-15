@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog
 import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPcbPreviewPanel;
 import com.waldo.utils.icomponents.IDialog;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -45,9 +46,22 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         return false;
     }
 
+    @Override
+    protected JPopupMenu showPopup(ProjectPcb projectObject) {
+        JPopupMenu popupMenu = super.showPopup(projectObject);
+
+        popupMenu.addSeparator();
+        popupMenu.add(((ProjectPcbPreviewPanel)previewPanel).getLinkAa());
+        popupMenu.add(((ProjectPcbPreviewPanel)previewPanel).getOrderAa());
+        popupMenu.add(((ProjectPcbPreviewPanel)previewPanel).getParseAa());
+        popupMenu.add(((ProjectPcbPreviewPanel)previewPanel).getUsedAa());
+
+        return popupMenu;
+    }
+
     /*
-     *                  LISTENERS
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+         *                  LISTENERS
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         super.initializeComponents();

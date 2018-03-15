@@ -12,6 +12,7 @@ import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -99,6 +100,50 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         }
     }
 
+    public AbstractAction getLinkAa() {
+        AbstractAction linkAction = new AbstractAction("Link", imageResource.readImage("Actions.Link")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onLink());
+            }
+        };
+        linkAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Link to known items");
+        return linkAction;
+    }
+
+    public AbstractAction getOrderAa() {
+        AbstractAction orderAction = new AbstractAction("Order", imageResource.readImage("Actions.ItemOrder")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onOrder());
+            }
+        };
+        orderAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Order linked items");
+        return orderAction;
+    }
+
+    public AbstractAction getParseAa() {
+        AbstractAction parseAction = new AbstractAction("Parse", imageResource.readImage("Parse.S.Title")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onParse());
+            }
+        };
+        parseAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Parse again");
+        return parseAction;
+    }
+
+    public AbstractAction getUsedAa() {
+        AbstractAction usedAction = new AbstractAction("Used", imageResource.readImage("Projects.Pcb.Used")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onUsed());
+            }
+        };
+        usedAction.putValue(AbstractAction.SHORT_DESCRIPTION, "Used items");
+        return usedAction;
+    }
+
     @Override
     void initializeInfoComponents() {
         pcbIdeTf = new ITextField(false);
@@ -106,11 +151,8 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         lastParsedTf = new ITextField(false);
         numberOfItemsTf = new ITextField(false);
 
-        actionToolBar.addSeparator();
-        actionToolBar.add(linkAa);
-        actionToolBar.add(orderAa);
-        actionToolBar.add(usedAa);
-        actionToolBar.add(parseAa);
+        lastParsedTf.setMaximumSize(new Dimension(60, 30));
+        itemsFromTf.setMaximumSize(new Dimension(60, 30));
 
         // Actions
         linkAa = new AbstractAction("Link", imageResource.readImage("Projects.Pcb.LinkBtn")) {
@@ -144,6 +186,12 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
             }
         };
         parseAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Parse again");
+
+        actionToolBar.addSeparator();
+        actionToolBar.add(linkAa);
+        actionToolBar.add(orderAa);
+        actionToolBar.add(usedAa);
+        actionToolBar.add(parseAa);
     }
 
     @Override
@@ -159,7 +207,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
         gbc.addLine("IDE", imageResource.readImage("Ides.Menu"), pcbIdeTf);
         gbc.addLine("Last parsed", imageResource.readImage("Parse.S.Title"), lastParsedTf);
-        gbc.addLine("Items", imageResource.readImage("Projects.Tab.Pcb"), itemInfoPnl);
+        //gbc.addLine("Items", imageResource.readImage("Projects.Tab.Pcb"), itemInfoPnl);
 
         return infoPnl;
     }

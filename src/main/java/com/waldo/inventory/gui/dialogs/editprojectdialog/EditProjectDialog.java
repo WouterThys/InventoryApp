@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.Application;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,8 +192,13 @@ public class EditProjectDialog extends EditProjectDialogLayout implements CacheC
     // Found projects in directory clicked
     //
     @Override
-    public void onGridComponentClick(ProjectObject projectObject) {
+    public void onGridComponentClick(MouseEvent e, ProjectObject projectObject) {
 
+    }
+
+    @Override
+    public void onGridComponentRightClick(MouseEvent e, ProjectObject projectObject) {
+        
     }
 
     //

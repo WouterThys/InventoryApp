@@ -10,8 +10,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
@@ -20,10 +20,11 @@ import java.nio.file.Paths;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, ActionListener {
+public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener /*, ActionListener */ {
 
     public interface TileClickListener<IT extends ProjectObject> {
-        void onTileClick(IT projectObject);
+        void onTileClick(MouseEvent e, IT projectObject);
+        void onTileRightClick(MouseEvent e, IT projectObject);
     }
 
     private JButton iconBtn;
@@ -33,9 +34,14 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     private final IT projectObject;
     private TileClickListener<IT> listener;
 
+    private boolean isSelected = false;
+    private Color background;
+
     public ITileView(IT projectObject) {
         this.projectObject = projectObject;
         this.name = projectObject.getName();
+
+        this.addMouseListener(this);
 
         initializeComponents();
         initializeLayouts();
@@ -54,13 +60,23 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         return FileUtils.formatFileNameString(text);
     }
 
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+        if (selected) {
+            this.setBackground(Color.gray);
+        } else {
+            this.setBackground(background);
+        }
+    }
+
 
     @Override
     public void initializeComponents() {
         iconBtn = new JButton();
         iconBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         iconBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
-        iconBtn.addActionListener(this);
+        iconBtn.addMouseListener(this);
+        //iconBtn.addActionListener(this);
 
         nameTp = new JTextPane();
 
@@ -76,6 +92,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         nameTp.setBackground(new Color(0,0,0,0));
         nameTp.setBorder(null);
         nameTp.setEditable(false);
+        nameTp.addMouseListener(this);
+
+        background = this.getBackground();
     }
 
     @Override
@@ -147,12 +166,12 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (listener != null) {
-            listener.onTileClick(projectObject);
-        }
-    }
+//    @Override
+//    public void actionPerformed(ActionEvent e) {
+//        if (listener != null) {
+//            listener.onTileClick(projectObject);
+//        }
+//    }
 
     @Override
     public String getName() {
@@ -183,6 +202,35 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
             int errorY = y - (error.getIconWidth()/3);
             error.paintIcon(c, g, errorX, errorY);
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (listener != null) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                listener.onTileClick(e, projectObject);
+            } else {
+                listener.onTileRightClick(e, projectObject);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        setBackground(Color.gray.brighter());
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        setSelected(isSelected);
     }
 }
 

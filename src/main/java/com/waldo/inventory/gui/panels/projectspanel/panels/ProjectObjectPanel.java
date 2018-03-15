@@ -6,6 +6,7 @@ import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.ProjectObjectPopup;
 import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPreviewPanel;
 import com.waldo.utils.icomponents.ILabel;
 
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel implements
         GuiUtils.GuiInterface,
@@ -106,13 +108,39 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         this.selectedProjectObject = selectedProjectObject;
     }
 
+    protected JPopupMenu showPopup(T projectObject) {
+        ProjectObjectPopup<T> popup = new ProjectObjectPopup<T>(projectObject) {
+            @Override
+            public void onRunIde(T projectObject) {
+                previewPanel.runIde(projectObject);
+            }
+
+            @Override
+            public void onBrowseProjectObject(T projectObject) {
+                previewPanel.browseProjectObject(projectObject);
+            }
+        };
+        return popup;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
         // Center
-        gridPanel = new ProjectGridPanel<>(this::selectProjectObject);
+        gridPanel = new ProjectGridPanel<>(new ProjectGridPanel.GridComponentClicked<T>() {
+            @Override
+            public void onGridComponentClick(MouseEvent e, T projectObject) {
+                selectProjectObject(projectObject);
+            }
+
+            @Override
+            public void onGridComponentRightClick(MouseEvent e, T projectObject) {
+                JPopupMenu popup = showPopup(projectObject);
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
         objectToolBar = new IdBToolBar(this, true, true, false, false);
         projectObjectNameLbl = new ILabel("", ILabel.CENTER);
         projectObjectNameLbl.setFont(18, Font.BOLD);
