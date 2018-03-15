@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
-import com.waldo.inventory.gui.dialogs.resistordialog.ResistorDialog;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
@@ -358,9 +357,9 @@ abstract class MainPanelLayout extends JPanel implements
 
                 @Override
                 public void onToolBarEdit(IdBToolBar source) {
-                    ResistorDialog dialog = new ResistorDialog(application, "resistor");
-                    dialog.showDialog();
-                    //MainPanelLayout.this.onToolBarEdit(source);
+                    //ResistorDialog dialog = new ResistorDialog(application, "resistor");
+                    //dialog.showDialog();
+                    MainPanelLayout.this.onToolBarEdit(source);
                 }
             };
             detailPanel.setBorder(BorderFactory.createCompoundBorder(

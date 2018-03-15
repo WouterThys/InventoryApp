@@ -1,14 +1,11 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
-import com.waldo.inventory.classes.Resistor;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.components.IResistorImage;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
@@ -109,39 +106,21 @@ public class Item extends DbObject {
         statement.setString(ndx++, getName());
         statement.setString(ndx++, getAlias());
         statement.setNString(ndx++, getDescription());
-        if (categoryId < UNKNOWN_ID) {
-            categoryId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, categoryId);
-        if (productId < UNKNOWN_ID) {
-            productId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, productId);
-        if (typeId < UNKNOWN_ID) {
-            typeId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, typeId);
-        statement.setString(ndx++, localDataSheet);
-        statement.setString(ndx++, onlineDataSheet);
-        statement.setString(ndx++, iconPath);
-        if (manufacturerId < UNKNOWN_ID) {
-            manufacturerId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, manufacturerId);
-        if (locationId < UNKNOWN_ID) {
-            locationId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, locationId);
-        statement.setInt(ndx++, amount);
+        statement.setLong(ndx++, getCategoryId());
+        statement.setLong(ndx++, getProductId());
+        statement.setLong(ndx++, getTypeId());
+        statement.setString(ndx++, getLocalDataSheet());
+        statement.setString(ndx++, getOnlineDataSheet());
+        statement.setString(ndx++, getIconPath());
+        statement.setLong(ndx++, getManufacturerId());
+        statement.setLong(ndx++, getLocationId());
+        statement.setInt(ndx++, getAmount());
         statement.setInt(ndx++, getAmountType().getValue());
         statement.setInt(ndx++, getOrderState().getValue());
-        if (packageTypeId < UNKNOWN_ID) {
-            packageTypeId = UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, packageTypeId); // PackageId
+        statement.setLong(ndx++, getPackageTypeId()); // PackageId
         statement.setInt(ndx++, getPins());
-        statement.setFloat(ndx++, rating);
-        statement.setBoolean(ndx++, discourageOrder);
+        statement.setFloat(ndx++, getRating());
+        statement.setBoolean(ndx++, isDiscourageOrder());
         // Remarks
         SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
         if (blob != null) {
@@ -445,29 +424,30 @@ public class Item extends DbObject {
     }
 
     public ImageIcon getItemIcon() {
-        ImageIcon icon = null;
-        if (getType() != null) {
-            switch (getType().getDisplayType()) {
-                default: break;
-                case R_THT:
-                    if (getValue().hasValue()) {
-                        Resistor r = new Resistor();
-                        try {
-                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getValue(), Statics.ResistorBandValue.Gold);
-                            IResistorImage image = new IResistorImage(r);
-                            icon = new ImageIcon(image.createImage(150, 150));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-            }
-        }
-
-        if (icon == null) {
-            icon = getIconFromPath(getIconPath());
-        }
-        return icon;
+//        ImageIcon icon = null;
+//        if (getType() != null) {
+//            switch (getType().getDisplayType()) {
+//                default: break;
+//                case R_THT:
+//                    if (getValue().hasValue()) {
+//                        Resistor r = new Resistor();
+//                        try {
+//                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getValue(), Statics.ResistorBandValue.Gold);
+//                            IResistorImage image = new IResistorImage(r);
+//                            icon = new ImageIcon(image.createImage(150, 150));
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    break;
+//            }
+//        }
+//
+//        if (icon == null) {
+//            icon = getIconFromPath(getIconPath());
+//        }
+//        return icon;
+        return getIconFromPath(getIconPath());
     }
 
     public String getAlias() {
@@ -489,13 +469,13 @@ public class Item extends DbObject {
     }
 
     public void setDescription(String description) {
-//        if (description != null && !description.isEmpty() && description.contains("?")) {
-//            description = description.replace("?", Statics.ValueUnits.R.toString());
-//        }
         this.description = description;
     }
 
     public long getCategoryId() {
+        if (categoryId < UNKNOWN_ID) {
+            categoryId = UNKNOWN_ID;
+        }
         return categoryId;
     }
 
@@ -514,6 +494,9 @@ public class Item extends DbObject {
     }
 
     public long getProductId() {
+        if (productId < UNKNOWN_ID) {
+            productId = UNKNOWN_ID;
+        }
         return productId;
     }
 
@@ -532,6 +515,9 @@ public class Item extends DbObject {
     }
 
     public long getTypeId() {
+        if (typeId < UNKNOWN_ID) {
+            typeId = UNKNOWN_ID;
+        }
         return typeId;
     }
 
@@ -572,6 +558,9 @@ public class Item extends DbObject {
     }
 
     public long getManufacturerId() {
+        if (manufacturerId < UNKNOWN_ID) {
+            manufacturerId = UNKNOWN_ID;
+        }
         return manufacturerId;
     }
 
@@ -590,6 +579,9 @@ public class Item extends DbObject {
     }
 
     public long getLocationId() {
+        if (locationId < UNKNOWN_ID) {
+            locationId = UNKNOWN_ID;
+        }
         return locationId;
     }
 
@@ -624,6 +616,9 @@ public class Item extends DbObject {
     }
 
     public ItemAmountTypes getAmountType() {
+        if (amountType == null) {
+            amountType = ItemAmountTypes.Unknown;
+        }
         return amountType;
     }
 
@@ -677,6 +672,9 @@ public class Item extends DbObject {
     }
 
     public long getPackageTypeId() {
+        if (packageTypeId < UNKNOWN_ID) {
+            packageTypeId = UNKNOWN_ID;
+        }
         return packageTypeId;
     }
 

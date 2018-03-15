@@ -8,10 +8,12 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editpendingorderdialog.EditPendingOrderDialog;
+import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -44,10 +46,17 @@ public class PendingOrdersDialog extends PendingOrdersDialogLayout implements Ca
     void orderItems(List<PendingOrder> pendingOrders) {
         if (pendingOrders != null && pendingOrders.size() > 0) {
             // Get distributor
+            List<Item> itemsToOrder = new ArrayList<>();
+            for (PendingOrder po : pendingOrders) {
+                itemsToOrder.add(po.getItem());
+            }
 
-
-            //OrderItemDialog dialog = new OrderItemDialog(application, "Order", ,false);
-
+            OrderItemDialog dialog = new OrderItemDialog(application, "Order", itemsToOrder, true, false);
+            if (dialog.showDialog() == IDialog.OK) {
+                for (PendingOrder po : pendingOrders) {
+                    po.delete();
+                }
+            }
         }
     }
 
