@@ -7,6 +7,9 @@ import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import com.waldo.utils.icomponents.*;
 
 public abstract class EditItemDialogLayout<T extends Item> extends IDialog implements IEditedListener {
 

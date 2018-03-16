@@ -5,15 +5,11 @@ import com.waldo.inventory.classes.dbclasses.Log;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 
 public class LogManager implements DbSettingsListener<LogSettings> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogManager.class);
 
     public static LogManager LOG (Class logClass) {
         return new LogManager(logClass, LogTypes.Error);
@@ -86,8 +82,7 @@ public class LogManager implements DbSettingsListener<LogSettings> {
     }
 
     public void startup(String startupPath)  {
-        LOGGER.info("\n \t Starting application \n *******************************************************************\n");
-        LOGGER.info("Start application at " + startupPath);
+        System.out.println("Starting app @ " + startupPath);
     }
 
     public void info(String info) {
@@ -98,9 +93,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Info, logClass.getSimpleName(), info);
                     log.save();
                 }
-
-                // Logger (info always logged?)
-                LOGGER.info(info);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG INFO");
             }
@@ -115,9 +107,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Debug, logClass.getSimpleName(), debug);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.debug(debug);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG DEBUG");
             }
@@ -132,9 +121,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Debug, logClass.getSimpleName(), debug, throwable);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.debug(debug, throwable);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG DEBUG");
             }
@@ -149,9 +135,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Warn, logClass.getSimpleName(), warning);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.warn(warning);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG WARNING");
             }
@@ -166,9 +149,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Warn, logClass.getSimpleName(), warning, throwable);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.warn(warning, throwable);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG WARNING");
             }
@@ -183,9 +163,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Error, logClass.getSimpleName(), error);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.error(error);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG ERROR");
             }
@@ -200,9 +177,6 @@ public class LogManager implements DbSettingsListener<LogSettings> {
                     Log log = new Log(LogTypes.Error, logClass.getSimpleName(), error, throwable);
                     log.save();
                 }
-
-                // Logger
-                LOGGER.error(error, throwable);
             } catch (Exception e) {
                 System.err.println("COULD NOT LOG ERROR");
             }

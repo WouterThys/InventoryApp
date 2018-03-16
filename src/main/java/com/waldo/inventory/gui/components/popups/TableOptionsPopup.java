@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.popups;
 
 import javax.swing.*;
-
 import java.util.Comparator;
 
 import static com.waldo.inventory.gui.Application.imageResource;

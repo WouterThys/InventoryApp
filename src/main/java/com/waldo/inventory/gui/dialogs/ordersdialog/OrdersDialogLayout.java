@@ -18,8 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-
-
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class OrdersDialogLayout extends IDialog

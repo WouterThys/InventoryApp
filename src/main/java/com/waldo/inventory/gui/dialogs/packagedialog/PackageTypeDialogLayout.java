@@ -4,12 +4,15 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.classes.search.Search;
+import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.tablemodels.IPackageTypeTableModel;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITable;
+import com.waldo.utils.icomponents.ITextArea;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

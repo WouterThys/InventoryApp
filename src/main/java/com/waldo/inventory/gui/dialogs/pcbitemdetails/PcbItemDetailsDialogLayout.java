@@ -4,7 +4,10 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITableLabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;

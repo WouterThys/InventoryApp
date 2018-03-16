@@ -2,7 +2,10 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableBallPanel;

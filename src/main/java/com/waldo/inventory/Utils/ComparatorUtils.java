@@ -2,9 +2,9 @@ package com.waldo.inventory.Utils;
 
 import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.search.DbObjectMatch;
 
 import java.util.Comparator;
 

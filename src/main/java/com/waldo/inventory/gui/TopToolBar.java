@@ -3,7 +3,7 @@ package com.waldo.inventory.gui;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.ITableToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;

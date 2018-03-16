@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
-import com.waldo.inventory.gui.components.actions.*;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.CacheManager;
 
 import javax.swing.*;

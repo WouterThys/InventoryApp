@@ -1,9 +1,9 @@
 package com.waldo.inventory.database.settings;
 
-import com.waldo.inventory.database.settings.settingsclasses.*;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
+import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -64,9 +64,10 @@ public class SettingsManager {
 
     public boolean init() {
         String dbFile = Application.startUpPath + "settings.db";
+
         dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + dbFile);
+        dataSource.setDriverClassName("org.sqlite.JDBC");
+        dataSource.setUrl("jdbc:sqlite:" + dbFile);
         dataSource.setUsername("waldo");
         dataSource.setPassword("");
         dataSource.setMaxIdle(10);

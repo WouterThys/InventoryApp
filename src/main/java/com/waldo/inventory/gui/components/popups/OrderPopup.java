@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.gui.components.actions.*;
+import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

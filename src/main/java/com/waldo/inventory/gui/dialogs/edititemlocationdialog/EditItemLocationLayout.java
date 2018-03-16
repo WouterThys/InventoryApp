@@ -4,7 +4,8 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
 
 import java.awt.*;
 import java.awt.event.ItemListener;

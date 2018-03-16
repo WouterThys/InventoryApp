@@ -7,7 +7,10 @@ import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
-import com.waldo.inventory.gui.panels.projectspanel.panels.*;
+import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectCodePanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectOtherPanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectPcbPanel;
 import com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel.ProjectDetailsPanel;
 import com.waldo.utils.icomponents.ILabel;
 
