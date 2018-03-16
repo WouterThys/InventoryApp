@@ -58,6 +58,7 @@ public abstract class ProjectObject extends DbObject {
         } else {
             statement.setString(ndx++, null);
         }
+        statement.setString(ndx++, getDescription());
 
         return ndx;
     }
@@ -72,6 +73,7 @@ public abstract class ProjectObject extends DbObject {
         cpy.setProjectId(getProjectId());
         cpy.setProjectIDEId(getProjectIDEId());
         cpy.setRemarksFile(getRemarksFile());
+        cpy.setDescription(getDescription());
 
         return cpy;
     }
@@ -87,6 +89,7 @@ public abstract class ProjectObject extends DbObject {
             if (!(((ProjectObject)obj).getRemarksFileName().equals(getRemarksFileName()))) return false;
             if (!(((ProjectObject)obj).getProjectId() == getProjectId())) return false;
             if (!(((ProjectObject)obj).getProjectIDEId() == getProjectIDEId())) return false;
+            if (!(((ProjectObject)obj).getDescription().equals(getDescription()))) return false;
         }
         return result;
     }

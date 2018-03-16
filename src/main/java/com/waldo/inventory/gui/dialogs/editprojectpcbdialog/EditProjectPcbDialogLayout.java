@@ -23,6 +23,7 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
     ITextField directoryTf;
     private JButton directoryBtn;
     private IComboBox<ProjectIDE> projectIdeCb;
+    private ITextArea descriptionTa;
 
     /*
     *                  VARIABLES
@@ -55,6 +56,12 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
 
+        // Description
+        descriptionTa = new ITextArea();
+        descriptionTa.setLineWrap(true); // Go to next line when area is full
+        descriptionTa.setWrapStyleWord(true); // Don't cut words in two
+        descriptionTa.addEditedListener(this, "description");
+
         // Directory
         directoryTf = new ITextField();
         directoryTf.addEditedListener(this, "directory");
@@ -74,6 +81,10 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
         getContentPanel().setLayout(new BorderLayout());
 
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
+
+        JPanel descPanel = new JPanel(new BorderLayout());
+        descPanel.add(new JLabel("Description: "), BorderLayout.PAGE_START);
+        descPanel.add(new JScrollPane(descriptionTa), BorderLayout.CENTER);
 
         // Fields
         GridBagConstraints gbc = new GridBagConstraints();
@@ -100,7 +111,8 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
         fieldsPanel.add(GuiUtils.createFileOpenPanel(directoryTf, directoryBtn), gbc);
 
         // Add
-        getContentPanel().add(fieldsPanel, BorderLayout.CENTER);
+        getContentPanel().add(fieldsPanel, BorderLayout.NORTH);
+        getContentPanel().add(descPanel, BorderLayout.CENTER);
 
         // Border
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
@@ -119,6 +131,7 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
             try {
                 directoryTf.setText(projectPcb.getDirectory());
                 projectIdeCb.setSelectedItem(projectPcb.getProjectIDE());
+                descriptionTa.setText(projectPcb.getDescription());
             } finally {
                 endWait();
             }

@@ -16,13 +16,30 @@ public abstract class ProjectObjectPopup<P extends ProjectObject> extends JPopup
         init(projectObject);
     }
 
+    public abstract void onEditObject(P projectObject);
+    public abstract void onDeleteObject(P projectObject);
     public abstract void onRunIde(P projectObject);
-
     public abstract void onBrowseProjectObject(P projectObject);
 
     private void init(final P projectObject) {
 
         // Actions
+        IActions.EditAction editAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditObject(projectObject);
+            }
+        };
+        editAction.setName("Edit");
+
+        IActions.DeleteAction deleteAction = new IActions.DeleteAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDeleteObject(projectObject);
+            }
+        };
+        deleteAction.setName("Delete");
+
         IActions.DoItAction runIdeAction = new IActions.DoItAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,6 +65,9 @@ public abstract class ProjectObjectPopup<P extends ProjectObject> extends JPopup
         runIdeAction.setEnabled(enabled);
         openProjectFolderAction.setEnabled(enabled);
 
+        add(editAction);
+        add(deleteAction);
+        addSeparator();
         add(runIdeAction);
         add(openProjectFolderAction);
     }

@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITextArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
     private IComboBox<CodeLanguages> languageCb;
     GuiUtils.IBrowseFilePanel directoryPnl;
     private IComboBox<ProjectIDE> projectIdeCb;
+    private ITextArea descriptionTa;
 
      /*
      *                  VARIABLES
@@ -57,6 +59,12 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
 
+        // Description
+        descriptionTa = new ITextArea();
+        descriptionTa.setLineWrap(true); // Go to next line when area is full
+        descriptionTa.setWrapStyleWord(true); // Don't cut words in two
+        descriptionTa.addEditedListener(this, "description");
+
         // Language
         languageCb = new IComboBox<>(CodeLanguages.values());
         languageCb.addEditedListener(this, "language", String.class);
@@ -76,6 +84,10 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
+        JPanel descPanel = new JPanel(new BorderLayout());
+        descPanel.add(new JLabel("Description: "), BorderLayout.PAGE_START);
+        descPanel.add(new JScrollPane(descriptionTa), BorderLayout.CENTER);
+
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
 
         // Fields
@@ -85,7 +97,8 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
         gbc.addLine("Directory: ", directoryPnl);
 
         // Add
-        getContentPanel().add(fieldsPanel, BorderLayout.CENTER);
+        getContentPanel().add(fieldsPanel, BorderLayout.NORTH);
+        getContentPanel().add(descPanel, BorderLayout.CENTER);
 
         // Border
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
@@ -105,7 +118,7 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
                 languageCb.setSelectedItem(projectCode.getLanguage());
                 directoryPnl.setText(projectCode.getDirectory());
                 projectIdeCb.setSelectedItem(projectCode.getProjectIDE());
-                //remarksTa.setText(projectCode.getRemarksFile());
+                descriptionTa.setText(projectCode.getDescription());
             } finally {
                 endWait();
             }

@@ -1175,6 +1175,7 @@ public class DatabaseAccess {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
+                    p.setDescription(rs.getString("description"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
@@ -1217,6 +1218,7 @@ public class DatabaseAccess {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
+                    p.setDescription(rs.getString("description"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         p.setLastParsedDate(rs.getTimestamp("lastParsedDate"));
@@ -1261,6 +1263,7 @@ public class DatabaseAccess {
                     p.setDirectory(rs.getString("directory"));
                     p.setProjectId(rs.getLong("projectId"));
                     p.setProjectIDEId(rs.getLong("projectIDEId"));
+                    p.setDescription(rs.getString("description"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));

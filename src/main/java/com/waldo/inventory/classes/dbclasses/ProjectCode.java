@@ -46,6 +46,7 @@ public class ProjectCode extends ProjectObject {
         } else {
             statement.setString(ndx++, null);
         }
+        statement.setString(ndx++, getDescription());
 
         return ndx;
     }
@@ -69,6 +70,7 @@ public class ProjectCode extends ProjectObject {
             if (!(((ProjectCode)obj).getRemarksFileName().equals(getRemarksFileName()))) return false;
             if (!(((ProjectCode)obj).getProjectId() == getProjectId())) return false;
             if (!(((ProjectCode)obj).getProjectIDEId() == getProjectIDEId())) return false;
+            if (!(((ProjectCode)obj).getDescription().equals(getDescription()))) return false;
         }
         return result;
     }
@@ -133,28 +135,28 @@ public class ProjectCode extends ProjectObject {
         this.language = CodeLanguages.fromString(language);
     }
 
-    @Override
-    public String getDirectory() {
-        return super.getDirectory();
-    }
-
-    @Override
-    public void setDirectory(String directory) {
-        super.setDirectory(directory);
-    }
-
-    @Override
-    public long getProjectIDEId() {
-        return super.getProjectIDEId();
-    }
-
-    @Override
-    public void setProjectIDEId(long projectIDEId) {
-        super.setProjectIDEId(projectIDEId);
-    }
-
-    @Override
-    public long getProjectId() {
-        return super.getProjectId();
-    }
+//    @Override
+//    public String getDirectory() {
+//        return super.getDirectory();
+//    }
+//
+//    @Override
+//    public void setDirectory(String directory) {
+//        super.setDirectory(directory);
+//    }
+//
+//    @Override
+//    public long getProjectIDEId() {
+//        return super.getProjectIDEId();
+//    }
+//
+//    @Override
+//    public void setProjectIDEId(long projectIDEId) {
+//        super.setProjectIDEId(projectIDEId);
+//    }
+//
+//    @Override
+//    public long getProjectId() {
+//        return super.getProjectId();
+//    }
 }

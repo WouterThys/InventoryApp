@@ -88,8 +88,16 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     @Override
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null) {
-            Project project = (Project) object[0];
-            if (!project.equals(selectedProject)) {
+            Project project = null;
+            if (object[0] instanceof Project) {
+                project = (Project) object[0];
+            }
+            if (object[0] instanceof ProjectPcb) {
+                selectedProjectObject = (ProjectPcb) object[0];
+                project = selectedProjectObject.getProject();
+            }
+
+            if (project != null && !project.equals(selectedProject)) {
                 selectedProject = project;
                 gridPanel.drawTiles(selectedProject.getProjectPcbs());
             }
@@ -97,6 +105,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             selectedProject = null;
         }
         selectProjectObject(selectedProjectObject);
+        updateEnabledComponents();
     }
 
     //
@@ -140,8 +149,10 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         }
 
         selectedProject.updateProjectPcbs();
-        gridPanel.drawTiles(selectedProject.getProjectPcbs());
-        updateEnabledComponents();
+//        gridPanel.redrawTiles();
+//        gridPanel.selectTile(object);
+//        updateEnabledComponents();
+        updateComponents(object);
     }
 
     //

@@ -36,7 +36,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
     final JPanel eastPanel = new JPanel(new BorderLayout());
     private final JPanel centerPanel = new JPanel(new BorderLayout());
     private final JPanel remarksPanel = new JPanel(new BorderLayout());
-    final JPanel menuPanel = new JPanel(new BorderLayout());
+    private final JPanel menuPanel = new JPanel(new BorderLayout());
 
     ProjectPreviewPanel<T> previewPanel;
 
@@ -108,19 +108,41 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         this.selectedProjectObject = selectedProjectObject;
     }
 
+    public void deleteProjectObject(T projectObject) {
+        if (projectObject != null) {
+            int result = JOptionPane.showConfirmDialog(
+                    ProjectObjectPanel.this,
+                    "Are you sure you want to delete " + projectObject.getName() + "?",
+                    "Confirm delete",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                projectObject.delete();
+            }
+        }
+    }
+
     protected JPopupMenu showPopup(T projectObject) {
-        ProjectObjectPopup<T> popup = new ProjectObjectPopup<T>(projectObject) {
+        return new ProjectObjectPopup<T>(projectObject) {
             @Override
-            public void onRunIde(T projectObject) {
-                previewPanel.runIde(projectObject);
+            public void onEditObject(T projectObject) {
+                ProjectObjectPanel.this.onToolBarEdit(null);
             }
 
             @Override
-            public void onBrowseProjectObject(T projectObject) {
-                previewPanel.browseProjectObject(projectObject);
+            public void onDeleteObject(T projectObject) {
+                deleteProjectObject(projectObject);
+            }
+
+            @Override
+            public void onRunIde(T projectObject1) {
+                previewPanel.runIde(projectObject1);
+            }
+
+            @Override
+            public void onBrowseProjectObject(T projectObject1) {
+                previewPanel.browseProjectObject(projectObject1);
             }
         };
-        return popup;
     }
 
     /*
@@ -213,6 +235,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         selectedProject.updateProjectPcbs();
         selectedProject.updateProjectOthers();
         gridPanel.addTile(object);
+        gridPanel.selectTile(object);
         selectProjectObject(object);
         updateEnabledComponents();
     }
@@ -245,15 +268,6 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (selectedProjectObject != null) {
-            int result = JOptionPane.showConfirmDialog(
-                    ProjectObjectPanel.this,
-                    "Are you sure you want to delete " + selectedProjectObject.getName() + "?",
-                    "Confirm delete",
-                    JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                selectedProjectObject.delete();
-            }
-        }
+        deleteProjectObject(selectedProjectObject);
     }
 }

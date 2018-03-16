@@ -80,7 +80,7 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         redrawTiles();
     }
 
-    private void redrawTiles() {
+    public void redrawTiles() {
         removeAll();
         for (ITileView view : tileViews) {
             add(view);
@@ -89,7 +89,7 @@ public class ProjectGridPanel<P extends ProjectObject> extends JPanel implements
         repaint();
     }
 
-    private void selectTile(P projectObject) {
+    public void selectTile(P projectObject) {
         if (selectedTile != null) {
             selectedTile.setSelected(false);
         }

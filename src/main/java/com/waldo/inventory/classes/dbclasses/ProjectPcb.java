@@ -61,6 +61,7 @@ public class ProjectPcb extends ProjectObject {
         } else {
             statement.setTimestamp(ndx++, null);
         }
+        statement.setString(ndx++, getDescription());
 
         return ndx;
     }
