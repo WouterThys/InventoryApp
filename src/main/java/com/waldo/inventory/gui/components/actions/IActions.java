@@ -297,5 +297,24 @@ public class IActions {
         }
     }
 
+    public static abstract class NextAction extends IAbstractAction {
+        protected NextAction() {
+            super("Next", imageResource.readImage("Actions.L.Right"));
+            setTooltip("Next");
+        }
+    }
 
+    public static abstract class PreviousAction extends IAbstractAction {
+        protected PreviousAction() {
+            super("Previous", imageResource.readImage("Actions.L.Left"));
+            setTooltip("Previous");
+        }
+    }
+
+    public static abstract class InventoryAction extends IAbstractAction {
+        protected InventoryAction() {
+            super("Inventory", imageResource.readImage("Actions.M.Count"));
+            setTooltip("Inventory");
+        }
+    }
 }

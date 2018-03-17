@@ -99,14 +99,16 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, imageOk, "");
 
+        private boolean done = false;
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (value instanceof OrderItem) {
-                if (row == 0) {
+                if (!done && row == 0) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
                     tableColumn.setMinWidth(32);
+                    done = true;
                 }
 
                 label.updateBackground(c.getBackground(), row, isSelected);

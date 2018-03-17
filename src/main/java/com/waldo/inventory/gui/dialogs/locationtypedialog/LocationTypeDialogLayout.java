@@ -8,6 +8,7 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -15,7 +16,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -25,7 +26,6 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
         Search.SearchListener<LocationType>,
         IdBToolBar.IdbToolBarListener,
-        ActionListener,
         IEditedListener{
 
     /*
@@ -36,8 +36,10 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     private IdBToolBar toolBar;
     private IObjectSearchPanel<LocationType> searchPanel;
 
-    private JButton detailCustomBtn;
     ITextField detailName;
+
+    private IActions.EditAction editAction;
+    private IActions.InventoryAction inventoryAction;
 
     ILocationMapPanel ILocationMapPanel;
 
@@ -54,6 +56,9 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         super(application, title);
 
     }
+
+    abstract void onEditLocation();
+    abstract void onInventory();
 
     /*
      *                   METHODS
@@ -101,12 +106,11 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         TitledBorder titledBorder = GuiUtils.createTitleBorder("Info");
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel northPanel = new JPanel(new GridBagLayout());
-        JPanel buttonPanel = new JPanel(new BorderLayout());
+        JToolBar toolBar = GuiUtils.createNewToolbar(inventoryAction, editAction);
 
-        buttonPanel.add(detailCustomBtn, BorderLayout.EAST);
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(northPanel);
         gbh.addLine("Name: ", detailName);
-        gbh.add(buttonPanel, 1,1);
+        gbh.add(toolBar, 1,1);
 
         // Add
         panel.add(northPanel, BorderLayout.NORTH);
@@ -142,8 +146,20 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailCustomBtn = new JButton(imageResource.readImage("Locations.Edit"));
-        detailCustomBtn.addActionListener(this);
+
+        editAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditLocation();
+            }
+        };
+
+        inventoryAction = new IActions.InventoryAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onInventory();
+            }
+        };
 
         ILocationMapPanel = new ILocationMapPanel(this, null, true);
     }
