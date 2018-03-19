@@ -8,11 +8,11 @@ import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
+import com.waldo.inventory.gui.dialogs.inventorydialog.InventoryDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -246,17 +246,22 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
         }
     }
 
-    //
-    // Custom  button press
-    //
     @Override
-    public void actionPerformed(ActionEvent e) {
+    void onEditLocation() {
         if (selectedLocationType != null) {
             CustomLocationDialog dialog = new CustomLocationDialog(this, "Custom", selectedLocationType);
             if (dialog.showDialog() == IDialog.OK) {
                 selectedLocationType.updateLocations();
                 setDetails();
             }
+        }
+    }
+
+    @Override
+    void onInventory() {
+        if (selectedLocationType != null) {
+            InventoryDialog dialog = new InventoryDialog(LocationTypeDialog.this, "Inventory", selectedLocationType);
+            dialog.showDialog();
         }
     }
 }

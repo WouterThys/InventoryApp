@@ -19,6 +19,7 @@ public class ILocationMapPanel extends JPanel implements GuiUtils.GuiInterface {
 
     public static final Color GREEN = new Color(19,182,46);
     public static final Color YELLOW = new Color(250,244,70);
+    public static final Color BLUE = Color.BLUE;
     
     /*
      *                  COMPONENTS
