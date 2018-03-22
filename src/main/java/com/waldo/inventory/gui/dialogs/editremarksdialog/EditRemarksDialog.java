@@ -23,31 +23,35 @@ public class EditRemarksDialog extends EditRemarksDialogLayout {
 
     @Override
     void onSave()  {
-        if (file == null) {
-            try {
-                file = FileUtils.createTempFile("remarks");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (file != null) {
-            try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
-                    objectOutputStream.writeObject(textEditor.getStyledDocument());
-                    objectOutputStream.flush();
-                    objectOutputStream.close();
+        if (textEditor.getStyledDocument().getLength() > 0) {
+            if (file == null) {
+                try {
+                    file = FileUtils.createTempFile("remarks");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+
+            if (file != null) {
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
+                        objectOutputStream.writeObject(textEditor.getStyledDocument());
+                        objectOutputStream.flush();
+                        objectOutputStream.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        EditRemarksDialog.this,
+                        "Could not save file..",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         } else {
-            JOptionPane.showMessageDialog(
-                    EditRemarksDialog.this,
-                    "Could not save file..",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            file = null;
         }
     }
 
@@ -64,7 +68,6 @@ public class EditRemarksDialog extends EditRemarksDialogLayout {
     @Override
     protected void onNeutral() {
         onSave();
-        super.onOK();
     }
 
     @Override

@@ -197,6 +197,7 @@ public class MainPanel extends MainPanelLayout {
                 SwingUtilities.invokeLater(() -> {
                     selectedItem = sm().findItemById(itemId);
                     tableSelectItem(selectedItem);
+                    detailPanel.updateComponents(selectedItem);
                     updateEnabledComponents();
                 });
 
@@ -206,6 +207,7 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Item item) {
                 tableRemoveItem(item);
                 selectedItem = null;
+                detailPanel.updateComponents(null);
                 updateEnabledComponents();
             }
 

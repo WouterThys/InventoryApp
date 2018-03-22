@@ -104,7 +104,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         } else {
             selectedProject = null;
         }
-        selectProjectObject(selectedProjectObject);
+        previewPanel.updateComponents(selectedProject);
         updateEnabledComponents();
     }
 

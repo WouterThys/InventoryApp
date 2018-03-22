@@ -174,6 +174,8 @@ public abstract class ProjectObject extends DbObject {
     public void setRemarksFile(File remarksFile) {
         if (remarksFile != null && remarksFile.exists()) {
             this.remarksFile = remarksFile.getAbsolutePath();
+        } else {
+            this.remarksFile = "";
         }
     }
 

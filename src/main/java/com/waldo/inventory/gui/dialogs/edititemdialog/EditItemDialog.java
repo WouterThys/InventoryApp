@@ -81,7 +81,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
     @Override
     protected void onNeutral() {
         if (verify()) {
-            componentPanel.updateRemarks();
             save();
 
             getButtonNeutral().setEnabled(false);
@@ -98,7 +97,7 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
     }
 
     private boolean checkChange() {
-        return (selectedItem != null) && (componentPanel.updateRemarks() || !(selectedItem.equals(originalItem)));
+        return (selectedItem != null) && (!(selectedItem.equals(originalItem)));
     }
 
     private void showSaveDialog() {
