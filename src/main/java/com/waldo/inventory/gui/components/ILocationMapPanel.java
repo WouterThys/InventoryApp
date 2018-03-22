@@ -69,7 +69,7 @@ public class ILocationMapPanel extends JPanel implements GuiUtils.GuiInterface {
         drawButtons();
     }
 
-    public void createButtonsFromLocations(List<Location> locationList, boolean showPopup) {
+    private void createButtonsFromLocations(List<Location> locationList, boolean showPopup) {
         buttonList.clear();
         if (locationList != null) {
             for (Location location : locationList) {

@@ -240,6 +240,10 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
                         JOptionPane.YES_NO_OPTION);
 
                 if (res == JOptionPane.YES_OPTION) {
+                    Location oldLocation = selectedItem.getLocation();
+                    if (oldLocation != null) {
+                        oldLocation.updateItems();
+                    }
                     selectedItem.setLocationId(-1);
                     updateLocationFields(null);
                     editedListener.onValueChanged(
