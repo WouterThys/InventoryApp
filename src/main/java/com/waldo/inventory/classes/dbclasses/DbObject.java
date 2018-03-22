@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.AddUpdateDelete;
 import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.inventory.managers.LogManager;
@@ -128,7 +129,7 @@ public abstract class DbObject {
             }
 
             @Override
-            public void tableChanged(int changedHow) {
+            public void tableChanged(QueryType changedHow) {
 
             }
 
@@ -161,8 +162,7 @@ public abstract class DbObject {
         }
     }
 
-    public abstract void tableChanged(int changedHow);
-
+    public abstract void tableChanged(QueryType changedHow);
 
     public void delete() {
         if (canBeSaved) {

@@ -55,7 +55,7 @@ public class GeneralSettings extends DbSettingsObject {
     }
 
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
 
     }
 

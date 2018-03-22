@@ -10,6 +10,38 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class Statics {
 
+    public enum QueryType {
+        CacheClear(-2),
+        Unknown(-1),
+        Insert(0),
+        Update(1),
+        Delete(2),
+        Select(3),
+        Custom(4);
+
+        private final int value;
+        QueryType(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static QueryType fromInt(int value) {
+            switch (value) {
+                default:
+                case -1: return Unknown;
+                case -2: return CacheClear;
+                case 0: return Insert;
+                case 1: return Update;
+                case 2: return Delete;
+                case 3: return Select;
+                case 4: return Custom;
+            }
+        }
+    }
+
     public static final String[] Alphabet = {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};

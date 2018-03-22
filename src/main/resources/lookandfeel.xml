@@ -12,15 +12,15 @@
         <insets top="2" left="2" bottom="2" right="2" />
         <state>
             <font name="serif" size="14" />
-            <color doubleValue="WHITE" dbAction="BACKGROUND"/>
-            <color doubleValue="BLACK" dbAction="TEXT_FOREGROUND" />
+            <color doubleValue="WHITE" dbQueryType="BACKGROUND"/>
+            <color doubleValue="BLACK" dbQueryType="TEXT_FOREGROUND" />
         </state>
     </style>
 
 
 
-    <bind style="inventoryStyle" dbAction="region" key=".*" />
-    <bind style="textfield" dbAction="region" key="TextField" />
+    <bind style="inventoryStyle" dbQueryType="region" key=".*" />
+    <bind style="textfield" dbQueryType="region" key="TextField" />
 
 
 </synth>

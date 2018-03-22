@@ -137,23 +137,14 @@ public class Order extends DbObject {
     // DatabaseAccess tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
-                List<Order> list = cache().getOrders();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+            case Insert: {
+                cache().add(this);
                 break;
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
-                break;
-            }
-            case DatabaseAccess.OBJECT_DELETE: {
-                List<Order> list = cache().getOrders();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+            case Delete: {
+                cache().remove(this);
                 break;
             }
         }

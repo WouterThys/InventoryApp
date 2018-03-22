@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.managers.CacheManager;
 import com.waldo.utils.DateUtils;
 
@@ -16,7 +16,7 @@ public class DbHistory extends DbObject {
 
     // Variables
     private Date date;
-    private int dbAction; // Add / edit / delete
+    private QueryType dbQueryType;
     private int dbObjectType;
     private long dbObjectId;
 
@@ -24,9 +24,9 @@ public class DbHistory extends DbObject {
         super(TABLE_NAME);
     }
 
-    public DbHistory(int dbAction, DbObject dbObject) {
+    public DbHistory(QueryType dbQueryType, DbObject dbObject) {
         this();
-        this.dbAction = dbAction;
+        this.dbQueryType = dbQueryType;
         this.dbObjectType = DbObject.getType(dbObject);
         this.dbObjectId = dbObject.getId();
     }
@@ -39,7 +39,7 @@ public class DbHistory extends DbObject {
         date = DateUtils.now();
 
         statement.setTimestamp(ndx++, new Timestamp(date.getTime()));
-        statement.setInt(ndx++, getDbAction());
+        statement.setInt(ndx++, getDbQueryType().getValue());
         statement.setInt(ndx++, getDbObjectType());
         statement.setLong(ndx++, getDbObjectId());
 
@@ -53,7 +53,7 @@ public class DbHistory extends DbObject {
 
         // Add variables
         cpy.setDate(getDate());
-        cpy.setDbAction(getDbAction());
+        cpy.setDbQueryType(getDbQueryType());
         cpy.setDbObjectType(getDbObjectType());
         cpy.setDbObjectId(getDbObjectId());
 
@@ -69,20 +69,20 @@ public class DbHistory extends DbObject {
     // DatabaseAccess tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(QueryType changedHow) {
         switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
+            case Insert: {
                 List<DbHistory> list = CacheManager.cache().getDbHistory();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
+            case Update: {
 
                 break;
             }
-            case DatabaseAccess.OBJECT_DELETE: {
+            case Delete: {
                 List<DbHistory> list = CacheManager.cache().getDbHistory();
                 if (list.contains(this)) {
                     list.remove(this);
@@ -116,12 +116,19 @@ public class DbHistory extends DbObject {
         }
     }
 
-    public int getDbAction() {
-        return dbAction;
+    public QueryType getDbQueryType() {
+        if (dbQueryType == null) {
+            dbQueryType = QueryType.Unknown;
+        }
+        return dbQueryType;
     }
 
-    public void setDbAction(int dbAction) {
-        this.dbAction = dbAction;
+    public void setDbQueryType(QueryType dbQueryType) {
+        this.dbQueryType = dbQueryType;
+    }
+
+    public void setDbQueryType(int dbQueryType) {
+        this.dbQueryType = QueryType.fromInt(dbQueryType);
     }
 
     public int getDbObjectType() {

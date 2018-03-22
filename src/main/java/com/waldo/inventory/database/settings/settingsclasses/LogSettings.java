@@ -1,5 +1,6 @@
 package com.waldo.inventory.database.settings.settingsclasses;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 
 public class LogSettings extends DbSettingsObject {
@@ -22,7 +23,7 @@ public class LogSettings extends DbSettingsObject {
     }
 
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
         //
     }
 

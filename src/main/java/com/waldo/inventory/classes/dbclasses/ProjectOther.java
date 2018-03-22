@@ -1,8 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DatabaseAccess;
-
-import java.util.List;
+import com.waldo.inventory.Utils.Statics;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -36,23 +34,14 @@ public class ProjectOther extends ProjectObject {
     // DatabaseAccess tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
-                List<ProjectOther> list = cache().getProjectOthers();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+            case Insert: {
+                cache().add(this);
                 break;
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
-                break;
-            }
-            case DatabaseAccess.OBJECT_DELETE: {
-                List<ProjectOther> list = cache().getProjectOthers();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+            case Delete: {
+                cache().remove(this);
                 break;
             }
         }

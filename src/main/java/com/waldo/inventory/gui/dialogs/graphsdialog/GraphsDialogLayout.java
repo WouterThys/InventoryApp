@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.graphsdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbHistory;
-import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.gui.Application;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
@@ -75,10 +74,10 @@ abstract class GraphsDialogLayout extends IDialog {
             int total;
 
             for (DbHistory history : historyList) {
-                switch (history.getDbAction()) {
-                    case DatabaseAccess.OBJECT_INSERT: inserts++; break;
-                    case DatabaseAccess.OBJECT_UPDATE: updates++; break;
-                    case DatabaseAccess.OBJECT_DELETE: deletes++; break;
+                switch (history.getDbQueryType()) {
+                    case Insert: inserts++; break;
+                    case Update: updates++; break;
+                    case Delete: deletes++; break;
                 }
             }
 

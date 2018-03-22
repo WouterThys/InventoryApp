@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
-import com.waldo.inventory.database.DatabaseAccess;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -86,19 +86,16 @@ public class ParserItemLink extends DbObject {
     // DatabaseAccess tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
+            case Insert: {
                 List<ParserItemLink> list = cache().getParserItemLinks();
                 if (!list.contains(this)) {
                     list.add(this);
                 }
                 break;
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
-                break;
-            }
-            case DatabaseAccess.OBJECT_DELETE: {
+            case Delete: {
                 List<ParserItemLink> list = cache().getParserItemLinks();
                 if (list.contains(this)) {
                     list.remove(this);

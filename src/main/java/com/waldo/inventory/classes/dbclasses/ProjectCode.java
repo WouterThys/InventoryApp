@@ -1,13 +1,12 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.CodeLanguages;
-import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -84,23 +83,14 @@ public class ProjectCode extends ProjectObject {
     // DatabaseAccess tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case DatabaseAccess.OBJECT_INSERT: {
-                List<ProjectCode> list = cache().getProjectCodes();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+            case Insert: {
+                cache().add(this);
                 break;
             }
-            case DatabaseAccess.OBJECT_UPDATE: {
-                break;
-            }
-            case DatabaseAccess.OBJECT_DELETE: {
-                List<ProjectCode> list = cache().getProjectCodes();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+            case Delete: {
+                cache().remove(this);
                 break;
             }
         }

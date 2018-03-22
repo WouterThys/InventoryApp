@@ -1,11 +1,11 @@
 package com.waldo.inventory.database.classes;
 
+import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.database.DatabaseAccess;
 
 public class DbQueueObject {
 
-    private final int how;
+    private final QueryType queryType;
     private final DbObject object;
     private final String sql;
 
@@ -13,20 +13,24 @@ public class DbQueueObject {
     private long insertTime;
     private long removeTime;
 
-    public DbQueueObject(DbObject object, int how) {
+    public DbQueueObject(DbObject object, QueryType queryType) {
         this.object = object;
-        this.how = how;
+        if (queryType == null) {
+            this.queryType = QueryType.Unknown;
+        } else {
+            this.queryType = queryType;
+        }
         this.sql = "";
     }
 
     public DbQueueObject(String sql) {
         this.object = null;
-        this.how = DatabaseAccess.EXECUTE_SQL;
+        this.queryType = QueryType.Custom;
         this.sql = sql;
     }
 
-    public int getHow() {
-        return how;
+    public QueryType getQueryType() {
+        return queryType;
     }
 
     public DbObject getObject() {

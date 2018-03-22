@@ -1,11 +1,11 @@
 package com.waldo.inventory.managers;
 
+import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.database.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
-import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.utils.DateUtils;
 
@@ -125,33 +125,35 @@ public class CacheManager {
         }
     }
 
-    public <T extends DbObject> void notifyListeners(int changedHow, T object) {
+    public <T extends DbObject> void notifyListeners(QueryType queryType, T object) {
         Class t = object.getClass();
         if (changedListenerMap.containsKey(t)) {
             for (CacheChangedListener l : changedListenerMap.get(t)) {
-                switch (changedHow) {
-                    case DatabaseAccess.OBJECT_INSERT:
+                switch (queryType) {
+                    case Insert:
                         try {
                             SwingUtilities.invokeLater(() -> l.onInserted(object));
                         } catch (Exception e) {
                             LOG.error("Error after insert of " + object.getName(), e);
                         }
                         break;
-                    case DatabaseAccess.OBJECT_UPDATE:
+                    case Update:
                         try {
                             SwingUtilities.invokeLater(() -> l.onUpdated(object));
                         } catch (Exception e) {
                             LOG.error("Error after update of " + object.getName(), e);
                         }
                         break;
-                    case DatabaseAccess.OBJECT_DELETE:
+                    case Delete:
                         try {
                             SwingUtilities.invokeLater(() -> l.onDeleted(object));
                         } catch (Exception e) {
                             LOG.error("Error after delete of " + object.getName(), e);
                         }
                         break;
-                    case DatabaseAccess.OBJECT_CACHE_CLEAR:
+                    case Custom:
+                        break;
+                    case CacheClear:
                         try {
                             SwingUtilities.invokeLater(l::onCacheCleared);
                         } catch (Exception e) {
@@ -212,6 +214,17 @@ public class CacheManager {
         return items;
     }
 
+    public synchronized void add(Item element) {
+        if (!getItems().contains(element)) {
+            items.add(element);
+        }
+    }
+
+    public synchronized void remove(Item element) {
+        getItems().remove(element);
+    }
+
+
     public synchronized List<String> getAliasList() {
         if (aliasList == null) {
             aliasList = new ArrayList<>();
@@ -238,6 +251,7 @@ public class CacheManager {
         aliasList = null;
     }
 
+
     public synchronized CacheList<Category> getCategories() {
         if (!categories.isFetched()) {
             long start = System.nanoTime();
@@ -245,6 +259,17 @@ public class CacheManager {
         }
         return categories;
     }
+
+    public synchronized void add(Category element) {
+        if (!getCategories().contains(element)) {
+            categories.add(element);
+        }
+    }
+
+    public synchronized void remove(Category element) {
+        getCategories().remove(element);
+    }
+
 
     public synchronized CacheList<Product> getProducts() {
         if (!products.isFetched()) {
@@ -254,6 +279,17 @@ public class CacheManager {
         return products;
     }
 
+    public synchronized void add(Product element) {
+        if (!getProducts().contains(element)) {
+            products.add(element);
+        }
+    }
+
+    public synchronized void remove(Product element) {
+        getProducts().remove(element);
+    }
+
+
     public synchronized CacheList<Type> getTypes() {
         if (!types.isFetched()) {
             long start = System.nanoTime();
@@ -261,6 +297,18 @@ public class CacheManager {
         }
         return types;
     }
+
+    public synchronized void add(Type element) {
+        if (!getTypes().contains(element)) {
+            types.add(element);
+        }
+    }
+
+    public synchronized void remove(Type element) {
+        getTypes().remove(element);
+    }
+
+
 
     public synchronized CacheList<Manufacturer> getManufacturers() {
         if (!manufacturers.isFetched()) {
@@ -270,6 +318,17 @@ public class CacheManager {
         return manufacturers;
     }
 
+    public synchronized void add(Manufacturer element) {
+        if (!getManufacturers().contains(element)) {
+            manufacturers.add(element);
+        }
+    }
+
+    public synchronized void remove(Manufacturer element) {
+        getManufacturers().remove(element);
+    }
+
+
     public synchronized CacheList<Location> getLocations() {
         if (!locations.isFetched()) {
             long start = System.nanoTime();
@@ -277,6 +336,17 @@ public class CacheManager {
         }
         return locations;
     }
+
+    public synchronized void add(Location element) {
+        if (!getLocations().contains(element)) {
+            locations.add(element);
+        }
+    }
+
+    public synchronized void remove(Location element) {
+        getLocations().remove(element);
+    }
+
 
     public synchronized CacheList<LocationType> getLocationTypes() {
         if (!locationTypes.isFetched()) {
@@ -286,6 +356,17 @@ public class CacheManager {
         return locationTypes;
     }
 
+    public synchronized void add(LocationType element) {
+        if (!getLocationTypes().contains(element)) {
+            locationTypes.add(element);
+        }
+    }
+
+    public synchronized void remove(LocationType element) {
+        getLocationTypes().remove(element);
+    }
+
+
     public synchronized CacheList<Order> getOrders() {
         if (!orders.isFetched()) {
             long start = System.nanoTime();
@@ -294,6 +375,17 @@ public class CacheManager {
         return orders;
     }
 
+    public synchronized void add(Order element) {
+        if (!getOrders().contains(element)) {
+            orders.add(element);
+        }
+    }
+
+    public synchronized void remove(Order element) {
+        getOrders().remove(element);
+    }
+
+
     public synchronized CacheList<OrderItem> getOrderItems() {
         if (!orderItems.isFetched()) {
             long start = System.nanoTime();
@@ -301,6 +393,17 @@ public class CacheManager {
         }
         return orderItems;
     }
+
+    public synchronized void add(OrderItem element) {
+        if (!getOrderItems().contains(element)) {
+            orderItems.add(element);
+        }
+    }
+
+    public synchronized void remove(OrderItem element) {
+        getOrderItems().remove(element);
+    }
+
 
     public List<OrderItem> getOrderedItems(long orderId) {
         List<OrderItem> items = new ArrayList<>();
@@ -312,6 +415,8 @@ public class CacheManager {
         return items;
     }
 
+
+
     public synchronized CacheList<Distributor> getDistributors() {
         if (!distributors.isFetched()) {
             long start = System.nanoTime();
@@ -319,6 +424,17 @@ public class CacheManager {
         }
         return distributors;
     }
+
+    public synchronized void add(Distributor element) {
+        if (!getDistributors().contains(element)) {
+            distributors.add(element);
+        }
+    }
+
+    public synchronized void remove(Distributor element) {
+        getDistributors().remove(element);
+    }
+
 
     public synchronized CacheList<DistributorPartLink> getDistributorPartLinks() {
         if (!distributorPartLinks.isFetched()) {
@@ -328,6 +444,17 @@ public class CacheManager {
         return distributorPartLinks;
     }
 
+    public synchronized void add(DistributorPartLink element) {
+        if (!getDistributorPartLinks().contains(element)) {
+            distributorPartLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(DistributorPartLink element) {
+        getDistributorPartLinks().remove(element);
+    }
+
+
     public synchronized CacheList<Package> getPackages() {
         if (!packages.isFetched()) {
             long start = System.nanoTime();
@@ -335,6 +462,17 @@ public class CacheManager {
         }
         return packages;
     }
+
+    public synchronized void add(Package element) {
+        if (!getPackages().contains(element)) {
+            packages.add(element);
+        }
+    }
+
+    public synchronized void remove(Package element) {
+        getPackages().remove(element);
+    }
+
 
     public synchronized CacheList<PackageType> getPackageTypes() {
         if (!packageTypes.isFetched()) {
@@ -344,6 +482,17 @@ public class CacheManager {
         return packageTypes;
     }
 
+    public synchronized void add(PackageType element) {
+        if (!getPackageTypes().contains(element)) {
+            packageTypes.add(element);
+        }
+    }
+
+    public synchronized void remove(PackageType element) {
+        getPackageTypes().remove(element);
+    }
+
+
     public synchronized CacheList<Project> getProjects() {
         if (!projects.isFetched()) {
             long start = System.nanoTime();
@@ -351,6 +500,17 @@ public class CacheManager {
         }
         return projects;
     }
+
+    public synchronized void add(Project element) {
+        if (!getProjects().contains(element)) {
+            projects.add(element);
+        }
+    }
+
+    public synchronized void remove(Project element) {
+        getProjects().remove(element);
+    }
+
 
     public synchronized CacheList<ProjectCode> getProjectCodes() {
         if (!projectCodes.isFetched()) {
@@ -360,6 +520,17 @@ public class CacheManager {
         return projectCodes;
     }
 
+    public synchronized void add(ProjectCode element) {
+        if (!getProjectCodes().contains(element)) {
+            projectCodes.add(element);
+        }
+    }
+
+    public synchronized void remove(ProjectCode element) {
+        getProjectCodes().remove(element);
+    }
+
+
     public synchronized CacheList<ProjectPcb> getProjectPcbs() {
         if (!projectPcbs.isFetched()) {
             long start = System.nanoTime();
@@ -367,6 +538,17 @@ public class CacheManager {
         }
         return projectPcbs;
     }
+
+    public synchronized void add(ProjectPcb element) {
+        if (!getProjectPcbs().contains(element)) {
+            projectPcbs.add(element);
+        }
+    }
+
+    public synchronized void remove(ProjectPcb element) {
+        getProjectPcbs().remove(element);
+    }
+
 
     public synchronized CacheList<CreatedPcb> getCreatedPcbs() {
         if (!createdPcbs.isFetched()) {
@@ -376,6 +558,17 @@ public class CacheManager {
         return createdPcbs;
     }
 
+    public synchronized void add(CreatedPcb element) {
+        if (!getCreatedPcbs().contains(element)) {
+            createdPcbs.add(element);
+        }
+    }
+
+    public synchronized void remove(CreatedPcb element) {
+        getCreatedPcbs().remove(element);
+    }
+
+
     public synchronized CacheList<CreatedPcbLink> getCreatedPcbLinks() {
         if (!createdPcbLinks.isFetched()) {
             long start = System.nanoTime();
@@ -383,6 +576,17 @@ public class CacheManager {
         }
         return createdPcbLinks;
     }
+
+    public synchronized void add(CreatedPcbLink element) {
+        if (!getCreatedPcbLinks().contains(element)) {
+            createdPcbLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(CreatedPcbLink element) {
+        getCreatedPcbLinks().remove(element);
+    }
+
 
     public synchronized CacheList<ProjectOther> getProjectOthers() {
         if (!projectOthers.isFetched()) {
@@ -392,6 +596,17 @@ public class CacheManager {
         return projectOthers;
     }
 
+    public synchronized void add(ProjectOther element) {
+        if (!getProjectOthers().contains(element)) {
+            getProjectOthers().add(element);
+        }
+    }
+
+    public synchronized void remove(ProjectOther element) {
+        getProjectOthers().remove(element);
+    }
+
+
     public synchronized CacheList<PcbItemProjectLink> getPcbItemProjectLinks() {
         if (!pcbItemProjectLinks.isFetched()) {
             long start = System.nanoTime();
@@ -399,6 +614,17 @@ public class CacheManager {
         }
         return pcbItemProjectLinks;
     }
+
+    public synchronized void add(PcbItemProjectLink element) {
+        if (!getPcbItemProjectLinks().contains(element)) {
+            pcbItemProjectLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(PcbItemProjectLink element) {
+        getPcbItemProjectLinks().remove(element);
+    }
+
 
     public synchronized CacheList<ProjectIDE> getProjectIDES() {
         if (!projectIDES.isFetched()) {
@@ -408,6 +634,17 @@ public class CacheManager {
         return projectIDES;
     }
 
+    public synchronized void add(ProjectIDE element) {
+        if (!getProjectIDES().contains(element)) {
+            projectIDES.add(element);
+        }
+    }
+
+    public synchronized void remove(ProjectIDE element) {
+        getProjectIDES().remove(element);
+    }
+
+
     public synchronized CacheList<ParserItemLink> getParserItemLinks() {
         if (!parserItemLinks.isFetched()) {
             long start = System.nanoTime();
@@ -415,6 +652,17 @@ public class CacheManager {
         }
         return parserItemLinks;
     }
+
+    public synchronized void add(ParserItemLink element) {
+        if (!getParserItemLinks().contains(element)) {
+            parserItemLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(ParserItemLink element) {
+        getParserItemLinks().remove(element);
+    }
+
 
     public synchronized CacheList<OrderFileFormat> getOrderFileFormats() {
         if (!orderFileFormats.isFetched()) {
@@ -424,6 +672,17 @@ public class CacheManager {
         return orderFileFormats;
     }
 
+    public synchronized void add(OrderFileFormat element) {
+        if (!getOrderFileFormats().contains(element)) {
+            orderFileFormats.add(element);
+        }
+    }
+
+    public synchronized void remove(OrderFileFormat element) {
+        getOrderFileFormats().remove(element);
+    }
+
+
     public synchronized CacheList<PcbItem> getPcbItems() {
         if (!pcbItems.isFetched()) {
             long start = System.nanoTime();
@@ -431,6 +690,17 @@ public class CacheManager {
         }
         return pcbItems;
     }
+
+    public synchronized void add(PcbItem element) {
+        if (!getPcbItems().contains(element)) {
+            pcbItems.add(element);
+        }
+    }
+
+    public synchronized void remove(PcbItem element) {
+        getPcbItems().remove(element);
+    }
+
 
     public synchronized CacheList<PcbItemItemLink> getPcbItemItemLinks() {
         if (!pcbItemItemLinks.isFetched()) {
@@ -440,6 +710,17 @@ public class CacheManager {
         return pcbItemItemLinks;
     }
 
+    public synchronized void add(PcbItemItemLink element) {
+        if (!getPcbItemItemLinks().contains(element)) {
+            pcbItemItemLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(PcbItemItemLink element) {
+        getPcbItemItemLinks().remove(element);
+    }
+
+
     public synchronized CacheList<Log> getLogs() {
         if (!logs.isFetched()) {
             long start = System.nanoTime();
@@ -447,6 +728,17 @@ public class CacheManager {
         }
         return logs;
     }
+
+    public synchronized void add(Log element) {
+        if (!getLogs().contains(element)) {
+            logs.add(element);
+        }
+    }
+
+    public synchronized void remove(Log element) {
+        getLogs().remove(element);
+    }
+
 
     public synchronized CacheList<DbHistory> getDbHistory() {
         if (!dbHistoryList.isFetched()) {
@@ -456,6 +748,17 @@ public class CacheManager {
         return dbHistoryList;
     }
 
+    public synchronized void add(DbHistory element) {
+        if (!getDbHistory().contains(element)) {
+            dbHistoryList.add(element);
+        }
+    }
+
+    public synchronized void remove(DbHistory element) {
+        getDbHistory().remove(element);
+    }
+
+
     public synchronized CacheList<Set> getSets() {
         if (!sets.isFetched()) {
             long start = System.nanoTime();
@@ -463,6 +766,17 @@ public class CacheManager {
         }
         return sets;
     }
+
+    public synchronized void add(Set element) {
+        if (!getSets().contains(element)) {
+            sets.add(element);
+        }
+    }
+
+    public synchronized void remove(Set element) {
+        getSets().remove(element);
+    }
+
 
     public synchronized CacheList<SetItemLink> getSetItemLinks() {
         if (!setItemLinks.isFetched()) {
@@ -472,6 +786,17 @@ public class CacheManager {
         return setItemLinks;
     }
 
+    public synchronized void add(SetItemLink element) {
+        if (!getSetItemLinks().contains(element)) {
+            setItemLinks.add(element);
+        }
+    }
+
+    public synchronized void remove(SetItemLink element) {
+        getSetItemLinks().remove(element);
+    }
+
+
     public synchronized CacheList<DbEvent> getDbEvents() {
         if (!dbEvents.isFetched()) {
             long start = System.nanoTime();
@@ -479,6 +804,17 @@ public class CacheManager {
         }
         return dbEvents;
     }
+
+    public synchronized void add(DbEvent element) {
+        if (!getDbEvents().contains(element)) {
+            dbEvents.add(element);
+        }
+    }
+
+    public synchronized void remove(DbEvent element) {
+        getDbEvents().remove(element);
+    }
+
 
     public synchronized CacheList<Statistics> getStatistics() {
         if (!statistics.isFetched()) {
@@ -488,11 +824,32 @@ public class CacheManager {
         return statistics;
     }
 
+    public synchronized void add(Statistics element) {
+        if (!getStatistics().contains(element)) {
+            statistics.add(element);
+        }
+    }
+
+    public synchronized void remove(Statistics element) {
+        getStatistics().remove(element);
+    }
+
+
     public synchronized CacheList<PendingOrder> getPendingOrders() {
         if (!pendingOrders.isFetched()) {
             long start = System.nanoTime();
             pendingOrders.setList(db().updatePendingOrders(), (System.nanoTime() - start));
         }
         return pendingOrders;
+    }
+
+    public synchronized void add(PendingOrder element) {
+        if (!getPendingOrders().contains(element)) {
+            pendingOrders.add(element);
+        }
+    }
+
+    public synchronized void remove(PendingOrder element) {
+        getPendingOrders().remove(element);
     }
 }

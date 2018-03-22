@@ -1,5 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.Statics;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -63,7 +65,7 @@ public class Statistics extends DbObject {
     // DbManager tells the object is updated
     //
     @Override
-    public void tableChanged(int changedHow) {
+    public void tableChanged(Statics.QueryType changedHow) {
     }
 
     // Getters

@@ -11,6 +11,7 @@ import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbExecuteListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
 import com.waldo.utils.DateUtils;
@@ -22,6 +23,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.QueryType.*;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -30,13 +32,6 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class DatabaseAccess {
 
     private static final LogManager LOG = LogManager.LOG(DatabaseAccess.class);
-
-    public static final int OBJECT_INSERT = 0;
-    public static final int OBJECT_UPDATE = 1;
-    public static final int OBJECT_DELETE = 2;
-    public static final int OBJECT_SELECT = 3;
-    public static final int OBJECT_CACHE_CLEAR = 4;
-    public static final int EXECUTE_SQL = 5;
 
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
@@ -268,69 +263,6 @@ public class DatabaseAccess {
             this.name = name;
         }
 
-        private void insert(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            dbo.addParameters(stmt);
-            stmt.execute();
-
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                rs.next();
-                dbo.setId(rs.getLong(1));
-            }
-
-            // Listeners
-            dbo.tableChanged(OBJECT_INSERT);
-
-            // Log to db history
-            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_INSERT, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        private void update(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            int ndx = dbo.addParameters(stmt);
-            if (ndx > 0) {
-                stmt.setLong(ndx, dbo.getId());
-                stmt.execute();
-            }
-
-            // Listeners
-            dbo.tableChanged(OBJECT_UPDATE);
-
-            // Log to db history
-            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_UPDATE, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        private void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
-            stmt.setLong(1, dbo.getId());
-            stmt.execute();
-            dbo.setId(-1);// Not in database anymore
-
-            // Listeners
-            dbo.tableChanged(OBJECT_DELETE);
-
-            // Log to db history
-            if (Main.LOG_HISTORY && !(dbo instanceof DbHistory)) {
-                try {
-                    DbHistory dbHistory = new DbHistory(OBJECT_DELETE, dbo);
-                    dbHistory.save();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         @Override
         protected Integer doInBackground() throws Exception {
             Thread.currentThread().setName(name);
@@ -348,47 +280,45 @@ public class DatabaseAccess {
                             boolean hasMoreWork;
                             do {
                                 DbObject dbo = queueObject.getObject();
-                                switch (queueObject.getHow()) {
-                                    case OBJECT_INSERT: {
+                                Statics.QueryType type = queueObject.getQueryType();
+                                switch (type) {
+                                    case Insert: {
                                         String sql = dbo.getScript(DbObject.SQL_INSERT);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                                            insert(stmt, dbo);
-                                            cache().notifyListeners(OBJECT_INSERT, dbo);
+                                            DatabaseHelper.insert(stmt, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_INSERT, sql);
+                                                DbErrorObject object = new DbErrorObject(dbo, e, Insert, sql);
                                                 nonoList.put(object);
                                             }
                                         }
                                     }
                                     break;
-                                    case OBJECT_UPDATE: {
+                                    case Update: {
                                         String sql = dbo.getScript(DbObject.SQL_UPDATE);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                                            update(stmt, dbo);
-                                            cache().notifyListeners(OBJECT_UPDATE, dbo);
+                                            DatabaseHelper.update(stmt, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_UPDATE, sql);
+                                                DbErrorObject object = new DbErrorObject(dbo, e, Update, sql);
                                                 nonoList.put(object);
                                             }
                                         }
                                         break;
                                     }
-                                    case OBJECT_DELETE: {
+                                    case Delete: {
                                         String sql = dbo.getScript(DbObject.SQL_DELETE);
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                                            delete(stmt, dbo);
-                                            cache().notifyListeners(OBJECT_DELETE, dbo);
+                                            DatabaseHelper.delete(stmt, dbo);
                                         } catch (SQLException e) {
                                             if (DbObject.getType(dbo) != DbObject.TYPE_LOG) {
-                                                DbErrorObject object = new DbErrorObject(dbo, e, OBJECT_DELETE, sql);
+                                                DbErrorObject object = new DbErrorObject(dbo, e, Delete, sql);
                                                 nonoList.put(object);
                                             }
                                         }
                                         break;
                                     }
-                                    case EXECUTE_SQL: {
+                                    case Custom: {
                                         String sql = queueObject.getSql();
                                         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                                             stmt.execute();
@@ -399,6 +329,7 @@ public class DatabaseAccess {
                                         break;
                                     }
                                 }
+                                cache().notifyListeners(type, dbo);
 
                                 if (workList.size() > 0) {
                                     queueObject = workList.take();
@@ -451,28 +382,28 @@ public class DatabaseAccess {
             while (keepRunning) {
                 DbErrorObject error = nonoList.take();
                 if (error != null) {
-                    switch (error.getHow()) {
-                        case OBJECT_SELECT:
+                    switch (error.getQueryType()) {
+                        case Select:
                             if (errorListener != null) {
                                 errorListener.onSelectError(error.getObject(), error.getException(), error.getSql());
                             }
                             break;
-                        case OBJECT_INSERT:
+                        case Insert:
                             if (errorListener != null) {
                                 errorListener.onInsertError(error.getObject(), error.getException(), error.getSql());
                             }
                             break;
-                        case OBJECT_UPDATE:
+                        case Update:
                             if (errorListener != null) {
                                 errorListener.onUpdateError(error.getObject(), error.getException(), error.getSql());
                             }
                             break;
-                        case OBJECT_DELETE:
+                        case Delete:
                             if (errorListener != null) {
                                 errorListener.onDeleteError(error.getObject(), error.getException(), error.getSql());
                             }
                             break;
-                        case EXECUTE_SQL:
+                        case Custom:
                             if (errorListener != null) {
 
                             }
@@ -509,7 +440,7 @@ public class DatabaseAccess {
         object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
-                DbQueueObject toInsert = new DbQueueObject(object, OBJECT_INSERT);
+                DbQueueObject toInsert = new DbQueueObject(object, Insert);
                 try {
                     workList.put(toInsert);
                 } catch (InterruptedException e) {
@@ -520,7 +451,7 @@ public class DatabaseAccess {
             // Just write it into cache
             object.setId(cacheOnlyFakedId);
             cacheOnlyFakedId++;
-            object.tableChanged(OBJECT_INSERT);
+            object.tableChanged(Insert);
         }
     }
 
@@ -528,7 +459,7 @@ public class DatabaseAccess {
         object.getAud().setUpdated(loggedUser);
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
-                DbQueueObject toUpdate = new DbQueueObject(object, OBJECT_UPDATE);
+                DbQueueObject toUpdate = new DbQueueObject(object, Update);
                 try {
                     workList.put(toUpdate);
                 } catch (InterruptedException e) {
@@ -537,14 +468,14 @@ public class DatabaseAccess {
             });
         } else {
             // Just update into cache
-            object.tableChanged(OBJECT_UPDATE);
+            object.tableChanged(Update);
         }
     }
 
     public void delete(final DbObject object) {
         if (!Main.CACHE_ONLY) {
             SwingUtilities.invokeLater(() -> {
-                DbQueueObject toDelete = new DbQueueObject(object, OBJECT_DELETE);
+                DbQueueObject toDelete = new DbQueueObject(object, Delete);
                 try {
                     workList.put(toDelete);
                 } catch (InterruptedException e) {
@@ -553,7 +484,7 @@ public class DatabaseAccess {
             });
         } else {
             // Just delete
-            object.tableChanged(OBJECT_DELETE);
+            object.tableChanged(Delete);
         }
     }
 
@@ -623,7 +554,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(i, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(i, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -658,7 +589,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(c, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(c, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -695,7 +626,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -735,7 +666,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(t, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(t, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -773,7 +704,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(m, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(m, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -813,7 +744,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(l, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -847,7 +778,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(l, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -896,7 +827,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(o, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -936,7 +867,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(o, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -995,7 +926,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(d, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(d, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1035,7 +966,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(pn, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(pn, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1070,7 +1001,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(pa, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(pa, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1107,7 +1038,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(pt, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(pt, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1143,7 +1074,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1188,7 +1119,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1233,7 +1164,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1276,7 +1207,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1313,7 +1244,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1353,7 +1284,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1396,7 +1327,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1440,7 +1371,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1477,7 +1408,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1510,7 +1441,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(off, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(off, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1544,7 +1475,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(pcbItem, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(pcbItem, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1578,7 +1509,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(kil, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(kil, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1619,7 +1550,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(l, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(l, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1649,7 +1580,7 @@ public class DatabaseAccess {
                     } else {
                         dbh.setDate(DateUtils.sqLiteToDate(rs.getString("date")));
                     }
-                    dbh.setDbAction(rs.getInt("dbAction"));
+                    dbh.setDbQueryType(rs.getInt("dbAction"));
                     dbh.setDbObjectType(rs.getInt("dbObjectType"));
                     dbh.setDbObjectId(rs.getLong("dbObjectId"));
 
@@ -1658,7 +1589,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(dbh, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(dbh, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1719,7 +1650,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(s, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1754,7 +1685,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(s, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1798,7 +1729,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException ex) {
-            DbErrorObject object = new DbErrorObject(null, ex, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(null, ex, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1839,7 +1770,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(s, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(s, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
@@ -1874,7 +1805,7 @@ public class DatabaseAccess {
                 }
             }
         } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, OBJECT_SELECT, sql);
+            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
             try {
                 nonoList.put(object);
             } catch (InterruptedException e1) {
