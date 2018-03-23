@@ -173,8 +173,6 @@ public class PcbItemItemLink extends DbObject {
     }
 
     public void setMatchedItem(@NotNull Item matchedItem) {
-        this.match = matchedItem.getObjectMatch().getMatchPercent();
-
         this.item = matchedItem;
         this.itemId = item.getId();
     }

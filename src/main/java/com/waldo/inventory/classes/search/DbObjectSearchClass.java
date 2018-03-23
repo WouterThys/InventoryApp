@@ -18,10 +18,6 @@ class DbObjectSearchClass<T0 extends DbObject> {
 
     private Search.SearchListener<T0> searchListener;
 
-    DbObjectSearchClass(List<T0> searchList) {
-        this(searchList, null);
-    }
-
     DbObjectSearchClass(List<T0> searchList, Search.SearchListener<T0> searchListener) {
         this.searchList = searchList;
         this.searchListener = searchListener;
@@ -123,9 +119,9 @@ class DbObjectSearchClass<T0 extends DbObject> {
         searchWord = searchWord.toUpperCase();
 
         for (T0 dbo : listToSearches) {
-            if (dbo.hasMatch(searchWord)) {
-                foundList.add(dbo);
-            }
+//            if (dbo.hasMatch(searchWord)) {
+//                foundList.add(dbo);
+//            } // TODO #1
         }
 
         return foundList;
@@ -138,9 +134,10 @@ class DbObjectSearchClass<T0 extends DbObject> {
         }
 
         for (T0 dbo : listToSearches) {
-            if (dbo.hasMatch(searchObject)) {
-                foundList.add(dbo);
-            }
+//            if (dbo.hasMatch(searchObject)) {
+//                foundList.add(dbo);
+//            }
+            // TODO #1
         }
 
         return foundList;

@@ -30,7 +30,6 @@ public class Location extends DbObject {
 
     public Location() {
         super(TABLE_NAME);
-        matchCount = 7;
     }
 
     @Override
@@ -113,21 +112,6 @@ public class Location extends DbObject {
         unknown.setId(DbObject.UNKNOWN_ID);
         unknown.setCanBeSaved(false);
         return unknown;
-    }
-
-
-    @Override
-    protected int findMatch(String searchTerm) {
-        int match = super.findMatch(searchTerm);
-
-        // Local objects
-        if (getLocationType() != null && getLocationType().getName().toUpperCase().contains(searchTerm)) match++;
-        if (Statics.Alphabet[row].toUpperCase().contains(searchTerm)) match++;
-        if (String.valueOf(col).toUpperCase().contains(searchTerm)) match++;
-        if (getPrettyString().toUpperCase().contains(searchTerm)) match++;
-        if (getAlias().toUpperCase().contains(searchTerm)) match++;
-
-        return match;
     }
 
     @Override

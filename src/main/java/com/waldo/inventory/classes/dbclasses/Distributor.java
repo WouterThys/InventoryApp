@@ -19,7 +19,6 @@ public class Distributor extends DbObject {
 
     public Distributor() {
         super(TABLE_NAME);
-        matchCount = 3;
     }
 
 
@@ -33,13 +32,6 @@ public class Distributor extends DbObject {
         }
         statement.setLong(ndx++, getOrderFileFormatId());
         return ndx;
-    }
-
-    @Override
-    protected int findMatch(String searchTerm) {
-        int match = super.findMatch(searchTerm);
-        if (searchTerm.contains(getWebsite().toUpperCase())) match++;
-        return match;
     }
 
     @Override

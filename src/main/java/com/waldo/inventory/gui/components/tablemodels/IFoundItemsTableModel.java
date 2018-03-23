@@ -4,7 +4,6 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.classes.search.DbObjectMatch;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -82,7 +81,8 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                     }
                     return "";
                 case 5: // Match
-                    return setItem.getObjectMatch();
+                    // TODO #1
+                    return 0;//setItem.getObjectMatch();
             }
         }
         return null;
@@ -121,9 +121,10 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                 label.setText(txt);
 
                 return label;
-            } else if (value instanceof DbObjectMatch) {
-                return new MatchValue(((DbObjectMatch)value).getMatchPercent());
             }
+//            else if (value instanceof Match) {
+//                return 0;// TODO #1 new MatchValue(((Match)value).getMatchPercent());
+//            }
             return component;
         }
     }

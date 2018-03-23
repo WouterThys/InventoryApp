@@ -2,8 +2,10 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.search.ItemFinder;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
+import com.waldo.inventory.managers.CacheManager;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ITable;
 import com.waldo.utils.icomponents.ITextField;
@@ -98,6 +100,10 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUt
         filterAa = new AbstractAction("Filter", imageResource.readImage("Toolbar.Table.ApplyFilter")) {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // TEST
+                ItemFinder.searchByKeyWord(CacheManager.cache().getItems(), filterTf.getText());
+
                 filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("Toolbar.Table.ApplyFilter"));
                 filterTf.setText("");
                 hasFilter = false;

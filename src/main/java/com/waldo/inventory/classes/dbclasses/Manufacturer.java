@@ -22,7 +22,6 @@ public class Manufacturer extends DbObject {
 
     public Manufacturer() {
         super(TABLE_NAME);
-        matchCount = 3;
     }
 
     public static Manufacturer getUnknownManufacturer() {
@@ -45,13 +44,6 @@ public class Manufacturer extends DbObject {
             }
         }
         return result;
-    }
-
-    @Override
-    protected int findMatch(String searchTerm) {
-        int match = super.findMatch(searchTerm);
-        if ((getWebsite().toUpperCase().contains(searchTerm))) match++;
-        return match;
     }
 
     @Override

@@ -66,7 +66,6 @@ public class Item extends DbObject {
 
     public Item(String name) {
         super(TABLE_NAME);
-        matchCount = 11;
         setName(name);
     }
 
@@ -144,85 +143,6 @@ public class Item extends DbObject {
         statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()), Calendar.getInstance());
 
         return ndx;
-    }
-
-    @Override
-    protected int findMatch(String searchTerm) {
-        if (this.isUnknown()) return 0;
-        getObjectMatch().setMatchCount(matchCount);
-        int match = super.findMatch(searchTerm);
-
-        // Local objects
-        if (getAlias().toUpperCase().contains(searchTerm)) match++;
-        if (getDescription().toUpperCase().contains(searchTerm)) match++;
-        if (getLocalDataSheet().toUpperCase().contains(searchTerm)) match++;
-        if (getOnlineDataSheet().toUpperCase().contains(searchTerm)) match++;
-        if (getValue().toString().equals(searchTerm)) match++;
-
-        // Covert category, product, type, ...
-        if (getCategory() != null && category.hasMatch(searchTerm)) match++;
-        if (getProduct() != null && product.hasMatch(searchTerm)) match++;
-        if (getType() != null && type.hasMatch(searchTerm)) match++;
-        if (getManufacturer() != null && manufacturer.hasMatch(searchTerm)) match++;
-        if (getLocation() != null && location.hasMatch(searchTerm)) match++;
-        if (getPackageType() != null && packageType.hasMatch(searchTerm)) match++;
-
-        return match;
-    }
-
-    @Override
-    protected int findMatch(DbObject dbObject) {
-        if (this.isUnknown()) return 0;
-        int match = 0;
-        if (dbObject != null && dbObject instanceof PcbItemProjectLink) {
-            getObjectMatch().setMatchCount(3);
-
-            PcbItemProjectLink projectLink = (PcbItemProjectLink) dbObject;
-            PcbItem pcbItem = projectLink.getPcbItem();
-
-            String pcbName = pcbItem.getPartName().toUpperCase();
-            String pcbValue = projectLink.getValue();
-            String pcbFp = pcbItem.getFootprint();
-
-            ParserItemLink parserLink = SearchManager.sm().findParserItemLinkByPcbItemName(pcbName);
-            if (parserLink != null) {
-
-                if (parserLink.hasCategory()) {
-                    if (getCategoryId() != parserLink.getCategoryId()) {
-                        return 0;
-                    }
-                }
-
-                if (parserLink.hasProduct()) {
-                    if (getProductId() != parserLink.getProductId()) {
-                        return 0;
-                    }
-                }
-
-                if (parserLink.hasType()) {
-                    if (getTypeId() != parserLink.getTypeId()) {
-                        return 0;
-                    }
-                }
-            }
-
-            String itemName = getName().toUpperCase();
-            String itemAlias = getAlias().toUpperCase();
-
-            if (PcbItem.matchesName(pcbName, itemName) || PcbItem.matchesAlias(pcbName, itemAlias)) match++;
-            if (getValue().hasValue()) {
-                if (PcbItem.matchesValue(pcbValue, getValue())) match++;
-            } else {
-                if (PcbItem.matchesName(pcbName, itemName)) match++;
-            }
-
-            // Only check footprint match if there is already a match
-            if (match > 0 && getPackageTypeId() > UNKNOWN_ID) {
-                if (PcbItem.matchesFootprint(pcbFp, getPackageType())) match++;
-            }
-
-        }
-        return match;
     }
 
     @Override

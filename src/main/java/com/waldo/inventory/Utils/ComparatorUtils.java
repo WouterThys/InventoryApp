@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.classes.search.DbObjectMatch;
+import com.waldo.inventory.classes.search.Match;
 
 import java.util.Comparator;
 
@@ -32,8 +32,9 @@ public class ComparatorUtils {
     public static class ObjectMatchComparator implements Comparator<DbObject> {
         @Override
         public int compare(DbObject o1, DbObject o2) {
-            MatchComparator mc = new MatchComparator();
-            return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
+            //MatchComparator mc = new MatchComparator();
+            //return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
+            return 0; // TODO #1
         }
     }
 
@@ -237,16 +238,16 @@ public class ComparatorUtils {
     //
     // Match
     //
-    public static class MatchComparator implements Comparator<DbObjectMatch> {
+    public static class MatchComparator implements Comparator<Match> {
         @Override
-        public int compare(DbObjectMatch o1, DbObjectMatch o2) {
-            if (o1 == null && o2 != null) {
+        public int compare(Match m1, Match m2) {
+            if (m1 == null && m2 != null) {
                 return -1;
-            } else if (o1 != null && o2 == null) {
+            } else if (m1 != null && m2 == null) {
                 return 1;
-            } else if (o1 != null){
+            } else if (m1 != null){
                 // Actual compare
-                return -Integer.compare(o1.getMatchPercent(), o2.getMatchPercent());
+                return Integer.compare(m1.getWeight(), m2.getWeight());
             } else {
                 return -1;
             }

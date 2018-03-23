@@ -36,7 +36,6 @@ public class ProjectIDE extends DbObject {
 
     public ProjectIDE() {
         super(TABLE_NAME);
-        matchCount = 3;
     }
 
     public void launch(File file) throws IOException {
@@ -101,13 +100,6 @@ public class ProjectIDE extends DbObject {
             }
         }
         return result;
-    }
-
-    @Override
-    protected int findMatch(String searchTerm) {
-        int match = super.findMatch(searchTerm);
-        if (getExtension().toUpperCase().contains(searchTerm)) match++;
-        return match;
     }
 
     @Override
