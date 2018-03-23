@@ -10,21 +10,20 @@ import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceiv
 import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class OrderConfirmDialog extends OrderConfirmDialogLayout implements CacheChangedListener<Order> {
+public class OrderDetailsDialog extends OrderDetailsDialogLayout implements CacheChangedListener<Order> {
 
-    public OrderConfirmDialog(Application application, String title, Order order) {
+    public OrderDetailsDialog(Application application, String title, Order order) {
         super(application, title);
 
         initializeComponents();
@@ -34,82 +33,6 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         addCacheListener(Order.class,this);
 
         checkAndUpdate();
-    }
-
-    //
-    // Dialog
-    //
-    @Override
-    protected void onOK() {
-        if (currentPanel.equals(TAB_ORDER_DETAILS)) {
-            switch(order.getOrderState()) {
-                case Planned: doOrder(); break;
-                case Ordered: setReceived(); break;
-                case Received: super.onOK(); break;
-                default: break;
-            }
-            updateComponents(order);
-            updateEnabledComponents();
-            updateVisibleComponents();
-        } else {
-            selectNext();
-        }
-    }
-
-    @Override
-    protected void onNeutral() {
-        selectNext();
-    }
-
-    @Override
-    protected void onCancel() {
-        if (order != null && originalOrder != null) {
-            originalOrder.createCopy(order);
-            order.setCanBeSaved(true);
-        }
-
-        super.onCancel();
-    }
-
-    @Override
-    protected void setFocusTab(String focusTab) {
-        if (focusTab.equals(TAB_ORDER_DETAILS) && parseSucces) {
-            selectNext();
-        }
-    }
-
-    //
-    // Methods
-    //
-    private void doOrder() {
-        // Do order
-        order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-        beginWait();
-        try {
-            order.updateItemStates();
-        } finally {
-            endWait();
-        }
-        order.save();
-        originalOrder = order.createCopy();
-
-        // Go to website
-        copyToClipboard();
-        browseOrderPage();
-    }
-
-    private void setReceived() {
-        // Do receive
-        order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-        beginWait();
-        try {
-            order.updateItemStates();
-            order.updateItemAmounts(true);
-        } finally {
-            endWait();
-        }
-        order.save();
-        originalOrder = order.createCopy();
     }
 
     private void checkOrderedItemsLocations(Order order) {
@@ -140,16 +63,17 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         }
     }
 
-    private void selectNext() {
-        cardLayout.next(cardPanel);
-        if (currentPanel.equals(TAB_ORDER_FILE)) {
-            currentPanel = TAB_ORDER_DETAILS;
-        } else {
-            currentPanel = TAB_ORDER_FILE;
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (isShown && !e.getValueIsAdjusting()) {
+            String selected = stepList.getSelectedValue();
+            if (selected != null && !selected.isEmpty()) {
+                currentPanel = selected;
+                cardLayout.show(cardPanel, currentPanel);
+                updateVisibleComponents();
+                updateEnabledComponents();
+            }
         }
-        stepList.setSelectedValue(currentPanel, true);
-        updateEnabledComponents();
-        updateVisibleComponents();
     }
 
     private void checkAndUpdate() {
@@ -158,10 +82,10 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
             fillTableData();
 
             fileOkLbl.setIcon(imageResource.readImage("OrderConfirm.Check", 16));
-            parseSucces = true;
+            parseSuccess = true;
         } else {
             showErrors(errorList);
-            parseSucces = false;
+            parseSuccess = false;
         }
 
         updateEnabledComponents();
@@ -210,7 +134,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         try {
             OpenUtils.browseLink(order.getDistributor().getWebsite());
         } catch (IOException e1) {
-            JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+            JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                     "Unable to browse: " + order.getDistributor().getWebsite(),
                     "Browse error",
                     JOptionPane.ERROR_MESSAGE);
@@ -222,7 +146,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
         try {
             OpenUtils.browseLink(order.getDistributor().getOrderLink());
         } catch (IOException e1) {
-            JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+            JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                     "Unable to browse: " + order.getDistributor().getOrderLink(),
                     "Browse error",
                     JOptionPane.ERROR_MESSAGE);
@@ -266,7 +190,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
             if (order != null && order.getDistributor() != null && order.getDistributor().getOrderFileFormat() != null) {
                 copyToClipboard();
             } else {
-                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                         "Could not copy to clipboard..",
                         "Error copying",
                         JOptionPane.ERROR_MESSAGE);
@@ -277,7 +201,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
             if (order != null && order.getDistributor() != null && order.getDistributor().getOrderFileFormat() != null) {
                 viewParsed();
             } else {
-                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                         "Could not copy to clipboard..",
                         "Error copying",
                         JOptionPane.ERROR_MESSAGE);
@@ -286,7 +210,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
             if ((order.getDistributor() != null) && !(order.getDistributor().getWebsite().isEmpty())) {
                 browseDistributor();
             } else {
-                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                         "Could browse website..",
                         "Error browsing",
                         JOptionPane.ERROR_MESSAGE);
@@ -295,7 +219,7 @@ public class OrderConfirmDialog extends OrderConfirmDialogLayout implements Cach
             if ((order.getDistributor() != null) && !(order.getDistributor().getOrderLink().isEmpty())) {
                 browseOrderPage();
             } else {
-                JOptionPane.showMessageDialog(OrderConfirmDialog.this,
+                JOptionPane.showMessageDialog(OrderDetailsDialog.this,
                         "Could browse order page..",
                         "Error browsing",
                         JOptionPane.ERROR_MESSAGE);

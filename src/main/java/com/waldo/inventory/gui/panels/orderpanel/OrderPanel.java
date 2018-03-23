@@ -10,7 +10,7 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
-import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderConfirmDialog;
+import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
@@ -130,12 +130,12 @@ public class OrderPanel extends OrderPanelLayout {
 
     private void initActions() {
         tbOrderFlowPanel.addOrderClickListener(e -> {
-            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm order", selectedOrder);
+            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm order", selectedOrder);
             dialog.showDialog();
         });
         tbOrderFlowPanel.addReceivedClickListener(e -> {
-            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", selectedOrder);
-            dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
+            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", selectedOrder);
+            dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
         });
     }
 
@@ -499,9 +499,9 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     void onOrderDetails(Order order) {
         if (order != null && order.canBeSaved()) {
-            OrderConfirmDialog dialog = new OrderConfirmDialog(application, "Confirm receive", order);
+            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", order);
             if (order.isReceived()) {
-                dialog.showDialog(OrderConfirmDialog.TAB_ORDER_DETAILS, null);
+                dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
             } else {
                 dialog.showDialog();
             }
