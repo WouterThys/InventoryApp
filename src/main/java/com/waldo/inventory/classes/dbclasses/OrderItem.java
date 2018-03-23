@@ -17,8 +17,10 @@ public class OrderItem extends DbObject {
 
     private long orderId;
     private Order order;
+
     private long itemId;
     private Item item;
+
     private int amount;
     private DistributorPartLink distributorPartLink;
 
@@ -45,10 +47,18 @@ public class OrderItem extends DbObject {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (getOrderId() < UNKNOWN_ID) {
+            orderId = UNKNOWN_ID;
+        }
+        if (getItemId() < UNKNOWN_ID) {
+            itemId = UNKNOWN_ID;
+        }
+
         statement.setString(ndx++, name);
-        statement.setLong(ndx++, orderId);
-        statement.setLong(ndx++, itemId);
-        statement.setInt(ndx++, amount);
+        statement.setLong(ndx++, getOrderId());
+        statement.setLong(ndx++, getItemId());
+        statement.setInt(ndx++, getAmount());
         return ndx;
     }
 
@@ -81,6 +91,12 @@ public class OrderItem extends DbObject {
                 cache().remove(this);
                 break;
             }
+        }
+    }
+
+    public void updateOrderState() {
+        if (itemId > DbObject.UNKNOWN_ID) {
+            getItem().updateOrderState();
         }
     }
 

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.waldo.inventory.Utils.Statics.ItemOrderStates.Planned;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
@@ -160,8 +159,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             setSelectedTab(TAB_ORDERS);
             // Update items
             for (Item item : itemsToOrder) {
-                item.setOrderState(Planned);
-                item.save();
+                item.updateOrderState();
+                //item.save();
             }
         } finally {
             endWait(this);
@@ -190,8 +189,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             setSelectedTab(TAB_ORDERS);
             // Update items
             for (OrderItem orderItem : itemsToOrder) {
-                orderItem.getItem().setOrderState(Planned);
-                orderItem.getItem().save();
+                orderItem.updateOrderState();
+                //orderItem.getItem().save();
             }
         } finally {
             endWait(this);

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -489,8 +488,8 @@ public class OrderPanel extends OrderPanelLayout {
 
                     // Do this after delete: items will not be updated in change listener for orders
                     for (OrderItem orderItem : orderItems) {
-                        orderItem.getItem().setOrderState(Statics.ItemOrderStates.NoOrder);
-                        orderItem.getItem().save();
+                        orderItem.updateOrderState();
+                        //orderItem.getItem().save();
                     }
                 });
             }
@@ -879,8 +878,8 @@ public class OrderPanel extends OrderPanelLayout {
                     if (itemsToOrder != null) {
                         // Update item
                         for (Item item : itemsToOrder) {
-                            item.setOrderState(Statics.ItemOrderStates.Planned);
-                            item.save();
+                            item.updateOrderState();//(Statics.ItemOrderStates.Planned);
+                            //item.save();
                         }
 
                         addItemsToOrder(itemsToOrder, selectedOrder);

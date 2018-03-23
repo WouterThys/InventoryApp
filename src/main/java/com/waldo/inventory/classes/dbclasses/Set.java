@@ -41,7 +41,7 @@ public class Set extends Item {
         item.setLocationId(getLocationId());
         item.setAmount(getAmount());
         item.setAmountType(getAmountType());
-        item.setOrderState(getOrderState());
+        //item.setOrderState(getOrderState());
         item.setPackageTypeId(getPackageTypeId());
         item.setPins(getPins());
         item.setRating(getRating());

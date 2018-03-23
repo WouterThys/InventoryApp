@@ -206,9 +206,19 @@ public class SearchManager {
 
     public List<Order> findOrdersForItem(long itemId) {
         List<Order> orders = new ArrayList<>();
-        for (OrderItem oi : cache().getOrderItems()) {
-            if (oi.getItemId() == itemId) {
-                orders.add(oi.getOrder());
+        if (itemId > DbObject.UNKNOWN_ID) {
+//            for (OrderItem oi : cache().getOrderItems()) {
+//                if (oi.getItemId() == itemId) {
+//                    orders.add(oi.getOrder());
+//                }
+//            }
+            for (Order o : cache().getOrders()) {
+                for (OrderItem oi : o.getOrderItems()) {
+                    if (oi.getItemId() == itemId) {
+                        orders.add(o);
+                        break;
+                    }
+                }
             }
         }
         return orders;

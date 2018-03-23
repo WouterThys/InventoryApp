@@ -531,7 +531,7 @@ public class DatabaseAccess {
                         i.setLocationId(rs.getLong("locationId"));
                         i.setAmount(rs.getInt("amount"));
                         i.setAmountType(rs.getInt("amountType"));
-                        i.setOrderState(rs.getInt("orderState"));
+                        //i.setOrderState(rs.getInt("orderState"));
                         i.setPackageTypeId(rs.getLong("packageTypeId"));
                         i.setPins(rs.getInt("pins"));
                         i.setRating(rs.getFloat("rating"));
@@ -891,10 +891,10 @@ public class DatabaseAccess {
                 stmt.execute();
 
             } catch (SQLException e) {
-                Status().setError("Failed to detele item from order");
+                Status().setError("Failed to delete item from order");
             }
         } catch (SQLException e) {
-            Status().setError("Failed to detele item from order");
+            Status().setError("Failed to delete item from order");
         }
     }
 
@@ -1628,7 +1628,7 @@ public class DatabaseAccess {
                     s.setLocationId(rs.getLong("locationId"));
                     s.setAmount(rs.getInt("amount"));
                     s.setAmountType(rs.getInt("amountType"));
-                    s.setOrderState(rs.getInt("orderState"));
+                    //s.setOrderState(rs.getInt("orderState"));
                     s.setPackageTypeId(rs.getLong("packageTypeId"));
                     s.setPins(rs.getInt("pins"));
                     s.setRating(rs.getFloat("rating"));

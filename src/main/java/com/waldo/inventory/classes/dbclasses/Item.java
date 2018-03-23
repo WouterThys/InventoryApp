@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -49,7 +50,7 @@ public class Item extends DbObject {
     protected Location location;
     protected int amount = 0;
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
-    private ItemOrderStates orderState = ItemOrderStates.NoOrder;
+    private ItemOrderStates orderState = null;
 
     protected long packageTypeId = UNKNOWN_ID;
     private PackageType packageType;
@@ -115,7 +116,7 @@ public class Item extends DbObject {
         statement.setLong(ndx++, getLocationId());
         statement.setInt(ndx++, getAmount());
         statement.setInt(ndx++, getAmountType().getValue());
-        statement.setInt(ndx++, getOrderState().getValue());
+        statement.setInt(ndx++, 0);
         statement.setLong(ndx++, getPackageTypeId()); // PackageId
         statement.setInt(ndx++, getPins());
         statement.setFloat(ndx++, getRating());
@@ -241,7 +242,7 @@ public class Item extends DbObject {
         item.setLocationId(getLocationId());
         item.setAmount(getAmount());
         item.setAmountType(getAmountType());
-        item.setOrderState(getOrderState());
+        //item.setOrderState(getOrderState());
         item.setPackageTypeId(getPackageTypeId());
         item.setPins(getPins());
         item.setRating(getRating());
@@ -373,21 +374,7 @@ public class Item extends DbObject {
     }
 
     public void updateOrderState() {
-        ItemOrderStates currentState = getOrderState();
-        Order lastOrderForItem = SearchManager.sm().findLastOrderForItem(id);
-        if (lastOrderForItem == null) {
-            orderState = ItemOrderStates.NoOrder;
-        } else {
-            if (lastOrderForItem.isOrdered() && lastOrderForItem.isReceived()) orderState = ItemOrderStates.NoOrder;
-            else if (lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived())
-                orderState = ItemOrderStates.Ordered;
-            else if (!lastOrderForItem.isOrdered() && !lastOrderForItem.isReceived())
-                orderState = ItemOrderStates.Planned;
-            else orderState = ItemOrderStates.NoOrder;
-        }
-        if (currentState != getOrderState()) {
-            save();
-        }
+        orderState = null;
     }
 
     public String getPrettyName() {
@@ -624,16 +611,39 @@ public class Item extends DbObject {
     }
 
     public ItemOrderStates getOrderState() {
+        if (orderState == null) {
+            List<Order> orders = SearchManager.sm().findOrdersForItem(getId());
+            orderState = ItemOrderStates.NoOrder;
+
+            int inPlanned = 0;
+            int inOrdered = 0;
+            int inReceived = 0;
+
+            for (Order o : orders) {
+                if (o.isPlanned()) {
+                    inPlanned++;
+                }
+                if (o.isOrdered() && !o.isReceived()) {
+                    inOrdered++;
+                }
+                if (o.isOrdered() && o.isReceived()) {
+                    inReceived++;
+                }
+            }
+
+            if (inPlanned > 0) orderState = ItemOrderStates.Planned;
+            else if (inOrdered > inReceived) orderState = ItemOrderStates.Ordered;
+        }
         return orderState;
     }
 
-    public void setOrderState(ItemOrderStates orderState) {
-        this.orderState = orderState;
-    }
-
-    public void setOrderState(int orderState) {
-        this.orderState = ItemOrderStates.fromInt(orderState);
-    }
+//    public void setOrderState(ItemOrderStates orderState) {
+//        this.orderState = orderState;
+//    }
+//
+//    public void setOrderState(int orderState) {
+//        this.orderState = ItemOrderStates.fromInt(orderState);
+//    }
 
     public float getRating() {
         return rating;
