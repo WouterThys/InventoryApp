@@ -106,7 +106,7 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     public void onToolBarAdd(IdBToolBar source) {
         if (selectedProject != null) {
             ProjectCode newProjectCode = new ProjectCode(selectedProject.getId());
-            EditProjectCodeDialog dialog = new EditProjectCodeDialog(application, "Add code", newProjectCode);
+            EditProjectCodeDialog dialog = new EditProjectCodeDialog(application, newProjectCode);
             dialog.showDialog();
         }
     }
@@ -114,7 +114,7 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProjectObject != null) {
-            EditProjectCodeDialog dialog = new EditProjectCodeDialog(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
+            EditProjectCodeDialog dialog = new EditProjectCodeDialog(application, selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
                 ProjectCode newProjectCode = dialog.getProjectCode();
                 newProjectCode.save();
@@ -127,7 +127,8 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
     //
     @Override
     public void onUpdated(ProjectCode object) {
-        gridPanel.drawTiles(selectedProject.getProjectCodes());
+        //gridPanel.drawTiles(selectedProject.getProjectCodes());
+        previewPanel.updateComponents(object);
         updateEnabledComponents();
     }
 }

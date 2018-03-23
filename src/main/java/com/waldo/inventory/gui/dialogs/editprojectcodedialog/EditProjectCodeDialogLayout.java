@@ -6,10 +6,8 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.CodeLanguages;
 import com.waldo.inventory.classes.dbclasses.ProjectCode;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
-import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IObjectDialog;
 import com.waldo.utils.icomponents.IComboBox;
-import com.waldo.utils.icomponents.IDialog;
-import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ITextArea;
 
 import javax.swing.*;
@@ -18,7 +16,7 @@ import java.awt.*;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedListener {
+abstract class EditProjectCodeDialogLayout extends IObjectDialog<ProjectCode> {
 
     /*
     *                  COMPONENTS
@@ -31,21 +29,20 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectCode projectCode;
-    ProjectCode originalProjectCode;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditProjectCodeDialogLayout(Application application, String title) {
-        super(application, title);
-
+    EditProjectCodeDialogLayout(Window window, ProjectCode projectCode) {
+        super(window, "Project code", projectCode, ProjectCode.class);
     }
 
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    public ProjectCode getProjectCode() {
+        return getObject();
+    }
 
     /*
      *                  LISTENERS
@@ -54,10 +51,6 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
     public void initializeComponents() {
         // Dialog
         setTitleIcon(imageResource.readImage("Projects.Code.Title"));
-        setTitleName(getTitle());
-        getButtonNeutral().setVisible(true);
-        getButtonNeutral().setText("Save");
-        getButtonNeutral().setEnabled(false);
 
         // Description
         descriptionTa = new ITextArea();
@@ -108,17 +101,13 @@ abstract class EditProjectCodeDialogLayout extends IDialog implements IEditedLis
 
     @Override
     public void updateComponents(Object... object) {
-        projectCode = (ProjectCode) object[0];
-
-        if (projectCode != null) {
-            originalProjectCode = projectCode.createCopy();
-
+        if (getObject() != null) {
             beginWait();
             try {
-                languageCb.setSelectedItem(projectCode.getLanguage());
-                directoryPnl.setText(projectCode.getDirectory());
-                projectIdeCb.setSelectedItem(projectCode.getProjectIDE());
-                descriptionTa.setText(projectCode.getDescription());
+                languageCb.setSelectedItem(getProjectCode().getLanguage());
+                directoryPnl.setText(getProjectCode().getDirectory());
+                projectIdeCb.setSelectedItem(getProjectCode().getProjectIDE());
+                descriptionTa.setText(getProjectCode().getDescription());
             } finally {
                 endWait();
             }

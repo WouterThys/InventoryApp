@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class CreatedPcbLink  extends DbObject {
+public class CreatedPcbLink extends DbObject {
 
     public static final String TABLE_NAME = "createdpcblinks";
 
