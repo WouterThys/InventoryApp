@@ -22,7 +22,7 @@ abstract class CreatePcbDialogLayout extends IDialog {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     // New or existing order
     private ILabel selectPcbLbl;
-    IComboBox<CreatedPcb> createdPcbCb;
+    private IComboBox<CreatedPcb> createdPcbCb;
     private IActions.AddAction addNewPcbAa;
     private IActions.GoAction addNowAa;
 
