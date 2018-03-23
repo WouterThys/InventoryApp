@@ -54,3 +54,4 @@ logs/
 target/
 /InventoryDbModel.mwb
 InventoryAppDbModel.mwb
+settings.db
