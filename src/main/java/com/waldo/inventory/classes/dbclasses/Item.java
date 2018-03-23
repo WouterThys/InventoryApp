@@ -342,6 +342,10 @@ public class Item extends DbObject {
                     if (Main.DEBUG_MODE) System.out.println("Set: " + ref.isSet() + " != " + isSet());
                     return false;
                 }
+                if (!(ref.getRemarksFileName().equals(getRemarksFileName()))) {
+                    if (Main.DEBUG_MODE) System.out.println("Remarks files differ");
+                    return false;
+                }
             }
         }
         return result;
@@ -647,6 +651,13 @@ public class Item extends DbObject {
         this.discourageOrder = discourageOrder;
     }
 
+    private String getRemarksFileName() {
+        if (remarksFile == null) {
+            return "";
+        }
+        return remarksFile;
+    }
+
     public File getRemarksFile() {
         if (remarksFile != null && !remarksFile.isEmpty()) {
             return new File(remarksFile);
@@ -657,6 +668,8 @@ public class Item extends DbObject {
     public void setRemarksFile(File remarksFile) {
         if (remarksFile != null && remarksFile.exists()) {
             this.remarksFile = remarksFile.getAbsolutePath();
+        } else {
+            this.remarksFile = null;
         }
     }
 

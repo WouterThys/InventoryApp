@@ -1541,7 +1541,7 @@ public class ITextEditor extends JPanel {
     }
 
     public void setDocument(File file) {
-        if (file != null) {
+        if (file != null && file.exists()) {
             readFile(file);
         } else {
             editor.setText("");
@@ -1556,19 +1556,16 @@ public class ITextEditor extends JPanel {
              ObjectInputStream ois = new ObjectInputStream(fis)) {
 
             doc = (DefaultStyledDocument) ois.readObject();
+
+            editor.setDocument(doc);
+            doc.addUndoableEditListener(new UndoEditListener());
         }
         catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(this, "Input file was not found!");
-            return;
         }
         catch (ClassNotFoundException | IOException ex) {
-
-            throw new RuntimeException(ex);
+            ex.printStackTrace();
         }
-
-        editor.setDocument(doc);
-        doc.addUndoableEditListener(new UndoEditListener());
-        //applyFocusListenerToPictures(doc);
     }
 
 }

@@ -7,10 +7,13 @@ import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.IPanel;
+import com.waldo.utils.icomponents.ITextArea;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,9 +35,10 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     private ITextField nameTf;
     private ITextArea descriptionTa;
     private ITextField directoryTf;
-    private ITextPane remarksTp;
+    private IRemarksPanel remarksPnl;
+    //private ITextPane remarksTp;
+    //private AbstractAction editRemarksAa;
 
-    private AbstractAction editRemarksAa;
     private IActions.DoItAction runIdeAction;
     private IActions.BrowseFileAction openProjectFolderAction;
 
@@ -129,7 +133,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         boolean hasObject = selectedProjectObject != null;
         boolean validObject = hasObject && selectedProjectObject.isValid();
 
-        editRemarksAa.setEnabled(hasObject);
+        remarksPnl.setEnabled(hasObject);
         runIdeAction.setEnabled(validObject);
         openProjectFolderAction.setEnabled(validObject);
     }
@@ -166,7 +170,9 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     }
 
     private void updateRemarks(P projectObject) {
-        remarksTp.setFile(projectObject.getRemarksFile());
+        if (projectObject != null) {
+            remarksPnl.updateComponents(projectObject.getRemarksFile());
+        }
     }
 
     private JPanel createToolBarPanel() {
@@ -236,22 +242,6 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         return dataPnl;
     }
 
-    private JPanel createRemarksPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-
-        JToolBar toolBar = GuiUtils.createNewToolbar();
-        JButton b = toolBar.add(editRemarksAa);
-        b.setText("Edit remarks ");
-        b.setVerticalTextPosition(SwingConstants.CENTER);
-        b.setHorizontalTextPosition(SwingConstants.LEFT);
-
-        JScrollPane scrollPane = new JScrollPane(remarksTp);
-        panel.add(toolBar, BorderLayout.PAGE_START);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        return panel;
-    }
-
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -278,24 +268,10 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
         directoryTf = new ITextField(false);
 
-        remarksTp = new ITextPane();
-        remarksTp.setEditable(false);
-        remarksTp.setEnabled(false);
-
-
-        // Actions
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EditRemarksDialog dialog = new EditRemarksDialog(application, "Edit project remarks", selectedProjectObject.getRemarksFile());
-                if (dialog.showDialog() == IDialog.OK) {
-                    selectedProjectObject.setRemarksFile(dialog.getFile());
-                    selectedProjectObject.save();
-                }
-            }
-        };
-        editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
-        editRemarksAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit remarks");
+        remarksPnl = new IRemarksPanel(application, newFile -> {
+            selectedProjectObject.setRemarksFile(newFile);
+            selectedProjectObject.save();
+        });
 
         runIdeAction = new IActions.DoItAction() {
             @Override
@@ -330,7 +306,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel toolbarsPanel = createToolBarPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel dataPanel = createDataPanel();
-        JPanel remarksPanel = createRemarksPanel();
+        //JPanel remarksPanel = createRemarksPanel();
 
         setLayout(new BorderLayout());
 
@@ -341,7 +317,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         panel2.add(panel1, BorderLayout.CENTER);
 
         add(panel2, BorderLayout.NORTH);
-        add(remarksPanel, BorderLayout.CENTER);
+        add(remarksPnl, BorderLayout.CENTER);
     }
 
     @Override

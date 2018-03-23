@@ -6,29 +6,23 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.ITextEditor;
+import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.ITitledEditPanel;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
-import com.waldo.utils.FileUtils;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
@@ -67,8 +61,8 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private ILabel manufacturerIconLbl;
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
-    private ITextEditor remarksTe;
-
+    //private ITextPane remarksTp;
+    private IRemarksPanel remarksPnl;
 
     public ComponentPanel(Window parent, T selectedItem, @NotNull IEditedListener listener) {
         this.parent = parent;
@@ -155,43 +149,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     public void updateTypeCbValues(long productId) {
         typeCb.updateList(sm().findTypeListForProduct(productId));
         typeCb.setSelectedItem(selectedItem.getType());
-    }
-
-    public boolean updateRemarks() {
-        boolean changed = false;
-        DefaultStyledDocument document = remarksTe.getStyledDocument();
-        File file = selectedItem.getRemarksFile();
-        if (document != null && (document.getLength() > 0 || file != null)) {
-            if (file == null) {
-                try {
-                    file = FileUtils.createTempFile("remarks");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (file != null) {
-                selectedItem.setRemarksFile(file);
-                try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                    try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
-                        objectOutputStream.writeObject(document);
-                        objectOutputStream.flush();
-                        objectOutputStream.close();
-                        changed = true;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Could not save file..",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-        return changed;
     }
 
     /*
@@ -392,10 +349,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         discourageOrderCb.addEditedListener(editedListener, "discourageOrder");
         discourageOrderCb.setAlignmentX(RIGHT_ALIGNMENT);
         discourageOrderCb.setName(EditItemDialogLayout.COMP_DISCOURAGE);
-        remarksTe = new ITextEditor();
-        remarksTe.setName(EditItemDialogLayout.COMP_REMARK);
-        remarksTe.setPreferredSize(new Dimension(300, 100));
-
+        remarksPnl = new IRemarksPanel(parent, newFile -> {
+           selectedItem.setRemarksFile(newFile);
+           editedListener.onValueChanged(remarksPnl, "remarksFile", null, null);
+        });
     }
 
     private JPanel createBasicPanel() {
@@ -433,7 +390,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private JPanel createDetailsPanel() {
         JPanel packagePanel = new JPanel(new BorderLayout());
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
-        JPanel remarksPanel = new JPanel(new GridBagLayout());
+        JPanel remarksPanel = new JPanel(new BorderLayout());
 
 
         // Borders
@@ -456,33 +413,23 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         gbc.add(manufacturerIconLbl, 2,0,1,1);
 
         // REMARKS
-        gbc = new GuiUtils.GridBagHelper(remarksPanel);
+        JPanel headerPnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(headerPnl);
 
         gbc.gridx = 0; gbc.weightx = 0;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        remarksPanel.add(starRater, gbc);
+        headerPnl.add(starRater, gbc);
 
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
-        remarksPanel.add(discourageOrderCb, gbc);
+        headerPnl.add(discourageOrderCb, gbc);
 
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        remarksPanel.add(new ILabel("Remarks: "), gbc);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.WEST;
-        remarksPanel.add(new JScrollPane(remarksTe), gbc);
-
+        remarksPanel.add(headerPnl, BorderLayout.NORTH);
+        remarksPanel.add(remarksPnl, BorderLayout.CENTER);
 
         // Add to panel
         JPanel panel = new JPanel();
@@ -562,7 +509,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         starRater.setRating(selectedItem.getRating());
         starRater.setSelection(0);
         discourageOrderCb.setSelected(selectedItem.isDiscourageOrder());
-        remarksTe.setDocument(selectedItem.getRemarksFile());
+        remarksPnl.updateComponents(selectedItem.getRemarksFile());
     }
 
     /*
