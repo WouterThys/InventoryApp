@@ -4,6 +4,7 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.classes.dbclasses.PackageType;
+import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -12,13 +13,11 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.util.Comparator;
-import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
-public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
+public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>> {
 
     // Names and classes
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Footprint", "Manufacturer", "Match"};
@@ -26,13 +25,9 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
     private SearchType searchType;
 
-    public IFoundItemsTableModel(SearchType searchType, Comparator<DbObject> comparator) {
-        super(COLUMN_NAMES, COLUMN_CLASSES, comparator);
+    public IFoundItemsTableModel(SearchType searchType) {
+        super(COLUMN_NAMES, COLUMN_CLASSES);
         this.searchType = searchType;
-    }
-
-    public void setItemList(List<Item> itemList) {
-        super.setItemList(itemList);
     }
 
     @Override
@@ -46,25 +41,25 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Item setItem = getItemAt(rowIndex);
-
-        if (setItem != null) {
+        ObjectMatch<Item> objectMatch = getItemAt(rowIndex);
+        if (objectMatch != null) {
+            Item foundItem = objectMatch.getFoundObject();
             switch (columnIndex) {
                 case -1:
                 case 0: // Amount label
-                    return setItem;
+                    return foundItem;
                 case 1: // Name
-                    return setItem.toString();
+                    return foundItem.toString();
                 case 2: // Value
                     String result;
-                    if (setItem.getValue().hasValue()) {
-                        result = setItem.getValue().toString();
+                    if (foundItem.getValue().hasValue()) {
+                        result = foundItem.getValue().toString();
                     } else {
-                        result = setItem.getAlias();
+                        result = foundItem.getAlias();
                     }
                     return result;
                 case 3: // Footprint
-                    PackageType packageType = setItem.getPackageType();
+                    PackageType packageType = foundItem.getPackageType();
                     if (packageType != null) {
                         if (packageType.getPackageId() > DbObject.UNKNOWN_ID) {
                             return packageType.getPackage().toString() + " - " + packageType.toString();
@@ -75,14 +70,13 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
                         return "";
                     }
                 case 4: // Manufacturer
-                    Manufacturer m = setItem.getManufacturer();
+                    Manufacturer m = foundItem.getManufacturer();
                     if (m != null && !m.isUnknown()) {
                         return m.toString();
                     }
                     return "";
                 case 5: // Match
-                    // TODO #1
-                    return 0;//setItem.getObjectMatch();
+                    return objectMatch;
             }
         }
         return null;
@@ -122,9 +116,9 @@ public class IFoundItemsTableModel extends IAbstractTableModel<Item> {
 
                 return label;
             }
-//            else if (value instanceof Match) {
-//                return 0;// TODO #1 new MatchValue(((Match)value).getMatchPercent());
-//            }
+            else if (value instanceof ObjectMatch) {
+                return new MatchValue(((ObjectMatch)value).getTotalWeight());
+            }
             return component;
         }
     }

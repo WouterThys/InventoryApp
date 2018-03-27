@@ -149,8 +149,13 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
             icon = imageResource.readImage("Projects.Icon");
         }
         iconLbl.setIcon(icon);
-        nameTf.setText(projectObject.toString());
-        descriptionTa.setText(projectObject.getDescription());
+        if (projectObject != null) {
+            nameTf.setText(projectObject.toString());
+            descriptionTa.setText(projectObject.getDescription());
+        } else {
+            nameTf.setText("");
+            descriptionTa.setText("");
+        }
     }
 
     private void updateData(P projectObject) {
@@ -327,7 +332,11 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
             selectedProjectObject = null;
         } else {
             setVisible(true);
-            selectedProjectObject = (P) args[0];
+            if (args[0] instanceof Project) {
+                selectedProjectObject = null;
+            } else if (args[0] instanceof ProjectObject) {
+                selectedProjectObject = (P) args[0];
+            }
 
             updateToolbar();
             updateHeader(selectedProjectObject);

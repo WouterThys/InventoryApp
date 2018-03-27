@@ -116,12 +116,10 @@ class DbObjectSearchClass<T0 extends DbObject> {
             return foundList;
         }
 
-        searchWord = searchWord.toUpperCase();
-
-        for (T0 dbo : listToSearches) {
-//            if (dbo.hasMatch(searchWord)) {
-//                foundList.add(dbo);
-//            } // TODO #1
+        T0 t0 = listToSearches.get(0);
+        List<ObjectMatch<T0>> found = t0.searchByKeyWord(listToSearches, searchWord);
+        for (ObjectMatch<T0> t : found) {
+            foundList.add(t.getFoundObject());
         }
 
         return foundList;

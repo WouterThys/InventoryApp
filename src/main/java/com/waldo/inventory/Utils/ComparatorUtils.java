@@ -4,7 +4,7 @@ import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.classes.search.Match;
+import com.waldo.inventory.classes.search.ObjectMatch;
 
 import java.util.Comparator;
 
@@ -26,15 +26,6 @@ public class ComparatorUtils {
                 return 1;
             }
             return dbo1.getName().compareTo(dbo2.getName());
-        }
-    }
-
-    public static class ObjectMatchComparator implements Comparator<DbObject> {
-        @Override
-        public int compare(DbObject o1, DbObject o2) {
-            //MatchComparator mc = new MatchComparator();
-            //return mc.compare(o1.getObjectMatch(), o2.getObjectMatch());
-            return 0; // TODO #1
         }
     }
 
@@ -238,16 +229,19 @@ public class ComparatorUtils {
     //
     // Match
     //
-    public static class MatchComparator implements Comparator<Match> {
+    public static class FoundMatchComparator implements Comparator<ObjectMatch> {
         @Override
-        public int compare(Match m1, Match m2) {
+        public int compare(ObjectMatch m1, ObjectMatch m2) {
             if (m1 == null && m2 != null) {
                 return -1;
             } else if (m1 != null && m2 == null) {
                 return 1;
             } else if (m1 != null){
-                // Actual compare
-                return Integer.compare(m1.getWeight(), m2.getWeight());
+                int res = Integer.compare(m2.getTotalWeight(), m1.getTotalWeight());
+                if (res == 0) {
+                    res = Integer.compare(m2.getTotalMatches(), m1.getTotalMatches());
+                }
+                return res;
             } else {
                 return -1;
             }

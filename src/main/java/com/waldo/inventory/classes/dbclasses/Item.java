@@ -1,10 +1,12 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Value;
+import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,7 +28,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class Item extends DbObject {
+public class Item extends DbObject<Item> {
 
     public static final String TABLE_NAME = "items";
 
@@ -270,6 +273,56 @@ public class Item extends DbObject {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<ObjectMatch<Item>> searchByKeyWord(List<Item> searchList, String searchTerm) {
+        List<ObjectMatch<Item>> itemMatches = new ArrayList<>();
+
+        if (searchList != null && searchList.size() > 0 && searchTerm != null && !searchTerm.isEmpty()) {
+            searchTerm = searchTerm.toUpperCase();
+            for (Item item : searchList) {
+                List<ObjectMatch.Match> matchList = new ArrayList<>();
+                ObjectMatch.Match m;
+
+                m = ObjectMatch.Match.hasMatch(32, item.getName(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(16, item.getAlias(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(8, item.getValue().toString(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(4, item.getCategory(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(4, item.getProduct(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(4, item.getType(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(2, item.getManufacturer(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(2, item.getLocation(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                m = ObjectMatch.Match.hasMatch(2, item.getPackageType(), searchTerm);
+                if (m != null) matchList.add(m);
+
+                if (matchList.size() > 0) {
+                    itemMatches.add(new ObjectMatch<>(item, matchList));
+                }
+
+            }
+
+            if (itemMatches.size() > 0) {
+                itemMatches.sort(new ComparatorUtils.FoundMatchComparator());
+            }
+        }
+        return itemMatches;
     }
 
     public String createRemarksFileName() {
@@ -556,14 +609,6 @@ public class Item extends DbObject {
         }
         return orderState;
     }
-
-//    public void setOrderState(ItemOrderStates orderState) {
-//        this.orderState = orderState;
-//    }
-//
-//    public void setOrderState(int orderState) {
-//        this.orderState = ItemOrderStates.fromInt(orderState);
-//    }
 
     public float getRating() {
         return rating;
