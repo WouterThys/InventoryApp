@@ -5,16 +5,14 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.inventory.classes.search.SearchMatch;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.icomponents.IImageButton;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,8 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     }
 
     private ITextField searchField;
-    private JButton searchButton;
+    //private JButton searchButton;
+    private IActions.SearchAction searchAction;
     private ILabel infoLabel;
     private JPanel btnPanel;
     private IImageButton previousBtn;
@@ -201,10 +200,10 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
 
     private void setSearched(boolean searched) {
         if (searched) {
-            searchButton.setIcon(removeSearchIcon);
+            searchAction.setIcon(removeSearchIcon);
         } else {
             foundList.clear();
-            searchButton.setIcon(searchIcon);
+            searchAction.setIcon(searchIcon);
         }
     }
 
@@ -266,21 +265,23 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
             });
         }
 
-        // Search button
-        searchButton = new JButton(imageResource.readImage("Search.Search"));
-        searchButton.addActionListener(e -> {
-            if (foundList.size() > 0) {
-                clearSearch();
-            } else {
-                String searchWord = searchField.getText();
-                if (searchWord == null || searchWord.isEmpty()) {
-                    setError("No input..");
+        // Search action
+        searchAction = new IActions.SearchAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (foundList.size() > 0) {
+                    clearSearch();
                 } else {
-                    clearLabel();
-                    search(searchWord);
+                    String searchWord = searchField.getText();
+                    if (searchWord == null || searchWord.isEmpty()) {
+                        setError("No input..");
+                    } else {
+                        clearLabel();
+                        search(searchWord);
+                    }
                 }
             }
-        });
+        };
 
         // Info label
         infoLabel = new ILabel();
@@ -334,7 +335,8 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         gbc.gridx = 1; gbc.weightx = 0.1;
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(searchButton, gbc);
+        add(GuiUtils.createNewToolbar(searchAction), gbc);
+        // TODO check out GuiUtils.createComponentWithActions()
 
         gbc.gridx = 0; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
@@ -356,7 +358,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     @Override
     public void setEnabled(boolean enabled) {
             searchField.setEnabled(enabled);
-            searchButton.setEnabled(enabled);
+            searchAction.setEnabled(enabled);
             infoLabel.setEnabled(enabled);
     }
 }

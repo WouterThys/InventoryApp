@@ -126,6 +126,17 @@ public class SearchManager {
         return null;
     }
 
+    public Manufacturer findManufacturerByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Manufacturer m : cache().getManufacturers()) {
+                if (m.getName().equals(name)) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Item> getItemsForManufacturer(long manufacturerId)    {
         List<Item> items = new ArrayList<>();
         for (Item item : cache().getItems()) {

@@ -18,9 +18,9 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
     }
 
     @Override
-    public VerifyState verify() {
+    public VerifyState verify(ProjectCode code) {
         VerifyState state = VerifyState.Ok;
-        if (getProjectCode().getDirectory().isEmpty()) {
+        if (code.getDirectory().isEmpty()) {
             directoryPnl.setWarning("Directory can not be empty..");
             state = VerifyState.Warning;
         } else {
@@ -31,16 +31,16 @@ public class EditProjectCodeDialog extends EditProjectCodeDialogLayout {
             }
         }
 
-        if (getProjectCode().getProjectIDEId() > DbObject.UNKNOWN_ID) {
-            if (getProjectCode().getProjectIDE().isUseParentFolder()) {
-                File parent = new File(getProjectCode().getDirectory());
-                if (!(parent.exists() && parent.isDirectory() && FileUtils.contains(parent, getProjectCode().getProjectIDE().getExtension()))) {
+        if (code.getProjectIDEId() > DbObject.UNKNOWN_ID) {
+            if (code.getProjectIDE().isUseParentFolder()) {
+                File parent = new File(code.getDirectory());
+                if (!(parent.exists() && parent.isDirectory() && FileUtils.contains(parent, code.getProjectIDE().getExtension()))) {
                     directoryPnl.setWarning("Directory does not match with IDE");
                     state = VerifyState.Warning;
                 }
             } else {
-                File file = new File(getProjectCode().getDirectory());
-                if (!(file.exists() && FileUtils.is(file, getProjectCode().getProjectIDE().getExtension()))) {
+                File file = new File(code.getDirectory());
+                if (!(file.exists() && FileUtils.is(file, code.getProjectIDE().getExtension()))) {
                     directoryPnl.setWarning("Directory does not match with IDE");
                     state = VerifyState.Warning;
                 }

@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components;
 
-import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.utils.icomponents.IDialog;
@@ -28,11 +27,13 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
     private T originalObject;
     private T copyObject;
 
-    public IObjectDialog(Window parent, String title, @NotNull T originalObject, Class<T> c) {
+    public IObjectDialog(Window parent, String title, T originalObject, Class<T> c) {
         super(parent, title);
 
         this.originalObject = originalObject;
-        this.copyObject = (T) originalObject.createCopy();
+        if (originalObject != null) {
+            this.copyObject = (T) originalObject.createCopy();
+        }
 
         assert copyObject != null;
 
@@ -40,17 +41,18 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
 
         // Layout
         setTitle(getTitle());
-        ImageIcon icon;
-        if (originalObject.getId() > DbObject.UNKNOWN_ID) {
-            icon = imageResource.readImage("Actions.L.Edit");
-        } else {
-            icon = imageResource.readImage("Actions.L.Add");
+        if (originalObject != null) {
+            ImageIcon icon;
+            if (originalObject.getId() > DbObject.UNKNOWN_ID) {
+                icon = imageResource.readImage("Actions.L.Edit");
+            } else {
+                icon = imageResource.readImage("Actions.L.Add");
+            }
+            if (icon != null) {
+                setInfoIcon(icon);
+                setIconImage(icon.getImage());
+            }
         }
-        if (icon != null) {
-            setInfoIcon(icon);
-            setIconImage(icon.getImage());
-        }
-
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
         getButtonNeutral().setVisible(true);
@@ -60,7 +62,7 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         return copyObject;
     }
 
-    public abstract VerifyState verify();
+    public abstract VerifyState verify(T toVerify);
 
     public <L extends DbObject> void addCacheListener(Class<L> c, CacheChangedListener<L> listener) {
         if (!cacheListenerList.contains(listener)) {
@@ -69,8 +71,16 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         cache().addListener(c, listener);
     }
 
+    public void setOriginalObject(T originalObject) {
+        this.originalObject = originalObject;
+        if (originalObject != null) {
+            this.copyObject = (T) originalObject.createCopy();
+        }
+        getButtonNeutral().setEnabled(false);
+    }
+
     public boolean hasChanged() {
-        return !(copyObject.equals(originalObject));
+        return originalObject != null && copyObject != null && !(copyObject.equals(originalObject));
     }
 
     private void doSave() {
@@ -81,7 +91,7 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
 
     public void save(boolean closeAfter) {
         boolean canClose = true;
-        switch (verify()) {
+        switch (verify(copyObject)) {
             case Ok:
                 doSave();
                 break;
@@ -107,7 +117,7 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         }
     }
 
-    public void showSaveDialog() {
+    private void showSaveDialog() {
         String msg = copyObject + " is edited, do you want to save?";
         int res = JOptionPane.showConfirmDialog(
                 this,
@@ -118,6 +128,8 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
 
         if (res == JOptionPane.YES_OPTION) {
             save(true);
+        } else {
+            super.onOK();
         }
     }
 
@@ -154,7 +166,9 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
 
     @Override
     public void onDeleted(T object) {
-        // Should not happen
+        originalObject = null;
+        copyObject = null;
+        getButtonNeutral().setEnabled(false);
     }
 
     @Override
@@ -185,5 +199,14 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
     @Override
     protected void onNeutral() {
         save(false);
+    }
+
+    @Override
+    protected void onCancel() {
+        if (hasChanged()) {
+            showSaveDialog();
+        } else {
+            super.onCancel();
+        }
     }
 }
