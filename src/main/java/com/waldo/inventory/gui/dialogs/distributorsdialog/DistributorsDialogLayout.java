@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -25,7 +26,7 @@ import static javax.swing.SpringLayout.*;
 
 abstract class DistributorsDialogLayout extends IDialog implements
         ListSelectionListener,
-        Search.SearchListener<Distributor>,
+        IObjectSearchPanel.SearchListener<Distributor>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
 
@@ -33,9 +34,9 @@ abstract class DistributorsDialogLayout extends IDialog implements
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<Distributor> distributorList;
-    private DefaultListModel<Distributor> distributorDefaultListModel;
+    private DefaultListModel<Distributor> distributorListModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel<Distributor> searchPanel;
+    IObjectSearchPanel<Distributor> searchPanel;
 
     ITextField detailName;
     GuiUtils.IBrowseWebPanel browseDistributorPanel;
@@ -82,6 +83,16 @@ abstract class DistributorsDialogLayout extends IDialog implements
             detailOrderFileFormatTb.setAddActionEnabled(false);
             detailOrderFileFormatTb.setDeleteActionEnabled(false);
             detailOrderFileFormatTb.setEditActionEnabled(false);
+        }
+    }
+
+    void setDistributorList(List<Distributor> distributorList) {
+        if (distributorList != null) {
+            distributorList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            distributorListModel.removeAllElements();
+            for (Distributor d : distributorList) {
+                distributorListModel.addElement(d);
+            }
         }
     }
 
@@ -169,8 +180,8 @@ abstract class DistributorsDialogLayout extends IDialog implements
         searchPanel = new IObjectSearchPanel<>(cache().getDistributors(), this);
 
         // Distributor list
-        distributorDefaultListModel = new DefaultListModel<>();
-        distributorList = new JList<>(distributorDefaultListModel);
+        distributorListModel = new DefaultListModel<>();
+        distributorList = new JList<>(distributorListModel);
         distributorList.addListSelectionListener(this);
 
         toolBar = new IdBToolBar(this);
@@ -250,12 +261,7 @@ abstract class DistributorsDialogLayout extends IDialog implements
         beginWait();
         try {
             // Get all
-            distributorDefaultListModel.removeAllElements();
-            for (Distributor d : cache().getDistributors()) {
-                if (!d.isUnknown()) {
-                    distributorDefaultListModel.addElement(d);
-                }
-            }
+            setDistributorList(cache().getDistributors());
 
             selectedDistributor = (Distributor) object[0];
             updateEnabledComponents();

@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -24,7 +25,7 @@ import static javax.swing.SpringLayout.*;
 
 abstract class LocationTypeDialogLayout extends IDialog implements
         ListSelectionListener,
-        Search.SearchListener<LocationType>,
+        IObjectSearchPanel.SearchListener<LocationType>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener{
 
@@ -34,7 +35,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     JList<LocationType> locationTypeList;
     private DefaultListModel<LocationType> locationTypeModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel<LocationType> searchPanel;
+    IObjectSearchPanel<LocationType> searchPanel;
 
     ITextField detailName;
 
@@ -66,6 +67,16 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     private void updateEnabledComponents() {
         toolBar.setEditActionEnabled(selectedLocationType != null);
         toolBar.setDeleteActionEnabled(selectedLocationType != null);
+    }
+
+    void setLocationTypeList(List<LocationType> locationTypeList) {
+        if (locationTypeList != null) {
+            locationTypeList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            locationTypeModel.removeAllElements();
+            for (LocationType d : locationTypeList) {
+                locationTypeModel.addElement(d);
+            }
+        }
     }
 
     private JPanel createWestPanel() {
@@ -187,12 +198,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
         beginWait();
         try {
             // Get all
-            locationTypeModel.removeAllElements();
-            for (LocationType lt : cache().getLocationTypes()) {
-                if (!lt.isUnknown()) {
-                    locationTypeModel.addElement(lt);
-                }
-            }
+            setLocationTypeList(cache().getLocationTypes());
 
             selectedLocationType = (LocationType) object[0];
             updateEnabledComponents();

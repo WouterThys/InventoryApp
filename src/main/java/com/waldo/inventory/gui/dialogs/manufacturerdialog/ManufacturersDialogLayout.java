@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -15,6 +14,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -22,17 +22,17 @@ import static javax.swing.SpringLayout.*;
 
 abstract class ManufacturersDialogLayout extends IDialog implements
         ListSelectionListener,
-        Search.SearchListener<Manufacturer>,
         IdBToolBar.IdbToolBarListener,
+        IObjectSearchPanel.SearchListener<Manufacturer>,
         IEditedListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     JList<Manufacturer> manufacturerList;
-    DefaultListModel<Manufacturer> manufacturerDefaultListModel;
+    private DefaultListModel<Manufacturer> manufacturerListModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel<Manufacturer> searchPanel;
+    IObjectSearchPanel<Manufacturer> searchPanel;
 
     ITextField detailName;
     GuiUtils.IBrowseWebPanel browsePanel;
@@ -58,15 +58,24 @@ abstract class ManufacturersDialogLayout extends IDialog implements
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
-        if (selectedManufacturer == null || selectedManufacturer.isUnknown()) {
-            toolBar.setDeleteActionEnabled(false);
-            toolBar.setEditActionEnabled(false);
-        } else {
-            toolBar.setDeleteActionEnabled(true);
-            toolBar.setEditActionEnabled(true);
-        }
+        boolean enabled = selectedManufacturer != null;
+        boolean browseEnabled = enabled && !selectedManufacturer.getWebsite().isEmpty();
+
+        toolBar.setDeleteActionEnabled(enabled);
+        toolBar.setEditActionEnabled(enabled);
+       browsePanel.setActionEnabled(browseEnabled);
     }
 
+    void setManufacturerList(List<Manufacturer> manufacturerList) {
+        if (manufacturerList != null) {
+            manufacturerListModel.removeAllElements();
+            for (Manufacturer m : manufacturerList) {
+                if (!m.isUnknown()) {
+                    manufacturerListModel.addElement(m);
+                }
+            }
+        }
+    }
 
     private JPanel createWestPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Manufacturers");
@@ -157,11 +166,11 @@ abstract class ManufacturersDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel<>(cache().getManufacturers(), this);
+        searchPanel = new IObjectSearchPanel<>(cache().getManufacturers(), this, true);
 
         // Manufacturers list
-        manufacturerDefaultListModel = new DefaultListModel<>();
-        manufacturerList = new JList<>(manufacturerDefaultListModel);
+        manufacturerListModel = new DefaultListModel<>();
+        manufacturerList = new JList<>(manufacturerListModel);
         manufacturerList.addListSelectionListener(this);
 
         toolBar = new IdBToolBar(this, IdBToolBar.HORIZONTAL);

@@ -1,8 +1,10 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.search.Search;
+import com.waldo.inventory.classes.search.ObjectMatch;
+import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.utils.icomponents.IImageButton;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
@@ -11,14 +13,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface, Search.SearchListener<T> {
+public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface {
 
-    private final Search.DbObjectSearch<T> searchManager;
+    private static final ImageIcon removeSearchIcon = imageResource.readImage("Search.RemoveSearch");
+    private static final ImageIcon searchIcon = imageResource.readImage("Search.Search");
+
+    public interface SearchListener<T extends DbObject> {
+        void onObjectsFound(List<T> foundObjects);
+        void onNextObjectSelected(T next);
+        void onPreviousObjectSelected(T previous);
+        void onSearchCleared();
+    }
 
     private ITextField searchField;
     private JButton searchButton;
@@ -27,27 +40,64 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private IImageButton previousBtn;
     private IImageButton nextBtn;
 
-    private Search.SearchListener<T> searchListener;
+    private SearchListener<T> searchListener;
+    private List<T> searchList;
+    private List<T> foundList = new ArrayList<>();
+    private T currentObject;
 
-    public IObjectSearchPanel(List<T> searchList, Search.SearchListener<T> searchListener) {
-        this.searchManager = new Search.DbObjectSearch<>(searchList, this);
+    private boolean immediateSearch = false;
+
+    public IObjectSearchPanel(List<T> searchList) {
+        this(searchList, null);
+    }
+
+    public IObjectSearchPanel(List<T> searchList, SearchListener<T> searchListener) {
+        this(searchList, searchListener, false);
+    }
+
+    public IObjectSearchPanel(List<T> searchList, SearchListener<T> searchListener, boolean immediateSearch) {
+        super();
+
+        this.searchList = searchList;
         this.searchListener = searchListener;
+        this.immediateSearch = immediateSearch;
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
-    public IObjectSearchPanel(List<T> searchList) {
-        this(searchList, null);
-    }
 
     public void setSearchList(List<T> searchList) {
-        searchManager.setSearchList(searchList);
+        this.searchList = searchList;
     }
 
-    public void addSearchListener(Search.SearchListener<T> searchListener) {
+    public void addSearchListener(SearchListener<T> searchListener) {
         this.searchListener = searchListener;
+    }
+
+    private void sendObjectsFound(List<T> foundList) {
+        if (searchListener != null) {
+            searchListener.onObjectsFound(foundList);
+        }
+    }
+
+    private void sendNextObject(T next) {
+        if (searchListener != null) {
+            searchListener.onNextObjectSelected(next);
+        }
+    }
+
+    private void sendPreviousObject(T previous) {
+        if (searchListener != null) {
+            searchListener.onPreviousObjectSelected(previous);
+        }
+    }
+
+    private void sendSearchCleared() {
+        if (searchListener != null) {
+            searchListener.onSearchCleared();
+        }
     }
 
     public void clearSearch() {
@@ -56,19 +106,105 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         searchField.setText("");
         btnPanel.setVisible(false);
 
-        searchManager.clearSearch();
+        sendSearchCleared();
     }
 
     public void search(String searchWord) {
-        searchManager.search(searchWord);
+        if (searchWord == null || searchWord.isEmpty()) {
+            clearSearch();
+            return;
+        }
+        if (searchList.size() > 0) {
+            setSearched(false);
+            clearLabel();
+            btnPanel.setVisible(false);
+
+            SwingUtilities.invokeLater(() -> {
+                List<ObjectMatch<T>> foundObjects = new ArrayList<>();
+                for (T t : searchList) {
+                    List<SearchMatch> matches = t.searchByKeyWord(searchWord);
+                    if (matches != null && matches.size() > 0) {
+                        ObjectMatch<T> objectMatch = new ObjectMatch<>(t, matches);
+                        foundObjects.add(objectMatch);
+                    }
+                }
+
+                if (foundObjects.size() > 0) {
+                    if (foundObjects.size() == 1) {
+                        setInfo("1 object found!");
+                    } else {
+                        setInfo(foundObjects.size() + " object(s) found!");
+                        btnPanel.setVisible(true);
+
+                        foundObjects.sort(new ComparatorUtils.FoundMatchComparator());
+                    }
+
+                    foundList.clear();
+                    for (ObjectMatch<T> om : foundObjects) {
+                        foundList.add(om.getFoundObject());
+                    }
+                    sendObjectsFound(foundList);
+                    setSearched(true);
+                } else {
+                    sendObjectsFound(null);
+                    setError("Nothing found..");
+                }
+            });
+        } else {
+            setError("No data to search..");
+        }
+    }
+
+    public T getCurrentObject() {
+        return currentObject;
+    }
+
+    public void setCurrentObject(T object) {
+        this.currentObject = object;
+    }
+
+    private T findPreviousObject() {
+        T previous = null;
+        if (foundList.size() > 0) {
+            if (currentObject == null) {
+                previous = foundList.get(0);
+            } else {
+                int ndx = foundList.indexOf(currentObject);
+                if (ndx < 1) {
+                    previous = foundList.get(foundList.size()-1);
+                } else {
+                    ndx--;
+                    previous = foundList.get(ndx);
+                }
+            }
+        }
+        return previous;
+    }
+
+    private T findNextObject() {
+        T next = null;
+        if (foundList.size() > 0) {
+            if (currentObject == null) {
+                next = foundList.get(0);
+            } else {
+                int ndx = foundList.indexOf(currentObject);
+                if (ndx >= foundList.size()-1) {
+                    next = foundList.get(0);
+                } else {
+                    ndx++;
+                    next = foundList.get(ndx);
+                }
+            }
+        }
+        return next;
     }
 
     private void setSearched(boolean searched) {
-        searchManager.setSearched(searched);
         if (searched) {
-            searchButton.setIcon(imageResource.readImage("Search.RemoveSearch"));
+            searchButton.setIcon(removeSearchIcon);
         } else {
-            searchButton.setIcon(imageResource.readImage("Search.Search"));
+            foundList.clear();
+            searchButton.setIcon(searchIcon);
         }
     }
 
@@ -113,11 +249,27 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
                 search(searchWord);
             }
         });
+        if (immediateSearch) {
+            searchField.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    search(searchField.getText());
+                }
+            });
+        }
 
         // Search button
         searchButton = new JButton(imageResource.readImage("Search.Search"));
         searchButton.addActionListener(e -> {
-            if (searchManager.isSearched()) {
+            if (foundList.size() > 0) {
                 clearSearch();
             } else {
                 String searchWord = searchField.getText();
@@ -137,23 +289,31 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         // Next and prev buttons
         btnPanel = new JPanel();
         btnPanel.setVisible(false);
-        previousBtn = new IImageButton(
+        nextBtn = new IImageButton(
                 imageResource.readImage("Search.ArrowRightBlue"),
                 imageResource.readImage("Search.ArrowRightGreen"),
                 imageResource.readImage("Search.ArrowRightGreen"),
                 imageResource.readImage("Search.ArrowRightGray"));
-        previousBtn.setBorder(BorderFactory.createEmptyBorder());
-        previousBtn.setContentAreaFilled(false);
-        nextBtn = new IImageButton(
+        nextBtn.setBorder(BorderFactory.createEmptyBorder());
+        nextBtn.setContentAreaFilled(false);
+        previousBtn = new IImageButton(
                 imageResource.readImage("Search.ArrowLeftBlue"),
                 imageResource.readImage("Search.ArrowLeftGreen"),
                 imageResource.readImage("Search.ArrowLeftGreen"),
                 imageResource.readImage("Search.ArrowLeftGray"));
-        nextBtn.setBorder(BorderFactory.createEmptyBorder());
-        nextBtn.setContentAreaFilled(false);
+        previousBtn.setBorder(BorderFactory.createEmptyBorder());
+        previousBtn.setContentAreaFilled(false);
 
-        previousBtn.addActionListener(e -> searchManager.findPreviousObject());
-        nextBtn.addActionListener(e -> searchManager.findNextObject());
+        previousBtn.addActionListener(e -> {
+            T previous = findPreviousObject();
+            setCurrentObject(previous);
+            sendPreviousObject(previous);
+        });
+        nextBtn.addActionListener(e -> {
+            T next = findNextObject();
+            setCurrentObject(next);
+            sendNextObject(next);
+        });
     }
 
 
@@ -181,8 +341,8 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(infoLabel, gbc);
 
-        btnPanel.add(nextBtn);
         btnPanel.add(previousBtn);
+        btnPanel.add(nextBtn);
         gbc.gridx = 1; gbc.weightx = 1;
         gbc.gridy = 1; gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -198,48 +358,5 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
             searchField.setEnabled(enabled);
             searchButton.setEnabled(enabled);
             infoLabel.setEnabled(enabled);
-    }
-
-    @Override
-    public void onObjectsFound(List<T> foundObjects) {
-        if (foundObjects.size() > 0) {
-            if (foundObjects.size() == 1) {
-                setInfo("1 object found!");
-            } else {
-                setInfo(foundObjects.size() + " object(s) found!");
-            }
-
-            if (foundObjects.size() > 1) {
-                btnPanel.setVisible(true);
-            }
-
-            setSearched(true);
-        } else {
-            setError("Nothing found..");
-        }
-        if (searchListener != null) {
-            searchListener.onObjectsFound(foundObjects);
-        }
-    }
-
-    @Override
-    public void onSearchCleared() {
-        if (searchListener != null) {
-            searchListener.onSearchCleared();
-        }
-    }
-
-    @Override
-    public void onNextSearchObject(T next) {
-        if (searchListener != null) {
-            searchListener.onNextSearchObject(next);
-        }
-    }
-
-    @Override
-    public void onPreviousSearchObject(T previous) {
-        if (searchListener != null) {
-            searchListener.onPreviousSearchObject(previous);
-        }
     }
 }

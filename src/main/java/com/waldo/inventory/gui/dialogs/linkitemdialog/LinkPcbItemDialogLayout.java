@@ -3,9 +3,9 @@ package com.waldo.inventory.gui.dialogs.linkitemdialog;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.PcbItem;
 import com.waldo.inventory.classes.dbclasses.PcbItemItemLink;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.tablemodels.ILinkPcbItemTableModel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkItemPanel;
 import com.waldo.inventory.gui.dialogs.linkitemdialog.extras.LinkPcbPanel;
@@ -20,7 +20,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 
 abstract class LinkPcbItemDialogLayout extends IDialog implements
-        Search.SearchListener<Item>, ActionListener {
+        IObjectSearchPanel.SearchListener<Item>, ActionListener {
 
     /*
     *                  COMPONENTS
@@ -89,7 +89,7 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         pcbPanel = new LinkPcbPanel(ILinkPcbItemTableModel.LINK_COMPONENTS);
 
         itemPanel = new LinkItemPanel(this);
-        itemPanel.addSearchListener(this);
+        //itemPanel.addSearchListener(this);
 
         // Buttons
         linkBtn = new JButton(imageResource.readImage("Projects.Link.AddLinkBtn"));

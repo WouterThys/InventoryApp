@@ -199,27 +199,33 @@ public class LocationTypeDialog extends LocationTypeDialogLayout implements Cach
     }
 
     //
-    // Search
+    // Search listener
     //
     @Override
     public void onObjectsFound(List<LocationType> foundObjects) {
-        LocationType found = foundObjects.get(0);
-        locationTypeList.setSelectedValue(found, true);
+        if (foundObjects != null && foundObjects.size() > 0) {
+            setLocationTypeList(foundObjects);
+            LocationType m = foundObjects.get(0);
+            locationTypeList.setSelectedValue(m, true);
+            searchPanel.setCurrentObject(m);
+        } else {
+            searchPanel.clearSearch();
+        }
     }
 
     @Override
-    public void onSearchCleared() {
-        locationTypeList.setSelectedValue(selectedLocationType, true);
-    }
-
-    @Override
-    public void onNextSearchObject(LocationType next) {
+    public void onNextObjectSelected(LocationType next) {
         locationTypeList.setSelectedValue(next, true);
     }
 
     @Override
-    public void onPreviousSearchObject(LocationType previous) {
+    public void onPreviousObjectSelected(LocationType previous) {
         locationTypeList.setSelectedValue(previous, true);
+    }
+
+    @Override
+    public void onSearchCleared() {
+        updateComponents(selectedLocationType);
     }
 
     //

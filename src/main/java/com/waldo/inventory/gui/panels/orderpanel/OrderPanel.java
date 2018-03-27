@@ -12,7 +12,6 @@ import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
 import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
-import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
@@ -872,19 +871,20 @@ public class OrderPanel extends OrderPanelLayout {
             onAddOrder();
         } else {
             if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
-                OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
-                if (dialog.showDialog() == IDialog.OK) {
-                    List<Item> itemsToOrder = dialog.getItemsToOrder();
-                    if (itemsToOrder != null) {
-                        // Update item
-                        for (Item item : itemsToOrder) {
-                            item.updateOrderState();//(Statics.ItemOrderStates.Planned);
-                            //item.save();
-                        }
-
-                        addItemsToOrder(itemsToOrder, selectedOrder);
-                    }
-                }
+//                OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
+//                if (dialog.showDialog() == IDialog.OK) {
+//                    List<Item> itemsToOrder = dialog.getItemsToOrder();
+//                    if (itemsToOrder != null) {
+//                        // Update item
+//                        for (Item item : itemsToOrder) {
+//                            item.updateOrderState();//(Statics.ItemOrderStates.Planned);
+//                            //item.save();
+//                        }
+//
+//                        addItemsToOrder(itemsToOrder, selectedOrder);
+//                    }
+//                }
+                // TODO #1 Advanced search dialog
             }
         }
     }

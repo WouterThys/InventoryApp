@@ -698,9 +698,7 @@ public class DatabaseAccess {
                     m.setIconPath(rs.getString("iconpath"));
 
                     m.setInserted(true);
-                    if (m.getId() != DbObject.UNKNOWN_ID) {
-                        manufacturers.add(m);
-                    }
+                    manufacturers.add(m);
                 }
             }
         } catch (SQLException e) {
@@ -711,7 +709,6 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        manufacturers.add(0, Manufacturer.getUnknownManufacturer());
         return manufacturers;
     }
 

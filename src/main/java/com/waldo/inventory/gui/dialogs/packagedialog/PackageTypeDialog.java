@@ -202,12 +202,7 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
         try {
 
             // Get all packages
-            packageModel.removeAllElements();
-            for (Package p : cache().getPackages()) {
-                if (!p.isUnknown()) {
-                    packageModel.addElement(p);
-                }
-            }
+            setPackageList(cache().getPackages());
 
             if (object.length > 0) {
                 selectedPackage = (Package) object[0];
@@ -341,27 +336,33 @@ public class PackageTypeDialog extends PackageTypeDialogLayout {
     }
 
     //
-    // Search
+    // Search listener
     //
     @Override
-    public void onObjectsFound(List<PackageType> foundObjects) {
-        PackageType pFound = foundObjects.get(0); // Just get first, later get other with "next" arrow?
-        packageList.setSelectedValue(pFound, true);
+    public void onObjectsFound(List<Package> foundObjects) {
+        if (foundObjects != null && foundObjects.size() > 0) {
+            setPackageList(foundObjects);
+            Package d = foundObjects.get(0);
+            packageList.setSelectedValue(d, true);
+            searchPanel.setCurrentObject(d);
+        } else {
+            searchPanel.clearSearch();
+        }
     }
 
     @Override
-    public void onSearchCleared() {
-        packageList.setSelectedValue(selectedPackage, true);
-    }
-
-    @Override
-    public void onNextSearchObject(PackageType next) {
+    public void onNextObjectSelected(Package next) {
         packageList.setSelectedValue(next, true);
     }
 
     @Override
-    public void onPreviousSearchObject(PackageType previous) {
+    public void onPreviousObjectSelected(Package previous) {
         packageList.setSelectedValue(previous, true);
+    }
+
+    @Override
+    public void onSearchCleared() {
+        updateComponents(selectedPackage);
     }
 
     //

@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.packagedialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.classes.dbclasses.PackageType;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -27,7 +27,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 import static javax.swing.SpringLayout.*;
 
 abstract class PackageTypeDialogLayout extends IDialog implements
-        Search.SearchListener<PackageType>,
+        IObjectSearchPanel.SearchListener<Package>,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
         IEditedListener {
@@ -39,7 +39,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
     JList<Package> packageList;
     DefaultListModel<Package> packageModel;
     IdBToolBar listToolBar;
-    private IObjectSearchPanel<PackageType> searchPanel;
+    IObjectSearchPanel<Package> searchPanel;
 
     ITextField detailNameTf;
     ITextArea detailDescriptionTa;
@@ -79,6 +79,16 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         detailToolBar.setEditActionEnabled(typeSelected);
 
 
+    }
+
+    void setPackageList(List<Package> packageList) {
+        if (packageList != null) {
+            packageList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            packageModel.removeAllElements();
+            for (Package p : packageList) {
+                packageModel.addElement(p);
+            }
+        }
     }
 
     void dimensionTableAddMouseAdapter(MouseAdapter mouseAdapter) {
@@ -207,7 +217,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
         getButtonNeutral().setEnabled(false);
 
         // Search
-        searchPanel = new IObjectSearchPanel<>(cache().getPackageTypes(), this);
+        searchPanel = new IObjectSearchPanel<>(cache().getPackages(), this);
 
         // Packages list
         packageModel = new DefaultListModel<>();

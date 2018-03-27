@@ -92,7 +92,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
 //    }
 
     void addResults(List<Item> results) {
-        tableModel.addItems(results);
+        // TODO #1 tableModel.addItems(results);
     }
 
     void tableUpdate() {
@@ -108,7 +108,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     }
 
     void tableSelect(int ndx) {
-        foundItemTable.selectItem(tableModel.getItemList().get(ndx));
+        // TODO #1 foundItemTable.selectItem(tableModel.getItemList().get(ndx));
     }
 
     Item tableGetSelected() {
@@ -181,18 +181,19 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         nextPrevTb.add(nextResultAction);
         nextPrevTb.add(prevResultAction);
 
-        tableModel = new IFoundItemsTableModel(searchType, null);
-        foundItemTable = new ITable<>(tableModel);
-        if (!allowMultiSelect) {
-            foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        }
-        foundItemTable.getSelectionModel().addListSelectionListener(this);
-        foundItemTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onMouseClicked(e);
-            }
-        });
+        // TODO #1
+//        tableModel = new IFoundItemsTableModel(searchType, null);
+//        foundItemTable = new ITable<>(tableModel);
+//        if (!allowMultiSelect) {
+//            foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        }
+//        foundItemTable.getSelectionModel().addListSelectionListener(this);
+//        foundItemTable.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                onMouseClicked(e);
+//            }
+//        });
 
     }
 

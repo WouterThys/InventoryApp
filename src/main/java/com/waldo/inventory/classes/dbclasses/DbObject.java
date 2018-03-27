@@ -1,11 +1,9 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.AddUpdateDelete;
-import com.waldo.inventory.classes.search.ObjectMatch;
-import com.waldo.inventory.classes.search.ObjectSearchListener;
+import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.inventory.managers.LogManager;
 
 import java.sql.PreparedStatement;
@@ -16,7 +14,7 @@ import java.util.List;
 import static com.waldo.inventory.database.DatabaseAccess.db;
 import static com.waldo.inventory.gui.Application.scriptResource;
 
-public abstract class DbObject<T extends DbObject> implements ObjectSearchListener<T> {
+public abstract class DbObject {
 
     private static final LogManager LOG = LogManager.LOG(DbObject.class);
     public static final int UNKNOWN_ID = 1;
@@ -206,29 +204,17 @@ public abstract class DbObject<T extends DbObject> implements ObjectSearchListen
         return false;
     }
 
-    @Override
-    public List<ObjectMatch<T>> searchByKeyWord(List<T> searchList, String searchTerm) {
-        List<ObjectMatch<T>> objectMatches = new ArrayList<>();
+    public List<SearchMatch> searchByKeyWord(String searchTerm) {
+        List<SearchMatch> matches = new ArrayList<>();
 
-        if (searchList != null && searchList.size() > 0 && searchTerm != null && !searchTerm.isEmpty()) {
+        if (searchTerm != null && !searchTerm.isEmpty()) {
             searchTerm = searchTerm.toUpperCase();
-            for (T t : searchList) {
-                List<ObjectMatch.Match> matchList = new ArrayList<>();
-                ObjectMatch.Match m;
 
-                m = ObjectMatch.Match.hasMatch(32, t.getName(), searchTerm);
-                if (m != null) matchList.add(m);
-
-                if (matchList.size() > 0) {
-                    objectMatches.add(new ObjectMatch<>(t, matchList));
-                }
-            }
-
-            if (objectMatches.size() > 0) {
-                objectMatches.sort(new ComparatorUtils.FoundMatchComparator());
-            }
+            SearchMatch m;
+            m = SearchMatch.hasMatch(32, getName(), searchTerm);
+            if (m != null) matches.add(m);
         }
-        return objectMatches;
+        return matches;
     }
 
     public abstract DbObject createCopy();

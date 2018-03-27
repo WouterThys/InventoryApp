@@ -104,7 +104,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     private void clearDetails() {
         detailName.setText("");
         projectTypeCb.setSelectedItem(null);
-        detailLogo.setIcon((Icon) null);
+        detailLogo.setIcon(null);
         detailProjectModel.removeAllElements();
     }
 
@@ -153,22 +153,17 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
 
     @Override
     public void updateComponents(Object... object) {
+        beginWait();
         try {
-            beginWait();
             // Get all menus
-            projectTypeModel.removeAllElements();
-            for (ProjectIDE pt : cache().getProjectIDES()) {
-                if (!pt.isUnknown()) {
-                    projectTypeModel.addElement(pt);
-                }
-            }
+            setProjectIdeList(cache().getProjectIDES());
 
             selectedProjectIDE = (ProjectIDE) object[0];
             updateEnabledComponents();
 
             if (selectedProjectIDE != null) {
                 originalProjectIDE = selectedProjectIDE.createCopy();
-                projectTypeList.setSelectedValue(selectedProjectIDE, true);
+                projectIdeList.setSelectedValue(selectedProjectIDE, true);
                 setDetails();
             } else {
                 originalProjectIDE = null;
@@ -182,26 +177,31 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
     //
     // Search listener
     //
-
     @Override
     public void onObjectsFound(List<ProjectIDE> foundObjects) {
-        ProjectIDE ptFound = foundObjects.get(0);
-        projectTypeList.setSelectedValue(ptFound, true);
+        if (foundObjects != null && foundObjects.size() > 0) {
+            setProjectIdeList(foundObjects);
+            ProjectIDE m = foundObjects.get(0);
+            projectIdeList.setSelectedValue(m, true);
+            searchPanel.setCurrentObject(m);
+        } else {
+            searchPanel.clearSearch();
+        }
+    }
+
+    @Override
+    public void onNextObjectSelected(ProjectIDE next) {
+        projectIdeList.setSelectedValue(next, true);
+    }
+
+    @Override
+    public void onPreviousObjectSelected(ProjectIDE previous) {
+        projectIdeList.setSelectedValue(previous, true);
     }
 
     @Override
     public void onSearchCleared() {
-        projectTypeList.setSelectedValue(selectedProjectIDE, true);
-    }
-
-    @Override
-    public void onNextSearchObject(ProjectIDE next) {
-        projectTypeList.setSelectedValue(next, true);
-    }
-
-    @Override
-    public void onPreviousSearchObject(ProjectIDE previous) {
-        projectTypeList.setSelectedValue(previous, true);
+        updateComponents(selectedProjectIDE);
     }
 
     //

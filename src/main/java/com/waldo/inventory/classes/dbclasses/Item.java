@@ -1,12 +1,11 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Value;
-import com.waldo.inventory.classes.search.ObjectMatch;
+import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
@@ -28,7 +27,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class Item extends DbObject<Item> {
+public class Item extends DbObject {
 
     public static final String TABLE_NAME = "items";
 
@@ -275,54 +274,41 @@ public class Item extends DbObject<Item> {
         return result;
     }
 
-    @Override
-    public List<ObjectMatch<Item>> searchByKeyWord(List<Item> searchList, String searchTerm) {
-        List<ObjectMatch<Item>> itemMatches = new ArrayList<>();
+    public List<SearchMatch> searchByKeyWord(String searchTerm) {
+        List<SearchMatch> matchList = new ArrayList<>();
 
-        if (searchList != null && searchList.size() > 0 && searchTerm != null && !searchTerm.isEmpty()) {
+        if (searchTerm != null && !searchTerm.isEmpty()) {
             searchTerm = searchTerm.toUpperCase();
-            for (Item item : searchList) {
-                List<ObjectMatch.Match> matchList = new ArrayList<>();
-                ObjectMatch.Match m;
 
-                m = ObjectMatch.Match.hasMatch(32, item.getName(), searchTerm);
-                if (m != null) matchList.add(m);
+            SearchMatch m;
+            m = SearchMatch.hasMatch(32, getName(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(16, item.getAlias(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(16, getAlias(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(8, item.getValue().toString(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(8, getValue().toString(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(4, item.getCategory(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(4, getCategory(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(4, item.getProduct(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(4, getProduct(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(4, item.getType(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(4, getType(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(2, item.getManufacturer(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(2, getManufacturer(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(2, item.getLocation(), searchTerm);
-                if (m != null) matchList.add(m);
+            m = SearchMatch.hasMatch(2, getLocation(), searchTerm);
+            if (m != null) matchList.add(m);
 
-                m = ObjectMatch.Match.hasMatch(2, item.getPackageType(), searchTerm);
-                if (m != null) matchList.add(m);
-
-                if (matchList.size() > 0) {
-                    itemMatches.add(new ObjectMatch<>(item, matchList));
-                }
-
-            }
-
-            if (itemMatches.size() > 0) {
-                itemMatches.sort(new ComparatorUtils.FoundMatchComparator());
-            }
+            m = SearchMatch.hasMatch(2, getPackageType(), searchTerm);
+            if (m != null) matchList.add(m);
         }
-        return itemMatches;
+        return matchList;
     }
 
     public String createRemarksFileName() {

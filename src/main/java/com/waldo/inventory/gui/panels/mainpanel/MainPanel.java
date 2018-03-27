@@ -207,7 +207,7 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Item item) {
                 tableRemoveItem(item);
                 selectedItem = null;
-                detailPanel.updateComponents(null);
+                detailPanel.updateComponents();
                 updateEnabledComponents();
             }
 

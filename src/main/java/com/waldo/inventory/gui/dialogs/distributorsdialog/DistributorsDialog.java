@@ -98,7 +98,7 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
     private void clearDetails() {
         detailName.setText("");
         browseDistributorPanel.clearText();
-        detailLogo.setIcon((Icon)null);
+        detailLogo.setIcon(null);
         // List
         browseOrderLinkPanel.clearText();
         detailOrderFileFormatCb.setSelectedItem(null);
@@ -165,27 +165,33 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
 
 
     //
-    // Search listeners
+    // Search listener
     //
     @Override
     public void onObjectsFound(List<Distributor> foundObjects) {
-        Distributor dFound = foundObjects.get(0);
-        distributorList.setSelectedValue(dFound, true);
+        if (foundObjects != null && foundObjects.size() > 0) {
+            setDistributorList(foundObjects);
+            Distributor d = foundObjects.get(0);
+            distributorList.setSelectedValue(d, true);
+            searchPanel.setCurrentObject(d);
+        } else {
+            searchPanel.clearSearch();
+        }
     }
 
     @Override
-    public void onSearchCleared() {
-        distributorList.setSelectedValue(selectedDistributor, true);
-    }
-
-    @Override
-    public void onNextSearchObject(Distributor next) {
+    public void onNextObjectSelected(Distributor next) {
         distributorList.setSelectedValue(next, true);
     }
 
     @Override
-    public void onPreviousSearchObject(Distributor previous) {
+    public void onPreviousObjectSelected(Distributor previous) {
         distributorList.setSelectedValue(previous, true);
+    }
+
+    @Override
+    public void onSearchCleared() {
+        updateComponents(selectedDistributor);
     }
 
 

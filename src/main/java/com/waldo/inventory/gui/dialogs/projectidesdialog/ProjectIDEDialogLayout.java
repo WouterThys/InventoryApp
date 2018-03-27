@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics.ProjectTypes;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
-import com.waldo.inventory.classes.search.Search;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -24,18 +24,18 @@ import static javax.swing.SpringLayout.*;
 
 abstract class ProjectIDEDialogLayout extends IDialog implements
         ListSelectionListener,
-        Search.SearchListener<ProjectIDE>,
+        IObjectSearchPanel.SearchListener<ProjectIDE>,
         IdBToolBar.IdbToolBarListener,
         IEditedListener,
         ActionListener {
 
     /*
-    *                  COMPONENTS
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    JList<ProjectIDE> projectTypeList;
-    DefaultListModel<ProjectIDE> projectTypeModel;
+     *                  COMPONENTS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    JList<ProjectIDE> projectIdeList;
+    DefaultListModel<ProjectIDE> projectIdeModel;
     private IdBToolBar toolBar;
-    private IObjectSearchPanel<ProjectIDE> searchPanel;
+    IObjectSearchPanel<ProjectIDE> searchPanel;
 
     ITextField detailName;
     ILabel detailLogo;
@@ -68,15 +68,24 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     void updateEnabledComponents() {
         boolean enabled = !(selectedProjectIDE == null || selectedProjectIDE.isUnknown());
 
-            toolBar.setDeleteActionEnabled(enabled);
-            toolBar.setEditActionEnabled(enabled);
-            detailLauncherBtn.setEnabled(enabled);
-            detailDetectionBtn.setEnabled(enabled);
-            detailParserBtn.setEnabled(enabled);
-            projectTypeCb.setEnabled(enabled);
+        toolBar.setDeleteActionEnabled(enabled);
+        toolBar.setEditActionEnabled(enabled);
+        detailLauncherBtn.setEnabled(enabled);
+        detailDetectionBtn.setEnabled(enabled);
+        detailParserBtn.setEnabled(enabled);
+        projectTypeCb.setEnabled(enabled);
 
     }
 
+    void setProjectIdeList(List<ProjectIDE> ideList) {
+        if (ideList != null) {
+            ideList.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            projectIdeModel.removeAllElements();
+            for (ProjectIDE p : ideList) {
+                projectIdeModel.addElement(p);
+            }
+        }
+    }
 
     private JPanel createWestPanel() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Project IDEs");
@@ -84,7 +93,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         titledBorder.setTitleColor(Color.gray);
 
         JPanel westPanel = new JPanel();
-        JScrollPane list = new JScrollPane(projectTypeList);
+        JScrollPane list = new JScrollPane(projectIdeList);
 
         SpringLayout layout = new SpringLayout();
         // Search panel
@@ -120,7 +129,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         titledBorder.setTitleJustification(TitledBorder.RIGHT);
         titledBorder.setTitleColor(Color.gray);
 
-        JPanel panel = new JPanel(new BorderLayout(5,5));
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
         JPanel logoPanel = new JPanel(new BorderLayout());
         logoPanel.add(detailLogo, BorderLayout.EAST);
 
@@ -136,7 +145,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         gbc.addLine("Name: ", detailName);
         gbc.addLine("Type", projectTypeCb);
         gbc.addLine("", buttonPanel);
-        gbc.add(logoPanel, 1,3,1,1);
+        gbc.add(logoPanel, 1, 3, 1, 1);
 
         // Item list
         JPanel listPanel = new JPanel(new GridBagLayout());
@@ -167,9 +176,9 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         searchPanel = new IObjectSearchPanel<>(cache().getProjectIDES(), this);
 
         // Project type list
-        projectTypeModel = new DefaultListModel<>();
-        projectTypeList = new JList<>(projectTypeModel);
-        projectTypeList.addListSelectionListener(this);
+        projectIdeModel = new DefaultListModel<>();
+        projectIdeList = new JList<>(projectIdeModel);
+        projectIdeList.addListSelectionListener(this);
 
         toolBar = new IdBToolBar(this, IdBToolBar.HORIZONTAL);
         toolBar.setFloatable(false);

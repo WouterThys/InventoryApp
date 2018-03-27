@@ -130,7 +130,7 @@ public class TopToolBar extends JPanel {
 //    }
 //
 //    @Override
-//    public void onNextSearchObject(DbObject next) {
+//    public void onNextObjectSelected(DbObject next) {
 //        if (next instanceof Item) {
 //            try {
 //                application.setSelectedItem((Item) next);
@@ -148,7 +148,7 @@ public class TopToolBar extends JPanel {
 //    }
 //
 //    @Override
-//    public void onPreviousSearchObject(DbObject previous) {
+//    public void onPreviousObjectSelected(DbObject previous) {
 //        if (previous instanceof Item) {
 //            try {
 //                application.setSelectedItem((Item) previous);

@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
@@ -14,6 +15,7 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -30,16 +32,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
         addCacheListener(Manufacturer.class, this);
 
-        updateWithFirstManufacturer();
-    }
-
-    private void updateWithFirstManufacturer() {
-        if (cache().getManufacturers().size() > 1) {
-            updateComponents(cache().getManufacturers().get(1)); // 0 is unknown
-            setDetails();
-        } else {
-            updateComponents();
-        }
+        updateComponents();
     }
 
     @Override
@@ -140,32 +133,51 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
         return (selectedManufacturer != null) && !(selectedManufacturer.equals(originalManufacturer));
     }
 
+    private void selectManufacturer(Manufacturer manufacturer) {
+        if (selectedManufacturer != null && originalManufacturer != null) {
+            if (checkChange()) {
+                showSaveDialog(false);
+            }
+        }
+        getButtonNeutral().setEnabled(false);
+        selectedManufacturer = manufacturer;
+        if (selectedManufacturer != null && !selectedManufacturer.isUnknown()) {
+            originalManufacturer = selectedManufacturer.createCopy();
+            manufacturerList.setSelectedValue(selectedManufacturer, true);
+            setDetails();
+        } else {
+            clearDetails();
+        }
+        updateEnabledComponents();
+    }
+
     //
     // Update listener
     //
 
     @Override
-    public void updateComponents(Object... object) {
+    public void updateComponents(Object... args) {
+        if (isUpdating()) {
+            return;
+        }
+        beginWait();
         try {
-            beginWait();
             // Get all menus
-            manufacturerDefaultListModel.removeAllElements();
-            for (Manufacturer m : cache().getManufacturers()) {
-                if (!m.isUnknown()) {
-                    manufacturerDefaultListModel.addElement(m);
-                }
+            List<Manufacturer> manufacturers = cache().getManufacturers();
+            manufacturers.sort(new ComparatorUtils.DbObjectNameComparator<>());
+            setManufacturerList(manufacturers);
+
+            Manufacturer m = null;
+
+            if (args.length > 0) {
+                m = (Manufacturer) args[0];
+            }
+            if (m == null) {
+                m = manufacturers.get(1); // Unknown is 0
             }
 
-            selectedManufacturer = (Manufacturer) object[0];
+            selectManufacturer(m);
             updateEnabledComponents();
-
-            if (selectedManufacturer != null) {
-                originalManufacturer = selectedManufacturer.createCopy();
-                manufacturerList.setSelectedValue(selectedManufacturer, true);
-                setDetails();
-            } else {
-                originalManufacturer = null;
-            }
         } finally {
             endWait();
         }
@@ -175,26 +187,36 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
     //
     // Search listener
     //
-
     @Override
     public void onObjectsFound(List<Manufacturer> foundObjects) {
-        Manufacturer mFound = foundObjects.get(0);
-        manufacturerList.setSelectedValue(mFound, true);
+        if (foundObjects != null && foundObjects.size() > 0) {
+            beginWait();
+            try {
+                setManufacturerList(foundObjects);
+                Manufacturer m = foundObjects.get(0);
+                manufacturerList.setSelectedValue(m, true);
+                searchPanel.setCurrentObject(m);
+            } finally {
+                endWait();
+            }
+        } else {
+            setManufacturerList(new ArrayList<>());
+        }
     }
 
     @Override
-    public void onSearchCleared() {
-        manufacturerList.setSelectedValue(selectedManufacturer, true);
-    }
-
-    @Override
-    public void onNextSearchObject(Manufacturer next) {
+    public void onNextObjectSelected(Manufacturer next) {
         manufacturerList.setSelectedValue(next, true);
     }
 
     @Override
-    public void onPreviousSearchObject(Manufacturer previous) {
+    public void onPreviousObjectSelected(Manufacturer previous) {
         manufacturerList.setSelectedValue(previous, true);
+    }
+
+    @Override
+    public void onSearchCleared() {
+        updateComponents(selectedManufacturer);
     }
 
     //
@@ -212,7 +234,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
     @Override
     public void onDeleted(Manufacturer manufacturer) {
-        updateWithFirstManufacturer();
+        updateComponents();
     }
 
     @Override
@@ -227,16 +249,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
             JList list = (JList) e.getSource();
             Object selected = list.getSelectedValue();
 
-            if (checkChange()) {
-                showSaveDialog(false);
-            }
-            getButtonNeutral().setEnabled(false);
-            updateComponents(selected);
-            if (selectedManufacturer != null && !selectedManufacturer.isUnknown()) {
-                setDetails();
-            } else {
-                clearDetails();
-            }
+            selectManufacturer((Manufacturer)selected);
         }
     }
 
@@ -246,7 +259,7 @@ public class ManufacturersDialog extends ManufacturersDialogLayout implements Ca
 
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        updateWithFirstManufacturer();
+        updateComponents(selectedManufacturer);
     }
 
     @Override

@@ -185,28 +185,18 @@ public class LinkPcbItemDialog extends LinkPcbItemDialogLayout {
     }
 
     @Override
+    public void onNextObjectSelected(Item next) {
+
+    }
+
+    @Override
+    public void onPreviousObjectSelected(Item previous) {
+
+    }
+
+    @Override
     public void onSearchCleared() {
-        if (selectedPcbItem != null) {
-            // TODO #24
-//            if (selectedPcbItem.hasMatchedItem()) {
-//                itemPanel.selectMatchItem(selectedPcbItem.getMatchedItemLink());
-//            } else {
-//                selectedItemLink = null;
-//            }
-        } else {
-            itemPanel.clearItemList();
-        }
-        updateEnabledComponents();
-    }
-
-    @Override
-    public void onNextSearchObject(Item next) {
-
-    }
-
-    @Override
-    public void onPreviousSearchObject(Item previous) {
-
+        updateComponents(selectedPcbItem);
     }
 
     //
