@@ -1,272 +1,143 @@
 package com.waldo.inventory.gui.dialogs.locationtypedialog;
 
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
-import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.gui.components.ILocationMapPanel;
+import com.waldo.inventory.gui.components.IResourceDialog;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
 import com.waldo.inventory.gui.dialogs.inventorydialog.InventoryDialog;
+import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class LocationTypeDialog extends LocationTypeDialogLayout implements CacheChangedListener<LocationType> {
+public class LocationTypeDialog extends IResourceDialog<LocationType> {
 
-    private boolean canClose = true;
+    private static final ImageIcon icon = imageResource.readImage("Locations.Title");
 
-    public LocationTypeDialog(Application application, String title) {
-        super(application, title);
+    private ITextField detailName;
+    private IActions.EditAction editAction;
+    private IActions.InventoryAction inventoryAction;
+    private ILocationMapPanel locationMapPanel;
 
-        initializeComponents();
-        initializeLayouts();
-
-        addCacheListener(LocationType.class, this);
-
-        updateWithFirstLocationType();
+    public LocationTypeDialog(Window window) {
+        super(window, "Locations", LocationType.class);
     }
 
-
-    private void updateWithFirstLocationType() {
-        if (cache().getLocationTypes().size() > 1) {
-            updateComponents(cache().getLocationTypes().get(1)); // 0 is Unknown
-            setDetails();
-        } else {
-            updateComponents();
-        }
+    @Override
+    protected List<LocationType> getAllResources() {
+        return cache().getLocationTypes();
     }
 
-    private void setDetails() {
-        if (selectedLocationType != null) {
-            detailName.setText(selectedLocationType.getName());
-            ILocationMapPanel.setLocations(selectedLocationType.getLocations());
-            ILocationMapPanel.setLocationsWithItemHighlighted(com.waldo.inventory.gui.components.ILocationMapPanel.GREEN);
-        }
+    @Override
+    protected LocationType getNewResource() {
+        return new LocationType();
     }
 
-    private void clearDetails() {
-        detailName.setText("");
+    @Override
+    protected void updateEnabledComponents() {
+        super.updateEnabledComponents();
     }
 
-    private void showSaveDialog(boolean closeAfter) {
-        if (selectedLocationType != null) {
-            String msg = selectedLocationType.getName() + " is edited, do you want to save?";
-            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                if (verify()) {
-                    selectedLocationType.save();
-                    originalLocationType = selectedLocationType.createCopy();
-                    if (closeAfter) {
-                        dispose();
-                    }
-                }
+    @Override
+    protected void initializeDetailComponents() {
+        setTitleIcon(icon);
+        detailName = new ITextField("Name");
+        detailName.setEnabled(false);
+
+        editAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editLocationType(getSelectedResource());
             }
-        } else {
-            if (closeAfter) {
-                dialogResult = OK;
-                dispose();
+        };
+
+        inventoryAction = new IActions.InventoryAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doInventory(getSelectedResource());
             }
-        }
-        canClose = true;
+        };
+
+        locationMapPanel = new ILocationMapPanel(this, null, true);
     }
 
-    private boolean verify() {
-        boolean ok = true;
+    @Override
+    protected JPanel createDetailPanel() {
+        JPanel panel = new JPanel(new BorderLayout(5,5));
+        JPanel northPanel = new JPanel(new GridBagLayout());
+        JToolBar toolBar = GuiUtils.createNewToolbar(inventoryAction, editAction);
+
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(northPanel);
+        gbh.addLine("Name: ", detailName);
+        gbh.add(toolBar, 1,1);
+
+        // Add
+        panel.add(northPanel, BorderLayout.NORTH);
+        panel.add(locationMapPanel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    @Override
+    protected void setDetails(LocationType locationType) {
+        if (locationType != null) {
+            detailName.setText(locationType.getName());
+            locationMapPanel.setLocations(locationType.getLocations());
+            locationMapPanel.setLocationsWithItemHighlighted(com.waldo.inventory.gui.components.ILocationMapPanel.GREEN);
+        } else {
+            clearDetails();
+        }
+    }
+
+    @Override
+    public VerifyState verify(LocationType toVerify) {
+        VerifyState ok = VerifyState.Ok;
         if (detailName.getText().isEmpty()) {
             detailName.setError("Name can't be empty");
-            ok = false;
+            ok = VerifyState.Error;
+        } else {
+            if (toVerify.getId() < DbObject.UNKNOWN_ID) {
+                if (SearchManager.sm().findLocationTypeByName(detailName.getText()) != null) {
+                    detailName.setError("Name already exists..");
+                    ok = VerifyState.Error;
+                }
+            }
         }
 
         return ok;
     }
 
-    private boolean checkChange() {
-        return (selectedLocationType != null) && !(selectedLocationType.equals(originalLocationType));
+    @Override
+    public void clearDetails() {
+        detailName.setText("");
+        locationMapPanel.clear();
     }
 
-    //
-    // Dialog
-    //
-    @Override
-    protected void onOK() {
-        if (checkChange()) {
-            canClose = false;
-            showSaveDialog(true);
-        }
 
-        if (canClose) {
-            super.onOK();
-        }
-    }
 
-    @Override
-    protected void onCancel() {
-        if (selectedLocationType != null && originalLocationType != null) {
-            originalLocationType.createCopy(selectedLocationType);
-            selectedLocationType.setCanBeSaved(true);
-        }
-
-        super.onCancel();
-    }
-
-    @Override
-    protected void onNeutral() {
-        if (verify()) {
-            selectedLocationType.save();
-            originalLocationType = selectedLocationType.createCopy();
-            getButtonNeutral().setEnabled(false);
-        }
-    }
-
-    //
-    // Value edited
-    //
-    @Override
-    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        getButtonNeutral().setEnabled(checkChange());
-        ILocationMapPanel.setLocations(selectedLocationType.getLocations());
-    }
-
-    @Override
-    public DbObject getGuiObject() {
-        return selectedLocationType;
-    }
-
-    //
-    // Location type changed
-    //
-    @Override
-    public void onInserted(LocationType location) {
-        updateComponents(location);
-    }
-
-    @Override
-    public void onUpdated(LocationType location) {
-        updateComponents(location);
-    }
-
-    @Override
-    public void onDeleted(LocationType object) {
-        updateWithFirstLocationType();
-    }
-
-    @Override
-    public void onCacheCleared() {}
-
-    //
-    // Tool bar
-    //
-    @Override
-    public void onToolBarRefresh(IdBToolBar source) {
-        selectedLocationType = null;
-        clearDetails();
-        updateComponents(selectedLocationType);
-    }
-
-    @Override
-    public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(this, "New Location type", new LocationType());
-        if (dialog.showDialog() == DbObjectDialog.OK) {
-            LocationType type = dialog.getDbObject();
-            type.save();
-        }
-    }
-
-    @Override
-    public void onToolBarDelete(IdBToolBar source) {
-        if (selectedLocationType != null) {
-            int res = JOptionPane.showConfirmDialog(LocationTypeDialog.this, "Are you sure you want to delete \"" + selectedLocationType.getName() + "\"?");
-            if (res == JOptionPane.OK_OPTION) {
-                selectedLocationType.delete();
-            }
-        }
-    }
-
-    @Override
-    public void onToolBarEdit(IdBToolBar source) {
-        if (selectedLocationType != null) {
-            DbObjectDialog<LocationType> dialog = new DbObjectDialog<>(this, "Update " + selectedLocationType.getName(), selectedLocationType);
-            if (dialog.showDialog() == DbObjectDialog.OK) {
-                selectedLocationType.save();
-                originalLocationType = selectedLocationType.createCopy();
-            }
-        }
-    }
-
-    //
-    // Search listener
-    //
-    @Override
-    public void onObjectsFound(List<LocationType> foundObjects) {
-        if (foundObjects != null && foundObjects.size() > 0) {
-            setLocationTypeList(foundObjects);
-            LocationType m = foundObjects.get(0);
-            locationTypeList.setSelectedValue(m, true);
-            searchPanel.setCurrentObject(m);
-        } else {
-            searchPanel.clearSearch();
-        }
-    }
-
-    @Override
-    public void onNextObjectSelected(LocationType next) {
-        locationTypeList.setSelectedValue(next, true);
-    }
-
-    @Override
-    public void onPreviousObjectSelected(LocationType previous) {
-        locationTypeList.setSelectedValue(previous, true);
-    }
-
-    @Override
-    public void onSearchCleared() {
-        updateComponents(selectedLocationType);
-    }
-
-    //
-    // List selection
-    //
-    @Override
-    public void valueChanged(ListSelectionEvent ev) {
-        if (!ev.getValueIsAdjusting() && !isUpdating()) {
-            SwingUtilities.invokeLater(() -> {
-                JList list = (JList) ev.getSource();
-                Object selected = list.getSelectedValue();
-
-                if (checkChange()) {
-                    showSaveDialog(false);
-                }
-                getButtonNeutral().setEnabled(false);
-                updateComponents(selected);
-                if (selectedLocationType != null && !selectedLocationType.isUnknown()) {
-                    setDetails();
-                } else {
-                    clearDetails();
-                }
-            });
-        }
-    }
-
-    @Override
-    void onEditLocation() {
-        if (selectedLocationType != null) {
-            CustomLocationDialog dialog = new CustomLocationDialog(this, "Custom", selectedLocationType);
+    private void editLocationType(LocationType locationType) {
+        if (locationType != null) {
+            CustomLocationDialog dialog = new CustomLocationDialog(this, "Custom", locationType);
             if (dialog.showDialog() == IDialog.OK) {
-                selectedLocationType.updateLocations();
-                setDetails();
+                locationType.updateLocations();
+                setDetails(locationType);
             }
         }
     }
 
-    @Override
-    void onInventory() {
-        if (selectedLocationType != null) {
-            InventoryDialog dialog = new InventoryDialog(LocationTypeDialog.this, "Inventory", selectedLocationType);
+    private void doInventory(LocationType locationType) {
+        if (locationType != null) {
+            InventoryDialog dialog = new InventoryDialog(LocationTypeDialog.this, "Inventory", locationType);
             dialog.showDialog();
         }
     }

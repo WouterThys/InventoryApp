@@ -83,7 +83,7 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        DistributorsDialog distributorsDialog = new DistributorsDialog(EditDistributorPartLinkDialog.this, "Distributors");
+        DistributorsDialog distributorsDialog = new DistributorsDialog(EditDistributorPartLinkDialog.this);
         distributorsDialog.showDialog();
 
         updateDistributorCb(distributorPartLink);

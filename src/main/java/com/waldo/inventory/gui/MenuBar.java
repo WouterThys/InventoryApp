@@ -126,7 +126,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener manufacturersSelected() {
         return (e -> {
-            ManufacturersDialog dialog = new ManufacturersDialog(application, "Manufacturers");
+            ManufacturersDialog dialog = new ManufacturersDialog(application);
             dialog.showDialog();
         });
     }
@@ -141,7 +141,7 @@ public class MenuBar extends JMenuBar {
     private ActionListener distributorsSelected() {
         //return  e -> DistributorsDialog.showDialog(application);
         return (e -> {
-            DistributorsDialog dialog = new DistributorsDialog(application, "Distributors");
+            DistributorsDialog dialog = new DistributorsDialog(application);
             dialog.showDialog();
         });
     }
@@ -170,7 +170,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener locationTypesSelected() {
         return (e -> {
-            LocationTypeDialog dialog = new LocationTypeDialog(application, "Locations");
+            LocationTypeDialog dialog = new LocationTypeDialog(application);
             dialog.showDialog();
         });
     }

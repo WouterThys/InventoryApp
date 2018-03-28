@@ -1,14 +1,21 @@
 package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
+import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
+import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.database.settings.SettingsManager;
+import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.DbObjectDialog;
+import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
+import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,84 +25,183 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class DistributorsDialog extends DistributorsDialogLayout implements CacheChangedListener<Distributor> {
+public class DistributorsDialog extends IResourceDialog<Distributor> {
 
-    private boolean canClose = true;
+    private static final ImageIcon icon = imageResource.readImage("Distributors.Title");
 
-    public DistributorsDialog(Window parent, String title) {
-        super(parent, title);
+    private ITextField detailName;
+    private GuiUtils.IBrowseWebPanel browseDistributorPanel;
+    private GuiUtils.IBrowseWebPanel browseOrderLinkPanel;
+    private ILabel detailLogo;
+    private IComboBox<OrderFileFormat> detailOrderFileFormatCb;
+    private IdBToolBar detailOrderFileFormatTb;
 
-        initializeComponents();
-        initializeLayouts();
-
-        addCacheListener(Distributor.class, this);
-
-        updateWithFirstDistributor();
-    }
-
-    private void updateWithFirstDistributor() {
-        if (cache().getDistributors().size() > 0) {
-            updateComponents(cache().getDistributors().get(0));
-            setDetails();
-        } else {
-            updateComponents();
-        }
+    public DistributorsDialog(Window window) {
+        super(window, "Distributors", Distributor.class);
     }
 
     @Override
-    protected void onOK() {
-        if (checkChange()) {
-            canClose = false;
-            showSaveDialog(true);
-        }
-
-        if (canClose) {
-            super.onOK();
-        }
+    protected List<Distributor> getAllResources() {
+        return cache().getDistributors();
     }
 
     @Override
-    protected void onNeutral() {
-        if (verify()) {
-            selectedDistributor.save();
-            originalDistributor = selectedDistributor.createCopy();
-            getButtonNeutral().setEnabled(false);
-        }
+    protected Distributor getNewResource() {
+        return new Distributor();
     }
 
     @Override
-    protected void onCancel() {
-        if (selectedDistributor != null && originalDistributor != null) {
-            originalDistributor.createCopy(selectedDistributor);
-            selectedDistributor.setCanBeSaved(true);
-        }
+    protected void initializeDetailComponents() {
+        setTitleIcon(icon);
+        detailName = new ITextField("Name");
+        detailName.setEnabled(false);
+        detailLogo = new ILabel();
+        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        super.onCancel();
-    }
+        browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
+        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
 
-    private void setDetails() {
-        if (selectedDistributor != null) {
-            detailName.setText(selectedDistributor.getName());
-            browseDistributorPanel.setText(selectedDistributor.getWebsite());
-
-            if (!selectedDistributor.getIconPath().isEmpty()) {
-                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), selectedDistributor.getIconPath());
-                try {
-                    detailLogo.setIcon(imageResource.readImage(path));
-                } catch (IOException e) {
-                    detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
-                }
-            } else {
-                detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
+        detailOrderFileFormatCb = new IComboBox<>(cache().getOrderFileFormats(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
+        detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
+            @Override
+            public void onToolBarRefresh(IdBToolBar source) {
+                detailOrderFileFormatCb.updateList();
             }
 
-            // Orders
-            browseOrderLinkPanel.setText(selectedDistributor.getOrderLink());
-            detailOrderFileFormatCb.setSelectedItem(selectedDistributor.getOrderFileFormat());
+            @Override
+            public void onToolBarAdd(IdBToolBar source) {
+                EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Add format", new OrderFileFormat());
+                if (dialog.showDialog() == IDialog.OK) {
+                    OrderFileFormat off = dialog.getOrderFileFormat();
+                    off.save();
+                }
+            }
+
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+                if (off != null) {
+                    int result = JOptionPane.showConfirmDialog(DistributorsDialog.this,
+                            "Are you sure you want to delete " + off.getName(),
+                            "Delete format",
+                            JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        off.delete();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+                if (off != null) {
+                    EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Edit format", off);
+                    if (dialog.showDialog() == IDialog.OK) {
+                        off.save();
+                    }
+                }
+            }
+        });
+        detailOrderFileFormatTb.setAlignmentX(RIGHT_ALIGNMENT);
+        detailOrderFileFormatCb.updateList();
+    }
+
+    @Override
+    protected JPanel createDetailPanel() {
+        JPanel panel = new JPanel(new BorderLayout(5,5));
+
+        // Panels
+        JPanel textFieldPanel = new JPanel();
+        JPanel orderPanel = new JPanel(new GridBagLayout());
+
+        // - Text fields
+        GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
+        gbh.addLine("Name: ", detailName);
+        gbh.addLine("Web site: ", browseDistributorPanel);
+        gbh.add(detailLogo, 1, 2, 1, 1);
+
+        // - Order stuff
+        gbh = new GuiUtils.GridBagHelper(orderPanel);
+        gbh.addLine("Order link: ", browseOrderLinkPanel);
+        gbh.gridwidth = 2;
+        gbh.addLine("File format: ", detailOrderFileFormatCb, GridBagConstraints.BOTH);
+        gbh.gridwidth = 1;
+        gbh.add(detailOrderFileFormatTb, 1, 2);
+
+        // Add all
+        panel.add(textFieldPanel, BorderLayout.NORTH);
+        panel.add(orderPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    @Override
+    protected void updateEnabledComponents() {
+        super.updateEnabledComponents();
+
+        if (getObject() != null) {
+            detailOrderFileFormatTb.setRefreshActionEnabled(true);
+            detailOrderFileFormatTb.setAddActionEnabled(true);
+
+            OrderFileFormat off = getObject().getOrderFileFormat();
+            if (off != null && !off.isUnknown()) {
+                detailOrderFileFormatTb.setDeleteActionEnabled(true);
+                detailOrderFileFormatTb.setEditActionEnabled(true);
+            } else {
+                detailOrderFileFormatTb.setDeleteActionEnabled(false);
+                detailOrderFileFormatTb.setEditActionEnabled(false);
+            }
+        } else {
+            detailOrderFileFormatTb.setRefreshActionEnabled(false);
+            detailOrderFileFormatTb.setAddActionEnabled(false);
+            detailOrderFileFormatTb.setDeleteActionEnabled(false);
+            detailOrderFileFormatTb.setEditActionEnabled(false);
         }
     }
 
-    private void clearDetails() {
+    @Override
+    protected void setDetails(Distributor distributor) {
+        detailName.setText(distributor.getName());
+        browseDistributorPanel.setText(distributor.getWebsite());
+
+        if (!distributor.getIconPath().isEmpty()) {
+            Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), distributor.getIconPath());
+            try {
+                detailLogo.setIcon(imageResource.readImage(path));
+            } catch (IOException e) {
+                detailLogo.setIcon(icon);
+            }
+        } else {
+            detailLogo.setIcon(icon);
+        }
+
+        // Orders
+        browseOrderLinkPanel.setText(distributor.getOrderLink());
+        detailOrderFileFormatCb.setSelectedItem(distributor.getOrderFileFormat());
+    }
+
+    @Override
+    public VerifyState verify(Distributor d) {
+        VerifyState ok = VerifyState.Ok;
+        if (detailName.getText().isEmpty()) {
+            detailName.setError("Name can't be empty");
+            ok = VerifyState.Error;
+        } else {
+            if (d.getId() < DbObject.UNKNOWN_ID) {
+                if (SearchManager.sm().findDistributorByName(detailName.getText()) != null) {
+                    detailName.setError("Name already exists..");
+                    ok = VerifyState.Error;
+                }
+            }
+        }
+
+        return ok;
+    }
+
+    @Override
+    public void clearDetails() {
         detailName.setText("");
         browseDistributorPanel.clearText();
         detailLogo.setIcon(null);
@@ -104,169 +210,4 @@ public class DistributorsDialog extends DistributorsDialogLayout implements Cach
         detailOrderFileFormatCb.setSelectedItem(null);
     }
 
-    private void showSaveDialog(boolean closeAfter) {
-        if (selectedDistributor != null) {
-            String msg = selectedDistributor.getName() + " is edited, do you want to save?";
-            if (JOptionPane.showConfirmDialog(this, msg, "Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                if (verify()) {
-                    selectedDistributor.setName(detailName.getText());
-                    selectedDistributor.save();
-                    originalDistributor = selectedDistributor.createCopy();
-                    if (closeAfter) {
-                        dispose();
-                    }
-                }
-            }
-        } else {
-            if (closeAfter) {
-                dialogResult = OK;
-                dispose();
-            }
-        }
-        canClose = true;
-    }
-
-    private boolean verify() {
-        boolean ok = true;
-        if (detailName.getText().isEmpty()) {
-            detailName.setError("Name can't be empty");
-            ok = false;
-        }
-
-        return ok;
-    }
-
-    private boolean checkChange() {
-        return (selectedDistributor != null) && !(selectedDistributor.equals(originalDistributor));
-    }
-
-
-    //
-    // List selection changed
-    //
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !isUpdating()) {
-            JList list = (JList) e.getSource();
-            Object selected = list.getSelectedValue();
-
-            if (checkChange()) {
-                showSaveDialog(false);
-            }
-            getButtonNeutral().setEnabled(false);
-            updateComponents(selected);
-            if (selectedDistributor != null && !selectedDistributor.isUnknown()) {
-                setDetails();
-            } else {
-                clearDetails();
-            }
-        }
-    }
-
-
-    //
-    // Search listener
-    //
-    @Override
-    public void onObjectsFound(List<Distributor> foundObjects) {
-        if (foundObjects != null && foundObjects.size() > 0) {
-            setDistributorList(foundObjects);
-            Distributor d = foundObjects.get(0);
-            distributorList.setSelectedValue(d, true);
-            searchPanel.setCurrentObject(d);
-        } else {
-            searchPanel.clearSearch();
-        }
-    }
-
-    @Override
-    public void onNextObjectSelected(Distributor next) {
-        distributorList.setSelectedValue(next, true);
-    }
-
-    @Override
-    public void onPreviousObjectSelected(Distributor previous) {
-        distributorList.setSelectedValue(previous, true);
-    }
-
-    @Override
-    public void onSearchCleared() {
-        updateComponents(selectedDistributor);
-    }
-
-
-    //
-    //  Distributor changed listeners
-    //
-    @Override
-    public void onInserted(Distributor object) {
-        updateComponents(object);
-    }
-
-    @Override
-    public void onUpdated(Distributor newObject) {
-        updateComponents(newObject);
-    }
-
-    @Override
-    public void onDeleted(Distributor object) {
-        updateWithFirstDistributor();
-    }
-
-    @Override
-    public void onCacheCleared() {}
-
-    //
-    //  Toolbar listener
-    //
-    @Override
-    public void onToolBarRefresh(IdBToolBar source) {
-        selectedDistributor = null;
-        originalDistributor = null;
-        clearDetails();
-        updateWithFirstDistributor();
-    }
-
-    @Override
-    public void onToolBarAdd(IdBToolBar source) {
-        DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(this, "New Distributor", new Distributor());
-        if (dialog.showDialog() == DbObjectDialog.OK) {
-            Distributor d = dialog.getDbObject();
-            d.save();
-        }
-    }
-
-    @Override
-    public void onToolBarDelete(IdBToolBar source) {
-        if (selectedDistributor != null) {
-            int res = JOptionPane.showConfirmDialog(DistributorsDialog.this, "Are you sure you want to delete \"" + selectedDistributor.getName() + "\"?");
-            if (res == JOptionPane.OK_OPTION) {
-                selectedDistributor.delete();
-            }
-        }
-    }
-
-    @Override
-    public void onToolBarEdit(IdBToolBar source) {
-        if (selectedDistributor != null) {
-            DbObjectDialog<Distributor> dialog = new DbObjectDialog<>(this, "Update " + selectedDistributor.getName(), selectedDistributor);
-            if (dialog.showDialog() == DbObjectDialog.OK) {
-                selectedDistributor.save();
-                originalDistributor = selectedDistributor.createCopy();
-            }
-        }
-    }
-
-    //
-    // Stuff changed
-    //
-    @Override
-    public void onValueChanged(Component component, String fieldName, Object previousValue, Object newValue) {
-        getButtonNeutral().setEnabled(checkChange());
-    }
-
-    @Override
-    public DbObject getGuiObject() {
-        return selectedDistributor;
-    }
 }

@@ -269,7 +269,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
 
     private ActionListener createManufacturerAddListener() {
         return e -> {
-            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent, "Manufacturers");
+            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent);
             if (manufacturersDialog.showDialog() == IDialog.OK) {
                 updateManufacturerCbValues();
             }

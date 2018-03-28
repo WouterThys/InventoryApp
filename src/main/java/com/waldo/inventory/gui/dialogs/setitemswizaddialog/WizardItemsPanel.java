@@ -242,7 +242,7 @@ public class WizardItemsPanel extends JPanel implements GuiUtils.GuiInterface, I
 
     private ActionListener createManufacturerListener() {
         return e -> {
-            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent, "Manufacturers");
+            ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent);
             if (manufacturersDialog.showDialog() == IDialog.OK) {
                 updateManufacturerCbValues();
             }

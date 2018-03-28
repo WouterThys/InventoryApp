@@ -29,8 +29,8 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
     private JList<Item> detailItemList;
     private DefaultListModel<Item> detailItemDefaultListModel;
 
-    public ManufacturersDialog(Window parent, String title) {
-        super(parent, title, Manufacturer.class);
+    public ManufacturersDialog(Window parent) {
+        super(parent, "Manufacturers", Manufacturer.class);
     }
 
     @Override

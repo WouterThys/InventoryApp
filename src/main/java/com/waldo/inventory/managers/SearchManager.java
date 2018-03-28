@@ -194,6 +194,17 @@ public class SearchManager {
         return null;
     }
 
+    public Distributor findDistributorByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Distributor d : cache().getDistributors()) {
+                if (d.getName().equals(name)) {
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
+
     public DistributorPartLink findDistributorPartLink(long distributorId, long itemId) {
         for (DistributorPartLink pn : cache().getDistributorPartLinks()) {
             if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
@@ -401,6 +412,17 @@ public class SearchManager {
         for (LocationType lt : cache().getLocationTypes()) {
             if (lt.getId() == locationTypeId) {
                 return lt;
+            }
+        }
+        return null;
+    }
+
+    public LocationType findLocationTypeByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (LocationType lt : cache().getLocationTypes()) {
+                if (lt.getName().equals(name)) {
+                    return lt;
+                }
             }
         }
         return null;
