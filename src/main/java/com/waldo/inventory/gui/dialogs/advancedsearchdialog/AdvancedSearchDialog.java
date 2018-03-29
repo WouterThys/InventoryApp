@@ -23,7 +23,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
         initializeListeners();
 
         // TODO #1 searcher = new Search.DbObjectSearch<>(
-        // TODO #1         cache().getItems(), itemSearchListener);
+        // TODO #1         cache().getItemList(), itemSearchListener);
 
         updateComponents();
     }

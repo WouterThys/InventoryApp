@@ -115,7 +115,7 @@ public class PackageType extends DbObject {
     }
 
     public Package getPackage() {
-        if (aPackage == null) {
+        if (aPackage == null && packageId > UNKNOWN_ID) {
             aPackage = SearchManager.sm().findPackageById(packageId);
         }
         return aPackage;

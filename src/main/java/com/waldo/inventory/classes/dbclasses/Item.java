@@ -41,6 +41,9 @@ public class Item extends DbObject {
     protected Product product;
     private long typeId = UNKNOWN_ID;
     protected Type type;
+    protected long divisionId = UNKNOWN_ID;
+    protected Division division;
+
     private boolean isSet = false;
 
     private String localDataSheet = "";
@@ -419,7 +422,7 @@ public class Item extends DbObject {
     }
 
     public Category getCategory() {
-        if (category == null) {
+        if (category == null && categoryId > UNKNOWN_ID) {
             category = sm().findCategoryById(categoryId);
         }
         return category;
@@ -474,6 +477,27 @@ public class Item extends DbObject {
         this.typeId = typeId;
     }
 
+    public long getDivisionId() {
+        if (divisionId < UNKNOWN_ID) {
+            divisionId = UNKNOWN_ID;
+        }
+        return divisionId;
+    }
+
+    public Division getDivision() {
+        if (division == null && getDivisionId() > UNKNOWN_ID) {
+            division = SearchManager.sm().findDivisionById(divisionId);
+        }
+        return division;
+    }
+
+    public void setDivisionId(long divisionId) {
+        if (division != null && division.getId() != divisionId) {
+            division = null;
+        }
+        this.divisionId = divisionId;
+    }
+
     public String getLocalDataSheet() {
         if (localDataSheet == null) {
             localDataSheet = "";
@@ -504,7 +528,7 @@ public class Item extends DbObject {
     }
 
     public Manufacturer getManufacturer() {
-        if (manufacturer == null) {
+        if (manufacturer == null && manufacturerId > UNKNOWN_ID) {
             manufacturer = sm().findManufacturerById(manufacturerId);
         }
         return manufacturer;
@@ -537,7 +561,7 @@ public class Item extends DbObject {
     }
 
     public Location getLocation() {
-        if (location == null) {
+        if (location == null && locationId > UNKNOWN_ID) {
             location = SearchManager.sm().findLocationById(getLocationId());
         }
         return location;
@@ -668,7 +692,7 @@ public class Item extends DbObject {
     }
 
     public PackageType getPackageType() {
-        if (packageType == null) {
+        if (packageType == null && packageTypeId > UNKNOWN_ID) {
             packageType = sm().findPackageTypeById(packageTypeId);
         }
         return packageType;

@@ -704,7 +704,7 @@ public class Statics {
         }
     }
 
-    public enum TypeDisplayType {
+    public enum IconDisplayType {
         Icon    (0, "Icon"),
         R_SMD   (1, "Resistor - SMD"),
         R_THT   (2, "Resistor - Through hole"),
@@ -714,7 +714,7 @@ public class Statics {
 
         private final int intValue;
         private final String stringValue;
-        TypeDisplayType(int intValue, String stringValue) {
+        IconDisplayType(int intValue, String stringValue) {
             this.intValue = intValue;
             this.stringValue = stringValue;
         }
@@ -728,7 +728,7 @@ public class Statics {
             return stringValue;
         }
 
-        public static TypeDisplayType fromInt(int intValue) {
+        public static IconDisplayType fromInt(int intValue) {
             switch (intValue) {
                 default:
                 case 0: return Icon;

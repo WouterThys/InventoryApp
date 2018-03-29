@@ -153,7 +153,7 @@ public class ParserItemLink extends DbObject {
     }
 
     public Category getCategory() {
-        if (category == null) {
+        if (category == null && categoryId > UNKNOWN_ID) {
             category = SearchManager.sm().findCategoryById(categoryId);
         }
         return category;
@@ -171,7 +171,7 @@ public class ParserItemLink extends DbObject {
     }
 
     public Product getProduct() {
-        if (product == null) {
+        if (product == null && productId > UNKNOWN_ID) {
             product = SearchManager.sm().findProductById(productId);
         }
         return product;
@@ -189,7 +189,7 @@ public class ParserItemLink extends DbObject {
     }
 
     public Type getType() {
-        if (type == null) {
+        if (type == null && typeId > UNKNOWN_ID) {
             type = SearchManager.sm().findTypeById(typeId);
         }
         return type;

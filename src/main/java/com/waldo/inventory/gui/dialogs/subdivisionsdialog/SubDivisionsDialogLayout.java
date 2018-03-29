@@ -1,8 +1,7 @@
 package com.waldo.inventory.gui.dialogs.subdivisionsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.Statics.TypeDisplayType;
+import com.waldo.inventory.Utils.Statics.IconDisplayType;
 import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Product;
@@ -32,7 +31,7 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
     private ITextField nameTf;
     // Type
     private ICheckBox canHaveValueCb;
-    private IComboBox<TypeDisplayType> displayTypeCb;
+    private IComboBox<IconDisplayType> displayTypeCb;
 
     /*
      *                  VARIABLES
@@ -122,11 +121,11 @@ abstract class SubDivisionsDialogLayout extends IDialog implements IEditedListen
         canHaveValueCb = new ICheckBox();
         canHaveValueCb.addEditedListener(this, "canHaveValue");
 
-        displayTypeCb = new IComboBox<>(Statics.TypeDisplayType.values());
+        displayTypeCb = new IComboBox<>(IconDisplayType.values());
         displayTypeCb.addItemListener(e -> {
             if (SubDivisionsDialogLayout.this.isShown && e.getStateChange() == ItemEvent.SELECTED) {
                 if (type != null) {
-                    type.setDisplayType((TypeDisplayType) displayTypeCb.getSelectedItem());
+                    type.setDisplayType((IconDisplayType) displayTypeCb.getSelectedItem());
                 }
             }
         });

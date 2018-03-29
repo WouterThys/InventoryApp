@@ -65,6 +65,17 @@ public class SearchManager {
         return null;
     }
 
+    public Division findDivisionById(long id) {
+        if (id > DbObject.UNKNOWN_ID) {
+            for (Division d : cache().getDivisions()) {
+                if (d.getId() == id) {
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Product> findProductListForCategory(long categoryId)    {
         List<Product> products = new ArrayList<>();
         for (Product p : cache().getProducts()) {
@@ -112,6 +123,24 @@ public class SearchManager {
         for (Item i : findItemListForProduct(p)) {
             if (i.getTypeId() == t.getId()) {
                 items.add(i);
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemsForDivision(Division d) {
+        List<Item> items = new ArrayList<>();
+        if (d != null) {
+            List<Item> searchInList;
+            if (d.getParentDivision() != null) {
+                searchInList = d.getParentDivision().getItemList();
+            } else {
+                searchInList = cache().getItems();
+            }
+            for (Item i : searchInList) {
+                if (i.getDivisionId() == d.getId()) {
+                    items.add(i);
+                }
             }
         }
         return items;

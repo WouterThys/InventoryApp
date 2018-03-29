@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.Statics.TypeDisplayType;
+import com.waldo.inventory.Utils.Statics.IconDisplayType;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ public class Type extends DbObject {
     private Product product;
 
     private boolean canHaveValue;
-    private TypeDisplayType displayType;
+    private IconDisplayType displayType;
 
     public Type() {
         super(TABLE_NAME);
@@ -102,18 +102,18 @@ public class Type extends DbObject {
         this.canHaveValue = canHaveValue;
     }
 
-    public TypeDisplayType getDisplayType() {
+    public IconDisplayType getDisplayType() {
         if (displayType == null) {
-            displayType = TypeDisplayType.Icon;
+            displayType = IconDisplayType.Icon;
         }
         return displayType;
     }
 
-    public void setDisplayType(TypeDisplayType displayType) {
+    public void setDisplayType(IconDisplayType displayType) {
         this.displayType = displayType;
     }
 
     public void setDisplayType(int displayType) {
-        this.displayType = TypeDisplayType.fromInt(displayType);
+        this.displayType = IconDisplayType.fromInt(displayType);
     }
 }

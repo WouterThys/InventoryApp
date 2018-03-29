@@ -4,10 +4,10 @@ import com.sun.istack.internal.NotNull;
 import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Vector;
 
-public class CacheList<T> extends ArrayList<T> {
+public class CacheList<T> extends Vector<T> {
 
     private boolean isFetched;
 

@@ -185,7 +185,7 @@ public class Location extends DbObject {
     }
 
     public LocationType getLocationType() {
-        if (locationType == null) {
+        if (locationType == null && locationTypeId > UNKNOWN_ID) {
             locationType = SearchManager.sm().findLocationTypeById(locationTypeId);
         }
         return locationType;

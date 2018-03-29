@@ -678,6 +678,39 @@ public class DatabaseAccess {
         return types;
     }
 
+    public List<Division> updateDivisions() {
+        List<Division> divisions = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return divisions;
+        }
+        Status().setMessage("Fetching Division from DB");
+        Division d = null;
+        String sql = scriptResource.readString(Division.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    d = new Division();
+                    d.setId(rs.getLong("id"));
+                    d.setName(rs.getString("name"));
+                    d.setIconPath(rs.getString("iconPath"));
+
+                    d.setInserted(true);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(d, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return divisions;
+    }
+
     public List<Manufacturer> updateManufacturers() {
         List<Manufacturer> manufacturers = new ArrayList<>();
         if (Main.CACHE_ONLY) {

@@ -118,7 +118,6 @@ public class ITree extends JTree {
         };
     }
 
-
     public static DefaultTreeCellRenderer getProjectsRenderer() {
         return new DefaultTreeCellRenderer() {
             private final ImageIcon codeIcon = imageResource.readImage("Projects.Tree.Code");

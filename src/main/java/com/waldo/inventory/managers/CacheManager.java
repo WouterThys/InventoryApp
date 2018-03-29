@@ -36,6 +36,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Categories", categories));
         objectLogList.add(new ObjectLog("Products", products));
         objectLogList.add(new ObjectLog("Types", types));
+        objectLogList.add(new ObjectLog("Divisions", divisions));
         objectLogList.add(new ObjectLog("Manufacturers", manufacturers, "manufacturersCount"));
         objectLogList.add(new ObjectLog("Locations", locations, "locationsCount"));
         objectLogList.add(new ObjectLog("Location types", locationTypes));
@@ -68,6 +69,7 @@ public class CacheManager {
     private final CacheList<Category> categories = new CacheList<>();
     private final CacheList<Product> products = new CacheList<>();
     private final CacheList<Type> types = new CacheList<>();
+    private final CacheList<Division> divisions = new CacheList<>();
     private final CacheList<Manufacturer> manufacturers = new CacheList<>();
     private final CacheList<Location> locations = new CacheList<>();
     private final CacheList<LocationType> locationTypes = new CacheList<>();
@@ -177,6 +179,7 @@ public class CacheManager {
         categories.clear();
         products.clear();
         types.clear();
+        divisions.clear();
         manufacturers.clear();
         locations.clear();
         locationTypes.clear();
@@ -308,6 +311,24 @@ public class CacheManager {
         getTypes().remove(element);
     }
 
+
+    public synchronized CacheList<Division> getDivisions() {
+        if (!divisions.isFetched()) {
+            long start = System.nanoTime();
+            divisions.setList(db().updateDivisions(), (System.nanoTime() - start));
+        }
+        return divisions;
+    }
+
+    public synchronized void add(Division element) {
+        if (!getDivisions().contains(element)) {
+            divisions.add(element);
+        }
+    }
+
+    public synchronized void remove(Division element) {
+        getDivisions().remove(element);
+    }
 
 
     public synchronized CacheList<Manufacturer> getManufacturers() {
