@@ -4,13 +4,11 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.popups.DivisionPopup;
 import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.popups.MultiItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
 import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
@@ -18,7 +16,6 @@ import com.waldo.utils.icomponents.IDialog;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -151,13 +148,13 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void onShowSets(boolean show) {
         showSets = show;
-        tableInitialize(selectedDivision);
+        //tableInitialize(selectedDivision);
     }
 
     @Override
     public void onShowSetItems(boolean show) {
         showSetItems = show;
-        tableInitialize(selectedDivision);
+        //tableInitialize(selectedDivision);
     }
 
     private void initListeners() {
@@ -176,13 +173,13 @@ public class MainPanel extends MainPanelLayout {
                 detailPanel.updateComponents(selectedItem);
 
                 if (setsSelected()) {
-                    ((Set) selectedDivision).addSetItem(item);
+                    //((Set) selectedDivision).addSetItem(item);
                 } else {
                     treeSelectDivisionForItem(item);
                 }
 
                 // Add to table
-                tableInitialize(selectedDivision);
+                //tableInitialize(selectedDivision);
                 tableAddItem(item);
                 // Select in table
                 tableSelectItem(item);
@@ -223,17 +220,17 @@ public class MainPanel extends MainPanelLayout {
         categoriesChanged = new CacheChangedListener<Category>() {
             @Override
             public void onInserted(Category category) {
-                treeModel.addObject(category, true);
+                //treeModel.addObject(category, true);
             }
 
             @Override
             public void onUpdated(Category newCategory) {
-                treeModel.updateObject(newCategory);
+                //treeModel.updateObject(newCategory);
             }
 
             @Override
             public void onDeleted(Category category) {
-                treeModel.removeObject(category);
+                //treeModel.removeObject(category);
             }
 
             @Override
@@ -246,17 +243,17 @@ public class MainPanel extends MainPanelLayout {
         productsChanged = new CacheChangedListener<Product>() {
             @Override
             public void onInserted(Product product) {
-                treeModel.addObject(product, true);
+                //treeModel.addObject(product, true);
             }
 
             @Override
             public void onUpdated(Product newProduct) {
-                treeModel.updateObject(newProduct);
+                //treeModel.updateObject(newProduct);
             }
 
             @Override
             public void onDeleted(Product product) {
-                treeModel.removeObject(product);
+                //treeModel.removeObject(product);
             }
 
             @Override
@@ -269,17 +266,17 @@ public class MainPanel extends MainPanelLayout {
         typesChanged = new CacheChangedListener<Type>() {
             @Override
             public void onInserted(Type type) {
-                treeModel.addObject(type, false);
+                //treeModel.addObject(type, false);
             }
 
             @Override
             public void onUpdated(Type newType) {
-                treeModel.updateObject(newType);
+                //treeModel.updateObject(newType);
             }
 
             @Override
             public void onDeleted(Type type) {
-                treeModel.removeObject(type);
+                //treeModel.removeObject(type);
             }
 
             @Override
@@ -292,17 +289,17 @@ public class MainPanel extends MainPanelLayout {
         setsChanged = new CacheChangedListener<Set>() {
             @Override
             public void onInserted(Set set) {
-                treeModel.addObject(set, false);
+                //treeModel.addObject(set, false);
             }
 
             @Override
             public void onUpdated(Set set) {
-                treeModel.updateObject(set);
+                //treeModel.updateObject(set);
             }
 
             @Override
             public void onDeleted(Set set) {
-                treeModel.removeObject(set);
+                //treeModel.removeObject(set);
             }
 
             @Override
@@ -317,47 +314,55 @@ public class MainPanel extends MainPanelLayout {
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if (!Application.isUpdating(MainPanel.this)) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
-
-            if (node == null) {
-                selectedDivision = null;
-                return; // Nothing selected
-            }
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
+//
+//            if (node == null) {
+//                selectedDivision = null;
+//                return; // Nothing selected
+//            }
+//
+//            selectedItem = null;
+//
+//            updateComponents(node.getUserObject());
 
             selectedItem = null;
+            selectedDivision = divisionTree.getSelectedDivision();
 
-            updateComponents(node.getUserObject());
+            updateDetails();
+            if (selectedDivision != null) {
+                setItemTableList(selectedDivision.getItemList());
+            }
         }
     }
 
     @Override
     void onTreeRightClick(MouseEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
-        if (node != null) {
-            selectedDivision = (DbObject) node.getUserObject();
-            JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
-                @Override
-                public void onAddDivision() {
-                    MainPanel.this.onAddDivision();
-                }
-
-                @Override
-                public void onEditDivision() {
-                    MainPanel.this.onEditDivision();
-                }
-
-                @Override
-                public void onDeleteDivision() {
-                    MainPanel.this.onDeleteDivision();
-                }
-
-                @Override
-                public void onSetWizardAction() {
-                    MainPanel.this.onSetWizardAction();
-                }
-            };
-            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
+//        DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionTree.getLastSelectedPathComponent();
+//        if (node != null) {
+//            selectedDivision = (DbObject) node.getUserObject();
+//            JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
+//                @Override
+//                public void onAddDivision() {
+//                    MainPanel.this.onAddDivision();
+//                }
+//
+//                @Override
+//                public void onEditDivision() {
+//                    MainPanel.this.onEditDivision();
+//                }
+//
+//                @Override
+//                public void onDeleteDivision() {
+//                    MainPanel.this.onDeleteDivision();
+//                }
+//
+//                @Override
+//                public void onSetWizardAction() {
+//                    MainPanel.this.onSetWizardAction();
+//                }
+//            };
+//            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+//        }
     }
 
     //
@@ -396,27 +401,27 @@ public class MainPanel extends MainPanelLayout {
     }
 
     private void onEditDivision() {
-        if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            IDialog dialog = null;
-            String title = "Edit " + selectedDivision.getName();
-            switch (DbObject.getType(selectedDivision)) {
-                case DbObject.TYPE_CATEGORY:
-                    dialog = new SubDivisionsDialog(application, title, (Category) selectedDivision);
-                    break;
-                case DbObject.TYPE_PRODUCT:
-                    dialog = new SubDivisionsDialog(application, title, (Product) selectedDivision);
-                    break;
-                case DbObject.TYPE_TYPE:
-                    dialog = new SubDivisionsDialog(application, title, (Type) selectedDivision);
-                    break;
-                case DbObject.TYPE_SET:
-                    dialog = new EditItemDialog<>(application, title, (Set) selectedDivision);
-                    break;
-            }
-            if (dialog != null) {
-                dialog.showDialog();
-            }
-        }
+//        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+//            IDialog dialog = null;
+//            String title = "Edit " + selectedDivision.getName();
+//            switch (DbObject.getType(selectedDivision)) {
+//                case DbObject.TYPE_CATEGORY:
+//                    dialog = new SubDivisionsDialog(application, title, (Category) selectedDivision);
+//                    break;
+//                case DbObject.TYPE_PRODUCT:
+//                    dialog = new SubDivisionsDialog(application, title, (Product) selectedDivision);
+//                    break;
+//                case DbObject.TYPE_TYPE:
+//                    dialog = new SubDivisionsDialog(application, title, (Type) selectedDivision);
+//                    break;
+//                case DbObject.TYPE_SET:
+//                    dialog = new EditItemDialog<>(application, title, (Set) selectedDivision);
+//                    break;
+//            }
+//            if (dialog != null) {
+//                dialog.showDialog();
+//            }
+//        }
     }
 
     private void onDeleteDivision() {
@@ -431,8 +436,8 @@ public class MainPanel extends MainPanelLayout {
     private void onSetWizardAction() {
         if (setsSelected() && selectedDivision.canBeSaved()) {
             // Add set items wizard dialog
-            SetItemsWizardDialog dialog = new SetItemsWizardDialog(application, "Set item magic", (Set) selectedDivision);
-            dialog.showDialog();
+            //SetItemsWizardDialog dialog = new SetItemsWizardDialog(application, "Set item magic", (Set) selectedDivision);
+            //dialog.showDialog();
         }
     }
 
@@ -448,7 +453,7 @@ public class MainPanel extends MainPanelLayout {
     private void onAddItem() {
         EditItemDialog dialog = new EditItemDialog<>(application, "Add item", new Item());
         if (setsSelected()) {
-            dialog.setValuesForSet((Set) selectedDivision);
+            //dialog.setValuesForSet((Set) selectedDivision);
         }
         dialog.showDialog();
     }
@@ -547,10 +552,10 @@ public class MainPanel extends MainPanelLayout {
         if (res == JOptionPane.YES_OPTION) {
             for (Item item : selectedItems) {
                 tableRemoveItem(item);
-                ((Set)selectedDivision).removeSetItem(item);
-                if (checkBox.isSelected()) {
-                    item.delete();
-                }
+//                ((Set)selectedDivision).removeSetItem(item);
+//                if (checkBox.isSelected()) {
+//                    item.delete();
+//                }
             }
             selectedItem = null;
             updateEnabledComponents();
@@ -578,16 +583,16 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        if (source.equals(selectionTb)) {
+        if (source.equals(divisionTb)) {
             cache().getCategories().clear();
             cache().getProducts().clear();
             cache().getTypes().clear();
-            treeRecreateNodes();
+            //treeRecreateNodes();
         } else {
             Application.beginWait(MainPanel.this);
             try {
                 cache().getItems().clear();
-                tableInitialize(selectedDivision);
+                //tableInitialize(selectedDivision);
                 for (Item item : getTableModel().getItemList()) {
                     item.updateOrderState();
                 }
@@ -602,9 +607,9 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (source != null && source.equals(selectionTb)) {
+        if (source != null && source.equals(divisionTb)) {
             if (selectedDivision == null) {
-                selectedDivision = treeGetItemRoot();
+                //selectedDivision = treeGetItemRoot();
             }
             onAddDivision();
         } else {
@@ -614,7 +619,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (source != null && source.equals(selectionTb)) {
+        if (source != null && source.equals(divisionTb)) {
             onDeleteDivision();
         } else {
             onDeleteItem();
@@ -623,7 +628,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (source != null && source.equals(selectionTb)) {
+        if (source != null && source.equals(divisionTb)) {
             onEditDivision();
         } else {
             onEditItem();
@@ -657,12 +662,12 @@ public class MainPanel extends MainPanelLayout {
     private void onAddItemToSet(Set set, Item item) {
         if (set != null && item != null) {
             selectedItem = item;
-            selectedDivision = set;
+            //selectedDivision = set;
             detailPanel.updateComponents(selectedItem);
 
             // Add to table
             treeSelectDivision(selectedDivision);
-            tableInitialize(selectedDivision);
+            //tableInitialize(selectedDivision);
             if (set.addSetItem(item)) {
                 tableAddItem(item);
             }

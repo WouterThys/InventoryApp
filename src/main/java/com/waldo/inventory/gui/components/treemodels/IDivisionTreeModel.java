@@ -6,6 +6,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class IDivisionTreeModel implements TreeModel {
@@ -17,11 +19,20 @@ public class IDivisionTreeModel implements TreeModel {
         this.rootDivision = rootDivision;
     }
 
-    protected void fireTreeStructureChanged(Division oldRoot) {
-        int length = treeModelListeners.size();
-        TreeModelEvent e = new TreeModelEvent(this, new Object[] {oldRoot});
-        for (TreeModelListener tml : treeModelListeners) {
-            tml.treeStructureChanged(e);
+    protected void fireTreeStructureChanged(Division changedDivision) {
+        if (changedDivision != null) {
+            List<Division> affectedDivisions = new ArrayList<>();
+            affectedDivisions.add(changedDivision);
+            Division parent = changedDivision.getParentDivision();
+            while (parent != null) {
+                affectedDivisions.add(0, parent);
+                parent = parent.getParentDivision();
+            }
+
+            TreeModelEvent e = new TreeModelEvent(this, affectedDivisions.toArray());
+            for (TreeModelListener tml : treeModelListeners) {
+                tml.treeStructureChanged(e);
+            }
         }
     }
 
@@ -37,7 +48,7 @@ public class IDivisionTreeModel implements TreeModel {
     public Division getChild(Object parent, int index) {
         try {
             Division d = (Division) parent;
-            if (d != null) return d.getSubDivisionAt(index);
+            if (d != null) return d.getSubDivisions().get(index);
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -48,7 +59,7 @@ public class IDivisionTreeModel implements TreeModel {
     public int getChildCount(Object parent) {
         try {
             Division d = (Division) parent;
-            if (d != null) return d.getSubDivisionCount();
+            if (d != null) return d.getSubDivisions().size();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -62,12 +73,18 @@ public class IDivisionTreeModel implements TreeModel {
 
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
-
+        System.out.println("IDivisionsTreeModel: value for path changed, path=" + path + ", new value=" + newValue);
     }
 
     @Override
     public int getIndexOfChild(Object parent, Object child) {
-        Division d = (Division) parent;
+        try {
+            Division p = (Division) parent;
+            Division c = (Division) child;
+            if (p != null && c != null) return p.getSubDivisions().indexOf(c);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 

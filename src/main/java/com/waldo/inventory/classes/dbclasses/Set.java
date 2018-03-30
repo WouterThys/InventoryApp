@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.managers.SearchManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -87,6 +88,14 @@ public class Set extends Item {
             }
         }
         return result;
+    }
+
+    public static Set createDummySet(String name, List<Set> setItems) {
+        Set dummy =  new Set(name);
+        dummy.setId(-1);
+        dummy.setCanBeSaved(false);
+        dummy.setItems = new ArrayList<>(setItems);
+        return dummy;
     }
 
     //

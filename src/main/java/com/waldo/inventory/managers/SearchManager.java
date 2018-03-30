@@ -76,6 +76,26 @@ public class SearchManager {
         return null;
     }
 
+    public List<Division> findDivisionsWithoutParent() {
+        List<Division> divisionsWithoutParent = new ArrayList<>();
+        for (Division d : cache().getDivisions()) {
+            if (!d.isUnknown() && d.getParentDivisionId() <= DbObject.UNKNOWN_ID) {
+                divisionsWithoutParent.add(d);
+            }
+        }
+        return divisionsWithoutParent;
+    }
+
+    public List<Division> findDivisionsWithParent(long parentDivisionId) {
+        List<Division> divisionsWithoutParent = new ArrayList<>();
+        for (Division d : cache().getDivisions()) {
+            if (d.getParentDivisionId() == parentDivisionId) {
+                divisionsWithoutParent.add(d);
+            }
+        }
+        return divisionsWithoutParent;
+    }
+
     public List<Product> findProductListForCategory(long categoryId)    {
         List<Product> products = new ArrayList<>();
         for (Product p : cache().getProducts()) {
@@ -131,16 +151,13 @@ public class SearchManager {
     public List<Item> findItemsForDivision(Division d) {
         List<Item> items = new ArrayList<>();
         if (d != null) {
-            List<Item> searchInList;
-            if (d.getParentDivision() != null) {
-                searchInList = d.getParentDivision().getItemList();
-            } else {
-                searchInList = cache().getItems();
-            }
-            for (Item i : searchInList) {
-                if (i.getDivisionId() == d.getId()) {
-                    items.add(i);
+            for (Item item : cache().getItems()) {
+                if (item.getDivisionId() == d.getId()) {
+                    items.add(item);
                 }
+            }
+            for (Division subDivision : d.getSubDivisions()) {
+                items.addAll(subDivision.getItemList());
             }
         }
         return items;

@@ -11,7 +11,6 @@ import com.waldo.inventory.database.classes.DbQueueObject;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.database.interfaces.DbExecuteListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
-import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.TableManager;
 import com.waldo.utils.DateUtils;
@@ -696,8 +695,12 @@ public class DatabaseAccess {
                     d.setId(rs.getLong("id"));
                     d.setName(rs.getString("name"));
                     d.setIconPath(rs.getString("iconPath"));
-
+                    d.setParentDivisionId(rs.getLong("parentDivisionId"));
+                    d.setCanHaveValue(rs.getBoolean("canHaveValue"));
+                    d.setDisplayType(rs.getInt("displayType"));
                     d.setInserted(true);
+
+                    divisions.add(d);
                 }
             }
         } catch (SQLException e) {

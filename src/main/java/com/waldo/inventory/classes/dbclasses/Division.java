@@ -5,7 +5,6 @@ import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -66,15 +65,14 @@ public class Division extends DbObject {
         return dummy;
     }
 
-    public static void linkDivisions(Division parentDivision, List<Division> subDivisions) {
-        if (subDivisions != null) {
-            for (Division sub : subDivisions) {
-                if (parentDivision != null) {
-                    parentDivision.getSubDivisions().add(sub);
-                    sub.setParentDivisionId(parentDivision.getId());
-                }
-            }
-        }
+    public static Division createDummyDivision(String name, List<Division> subDivisions) {
+        Division dummy =  new Division(name);
+        dummy.setId(-1);
+        dummy.setCanBeSaved(false);
+        dummy.setDisplayType(Statics.IconDisplayType.Icon);
+        dummy.setCanHaveValue(false);
+        dummy.subDivisions = subDivisions;
+        return dummy;
     }
 
     //
@@ -111,27 +109,16 @@ public class Division extends DbObject {
 
     public List<Division> getSubDivisions() {
         if (subDivisions == null) {
-            subDivisions = new ArrayList<>();
+            subDivisions = SearchManager.sm().findDivisionsWithParent(getId());
         }
         return subDivisions;
     }
 
-    public int getSubDivisionCount() {
-        return getSubDivisions().size();
-    }
-
-    public Division getSubDivisionAt(int index) {
-        return getSubDivisions().get(index);
-    }
-
-    public int getIndexOfSubDivision(Division subDivision) {
-        return getSubDivisions().indexOf(subDivision);
-    }
-
     public int getLevel() {
         if (level < 0) {
+            level = 0;
             Division parent = getParentDivision();
-            while (parent != null) {
+            while (parent != null && !parent.isUnknown()) {
                 level++;
                 parent = parent.getParentDivision();
             }
