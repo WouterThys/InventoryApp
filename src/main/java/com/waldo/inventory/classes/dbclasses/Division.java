@@ -22,6 +22,7 @@ public class Division extends DbObject {
     private long parentDivisionId;
     private Division parentDivision;
     private List<Division> subDivisions;
+    private int level = -1;
 
     public Division() {
         this("");
@@ -127,9 +128,21 @@ public class Division extends DbObject {
         return getSubDivisions().indexOf(subDivision);
     }
 
+    public int getLevel() {
+        if (level < 0) {
+            Division parent = getParentDivision();
+            while (parent != null) {
+                level++;
+                parent = parent.getParentDivision();
+            }
+        }
+        return level;
+    }
+
     public void setParentDivisionId(long parentDivisionId) {
         if (parentDivision != null && parentDivision.getId() != parentDivisionId) {
             parentDivision = null;
+            level = -1;
         }
         this.parentDivisionId = parentDivisionId;
     }

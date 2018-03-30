@@ -525,6 +525,7 @@ public class DatabaseAccess {
                         i.setCategoryId(rs.getInt("categoryId"));
                         i.setProductId(rs.getInt("productId"));
                         i.setTypeId(rs.getInt("typeId"));
+                        i.setDivisionId(rs.getLong("divisionId"));
                         i.setLocalDataSheet(rs.getString("localDataSheet"));
                         i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
                         i.setManufacturerId(rs.getLong("manufacturerId"));

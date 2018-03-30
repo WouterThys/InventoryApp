@@ -11,6 +11,7 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
+import com.waldo.inventory.gui.components.treemodels.IDivisionTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
@@ -48,6 +49,10 @@ abstract class MainPanelLayout extends JPanel implements
 
     ITree selectionTree;
     IDbObjectTreeModel<DbObject> treeModel;
+
+    ITree divisionTree;
+    IDivisionTreeModel divisionTreeModel;
+
     IdBToolBar selectionTb;
 
     AbstractDetailPanel detailPanel;
@@ -219,6 +224,10 @@ abstract class MainPanelLayout extends JPanel implements
         if (division != null) {
             treeModel.setSelectedObject(division);
         }
+    }
+
+    private void createDivisionNodes() {
+
     }
 
     private void createNodes(DefaultMutableTreeNode rootNode) {

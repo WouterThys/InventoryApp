@@ -113,6 +113,7 @@ public class Item extends DbObject {
         statement.setLong(ndx++, getCategoryId());
         statement.setLong(ndx++, getProductId());
         statement.setLong(ndx++, getTypeId());
+        statement.setLong(ndx++, getDivisionId());
         statement.setString(ndx++, getLocalDataSheet());
         statement.setString(ndx++, getOnlineDataSheet());
         statement.setString(ndx++, getIconPath());
@@ -161,6 +162,7 @@ public class Item extends DbObject {
         item.setCategoryId(getCategoryId());
         item.setProductId(getProductId());
         item.setTypeId(getTypeId());
+        item.setDivisionId(getDivisionId());
         item.setLocalDataSheet(getLocalDataSheet());
         item.setOnlineDataSheet(getOnlineDataSheet());
         item.setManufacturerId(getManufacturerId());
@@ -218,6 +220,10 @@ public class Item extends DbObject {
                 }
                 if (!(ref.getTypeId() == getTypeId())) {
                     if (Main.DEBUG_MODE) System.out.println("TypeId: " + ref.getTypeId() + " != " + getTypeId());
+                    return false;
+                }
+                if (!(ref.getDivisionId() == getDivisionId())) {
+                    if (Main.DEBUG_MODE) System.out.println("DivisionId: " + ref.getDivisionId() + " != " + getDivisionId());
                     return false;
                 }
                 if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) {
@@ -300,6 +306,9 @@ public class Item extends DbObject {
             if (m != null) matchList.add(m);
 
             m = SearchMatch.hasMatch(4, getType(), searchTerm);
+            if (m != null) matchList.add(m);
+
+            m = SearchMatch.hasMatch(4, getDivision(), searchTerm);
             if (m != null) matchList.add(m);
 
             m = SearchMatch.hasMatch(2, getManufacturer(), searchTerm);
