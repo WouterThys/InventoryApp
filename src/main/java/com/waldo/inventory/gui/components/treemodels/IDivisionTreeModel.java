@@ -19,7 +19,7 @@ public class IDivisionTreeModel implements TreeModel {
         this.rootDivision = rootDivision;
     }
 
-    protected void fireTreeStructureChanged(Division changedDivision) {
+    public void fireTreeStructureChanged(Division changedDivision) {
         if (changedDivision != null) {
             List<Division> affectedDivisions = new ArrayList<>();
             affectedDivisions.add(changedDivision);

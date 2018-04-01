@@ -9,7 +9,7 @@ import java.util.Enumeration;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ISetTree  extends ITree {
+public class ISetTree extends ITree {
 
     private final ImageIcon setIcon = imageResource.readImage("Items.Tree.Set");
 
@@ -26,6 +26,17 @@ public class ISetTree  extends ITree {
         setCellRenderer(renderer);
 
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
+
+    public Set getRootSet() {
+        return (Set) getModel().getRoot();
+    }
+
+    public void setChanged(Set changedSet) {
+        if (changedSet == null) {
+            changedSet = (Set) getModel().getRoot();
+        }
+        ((ISetTreeModel) getModel()).fireTreeStructureChanged(changedSet);
     }
 
     public Set getSelectedSet() {

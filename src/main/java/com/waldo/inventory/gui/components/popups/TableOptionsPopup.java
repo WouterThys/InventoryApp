@@ -12,8 +12,8 @@ public abstract class TableOptionsPopup extends JPopupMenu {
     private final JCheckBoxMenuItem showSetItemsMenu =  new JCheckBoxMenuItem("Show set items", imageResource.readImage("Items.Tree.Item"), false);
 
     public interface TableOptionsListener {
-        void onShowSets(boolean show);
-        void onShowSetItems(boolean show);
+        void onShowSetsInTable(boolean show);
+        void onShowSetItemsInTable(boolean show);
     }
 
     private TableOptionsListener tableOptionsListener;
@@ -40,12 +40,12 @@ public abstract class TableOptionsPopup extends JPopupMenu {
 
         showSetsMenu.addActionListener(e -> {
             if (tableOptionsListener != null) {
-                tableOptionsListener.onShowSets(showSetsMenu.isSelected());
+                tableOptionsListener.onShowSetsInTable(showSetsMenu.isSelected());
             }
         });
         showSetItemsMenu.addActionListener(e -> {
             if (tableOptionsListener != null) {
-                tableOptionsListener.onShowSetItems(showSetItemsMenu.isSelected());
+                tableOptionsListener.onShowSetItemsInTable(showSetItemsMenu.isSelected());
             }
         });
 

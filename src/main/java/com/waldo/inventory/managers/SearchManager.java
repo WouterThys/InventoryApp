@@ -76,6 +76,17 @@ public class SearchManager {
         return null;
     }
 
+    public Division findDivisionByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Division d : cache().getDivisions()) {
+                if (d.getName().equals(name)) {
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Division> findDivisionsWithoutParent() {
         List<Division> divisionsWithoutParent = new ArrayList<>();
         for (Division d : cache().getDivisions()) {

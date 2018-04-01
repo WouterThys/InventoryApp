@@ -18,7 +18,7 @@ public class ISetTreeModel implements TreeModel {
         this.rootSet = rootSet;
     }
 
-    protected void fireTreeStructureChanged(Set changedSet) {
+    public void fireTreeStructureChanged(Set changedSet) {
         TreeModelEvent e = new TreeModelEvent(this, new Object[] {changedSet});
         for (TreeModelListener tml : treeModelListeners) {
             tml.treeStructureChanged(e);

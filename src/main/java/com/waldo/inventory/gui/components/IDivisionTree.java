@@ -27,6 +27,17 @@ public class IDivisionTree extends ITree {
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
+    public void divisionChanged(Division changedDivision) {
+        if (changedDivision == null) {
+            changedDivision = (Division) getModel().getRoot();
+        }
+        ((IDivisionTreeModel) getModel()).fireTreeStructureChanged(changedDivision);
+    }
+
+    public Division getRootDivision() {
+        return (Division) getModel().getRoot();
+    }
+
     public Division getSelectedDivision() {
         Division selected = null;
         TreePath path = getSelectionModel().getSelectionPath();
@@ -36,7 +47,7 @@ public class IDivisionTree extends ITree {
         return selected;
     }
 
-    public void setSelectedSet(Division division) {
+    public void setSelectedDivision(Division division) {
         if (division != null) {
             DefaultMutableTreeNode node = findNode(division);
             if (node != null) {
