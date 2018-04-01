@@ -5,6 +5,7 @@ import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -106,6 +107,19 @@ public class Division extends DbObject {
     public void updateItemList() {
         itemList = null;
     }
+
+    public List<Division> getParentDivisions() {
+        List<Division> parentDivisionList = new ArrayList<>();
+
+        Division parent = getParentDivision();
+        while(parent != null) {
+            parentDivisionList.add(parent);
+            parent = parent.getParentDivision();
+        }
+
+        return parentDivisionList;
+    }
+
 
     public List<Division> getSubDivisions() {
         if (subDivisions == null) {

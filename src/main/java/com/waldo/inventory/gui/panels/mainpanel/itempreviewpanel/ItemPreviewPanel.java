@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
@@ -30,11 +31,12 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private ITextField manufacturerTf;
     private ITextField footprintTf;
     private ITextField locationTf;
-    private ITextField categoryTf;
-    private ITextField productTf;
-    private ITextField typeTf;
     private IStarRater starRater;
     private ITextPane remarksTp;
+//    private ITextField categoryTf;
+//    private ITextField productTf;
+//    private ITextField typeTf;
+    private IDivisionPanel divisionPnl;
 
     private AbstractAction dataSheetAa;
     private AbstractAction orderAa;
@@ -106,23 +108,24 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     private void updateData(Item item, OrderItem orderItem) {
         if (!isOrderType) {
-            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-                categoryTf.setText(item.getCategory().toString());
-            } else {
-                categoryTf.setText("");
-            }
-
-            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                productTf.setText(item.getProduct().toString());
-            } else {
-                productTf.setText("");
-            }
-
-            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                typeTf.setText(item.getType().toString());
-            } else {
-                typeTf.setText("");
-            }
+//            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+//                categoryTf.setText(item.getCategory().toString());
+//            } else {
+//                categoryTf.setText("");
+//            }
+//
+//            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+//                productTf.setText(item.getProduct().toString());
+//            } else {
+//                productTf.setText("");
+//            }
+//
+//            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+//                typeTf.setText(item.getType().toString());
+//            } else {
+//                typeTf.setText("");
+//            }
+            divisionPnl.updateComponents(item.getDivision());
         } else {
             amountTf.setText(String.valueOf(orderItem.getAmount()));
             if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
@@ -223,21 +226,38 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         GuiUtils.GridBagHelper gbc;
 
+//        JPanel divisionPanel = new JPanel();
+//        divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
+//        gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
+//        if (!isOrderType) {
+//            gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
+//            gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
+//            gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
+//        } else {
+//            JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
+//            JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
+//            JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
+//            gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
+//            gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
+//            gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+//        }
+
+
         JPanel divisionPanel = new JPanel();
         divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
-        gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-        if (!isOrderType) {
-            gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
-            gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
-            gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
-        } else {
+        if (isOrderType) {
+            gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
             JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
             JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
             JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
             gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
             gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
             gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+        } else {
+            divisionPanel.setLayout(new BorderLayout());
+            divisionPanel.add(divisionPnl, BorderLayout.CENTER);
         }
+
 
         JPanel infoPnl = new JPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
@@ -287,9 +307,10 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         manufacturerTf = new ITextField(false);
         footprintTf = new ITextField(false);
         locationTf = new ITextField(false);
-        categoryTf = new ITextField(false);
-        productTf = new ITextField(false);
-        typeTf = new ITextField(false);
+//        categoryTf = new ITextField(false);
+//        productTf = new ITextField(false);
+//        typeTf = new ITextField(false);
+        divisionPnl = new IDivisionPanel(false);
         descriptionTa = new ITextArea(false);
         descriptionTa.setBorder(nameTf.getBorder());
         descriptionTa.setEnabled(false);
