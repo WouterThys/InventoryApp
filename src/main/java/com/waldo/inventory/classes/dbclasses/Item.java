@@ -35,13 +35,7 @@ public class Item extends DbObject {
     protected Value value;
     protected String description = "";
 
-    protected long categoryId = UNKNOWN_ID;
-    protected Category category;
-    private long productId = UNKNOWN_ID;
-    protected Product product;
-    private long typeId = UNKNOWN_ID;
-    protected Type type;
-    protected long divisionId = UNKNOWN_ID;
+    private long divisionId = UNKNOWN_ID;
     protected Division division;
 
     private boolean isSet = false;
@@ -57,7 +51,7 @@ public class Item extends DbObject {
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
     private ItemOrderStates orderState = null;
 
-    protected long packageTypeId = UNKNOWN_ID;
+    private long packageTypeId = UNKNOWN_ID;
     private PackageType packageType;
     protected int pins;
 
@@ -94,13 +88,9 @@ public class Item extends DbObject {
 
         if (set != null) {
             this.rating = set.getRating();
-            this.category = set.getCategory();
-            this.product = set.getProduct();
-            this.type = set.getType();
+            this.division = set.getDivision();
 
-            if (category != null) categoryId = category.getId();
-            if (product != null) productId = product.getId();
-            if (type != null) typeId = type.getId();
+            if (division != null) divisionId = division.getId();
         }
     }
 
@@ -110,9 +100,6 @@ public class Item extends DbObject {
         statement.setString(ndx++, getName());
         statement.setString(ndx++, getAlias());
         statement.setNString(ndx++, getDescription());
-        statement.setLong(ndx++, getCategoryId());
-        statement.setLong(ndx++, getProductId());
-        statement.setLong(ndx++, getTypeId());
         statement.setLong(ndx++, getDivisionId());
         statement.setString(ndx++, getLocalDataSheet());
         statement.setString(ndx++, getOnlineDataSheet());
@@ -159,9 +146,6 @@ public class Item extends DbObject {
         item.setAlias(getAlias());
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
-        item.setCategoryId(getCategoryId());
-        item.setProductId(getProductId());
-        item.setTypeId(getTypeId());
         item.setDivisionId(getDivisionId());
         item.setLocalDataSheet(getLocalDataSheet());
         item.setOnlineDataSheet(getOnlineDataSheet());
@@ -208,18 +192,6 @@ public class Item extends DbObject {
                 }
                 if (!(ref.getDescription().equals(getDescription()))) {
                     if (Main.DEBUG_MODE) System.out.println(ref.getDescription() + " != " + getDescription());
-                    return false;
-                }
-                if (!(ref.getCategoryId() == getCategoryId())) {
-                    if (Main.DEBUG_MODE) System.out.println("CategoryId: " + ref.getCategoryId() + " != " + getCategoryId());
-                    return false;
-                }
-                if (!(ref.getProductId() == getProductId())) {
-                    if (Main.DEBUG_MODE) System.out.println("ProductId: " + ref.getProductId() + " != " + getProductId());
-                    return false;
-                }
-                if (!(ref.getTypeId() == getTypeId())) {
-                    if (Main.DEBUG_MODE) System.out.println("TypeId: " + ref.getTypeId() + " != " + getTypeId());
                     return false;
                 }
                 if (!(ref.getDivisionId() == getDivisionId())) {
@@ -297,15 +269,6 @@ public class Item extends DbObject {
             if (m != null) matchList.add(m);
 
             m = SearchMatch.hasMatch(8, getValue().toString(), searchTerm);
-            if (m != null) matchList.add(m);
-
-            m = SearchMatch.hasMatch(4, getCategory(), searchTerm);
-            if (m != null) matchList.add(m);
-
-            m = SearchMatch.hasMatch(4, getProduct(), searchTerm);
-            if (m != null) matchList.add(m);
-
-            m = SearchMatch.hasMatch(4, getType(), searchTerm);
             if (m != null) matchList.add(m);
 
             m = SearchMatch.hasMatch(4, getDivision(), searchTerm);
@@ -421,69 +384,6 @@ public class Item extends DbObject {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public long getCategoryId() {
-        if (categoryId < UNKNOWN_ID) {
-            categoryId = UNKNOWN_ID;
-        }
-        return categoryId;
-    }
-
-    public Category getCategory() {
-        if (category == null && categoryId > UNKNOWN_ID) {
-            category = sm().findCategoryById(categoryId);
-        }
-        return category;
-    }
-
-    public void setCategoryId(long categoryId) {
-        if (category != null && category.getId() != categoryId) {
-            category = null;
-        }
-        this.categoryId = categoryId;
-    }
-
-    public long getProductId() {
-        if (productId < UNKNOWN_ID) {
-            productId = UNKNOWN_ID;
-        }
-        return productId;
-    }
-
-    public Product getProduct() {
-        if (product == null) {
-            product = sm().findProductById(productId);
-        }
-        return product;
-    }
-
-    public void setProductId(long productId) {
-        if (product != null && product.getId() != productId) {
-            product = null;
-        }
-        this.productId = productId;
-    }
-
-    public long getTypeId() {
-        if (typeId < UNKNOWN_ID) {
-            typeId = UNKNOWN_ID;
-        }
-        return typeId;
-    }
-
-    public Type getType() {
-        if (type == null) {
-            type = sm().findTypeById(typeId);
-        }
-        return type;
-    }
-
-    public void setTypeId(long typeId) {
-        if (type != null && type.getId() != typeId) {
-            type = null;
-        }
-        this.typeId = typeId;
     }
 
     public long getDivisionId() {

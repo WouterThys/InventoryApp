@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.popups;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
@@ -8,47 +8,17 @@ import java.awt.event.ActionEvent;
 
 public abstract class DivisionPopup extends JPopupMenu {
 
-    private enum DivisionType {
-        RootItem,
-        RootSet,
-        Category,
-        Product,
-        Type,
-        Set
-    }
-
-    protected DivisionPopup(DbObject division) {
+    protected DivisionPopup(final Division division) {
         super();
 
-        switch (DbObject.getType(division)) {
-            case DbObject.TYPE_ITEM:
-                init(DivisionType.RootItem);
-                break;
-            case DbObject.TYPE_CATEGORY:
-                init(DivisionType.Category);
-                break;
-            case DbObject.TYPE_PRODUCT:
-                init(DivisionType.Product);
-                break;
-            case DbObject.TYPE_TYPE:
-                init(DivisionType.Type);
-                break;
-            case DbObject.TYPE_SET:
-                if (division.canBeSaved()) {
-                    init(DivisionType.Set);
-                } else {
-                    init(DivisionType.RootSet);
-                }
-                break;
-        }
+        init(division);
     }
 
     public abstract void onAddDivision();
     public abstract void onEditDivision();
     public abstract void onDeleteDivision();
-    public abstract void onSetWizardAction();
 
-    private void init(DivisionType divisionType) {
+    private void init(final Division division) {
 
         IActions.AddAction addDivisionAction = new IActions.AddAction() {
             @Override
@@ -71,54 +41,12 @@ public abstract class DivisionPopup extends JPopupMenu {
             }
         };
 
-        IActions.WizardAction setItemsWizardAction = new IActions.WizardAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onSetWizardAction();
-            }
-        };
-
-        switch (divisionType) {
-            case RootItem:
-                addDivisionAction.setName("Add category");
-                add(addDivisionAction);
-                break;
-            case RootSet:
-                addDivisionAction.setName("Add set");
-                add(addDivisionAction);
-                break;
-            case Category:
-                addDivisionAction.setName("Add product");
-                editDivisionAction.setName("Edit category");
-                deleteDivisionAction.setName("Delete category");
-                add(addDivisionAction);
-                add(editDivisionAction);
-                add(deleteDivisionAction);
-                break;
-            case Product:
-                addDivisionAction.setName("Add type");
-                editDivisionAction.setName("Edit product");
-                deleteDivisionAction.setName("Delete product");
-                add(addDivisionAction);
-                add(editDivisionAction);
-                add(deleteDivisionAction);
-                break;
-            case Type:
-                editDivisionAction.setName("Edit type");
-                deleteDivisionAction.setName("Delete type");
-                add(editDivisionAction);
-                add(deleteDivisionAction);
-                break;
-            case Set:
-                editDivisionAction.setName("Edit set");
-                deleteDivisionAction.setName("Delete set");
-                setItemsWizardAction.setName("Set item wizard");
-                add(editDivisionAction);
-                add(deleteDivisionAction);
-                addSeparator();
-                add(setItemsWizardAction);
-                break;
-        }
+        addDivisionAction.setName("Add division to " + division);
+        editDivisionAction.setName("Edit " + division);
+        deleteDivisionAction.setName("Delete " + division);
+        add(addDivisionAction);
+        add(editDivisionAction);
+        add(deleteDivisionAction);
 
     }
 }

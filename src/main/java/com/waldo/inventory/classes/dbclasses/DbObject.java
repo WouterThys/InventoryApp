@@ -28,9 +28,7 @@ public abstract class DbObject {
 
     public static final int TYPE_UNKNOWN = -1;
     public static final int TYPE_ITEM = 1;
-    public static final int TYPE_CATEGORY = 2;
-    public static final int TYPE_PRODUCT = 3;
-    public static final int TYPE_TYPE = 4;
+    public static final int TYPE_DIVISION = 2;
     public static final int TYPE_MANUFACTURER = 5;
     public static final int TYPE_LOCATION = 6;
     public static final int TYPE_ORDER = 7;
@@ -90,9 +88,7 @@ public abstract class DbObject {
     public static int getType(DbObject dbObject) {
         if (dbObject instanceof Set) return TYPE_SET;
         if (dbObject instanceof Item) return TYPE_ITEM;
-        if (dbObject instanceof Category) return TYPE_CATEGORY;
-        if (dbObject instanceof Product) return TYPE_PRODUCT;
-        if (dbObject instanceof Type) return TYPE_TYPE;
+        if (dbObject instanceof Division) return TYPE_DIVISION;
         if (dbObject instanceof Distributor) return TYPE_DISTRIBUTOR;
         if (dbObject instanceof Location) return TYPE_LOCATION;
         if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;

@@ -1,11 +1,7 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog;
 
-import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.Category;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
-import com.waldo.inventory.classes.dbclasses.Product;
-import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ITextField;
@@ -13,18 +9,15 @@ import com.waldo.utils.icomponents.ITextField;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.waldo.inventory.managers.CacheManager.cache;
-import static com.waldo.inventory.managers.SearchManager.sm;
-
 public abstract class EditParserItemLinkDialogLayout extends IDialog implements IEditedListener {
 
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ITextField pcbItemNameTf;
-    IComboBox<Category> categoryCb;
-    IComboBox<Product> productCb;
-    IComboBox<com.waldo.inventory.classes.dbclasses.Type> typeCb;
+//    IComboBox<Category> categoryCb;
+//    IComboBox<Product> productCb;
+//    IComboBox<com.waldo.inventory.classes.dbclasses.Type> typeCb;
 
      /*
      *                  VARIABLES
@@ -44,60 +37,60 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     void updateEnabledComponents() {
         boolean categoryEnabled = !parserItemLink.getPcbItemName().isEmpty();
-        categoryCb.setEnabled(categoryEnabled);
+        //categoryCb.setEnabled(categoryEnabled);
     }
 
     private void createCategoryCb() {
-        categoryCb = new IComboBox<>(cache().getCategories(), new DbObjectNameComparator<>(), false);
-        categoryCb.insertItemAt(null, 0);
-        categoryCb.addActionListener(e -> {
-            if (!isUpdating()) {
-                JComboBox jbc = (JComboBox) e.getSource();
-                Category c = (Category) jbc.getSelectedItem();
-                if (c == null) {
-                    productCb.setEnabled(false);
-                    typeCb.setEnabled(false);
-                } else {
-                    productCb.setEnabled(true);
-                    updateProductCb(c);
-                }
-            }
-        });
+//        categoryCb = new IComboBox<>(cache().getCategories(), new DbObjectNameComparator<>(), false);
+//        categoryCb.insertItemAt(null, 0);
+//        categoryCb.addActionListener(e -> {
+//            if (!isUpdating()) {
+//                JComboBox jbc = (JComboBox) e.getSource();
+//                Category c = (Category) jbc.getSelectedItem();
+//                if (c == null) {
+//                    productCb.setEnabled(false);
+//                    typeCb.setEnabled(false);
+//                } else {
+//                    productCb.setEnabled(true);
+//                    updateProductCb(c);
+//                }
+//            }
+//        });
     }
 
     private void createProductCb() {
-        productCb = new IComboBox<>(cache().getProducts(), new DbObjectNameComparator<>(), false);
-        productCb.insertItemAt(null, 0);
-        productCb.setEnabled(false);
-        productCb.addActionListener(e -> {
-            if (!isUpdating()) {
-                JComboBox jbc = (JComboBox) e.getSource();
-                Product p = (Product) jbc.getSelectedItem();
-                if (p == null) {
-                    typeCb.setEnabled(false);
-                } else {
-                    typeCb.setEnabled(true);
-                    updateTypeCb(p);
-                }
-            }
-        });
+//        productCb = new IComboBox<>(cache().getProducts(), new DbObjectNameComparator<>(), false);
+//        productCb.insertItemAt(null, 0);
+//        productCb.setEnabled(false);
+//        productCb.addActionListener(e -> {
+//            if (!isUpdating()) {
+//                JComboBox jbc = (JComboBox) e.getSource();
+//                Product p = (Product) jbc.getSelectedItem();
+//                if (p == null) {
+//                    typeCb.setEnabled(false);
+//                } else {
+//                    typeCb.setEnabled(true);
+//                    updateTypeCb(p);
+//                }
+//            }
+//        });
     }
 
     private void createTypeCb() {
-        typeCb = new IComboBox<>(cache().getTypes(), new DbObjectNameComparator<>(), false);
-        typeCb.insertItemAt(null, 0);
-        typeCb.setEnabled(false);
+//        typeCb = new IComboBox<>(cache().getTypes(), new DbObjectNameComparator<>(), false);
+//        typeCb.insertItemAt(null, 0);
+//        typeCb.setEnabled(false);
     }
 
-    private void updateProductCb(Category category) {
-        productCb.updateList(sm().findProductListForCategory(category.getId()));
-        productCb.insertItemAt(null, 0);
-    }
-
-    private void updateTypeCb(Product product) {
-        typeCb.updateList(sm().findTypeListForProduct(product.getId()));
-        typeCb.insertItemAt(null, 0);
-    }
+//    private void updateProductCb(Category category) {
+//        productCb.updateList(sm().findProductListForCategory(category.getId()));
+//        productCb.insertItemAt(null, 0);
+//    }
+//
+//    private void updateTypeCb(Product product) {
+//        typeCb.updateList(sm().findTypeListForProduct(product.getId()));
+//        typeCb.insertItemAt(null, 0);
+//    }
 
     /*
      *                  LISTENERS
@@ -121,9 +114,9 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
         gbc.addLine("Component name: ", pcbItemNameTf);
-        gbc.addLine("Category: ", categoryCb);
-        gbc.addLine("Product: ", productCb);
-        gbc.addLine("Type: ", typeCb);
+//        gbc.addLine("Category: ", categoryCb);
+//        gbc.addLine("Product: ", productCb);
+//        gbc.addLine("Type: ", typeCb);
 
         getContentPanel().add(panel);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(10,5,10,5));
@@ -140,32 +133,32 @@ public abstract class EditParserItemLinkDialogLayout extends IDialog implements 
 
             beginWait();
             try {
-                Category c = parserItemLink.getCategory();
-                if (c != null && !c.isUnknown()) {
-                    categoryCb.setSelectedItem(c);
-                    updateProductCb(c);
-                    productCb.setEnabled(true);
-                    Product p = parserItemLink.getProduct();
-                    if (p != null && !p.isUnknown()) {
-                        productCb.setSelectedItem(p);
-                        updateTypeCb(p);
-                        typeCb.setEnabled(true);
-                        com.waldo.inventory.classes.dbclasses.Type t = parserItemLink.getType();
-                        if (t != null && !t.isUnknown()) {
-                            typeCb.setSelectedItem(t);
-                        } else {
-                            typeCb.setSelectedItem(null);
-                        }
-                    } else {
-                        productCb.setSelectedItem(null);
-                        typeCb.setSelectedItem(null);
-                    }
-
-                } else {
-                    categoryCb.setSelectedItem(null);
-                    productCb.setSelectedItem(null);
-                    typeCb.setSelectedItem(null);
-                }
+//                Category c = parserItemLink.getCategory();
+//                if (c != null && !c.isUnknown()) {
+//                    categoryCb.setSelectedItem(c);
+//                    updateProductCb(c);
+//                    productCb.setEnabled(true);
+//                    Product p = parserItemLink.getProduct();
+//                    if (p != null && !p.isUnknown()) {
+//                        productCb.setSelectedItem(p);
+//                        updateTypeCb(p);
+//                        typeCb.setEnabled(true);
+//                        com.waldo.inventory.classes.dbclasses.Type t = parserItemLink.getType();
+//                        if (t != null && !t.isUnknown()) {
+//                            typeCb.setSelectedItem(t);
+//                        } else {
+//                            typeCb.setSelectedItem(null);
+//                        }
+//                    } else {
+//                        productCb.setSelectedItem(null);
+//                        typeCb.setSelectedItem(null);
+//                    }
+//
+//                } else {
+//                    categoryCb.setSelectedItem(null);
+//                    productCb.setSelectedItem(null);
+//                    typeCb.setSelectedItem(null);
+//                }
 
             } finally {
                 endWait();

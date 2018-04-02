@@ -347,7 +347,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     public void updateComponents(Object... object) {
         aliasPnl.setText(selectedItem.getAlias().trim());
         nameValuePnl.setNameTxt(selectedItem.getName().trim());
-        if (selectedItem.getType() != null && selectedItem.getType().isCanHaveValue()) {
+        if (selectedItem.getDivision() != null && selectedItem.getDivision().isCanHaveValue()) {
             nameValuePnl.setValue(selectedItem.getValue());
             nameValuePnl.displayValue(true);
             nameValuePnl.setValuePanelVisible(false);

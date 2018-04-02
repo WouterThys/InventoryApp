@@ -521,9 +521,6 @@ public class DatabaseAccess {
                         i.setIconPath(rs.getString("iconPath"));
                         i.setAlias(rs.getString("alias"));
                         i.setDescription(rs.getString("description"));
-                        i.setCategoryId(rs.getInt("categoryId"));
-                        i.setProductId(rs.getInt("productId"));
-                        i.setTypeId(rs.getInt("typeId"));
                         i.setDivisionId(rs.getLong("divisionId"));
                         i.setLocalDataSheet(rs.getString("localDataSheet"));
                         i.setOnlineDataSheet(rs.getString("onlineDataSheet"));
@@ -562,120 +559,6 @@ public class DatabaseAccess {
             }
         }
         return items;
-    }
-
-    public List<Category> updateCategories() {
-        List<Category> categories = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return categories;
-        }
-        Status().setMessage("Fetching categories from DB");
-        Category c = null;
-        String sql = scriptResource.readString(Category.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    c = new Category();
-                    c.setId(rs.getLong("id"));
-                    c.setName(rs.getString("name"));
-                    c.setIconPath(rs.getString("iconpath"));
-
-                    c.setInserted(true);
-                    if (c.getId() != DbObject.UNKNOWN_ID) {
-                        categories.add(c);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(c, e, Select, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-        categories.add(0, Category.getUnknownCategory());
-        return categories;
-    }
-
-    public List<Product> updateProducts() {
-        List<Product> products = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return products;
-        }
-        Status().setMessage("Fetching products from DB");
-        Product p = null;
-        String sql = scriptResource.readString(Product.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    p = new Product();
-                    p.setId(rs.getLong("id"));
-                    p.setName(rs.getString("name"));
-                    p.setIconPath(rs.getString("iconpath"));
-                    p.setCategoryId(rs.getLong("categoryid"));
-
-                    p.setInserted(true);
-                    if (p.getId() != DbObject.UNKNOWN_ID) {
-                        products.add(p);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(p, e, Select, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        products.add(0, Product.getUnknownProduct());
-        return products;
-    }
-
-    public List<Type> updateTypes() {
-        List<Type> types = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return types;
-        }
-        Status().setMessage("Fetching types from DB");
-        Type t = null;
-        String sql = scriptResource.readString(Type.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    t = new Type();
-                    t.setId(rs.getLong("id"));
-                    t.setName(rs.getString("name"));
-                    t.setIconPath(rs.getString("iconpath"));
-                    t.setProductId(rs.getLong("productid"));
-                    t.setCanHaveValue(rs.getBoolean("canHaveValue"));
-                    t.setDisplayType(rs.getInt("displayType"));
-
-                    t.setInserted(true);
-                    if (t.getId() != 1) {
-                        types.add(t);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(t, e, Select, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-        types.add(0, Type.getUnknownType());
-
-        return types;
     }
 
     public List<Division> updateDivisions() {
@@ -1433,9 +1316,7 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setParserName(rs.getString("parserName"));
                     p.setPcbItemName(rs.getString("pcbItemName"));
-                    p.setCategoryId(rs.getLong("categoryId"));
-                    p.setProductId(rs.getLong("productId"));
-                    p.setTypeId(rs.getLong("typeId"));
+                    p.setDivisionId(rs.getLong("divisionId"));
 
                     p.setInserted(true);
                     parserItemLinks.add(p);
@@ -1653,9 +1534,7 @@ public class DatabaseAccess {
                     s.setIconPath(rs.getString("iconPath"));
                     s.setAlias(rs.getString("alias"));
                     s.setDescription(rs.getString("description"));
-                    s.setCategoryId(rs.getInt("categoryId"));
-                    s.setProductId(rs.getInt("productId"));
-                    s.setTypeId(rs.getInt("typeId"));
+                    s.setDivisionId(rs.getLong("divisionId"));
                     s.setLocalDataSheet(rs.getString("localDataSheet"));
                     s.setOnlineDataSheet(rs.getString("onlineDataSheet"));
                     s.setManufacturerId(rs.getLong("manufacturerId"));

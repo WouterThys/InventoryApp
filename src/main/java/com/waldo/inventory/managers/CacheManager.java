@@ -33,9 +33,6 @@ public class CacheManager {
     private CacheManager() {
         objectLogList = new ArrayList<>();
         objectLogList.add(new ObjectLog("Items", items, "itemsCount"));
-        objectLogList.add(new ObjectLog("Categories", categories));
-        objectLogList.add(new ObjectLog("Products", products));
-        objectLogList.add(new ObjectLog("Types", types));
         objectLogList.add(new ObjectLog("Divisions", divisions));
         objectLogList.add(new ObjectLog("Manufacturers", manufacturers, "manufacturersCount"));
         objectLogList.add(new ObjectLog("Locations", locations, "locationsCount"));
@@ -66,9 +63,6 @@ public class CacheManager {
 
     // Cached lists
     private final CacheList<Item> items = new CacheList<>();
-    private final CacheList<Category> categories = new CacheList<>();
-    private final CacheList<Product> products = new CacheList<>();
-    private final CacheList<Type> types = new CacheList<>();
     private final CacheList<Division> divisions = new CacheList<>();
     private final CacheList<Manufacturer> manufacturers = new CacheList<>();
     private final CacheList<Location> locations = new CacheList<>();
@@ -176,9 +170,6 @@ public class CacheManager {
 
     public void clearCache() {
         items.clear();
-        categories.clear();
-        products.clear();
-        types.clear();
         divisions.clear();
         manufacturers.clear();
         locations.clear();
@@ -252,63 +243,6 @@ public class CacheManager {
 
     public synchronized void clearAliases() {
         aliasList = null;
-    }
-
-
-    public synchronized CacheList<Category> getCategories() {
-        if (!categories.isFetched()) {
-            long start = System.nanoTime();
-            categories.setList(db().updateCategories(), (System.nanoTime() - start));
-        }
-        return categories;
-    }
-
-    public synchronized void add(Category element) {
-        if (!getCategories().contains(element)) {
-            categories.add(element);
-        }
-    }
-
-    public synchronized void remove(Category element) {
-        getCategories().remove(element);
-    }
-
-
-    public synchronized CacheList<Product> getProducts() {
-        if (!products.isFetched()) {
-            long start = System.nanoTime();
-            products.setList(db().updateProducts(), (System.nanoTime() - start));
-        }
-        return products;
-    }
-
-    public synchronized void add(Product element) {
-        if (!getProducts().contains(element)) {
-            products.add(element);
-        }
-    }
-
-    public synchronized void remove(Product element) {
-        getProducts().remove(element);
-    }
-
-
-    public synchronized CacheList<Type> getTypes() {
-        if (!types.isFetched()) {
-            long start = System.nanoTime();
-            types.setList(db().updateTypes(), (System.nanoTime() - start));
-        }
-        return types;
-    }
-
-    public synchronized void add(Type element) {
-        if (!getTypes().contains(element)) {
-            types.add(element);
-        }
-    }
-
-    public synchronized void remove(Type element) {
-        getTypes().remove(element);
     }
 
 

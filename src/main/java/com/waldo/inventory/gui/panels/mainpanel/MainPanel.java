@@ -320,11 +320,6 @@ public class MainPanel extends MainPanelLayout {
                     public void onDeleteDivision() {
                         MainPanel.this.onDeleteDivision();
                     }
-
-                    @Override
-                    public void onSetWizardAction() {
-                        MainPanel.this.onSetWizardAction();
-                    }
                 };
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }

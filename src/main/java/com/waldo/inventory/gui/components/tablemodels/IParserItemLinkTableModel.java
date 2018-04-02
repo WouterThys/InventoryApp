@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 
@@ -23,23 +22,23 @@ public class IParserItemLinkTableModel extends IAbstractTableModel<ParserItemLin
                 case 0: // Component name
                     return link.getPcbItemName();
                 case 1: // Category
-                    if (link.getCategoryId() > DbObject.UNKNOWN_ID) {
-                        return link.getCategory().toString();
-                    } else {
-                        return "";
-                    }
+//                    if (link.getCategoryId() > DbObject.UNKNOWN_ID) {
+//                        return link.getCategory().toString();
+//                    } else {
+//                        return "";
+//                    }
                 case 2: // Product
-                    if (link.getProductId() > DbObject.UNKNOWN_ID) {
-                        return link.getProduct().toString();
-                    } else {
-                        return "";
-                    }
+//                    if (link.getProductId() > DbObject.UNKNOWN_ID) {
+//                        return link.getProduct().toString();
+//                    } else {
+//                        return "";
+//                    }
                 case 3: // Type
-                    if (link.getTypeId() > DbObject.UNKNOWN_ID) {
-                        return link.getType().toString();
-                    } else {
-                        return "";
-                    }
+//                    if (link.getTypeId() > DbObject.UNKNOWN_ID) {
+//                        return link.getType().toString();
+//                    } else {
+//                        return "";
+//                    }
 
             }
         }

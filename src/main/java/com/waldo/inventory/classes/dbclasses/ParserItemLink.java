@@ -17,14 +17,8 @@ public class ParserItemLink extends DbObject {
     private String parserName;
     private String pcbItemName; // "C" or "R" or ...
 
-    private long categoryId;
-    private Category category;
-
-    private long productId;
-    private Product product;
-
-    private long typeId;
-    private Type type;
+    private long divisionId;
+    private Division division;
 
     public ParserItemLink() {
         super(TABLE_NAME);
@@ -43,22 +37,7 @@ public class ParserItemLink extends DbObject {
         // Add parameters
         statement.setString(ndx++, getParserName());
         statement.setString(ndx++, getPcbItemName());
-
-        long cId = getCategoryId();
-        if (cId < DbObject.UNKNOWN_ID) {
-            cId = DbObject.UNKNOWN_ID;
-        }
-        long pId = getProductId();
-        if (pId < DbObject.UNKNOWN_ID) {
-            pId = DbObject.UNKNOWN_ID;
-        }
-        long tId = getTypeId();
-        if (tId < DbObject.UNKNOWN_ID) {
-            tId = DbObject.UNKNOWN_ID;
-        }
-        statement.setLong(ndx++, cId);
-        statement.setLong(ndx++, pId);
-        statement.setLong(ndx++, tId);
+        statement.setLong(ndx++, getDivisionId());
 
         return ndx;
     }
@@ -70,9 +49,7 @@ public class ParserItemLink extends DbObject {
         // Add variables
         cpy.setParserName(getParserName());
         cpy.setPcbItemName(getPcbItemName());
-        cpy.setCategoryId(getCategoryId());
-        cpy.setProductId(getProductId());
-        cpy.setTypeId(getTypeId());
+        cpy.setDivisionId(getDivisionId());
 
         return cpy;
     }
@@ -105,18 +82,6 @@ public class ParserItemLink extends DbObject {
         }
     }
 
-    public boolean hasCategory() {
-        return categoryId > UNKNOWN_ID;
-    }
-
-    public boolean hasProduct() {
-        return productId > UNKNOWN_ID;
-    }
-
-    public boolean hasType() {
-        return typeId > UNKNOWN_ID;
-    }
-
     // Getters and setters
 
     public String getParserName() {
@@ -141,57 +106,24 @@ public class ParserItemLink extends DbObject {
         this.pcbItemName = pcbItemName;
     }
 
-    public long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(long categoryId) {
-        if (category != null && category.getId() != categoryId) {
-            category = null;
+    public long getDivisionId() {
+        if (divisionId < UNKNOWN_ID) {
+            divisionId = UNKNOWN_ID;
         }
-        this.categoryId = categoryId;
+        return divisionId;
     }
 
-    public Category getCategory() {
-        if (category == null && categoryId > UNKNOWN_ID) {
-            category = SearchManager.sm().findCategoryById(categoryId);
+    public void setDivisionId(long divisionId) {
+        if (division != null && division.getId() != divisionId) {
+            division = null;
         }
-        return category;
+        this.divisionId = divisionId;
     }
 
-    public long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        if (product != null && product.getId() != productId) {
-            product = null;
+    public Division getType() {
+        if (division == null && divisionId > UNKNOWN_ID) {
+            division = SearchManager.sm().findDivisionById(divisionId);
         }
-        this.productId = productId;
-    }
-
-    public Product getProduct() {
-        if (product == null && productId > UNKNOWN_ID) {
-            product = SearchManager.sm().findProductById(productId);
-        }
-        return product;
-    }
-
-    public long getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(long typeId) {
-        if (type != null && type.getId() != typeId) {
-            type = null;
-        }
-        this.typeId = typeId;
-    }
-
-    public Type getType() {
-        if (type == null && typeId > UNKNOWN_ID) {
-            type = SearchManager.sm().findTypeById(typeId);
-        }
-        return type;
+        return division;
     }
 }

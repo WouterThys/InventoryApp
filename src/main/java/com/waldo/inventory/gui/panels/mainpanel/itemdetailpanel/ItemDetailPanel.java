@@ -74,23 +74,23 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
             plusOneAction.setEnabled(!locked);
             minOneAction.setEnabled(!locked);
         } else {
-            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-                categoryTf.setText(item.getCategory().toString());
-            } else {
-                categoryTf.setText("");
-            }
-
-            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-                productTf.setText(item.getProduct().toString());
-            } else {
-                productTf.setText("");
-            }
-
-            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-                typeTf.setText(item.getType().toString());
-            } else {
-                typeTf.setText("");
-            }
+//            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
+//                categoryTf.setText(item.getCategory().toString());
+//            } else {
+//                categoryTf.setText("");
+//            }
+//
+//            if (item.getProductId() > DbObject.UNKNOWN_ID) {
+//                productTf.setText(item.getProduct().toString());
+//            } else {
+//                productTf.setText("");
+//            }
+//
+//            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
+//                typeTf.setText(item.getType().toString());
+//            } else {
+//                typeTf.setText("");
+//            }
         }
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {

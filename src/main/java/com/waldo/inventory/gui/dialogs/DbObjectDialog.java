@@ -55,9 +55,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
 
     private void determineInitialPath() {
         if (T.getType(dbObject) == DbObject.TYPE_DISTRIBUTOR) initialPath = settings().getFileSettings().getImgDistributorsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_CATEGORY) initialPath = settings().getFileSettings().getImgDivisionsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_PRODUCT) initialPath = settings().getFileSettings().getImgDivisionsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_TYPE) initialPath = settings().getFileSettings().getImgDivisionsPath();
+        else if (T.getType(dbObject) == DbObject.TYPE_DIVISION) initialPath = settings().getFileSettings().getImgDivisionsPath();
         else if (T.getType(dbObject) == DbObject.TYPE_PROJECT_TYPE) initialPath = settings().getFileSettings().getImgIdesPath();
         else if (T.getType(dbObject) == DbObject.TYPE_ITEM) initialPath = settings().getFileSettings().getImgItemsPath();
         else if (T.getType(dbObject) == DbObject.TYPE_MANUFACTURER) initialPath = settings().getFileSettings().getImgManufacturersPath();

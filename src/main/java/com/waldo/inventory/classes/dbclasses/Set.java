@@ -33,9 +33,7 @@ public class Set extends Item {
 
         item.setValue(Value.copy(getValue()));
         item.setDescription(getDescription());
-        item.setCategoryId(getCategoryId());
-        item.setProductId(getProductId());
-        item.setTypeId(getTypeId());
+        item.setDivisionId(getDivisionId());
         item.setLocalDataSheet(getLocalDataSheet());
         item.setOnlineDataSheet(getOnlineDataSheet());
         item.setManufacturerId(getManufacturerId());
@@ -68,9 +66,7 @@ public class Set extends Item {
                 if (!(ref.getValue().equals(getValue()))) {System.out.println("Value differs"); return false; }
                 if (!(ref.getIconPath().equals(getIconPath()))) { System.out.println("IconPath differs"); return false; }
                 if (!(ref.getDescription().equals(getDescription()))) { System.out.println("Description differs"); return false; }
-                if (!(ref.getCategoryId() == getCategoryId())) { System.out.println("Category differs"); return false; }
-                if (!(ref.getProductId() == getProductId())) { System.out.println("Product differs"); return false; }
-                if (!(ref.getTypeId() == getTypeId())) { System.out.println("Type differs"); return false; }
+                if (!(ref.getDivisionId() == getDivisionId())) { System.out.println("Division differs"); return false; }
                 if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) { System.out.println("Local datasheet differs"); return false; }
                 if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) { System.out.println("Online datasheet differs"); return false; }
                 if (!(ref.getManufacturerId() == getManufacturerId())) { System.out.println("Manufacturer differs"); return false; }

@@ -38,33 +38,6 @@ public class SearchManager {
         return null;
     }
 
-    public Category findCategoryById(long id) {
-        for (Category c : cache().getCategories()) {
-            if (c.getId() == id) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public Product findProductById(long id) {
-        for (Product p : cache().getProducts()) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public Type findTypeById(long id) {
-        for (Type t : cache().getTypes()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
-    }
-
     public Division findDivisionById(long id) {
         if (id > DbObject.UNKNOWN_ID) {
             for (Division d : cache().getDivisions()) {
@@ -105,58 +78,6 @@ public class SearchManager {
             }
         }
         return divisionsWithoutParent;
-    }
-
-    public List<Product> findProductListForCategory(long categoryId)    {
-        List<Product> products = new ArrayList<>();
-        for (Product p : cache().getProducts()) {
-            if (p.getCategoryId() == categoryId) {
-                products.add(p);
-            }
-        }
-        return products;
-    }
-
-    public List<Type> findTypeListForProduct(long productId)    {
-        List<Type> types = new ArrayList<>();
-        for (Type t : cache().getTypes()) {
-            if (t.getProductId() == productId) {
-                types.add(t);
-            }
-        }
-        return types;
-    }
-
-    public List<Item> findItemListForCategory(Category c)    {
-        List<Item> items = new ArrayList<>();
-        for (Item i : cache().getItems()) {
-            if (i.getCategoryId() == c.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> findItemListForProduct(Product p)    {
-        List<Item> items = new ArrayList<>();
-        Category c = sm().findCategoryById(p.getCategoryId());
-        for (Item i : findItemListForCategory(c)) {
-            if (i.getProductId() == p.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
-    }
-
-    public List<Item> findItemListForType(Type t)    {
-        List<Item> items = new ArrayList<>();
-        Product p = sm().findProductById(t.getProductId());
-        for (Item i : findItemListForProduct(p)) {
-            if (i.getTypeId() == t.getId()) {
-                items.add(i);
-            }
-        }
-        return items;
     }
 
     public List<Item> findItemsForDivision(Division d) {

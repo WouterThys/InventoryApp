@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.ProjectIDEDialog;
 import com.waldo.inventory.gui.dialogs.querydialog.QueryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
-import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -49,10 +48,7 @@ public class MenuBar extends JMenuBar {
 
 
         // Database menu
-        JMenu dbMenu = new JMenu("Database");
-
-        JMenuItem subDivisions = new JMenuItem("Sub divisions", imageResource.readImage("SubDivisions.Menu"));
-        subDivisions.addActionListener(subDivisionsSelected());
+        JMenu dbMenu = new JMenu("Resources");
 
         JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readImage("Manufacturers.Menu"));
         manufacturers.addActionListener(manufacturersSelected());
@@ -69,8 +65,6 @@ public class MenuBar extends JMenuBar {
         JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("Locations.Menu"));
         locationTypes.addActionListener(locationTypesSelected());
 
-        //dbMenu.add(subDivisions);
-        //dbMenu.addSeparator();
         dbMenu.add(locationTypes);
         dbMenu.add(manufacturers);
         dbMenu.add(distributors);
@@ -114,13 +108,6 @@ public class MenuBar extends JMenuBar {
         return e -> {
             GraphsDialog dialog = new GraphsDialog(application, "Statistics");
             dialog.showDialog();
-        };
-    }
-
-    private ActionListener subDivisionsSelected() {
-        return e -> {
-            SubDivisionsDialog divisionsDialog = new SubDivisionsDialog(application, "Sub divisions");
-            divisionsDialog.showDialog();
         };
     }
 
