@@ -67,6 +67,8 @@ public class IDivisionPanel extends IPanel {
             if (division == null || !division.equals(newDivision)) {
                 division = newDivision;
 
+                removeAll();
+
                 initializeComponents();
                 initializeLayouts();
 

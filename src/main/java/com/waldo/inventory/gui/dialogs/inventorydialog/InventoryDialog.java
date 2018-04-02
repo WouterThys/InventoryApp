@@ -54,7 +54,7 @@ public class InventoryDialog extends InventoryDialogLayout {
             if (dialog.showDialog() == IDialog.OK) {
                 Item item = dialog.getSelectedItem();
                 if (item != null) {
-                    currentLocation.updateItems();
+                    currentLocation.updateItemList();
                     item.setLocationId(currentLocation.getId());
                     item.save();
 
@@ -76,7 +76,7 @@ public class InventoryDialog extends InventoryDialogLayout {
             );
             if (res == JOptionPane.YES_OPTION) {
                 currentItem.setLocationId(0);
-                currentLocation.updateItems();
+                currentLocation.updateItemList();
                 currentItem.save();
 
                 tableModel.setItemList(currentLocation.getItems());

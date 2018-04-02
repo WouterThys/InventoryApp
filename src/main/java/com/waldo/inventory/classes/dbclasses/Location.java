@@ -169,7 +169,7 @@ public class Location extends DbObject {
         return items;
     }
 
-    public void updateItems() {
+    public void updateItemList() {
         items = null;
     }
 

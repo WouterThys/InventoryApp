@@ -3,10 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.classes.dbclasses.Set;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IDivisionPanel;
@@ -15,6 +12,7 @@ import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
+import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -50,6 +48,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private ITextFieldActionPanel aliasPnl;
     private ITextArea descriptionTa;
     private IDivisionPanel divisionPnl;
+    private IActions.EditAction editDivisionAction;
     private GuiUtils.IBrowseFilePanel localDataSheetPnl;
     private GuiUtils.IBrowseWebPanel onlineDataSheetPnl;
 
@@ -182,6 +181,20 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
 
         // Division
         divisionPnl = new IDivisionPanel();
+        editDivisionAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectDivisionDialog dialog = new SelectDivisionDialog(parent, selectedItem.getDivision());
+                if (dialog.showDialog() == IDialog.OK) {
+                    Division newDivision = dialog.getSelectedDivision();
+                    if (newDivision != null && !newDivision.equals(selectedItem.getDivision())) {
+                        selectedItem.setDivisionId(newDivision.getId());
+                        divisionPnl.updateComponents(newDivision);
+                        editedListener.onValueChanged(null, "divisionId", null, null);
+                    }
+                }
+            }
+        };
 
         // Data sheets
         localDataSheetPnl = new GuiUtils.IBrowseFilePanel("", "/home", editedListener, "localDataSheet");
@@ -242,6 +255,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         JPanel divPnl = new JPanel(new BorderLayout());
         divPnl.setBorder(GuiUtils.createTitleBorder("Division"));
         divPnl.add(divisionPnl, BorderLayout.CENTER);
+        divPnl.add(GuiUtils.createNewToolbar(editDivisionAction), BorderLayout.EAST);
 
         JPanel dsPnl = new JPanel();
         dsPnl.setBorder(GuiUtils.createTitleBorder("Data sheets"));

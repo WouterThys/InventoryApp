@@ -52,6 +52,18 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     private void save() {
         if (allowSave) {
+            // Update location
+            if (selectedItem.getLocationId() != originalItem.getLocationId()) {
+                if (selectedItem.getLocation() != null) {
+                    selectedItem.getLocation().updateItemList();
+                }
+            }
+            // Update division
+            if (selectedItem.getDivisionId() != originalItem.getDivisionId()) {
+                if (selectedItem.getDivision() != null) {
+                    selectedItem.getDivision().updateItemList();
+                }
+            }
             selectedItem.save();
         }
         originalItem = selectedItem.createCopy();

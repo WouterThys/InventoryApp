@@ -216,7 +216,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
                     Location newLocation = dialog.getItemLocation();
                     if (newLocation != null) {
                         selectedItem.setLocationId(newLocation.getId());
-                        newLocation.updateItems();
+                        newLocation.updateItemList();
                     } else {
                         selectedItem.setLocationId(DbObject.UNKNOWN_ID);
                     }
@@ -242,7 +242,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
                 if (res == JOptionPane.YES_OPTION) {
                     Location oldLocation = selectedItem.getLocation();
                     if (oldLocation != null) {
-                        oldLocation.updateItems();
+                        oldLocation.updateItemList();
                     }
                     selectedItem.setLocationId(-1);
                     updateLocationFields(null);
