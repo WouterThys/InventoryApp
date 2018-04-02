@@ -178,25 +178,34 @@ public class PcbItemParser {
             HashMap<String, List<PcbItem>> resultMap = new HashMap<>();
 
             // Parse from file
-            if (fileToParse != null && fileToParse.isFile()) {
-                if (kiCadParser.isFileValid(fileToParse)) {
-                    kiCadParser.parse(fileToParse);
-                    resultMap = createMap(kiCadParser.getParsedData());
+            if (fileToParse != null) {
+                File parseFile = null;
+                if (fileToParse.isFile()) {
+                    if (kiCadParser.isFileValid(fileToParse)) {
+                        parseFile = fileToParse;
+                    } else {
+                        List<File> actualFiles = FileUtils.findFileInFolder(fileToParse.getParentFile(), kiCadParser.getFileExtension(), true);
+                        if (actualFiles != null && actualFiles.size() == 1) {
+                            parseFile = actualFiles.get(0);
+                        }
+                    }
                 } else {
-                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse.getParentFile(), kiCadParser.getFileExtension(), true);
+                    // Search for file
+                    List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
                     if (actualFiles != null && actualFiles.size() == 1) {
-                        kiCadParser.parse(actualFiles.get(0));
-                        resultMap = createMap(kiCadParser.getParsedData());
+                        parseFile = actualFiles.get(0);
                     }
                 }
-            } else {
-                // Search for file
-                List<File> actualFiles = FileUtils.findFileInFolder(fileToParse, kiCadParser.getFileExtension(), true);
-                if (actualFiles != null && actualFiles.size() == 1) {
-                    kiCadParser.parse(actualFiles.get(0));
-                    resultMap = createMap(kiCadParser.getParsedData());
+
+                if (parseFile != null) {
+                    try {
+                        resultMap = createMap(kiCadParser.parse(fileToParse));
+                    } catch (com.waldo.kicadparser.KiCadParser.KiCadParserException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
 
             return resultMap;
         }

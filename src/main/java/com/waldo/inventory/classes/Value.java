@@ -148,24 +148,28 @@ public class Value {
 
         double foundDouble = -1;
         int foundMultiplier = 0;
+        if (valueTxt != null && !valueTxt.isEmpty()) {
+            valueTxt = valueTxt.trim();
+            valueTxt = valueTxt.replace(',', '.');
 
-        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(valueTxt);
-        while (m.find()) {
-            foundDouble = Double.parseDouble(m.group(1));
-        }
+            Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(valueTxt);
+            while (m.find()) {
+                foundDouble = Double.parseDouble(m.group(1));
+            }
 
-        if (foundDouble >= 0) {
-            if (valueTxt.contains("f")) foundMultiplier = -15;
-            else if (valueTxt.contains("p")) foundMultiplier = -12;
-            else if (valueTxt.contains("n")) foundMultiplier = -9;
-            else if (valueTxt.contains("µ") || valueTxt.contains("u")) foundMultiplier = -6;
-            else if (valueTxt.contains("m")) foundMultiplier = -3;
-            else if (valueTxt.contains("k") || valueTxt.contains("K")) foundMultiplier = 3;
-            else if (valueTxt.contains("M")) foundMultiplier = 6;
-            else if (valueTxt.contains("G")) foundMultiplier = 9;
-            else if (valueTxt.contains("T")) foundMultiplier = 12;
+            if (foundDouble >= 0) {
+                if (valueTxt.contains("f")) foundMultiplier = -15;
+                else if (valueTxt.contains("p")) foundMultiplier = -12;
+                else if (valueTxt.contains("n")) foundMultiplier = -9;
+                else if (valueTxt.contains("µ") || valueTxt.contains("u")) foundMultiplier = -6;
+                else if (valueTxt.contains("m")) foundMultiplier = -3;
+                else if (valueTxt.contains("k") || valueTxt.contains("K")) foundMultiplier = 3;
+                else if (valueTxt.contains("M")) foundMultiplier = 6;
+                else if (valueTxt.contains("G")) foundMultiplier = 9;
+                else if (valueTxt.contains("T")) foundMultiplier = 12;
 
-            return new Value(foundDouble, foundMultiplier, "");
+                return new Value(foundDouble, foundMultiplier, "");
+            }
         }
         return null;
     }

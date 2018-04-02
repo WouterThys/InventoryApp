@@ -112,15 +112,16 @@ public class ProjectPcb extends ProjectObject {
             return pcbItemLinks;
         }
 
-        HashMap<String, List<PcbItem>> pcbItems = getParser().parse(fileToParse);
+        // Parse the items from the file
+        HashMap<String, List<PcbItem>> parsedItems = getParser().parse(fileToParse);
 
         // Update pcb items in database
-        pcbItemLinks.addAll(PcbItemParser.getInstance().updatePcbItemDb(this, pcbItems));
+        pcbItemLinks.addAll(PcbItemParser.getInstance().updatePcbItemDb(this, parsedItems));
 
         // Update links with project
         PcbItemParser.getInstance().updatePcbItemProjectLinksDb(this, pcbItemLinks);
 
-        // Update links with item
+        // Try to find (and update) item links
         PcbItemParser.getInstance().updatePcbItemItemLinks(pcbItemLinks);
 
         lastParsedDate = DateUtils.now();
