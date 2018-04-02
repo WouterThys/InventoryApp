@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -20,18 +19,16 @@ public class IDivisionPanel extends IPanel {
     private final ImageIcon levelxIcon = imageResource.readImage("Items.Tree.Type");
 
     private Division division;
-    private boolean editable;
 
     private List<DivisionLayout> divisionLayoutList = new ArrayList<>();
 
-    public IDivisionPanel(boolean editable) {
+    public IDivisionPanel() {
         super();
-        this.editable = editable;
     }
 
     private void addDivisionToLayoutList(Division division) {
         if (division != null) {
-            divisionLayoutList.add(0, new DivisionLayout(division, editable));
+            divisionLayoutList.add(0, new DivisionLayout(division));
         }
     }
 
@@ -86,7 +83,7 @@ public class IDivisionPanel extends IPanel {
         private ImageIcon icon;
         private Division division;
 
-        public DivisionLayout(Division division, boolean editable) {
+        public DivisionLayout(Division division) {
             super(new BorderLayout());
             this.division = division;
             if (division != null) {
@@ -107,16 +104,10 @@ public class IDivisionPanel extends IPanel {
                 // ToolTip
                 toolTip = "Level " + division.getLevel();
 
-                if (editable) {
-                    IComboBox<Division> comboBox = new IComboBox<>();
-
-                    add(comboBox, BorderLayout.CENTER);
-                } else {
-                    ITextField textField = new ITextField(false);
-                    textField.setText(division.toString());
-
-                    add(textField, BorderLayout.CENTER);
-                }
+                // Text field
+                ITextField textField = new ITextField(false);
+                textField.setText(division.toString());
+                add(textField, BorderLayout.CENTER);
             }
         }
 

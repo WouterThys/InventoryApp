@@ -29,8 +29,21 @@ public class Division extends DbObject {
     }
 
     public Division(String name) {
+        this(name, null);
+    }
+
+    public Division(Division parentDivision) {
+        this("", parentDivision);
+    }
+
+    public Division(String name, Division parentDivision) {
         super(TABLE_NAME);
         setName(name);
+
+         this.parentDivision = parentDivision;
+        if (parentDivision != null) {
+            parentDivisionId = parentDivision.getId();
+        }
     }
 
     @Override
@@ -55,15 +68,6 @@ public class Division extends DbObject {
     @Override
     public Division createCopy() {
         return createCopy(new Division());
-    }
-
-    public static Division createDummyDivision(String name) {
-        Division dummy =  new Division(name);
-        dummy.setId(-1);
-        dummy.setCanBeSaved(false);
-        dummy.setDisplayType(Statics.IconDisplayType.Icon);
-        dummy.setCanHaveValue(false);
-        return dummy;
     }
 
     public static Division createDummyDivision(String name, List<Division> subDivisions) {

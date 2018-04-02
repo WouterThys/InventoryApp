@@ -13,6 +13,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITree extends JTree {
 
+    public ITree() {
+        this(null);
+    }
+
     public ITree (TreeModel treeModel) {
         super(treeModel);
 

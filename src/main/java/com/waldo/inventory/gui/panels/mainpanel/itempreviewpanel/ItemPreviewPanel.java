@@ -90,16 +90,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     }
 
     private void updateHeader(Item item) {
-//        try {
-//            if (!item.getIconPath().isEmpty()) {
-//                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-//                iconLbl.setIcon(imageResource.readImage(path));
-//            } else {
-//                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
-//            }
-//        } catch (Exception e) {
-//            Status().setError("Failed to set item icon");
-//        }
         iconLbl.setIcon(item.getItemIcon());
         nameTf.setText(item.toString());
         descriptionTa.setText(item.getDescription());
@@ -108,23 +98,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     private void updateData(Item item, OrderItem orderItem) {
         if (!isOrderType) {
-//            if (item.getCategoryId() > DbObject.UNKNOWN_ID) {
-//                categoryTf.setText(item.getCategory().toString());
-//            } else {
-//                categoryTf.setText("");
-//            }
-//
-//            if (item.getProductId() > DbObject.UNKNOWN_ID) {
-//                productTf.setText(item.getProduct().toString());
-//            } else {
-//                productTf.setText("");
-//            }
-//
-//            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-//                typeTf.setText(item.getType().toString());
-//            } else {
-//                typeTf.setText("");
-//            }
             divisionPnl.updateComponents(item.getDivision());
         } else {
             amountTf.setText(String.valueOf(orderItem.getAmount()));
@@ -226,23 +199,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         GuiUtils.GridBagHelper gbc;
 
-//        JPanel divisionPanel = new JPanel();
-//        divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
-//        gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-//        if (!isOrderType) {
-//            gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
-//            gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
-//            gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
-//        } else {
-//            JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
-//            JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
-//            JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
-//            gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
-//            gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
-//            gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
-//        }
-
-
         JPanel divisionPanel = new JPanel();
         divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
         if (isOrderType) {
@@ -307,10 +263,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         manufacturerTf = new ITextField(false);
         footprintTf = new ITextField(false);
         locationTf = new ITextField(false);
-//        categoryTf = new ITextField(false);
-//        productTf = new ITextField(false);
-//        typeTf = new ITextField(false);
-        divisionPnl = new IDivisionPanel(false);
+        divisionPnl = new IDivisionPanel();
         descriptionTa = new ITextArea(false);
         descriptionTa.setBorder(nameTf.getBorder());
         descriptionTa.setEnabled(false);

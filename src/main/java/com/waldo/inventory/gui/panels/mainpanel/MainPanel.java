@@ -9,10 +9,9 @@ import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.popups.MultiItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
+import com.waldo.inventory.gui.dialogs.editdivisiondialog.EditDivisionDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.subdivisionsdialog.SubDivisionsDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -239,18 +238,21 @@ public class MainPanel extends MainPanelLayout {
     private void setDivisionsChangedListener() {
         divisionsChanged = new CacheChangedListener<Division>() {
             @Override
-            public void onInserted(Division object) {
-               //
+            public void onInserted(Division division) {
+               divisionTree.addDivision(division);
+               updateComponents(division);
             }
 
             @Override
-            public void onUpdated(Division object) {
-
+            public void onUpdated(Division division) {
+                divisionTree.updateDivision(division);
+                updateComponents(division);
             }
 
             @Override
-            public void onDeleted(Division object) {
-
+            public void onDeleted(Division division) {
+                divisionTree.removeDivision(division);
+                updateComponents();
             }
 
             @Override
@@ -338,59 +340,29 @@ public class MainPanel extends MainPanelLayout {
     // Divisions
     //
     private void onAddDivision() {
-        DbObject newDivision;
-        IDialog dialog = null;
+        Division parent;
         if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            switch (DbObject.getType(selectedDivision)) {
-                case DbObject.TYPE_CATEGORY:
-                    newDivision = new Product(selectedDivision.getId());
-                    dialog = new SubDivisionsDialog(application, "Add product", (Product) newDivision);
-                    break;
-                case DbObject.TYPE_PRODUCT:
-                    newDivision = new Type(selectedDivision.getId());
-                    dialog = new SubDivisionsDialog(application, "Add type", (Type) newDivision);
-                    break;
-                case DbObject.TYPE_SET:
-                    newDivision = new Set();
-                    dialog = new EditItemDialog<>(application, "Add set", (Set) newDivision);
-                    break;
-            }
+            parent = selectedDivision;
         } else {
-            if (setsSelected()) {
-                newDivision = new Set();
-                dialog = new EditItemDialog<>(application, "Add set", (Set) newDivision);
-            } else {
-                newDivision = new Category();
-                dialog = new SubDivisionsDialog(application, "Add category", (Category) newDivision);
-            }
+            parent = divisionTree.getRootDivision();
         }
-        if (dialog != null) {
-            dialog.showDialog();
+        if (parent == null) {
+            parent = divisionTree.getRootDivision();
         }
+        EditDivisionDialog dialog = new EditDivisionDialog(application, new Division(parent), parent);
+        dialog.showDialog();
     }
 
     private void onEditDivision() {
-//        if (selectedDivision != null && selectedDivision.canBeSaved()) {
-//            IDialog dialog = null;
-//            String title = "Edit " + selectedDivision.getName();
-//            switch (DbObject.getType(selectedDivision)) {
-//                case DbObject.TYPE_CATEGORY:
-//                    dialog = new SubDivisionsDialog(application, title, (Category) selectedDivision);
-//                    break;
-//                case DbObject.TYPE_PRODUCT:
-//                    dialog = new SubDivisionsDialog(application, title, (Product) selectedDivision);
-//                    break;
-//                case DbObject.TYPE_TYPE:
-//                    dialog = new SubDivisionsDialog(application, title, (Type) selectedDivision);
-//                    break;
-//                case DbObject.TYPE_SET:
-//                    dialog = new EditItemDialog<>(application, title, (Set) selectedDivision);
-//                    break;
-//            }
-//            if (dialog != null) {
-//                dialog.showDialog();
-//            }
-//        }
+        Division parent = null;
+        if (selectedDivision != null && selectedDivision.canBeSaved()) {
+            parent = selectedDivision.getParentDivision();
+        }
+        if (parent == null) {
+            parent = divisionTree.getRootDivision();
+        }
+        EditDivisionDialog dialog = new EditDivisionDialog(application, selectedDivision, parent);
+        dialog.showDialog();
     }
 
     private void onDeleteDivision() {
@@ -434,7 +406,9 @@ public class MainPanel extends MainPanelLayout {
         }
     }
 
+    //
     // Items
+    //
     private void onEditItem() {
         if (selectedItem != null) {
             EditItemDialog dialog = new EditItemDialog<>(application, "Edit item", selectedItem);
@@ -574,7 +548,7 @@ public class MainPanel extends MainPanelLayout {
     public void onToolBarRefresh(IdBToolBar source) {
         if (divisionTb.equals(source)) {
             cache().getDivisions().clear();
-            divisionTree.divisionChanged(null);
+            divisionTree.updateTree();
         } else if (setsTb.equals(source)) {
             cache().getSets().clear();
             setTree.setChanged(null);

@@ -1,7 +1,9 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.utils.FileUtils;
@@ -9,7 +11,6 @@ import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -32,7 +33,10 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
         setValues(item);
         initializeComponents();
         initializeLayouts();
-        initActions();
+
+        initIconDoubleClicked();
+        initTabChangedAction();
+
         updateComponents(item);
     }
 
@@ -44,16 +48,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
     private void setValues(Item item) {
         selectedItem = item;
         originalItem = selectedItem.createCopy();
-    }
-
-    private void initActions() {
-        // Top Panel
-        initIconDoubleClicked();
-        initTabChangedAction();
-
-        // Component panel actions
-        initCategoryChangedAction();
-        initProductChangedAction();
     }
 
     private void save() {
@@ -155,27 +149,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     private void initTabChangedAction() {
         tabbedPane.addChangeListener(e -> updateComponents(selectedItem));
-    }
-
-    private void initCategoryChangedAction() {
-        componentPanel.setCategoryChangedAction(
-                e -> {
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        Category selectedCategory = (Category) e.getItem();
-                        componentPanel.getProductCb().setEnabled(!selectedCategory.isUnknown());
-                        componentPanel.updateProductCbValues(selectedCategory.getId());
-                        componentPanel.getTypeCb().setEnabled(false);
-                    }
-                });
-    }
-    private void initProductChangedAction() {
-        componentPanel.setProductChangedAction(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Product selectedProduct = (Product) e.getItem();
-                componentPanel.getTypeCb().setEnabled(!selectedProduct.isUnknown());
-                componentPanel.updateTypeCbValues(selectedProduct.getId());
-            }
-        });
     }
 
     private boolean verify() {
