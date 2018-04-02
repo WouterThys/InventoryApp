@@ -286,6 +286,60 @@ public class Item extends DbObject {
         return matchList;
     }
 
+    public List<SearchMatch> searchByPcbItem(PcbItemProjectLink pcbItemProjectLink, boolean divisionsEqual) {
+        List<SearchMatch> matchList = new ArrayList<>();
+        if (pcbItemProjectLink != null) {
+            PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
+
+            // Item values
+            String iName = getName().toUpperCase();
+            String aName = getAlias().toUpperCase();
+
+            // Pcb item values
+            String pName = pcbItem.getPartName().toUpperCase();
+            String pValue = pcbItemProjectLink.getValue();
+            String fValue = pcbItem.getFootprint().toUpperCase();
+
+            if (divisionsEqual) {
+                matchList.add(new SearchMatch(64, pName, iName));
+            } else {
+                // Name
+                if (((pName.length() > 2 && iName.length() > 2) && (iName.contains(pName) || pName.contains(iName)))) {
+                    matchList.add(new SearchMatch(64, pName, iName));
+                } else {
+                    // Alias
+                    if ((pName.length() > 2 && aName.length() > 2) && (aName.contains(pName) || pName.contains(aName))) {
+                        matchList.add(new SearchMatch(16, pName, aName));
+                    }
+                }
+            }
+
+
+            // Footprint
+            if (getPackageTypeId() > UNKNOWN_ID) {
+                String pkName = packageType.getPackage().getName().toUpperCase();
+                String ptName = packageType.getName().toUpperCase();
+                if (fValue.contains(pkName) || pkName.contains(fValue) || fValue.contains(ptName) || ptName.contains(fValue)) {
+                    matchList.add(new SearchMatch(32, fValue, pkName));
+                }
+            }
+
+            // Value
+            if (getValue().hasValue()) {
+                Value value = Value.tryFindValue(pValue);
+                if (value.equalsIgnoreUnits(getValue())) {
+                    matchList.add(new SearchMatch(32, value, getValue()));
+                }
+            } else {
+                if ((pValue.length() > 2 && iName.length() > 2) && (iName.contains(pValue) || pValue.contains(iName))) {
+                    matchList.add(new SearchMatch(32, pValue, iName));
+                }
+            }
+        }
+
+        return matchList;
+    }
+
     public String createRemarksFileName() {
         return getId() + "_ItemObject_";
     }
@@ -339,8 +393,8 @@ public class Item extends DbObject {
 
     public ImageIcon getItemIcon() {
 //        ImageIcon icon = null;
-//        if (getType() != null) {
-//            switch (getType().getDisplayType()) {
+//        if (getDivision() != null) {
+//            switch (getDivision().getDisplayType()) {
 //                default: break;
 //                case R_THT:
 //                    if (getValue().hasValue()) {

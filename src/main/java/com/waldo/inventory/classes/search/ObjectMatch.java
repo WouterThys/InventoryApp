@@ -11,10 +11,18 @@ public class ObjectMatch<T extends DbObject> {
 
     private int totalWeight = -1;
     private int totalMatches = -1;
+    private int maxWeight = 1;
 
     public ObjectMatch(T foundObject, List<SearchMatch> matches) {
         this.foundObject = foundObject;
         this.matches = matches;
+    }
+
+
+    public ObjectMatch(T foundObject, List<SearchMatch> matches, int maxWeight) {
+        this.foundObject = foundObject;
+        this.matches = matches;
+        this.maxWeight = maxWeight;
     }
 
     public int getTotalWeight() {
@@ -25,6 +33,10 @@ public class ObjectMatch<T extends DbObject> {
             }
         }
         return totalWeight;
+    }
+
+    public int getPercent() {
+        return (int)(((double)getTotalWeight() / maxWeight) * 100);
     }
 
     public int getTotalMatches() {
@@ -42,8 +54,7 @@ public class ObjectMatch<T extends DbObject> {
     public String toString() {
         return "ObjectMatch{" +
                 "foundObject=" + foundObject +
-                ", totalWeight=" + totalWeight +
-                ", totalMatches=" + totalMatches +
+                ", percent=" + getPercent() + "%" +
                 '}';
     }
 

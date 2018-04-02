@@ -3,11 +3,17 @@ package com.waldo.inventory.classes.search;
 public class SearchMatch {
 
     private int weight;
+    private int totalWeight;
     private Object searchMe;
     private Object findMe;
 
-    private SearchMatch(int weight, Object searchMe, Object findMe) {
+    public SearchMatch(int weight, Object searchMe, Object findMe) {
+        this(weight, -1, searchMe, findMe);
+    }
+
+    public SearchMatch(int weight, int totalWeight, Object searchMe, Object findMe) {
         this.weight = weight;
+        this.totalWeight = totalWeight;
         this.searchMe = searchMe;
         this.findMe = findMe;
     }
@@ -16,6 +22,7 @@ public class SearchMatch {
     public String toString() {
         return "Match{" +
                 "weight=" + weight +
+                ", percent=" + getPercent() + "%" +
                 ", searchMe=" + searchMe +
                 ", findMe=" + findMe +
                 '}';
@@ -48,5 +55,16 @@ public class SearchMatch {
 
     public int getWeight() {
         return weight;
+    }
+
+    public int getTotalWeight() {
+        return totalWeight;
+    }
+
+    public int getPercent() {
+        if (totalWeight < 0) {
+            return weight;
+        }
+        return (int)((double)(weight / totalWeight) * 100);
     }
 }

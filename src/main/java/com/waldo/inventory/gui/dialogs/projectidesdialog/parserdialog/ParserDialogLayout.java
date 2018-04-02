@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class ParserDialogLayout extends IDialog implements
+abstract class ParserDialogLayout extends IDialog implements
         ActionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
@@ -107,7 +107,7 @@ public abstract class ParserDialogLayout extends IDialog implements
 
     ParserItemLink tableGetSelected() {
         int row = parserItemLinkTable.getSelectedRow();
-        return (ParserItemLink) parserItemLinkTable.getValueAtRow(row);
+        return parserItemLinkTable.getValueAtRow(row);
     }
 
     List<ParserItemLink> tableGetSelectedList() {
@@ -115,7 +115,7 @@ public abstract class ParserDialogLayout extends IDialog implements
         int[] selectedRows = parserItemLinkTable.getSelectedRows();
         if (selectedRows.length > 0) {
             for (int row : selectedRows) {
-                ParserItemLink si = (ParserItemLink) parserItemLinkTable.getValueAtRow(row);
+                ParserItemLink si = parserItemLinkTable.getValueAtRow(row);
                 if (si != null) {
                     setItems.add(si);
                 }

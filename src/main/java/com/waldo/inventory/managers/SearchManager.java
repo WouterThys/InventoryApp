@@ -589,6 +589,21 @@ public class SearchManager {
         return links;
     }
 
+    public ParserItemLink findParserItemLink(PcbItem pcbItem) {
+        if (pcbItem != null) {
+            for (ParserItemLink link : cache().getParserItemLinks()) {
+                String linkName = link.getPcbItemName().toUpperCase();
+                String name = pcbItem.getPartName().toUpperCase();
+                if (!name.isEmpty() && !linkName.isEmpty()) {
+                    if (linkName.equals(name)) {
+                        return link;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public List<ParserItemLink> findParserItemLinksByParserName(String parserName) {
         List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (parserName != null && !parserName.isEmpty()) {

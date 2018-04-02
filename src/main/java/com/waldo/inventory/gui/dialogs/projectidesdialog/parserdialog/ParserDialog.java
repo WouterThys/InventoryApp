@@ -5,7 +5,6 @@ import com.waldo.inventory.classes.dbclasses.ParserItemLink;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparseritemlinkdialog.EditParserItemLinkDialog;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -70,11 +69,8 @@ public class ParserDialog extends ParserDialogLayout implements CacheChangedList
     public void onToolBarAdd(IdBToolBar source) {
         if (selectedParser != null) {
             ParserItemLink newLink = new ParserItemLink(selectedParser.getName());
-            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this, "Add link", newLink);
-
-            if (dialog.showDialog() == IDialog.OK) {
-                newLink.save();
-            }
+            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this,  newLink);
+            dialog.showDialog();
         }
     }
 
@@ -91,11 +87,8 @@ public class ParserDialog extends ParserDialogLayout implements CacheChangedList
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedLink != null) {
-            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this, "Edit link", selectedLink);
-
-            if (dialog.showDialog() == IDialog.OK) {
-                selectedLink.save();
-            }
+            EditParserItemLinkDialog dialog = new EditParserItemLinkDialog(this, selectedLink);
+            dialog.showDialog();
         }
     }
 

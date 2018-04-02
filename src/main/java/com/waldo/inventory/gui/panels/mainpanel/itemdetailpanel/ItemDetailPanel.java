@@ -87,7 +87,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 //            }
 //
 //            if (item.getTypeId() > DbObject.UNKNOWN_ID) {
-//                typeTf.setText(item.getType().toString());
+//                typeTf.setText(item.getDivision().toString());
 //            } else {
 //                typeTf.setText("");
 //            }

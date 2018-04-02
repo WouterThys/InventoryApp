@@ -5,7 +5,6 @@ import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -59,6 +58,23 @@ public class ParserItemLink extends DbObject {
         return createCopy(new ParserItemLink());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = super.equals(obj);
+        if (result) {
+            if (!(obj instanceof ParserItemLink)) {
+                return false;
+            } else {
+                ParserItemLink ref = (ParserItemLink) obj;
+                if (ref.getDivisionId() != getDivisionId()) return false;
+                if (!ref.getParserName().equals(getParserName())) return false;
+                if (!ref.getPcbItemName().equals(getPcbItemName())) return false;
+                result = true;
+            }
+        }
+        return result;
+    }
+
     //
     // DatabaseAccess tells the object is updated
     //
@@ -66,17 +82,11 @@ public class ParserItemLink extends DbObject {
     public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
             case Insert: {
-                List<ParserItemLink> list = cache().getParserItemLinks();
-                if (!list.contains(this)) {
-                    list.add(this);
-                }
+                cache().add(this);
                 break;
             }
             case Delete: {
-                List<ParserItemLink> list = cache().getParserItemLinks();
-                if (list.contains(this)) {
-                    list.remove(this);
-                }
+                cache().remove(this);
                 break;
             }
         }
@@ -120,7 +130,7 @@ public class ParserItemLink extends DbObject {
         this.divisionId = divisionId;
     }
 
-    public Division getType() {
+    public Division getDivision() {
         if (division == null && divisionId > UNKNOWN_ID) {
             division = SearchManager.sm().findDivisionById(divisionId);
         }
