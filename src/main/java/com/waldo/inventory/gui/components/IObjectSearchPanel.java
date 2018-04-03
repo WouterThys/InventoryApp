@@ -32,7 +32,6 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     }
 
     private ITextField searchField;
-    //private JButton searchButton;
     private IActions.SearchAction searchAction;
     private ILabel infoLabel;
     private JPanel btnPanel;
@@ -41,6 +40,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
 
     private SearchListener<T> searchListener;
     private List<T> searchList;
+    private List<ObjectMatch<T>> result = new ArrayList<>();
     private List<T> foundList = new ArrayList<>();
     private T currentObject;
 
@@ -108,6 +108,18 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         sendSearchCleared();
     }
 
+    protected List<ObjectMatch<T>> doSearch(String searchWord) {
+        List<ObjectMatch<T>> foundObjects = new ArrayList<>();
+        for (T t : searchList) {
+            List<SearchMatch> matches = t.searchByKeyWord(searchWord);
+            if (matches != null && matches.size() > 0) {
+                ObjectMatch<T> objectMatch = new ObjectMatch<>(t, matches);
+                foundObjects.add(objectMatch);
+            }
+        }
+        return foundObjects;
+    }
+
     public void search(String searchWord) {
         if (searchWord == null || searchWord.isEmpty()) {
             clearSearch();
@@ -119,27 +131,21 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
             btnPanel.setVisible(false);
 
             SwingUtilities.invokeLater(() -> {
-                List<ObjectMatch<T>> foundObjects = new ArrayList<>();
-                for (T t : searchList) {
-                    List<SearchMatch> matches = t.searchByKeyWord(searchWord);
-                    if (matches != null && matches.size() > 0) {
-                        ObjectMatch<T> objectMatch = new ObjectMatch<>(t, matches);
-                        foundObjects.add(objectMatch);
-                    }
-                }
+                result.clear();
+                result = doSearch(searchWord);
 
-                if (foundObjects.size() > 0) {
-                    if (foundObjects.size() == 1) {
+                if (result.size() > 0) {
+                    if (result.size() == 1) {
                         setInfo("1 object found!");
                     } else {
-                        setInfo(foundObjects.size() + " object(s) found!");
+                        setInfo(result.size() + " object(s) found!");
                         btnPanel.setVisible(true);
 
-                        foundObjects.sort(new ComparatorUtils.FoundMatchComparator());
+                        result.sort(new ComparatorUtils.FoundMatchComparator());
                     }
 
                     foundList.clear();
-                    for (ObjectMatch<T> om : foundObjects) {
+                    for (ObjectMatch<T> om : result) {
                         foundList.add(om.getFoundObject());
                     }
                     sendObjectsFound(foundList);
@@ -152,6 +158,10 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         } else {
             setError("No data to search..");
         }
+    }
+
+    public List<ObjectMatch<T>> getResult() {
+        return result;
     }
 
     public T getCurrentObject() {
@@ -227,18 +237,18 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     public void initializeComponents() {
         // Search text field
         searchField = new ITextField("Search");
-        searchField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                super.focusGained(e);
-                clearSearch();
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusLost(e);
-            }
-        });
+//        searchField.addFocusListener(new FocusAdapter() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                super.focusGained(e);
+//                clearSearch();
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                super.focusLost(e);
+//            }
+//        });
         searchField.addActionListener(e -> {
             String searchWord = searchField.getText();
             if (searchWord == null || searchWord.isEmpty()) {
@@ -322,34 +332,19 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     public void initializeLayouts() {
 
         setOpaque(false);
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(searchField, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 0.1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(GuiUtils.createNewToolbar(searchAction), gbc);
-        // TODO check out GuiUtils.createComponentWithActions()
-
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(infoLabel, gbc);
-
         btnPanel.add(previousBtn);
         btnPanel.add(nextBtn);
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 1; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(btnPanel, gbc);
 
+        JPanel searchPanel = new JPanel(new BorderLayout());
+        searchPanel.add(GuiUtils.createComponentWithActions(searchField, searchAction));
+
+        JPanel infoPanel = new JPanel(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.WEST);
+        infoPanel.add(btnPanel, BorderLayout.EAST);
+
+       setLayout(new BorderLayout());
+       add(searchPanel, BorderLayout.CENTER);
+       add(infoPanel, BorderLayout.SOUTH);
     }
 
     @Override

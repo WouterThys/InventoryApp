@@ -15,27 +15,33 @@ public class ItemFinder {
     public static final ItemFilter<Manufacturer> manufacturerFilter = new ItemFilter<>();
     public static final ItemFilter<Location> locationFilter = new ItemFilter<>();
 
+    private static final List<Item> itemList = new ArrayList<>();
 
-    private static List<Item> filterItems(List<ItemFilter> filterList) {
-        List<Item> itemList = new ArrayList<>();
 
-        if (filterList != null && filterList.size() > 0) {
+    private static List<Item> filterItems() {
+
+        if (divisionFilter.isChanged() || manufacturerFilter.isChanged() || locationFilter.isChanged()) {
+            itemList.clear();
+            divisionFilter.setChanged(false);
+            manufacturerFilter.setChanged(false);
+            locationFilter.setChanged(false);
+
             // Division
-            if (filterList.contains(divisionFilter) && divisionFilter.hasFilter()) {
+            if (divisionFilter.hasFilter()) {
                 for (Division d : divisionFilter.getFilters()) {
                     itemList.addAll(d.getItemList());
                 }
             }
 
             // Manufacturer
-            if (filterList.contains(manufacturerFilter) && manufacturerFilter.hasFilter()) {
+            if (manufacturerFilter.hasFilter()) {
                 // No division filter
                 if (itemList.size() == 0) {
                     for (Manufacturer m : manufacturerFilter.getFilters()) {
                         itemList.addAll(SearchManager.sm().findItemsForManufacturer(m));
                     }
                 } else {
-                    for (int i = itemList.size() -1; i >= 0; i--) {
+                    for (int i = itemList.size() - 1; i >= 0; i--) {
                         Item item = itemList.get(i);
                         for (Manufacturer m : manufacturerFilter.getFilters()) {
                             if (item.getManufacturerId() != m.getId()) {
@@ -48,14 +54,14 @@ public class ItemFinder {
             }
 
             // Location
-            if (filterList.contains(locationFilter) && locationFilter.hasFilter()) {
+            if (locationFilter.hasFilter()) {
                 // No previous filter
                 if (itemList.size() == 0) {
                     for (Location l : locationFilter.getFilters()) {
                         itemList.addAll(SearchManager.sm().findItemsForLocation(l));
                     }
                 } else {
-                    for (int i = itemList.size() -1; i >= 0; i--) {
+                    for (int i = itemList.size() - 1; i >= 0; i--) {
                         Item item = itemList.get(i);
                         for (Location l : locationFilter.getFilters()) {
                             if (item.getLocationId() != l.getId()) {
@@ -76,10 +82,10 @@ public class ItemFinder {
         return itemList;
     }
 
-    public static List<ObjectMatch<Item>> searchByKeyWord(String keyWord, List<ItemFilter> filterList) {
+    public static List<ObjectMatch<Item>> searchByKeyWord(String keyWord) {
         List<ObjectMatch<Item>> objectMatches = new ArrayList<>();
 
-        for (Item item : cache().getItems()) {
+        for (Item item : filterItems()) {
             List<SearchMatch> searchMatches = item.searchByKeyWord(keyWord);
             if (searchMatches.size() > 0) {
                 objectMatches.add(new ObjectMatch<>(item, searchMatches));
@@ -137,8 +143,11 @@ public class ItemFinder {
     public static class ItemFilter<T extends DbObject> {
 
         private final List<T> filterObjects = new ArrayList<>();
+        private boolean changed;
 
-        ItemFilter() {}
+        ItemFilter() {
+            changed = true;
+        }
 
         public List<T> getFilters() {
             return new ArrayList<>(filterObjects);
@@ -147,15 +156,33 @@ public class ItemFinder {
         public void addFilter(T filter) {
             if (!filterObjects.contains(filter)) {
                 filterObjects.add(filter);
+                changed = true;
+            }
+        }
+
+        public void setFilters(List<T> filterObjects) {
+            if (filterObjects != null) {
+                this.filterObjects.clear();
+                this.filterObjects.addAll(filterObjects);
+                changed = true;
             }
         }
 
         public void removeFilter(T filter) {
-            filterObjects.remove(filter);
+            changed = filterObjects.remove(filter);
         }
 
         public void clear() {
             filterObjects.clear();
+            changed = true;
+        }
+
+        public boolean isChanged() {
+            return changed;
+        }
+
+        public void setChanged(boolean changed) {
+            this.changed = changed;
         }
 
         public boolean hasFilter() {

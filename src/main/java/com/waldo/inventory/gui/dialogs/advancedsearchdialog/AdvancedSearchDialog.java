@@ -2,28 +2,23 @@ package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.search.ItemFinder;
+import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
-
-    // TODO #1 private Search.DbObjectSearch<Item> searcher;
-
-    // TODO #1 private Search.SearchListener<Item> itemSearchListener;
 
     public AdvancedSearchDialog(Window parent, String title, SearchType searchType, Object... args) {
         super(parent, title, searchType, args);
 
         initializeComponents();
         initializeLayouts();
-
-        initializeListeners();
-
-        // TODO #1 searcher = new Search.DbObjectSearch<>(
-        // TODO #1         cache().getItemList(), itemSearchListener);
 
         updateComponents();
     }
@@ -46,51 +41,35 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
     }
 
     @Override
-    void onSearch(String searchWord) {
+    List<ObjectMatch<Item>> onSearch(String searchWord) {
+        List<ObjectMatch<Item>> result = new ArrayList<>();
         if (searchWord != null && !searchWord.isEmpty()) {
             tableClear();
             beginWait();
             try {
-                // TODO #1 searcher.search(searchWord);
+                ItemFinder.divisionFilter.clear();
+                ItemFinder.manufacturerFilter.clear();
+                ItemFinder.locationFilter.clear();
+
+                ItemFinder.divisionFilter.setFilters(divisionFilterPanel.getSelected());
+                ItemFinder.manufacturerFilter.setFilters(manufacturerFilterPanel.getSelected());
+                ItemFinder.locationFilter.setFilters(locationFilterPanel.getSelected());
+
+                searchWord = searchWord.toUpperCase();
+                result.addAll(ItemFinder.searchByKeyWord(searchWord));
             } finally {
                 endWait();
             }
-
-        } else {
-            setError("Enter a search word");
-            tableClear();
         }
+        return result;
     }
 
     @Override
     void onSearch(DbObject dbObject) {
         if (dbObject != null) {
             // TODO #1 searcher.search(dbObject);
-        } else {
-            setError("Invalid object");
-            tableClear();
         }
     }
-
-    @Override
-    void onNext() {
-        // TODO #1
-//        if (searcher.hasSearchResults()) {
-//            searcher.findNextObject();
-//        }
-    }
-
-    @Override
-    void onPrevious() {
-        // TODO #1
-//        if (searcher.hasSearchResults()) {
-//            searcher.findPreviousObject();
-//        }
-    }
-
-    //
-    // Dialog
-    //
 
     //
     // Table item selected
@@ -103,36 +82,23 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
     //
     // Search
     //
-    private void initializeListeners() {
-        // TODO #1
-//        itemSearchListener = new Search.SearchListener<Item>() {
-//            @Override
-//            public void onObjectsFound(List<Item> foundObjects) {
-//                int size = foundObjects.size();
-//                if (size > 0) {
-//                    setInfo(String.valueOf(size) + " results found!!");
-//                    addResults(new ArrayList<>(foundObjects));
-//                    tableSelect(0);
-//                }
-//                updateEnabledComponents();
-//            }
-//
-//            @Override
-//            public void onSearchCleared() {
-//                tableClear();
-//                clearResultText();
-//                updateEnabledComponents();
-//            }
-//
-//            @Override
-//            public void onNextSearchObject(Item next) {
-//                tableSelect(next);
-//            }
-//
-//            @Override
-//            public void onPreviousSearchObject(Item previous) {
-//                tableSelect(previous);
-//            }
-//        };
+    @Override
+    public void onObjectsFound(List<Item> foundObjects) {
+        addResults(itemSearchPnl.getResult());
+    }
+
+    @Override
+    public void onNextObjectSelected(Item next) {
+
+    }
+
+    @Override
+    public void onPreviousObjectSelected(Item previous) {
+
+    }
+
+    @Override
+    public void onSearchCleared() {
+        tableClear();
     }
 }

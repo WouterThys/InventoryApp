@@ -1,28 +1,31 @@
 package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
 import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.search.ObjectMatch;
+import com.waldo.inventory.gui.components.IObjectSearchPanel;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.IFoundItemsTableModel;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITable;
-import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener {
+public abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener, IObjectSearchPanel.SearchListener<Item> {
 
+    private static final ImageIcon openIcon = imageResource.readImage("Search.Next");
+    private static final ImageIcon closeIcon = imageResource.readImage("Search.Previous");
 
     public enum SearchType {
         SearchWord,
@@ -32,17 +35,17 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ITextField searchTf;
-    private ILabel resultLbl;
+    IObjectSearchPanel<Item> itemSearchPnl;
 
-    private FilterPanel<Manufacturer> manufacturerFilterPanel;
-    private FilterPanel<Division> divisionFilterPanel;
-    private FilterPanel<Location> locationFilterPanel;
+    FilterPanel<Manufacturer> manufacturerFilterPanel;
+    FilterPanel<Division> divisionFilterPanel;
+    FilterPanel<Location> locationFilterPanel;
 
     private IFoundItemsTableModel tableModel;
-    private ITable<Item> foundItemTable;
+    private ITable<ObjectMatch<Item>> foundItemTable;
 
-    private JToolBar nextPrevTb;
+    private JPanel optionsPnl;
+    private IActions.UseAction showOptionsAction;
 
      /*
      *                  VARIABLES
@@ -74,31 +77,20 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    abstract void onSearch(String searchWord);
+    abstract List<ObjectMatch<Item>> onSearch(String searchWord);
     abstract void onSearch(DbObject dbObject);
-    abstract void onNext();
-    abstract void onPrevious();
     abstract void onMouseClicked(MouseEvent e);
 
     void updateEnabledComponents() {
         boolean hasSelected = tableGetSelected() != null;
 
         getButtonOK().setEnabled(hasSelected);
-
-        nextPrevTb.setEnabled(tableModel.getRowCount() > 1);
     }
 
-//    void tableInitialize(List<Item> foundItems) {
-//        switch (searchType) {
-//            case PcbItem:
-//                foundItems.sort(new ComparatorUtils.ItemMatchComparator());
-//                break;
-//        }
-//        tableModel.setItemList(foundItems);
-//    }
-
-    void addResults(List<Item> results) {
-        // TODO #1 tableModel.addItems(results);
+    void addResults(List<ObjectMatch<Item>> results) {
+        if (results != null) {
+            tableModel.setItemList(results);
+        }
     }
 
     void tableUpdate() {
@@ -109,42 +101,28 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         tableModel.clearItemList();
     }
 
-    void tableSelect(Item item) {
-        foundItemTable.selectItem(item);
-    }
-
-    void tableSelect(int ndx) {
-        // TODO #1 foundItemTable.selectItem(tableModel.getItemList().get(ndx));
-    }
-
     Item tableGetSelected() {
-        return foundItemTable.getSelectedItem();
+        ObjectMatch<Item> selected = foundItemTable.getSelectedItem();
+        if (selected != null) {
+            return selected.getFoundObject();
+        }
+        return null;
     }
-
-    void setError(String error) {
-        resultLbl.setForeground(Color.RED);
-        resultLbl.setText(error);
-    }
-
-    void setInfo(String info) {
-        resultLbl.setForeground(Color.BLACK);
-        resultLbl.setText(info);
-    }
-
-    void clearResultText() {
-        resultLbl.setText("");
-    }
-
 
     private JPanel createFilterPanel() {
-        JPanel filterPanel = new JPanel();
-
-        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+        JPanel filterPanel = new JPanel(new BorderLayout());
         filterPanel.setBorder(GuiUtils.createTitleBorder("Filters"));
 
-        filterPanel.add(divisionFilterPanel);
-        filterPanel.add(manufacturerFilterPanel);
-        filterPanel.add(locationFilterPanel);
+        optionsPnl.setLayout(new BoxLayout(optionsPnl, BoxLayout.X_AXIS));
+        optionsPnl.add(divisionFilterPanel);
+        optionsPnl.add(manufacturerFilterPanel);
+        optionsPnl.add(locationFilterPanel);
+
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.add(GuiUtils.createComponentWithActions(new ILabel("Options "), showOptionsAction), BorderLayout.EAST);
+
+        filterPanel.add(northPanel, BorderLayout.NORTH);
+        filterPanel.add(optionsPnl, BorderLayout.CENTER);
 
         return filterPanel;
     }
@@ -161,64 +139,42 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         getButtonOK().setEnabled(false);
         setResizable(true);
 
-        // This
-        searchTf = new ITextField("Search");
-        searchTf.addKeyListener(new KeyListener() {
+        itemSearchPnl = new IObjectSearchPanel<Item>(cache().getItems(), this, true) {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                onSearch(searchTf.getText());
-            }
-        });
-
-        resultLbl = new ILabel("Results: ");
-
-        AbstractAction nextResultAction = new AbstractAction("Next", imageResource.readImage("Search.Next")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onNext();
-            }
-        };
-        AbstractAction prevResultAction = new AbstractAction("Previous", imageResource.readImage("Search.Previous")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onPrevious();
+            protected List<ObjectMatch<Item>> doSearch(String searchWord) {
+                return onSearch(searchWord);
             }
         };
 
-        nextPrevTb = new JToolBar(JToolBar.HORIZONTAL);
-        nextPrevTb.setFloatable(false);
-        nextPrevTb.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        nextPrevTb.add(nextResultAction);
-        nextPrevTb.add(prevResultAction);
-
-
+        optionsPnl = new JPanel();
+        showOptionsAction = new IActions.UseAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (optionsPnl.isVisible()) {
+                    optionsPnl.setVisible(false);
+                    showOptionsAction.setIcon(openIcon);
+                } else {
+                    optionsPnl.setVisible(true);
+                    showOptionsAction.setIcon(closeIcon);
+                }
+            }
+        };
         manufacturerFilterPanel = new FilterPanel<>("Manufacturers", cache().getManufacturers());
         divisionFilterPanel = new FilterPanel<>("Divisions", SearchManager.sm().findDivisionsWithoutParent());
         locationFilterPanel = new FilterPanel<>("Locations", cache().getLocations().subList(0, 20));
 
-        // TODO #1
-//        tableModel = new IFoundItemsTableModel(searchType, null);
-//        foundItemTable = new ITable<>(tableModel);
-//        if (!allowMultiSelect) {
-//            foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        }
-//        foundItemTable.getSelectionModel().addListSelectionListener(this);
-//        foundItemTable.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                onMouseClicked(e);
-//            }
-//        });
+        tableModel = new IFoundItemsTableModel();
+        foundItemTable = new ITable<>(tableModel);
+        if (!allowMultiSelect) {
+            foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+        foundItemTable.getSelectionModel().addListSelectionListener(this);
+        foundItemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onMouseClicked(e);
+            }
+        });
 
     }
 
@@ -227,23 +183,17 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         getContentPanel().setLayout(new BorderLayout());
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        JPanel searchPnl = new JPanel(new BorderLayout());
-        searchPnl.add(new ILabel("Search word: "), BorderLayout.PAGE_START);
-        searchPnl.add(searchTf, BorderLayout.CENTER);
-
-        JPanel infoPnl = new JPanel(new BorderLayout());
-        infoPnl.add(resultLbl, BorderLayout.WEST);
-        infoPnl.add(nextPrevTb, BorderLayout.EAST);
-
         JScrollPane scrollPane = new JScrollPane(foundItemTable);
         scrollPane.setPreferredSize(new Dimension(600, 300));
 
         JPanel resultPnl = new JPanel(new BorderLayout());
-        resultPnl.add(infoPnl, BorderLayout.PAGE_START);
         resultPnl.add(scrollPane, BorderLayout.CENTER);
 
+        JPanel searchWordPnl = new JPanel(new BorderLayout());
+        searchWordPnl.add(itemSearchPnl, BorderLayout.CENTER);
+
         JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(searchPnl, BorderLayout.NORTH);
+        northPanel.add(searchWordPnl, BorderLayout.NORTH);
         northPanel.add(createFilterPanel(), BorderLayout.CENTER);
 
         getContentPanel().add(northPanel, BorderLayout.NORTH);
@@ -254,18 +204,18 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
 
     @Override
     public void updateComponents(Object... args) {
-        switch (searchType) {
-            case SearchWord:
-                if (searchWord != null && !searchWord.isEmpty()) {
-                    searchTf.setText(searchWord);
-                    onSearch(searchWord);
-                }
-                break;
-            case PcbItem:
-                if (searchPcbItem != null) {
-                    onSearch(searchPcbItem);
-                }
-                break;
-        }
+//        switch (searchType) {
+//            case SearchWord:
+//                if (searchWord != null && !searchWord.isEmpty()) {
+//                    searchTf.setText(searchWord);
+//                    onSearch(searchWord);
+//                }
+//                break;
+//            case PcbItem:
+//                if (searchPcbItem != null) {
+//                    onSearch(searchPcbItem);
+//                }
+//                break;
+//        }
     }
 }

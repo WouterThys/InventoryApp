@@ -15,7 +15,6 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 
 public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>> {
 
@@ -23,20 +22,8 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
     private static final String[] COLUMN_NAMES = {"", "Name", "Value", "Footprint", "Manufacturer", "Match"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class, ILabel.class};
 
-    private SearchType searchType;
-
-    public IFoundItemsTableModel(SearchType searchType) {
+    public IFoundItemsTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
-        this.searchType = searchType;
-    }
-
-    @Override
-    public int getColumnCount() {
-        switch (searchType) {
-            case SearchWord: return 5;
-            case PcbItem: return 6;
-        }
-        return super.getColumnCount();
     }
 
     @Override
@@ -117,7 +104,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
                 return label;
             }
             else if (value instanceof ObjectMatch) {
-                return new MatchValue(((ObjectMatch)value).getTotalWeight());
+                return new MatchValue(((ObjectMatch)value).getPercent());
             }
             return component;
         }
