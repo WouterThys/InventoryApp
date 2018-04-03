@@ -17,7 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType.SearchWord;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class EditPendingOrderDialogLayout extends IDialog {
@@ -59,10 +58,7 @@ abstract class EditPendingOrderDialogLayout extends IDialog {
         searchAction = new IActions.SearchAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdvancedSearchDialog dialog = new AdvancedSearchDialog(
-                        EditPendingOrderDialogLayout.this,
-                        "Find item",
-                        SearchWord);
+                AdvancedSearchDialog dialog = new AdvancedSearchDialog(EditPendingOrderDialogLayout.this, false);
                 if (dialog.showDialog() == IDialog.OK) {
                     Item item = dialog.getSelectedItem();
                     if (item == null) {

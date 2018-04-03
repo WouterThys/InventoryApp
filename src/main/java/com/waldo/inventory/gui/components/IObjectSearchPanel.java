@@ -66,6 +66,12 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         updateComponents();
     }
 
+    public void setSearchText(String searchText, boolean doSearch) {
+        searchField.setText(searchText);
+        if (doSearch) {
+            search(searchText);
+        }
+    }
 
     public void setSearchList(List<T> searchList) {
         this.searchList = searchList;
@@ -237,18 +243,6 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     public void initializeComponents() {
         // Search text field
         searchField = new ITextField("Search");
-//        searchField.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                super.focusGained(e);
-//                clearSearch();
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                super.focusLost(e);
-//            }
-//        });
         searchField.addActionListener(e -> {
             String searchWord = searchField.getText();
             if (searchWord == null || searchWord.isEmpty()) {

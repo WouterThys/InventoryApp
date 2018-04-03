@@ -6,7 +6,6 @@ import com.waldo.inventory.classes.dbclasses.LocationType;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
-import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 
 import javax.swing.*;
@@ -50,7 +49,7 @@ public class InventoryDialog extends InventoryDialogLayout {
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (currentLocation != null) {
-            AdvancedSearchDialog dialog = new AdvancedSearchDialog(InventoryDialog.this, "Search", SearchType.SearchWord);
+            AdvancedSearchDialog dialog = new AdvancedSearchDialog(InventoryDialog.this, true);
             if (dialog.showDialog() == IDialog.OK) {
                 Item item = dialog.getSelectedItem();
                 if (item != null) {

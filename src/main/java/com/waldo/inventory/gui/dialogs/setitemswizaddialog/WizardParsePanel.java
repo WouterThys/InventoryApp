@@ -9,7 +9,6 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.IWizardSetItemsTableModel;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
-import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
@@ -69,7 +68,7 @@ class WizardParsePanel extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void replace(Item selectedItem) {
         if (selectedItem != null) {
-            AdvancedSearchDialog dialog = new AdvancedSearchDialog(parent, "Search", AdvancedSearchDialogLayout.SearchType.SearchWord);
+            AdvancedSearchDialog dialog = new AdvancedSearchDialog(parent, true);
             if (dialog.showDialog() == IDialog.OK) {
                 Item newItem = dialog.getSelectedItem();
 

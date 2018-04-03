@@ -222,9 +222,9 @@ public class ComparatorUtils {
             } else if (m1 != null && m2 == null) {
                 return 1;
             } else if (m1 != null){
-                int res = Integer.compare(m1.getPercent(), m2.getPercent());
+                int res = -Integer.compare(m1.getPercent(), m2.getPercent());
                 if (res == 0) {
-                    res = Integer.compare(m2.getTotalMatches(), m1.getTotalMatches());
+                    res = -Integer.compare(m2.getTotalMatches(), m1.getTotalMatches());
                 }
                 return res;
             } else {

@@ -65,6 +65,18 @@ public class FilterPanel<T> extends IPanel {
         return selectedList;
     }
 
+    public void setSelected(T selected) {
+        for(int i = 0; i< checkBoxList.getModel().getSize();i++){
+            FilterCheckbox<T> box = (FilterCheckbox<T>) (checkBoxList.getModel().getElementAt(i));
+            if (box.equalsObject(selected)) {
+                box.setSelected(true);
+                break;
+            }
+        }
+        checkBoxList.revalidate();
+        checkBoxList.repaint();
+    }
+
     @Override
     public void initializeComponents() {
 
@@ -113,9 +125,16 @@ public class FilterPanel<T> extends IPanel {
 
     private class FilterCheckbox<F extends T> extends ICheckBox {
 
+        private T object;
+
         FilterCheckbox(F object) {
             super(object.toString());
+            this.object = object;
             addItemListener(e -> objectSelected(isSelected(), object));
+        }
+
+        public boolean equalsObject(Object o) {
+            return object.equals(o);
         }
     }
 }

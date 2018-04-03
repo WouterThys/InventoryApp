@@ -27,11 +27,6 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     private static final ImageIcon openIcon = imageResource.readImage("Search.Next");
     private static final ImageIcon closeIcon = imageResource.readImage("Search.Previous");
 
-    public enum SearchType {
-        SearchWord,
-        PcbItem
-    }
-
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -50,36 +45,49 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
      /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-     private SearchType searchType;
      private boolean allowMultiSelect;
-
-     private String searchWord = "";
-     private PcbItemProjectLink searchPcbItem = null;
+     private DbObject searchObject = null;
+     private boolean searchDbObject = false;
 
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AdvancedSearchDialogLayout(Window parent, String title, SearchType searchType, Object... args) {
-        super(parent, title);
-        this.searchType = searchType;
-        switch (searchType) {
-            case SearchWord:
-                allowMultiSelect = true;
-                if (args.length > 0) searchWord = String.valueOf(args[0]);
-                break;
-            case PcbItem:
-                allowMultiSelect = false;
-                if (args.length > 0) searchPcbItem = (PcbItemProjectLink) args[0];
-            break;
-        }
+    AdvancedSearchDialogLayout(Window parent, boolean allowMultiSelect) {
+        super(parent, "Advanced item search");
+        this.allowMultiSelect = allowMultiSelect;
     }
 
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     abstract List<ObjectMatch<Item>> onSearch(String searchWord);
-    abstract void onSearch(DbObject dbObject);
+    abstract List<ObjectMatch<Item>> onSearch(DbObject dbObject);
     abstract void onMouseClicked(MouseEvent e);
+
+    public void searchPcbItem(PcbItemProjectLink searchPcbItem) {
+        this.searchObject = searchPcbItem;
+        if (searchPcbItem != null && searchPcbItem.getPcbItem() != null) {
+            searchDbObject = true;
+
+            ParserItemLink link = SearchManager.sm().findParserItemLink(searchPcbItem.getPcbItem());
+            if (link != null) {
+                Division division = link.getDivision();
+                if (division != null) {
+                    division.updateItemList();
+
+                    Division parent = division.getParentDivision();
+                    while (parent != null) {
+                        division = parent;
+                        parent = division.getParentDivision();
+                    }
+
+                    divisionFilterPanel.setSelected(division);
+                }
+            }
+
+            itemSearchPnl.setSearchText(searchPcbItem.getPcbItem().toString(), true);
+        }
+    }
 
     void updateEnabledComponents() {
         boolean hasSelected = tableGetSelected() != null;
@@ -142,7 +150,11 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         itemSearchPnl = new IObjectSearchPanel<Item>(cache().getItems(), this, true) {
             @Override
             protected List<ObjectMatch<Item>> doSearch(String searchWord) {
-                return onSearch(searchWord);
+                if (searchDbObject) {
+                    return onSearch(searchObject);
+                } else {
+                    return onSearch(searchWord);
+                }
             }
         };
 

@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
-import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
@@ -188,12 +187,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     @Override
     void onSearchUsedItem(CreatedPcbLink link) {
         if (link != null) {
-            AdvancedSearchDialog dialog = new AdvancedSearchDialog(
-                    EditCreatedPcbLinksDialog.this,
-                    "Search",
-                    SearchType.PcbItem,
-                    link.getPcbItemProjectLink());
-
+            AdvancedSearchDialog dialog = new AdvancedSearchDialog(EditCreatedPcbLinksDialog.this, false);
+            dialog.searchPcbItem(link.getPcbItemProjectLink());
             if (dialog.showDialog() == IDialog.OK) {
                 Item newUsedItem = dialog.getSelectedItem();
                 if (newUsedItem != null) {

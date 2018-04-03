@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.search.ItemFinder;
 import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
@@ -14,12 +15,11 @@ import java.util.List;
 
 public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
 
-    public AdvancedSearchDialog(Window parent, String title, SearchType searchType, Object... args) {
-        super(parent, title, searchType, args);
+    public AdvancedSearchDialog(Window parent, boolean allowMultiSelect) {
+        super(parent, allowMultiSelect);
 
         initializeComponents();
         initializeLayouts();
-
         updateComponents();
     }
 
@@ -47,10 +47,7 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
             tableClear();
             beginWait();
             try {
-                ItemFinder.divisionFilter.clear();
-                ItemFinder.manufacturerFilter.clear();
-                ItemFinder.locationFilter.clear();
-
+                // TODO: don't do this every time..
                 ItemFinder.divisionFilter.setFilters(divisionFilterPanel.getSelected());
                 ItemFinder.manufacturerFilter.setFilters(manufacturerFilterPanel.getSelected());
                 ItemFinder.locationFilter.setFilters(locationFilterPanel.getSelected());
@@ -65,10 +62,26 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
     }
 
     @Override
-    void onSearch(DbObject dbObject) {
+    List<ObjectMatch<Item>> onSearch(DbObject dbObject) {
+        List<ObjectMatch<Item>> result = new ArrayList<>();
         if (dbObject != null) {
-            // TODO #1 searcher.search(dbObject);
+            if (dbObject instanceof PcbItemProjectLink) {
+
+                tableClear();
+                beginWait();
+                try {
+                    // TODO: don't do this every time..
+                    ItemFinder.divisionFilter.setFilters(divisionFilterPanel.getSelected());
+                    ItemFinder.manufacturerFilter.setFilters(manufacturerFilterPanel.getSelected());
+                    ItemFinder.locationFilter.setFilters(locationFilterPanel.getSelected());
+
+                    result.addAll(ItemFinder.searchByPcbItem((PcbItemProjectLink) dbObject, ItemFinder.divisionFilter.hasFilter()));
+                } finally {
+                    endWait();
+                }
+            }
         }
+        return result;
     }
 
     //

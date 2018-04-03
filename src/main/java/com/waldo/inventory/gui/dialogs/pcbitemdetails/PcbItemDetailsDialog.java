@@ -10,8 +10,6 @@ import com.waldo.utils.icomponents.IDialog;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialogLayout.SearchType;
-
 public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements CacheChangedListener<PcbItemItemLink> {
 
 
@@ -27,11 +25,8 @@ public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements 
 
     @Override
     void onSelectNewItem() {
-        AdvancedSearchDialog dialog = new AdvancedSearchDialog(
-                this,
-                "Search item",
-                SearchType.PcbItem,
-                pcbItemProjectLink);
+        AdvancedSearchDialog dialog = new AdvancedSearchDialog(this, false);
+        dialog.searchPcbItem(pcbItemProjectLink);
         if (dialog.showDialog() == IDialog.OK) {
             updatePcbItemLink(pcbItemProjectLink, dialog.getSelectedItem());
         }

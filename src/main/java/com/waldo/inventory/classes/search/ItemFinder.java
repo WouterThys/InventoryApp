@@ -92,39 +92,21 @@ public class ItemFinder {
             }
         }
 
-        if (objectMatches.size() > 0) {
-            if (objectMatches.size() == 1) {
-                objectMatches.sort(new ComparatorUtils.FoundMatchComparator());
-            }
+        if (objectMatches.size() > 1) {
+            objectMatches.sort(new ComparatorUtils.FoundMatchComparator());
         }
 
         return objectMatches;
     }
 
-    public static List<ObjectMatch<Item>> searchByPcbItem(PcbItemProjectLink pcbItemProjectLink) {
+    public static List<ObjectMatch<Item>> searchByPcbItem(PcbItemProjectLink pcbItemProjectLink, boolean divisionsFound) {
         List<ObjectMatch<Item>> objectMatches = new ArrayList<>();
 
         if (pcbItemProjectLink != null) {
             PcbItem pcbItem = pcbItemProjectLink.getPcbItem();
-            boolean divisionsFound = false;
 
             if (pcbItem != null) {
-                List<Item> itemsToSearch = null;
-                ParserItemLink link = SearchManager.sm().findParserItemLink(pcbItem);
-                if (link != null) {
-                    Division division = link.getDivision();
-                    if (division != null) {
-                        division.updateItemList();
-                        itemsToSearch = new ArrayList<>(division.getItemList());
-                    }
-                }
-                if (itemsToSearch == null || itemsToSearch.size() == 0) {
-                    itemsToSearch = cache().getItems();
-                } else {
-                    divisionsFound = true;
-                }
-
-                for (Item item : itemsToSearch) {
+                for (Item item : filterItems()) {
                     List<SearchMatch> searchMatches = item.searchByPcbItem(pcbItemProjectLink, divisionsFound);
                     if (searchMatches.size() > 0) {
                         objectMatches.add(new ObjectMatch<>(item, searchMatches, 128));
