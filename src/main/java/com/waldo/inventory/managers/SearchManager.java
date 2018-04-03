@@ -95,6 +95,30 @@ public class SearchManager {
         return items;
     }
 
+    public List<Item> findItemsForManufacturer(Manufacturer m) {
+        List<Item> items = new ArrayList<>();
+        if (m != null && !m.isUnknown()) {
+            for (Item item : cache().getItems()) {
+                if (item.getManufacturerId() == m.getId()) {
+                    items.add(item);
+                }
+            }
+        }
+        return items;
+    }
+
+    public List<Item> findItemsForLocation(Location l) {
+        List<Item> items = new ArrayList<>();
+        if (l != null && !l.isUnknown()) {
+            for (Item item : cache().getItems()) {
+                if (item.getLocationId() == l.getId()) {
+                    items.add(item);
+                }
+            }
+        }
+        return items;
+    }
+
     public Manufacturer findManufacturerById(long id) {
         for (Manufacturer m : cache().getManufacturers()) {
             if (m.getId() == id) {

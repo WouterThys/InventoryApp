@@ -7,8 +7,6 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
-import com.waldo.inventory.classes.search.ItemFinder;
-import com.waldo.inventory.classes.search.ObjectMatch;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
@@ -20,7 +18,6 @@ import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.OpenUtils;
 import com.waldo.utils.ResourceManager;
 import com.waldo.utils.icomponents.IDialog;
@@ -153,15 +150,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
-
-
-
-
-        // Test
-        List<ObjectMatch<Item>> list = ItemFinder.searchByPcbItem(SearchManager.sm().findPcbItemProjectLinkById(3633));
-        for(ObjectMatch<Item> objectMatch : list) {
-            System.out.println(objectMatch);
-        }
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {

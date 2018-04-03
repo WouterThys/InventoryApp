@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.advancedsearchdialog;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.tablemodels.IFoundItemsTableModel;
+import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITable;
@@ -12,10 +12,14 @@ import com.waldo.utils.icomponents.ITextField;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener {
 
@@ -29,9 +33,11 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ITextField searchTf;
-
-
     private ILabel resultLbl;
+
+    private FilterPanel<Manufacturer> manufacturerFilterPanel;
+    private FilterPanel<Division> divisionFilterPanel;
+    private FilterPanel<Location> locationFilterPanel;
 
     private IFoundItemsTableModel tableModel;
     private ITable<Item> foundItemTable;
@@ -129,6 +135,20 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         resultLbl.setText("");
     }
 
+
+    private JPanel createFilterPanel() {
+        JPanel filterPanel = new JPanel();
+
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+        filterPanel.setBorder(GuiUtils.createTitleBorder("Filters"));
+
+        filterPanel.add(divisionFilterPanel);
+        filterPanel.add(manufacturerFilterPanel);
+        filterPanel.add(locationFilterPanel);
+
+        return filterPanel;
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -181,6 +201,11 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         nextPrevTb.add(nextResultAction);
         nextPrevTb.add(prevResultAction);
 
+
+        manufacturerFilterPanel = new FilterPanel<>("Manufacturers", cache().getManufacturers());
+        divisionFilterPanel = new FilterPanel<>("Divisions", SearchManager.sm().findDivisionsWithoutParent());
+        locationFilterPanel = new FilterPanel<>("Locations", cache().getLocations().subList(0, 20));
+
         // TODO #1
 //        tableModel = new IFoundItemsTableModel(searchType, null);
 //        foundItemTable = new ITable<>(tableModel);
@@ -211,13 +236,17 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         infoPnl.add(nextPrevTb, BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(foundItemTable);
-        scrollPane.setPreferredSize(new Dimension(400, 200));
+        scrollPane.setPreferredSize(new Dimension(600, 300));
 
         JPanel resultPnl = new JPanel(new BorderLayout());
         resultPnl.add(infoPnl, BorderLayout.PAGE_START);
         resultPnl.add(scrollPane, BorderLayout.CENTER);
 
-        getContentPanel().add(searchPnl, BorderLayout.NORTH);
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.add(searchPnl, BorderLayout.NORTH);
+        northPanel.add(createFilterPanel(), BorderLayout.CENTER);
+
+        getContentPanel().add(northPanel, BorderLayout.NORTH);
         getContentPanel().add(resultPnl, BorderLayout.CENTER);
 
         pack();
