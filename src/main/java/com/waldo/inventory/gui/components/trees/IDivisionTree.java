@@ -1,6 +1,7 @@
-package com.waldo.inventory.gui.components;
+package com.waldo.inventory.gui.components.trees;
 
 import com.waldo.inventory.classes.dbclasses.Division;
+import com.waldo.inventory.gui.components.ITree;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -13,7 +14,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IDivisionTree extends ITree implements TreeModelListener {
 
-    private final ImageIcon categoryIcon =imageResource.readIcon("Items.Tree.Category");
+    private final ImageIcon categoryIcon = imageResource.readIcon("Items.Tree.Category");
     private final ImageIcon productIcon = imageResource.readIcon("Items.Tree.Product");
     private final ImageIcon typeIcon = imageResource.readIcon("Items.Tree.Type");
     private final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Item");
@@ -26,17 +27,6 @@ public class IDivisionTree extends ITree implements TreeModelListener {
 
         treeModel = createModel(rootDivision);
         setModel(treeModel);
-
-        setRenderer();
-        setRootVisible(showRoot);
-        setExpandsSelectedPaths(true);
-
-        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    }
-
-    public IDivisionTree(DefaultTreeModel treeModel, boolean showRoot) {
-        super(treeModel);
-        this.treeModel = treeModel;
 
         setRenderer();
         setRootVisible(showRoot);
@@ -63,14 +53,6 @@ public class IDivisionTree extends ITree implements TreeModelListener {
         return node;
     }
 
-    public DefaultTreeModel getTreeModel() {
-        return treeModel;
-    }
-
-    public Division getRootDivision() {
-        return (Division) rootNode.getUserObject();
-    }
-
     public Division getSelectedDivision() {
         Division selected = null;
         DefaultMutableTreeNode selectedNode = getSelectedNode();
@@ -80,7 +62,7 @@ public class IDivisionTree extends ITree implements TreeModelListener {
         return selected;
     }
 
-    public DefaultMutableTreeNode getSelectedNode() {
+    private DefaultMutableTreeNode getSelectedNode() {
         DefaultMutableTreeNode selected = null;
         TreePath path = getSelectionModel().getSelectionPath();
         if (path != null) {

@@ -85,7 +85,6 @@ public class Division extends DbObject {
         return dummy;
     }
 
-
     public double getTotalItemPrice() {
         BigDecimal bd = new BigDecimal(totalPrice);
         bd = bd.setScale(2, RoundingMode.HALF_UP);

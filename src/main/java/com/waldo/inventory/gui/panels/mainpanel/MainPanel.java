@@ -4,10 +4,7 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.popups.DivisionPopup;
-import com.waldo.inventory.gui.components.popups.ItemPopup;
-import com.waldo.inventory.gui.components.popups.LocationPopup;
-import com.waldo.inventory.gui.components.popups.MultiItemPopup;
+import com.waldo.inventory.gui.components.popups.*;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.managers.SearchManager;
@@ -325,40 +322,29 @@ public class MainPanel extends MainPanelLayout {
         } else {
             selectedSet = setTree.getSelectedSet();
             if (selectedSet != null) {
-                // Set stuff
+                JPopupMenu popupMenu = new SetPopup(selectedSet) {
+                    @Override
+                    public void onEditSet(Set set) {
+                        setPreviewPanel.editSet(set);
+                    }
+
+                    @Override
+                    public void onDeleteSet(Set set) {
+                        setPreviewPanel.deleteSet(set);
+                    }
+
+                    @Override
+                    public void onAddItemsToSet(Set set) {
+                        // todo
+                    }
+
+                    @Override
+                    public void onSetWizard(Set set) {
+                        setPreviewPanel.onSetWizard(set);
+                    }
+                };
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
-        }
-    }
-
-
-    //
-    // Sets
-    //
-    private void onAddSet() {
-        EditItemDialog dialog = new EditItemDialog<>(application, "Add item", new Set());
-        dialog.setValuesForSet(selectedSet);
-        dialog.showDialog();
-    }
-
-    private void onEditSet() {
-        if (selectedSet != null) {
-            EditItemDialog dialog = new EditItemDialog<>(application, "Edit item", selectedSet);
-            dialog.setValuesForSet(selectedSet);
-            dialog.showDialog();
-        }
-    }
-
-    private void onDeleteSet() {
-        if (selectedSet != null) {
-
-        }
-    }
-
-    private void onSetWizardAction() {
-        if (setsSelected() && selectedDivision.canBeSaved()) {
-            // Add set items wizard dialog
-            //SetItemsWizardDialog dialog = new SetItemsWizardDialog(application, "Set item magic", (Set) selectedDivision);
-            //dialog.showDialog();
         }
     }
 
@@ -502,10 +488,7 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        if (setsTb.equals(source)) {
-            cache().getSets().clear();
-            setTree.setChanged(null);
-        } else {
+
             Application.beginWait(MainPanel.this);
             try {
                 cache().getItems().clear();
@@ -529,37 +512,22 @@ public class MainPanel extends MainPanelLayout {
 
             itemDetailPanel.updateComponents(selectedItem);
             updateEnabledComponents();
-        }
+
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (setsTb.equals(source)) {
-            if (selectedSet == null) {
-                selectedSet = setTree.getRootSet();
-            }
-            onAddSet();
-        } else {
-            onAddItem();
-        }
+        onAddItem();
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (source.equals(setsTb)) {
-            onDeleteSet();
-        } else {
-            onDeleteItem();
-        }
+        onDeleteItem();
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (source.equals(setsTb)) {
-            onEditSet();
-        } else {
-            onEditItem();
-        }
+        onEditItem();
     }
 
     //

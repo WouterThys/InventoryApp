@@ -12,7 +12,6 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class Set extends Item {
     // Variables
     private List<Item> setItems;
-
     public Set() {
 
     }

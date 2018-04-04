@@ -153,7 +153,7 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
 
         centerPnl.add(divisionPanel, BorderLayout.CENTER);
         centerPnl.add(infoPnl, BorderLayout.SOUTH);
-        southPnl.add(divisionTb, BorderLayout.EAST);
+        southPnl.add(divisionTb, BorderLayout.WEST);
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);

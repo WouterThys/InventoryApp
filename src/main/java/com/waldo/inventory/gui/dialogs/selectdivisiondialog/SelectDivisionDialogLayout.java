@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.selectdivisiondialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.classes.dbclasses.Division;
-import com.waldo.inventory.gui.components.IDivisionTree;
+import com.waldo.inventory.gui.components.trees.IDivisionTree;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 

@@ -7,15 +7,16 @@ import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDivisionTree;
-import com.waldo.inventory.gui.components.ISetTree;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
+import com.waldo.inventory.gui.components.trees.IDivisionTree;
+import com.waldo.inventory.gui.components.trees.ISetTree;
 import com.waldo.inventory.gui.panels.mainpanel.preview.DivisionPreviewPanel;
-import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.preview.ItemPreviewPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.SetPreviewPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -29,7 +30,6 @@ import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class MainPanelLayout extends JPanel implements
         GuiUtils.GuiInterface,
@@ -50,10 +50,9 @@ abstract class MainPanelLayout extends JPanel implements
 
     DivisionPreviewPanel divisionPreviewPanel;
     IDivisionTree divisionTree;
-    //IdBToolBar divisionTb;
 
+    SetPreviewPanel setPreviewPanel;
     ISetTree setTree;
-    IdBToolBar setsTb;
 
     AbstractDetailPanel itemDetailPanel;
 
@@ -83,15 +82,12 @@ abstract class MainPanelLayout extends JPanel implements
     void updateEnabledComponents() {
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
-
-        // Sets
-        enabled = selectedSet != null && selectedSet.canBeSaved();
-        setsTb.setEditActionEnabled(enabled);
-        setsTb.setDeleteActionEnabled(enabled);
     }
 
     void updateDetails() {
         itemDetailPanel.updateComponents(selectedItem);
+        divisionPreviewPanel.updateComponents(selectedDivision);
+        setPreviewPanel.updateComponents(selectedSet);
     }
 
     abstract void onTreeRightClick(MouseEvent e);
@@ -210,7 +206,7 @@ abstract class MainPanelLayout extends JPanel implements
         JScrollPane scrollPane = new JScrollPane(setTree);
         pane.setPreferredSize(new Dimension(300, 400));
         setPanel.add(scrollPane, BorderLayout.CENTER);
-        setPanel.add(setsTb, BorderLayout.PAGE_END);
+        setPanel.add(setPreviewPanel, BorderLayout.SOUTH);
         setPanel.setMinimumSize(new Dimension(200, 200));
 
         tabbedPane.addTab(TREE_ITEMS, imageResource.readIcon("Items.Tree.Item"), divisionPanel);
@@ -244,12 +240,10 @@ abstract class MainPanelLayout extends JPanel implements
             }
         });
         divisionPreviewPanel = new DivisionPreviewPanel(application, rootDivision);
+        selectedDivision = rootDivision;
 
         // Sets
-        List<Set> sets = cache().getSets();
-        sets.sort(new ComparatorUtils.DbObjectNameComparator<>());
-        Set rootSet = Set.createDummySet("Dummy", sets);
-        setTree = new ISetTree(rootSet, false);
+        setTree = new ISetTree(false);
         setTree.addTreeSelectionListener(this);
         setTree.addMouseListener(new MouseAdapter() {
             @Override
@@ -261,7 +255,8 @@ abstract class MainPanelLayout extends JPanel implements
                 }
             }
         });
-        setsTb = new IdBToolBar(this);
+        selectedSet = setTree.getRootSet();
+        setPreviewPanel = new SetPreviewPanel(application, setTree.getRootSet());
 
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
@@ -341,7 +336,6 @@ abstract class MainPanelLayout extends JPanel implements
                             setItemTableList(selectedDivision.getItemList());
                         }
                     }
-                    divisionPreviewPanel.updateComponents(selectedDivision);
                 } else if (args[0] instanceof Set ) {
                     if (selectedSet == null || !selectedSet.equals(args[0])) {
                         selectedSet = (Set) args[0];
@@ -353,6 +347,8 @@ abstract class MainPanelLayout extends JPanel implements
             }
 
             // Enabled components
+            divisionPreviewPanel.updateComponents(selectedDivision);
+            setPreviewPanel.updateComponents(selectedSet);
             updateEnabledComponents();
 
             // Update detail panel
