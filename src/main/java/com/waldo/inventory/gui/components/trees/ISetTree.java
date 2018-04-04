@@ -10,29 +10,18 @@ import java.util.Enumeration;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class ISetTree extends ITree {
+public class ISetTree extends ITree<Set> {
 
-    private Set rootSet;
-    private DefaultMutableTreeNode rootNode;
-    private DefaultTreeModel treeModel;
-
-    public ISetTree(boolean showRoot) {
-        super();
-
-        treeModel = createModel();
-        setModel(treeModel);
+    public ISetTree(Set rootSet, boolean showRoot) {
+        super(rootSet, showRoot, false);
 
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         renderer.setLeafIcon(imageResource.readIcon("Items.Tree.Set"));
         setCellRenderer(renderer);
-        setRootVisible(showRoot);
-        setExpandsSelectedPaths(true);
-
-        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
-    private DefaultTreeModel createModel() {
-        rootSet = Set.createDummySet("Dummy", cache().getSets());
+    @Override
+    protected DefaultTreeModel createModel(Set set) {
         rootNode = new DefaultMutableTreeNode(rootSet);
 
         for(Item item : rootSet.getSetItems()) {

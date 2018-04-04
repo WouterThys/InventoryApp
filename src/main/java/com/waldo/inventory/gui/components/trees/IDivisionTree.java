@@ -12,30 +12,20 @@ import java.util.Enumeration;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IDivisionTree extends ITree implements TreeModelListener {
+public class IDivisionTree extends ITree<Division> implements TreeModelListener {
 
     private final ImageIcon categoryIcon = imageResource.readIcon("Items.Tree.Category");
     private final ImageIcon productIcon = imageResource.readIcon("Items.Tree.Product");
     private final ImageIcon typeIcon = imageResource.readIcon("Items.Tree.Type");
     private final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Item");
 
-    private DefaultMutableTreeNode rootNode;
-    private DefaultTreeModel treeModel;
-
     public IDivisionTree(Division rootDivision, boolean showRoot) {
-        super();
-
-        treeModel = createModel(rootDivision);
-        setModel(treeModel);
-
+        super(rootDivision, showRoot, false);
         setRenderer();
-        setRootVisible(showRoot);
-        setExpandsSelectedPaths(true);
-
-        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
-    private DefaultTreeModel createModel(Division rootDivision) {
+    @Override
+    protected DefaultTreeModel createModel(Division rootDivision) {
         rootNode = new DefaultMutableTreeNode(rootDivision);
 
         for (Division subDivision : rootDivision.getSubDivisions()) {
