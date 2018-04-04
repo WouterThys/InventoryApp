@@ -2,17 +2,18 @@ package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.DateUtils;
-import com.waldo.utils.icomponents.IImageButton;
 import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.IPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
+public abstract class IOrderFlowPanel extends IPanel {
 
     /*
      *                  COMPONENTS
@@ -25,13 +26,43 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
     private ILabel dateOrderedLbl;
     private ILabel dateReceivedLbl;
 
-    private IImageButton setOrderedBtn;
-    private IImageButton setReceivedBtn;
+    private JToolBar toOrderTb;
+    private JToolBar backPlannedTb;
+    private JToolBar toReceivedTb;
+    private JToolBar backOrderTb;
+
+    private IActions.MoveToOrderedAction moveToOrderedAction = new IActions.MoveToOrderedAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            moveToOrdered(order);
+        }
+    };
+
+    private IActions.MoveToReceivedAction moveToReceivedAction = new IActions.MoveToReceivedAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            moveToReceived(order);
+        }
+    };
+
+    private IActions.BackToOrderedAction backToOrderedAction = new IActions.BackToOrderedAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            backToOrdered(order);
+        }
+    };
+
+    private IActions.BackToPlannedAction backToPlannedAction = new IActions.BackToPlannedAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            backToPlanned(order);
+        }
+    };
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    private Order order;
 
     /*
      *                  CONSTRUCTOR
@@ -46,13 +77,10 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public void addOrderClickListener(ActionListener listener) {
-        setOrderedBtn.addActionListener(listener);
-    }
-
-    public void addReceivedClickListener(ActionListener listener) {
-        setReceivedBtn.addActionListener(listener);
-    }
+    public abstract void moveToOrdered(Order order);
+    public abstract void moveToReceived(Order order);
+    public abstract void backToOrdered(Order order);
+    public abstract void backToPlanned(Order order);
 
     /*
      *                  LISTENERS
@@ -81,25 +109,10 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
         dateOrderedLbl.setToolTipText("Order date");
         dateReceivedLbl.setToolTipText("Received date");
 
-        setOrderedBtn = new IImageButton(
-                imageResource.readIcon("Orders.Flow.ArrowBlue"),
-                imageResource.readIcon("Orders.Flow.ArrowGreen"),
-                imageResource.readIcon("Orders.Flow.ArrowGreen"),
-                imageResource.readIcon("Orders.Flow.ArrowGray"));
-        setReceivedBtn = new IImageButton(
-                imageResource.readIcon("Orders.Flow.ArrowBlue"),
-                imageResource.readIcon("Orders.Flow.ArrowGreen"),
-                imageResource.readIcon("Orders.Flow.ArrowGreen"),
-                imageResource.readIcon("Orders.Flow.ArrowGray"));
-
-        setOrderedBtn.setBorder(BorderFactory.createEmptyBorder());
-        setOrderedBtn.setContentAreaFilled(false);
-
-        setReceivedBtn.setBorder(BorderFactory.createEmptyBorder());
-        setReceivedBtn.setContentAreaFilled(false);
-
-        setOrderedBtn.setToolTipText("Set ordered");
-        setReceivedBtn.setToolTipText("Set Received");
+        backToPlannedAction.setTooltip("Back to planned");
+        moveToOrderedAction.setTooltip("Move to ordered");
+        moveToReceivedAction.setTooltip("Move to received");
+        backToOrderedAction.setTooltip("Back to ordered");
 
         setBorder(BorderFactory.createEmptyBorder(2,5,0,5));
     }
@@ -117,26 +130,39 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
         receivedPnl.add(receivedIcon, BorderLayout.CENTER);
         receivedPnl.add(dateReceivedLbl, BorderLayout.SOUTH);
 
+        toOrderTb = GuiUtils.createNewToolbar(moveToOrderedAction);
+        backPlannedTb = GuiUtils.createNewToolbar(backToPlannedAction);
+        toReceivedTb = GuiUtils.createNewToolbar(moveToReceivedAction);
+        backOrderTb = GuiUtils.createNewToolbar(backToOrderedAction);
+
         add(plannedPnl);
-        add(setOrderedBtn);
+        add(backPlannedTb);
+        add(toOrderTb);
         add(orderedPnl);
-        add(setReceivedBtn);
+        add(backOrderTb);
+        add(toReceivedTb);
         add(receivedPnl);
     }
 
     @Override
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null && object[0] instanceof Order) {
-            Order order = (Order) object[0];
+            order = (Order) object[0];
 
             switch (order.getOrderState()) {
                 case Planned:
                     dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
                     dateOrderedLbl.setText("");
-                    dateReceivedLbl.setText("");
 
-                    setOrderedBtn.setEnabled(true);
-                    setReceivedBtn.setEnabled(false);
+                    backToPlannedAction.setEnabled(false);
+                    moveToOrderedAction.setEnabled(true);
+                    moveToReceivedAction.setEnabled(false);
+                    backToOrderedAction.setEnabled(false);
+
+                    backPlannedTb.setVisible(false);
+                    toOrderTb.setVisible(true);
+                    toReceivedTb.setVisible(true);
+                    backOrderTb.setVisible(false);
 
                     plannedIcon.setEnabled(true);
                     orderedIcon.setEnabled(false);
@@ -148,8 +174,15 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
                     dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
                     dateReceivedLbl.setText("");
 
-                    setOrderedBtn.setEnabled(false);
-                    setReceivedBtn.setEnabled(true);
+                    backToPlannedAction.setEnabled(true);
+                    moveToOrderedAction.setEnabled(false);
+                    moveToReceivedAction.setEnabled(true);
+                    backToOrderedAction.setEnabled(false);
+
+                    backPlannedTb.setVisible(true);
+                    toOrderTb.setVisible(false);
+                    toReceivedTb.setVisible(true);
+                    backOrderTb.setVisible(false);
 
                     plannedIcon.setEnabled(false);
                     orderedIcon.setEnabled(true);
@@ -161,8 +194,15 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
                     dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
                     dateReceivedLbl.setText(DateUtils.formatDate(order.getDateReceived()));
 
-                    setOrderedBtn.setEnabled(false);
-                    setReceivedBtn.setEnabled(false);
+                    backToPlannedAction.setEnabled(false);
+                    moveToOrderedAction.setEnabled(false);
+                    moveToReceivedAction.setEnabled(false);
+                    backToOrderedAction.setEnabled(true);
+
+                    backPlannedTb.setVisible(true);
+                    toOrderTb.setVisible(false);
+                    toReceivedTb.setVisible(false);
+                    backOrderTb.setVisible(true);
 
                     plannedIcon.setEnabled(false);
                     orderedIcon.setEnabled(false);
@@ -177,8 +217,15 @@ public class IOrderFlowPanel extends JPanel implements GuiUtils.GuiInterface {
             dateOrderedLbl.setText("");
             dateReceivedLbl.setText("");
 
-            setOrderedBtn.setEnabled(false);
-            setReceivedBtn.setEnabled(false);
+            backToPlannedAction.setEnabled(false);
+            moveToOrderedAction.setEnabled(false);
+            moveToReceivedAction.setEnabled(false);
+            backToOrderedAction.setEnabled(false);
+
+            backPlannedTb.setVisible(false);
+            toOrderTb.setVisible(true);
+            toReceivedTb.setVisible(true);
+            backOrderTb.setVisible(false);
 
             plannedIcon.setEnabled(false);
             orderedIcon.setEnabled(false);

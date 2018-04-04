@@ -6,7 +6,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectCodePanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectOtherPanel;

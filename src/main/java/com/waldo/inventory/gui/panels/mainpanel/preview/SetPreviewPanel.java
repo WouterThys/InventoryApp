@@ -126,8 +126,8 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     @Override
     public void initializeComponents() {
         divisionPanel = new IDivisionPanel(false);
-        totalItemsTf = new ITextField(false);
-        setNameTf = new ITextField(false);
+        totalItemsTf = new ITextField(false, 4);
+        setNameTf = new ITextField(false, 12);
         setTb = new IdBToolBar(this);
     }
 
@@ -135,10 +135,18 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     public void initializeLayouts() {
         GuiUtils.GridBagHelper gbc;
 
-        JPanel infoPnl = new JPanel();
-        gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("Name", imageResource.readIcon("Items.Tree.Set"), setNameTf);
+        JPanel totalItemsPnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(totalItemsPnl);
         gbc.addLine("Total items", imageResource.readIcon("Preview.Amount"), totalItemsTf);
+
+        JPanel setNamePnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(setNamePnl);
+        gbc.addLine("Set name", imageResource.readIcon("Items.Tree.Set"), setNameTf);
+
+        JPanel infoPnl = new JPanel();
+        infoPnl.setLayout(new BoxLayout(infoPnl, BoxLayout.X_AXIS));
+        infoPnl.add(setNamePnl);
+        infoPnl.add(totalItemsPnl);
 
         JPanel centerPnl = new JPanel(new BorderLayout());
         JPanel southPnl = new JPanel(new BorderLayout());
@@ -149,7 +157,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);
-        add(southPnl, BorderLayout.SOUTH);
+        add(southPnl, BorderLayout.NORTH);
     }
 
     @Override

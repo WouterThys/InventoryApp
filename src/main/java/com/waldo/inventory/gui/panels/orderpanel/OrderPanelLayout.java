@@ -12,14 +12,14 @@ import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
-import com.waldo.inventory.gui.components.treemodels.IDbObjectTreeModel;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
-import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.preview.ItemPreviewPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITableEditors;
 
 import javax.swing.*;
@@ -39,8 +39,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public abstract class OrderPanelLayout extends JPanel implements
-        GuiUtils.GuiInterface,
+public abstract class OrderPanelLayout extends IPanel implements
         TreeSelectionListener,
         ListSelectionListener,
         IdBToolBar.IdbToolBarListener,
@@ -56,15 +55,13 @@ public abstract class OrderPanelLayout extends JPanel implements
     ITree ordersTree;
     private IDbObjectTreeModel<Order> treeModel;
     AbstractDetailPanel detailPanel;
-    //OrderItemDetailPanel orderItemDetailPanel;
 
     IdBToolBar treeToolBar;
     private JPanel orderTbPanel;
-    IOrderFlowPanel tbOrderFlowPanel;
+    private IOrderFlowPanel tbOrderFlowPanel;
     private ILabel tbOrderNameLbl;
     private IComboBox<Distributor> tbDistributorCb;
     private AbstractAction orderDetailsAa;
-    private AbstractAction pendingOrderAa;
     private JPanel tbOrderFilePanel;
 
     /*
@@ -452,7 +449,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         };
         orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
 
-        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
+        AbstractAction pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onViewPendingOrders();
@@ -460,7 +457,27 @@ public abstract class OrderPanelLayout extends JPanel implements
         };
         pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
 
-        tbOrderFlowPanel = new IOrderFlowPanel();
+        tbOrderFlowPanel = new IOrderFlowPanel() {
+            @Override
+            public void moveToOrdered(Order order) {
+                onMoveToOrdered(order);
+            }
+
+            @Override
+            public void moveToReceived(Order order) {
+                onMoveToReceived(order);
+            }
+
+            @Override
+            public void backToOrdered(Order order) {
+                onBackToOrdered(order);
+            }
+
+            @Override
+            public void backToPlanned(Order order) {
+                onBackToPlanned(order);
+            }
+        };
 
         // Tool bars
         treeToolBar = new IdBToolBar(this);

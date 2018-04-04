@@ -49,6 +49,11 @@ public abstract class SetPopup extends JPopupMenu {
             }
         };
 
+        addItemsToSetAction.setName("Add items to " + set);
+        editSetAction.setName("Edit " + set);
+        deleteSetAction.setName("Delete " + set);
+        wizardAction.setName("Set item wizard");
+
         add(editSetAction);
         add(deleteSetAction);
         addSeparator();

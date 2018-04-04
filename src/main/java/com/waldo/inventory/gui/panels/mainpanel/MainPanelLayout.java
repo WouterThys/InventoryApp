@@ -190,8 +190,13 @@ abstract class MainPanelLayout extends JPanel implements
         tabbedPane.addChangeListener(e -> {
             if (!Application.isUpdating(application)) {
                 int ndx = tabbedPane.getSelectedIndex();
-                if (ndx == 1) selectedTreeTab = TREE_SETS;
-                else selectedTreeTab = TREE_ITEMS;
+                if (ndx == 1){
+                    selectedTreeTab = TREE_SETS;
+                    updateComponents(selectedSet);
+                } else {
+                    selectedTreeTab = TREE_ITEMS;
+                    updateComponents(selectedDivision);
+                }
             }
         });
 
@@ -332,16 +337,16 @@ abstract class MainPanelLayout extends JPanel implements
                 if (args[0] instanceof Division) {
                     if (selectedDivision == null || !selectedDivision.equals(args[0])) {
                         selectedDivision = (Division) args[0];
-                        if (selectedDivision != null) {
-                            setItemTableList(selectedDivision.getItemList());
-                        }
+                    }
+                    if (selectedDivision != null) {
+                        setItemTableList(selectedDivision.getItemList());
                     }
                 } else if (args[0] instanceof Set ) {
                     if (selectedSet == null || !selectedSet.equals(args[0])) {
                         selectedSet = (Set) args[0];
-                        if (selectedSet != null) {
-                            setItemTableList(selectedSet.getSetItems(), false, true);
-                        }
+                    }
+                    if (selectedSet != null) {
+                        setItemTableList(selectedSet.getSetItems(), false, true);
                     }
                 }
             }

@@ -41,7 +41,6 @@ public class OrderPanel extends OrderPanelLayout {
 
         initializeComponents();
         initializeLayouts();
-        initActions();
         initializeListeners();
 
         cache().addListener(Item.class, itemsChanged);
@@ -125,17 +124,6 @@ public class OrderPanel extends OrderPanelLayout {
                 }
             }
         }
-    }
-
-    private void initActions() {
-        tbOrderFlowPanel.addOrderClickListener(e -> {
-            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm order", selectedOrder);
-            dialog.showDialog();
-        });
-        tbOrderFlowPanel.addReceivedClickListener(e -> {
-            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", selectedOrder);
-            dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
-        });
     }
 
     private void deleteSelectedOrderItems(final List<OrderItem> itemsToDelete) {
