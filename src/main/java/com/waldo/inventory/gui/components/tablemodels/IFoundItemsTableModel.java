@@ -83,7 +83,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
+        private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
 
         @Override

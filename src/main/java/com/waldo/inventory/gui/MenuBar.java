@@ -31,13 +31,13 @@ public class MenuBar extends JMenuBar {
         // File menu
         JMenu fileMenu = new JMenu("Inventory");
 
-        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readImage("Settings.Menu"));
+        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readIcon("Settings.Menu"));
         settingsItem.addActionListener(settingsSelected());
-        JMenuItem logItem = new JMenuItem("Logs", imageResource.readImage("Log.Menu"));
+        JMenuItem logItem = new JMenuItem("Logs", imageResource.readIcon("Log.Menu"));
         logItem.addActionListener(logSelected());
-        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readImage("Statistics.Menu"));
+        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readIcon("Statistics.Menu"));
         dbHistoryItem.addActionListener(dbHistorySelected());
-        JMenuItem closeItem = new JMenuItem("Exit", imageResource.readImage("MainMenu.Quit"));
+        JMenuItem closeItem = new JMenuItem("Exit", imageResource.readIcon("MainMenu.Quit"));
         closeItem.addActionListener(e -> Main.closeApplication(1));
 
         fileMenu.add(settingsItem);
@@ -50,19 +50,19 @@ public class MenuBar extends JMenuBar {
         // Database menu
         JMenu dbMenu = new JMenu("Resources");
 
-        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readImage("Manufacturers.Menu"));
+        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readIcon("Manufacturers.Menu"));
         manufacturers.addActionListener(manufacturersSelected());
 
-        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readImage("Distributors.Menu"));
+        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readIcon("Distributors.Menu"));
         distributors.addActionListener(distributorsSelected());
 
-        JMenuItem packages = new JMenuItem("Packages", imageResource.readImage("Packages.Menu"));
+        JMenuItem packages = new JMenuItem("Packages", imageResource.readIcon("Packages.Menu"));
         packages.addActionListener(packagesSelected());
 
-        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readImage("Ides.Menu"));
+        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readIcon("Ides.Menu"));
         projectTypes.addActionListener(projectTypesSelected());
 
-        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readImage("Locations.Menu"));
+        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readIcon("Locations.Menu"));
         locationTypes.addActionListener(locationTypesSelected());
 
         dbMenu.add(locationTypes);
@@ -75,10 +75,10 @@ public class MenuBar extends JMenuBar {
         // Tools menu
         JMenu toolsMenu = new JMenu("Tools");
 
-        JMenuItem queries = new JMenuItem("Query panel", imageResource.readImage("QueryDialog.TitleIcon", 16));
+        JMenuItem queries = new JMenuItem("Query panel", imageResource.readIcon("QueryDialog.TitleIcon"));
         queries.addActionListener(showQuerySelected());
 
-        JMenuItem kicadParser = new JMenuItem("KiCad parser", imageResource.readImage("Parser.KiCad", 16));
+        JMenuItem kicadParser = new JMenuItem("KiCad parser", imageResource.readIcon("Parser.KiCad"));
         kicadParser.addActionListener(kicadParserSelected());
 
         toolsMenu.add(queries);

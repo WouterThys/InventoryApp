@@ -81,7 +81,7 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout implements Cach
         if (errorList.size() == 0) {
             fillTableData();
 
-            fileOkLbl.setIcon(imageResource.readImage("OrderConfirm.Check", 16));
+            fileOkLbl.setIcon(imageResource.readIcon("OrderConfirm.Check"));
             parseSuccess = true;
         } else {
             showErrors(errorList);

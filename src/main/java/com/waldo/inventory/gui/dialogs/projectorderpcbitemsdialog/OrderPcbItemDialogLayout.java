@@ -89,7 +89,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Dialog
         setResizable(true);
-        setTitleIcon(imageResource.readImage("Projects.Order.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Order.Title"));
         setTitleName(getTitle());
 
         // Order

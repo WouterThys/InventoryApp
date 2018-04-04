@@ -66,7 +66,7 @@ public class IHistoryTableModel extends IAbstractTableModel {
                     Order order = (Order) dbObject;
                     switch (columnIndex) {
                         case 0: // Icon
-                            return Application.imageResource.readImage("HistoryDialog.OrderIcon");
+                            return Application.imageResource.readIcon("HistoryDialog.OrderIcon");
                         case 1: // Name
                             return "Ordered in " + order.getName();
                         case 2: // Date
@@ -76,7 +76,7 @@ public class IHistoryTableModel extends IAbstractTableModel {
                                 return DateUtils.formatDateTime(order.getDateModified());
                             }
                         case 3: // Go to
-                            return "Go";//imageResource.readImage("Common.ArrowRight");
+                            return "Go";//imageResource.readIcon("Common.ArrowRight");
                     }
 
 

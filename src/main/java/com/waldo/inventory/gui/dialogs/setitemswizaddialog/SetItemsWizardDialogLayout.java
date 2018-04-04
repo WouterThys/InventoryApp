@@ -106,7 +106,7 @@ abstract class SetItemsWizardDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("SetItem.Series.Title"));
+        setTitleIcon(imageResource.readIcon("SetItem.Series.Title"));
         getButtonOK().setText("Next");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);

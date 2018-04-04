@@ -54,7 +54,7 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("Settings.Title"));
+        setTitleIcon(imageResource.readIcon("Settings.Title"));
         setTitleName("Settings");
 
         // Panels
@@ -78,13 +78,13 @@ abstract class SettingsDialogLayout extends IDialog implements ChangeListener {
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
         // Add tabs
         if (!onError) {
-            tabbedPane.addTab("General ", imageResource.readImage("Settings.Tab.General"), generalPanel, "General settings");
+            tabbedPane.addTab("General ", imageResource.readIcon("Settings.Tab.General"), generalPanel, "General settings");
         }
-        tabbedPane.addTab("Database ", imageResource.readImage("Settings.Tab.Db"), dbPanel, "Database settings");
+        tabbedPane.addTab("Database ", imageResource.readIcon("Settings.Tab.Db"), dbPanel, "Database settings");
         if (!onError) {
-            tabbedPane.addTab("Files ", imageResource.readImage("Settings.Tab.File"), filesPanel, "File settings");
-            tabbedPane.addTab("Logs ", imageResource.readImage("Settings.Tab.Log"), logsPanel, "Log settings");
-            tabbedPane.addTab("Events ", imageResource.readImage("Settings.Tab.Events"), eventsPanel, "Events settings");
+            tabbedPane.addTab("Files ", imageResource.readIcon("Settings.Tab.File"), filesPanel, "File settings");
+            tabbedPane.addTab("Logs ", imageResource.readIcon("Settings.Tab.Log"), logsPanel, "Log settings");
+            tabbedPane.addTab("Events ", imageResource.readIcon("Settings.Tab.Events"), eventsPanel, "Events settings");
         }
         tabbedPane.addChangeListener(this);
 

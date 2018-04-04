@@ -103,9 +103,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     private JPanel createItemDetailPanel() {
         JPanel divisionPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-        gbc.addLine("Category", imageResource.readImage("Items.Tree.Category"), categoryTf);
-        gbc.addLine("Product", imageResource.readImage("Items.Tree.Product"), productTf);
-        gbc.addLine("Type", imageResource.readImage("Items.Tree.Type"), typeTf);
+        gbc.addLine("Category", imageResource.readIcon("Items.Tree.Category"), categoryTf);
+        gbc.addLine("Product", imageResource.readIcon("Items.Tree.Product"), productTf);
+        gbc.addLine("Type", imageResource.readIcon("Items.Tree.Type"), typeTf);
 
         return divisionPanel;
     }
@@ -118,9 +118,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
-        gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
-        gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+        gbc.addLine("Amount", imageResource.readIcon("Preview.Amount"), amountPnl);
+        gbc.addLine("Price", imageResource.readIcon("Preview.Price"), pricePnl);
+        gbc.addLine("Reference", imageResource.readIcon("Actions.OrderReference"), refPnl);
 
         return infoPnl;
     }
@@ -132,9 +132,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         GuiUtils.GridBagHelper gbc;
         JPanel sharePnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(sharePnl);
-        gbc.addLine("Manufacturers", imageResource.readImage("Manufacturers.Menu"), manufacturerTf);
-        gbc.addLine("Footprint", imageResource.readImage("Packages.Menu"), footprintTf);
-        gbc.addLine("Location", imageResource.readImage("Locations.Menu"), locationTf);
+        gbc.addLine("Manufacturers", imageResource.readIcon("Manufacturers.Menu"), manufacturerTf);
+        gbc.addLine("Footprint", imageResource.readIcon("Packages.Menu"), footprintTf);
+        gbc.addLine("Location", imageResource.readIcon("Locations.Menu"), locationTf);
 
         JPanel infoPnl;
         if (isOrderType) {
@@ -266,9 +266,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
             }
         };
 
-        dataSheetBtn = new JButton(imageResource.readImage("Items.Buttons.Datasheet"));
-        orderBtn = new JButton(imageResource.readImage("Items.Buttons.Order"));
-        historyBtn = new JButton(imageResource.readImage("Items.Buttons.History"));
+        dataSheetBtn = new JButton(imageResource.readIcon("Items.Buttons.Datasheet"));
+        orderBtn = new JButton(imageResource.readIcon("Items.Buttons.Order"));
+        historyBtn = new JButton(imageResource.readIcon("Items.Buttons.History"));
 
         dataSheetBtn.addActionListener(e -> itemDetailListener.onShowDataSheet(selectedItem));
         orderBtn.addActionListener(e -> itemDetailListener.onOrderItem(selectedItem));

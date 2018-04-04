@@ -17,11 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
@@ -132,13 +128,12 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             pcbNameTf.setText(createdPcb.toString());
             pcbDateTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
             if (!createdPcb.getIconPath().isEmpty()) {
-                Path path = Paths.get(createdPcb.getIconPath());
-                try {
-                    URL url = path.toUri().toURL();
-                    pcbImageLbl.setIcon(imageResource.readImage(url));
-                } catch (Exception e) {
-                    //
-                }
+//                Path path = Paths.get(createdPcb.getIconPath());
+//                try {
+//                    pcbImageLbl.setIcon(imageResource.readImage(path));
+//                } catch (Exception e) {
+//                    //
+//                }
             } else {
                 pcbImageLbl.setIcon(null);
             }
@@ -225,9 +220,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel infoPnl = new JPanel(new BorderLayout());
-        ILabel pcbItemLbl = new ILabel("Pcb item: ", imageResource.readImage("Projects.Details.Pcb"), SwingConstants.CENTER);
-        ILabel linkedItemLbl = new ILabel("Linked item: ", imageResource.readImage("Projects.Pcb.Linked"), SwingConstants.CENTER);
-        ILabel usedItemLbl = new ILabel("Used item: ", imageResource.readImage("Projects.Pcb.Used"), SwingConstants.CENTER);
+        ILabel pcbItemLbl = new ILabel("Pcb item: ", imageResource.readIcon("Projects.Details.Pcb"), SwingConstants.CENTER);
+        ILabel linkedItemLbl = new ILabel("Linked item: ", imageResource.readIcon("Projects.Pcb.Linked"), SwingConstants.CENTER);
+        ILabel usedItemLbl = new ILabel("Used item: ", imageResource.readIcon("Projects.Pcb.Used"), SwingConstants.CENTER);
 
         JPanel pnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(pnl);
@@ -271,12 +266,12 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         setModal(false);
         setTitleName(getTitle());
         if (projectPcb != null && projectPcb.getProject() != null && !projectPcb.getProject().getIconPath().isEmpty()) {
-            Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), projectPcb.getProject().getIconPath());
-            try {
-                setTitleIcon(imageResource.readImage(path, 48,48));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), projectPcb.getProject().getIconPath());
+//            try {
+//                setTitleIcon(imageResource.readImage(path, 48,48));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
 
         projectPcbTf = new ITextField(false);
@@ -349,16 +344,16 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 onSaveAll(createdPcb);
             }
         };
-        saveAllAction.setIcon(imageResource.readImage("Actions.M.Save"));
+        saveAllAction.setIcon(imageResource.readIcon("Actions.M.Save"));
         createPcbAction = new IActions.UseAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCreatePcb(createdPcb);
             }
         };
-        createPcbAction.setIcon(imageResource.readImage("Actions.M.Use"));
+        createPcbAction.setIcon(imageResource.readIcon("Actions.M.Use"));
         createPcbAction.setName("Create");
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onEditRemark(selectedLink);
@@ -372,7 +367,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 onMagicWizard(createdPcb);
             }
         };
-        wizardAction.setIcon(imageResource.readImage("Actions.M.Wizard"));
+        wizardAction.setIcon(imageResource.readIcon("Actions.M.Wizard"));
         removeAllAction = new IActions.RemoveAllAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -49,7 +49,7 @@ abstract class EditProjectOtherDialogLayout extends IDialog implements IEditedLi
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Projects.Other.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Other.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -58,7 +58,7 @@ abstract class EditProjectOtherDialogLayout extends IDialog implements IEditedLi
         // Directory
         directoryTf = new ITextField();
         directoryTf.addEditedListener(this, "directory");
-        directoryBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
+        directoryBtn = new JButton(imageResource.readIcon("Common.BrowseIcon"));
         directoryBtn.addActionListener(this);
 
         // IDE

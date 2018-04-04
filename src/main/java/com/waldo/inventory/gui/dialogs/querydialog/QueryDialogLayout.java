@@ -19,7 +19,7 @@ abstract class QueryDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Title
-        getTitleIconLabel().setIcon(imageResource.readImage("QueryDialog.TitleIcon", 48));
+        getTitleIconLabel().setIcon(imageResource.readIcon("QueryDialog.TitleIcon"));
         getTitleNameLabel().setText("Query");
 
         // Panel

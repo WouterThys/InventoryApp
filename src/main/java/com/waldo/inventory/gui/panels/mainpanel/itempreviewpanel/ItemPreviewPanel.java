@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
@@ -33,9 +34,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private ITextField locationTf;
     private IStarRater starRater;
     private ITextPane remarksTp;
-//    private ITextField categoryTf;
-//    private ITextField productTf;
-//    private ITextField typeTf;
     private IDivisionPanel divisionPnl;
 
     private AbstractAction dataSheetAa;
@@ -90,7 +88,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     }
 
     private void updateHeader(Item item) {
-        iconLbl.setIcon(item.getItemIcon());
+        iconLbl.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
         nameTf.setText(item.toString());
         descriptionTa.setText(item.getDescription());
         starRater.setRating(item.getRating());
@@ -100,16 +98,18 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (!isOrderType) {
             divisionPnl.updateComponents(item.getDivision());
         } else {
-            amountTf.setText(String.valueOf(orderItem.getAmount()));
-            if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                priceTf.setText(orderItem.getPrice().toString());
-                referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+            if (orderItem != null) {
+                amountTf.setText(String.valueOf(orderItem.getAmount()));
+                if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                    priceTf.setText(orderItem.getPrice().toString());
+                    referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+                }
+                boolean locked = orderItem.isLocked();
+                editPriceAction.setEnabled(!locked);
+                editReferenceAction.setEnabled(!locked);
+                plusOneAction.setEnabled(!locked);
+                minOneAction.setEnabled(!locked);
             }
-            boolean locked = orderItem.isLocked();
-            editPriceAction.setEnabled(!locked);
-            editReferenceAction.setEnabled(!locked);
-            plusOneAction.setEnabled(!locked);
-            minOneAction.setEnabled(!locked);
         }
 
         if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
@@ -206,9 +206,9 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
             JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
             JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
-            gbc.addLine("Amount", imageResource.readImage("Preview.Amount"), amountPnl);
-            gbc.addLine("Price", imageResource.readImage("Preview.Price"), pricePnl);
-            gbc.addLine("Reference", imageResource.readImage("Actions.OrderReference"), refPnl);
+            gbc.addLine("Amount", imageResource.readIcon("Preview.Amount"), amountPnl);
+            gbc.addLine("Price", imageResource.readIcon("Preview.Price"), pricePnl);
+            gbc.addLine("Reference", imageResource.readIcon("Actions.OrderReference"), refPnl);
         } else {
             divisionPanel.setLayout(new BorderLayout());
             divisionPanel.add(divisionPnl, BorderLayout.CENTER);
@@ -218,9 +218,9 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         JPanel infoPnl = new JPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
         gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("Manufacturers", imageResource.readImage("Manufacturers.Menu"), manufacturerTf);
-        gbc.addLine("Footprint", imageResource.readImage("Packages.Menu"), footprintTf);
-        gbc.addLine("Location", imageResource.readImage("Locations.Menu"), locationTf);
+        gbc.addLine("Manufacturers", imageResource.readIcon("Manufacturers.Menu"), manufacturerTf);
+        gbc.addLine("Footprint", imageResource.readIcon("Packages.Menu"), footprintTf);
+        gbc.addLine("Location", imageResource.readIcon("Locations.Menu"), locationTf);
 
         //dataPnl.add(createDivisionPanel());
         dataPnl.add(divisionPanel);
@@ -284,7 +284,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         dbToolbar = new IdBToolBar(this, false, false, true, true);
 
         // Actions
-        dataSheetAa = new AbstractAction("Datasheet", imageResource.readImage("Items.Buttons.Datasheet")) {
+        dataSheetAa = new AbstractAction("Datasheet", imageResource.readIcon("Items.Buttons.Datasheet")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItem != null && itemDetailListener != null) {
@@ -293,7 +293,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         };
         dataSheetAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Data sheet");
-        orderAa = new AbstractAction("Order", imageResource.readImage("Items.Buttons.Order")) {
+        orderAa = new AbstractAction("Order", imageResource.readIcon("Items.Buttons.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItem != null && itemDetailListener != null) {
@@ -302,7 +302,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         };
         orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order");
-        historyAa = new AbstractAction("History", imageResource.readImage("Items.Buttons.History")) {
+        historyAa = new AbstractAction("History", imageResource.readIcon("Items.Buttons.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItem != null && itemDetailListener != null) {

@@ -210,7 +210,7 @@ abstract class PackageTypeDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title and neutral button
-        setTitleIcon(imageResource.readImage("Packages.Title"));
+        setTitleIcon(imageResource.readIcon("Packages.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

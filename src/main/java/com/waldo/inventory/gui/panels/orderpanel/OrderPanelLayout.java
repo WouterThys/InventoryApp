@@ -444,7 +444,7 @@ public abstract class OrderPanelLayout extends JPanel implements
             }
         });
 
-        orderDetailsAa = new AbstractAction("Details", imageResource.readImage("Orders.Flow.Details")) {
+        orderDetailsAa = new AbstractAction("Details", imageResource.readIcon("Orders.Flow.Details")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onOrderDetails(selectedOrder);
@@ -452,7 +452,7 @@ public abstract class OrderPanelLayout extends JPanel implements
         };
         orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
 
-        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readImage("Actions.M.Pending")) {
+        pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onViewPendingOrders();

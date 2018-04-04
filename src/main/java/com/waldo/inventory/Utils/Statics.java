@@ -663,10 +663,10 @@ public class Statics {
 
     public enum CreatedPcbLinkState {
 
-        Ok (imageResource.readImage("Actions.SaveOk"), "Ok", Color.BLACK),
-        Warning(imageResource.readImage("Actions.SaveWarn"), "", Color.ORANGE),
-        Error(imageResource.readImage("Actions.SaveError"), "", Color.RED),
-        NotSaved(imageResource.readImage("Actions.SaveRed"), "Not saved..", Color.GRAY)
+        Ok (imageResource.readIcon("Actions.SaveOk"), "Ok", Color.BLACK),
+        Warning(imageResource.readIcon("Actions.SaveWarn"), "", Color.ORANGE),
+        Error(imageResource.readIcon("Actions.SaveError"), "", Color.RED),
+        NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY)
         ;
 
         private final ImageIcon imageIcon;

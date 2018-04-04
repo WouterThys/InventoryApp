@@ -13,14 +13,9 @@ import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink> {
 
@@ -332,13 +327,11 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
             if (!iconPath.isEmpty()) {
                 createdPcb.setIconPath(iconPath);
                 createdPcb.save();
-                try {
-                    Path path = Paths.get(createdPcb.getIconPath());
-                    URL url = path.toUri().toURL();
-                    pcbImageLbl.setIcon(imageResource.readImage(url));
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
+//                try {
+//                    pcbImageLbl.setIcon(imageResource.readImage(new File(iconPath).toPath()));
+//                } catch (Exception e2) {
+//                    e2.printStackTrace();
+//                }
             }
         }
     }

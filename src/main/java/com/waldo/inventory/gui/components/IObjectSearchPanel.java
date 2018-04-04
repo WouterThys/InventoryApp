@@ -21,8 +21,8 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface {
 
-    private static final ImageIcon removeSearchIcon = imageResource.readImage("Search.RemoveSearch");
-    private static final ImageIcon searchIcon = imageResource.readImage("Search.Search");
+    private static final ImageIcon removeSearchIcon = imageResource.readIcon("Search.RemoveSearch");
+    private static final ImageIcon searchIcon = imageResource.readIcon("Search.Search");
 
     public interface SearchListener<T extends DbObject> {
         void onObjectsFound(List<T> foundObjects);
@@ -295,17 +295,17 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
         btnPanel = new JPanel();
         btnPanel.setVisible(false);
         nextBtn = new IImageButton(
-                imageResource.readImage("Search.ArrowRightBlue"),
-                imageResource.readImage("Search.ArrowRightGreen"),
-                imageResource.readImage("Search.ArrowRightGreen"),
-                imageResource.readImage("Search.ArrowRightGray"));
+                imageResource.readIcon("Search.ArrowRightBlue"),
+                imageResource.readIcon("Search.ArrowRightGreen"),
+                imageResource.readIcon("Search.ArrowRightGreen"),
+                imageResource.readIcon("Search.ArrowRightGray"));
         nextBtn.setBorder(BorderFactory.createEmptyBorder());
         nextBtn.setContentAreaFilled(false);
         previousBtn = new IImageButton(
-                imageResource.readImage("Search.ArrowLeftBlue"),
-                imageResource.readImage("Search.ArrowLeftGreen"),
-                imageResource.readImage("Search.ArrowLeftGreen"),
-                imageResource.readImage("Search.ArrowLeftGray"));
+                imageResource.readIcon("Search.ArrowLeftBlue"),
+                imageResource.readIcon("Search.ArrowLeftGreen"),
+                imageResource.readIcon("Search.ArrowLeftGreen"),
+                imageResource.readIcon("Search.ArrowLeftGray"));
         previousBtn.setBorder(BorderFactory.createEmptyBorder());
         previousBtn.setContentAreaFilled(false);
 

@@ -55,7 +55,7 @@ public class IdBToolBar extends JToolBar {
 
         // Actions
         if (hasRefresh) {
-            refreshAction = new AbstractAction("Refresh", imageResource.readImage("Toolbar.Db.RefreshIcon")) {
+            refreshAction = new AbstractAction("Refresh", imageResource.readIcon("Toolbar.Db.RefreshIcon")) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     toolBarListener.onToolBarRefresh(IdBToolBar.this);
@@ -66,7 +66,7 @@ public class IdBToolBar extends JToolBar {
         }
 
         if (hasAdd) {
-            addAction = new AbstractAction("Add", imageResource.readImage("Toolbar.Db.AddIcon")) {
+            addAction = new AbstractAction("Add", imageResource.readIcon("Toolbar.Db.AddIcon")) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     toolBarListener.onToolBarAdd(IdBToolBar.this);
@@ -80,7 +80,7 @@ public class IdBToolBar extends JToolBar {
         }
 
         if (hasDelete) {
-            deleteAction = new AbstractAction("Delete", imageResource.readImage("Toolbar.Db.DeleteIcon")) {
+            deleteAction = new AbstractAction("Delete", imageResource.readIcon("Toolbar.Db.DeleteIcon")) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     toolBarListener.onToolBarDelete(IdBToolBar.this);
@@ -91,7 +91,7 @@ public class IdBToolBar extends JToolBar {
         }
 
         if (hasEdit) {
-            editAction = new AbstractAction("Update", imageResource.readImage("Toolbar.Db.EditIcon")) {
+            editAction = new AbstractAction("Update", imageResource.readIcon("Toolbar.Db.EditIcon")) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     toolBarListener.onToolBarEdit(IdBToolBar.this);

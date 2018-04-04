@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
@@ -13,9 +13,6 @@ import com.waldo.utils.icomponents.ITabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -111,9 +108,9 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
         editItemOrderPanel.initializeLayouts();
 
         // Add tabs
-        tabbedPane.addTab("Component  ", imageResource.readImage("EditItem.Tab.Component"), componentPanel, "Component info");
-        tabbedPane.addTab("Stock  ", imageResource.readImage("EditItem.Tab.Stock"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("Order  ", imageResource.readImage("EditItem.Tab.Order"), editItemOrderPanel, "Order info");
+        tabbedPane.addTab("Component  ", imageResource.readIcon("EditItem.Tab.Component"), componentPanel, "Component info");
+        tabbedPane.addTab("Stock  ", imageResource.readIcon("EditItem.Tab.Stock"), editItemStockPanel, "Stock info");
+        tabbedPane.addTab("Order  ", imageResource.readIcon("EditItem.Tab.Order"), editItemOrderPanel, "Order info");
 
         // Add
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
@@ -134,19 +131,9 @@ public abstract class EditItemDialogLayout<T extends Item> extends IDialog imple
     public void updateComponents(Object... object) {
         beginWait();
         try {
-            if (!selectedItem.getIconPath().isEmpty()) {
-                try {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), selectedItem.getIconPath());
-                    URL url = path.toUri().toURL();
-                    setTitleIcon(imageResource.readImage(url, 64, 64));
-                } catch (Exception e) {
-                    //Status().setError("Error updating components", e);
-                }
-            } else {
-                setTitleIcon(imageResource.readImage("Items.Edit.Title"));
-            }
+            setTitleIcon(ImageResource.scaleImage(selectedItem.getItemIcon(), new Dimension(64, 64)));
             if (selectedItem.isSet()) {
-                setInfoIcon(imageResource.readImage("Sets.Edit.Title"));
+                setInfoIcon(imageResource.readIcon("Sets.Edit.Title"));
             }
             setTitleName(selectedItem.getName().trim());
 

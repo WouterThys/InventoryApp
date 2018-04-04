@@ -134,7 +134,7 @@ abstract class EditProjectDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Dialog
         setTitleName(getTitle());
-        setTitleIcon(imageResource.readImage("Projects.Edit.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Edit.Title"));
         setResizable(true);
 
         // This

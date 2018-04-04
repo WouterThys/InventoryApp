@@ -18,13 +18,13 @@ public class ProgressPanel extends JPanel implements GuiUtils.GuiInterface {
         ParseDone
     }
 
-    private final ImageIcon itemsMIcon = imageResource.readImage("Items.M.Title");
-    private final ImageIcon locationsMIcon = imageResource.readImage("Locations.M.Title");
-    private final ImageIcon parseMIcon = imageResource.readImage("Parse.M.Title");
+    private final ImageIcon itemsMIcon = imageResource.readIcon("Items.M.Title");
+    private final ImageIcon locationsMIcon = imageResource.readIcon("Locations.M.Title");
+    private final ImageIcon parseMIcon = imageResource.readIcon("Parse.M.Title");
 
-    private final ImageIcon itemsSIcon = imageResource.readImage("Items.S.Title");
-    private final ImageIcon locationsSIcon = imageResource.readImage("Locations.S.Title");
-    private final ImageIcon parseSIcon = imageResource.readImage("Parse.S.Title");
+    private final ImageIcon itemsSIcon = imageResource.readIcon("Items.S.Title");
+    private final ImageIcon locationsSIcon = imageResource.readIcon("Locations.S.Title");
+    private final ImageIcon parseSIcon = imageResource.readIcon("Parse.S.Title");
 
     /*
      *                  COMPONENTS

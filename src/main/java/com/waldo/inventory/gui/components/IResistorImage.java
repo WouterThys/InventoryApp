@@ -24,7 +24,7 @@ public class IResistorImage extends IPanel {
     private final static double YT_SCALE = 0.134;
     private final static double HT_SCALE = 0.730;
 
-    private final BufferedImage resistorTemplate = (BufferedImage) imageResource.readImage("Template.Resistor").getImage();
+    private final BufferedImage resistorTemplate = (BufferedImage) imageResource.readIcon("Template.Resistor").getImage();
 
     private final ResistorBand band1 = new ResistorBand();
     private final ResistorBand band2 = new ResistorBand();

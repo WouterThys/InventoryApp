@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.DbObjectDialog;
@@ -18,8 +18,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -82,22 +80,15 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
         if (selectedProjectIDE != null) {
             detailName.setText(selectedProjectIDE.getName());
             projectTypeCb.setSelectedItem(selectedProjectIDE.getProjectType());
-
-            if (!selectedProjectIDE.getIconPath().isEmpty()) {
-                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgIdesPath(), selectedProjectIDE.getIconPath());
-                try {
-                    detailLogo.setIcon(imageResource.readImage(path, 48, 48));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                detailLogo.setIcon(imageResource.readImage("Common.UnknownIcon48"));
-            }
+            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readIdeIcon(selectedProjectIDE.getIconPath()), new Dimension(48,48)));
 
             detailProjectModel.removeAllElements();
             for (Project project : SearchManager.sm().findProjectsWithIde(selectedProjectIDE.getId())) {
                 detailProjectModel.addElement(project);
             }
+        } else {
+            detailName.setText("");
+            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readIdeIcon(ImageResource.DEFAULT), new Dimension(48,48)));
         }
     }
 

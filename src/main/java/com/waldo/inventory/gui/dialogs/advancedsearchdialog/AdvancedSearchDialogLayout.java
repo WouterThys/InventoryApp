@@ -24,8 +24,8 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class AdvancedSearchDialogLayout extends IDialog implements ListSelectionListener, IObjectSearchPanel.SearchListener<Item> {
 
-    private static final ImageIcon openIcon = imageResource.readImage("Search.Next");
-    private static final ImageIcon closeIcon = imageResource.readImage("Search.Previous");
+    private static final ImageIcon openIcon = imageResource.readIcon("Search.Next");
+    private static final ImageIcon closeIcon = imageResource.readIcon("Search.Previous");
 
     /*
     *                  COMPONENTS
@@ -141,7 +141,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Search.Title"));
+        setTitleIcon(imageResource.readIcon("Search.Title"));
         setTitleName(getTitle());
         getButtonOK().setText("Select");
         getButtonOK().setEnabled(false);

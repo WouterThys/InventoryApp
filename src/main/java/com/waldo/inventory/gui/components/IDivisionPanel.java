@@ -14,9 +14,9 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IDivisionPanel extends IPanel {
 
-    private final ImageIcon level0Icon = imageResource.readImage("Items.Tree.Category");
-    private final ImageIcon level1Icon = imageResource.readImage("Items.Tree.Product");
-    private final ImageIcon levelxIcon = imageResource.readImage("Items.Tree.Type");
+    private final ImageIcon level0Icon = imageResource.readIcon("Items.Tree.Category");
+    private final ImageIcon level1Icon = imageResource.readIcon("Items.Tree.Product");
+    private final ImageIcon levelxIcon = imageResource.readIcon("Items.Tree.Type");
 
     private Division division;
 

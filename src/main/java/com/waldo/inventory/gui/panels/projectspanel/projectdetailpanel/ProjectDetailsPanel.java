@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
@@ -13,10 +14,7 @@ import com.waldo.utils.icomponents.ITextPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface {
@@ -70,12 +68,10 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateIcon(ProjectObject project) {
-        try {
-            Project p = project.getProject();
-            Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), p.getIconPath());
-            iconLbl.setIcon(imageResource.readImage(path, 120, 120));
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (project != null) {
+            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(project.getProject().getIconPath()), new Dimension(120,120)));
+        } else {
+            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(ImageResource.DEFAULT), new Dimension(120, 120)));
         }
     }
 
@@ -142,9 +138,9 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
         JPanel pcbPanel = new JPanel();
         JPanel otherPanel = new JPanel();
 
-        codePanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Code")));
-        pcbPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Pcb")));
-        otherPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readImage("Projects.Details.Other")));
+        codePanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Code")));
+        pcbPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Pcb")));
+        otherPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Other")));
 
         JPanel westPanel;
         JPanel eastPanel;
@@ -230,7 +226,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
         remarksTp = new ITextPane();
         remarksTp.setPreferredSize(new Dimension(300, 50));
         remarksTp.setEditable(false);
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditRemarksDialog dialog = new EditRemarksDialog(application, "Edit project remarks", selectedProject.getRemarksFile());

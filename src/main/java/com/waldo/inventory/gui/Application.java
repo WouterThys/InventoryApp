@@ -3,6 +3,7 @@ package com.waldo.inventory.gui;
 import com.mysql.jdbc.MysqlErrorNumbers;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -43,7 +44,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     private static final int TAB_PROJECTS = 2;
 
     public static String startUpPath;
-    public static ResourceManager imageResource;
+    public static ImageResource imageResource;
+    //public static ResourceManager imageResource;
     public static ResourceManager scriptResource;
     public static ResourceManager colorResource;
 
@@ -58,7 +60,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // Resource manager
         try {
-            imageResource = new ResourceManager("settings/", "Icons.properties");
+            imageResource = ImageResource.getInstance();
+            imageResource.init("settings/", "Icons.properties");
+            //imageResource = new ResourceManager("settings/", "Icons.properties");
             scriptResource = new ResourceManager("settings/", "Scripts.properties");
             colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
@@ -125,7 +129,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // Icon
         try {
-            Image image = imageResource.readImage("Main.Icon").getImage();
+            Image image = imageResource.readIcon("Main.Icon").getImage();
             setIconImage(image);
         } catch (Exception e) {
             Status().setError("Error setting application image", e);
@@ -143,9 +147,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
-        tabbedPane.addTab("Components ", imageResource.readImage("MainTab.Components"), mainPanel, "Components");
-        tabbedPane.addTab("Orders ", imageResource.readImage("MainTab.Orders"), orderPanel, "Orders");
-        tabbedPane.addTab("Projects ", imageResource.readImage("MainTab.Projects"), projectPanel, "Projects");
+        tabbedPane.addTab("Components ", imageResource.readIcon("MainTab.Components"), mainPanel, "Components");
+        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), orderPanel, "Orders");
+        tabbedPane.addTab("Projects ", imageResource.readIcon("MainTab.Projects"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 

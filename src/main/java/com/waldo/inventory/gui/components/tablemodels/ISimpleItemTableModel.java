@@ -19,10 +19,10 @@ public class ISimpleItemTableModel extends IAbstractTableModel<Item> {
     private static final String[] COLUMN_NAMES = {"", "Name", "Manufacturer"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class};
 
-    private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon redBall = imageResource.readImage("Ball.red");
-    private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
-    private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
+    private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
+    private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
+    private static final ImageIcon yellowBall = imageResource.readIcon("Ball.yellow");
+    private static final ImageIcon blueBall = imageResource.readIcon("Ball.blue");
 
     public ISimpleItemTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);

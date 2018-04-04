@@ -63,10 +63,10 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcbLink> {
 
     static class CreatedPcbCellRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-        private static final ImageIcon redBall = imageResource.readImage("Ball.red");
-        private static final ImageIcon yellowBall = imageResource.readImage("Ball.yellow");
-        private static final ImageIcon blueBall = imageResource.readImage("Ball.blue");
+        private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
+        private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
+        private static final ImageIcon yellowBall = imageResource.readIcon("Ball.yellow");
+        private static final ImageIcon blueBall = imageResource.readIcon("Ball.blue");
 
         private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, greenBall);
         private static final ITableBallPanel pcbPanel = new ITableBallPanel(Color.gray, 0, false, greenBall, "", "");

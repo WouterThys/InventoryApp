@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.ILabel;
@@ -12,8 +12,6 @@ import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -21,7 +19,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
 
-    private static final ImageIcon icon = imageResource.readImage("Manufacturers.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Manufacturers.Title");
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browsePanel;
@@ -97,18 +95,7 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         if (manufacturer != null) {
             detailName.setText(manufacturer.getName());
             browsePanel.setText(manufacturer.getWebsite());
-
-            if (!manufacturer.getIconPath().isEmpty()) {
-                Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), manufacturer.getIconPath());
-                try {
-                    detailLogo.setIcon(imageResource.readImage(path));
-                } catch (Exception e) {
-                    detailLogo.setIcon(icon);
-                }
-            } else {
-                detailLogo.setIcon(icon);
-            }
-
+            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(manufacturer.getIconPath()), new Dimension(48,48)));
             detailItemDefaultListModel.removeAllElements();
             for (Item item : SearchManager.sm().getItemsForManufacturer(manufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);

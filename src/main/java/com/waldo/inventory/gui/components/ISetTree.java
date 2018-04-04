@@ -11,7 +11,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ISetTree extends ITree {
 
-    private final ImageIcon setIcon = imageResource.readImage("Items.Tree.Set");
+    private final ImageIcon setIcon = imageResource.readIcon("Items.Tree.Set");
 
     public ISetTree(Set rootSet, boolean showRoot) {
         super(new ISetTreeModel(rootSet));

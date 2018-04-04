@@ -2,10 +2,10 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -17,9 +17,6 @@ import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -27,7 +24,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorsDialog extends IResourceDialog<Distributor> {
 
-    private static final ImageIcon icon = imageResource.readImage("Distributors.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Distributors.Title");
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browseDistributorPanel;
@@ -165,17 +162,8 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
     protected void setDetails(Distributor distributor) {
         detailName.setText(distributor.getName());
         browseDistributorPanel.setText(distributor.getWebsite());
-
-        if (!distributor.getIconPath().isEmpty()) {
-            Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgDistributorsPath(), distributor.getIconPath());
-            try {
-                detailLogo.setIcon(imageResource.readImage(path));
-            } catch (IOException e) {
-                detailLogo.setIcon(icon);
-            }
-        } else {
-            detailLogo.setIcon(icon);
-        }
+        detailLogo.setIcon(ImageResource.scaleImage(
+                imageResource.readDistributorIcon(distributor.getIconPath()), new Dimension(48,48)));
 
         // Orders
         browseOrderLinkPanel.setText(distributor.getOrderLink());

@@ -13,10 +13,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IDivisionTree extends ITree implements TreeModelListener {
 
-    private final ImageIcon categoryIcon =imageResource.readImage("Items.Tree.Category");
-    private final ImageIcon productIcon = imageResource.readImage("Items.Tree.Product");
-    private final ImageIcon typeIcon = imageResource.readImage("Items.Tree.Type");
-    private final ImageIcon itemIcon = imageResource.readImage("Items.Tree.Item");
+    private final ImageIcon categoryIcon =imageResource.readIcon("Items.Tree.Category");
+    private final ImageIcon productIcon = imageResource.readIcon("Items.Tree.Product");
+    private final ImageIcon typeIcon = imageResource.readIcon("Items.Tree.Type");
+    private final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Item");
 
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;

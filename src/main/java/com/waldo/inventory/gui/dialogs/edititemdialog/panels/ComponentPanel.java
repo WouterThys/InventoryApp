@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
@@ -22,8 +22,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -117,12 +115,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         if (manufacturer != null) {
             try {
                 String p = manufacturer.getIconPath();
-                if (!p.isEmpty()) {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), p);
-                    manufacturerIconLbl.setIcon(imageResource.readImage(path, 48,48));
-                } else {
-                    manufacturerIconLbl.setIcon(null);
-                }
+                manufacturerIconLbl.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(p), new Dimension(48,48)));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -212,14 +205,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Manufacturer m = (Manufacturer) manufacturerCb.getSelectedItem();
                 if (m != null) {
-                    if (!m.getIconPath().isEmpty()) {
-                        Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgManufacturersPath(), m.getIconPath());
-                        try {
-                            manufacturerIconLbl.setIcon(imageResource.readImage(path, 48,48));
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }
+                    manufacturerIconLbl.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(m.getIconPath()), new Dimension(48,48)));
                 }
             }
         });

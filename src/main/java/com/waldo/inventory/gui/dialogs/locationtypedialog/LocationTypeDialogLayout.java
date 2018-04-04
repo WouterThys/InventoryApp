@@ -137,7 +137,7 @@ abstract class LocationTypeDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Dialog
         setResizable(true);
-        setTitleIcon(imageResource.readImage("Locations.Title"));
+        setTitleIcon(imageResource.readIcon("Locations.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

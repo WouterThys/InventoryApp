@@ -6,16 +6,12 @@ import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.SearchMatch;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.swing.*;
 import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -379,18 +375,6 @@ public class Item extends DbObject {
         return result;
     }
 
-    private ImageIcon getIconFromPath(String iconPath) {
-        ImageIcon icon;
-        try {
-            Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), iconPath);
-            URL url = path.toUri().toURL();
-            icon = imageResource.readImage(url, 150, 150);
-        } catch (Exception e) {
-            icon = imageResource.readImage("Items.Edit.Title");
-        }
-        return icon;
-    }
-
     public ImageIcon getItemIcon() {
 //        ImageIcon icon = null;
 //        if (getDivision() != null) {
@@ -415,7 +399,7 @@ public class Item extends DbObject {
 //            icon = getIconFromPath(getIconPath());
 //        }
 //        return icon;
-        return getIconFromPath(getIconPath());
+        return imageResource.readItemIcon(iconPath);
     }
 
     public String getAlias() {

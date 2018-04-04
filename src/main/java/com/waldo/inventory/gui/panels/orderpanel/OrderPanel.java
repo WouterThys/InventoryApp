@@ -535,7 +535,7 @@ public class OrderPanel extends OrderPanelLayout {
                         "Browse",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
-                        imageResource.readImage("Common.WebBrowseBig")
+                        imageResource.readIcon("Common.WebBrowseBig")
                 );
                 if (res == JOptionPane.YES_OPTION) {
                     // Go to website

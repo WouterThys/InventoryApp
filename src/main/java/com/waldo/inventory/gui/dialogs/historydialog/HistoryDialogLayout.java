@@ -1,10 +1,10 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
-import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.tablemodels.IOrderHistoryTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
@@ -16,9 +16,6 @@ import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -95,7 +92,7 @@ abstract class HistoryDialogLayout extends IDialog implements GuiUtils.GuiInterf
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("History.Title"));
+        setTitleIcon(imageResource.readIcon("History.Title"));
         setTitleName(getTitle());
 
         // This
@@ -158,15 +155,7 @@ abstract class HistoryDialogLayout extends IDialog implements GuiUtils.GuiInterf
         if (object.length != 0 && object[0] != null) {
             Item historyItem = (Item) object[0];
 
-            if (!historyItem.getIconPath().isEmpty()) {
-                try {
-                    Path path = Paths.get(SettingsManager.settings().getFileSettings().getImgItemsPath(), historyItem.getIconPath());
-                    URL url = path.toUri().toURL();
-                    setTitleIcon(imageResource.readImage(url, 64, 64));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            setTitleIcon(ImageResource.scaleImage(historyItem.getItemIcon(), new Dimension(64, 64)));
 
             updateHistoryViews(historyItem);
         }

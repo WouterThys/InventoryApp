@@ -44,9 +44,9 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         if (originalObject != null) {
             ImageIcon icon;
             if (originalObject.getId() > DbObject.UNKNOWN_ID) {
-                icon = imageResource.readImage("Actions.L.Edit");
+                icon = imageResource.readIcon("Actions.L.Edit");
             } else {
-                icon = imageResource.readImage("Actions.L.Add");
+                icon = imageResource.readIcon("Actions.L.Add");
             }
             if (icon != null) {
                 setInfoIcon(icon);

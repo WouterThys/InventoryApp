@@ -104,13 +104,13 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readImage("Parser.KiCad", 48));
+        setTitleIcon(imageResource.readIcon("Parser.KiCad"));
         setTitleName(getTitle());
 
         // Stuff
         parseBtn = new JButton("Parse");
         parseBtn.addActionListener(this);
-        selectFileBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
+        selectFileBtn = new JButton(imageResource.readIcon("Common.BrowseIcon"));
         selectFileBtn.addActionListener(this);
         fileLbl = new ILabel();
 

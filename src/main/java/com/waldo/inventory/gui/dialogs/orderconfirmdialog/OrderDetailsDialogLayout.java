@@ -318,24 +318,24 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
 
         // File panel
         orderByLbl = new ILabel();
-        fileOkLbl = new ILabel(imageResource.readImage("Orders.Confirm.Error"));
+        fileOkLbl = new ILabel(imageResource.readIcon("Orders.Confirm.Error"));
 
         orderFileTableModel = new DefaultTableModel();
         orderFileTable = new JTable(orderFileTableModel);
 
-        parseBtn = new JButton(imageResource.readImage("Orders.Confirm.Refresh"));
+        parseBtn = new JButton(imageResource.readIcon("Orders.Confirm.Refresh"));
         parseBtn.setToolTipText("Parse again");
         parseBtn.addActionListener(this);
-        copyToClipboardBtn = new JButton(imageResource.readImage("Orders.Confirm.Copy"));
+        copyToClipboardBtn = new JButton(imageResource.readIcon("Orders.Confirm.Copy"));
         copyToClipboardBtn.setToolTipText("Copy to clipboard");
         copyToClipboardBtn.addActionListener(this);
-        viewParsedBtn = new JButton(imageResource.readImage("Orders.Confirm.View"));
+        viewParsedBtn = new JButton(imageResource.readIcon("Orders.Confirm.View"));
         viewParsedBtn.setToolTipText("View parsed file");
         viewParsedBtn.addActionListener(this);
-        distributorsBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseDistributor"));
+        distributorsBrowseBtn = new JButton(imageResource.readIcon("Orders.Confirm.BrowseDistributor"));
         distributorsBrowseBtn.setToolTipText("Browse distributor website");
         distributorsBrowseBtn.addActionListener(this);
-        orderUrlBrowseBtn = new JButton(imageResource.readImage("Orders.Confirm.BrowseOrder"));
+        orderUrlBrowseBtn = new JButton(imageResource.readIcon("Orders.Confirm.BrowseOrder"));
         orderUrlBrowseBtn.setToolTipText("Go to order page");
         orderUrlBrowseBtn.addActionListener(this);
 

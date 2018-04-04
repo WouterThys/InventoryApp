@@ -63,8 +63,8 @@ public class ICacheLogTableModel extends IAbstractTableModel<ObjectLog> {
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon fetchedIcon = imageResource.readImage("Ball.green");
-        private static final ImageIcon notFetchedIcon = imageResource.readImage("Ball.red");
+        private static final ImageIcon fetchedIcon = imageResource.readIcon("Ball.green");
+        private static final ImageIcon notFetchedIcon = imageResource.readIcon("Ball.red");
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, fetchedIcon, "");
 

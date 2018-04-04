@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -12,16 +13,13 @@ import com.waldo.utils.icomponents.ITextField;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedListener {
 
-    private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-    private static final ImageIcon redBall = imageResource.readImage("Ball.red");
+    private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
+    private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
 
     /*
     *                  COMPONENTS
@@ -89,15 +87,11 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         if (pcbProject != null) {
             Project project = pcbProject.getProject();
             if (project != null) {
-                if (!project.getIconPath().isEmpty()) {
-                    Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), project.getIconPath());
-                    try {
-                        projectIconLbl.setIcon(imageResource.readImage(path, 48,48));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                projectIconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(project.getIconPath()), new Dimension(48,48)));
                 projectTf.setText(project.toString());
+            } else {
+                projectIconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(ImageResource.DEFAULT), new Dimension(48,48)));
+                projectTf.setText("");
             }
             pcbProjectTf.setText(pcbProject.toString());
         }
@@ -223,8 +217,8 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         orderPnl.add(orderBtn, BorderLayout.EAST);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
-        gbc.addLine(imageResource.readImage("Projects.Pcb.Linked"), itemPnl);
-        gbc.addLine(imageResource.readImage("Projects.Pcb.Ordered"), orderPnl);
+        gbc.addLine(imageResource.readIcon("Projects.Pcb.Linked"), itemPnl);
+        gbc.addLine(imageResource.readIcon("Projects.Pcb.Ordered"), orderPnl);
 
         return panel;
     }
@@ -237,7 +231,7 @@ abstract class PcbItemDetailsDialogLayout extends IDialog implements IEditedList
         // Dialog
         setResizable(true);
         setModal(false);
-        setTitleIcon(imageResource.readImage("Projects.Pcb.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Pcb.Title"));
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);
 

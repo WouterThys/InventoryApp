@@ -93,9 +93,9 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     static class Renderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon imageOk = imageResource.readImage("Orders.Table.Ok");
-        private static final ImageIcon imageWarn = imageResource.readImage("Orders.Table.Warning");
-        private static final ImageIcon imageError = imageResource.readImage("Orders.Table.Error");
+        private static final ImageIcon imageOk = imageResource.readIcon("Orders.Table.Ok");
+        private static final ImageIcon imageWarn = imageResource.readIcon("Orders.Table.Warning");
+        private static final ImageIcon imageError = imageResource.readIcon("Orders.Table.Error");
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, imageOk, "");
 

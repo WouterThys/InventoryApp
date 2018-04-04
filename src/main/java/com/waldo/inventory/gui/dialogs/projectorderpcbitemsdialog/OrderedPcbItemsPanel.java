@@ -167,7 +167,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
     @Override
     public void initializeComponents() {
         // Actions
-        addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {
+        addOneAa = new AbstractAction("AddOne", imageResource.readIcon("Projects.Order.AddOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onAddOne(orderTable.getSelectedItem());
@@ -175,7 +175,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
                 updateEnabledComponents();
             }
         };
-        remOneAa = new AbstractAction("RemOne", imageResource.readImage("Projects.Order.RemOne")) {
+        remOneAa = new AbstractAction("RemOne", imageResource.readIcon("Projects.Order.RemOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRemOne(orderTable.getSelectedItem());
@@ -183,7 +183,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
                 updateEnabledComponents();
             }
         };
-        remAllAa = new AbstractAction("RemAll", imageResource.readImage("Actions.RemoveAll")) {
+        remAllAa = new AbstractAction("RemAll", imageResource.readIcon("Actions.RemoveAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRemAll();
@@ -192,7 +192,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
             }
         };
 
-        refreshAa = new AbstractAction("Refresh", imageResource.readImage("Projects.Order.Refresh")) {
+        refreshAa = new AbstractAction("Refresh", imageResource.readIcon("Projects.Order.Refresh")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRefresh();
@@ -232,7 +232,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
         });
 
         // Button
-        doOrderBtn = new JButton(imageResource.readImage("Projects.Order.DoOrder"));
+        doOrderBtn = new JButton(imageResource.readIcon("Projects.Order.DoOrder"));
         doOrderBtn.addActionListener(e -> onDoOrder());
     }
 

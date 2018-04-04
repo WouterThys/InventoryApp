@@ -307,7 +307,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
 
                 if (visible) {
                     toggleValuePnlBtn.setText("");
-                    toggleValuePnlBtn.setIcon(imageResource.readImage("Search.ArrowRightBlue"));
+                    toggleValuePnlBtn.setIcon(imageResource.readIcon("Search.ArrowRightBlue"));
                 } else {
                     updateComponents();
                 }
@@ -338,7 +338,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             valuePnl = new IValuePanel();
 
             // Button
-            toggleValuePnlBtn = new JButton(imageResource.readImage("Search.ArrowLeftBlue"));
+            toggleValuePnlBtn = new JButton(imageResource.readIcon("Search.ArrowLeftBlue"));
             toggleValuePnlBtn.addActionListener(this);
             toggleValuePnlBtn.setToolTipText("Value");
         }
@@ -367,7 +367,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
                 toggleValuePnlBtn.setIcon(null);
             } else {
                 toggleValuePnlBtn.setText("");
-                toggleValuePnlBtn.setIcon(imageResource.readImage("Search.ArrowLeftBlue"));
+                toggleValuePnlBtn.setIcon(imageResource.readIcon("Search.ArrowLeftBlue"));
             }
         }
     }

@@ -70,7 +70,7 @@ abstract class PendingOrdersDialogLayout extends IDialog
     public void initializeComponents() {
         setResizable(true);
         setTitleName(getTitle());
-        setTitleIcon(imageResource.readImage("Orders.Pending.Title"));
+        setTitleIcon(imageResource.readIcon("Orders.Pending.Title"));
 
         tableModel = new IPendingOrdersTableModel();
         pendingOrderTable = new ITable<>(tableModel);

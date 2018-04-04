@@ -255,35 +255,35 @@ class OrderPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
         linkedPcbItemTable.setExactColumnWidth(0, 60);
 
         // Actions
-        addOneAa = new AbstractAction("AddOne", imageResource.readImage("Projects.Order.AddOne")) {
+        addOneAa = new AbstractAction("AddOne", imageResource.readIcon("Projects.Order.AddOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onAddOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };
-        remOneAa = new AbstractAction("RemOne", imageResource.readImage("Projects.Order.RemOne")) {
+        remOneAa = new AbstractAction("RemOne", imageResource.readIcon("Projects.Order.RemOne")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRemOne(pcbTableGetSelected().getPcbItem());
                 updateEnabledComponents();
             }
         };
-        addAllAa = new AbstractAction("AddAll", imageResource.readImage("Actions.AddAll")) {
+        addAllAa = new AbstractAction("AddAll", imageResource.readIcon("Actions.AddAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onAddAll();
                 updateEnabledComponents();
             }
         };
-        remAllAa = new AbstractAction("RemAll", imageResource.readImage("Actions.RemoveAll")) {
+        remAllAa = new AbstractAction("RemAll", imageResource.readIcon("Actions.RemoveAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRemAll();
                 updateEnabledComponents();
             }
         };
-        calculateAa = new AbstractAction("Calculate", imageResource.readImage("Projects.Order.Calculate")) {
+        calculateAa = new AbstractAction("Calculate", imageResource.readIcon("Projects.Order.Calculate")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCalculate();
@@ -298,7 +298,7 @@ class OrderPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
         calculateAa.putValue(AbstractAction.SHORT_DESCRIPTION, "All all, calculate with current stock");
 
         // Button
-        addToOrderBtn = new JButton(imageResource.readImage("Projects.Order.AddToBtn"));
+        addToOrderBtn = new JButton(imageResource.readIcon("Projects.Order.AddToBtn"));
         addToOrderBtn.addActionListener(e -> onAddToOrder());
 
         // Order size

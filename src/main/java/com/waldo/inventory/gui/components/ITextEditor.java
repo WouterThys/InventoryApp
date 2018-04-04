@@ -79,13 +79,13 @@ public class ITextEditor extends JPanel {
         undoManager = new UndoManager();
         EditButtonActionListener editButtonActionListener = new EditButtonActionListener();
 
-        undoAction = new AbstractAction("Undo", imageResource.readImage("TextEdit.Undo")) {
+        undoAction = new AbstractAction("Undo", imageResource.readIcon("TextEdit.Undo")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onUndo();
             }
         };
-        redoAction = new AbstractAction("Redo", imageResource.readImage("TextEdit.Redo")) {
+        redoAction = new AbstractAction("Redo", imageResource.readIcon("TextEdit.Redo")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRedo();
@@ -93,40 +93,40 @@ public class ITextEditor extends JPanel {
         };
 
         copyAction = new CopyAction();
-        copyAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Copy"));
+        copyAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Copy"));
         pasteAction = new DefaultEditorKit.PasteAction();
-        pasteAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Paste"));
+        pasteAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Paste"));
         cutAction = new CutAction();
-        cutAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Cut"));
+        cutAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Cut"));
 
         boldAction = new StyledEditorKit.BoldAction();
-        boldAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Bold"));
+        boldAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Bold"));
         italicAction = new StyledEditorKit.ItalicAction();
-        italicAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Italic"));
+        italicAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Italic"));
         underlineAction = new StyledEditorKit.UnderlineAction();
-        underlineAction.putValue(AbstractAction.SMALL_ICON, imageResource.readImage("TextEdit.Underline"));
+        underlineAction.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("TextEdit.Underline"));
 
-        colorAction = new AbstractAction("Color", imageResource.readImage("TextEdit.Color")) {
+        colorAction = new AbstractAction("Color", imageResource.readIcon("TextEdit.Color")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onColor();
             }
         };
-        insertPictureAction = new AbstractAction("Picture", imageResource.readImage("TextEdit.Picture")) {
+        insertPictureAction = new AbstractAction("Picture", imageResource.readIcon("TextEdit.Picture")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onInsertPicture();
             }
         };
 
-        bulletInsertButton = new AbstractAction("Bullets", imageResource.readImage("TextEdit.ListBullets")) {
+        bulletInsertButton = new AbstractAction("Bullets", imageResource.readIcon("TextEdit.ListBullets")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onBulletAction(BulletActionType.INSERT);
             }
         };
 
-        numbersInsertButton = new AbstractAction("Numbers", imageResource.readImage("TextEdit.ListNumbers")) {
+        numbersInsertButton = new AbstractAction("Numbers", imageResource.readIcon("TextEdit.ListNumbers")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onInsertNumbers(NumbersActionType.INSERT);

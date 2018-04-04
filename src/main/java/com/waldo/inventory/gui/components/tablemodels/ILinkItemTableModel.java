@@ -58,8 +58,8 @@ public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon greenBall = imageResource.readImage("Ball.green");
-        private static final ImageIcon redBall = imageResource.readImage("Ball.red");
+        private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
+        private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
 
         @Override

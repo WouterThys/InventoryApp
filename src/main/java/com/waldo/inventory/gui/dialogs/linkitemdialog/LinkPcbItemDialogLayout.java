@@ -54,9 +54,9 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         if (selectedPcbItem != null) {
             // TODO #24
 //            if (selectedPcbItem.hasMatchedItem()) {
-//                linkBtn.setIcon(imageResource.readImage("Projects.Link.RemoveLinkBtn"));
+//                linkBtn.setIcon(imageResource.readIcon("Projects.Link.RemoveLinkBtn"));
 //            } else {
-//                linkBtn.setIcon(imageResource.readImage("Projects.Link.AddLinkBtn"));
+//                linkBtn.setIcon(imageResource.readIcon("Projects.Link.AddLinkBtn"));
 //            }
         }
 
@@ -79,7 +79,7 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
     public void initializeComponents() {
         // Dialog
         setResizable(true);
-        setTitleIcon(imageResource.readImage("Projects.Link.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Link.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -92,12 +92,12 @@ abstract class LinkPcbItemDialogLayout extends IDialog implements
         //itemPanel.addSearchListener(this);
 
         // Buttons
-        linkBtn = new JButton(imageResource.readImage("Projects.Link.AddLinkBtn"));
+        linkBtn = new JButton(imageResource.readIcon("Projects.Link.AddLinkBtn"));
         linkBtn.setToolTipText("Link to item");
         linkBtn.setEnabled(false);
         linkBtn.addActionListener(this);
 
-        matchBtn = new JButton(imageResource.readImage("Projects.Link.ParseBtn"));
+        matchBtn = new JButton(imageResource.readIcon("Projects.Link.ParseBtn"));
         matchBtn.setToolTipText("Find match");
         matchBtn.setEnabled(false);
         matchBtn.addActionListener(this);

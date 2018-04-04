@@ -52,7 +52,7 @@ public class IRemarksPanel extends IPanel {
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
 
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readImage("Actions.EditRemark")) {
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -106,7 +106,7 @@ public class IRemarksPanel extends IPanel {
                 }
             }
         };
-        deleteAction.setIcon(imageResource.readImage("Actions.Delete"));
+        deleteAction.setIcon(imageResource.readIcon("Actions.Delete"));
         deleteAction.setName("Delete remarks");
     }
 

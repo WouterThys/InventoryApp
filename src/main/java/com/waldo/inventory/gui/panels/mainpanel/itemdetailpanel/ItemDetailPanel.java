@@ -6,11 +6,6 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.OrderDetailListener;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ItemDetailPanel extends ItemDetailPanelLayout {
@@ -47,12 +42,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void updateHeader(Item item) {
         try {
-            if (!item.getIconPath().isEmpty()) {
-                Path path = Paths.get(settings().getFileSettings().getImgItemsPath(), item.getIconPath());
-                iconLbl.setIcon(imageResource.readImage(path));
-            } else {
-                iconLbl.setIcon(imageResource.readImage("Items.Edit.Title"));
-            }
+            iconLbl.setIcon(item.getItemIcon());
         } catch (Exception e) {
             Status().setError("Failed to set item icon");
         }

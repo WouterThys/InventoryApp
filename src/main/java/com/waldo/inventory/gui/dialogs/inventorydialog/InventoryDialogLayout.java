@@ -186,7 +186,7 @@ abstract class InventoryDialogLayout extends IDialog
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        setTitleIcon(imageResource.readImage("Inventory.Title"));
+        setTitleIcon(imageResource.readIcon("Inventory.Title"));
         setTitleName(getTitle());
         setResizable(true);
 

@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.ProjectObjectPreview;
@@ -7,14 +8,10 @@ import com.waldo.utils.FileUtils;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IProjectObjectPreviewTableModel extends IAbstractTableModel<ProjectObjectPreview> {
@@ -48,18 +45,7 @@ public class IProjectObjectPreviewTableModel extends IAbstractTableModel<Project
                     return projectObject.isAddToProject();
                 case 1: // Project icon
                     String ideIconPath = projectObject.getProjectObject().getProjectIDE().getIconPath();
-                    Path p = Paths.get(settings().getFileSettings().getImgIdesPath(), ideIconPath);
-                    String path = p.toString();
-                    ImageIcon ideIcon = null;
-                    if (!path.isEmpty()) {
-                        try {
-                            URL url = new File(path).toURI().toURL();
-                            ideIcon = imageResource.readImage(url, 28, 28);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return ideIcon;
+                    return ImageResource.scaleImage(imageResource.readIdeIcon(ideIconPath), new Dimension(28, 28));
                 case 2: // Name
                     return FileUtils.formatFileNameString(projectObject.getProjectObject().getName());
                 case 3: // Full path

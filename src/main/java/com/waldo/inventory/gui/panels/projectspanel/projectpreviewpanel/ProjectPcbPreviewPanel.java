@@ -101,7 +101,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
     }
 
     public AbstractAction getLinkAa() {
-        AbstractAction linkAction = new AbstractAction("Link", imageResource.readImage("Actions.Link")) {
+        AbstractAction linkAction = new AbstractAction("Link", imageResource.readIcon("Actions.Link")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onLink());
@@ -112,7 +112,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
     }
 
     public AbstractAction getOrderAa() {
-        AbstractAction orderAction = new AbstractAction("Order", imageResource.readImage("Actions.ItemOrder")) {
+        AbstractAction orderAction = new AbstractAction("Order", imageResource.readIcon("Actions.ItemOrder")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrder());
@@ -123,7 +123,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
     }
 
     public AbstractAction getParseAa() {
-        AbstractAction parseAction = new AbstractAction("Parse", imageResource.readImage("Parse.S.Title")) {
+        AbstractAction parseAction = new AbstractAction("Parse", imageResource.readIcon("Parse.S.Title")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onParse());
@@ -134,7 +134,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
     }
 
     public AbstractAction getUsedAa() {
-        AbstractAction usedAction = new AbstractAction("Used", imageResource.readImage("Projects.Pcb.Used")) {
+        AbstractAction usedAction = new AbstractAction("Used", imageResource.readIcon("Projects.Pcb.Used")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onUsed());
@@ -155,7 +155,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         itemsFromTf.setMaximumSize(new Dimension(60, 30));
 
         // Actions
-        linkAa = new AbstractAction("Link", imageResource.readImage("Projects.Pcb.LinkBtn")) {
+        linkAa = new AbstractAction("Link", imageResource.readIcon("Projects.Pcb.LinkBtn")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onLink());
@@ -163,7 +163,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         };
         linkAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Link to known items");
 
-        orderAa = new AbstractAction("Order", imageResource.readImage("Projects.Pcb.OrderBtn")) {
+        orderAa = new AbstractAction("Order", imageResource.readIcon("Projects.Pcb.OrderBtn")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrder());
@@ -171,7 +171,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         };
         orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order linked items");
 
-        usedAa = new AbstractAction("Used", imageResource.readImage("Projects.Pcb.UsedBtn")) {
+        usedAa = new AbstractAction("Used", imageResource.readIcon("Projects.Pcb.UsedBtn")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onUsed());
@@ -179,7 +179,7 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         };
         usedAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Used items");
 
-        parseAa = new AbstractAction("Parse", imageResource.readImage("Projects.Pcb.ParseBtn")) {
+        parseAa = new AbstractAction("Parse", imageResource.readIcon("Projects.Pcb.ParseBtn")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onParse());
@@ -205,9 +205,9 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
         itemInfoPnl.add(itemsFromTf);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("IDE", imageResource.readImage("Ides.Menu"), pcbIdeTf);
-        gbc.addLine("Last parsed", imageResource.readImage("Parse.S.Title"), lastParsedTf);
-        //gbc.addLine("Items", imageResource.readImage("Projects.Tab.Pcb"), itemInfoPnl);
+        gbc.addLine("IDE", imageResource.readIcon("Ides.Menu"), pcbIdeTf);
+        gbc.addLine("Last parsed", imageResource.readIcon("Parse.S.Title"), lastParsedTf);
+        //gbc.addLine("Items", imageResource.readIcon("Projects.Tab.Pcb"), itemInfoPnl);
 
         return infoPnl;
     }

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.utils.FileUtils;
@@ -13,7 +14,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -134,12 +134,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
                 default:
                     break;
             }
-            if (!iconPath.isEmpty()) {
-                path = Paths.get(settings().getFileSettings().getImgIdesPath(), iconPath);
-                setIcon(path.toString(), projectObject.isValid());
-            } else  {
-                setIcon("", projectObject.isValid());
-            }
+            setIcon(iconPath, projectObject.isValid());
         }
 
 
@@ -148,21 +143,19 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
 
     private void setIcon(String path, boolean isValid) {
         if (!path.isEmpty()) {
-            URL url;
             try {
-                url = new File(path).toURI().toURL();
-                ImageIcon ideIcon = imageResource.readImage(url, 48, 48);
+                ImageIcon ideIcon = imageResource.readIdeIcon(path);
                 if (isValid) {
-                    iconBtn.setIcon(ideIcon);
+                    iconBtn.setIcon(ImageResource.scaleImage(ideIcon, new Dimension(48,48)));
                 } else {
-                    ImageIcon warnIcon = imageResource.readImage("ErrorProvider.WarningIcon", 16);
+                    ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
                     iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            iconBtn.setIcon(imageResource.readImage("Common.UnknownIcon48"));
+            iconBtn.setIcon(imageResource.readIcon("Common.UnknownIcon48"));
         }
     }
 

@@ -50,7 +50,7 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readImage("Projects.Pcb.Title"));
+        setTitleIcon(imageResource.readIcon("Projects.Pcb.Title"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -65,7 +65,7 @@ abstract class EditProjectPcbDialogLayout extends IDialog implements IEditedList
         // Directory
         directoryTf = new ITextField();
         directoryTf.addEditedListener(this, "directory");
-        directoryBtn = new JButton(imageResource.readImage("Common.BrowseIcon"));
+        directoryBtn = new JButton(imageResource.readIcon("Common.BrowseIcon"));
         directoryBtn.addActionListener(this);
 
         // IDE

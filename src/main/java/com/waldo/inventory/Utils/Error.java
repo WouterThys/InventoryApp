@@ -3,6 +3,7 @@ package com.waldo.inventory.Utils;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.waldo.inventory.gui.Application.colorResource;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class Error {
@@ -31,13 +32,13 @@ public class Error {
     public Color getColor() {
         switch (errorType) {
             case ERROR:
-                return new Color(imageResource.readInteger("ErrorProvider.ErrorColor", 16));
+                return new Color(colorResource.readInteger("ErrorProvider.ErrorColor", 16));
             case INFO:
-                return new Color(imageResource.readInteger("ErrorProvider.InfoColor", 16));
+                return new Color(colorResource.readInteger("ErrorProvider.InfoColor", 16));
             case NO_ERROR:
                 return Color.WHITE;
             case WARNING:
-                return new Color(imageResource.readInteger("ErrorProvider.WarningColor", 16));
+                return new Color(colorResource.readInteger("ErrorProvider.WarningColor", 16));
             default:
                 throw new IllegalArgumentException("Not a valid error type");
         }
@@ -46,13 +47,13 @@ public class Error {
     public ImageIcon getImage() {
         switch (errorType) {
             case ERROR:
-                return imageResource.readImage("ErrorProvider.ErrorIcon");
+                return imageResource.readIcon("ErrorProvider.ErrorIcon");
             case INFO:
-                return imageResource.readImage("ErrorProvider.InfoIcon");
+                return imageResource.readIcon("ErrorProvider.InfoIcon");
             case NO_ERROR:
                 return null;
             case WARNING:
-                return imageResource.readImage("ErrorProvider.WarningIcon");
+                return imageResource.readIcon("ErrorProvider.WarningIcon");
             default:
                 throw new IllegalArgumentException("Not a valid error type");
         }

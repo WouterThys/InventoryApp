@@ -26,10 +26,10 @@ public class ImageFileChooser {
     }
 
     private static class ImageFileView extends FileView {
-        final ImageIcon jpgIcon = imageResource.readImage("IFC.Jpg", 24);
-        final ImageIcon gifIcon = imageResource.readImage("IFC.Gif", 24);
-        final ImageIcon tiffIcon =imageResource.readImage("IFC.Tiff", 24);
-        final ImageIcon pngIcon = imageResource.readImage("IFC.Png", 24);
+        final ImageIcon jpgIcon = imageResource.readIcon("IFC.Jpg");
+        final ImageIcon gifIcon = imageResource.readIcon("IFC.Gif");
+        final ImageIcon tiffIcon =imageResource.readIcon("IFC.Tiff");
+        final ImageIcon pngIcon = imageResource.readIcon("IFC.Png");
 
         public String getName(File f) {
             return null; //let the L&F FileView figure this out

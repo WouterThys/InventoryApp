@@ -33,7 +33,7 @@ class QueryPanel extends JPanel {
     }
 
     private void initActions() {
-        executeAction = new AbstractAction("Execute", imageResource.readImage("QueryDialog.Execute", 24)) {
+        executeAction = new AbstractAction("Execute", imageResource.readIcon("QueryDialog.Execute")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -42,7 +42,7 @@ class QueryPanel extends JPanel {
             }
         };
 
-        executeAllAction = new AbstractAction("Execute all", imageResource.readImage("QueryDialog.ExecuteAll", 24)) {
+        executeAllAction = new AbstractAction("Execute all", imageResource.readIcon("QueryDialog.ExecuteAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String queryTxt = queryTextArea.getText();
@@ -50,7 +50,7 @@ class QueryPanel extends JPanel {
             }
         };
 
-        clearAction = new AbstractAction("Clear", imageResource.readImage("QueryDialog.Clear", 24)) {
+        clearAction = new AbstractAction("Clear", imageResource.readIcon("QueryDialog.Clear")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryTextArea.setText("");

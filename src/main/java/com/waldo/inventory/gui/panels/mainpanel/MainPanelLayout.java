@@ -217,8 +217,8 @@ abstract class MainPanelLayout extends JPanel implements
         setPanel.add(setsTb, BorderLayout.PAGE_END);
         setPanel.setMinimumSize(new Dimension(200, 200));
 
-        tabbedPane.addTab(TREE_ITEMS, imageResource.readImage("Items.Tree.Item"), divisionPanel);
-        tabbedPane.addTab(TREE_SETS, imageResource.readImage("Items.Tree.Set"), setPanel);
+        tabbedPane.addTab(TREE_ITEMS, imageResource.readIcon("Items.Tree.Item"), divisionPanel);
+        tabbedPane.addTab(TREE_SETS, imageResource.readIcon("Items.Tree.Set"), setPanel);
 
         panel.add(tabbedPane, BorderLayout.CENTER);
 

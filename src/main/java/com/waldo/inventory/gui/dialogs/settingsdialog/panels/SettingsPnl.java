@@ -224,13 +224,13 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
 
         // Actions
         toolBar = new IdBToolBar(this, true, true, true, false);
-        saveAction = new IActions.SaveAction(imageResource.readImage("Actions.M.Save")) {
+        saveAction = new IActions.SaveAction(imageResource.readIcon("Actions.M.Save")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveSettings(selectedSettings);
             }
         };
-        useAction = new IActions.UseAction(imageResource.readImage("Actions.M.Use")) {
+        useAction = new IActions.UseAction(imageResource.readIcon("Actions.M.Use")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedSettings.isSaved()) {

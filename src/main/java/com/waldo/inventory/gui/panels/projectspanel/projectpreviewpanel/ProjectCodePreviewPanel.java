@@ -30,8 +30,8 @@ public abstract class ProjectCodePreviewPanel extends ProjectPreviewPanel<Projec
         JPanel infoPnl = new JPanel();
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("IDE", imageResource.readImage("Ides.Menu"), ideTf);
-        gbc.addLine("Language", imageResource.readImage("TextEdit.ListNumbers"), languageTf);
+        gbc.addLine("IDE", imageResource.readIcon("Ides.Menu"), ideTf);
+        gbc.addLine("Language", imageResource.readIcon("TextEdit.ListNumbers"), languageTf);
 
         return infoPnl;
     }
