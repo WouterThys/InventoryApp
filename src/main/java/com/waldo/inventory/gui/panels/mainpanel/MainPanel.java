@@ -9,7 +9,6 @@ import com.waldo.inventory.gui.components.popups.ItemPopup;
 import com.waldo.inventory.gui.components.popups.LocationPopup;
 import com.waldo.inventory.gui.components.popups.MultiItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
-import com.waldo.inventory.gui.dialogs.editdivisiondialog.EditDivisionDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -180,7 +179,7 @@ public class MainPanel extends MainPanelLayout {
             @Override
             public void onInserted(Item item) {
                 selectedItem = item;
-                detailPanel.updateComponents(selectedItem);
+                itemDetailPanel.updateComponents(selectedItem);
 
                 if (setsSelected()) {
                     if (selectedSet != null) {
@@ -213,7 +212,7 @@ public class MainPanel extends MainPanelLayout {
                 SwingUtilities.invokeLater(() -> {
                     selectedItem = sm().findItemById(itemId);
                     tableSelectItem(selectedItem);
-                    detailPanel.updateComponents(selectedItem);
+                    itemDetailPanel.updateComponents(selectedItem);
                     updateEnabledComponents();
                 });
 
@@ -223,7 +222,7 @@ public class MainPanel extends MainPanelLayout {
             public void onDeleted(Item item) {
                 tableRemoveItem(item);
                 selectedItem = null;
-                detailPanel.updateComponents();
+                itemDetailPanel.updateComponents();
                 updateEnabledComponents();
             }
 
@@ -308,17 +307,17 @@ public class MainPanel extends MainPanelLayout {
                 JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
                     @Override
                     public void onAddDivision() {
-                        MainPanel.this.onAddDivision();
+                        divisionPreviewPanel.addDivision(selectedDivision);
                     }
 
                     @Override
                     public void onEditDivision() {
-                        MainPanel.this.onEditDivision();
+                        divisionPreviewPanel.editDivision(selectedDivision);
                     }
 
                     @Override
                     public void onDeleteDivision() {
-                        MainPanel.this.onDeleteDivision();
+                        divisionPreviewPanel.deleteDivision(selectedDivision);
                     }
                 };
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -327,44 +326,6 @@ public class MainPanel extends MainPanelLayout {
             selectedSet = setTree.getSelectedSet();
             if (selectedSet != null) {
                 // Set stuff
-            }
-        }
-    }
-
-    //
-    // Divisions
-    //
-    private void onAddDivision() {
-        Division parent;
-        if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            parent = selectedDivision;
-        } else {
-            parent = divisionTree.getRootDivision();
-        }
-        if (parent == null) {
-            parent = divisionTree.getRootDivision();
-        }
-        EditDivisionDialog dialog = new EditDivisionDialog(application, new Division(parent), parent);
-        dialog.showDialog();
-    }
-
-    private void onEditDivision() {
-        Division parent = null;
-        if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            parent = selectedDivision.getParentDivision();
-        }
-        if (parent == null) {
-            parent = divisionTree.getRootDivision();
-        }
-        EditDivisionDialog dialog = new EditDivisionDialog(application, selectedDivision, parent);
-        dialog.showDialog();
-    }
-
-    private void onDeleteDivision() {
-        if (selectedDivision != null && selectedDivision.canBeSaved()) {
-            int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + selectedDivision);
-            if (res == JOptionPane.YES_OPTION) {
-                selectedDivision.delete();
             }
         }
     }
@@ -541,10 +502,7 @@ public class MainPanel extends MainPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        if (divisionTb.equals(source)) {
-            cache().getDivisions().clear();
-            divisionTree.updateTree();
-        } else if (setsTb.equals(source)) {
+        if (setsTb.equals(source)) {
             cache().getSets().clear();
             setTree.setChanged(null);
         } else {
@@ -569,19 +527,14 @@ public class MainPanel extends MainPanelLayout {
                 Application.endWait(MainPanel.this);
             }
 
-            detailPanel.updateComponents(selectedItem);
+            itemDetailPanel.updateComponents(selectedItem);
             updateEnabledComponents();
         }
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (divisionTb.equals(source)) {
-            if (selectedDivision == null) {
-                selectedDivision = divisionTree.getRootDivision();
-            }
-            onAddDivision();
-        } else if (setsTb.equals(source)) {
+        if (setsTb.equals(source)) {
             if (selectedSet == null) {
                 selectedSet = setTree.getRootSet();
             }
@@ -593,9 +546,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (divisionTb.equals(source)) {
-            onDeleteDivision();
-        } else if (source.equals(setsTb)) {
+        if (source.equals(setsTb)) {
             onDeleteSet();
         } else {
             onDeleteItem();
@@ -604,9 +555,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (divisionTb.equals(source)) {
-            onEditDivision();
-        } else if (source.equals(setsTb)) {
+        if (source.equals(setsTb)) {
             onEditSet();
         } else {
             onEditItem();
@@ -641,7 +590,7 @@ public class MainPanel extends MainPanelLayout {
         if (set != null && item != null) {
             selectedItem = item;
             //selectedDivision = set;
-            detailPanel.updateComponents(selectedItem);
+            itemDetailPanel.updateComponents(selectedItem);
 
             // Add to table
             treeSelectDivision(selectedDivision);

@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.mainpanel.itemlisteners;
+package com.waldo.inventory.gui.panels.mainpanel;
 
 import com.waldo.inventory.classes.dbclasses.OrderItem;
 

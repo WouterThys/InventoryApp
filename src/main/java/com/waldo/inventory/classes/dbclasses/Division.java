@@ -3,6 +3,8 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.managers.SearchManager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,7 +24,10 @@ public class Division extends DbObject {
     private long parentDivisionId;
     private Division parentDivision;
     private List<Division> subDivisions;
+
+    // Not in db
     private int level = -1;
+    private double totalPrice = 0;
 
     public Division() {
         this("");
@@ -80,6 +85,13 @@ public class Division extends DbObject {
         return dummy;
     }
 
+
+    public double getTotalItemPrice() {
+        BigDecimal bd = new BigDecimal(totalPrice);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     //
     // DatabaseAccess tells the object is updated
     //
@@ -104,6 +116,13 @@ public class Division extends DbObject {
     public List<Item> getItemList() {
         if (itemList == null) {
             itemList = SearchManager.sm().findItemsForDivision(this);
+
+            for (Item item : itemList) {
+                List<DistributorPartLink> linkList = SearchManager.sm().findDistributorPartLinksForItem(item.getId());
+                if (linkList.size() > 0) {
+                    totalPrice += item.getAmount() * linkList.get(0).getPrice().getValue();
+                }
+            }
         }
         return itemList;
     }

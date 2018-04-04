@@ -19,11 +19,16 @@ public class IDivisionPanel extends IPanel {
     private final ImageIcon levelxIcon = imageResource.readIcon("Items.Tree.Type");
 
     private Division division;
-
+    private boolean showParents;
     private List<DivisionLayout> divisionLayoutList = new ArrayList<>();
 
     public IDivisionPanel() {
+        this(true);
+    }
+
+    public IDivisionPanel(boolean showParents) {
         super();
+        this.showParents = showParents;
     }
 
     private void addDivisionToLayoutList(Division division) {
@@ -38,10 +43,12 @@ public class IDivisionPanel extends IPanel {
         if (division != null) {
 
             addDivisionToLayoutList(division);
-            List<Division> parents = division.getParentDivisions();
+            if (showParents) {
+                List<Division> parents = division.getParentDivisions();
 
-            for (Division parent : parents) {
-                addDivisionToLayoutList(parent);
+                for (Division parent : parents) {
+                    addDivisionToLayoutList(parent);
+                }
             }
         }
     }
@@ -85,7 +92,7 @@ public class IDivisionPanel extends IPanel {
         private ImageIcon icon;
         private Division division;
 
-        public DivisionLayout(Division division) {
+        DivisionLayout(Division division) {
             super(new BorderLayout());
             this.division = division;
             if (division != null) {
@@ -121,7 +128,7 @@ public class IDivisionPanel extends IPanel {
                     '}';
         }
 
-        public String getToolTip() {
+        String getToolTip() {
             return toolTip;
         }
 

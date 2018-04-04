@@ -62,17 +62,6 @@ public class ImageResource extends Resource{
         return fromMap(projectImageMap, name, settings().getFileSettings().getImgProjectsPath());
     }
 
-
-//    public ImageIcon readImage(Path path) throws IOException {
-//        URL url = path.toUri().toURL();
-//        return new ImageIcon(ImageIO.read(url));
-//    }
-//
-//    public ImageIcon readImage(Path path, int width, int height) throws Exception {
-//        URL url = path.toUri().toURL();
-//        return getScaledImageIcon(ImageIO.read(url), width, height);
-//    }
-
     private ImageIcon fromMap(Map<String, ImageIcon> map, String name, String imagePath) {
         ImageIcon icon = null;
         if ((name != null) && (!name.isEmpty())) {

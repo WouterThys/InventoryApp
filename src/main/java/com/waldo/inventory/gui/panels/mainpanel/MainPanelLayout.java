@@ -13,9 +13,9 @@ import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
-import com.waldo.inventory.gui.panels.mainpanel.itemdetailpanel.ItemDetailPanel;
-import com.waldo.inventory.gui.panels.mainpanel.itemlisteners.ItemDetailListener;
-import com.waldo.inventory.gui.panels.mainpanel.itempreviewpanel.ItemPreviewPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.DivisionPreviewPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.mainpanel.preview.ItemPreviewPanel;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -48,13 +48,14 @@ abstract class MainPanelLayout extends JPanel implements
     ITablePanel<Item> itemTable;
     IItemTableModel tableModel;
 
+    DivisionPreviewPanel divisionPreviewPanel;
     IDivisionTree divisionTree;
-    IdBToolBar divisionTb;
+    //IdBToolBar divisionTb;
 
     ISetTree setTree;
     IdBToolBar setsTb;
 
-    AbstractDetailPanel detailPanel;
+    AbstractDetailPanel itemDetailPanel;
 
     /*
      *                  VARIABLES
@@ -83,11 +84,6 @@ abstract class MainPanelLayout extends JPanel implements
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
 
-        // Divisions
-        enabled = selectedDivision != null && selectedDivision.canBeSaved();
-        divisionTb.setEditActionEnabled(enabled);
-        divisionTb.setDeleteActionEnabled(enabled);
-
         // Sets
         enabled = selectedSet != null && selectedSet.canBeSaved();
         setsTb.setEditActionEnabled(enabled);
@@ -95,7 +91,7 @@ abstract class MainPanelLayout extends JPanel implements
     }
 
     void updateDetails() {
-        detailPanel.updateComponents(selectedItem);
+        itemDetailPanel.updateComponents(selectedItem);
     }
 
     abstract void onTreeRightClick(MouseEvent e);
@@ -207,7 +203,7 @@ abstract class MainPanelLayout extends JPanel implements
         JScrollPane pane = new JScrollPane(divisionTree);
         pane.setPreferredSize(new Dimension(300, 400));
         divisionPanel.add(pane, BorderLayout.CENTER);
-        divisionPanel.add(divisionTb, BorderLayout.PAGE_END);
+        divisionPanel.add(divisionPreviewPanel, BorderLayout.SOUTH);
         divisionPanel.setMinimumSize(new Dimension(200,200));
 
         JPanel setPanel = new JPanel(new BorderLayout());
@@ -247,7 +243,7 @@ abstract class MainPanelLayout extends JPanel implements
                 }
             }
         });
-        divisionTb = new IdBToolBar(this);
+        divisionPreviewPanel = new DivisionPreviewPanel(application, rootDivision);
 
         // Sets
         List<Set> sets = cache().getSets();
@@ -270,7 +266,7 @@ abstract class MainPanelLayout extends JPanel implements
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (vertical) {
-            detailPanel = new ItemPreviewPanel(this, null) {
+            itemDetailPanel = new ItemPreviewPanel(this, null) {
                 @Override
                 public void onToolBarDelete(IdBToolBar source) {
                     MainPanelLayout.this.onToolBarDelete(source);
@@ -283,7 +279,7 @@ abstract class MainPanelLayout extends JPanel implements
                     MainPanelLayout.this.onToolBarEdit(source);
                 }
             };
-            detailPanel.setBorder(BorderFactory.createCompoundBorder(
+            itemDetailPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(2, -1, -1, -1),
                     BorderFactory.createLineBorder(Color.lightGray, 1)
             ));
@@ -291,7 +287,7 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Items
         tableModel = new IItemTableModel();
-        itemTable = new ITablePanel<>(tableModel, detailPanel, this, true);
+        itemTable = new ITablePanel<>(tableModel, itemDetailPanel, this, true);
         itemTable.setDbToolBar(this, true, true, false, false);
         itemTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -308,7 +304,7 @@ abstract class MainPanelLayout extends JPanel implements
 
         // Details
         if (!vertical) {
-            detailPanel = new ItemDetailPanel(this);
+            itemDetailPanel = new ItemDetailPanel(this);
         }
     }
 
@@ -323,7 +319,7 @@ abstract class MainPanelLayout extends JPanel implements
         centerPanel.add(new JScrollPane(itemTable), BorderLayout.CENTER);
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (!vertical) {
-            centerPanel.add(detailPanel, BorderLayout.SOUTH);
+            centerPanel.add(itemDetailPanel, BorderLayout.SOUTH);
         }
 
         // Add
@@ -345,6 +341,7 @@ abstract class MainPanelLayout extends JPanel implements
                             setItemTableList(selectedDivision.getItemList());
                         }
                     }
+                    divisionPreviewPanel.updateComponents(selectedDivision);
                 } else if (args[0] instanceof Set ) {
                     if (selectedSet == null || !selectedSet.equals(args[0])) {
                         selectedSet = (Set) args[0];
@@ -359,7 +356,7 @@ abstract class MainPanelLayout extends JPanel implements
             updateEnabledComponents();
 
             // Update detail panel
-            detailPanel.updateComponents(selectedItem);
+            itemDetailPanel.updateComponents(selectedItem);
         } finally {
             Application.endWait(MainPanelLayout.this);
         }
