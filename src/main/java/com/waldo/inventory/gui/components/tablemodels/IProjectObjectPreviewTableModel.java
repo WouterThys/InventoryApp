@@ -44,8 +44,12 @@ public class IProjectObjectPreviewTableModel extends IAbstractTableModel<Project
                 case 0: // Add to project
                     return projectObject.isAddToProject();
                 case 1: // Project icon
-                    String ideIconPath = projectObject.getProjectObject().getProjectIDE().getIconPath();
-                    return ImageResource.scaleImage(imageResource.readIdeIcon(ideIconPath), new Dimension(28, 28));
+                    try {
+                        String ideIconPath = projectObject.getProjectObject().getProjectIDE().getIconPath();
+                        return ImageResource.scaleImage(imageResource.readIdeIcon(ideIconPath), new Dimension(28, 28));
+                    } catch (Exception e) {
+                        //
+                    }
                 case 2: // Name
                     return FileUtils.formatFileNameString(projectObject.getProjectObject().getName());
                 case 3: // Full path

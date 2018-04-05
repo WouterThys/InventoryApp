@@ -46,124 +46,7 @@ public class MainPanel extends MainPanelLayout {
         return tableModel;
     }
 
-    //
-    // Table
-    //
-    @Override
-    void onTableRowClicked(MouseEvent e) {
-        if (e.getClickCount() == 1) {
-            if (SwingUtilities.isRightMouseButton(e)) {
-                List<Item> selectedItems = itemTable.getAllSelectedItems();
-                JPopupMenu popup = null;
-                if (selectedItems == null || selectedItems.size() < 2) {
-                    tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
-                    if (selectedItem != null) {
-                        popup = new ItemPopup(selectedItem) {
-                            @Override
-                            public void onEditItem() {
-                                MainPanel.this.onEditItem();
-                            }
 
-                            @Override
-                            public void onDeleteItem() {
-                                MainPanel.this.onDeleteItem();
-                            }
-
-                            @Override
-                            public void onOpenLocalDataSheet(Item item) {
-                                application.openDataSheet(item, false);
-                            }
-
-                            @Override
-                            public void onOpenOnlineDataSheet(Item item) {
-                                application.openDataSheet(item, true);
-                            }
-
-                            @Override
-                            public void onOrderItem(Item item) {
-                                MainPanel.this.onOrderItem(item);
-                            }
-
-                            @Override
-                            public void onShowHistory(Item item) {
-                                MainPanel.this.onShowHistory(item);
-                            }
-
-                            @Override
-                            public void onAddToSet(Set set, Item item) {
-                                MainPanel.this.onAddItemToSet(set, item);
-                            }
-                        };
-                    }
-                } else {
-                    popup = new MultiItemPopup(selectedItems) {
-                        @Override
-                        public void onDeleteItems(List<Item> itemList) {
-                            MainPanel.this.onDeleteItem();
-                        }
-
-                        @Override
-                        public void onOrderItems(List<Item> itemList) {
-                            application.orderItems(itemList);
-                        }
-
-                        @Override
-                        public void onAddToSet(Set set, List<Item> itemList) {
-                            for (Item item : itemList) {
-                                MainPanel.this.onAddItemToSet(set, item);
-                            }
-                        }
-                    };
-                }
-                if (popup != null) {
-                    popup.show(e.getComponent(), e.getX(), e.getY());
-                }
-            } else {
-                int row = itemTable.getRowAtPoint(e.getPoint());
-                int col = itemTable.getColumnAtPoint(e.getPoint());
-                if (row >= 0 && col == 4) {
-                    if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
-                            && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
-
-                        LocationPopup popup = new LocationPopup(application, selectedItem.getLocation());
-                        popup.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                }
-            }
-        } else if (e.getClickCount() == 2) {
-            if (selectedItem != null && !selectedItem.isUnknown()) {
-                onEditItem();
-            }
-        }
-    }
-
-    @Override
-    public void onShowSetsInTable(boolean show) {
-        showSets = show;
-        if (setsSelected()) {
-            if (selectedSet != null) {
-                setItemTableList(selectedSet.getSetItems());
-            }
-        } else {
-            if (selectedItem != null) {
-                setItemTableList(selectedDivision.getItemList());
-            }
-        }
-    }
-
-    @Override
-    public void onShowSetItemsInTable(boolean show) {
-        showSets = show;
-        if (setsSelected()) {
-            if (selectedSet != null) {
-                setItemTableList(selectedSet.getSetItems());
-            }
-        } else {
-            if (selectedItem != null) {
-                setItemTableList(selectedDivision.getItemList());
-            }
-        }
-    }
 
     private void initListeners() {
         setItemsChangedListener();
@@ -279,6 +162,139 @@ public class MainPanel extends MainPanelLayout {
             public void onCacheCleared() {
             }
         };
+    }
+
+
+    //
+    // Table
+    //
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting() && !Application.isUpdating(MainPanel.this)) {
+            Application.beginWait(MainPanel.this);
+            try {
+                selectedItem = itemTable.getSelectedItem();
+                updateComponents(selectedDivision);
+            } finally {
+                Application.endWait(MainPanel.this);
+            }
+        }
+    }
+
+    @Override
+    void onTableRowClicked(MouseEvent e) {
+        if (e.getClickCount() == 1) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                List<Item> selectedItems = itemTable.getAllSelectedItems();
+                JPopupMenu popup = null;
+                if (selectedItems == null || selectedItems.size() < 2) {
+                    tableSelectItem(itemTable.getRowAtPoint(e.getPoint()));
+                    if (selectedItem != null) {
+                        popup = new ItemPopup(selectedItem) {
+                            @Override
+                            public void onEditItem() {
+                                MainPanel.this.onEditItem();
+                            }
+
+                            @Override
+                            public void onDeleteItem() {
+                                MainPanel.this.onDeleteItem();
+                            }
+
+                            @Override
+                            public void onOpenLocalDataSheet(Item item) {
+                                application.openDataSheet(item, false);
+                            }
+
+                            @Override
+                            public void onOpenOnlineDataSheet(Item item) {
+                                application.openDataSheet(item, true);
+                            }
+
+                            @Override
+                            public void onOrderItem(Item item) {
+                                MainPanel.this.onOrderItem(item);
+                            }
+
+                            @Override
+                            public void onShowHistory(Item item) {
+                                MainPanel.this.onShowHistory(item);
+                            }
+
+                            @Override
+                            public void onAddToSet(Set set, Item item) {
+                                MainPanel.this.onAddItemToSet(set, item);
+                            }
+                        };
+                    }
+                } else {
+                    popup = new MultiItemPopup(selectedItems) {
+                        @Override
+                        public void onDeleteItems(List<Item> itemList) {
+                            MainPanel.this.onDeleteItem();
+                        }
+
+                        @Override
+                        public void onOrderItems(List<Item> itemList) {
+                            application.orderItems(itemList);
+                        }
+
+                        @Override
+                        public void onAddToSet(Set set, List<Item> itemList) {
+                            for (Item item : itemList) {
+                                MainPanel.this.onAddItemToSet(set, item);
+                            }
+                        }
+                    };
+                }
+                if (popup != null) {
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            } else {
+                int row = itemTable.getRowAtPoint(e.getPoint());
+                int col = itemTable.getColumnAtPoint(e.getPoint());
+                if (row >= 0 && col == 4) {
+                    if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
+                            && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
+
+                        LocationPopup popup = new LocationPopup(application, selectedItem.getLocation());
+                        popup.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+        } else if (e.getClickCount() == 2) {
+            if (selectedItem != null && !selectedItem.isUnknown()) {
+                onEditItem();
+            }
+        }
+    }
+
+    @Override
+    public void onShowSetsInTable(boolean show) {
+        showSets = show;
+        if (setsSelected()) {
+            if (selectedSet != null) {
+                setItemTableList(selectedSet.getSetItems());
+            }
+        } else {
+            if (selectedItem != null) {
+                setItemTableList(selectedDivision.getItemList());
+            }
+        }
+    }
+
+    @Override
+    public void onShowSetItemsInTable(boolean show) {
+        showSets = show;
+        if (setsSelected()) {
+            if (selectedSet != null) {
+                setItemTableList(selectedSet.getSetItems());
+            }
+        } else {
+            if (selectedItem != null) {
+                setItemTableList(selectedDivision.getItemList());
+            }
+        }
     }
 
     //
@@ -464,22 +480,6 @@ public class MainPanel extends MainPanelLayout {
             }
             selectedItem = null;
             updateEnabledComponents();
-        }
-    }
-
-    //
-    // Table or list selection changed
-    //
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && !Application.isUpdating(MainPanel.this)) {
-            Application.beginWait(MainPanel.this);
-            try {
-                selectedItem = itemTable.getSelectedItem();
-                updateComponents(selectedDivision);
-            } finally {
-                Application.endWait(MainPanel.this);
-            }
         }
     }
 

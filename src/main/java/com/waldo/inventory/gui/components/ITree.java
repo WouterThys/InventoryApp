@@ -18,7 +18,7 @@ public abstract class ITree<T extends DbObject> extends JTree {
         this(null);
     }
 
-    public ITree (TreeModel treeModel) {
+    public ITree(TreeModel treeModel) {
         super(treeModel);
 
         Dimension d = getPreferredSize();
@@ -49,13 +49,25 @@ public abstract class ITree<T extends DbObject> extends JTree {
 
     protected abstract DefaultTreeModel createModel(T root);
 
+    protected void collapseAllNodes(int startingIndex, int rowCount) {
+        for (int i = startingIndex; i < rowCount; ++i) {
+            collapseRow(i);
+        }
 
-    public void collapseAll() {
-
+        if (getRowCount() != rowCount) {
+            collapseAllNodes(rowCount, getRowCount());
+        }
     }
 
-    public void expandAll() {
 
+    protected void expandAllNodes(int startingIndex, int rowCount) {
+        for (int i = startingIndex; i < rowCount; ++i) {
+            expandRow(i);
+        }
+
+        if (getRowCount() != rowCount) {
+            expandAllNodes(rowCount, getRowCount());
+        }
     }
 
 
@@ -87,7 +99,7 @@ public abstract class ITree<T extends DbObject> extends JTree {
 
     public void setSelectedNode(TreeNode node) {
         if (node != null) {
-            TreeNode[] nodes = ((DefaultTreeModel)getModel()).getPathToRoot(node);
+            TreeNode[] nodes = ((DefaultTreeModel) getModel()).getPathToRoot(node);
             TreePath path = new TreePath(nodes);
 
             setSelectionPath(path);
@@ -147,7 +159,6 @@ public abstract class ITree<T extends DbObject> extends JTree {
     }
 
 
-
     public static DefaultTreeCellRenderer getFilesRenderer() {
         return new DefaultTreeCellRenderer() {
 
@@ -156,7 +167,7 @@ public abstract class ITree<T extends DbObject> extends JTree {
                 Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
                 if (value instanceof File) {
-                    setText(((File)value).getName());
+                    setText(((File) value).getName());
                     //setNameTxt(());
                 }
 

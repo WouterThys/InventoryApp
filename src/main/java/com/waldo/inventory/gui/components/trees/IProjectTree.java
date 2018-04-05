@@ -15,18 +15,20 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class IProjectTree extends ITree<Project> {
 
+    private final ImageIcon codeIcon = imageResource.readIcon("Projects.Tree.Code");
+    private final ImageIcon pcbIcon = imageResource.readIcon("Projects.Tree.Pcb");
+    private final ImageIcon otherIcon = imageResource.readIcon("Projects.Tree.Other");
+
     public IProjectTree(Project root, boolean showRoot, boolean allowMultiSelect) {
         super(root, showRoot, allowMultiSelect);
+
+        setRenderer();
     }
 
     @Override
     protected DefaultTreeModel createModel(Project root) {
-        return null;
-    }
+        rootNode = new DefaultMutableTreeNode(root);
 
-
-
-    private void treeInitializeTree(DefaultMutableTreeNode rootNode) {
         for (Project p : cache().getProjects()) {
             if (!p.isUnknown()) {
                 ProjectCode code = new ProjectCode("Code  ");
@@ -49,25 +51,24 @@ public class IProjectTree extends ITree<Project> {
                 rootNode.add(projectNode);
             }
         }
+
+        return new DefaultTreeModel(rootNode);
     }
 
     public void removeProject(Project project) {
 
     }
 
-    @Override
-    public void removeItem(Project parent, Project item) {
-        super.removeItem(parent, item);
+    public void collapseAll() {
+        expandAllNodes(0, getRowCount());
     }
 
+    public void expandAll() {
+        expandAllNodes(0, getRowCount());
+    }
 
-
-    public static DefaultTreeCellRenderer getProjectsRenderer() {
-        return new DefaultTreeCellRenderer() {
-            private final ImageIcon codeIcon = imageResource.readIcon("Projects.Tree.Code");
-            private final ImageIcon pcbIcon = imageResource.readIcon("Projects.Tree.Pcb");
-            private final ImageIcon otherIcon = imageResource.readIcon("Projects.Tree.Other");
-
+    private void setRenderer() {
+        setCellRenderer(new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
@@ -93,6 +94,6 @@ public class IProjectTree extends ITree<Project> {
 
                 return c;
             }
-        };
+        });
     }
 }

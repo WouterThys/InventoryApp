@@ -133,6 +133,12 @@ public class Order extends DbObject {
         return result;
     }
 
+    public static Order createDummyOrder(String name) {
+        Order order = new Order(name);
+        order.setCanBeSaved(false);
+        return order;
+    }
+
     //
     // DatabaseAccess tells the object is updated
     //

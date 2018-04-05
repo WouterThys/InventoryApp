@@ -562,7 +562,8 @@ public class Item extends DbObject {
             }
 
             if (inPlanned > 0) orderState = ItemOrderStates.Planned;
-            else if (inOrdered > inReceived) orderState = ItemOrderStates.Ordered;
+            else if (inOrdered > 0) orderState = ItemOrderStates.Ordered;
+            else orderState = ItemOrderStates.NoOrder;
         }
         return orderState;
     }

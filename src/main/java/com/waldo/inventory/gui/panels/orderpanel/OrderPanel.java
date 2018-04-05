@@ -220,7 +220,8 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = newOrder;
 
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
-                final long orderId = treeUpdate();
+                final long orderId = newOrder.getId();
+                treeReload();
 
                 SwingUtilities.invokeLater(() -> {
                     selectedOrder = SearchManager.sm().findOrderById(orderId);

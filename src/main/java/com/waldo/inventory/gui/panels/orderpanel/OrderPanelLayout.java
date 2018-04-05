@@ -25,7 +25,6 @@ import com.waldo.utils.icomponents.ITableEditors;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -108,85 +107,51 @@ public abstract class OrderPanelLayout extends IPanel implements
     //
     // Tree stuff
     //
-    private void treeInitializeTree(DefaultMutableTreeNode rootNode) {
-        Order ordered = new Order("Ordered");
-        Order planned = new Order("Planned");
-        Order received = new Order("Received");
 
-        ordered.setCanBeSaved(false);
-        planned.setCanBeSaved(false);
-        received.setCanBeSaved(false);
-
-        DefaultMutableTreeNode orderedNode = new DefaultMutableTreeNode(ordered);
-        DefaultMutableTreeNode plannedNode = new DefaultMutableTreeNode(planned);
-        DefaultMutableTreeNode receivedNode = new DefaultMutableTreeNode(received);
-
-        rootNode.add(receivedNode);
-        rootNode.add(orderedNode);
-        rootNode.add(plannedNode);
-
-        for (Order o : cache().getOrders()) {
-            if (!o.isUnknown()) {
-                DefaultMutableTreeNode oNode = new DefaultMutableTreeNode(o, false);
-
-                switch (o.getOrderState()) {
-                    case Planned:
-                        plannedNode.add(oNode);
-                        break;
-                    case Ordered:
-                        orderedNode.add(oNode);
-                        break;
-                    case Received:
-                        receivedNode.add(oNode);
-                        break;
-                    case NoOrder:
-                        break; // Should not happen
-                }
-            }
-        }
-    }
-
-
-    public DefaultMutableTreeNode sort(DefaultMutableTreeNode node) {
-        //sort alphabetically
-        for(int i = 0; i < node.getChildCount() - 1; i++) {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
-            String nt = child.getUserObject().toString();
-
-            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
-                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
-                String np = prevNode.getUserObject().toString();
-
-                System.out.println(nt + " " + np);
-                if(nt.compareToIgnoreCase(np) > 0) {
-                    node.insert(child, j);
-                    node.insert(prevNode, i);
-                }
-            }
-            if(child.getChildCount() > 0) {
-                sort(child);
-            }
-        }
-
-        //put folders first - normal on Windows and some flavors of Linux but not on Mac OS X.
-        for(int i = 0; i < node.getChildCount() - 1; i++) {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
-            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
-                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
-
-                if(!prevNode.isLeaf() && child.isLeaf()) {
-                    node.insert(child, j);
-                    node.insert(prevNode, i);
-                }
-            }
-        }
-
-        return node;
-
-    }
+//    public DefaultMutableTreeNode sort(DefaultMutableTreeNode node) {
+//        //sort alphabetically
+//        for(int i = 0; i < node.getChildCount() - 1; i++) {
+//            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+//            String nt = child.getUserObject().toString();
+//
+//            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
+//                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
+//                String np = prevNode.getUserObject().toString();
+//
+//                System.out.println(nt + " " + np);
+//                if(nt.compareToIgnoreCase(np) > 0) {
+//                    node.insert(child, j);
+//                    node.insert(prevNode, i);
+//                }
+//            }
+//            if(child.getChildCount() > 0) {
+//                sort(child);
+//            }
+//        }
+//
+//        //put folders first - normal on Windows and some flavors of Linux but not on Mac OS X.
+//        for(int i = 0; i < node.getChildCount() - 1; i++) {
+//            DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+//            for(int j = i + 1; j <= node.getChildCount() - 1; j++) {
+//                DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) node.getChildAt(j);
+//
+//                if(!prevNode.isLeaf() && child.isLeaf()) {
+//                    node.insert(child, j);
+//                    node.insert(prevNode, i);
+//                }
+//            }
+//        }
+//
+//        return node;
+//
+//    }
 
     void treeDeleteOrder(Order order) {
         ordersTree.removeOrder(order);
+    }
+
+    void treeReload() {
+        ordersTree.structureChanged();
     }
 
     long treeUpdate() {
@@ -494,7 +459,7 @@ public abstract class OrderPanelLayout extends IPanel implements
         centerPanel.add(detailPanels, BorderLayout.SOUTH);
         orderItemTable.getTitlePanel().add(createOrderToolbar(), BorderLayout.CENTER);
 
-        ordersTree.setPreferredSize(new Dimension(300, 200));
+        //ordersTree.setPreferredSize(new Dimension(300, 200));
         JScrollPane pane = new JScrollPane(ordersTree);
         westPanel.add(tbOrderFlowPanel, BorderLayout.PAGE_START);
         westPanel.add(pane, BorderLayout.CENTER);

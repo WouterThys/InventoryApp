@@ -96,6 +96,33 @@ public class ComparatorUtils {
     }
 
 
+    //
+    // Orders
+    //
+    public static class ReceivedOrderComparator implements Comparator<Order> {
+        @Override
+        public String toString() {
+            return "Received orders";
+        }
+
+        @Override
+        public int compare(Order o1, Order o2) {
+            if (o1 == null && o2 != null) {
+                return -1;
+            } else if (o1 != null && o2 == null) {
+                return 1;
+            } else if (o1 != null){
+                // Actual compare
+                if (o1.isReceived() && o2.isReceived()) {
+                    return o1.getDateReceived().compareTo(o2.getDateReceived());
+                } else {
+                    return 0;
+                }
+            } else {
+                return -1;
+            }
+        }
+    }
 
     //
     // Manufacturer
