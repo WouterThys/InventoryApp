@@ -30,6 +30,7 @@ import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 abstract class MainPanelLayout extends JPanel implements
         GuiUtils.GuiInterface,
@@ -170,12 +171,12 @@ abstract class MainPanelLayout extends JPanel implements
     //
     void treeSelectDivisionForItem(Item item) {
         if (item != null) {
-            divisionTree.setSelectedDivision(item.getDivision());
+            divisionTree.setSelectedItem(item.getDivision());
         }
     }
 
     void treeSelectDivision(Division division) {
-        divisionTree.setSelectedDivision(division);
+        divisionTree.setSelectedItem(division);
     }
 
     // Other
@@ -248,7 +249,11 @@ abstract class MainPanelLayout extends JPanel implements
         selectedDivision = rootDivision;
 
         // Sets
-        setTree = new ISetTree(false);
+        List<Set> rootSets = cache().getSets();
+        rootSets.sort(new ComparatorUtils.DbObjectNameComparator<>());
+        Set rootSet = Set.createDummySet("Dummy", rootSets);
+
+        setTree = new ISetTree(rootSet, false, false);
         setTree.addTreeSelectionListener(this);
         setTree.addMouseListener(new MouseAdapter() {
             @Override

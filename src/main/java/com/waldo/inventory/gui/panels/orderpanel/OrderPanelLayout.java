@@ -9,9 +9,9 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IOrderFlowPanel;
 import com.waldo.inventory.gui.components.ITablePanel;
-import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
+import com.waldo.inventory.gui.components.trees.IOrderTree;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
@@ -36,7 +36,6 @@ import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class OrderPanelLayout extends IPanel implements
@@ -52,8 +51,7 @@ public abstract class OrderPanelLayout extends IPanel implements
     private ITablePanel<OrderItem> orderItemTable;
     IOrderItemTableModel tableModel;
 
-    ITree ordersTree;
-    private IDbObjectTreeModel<Order> treeModel;
+    IOrderTree ordersTree;
     AbstractDetailPanel detailPanel;
 
     IdBToolBar treeToolBar;
@@ -71,6 +69,8 @@ public abstract class OrderPanelLayout extends IPanel implements
 
     OrderItem selectedOrderItem;
     Order selectedOrder;
+
+    Order rootOrder;
 
     /*
      *                  CONSTRUCTOR
@@ -185,18 +185,8 @@ public abstract class OrderPanelLayout extends IPanel implements
 
     }
 
-    void treeRecreateNodes() {
-        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
-        rootNode.removeAllChildren();
-        treeInitializeTree(rootNode);
-    }
-
     void treeDeleteOrder(Order order) {
-        try {
-            treeModel.removeObject(order);
-        } catch (Exception e) {
-            Status().setError("Failed to remove order " + order.getName() + " from tree", e);
-        }
+        ordersTree.removeOrder(order);
     }
 
     long treeUpdate() {
@@ -204,13 +194,13 @@ public abstract class OrderPanelLayout extends IPanel implements
         if (selectedOrder != null) {
             orderId = selectedOrder.getId();
         }
-        treeModel.reload();
-        treeModel.expandNodes();
+        ordersTree.updateTree();
+        ordersTree.expandAll();
         return orderId;
     }
 
     void treeSelectOrder(Order order) {
-        treeModel.setSelectedObject(order);
+        ordersTree.setSelectedItem(order);
     }
 
 
@@ -348,21 +338,11 @@ public abstract class OrderPanelLayout extends IPanel implements
     @Override
     public void initializeComponents() {
         // Sub division tree
-        Order virtualRootOrder = new Order("All");
-        virtualRootOrder.setCanBeSaved(false);
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(virtualRootOrder, true);
-        treeInitializeTree(rootNode);
-        treeModel = new IDbObjectTreeModel<>(rootNode, (rootNode1, child) -> {
-            if (child.isOrdered()) {
-                return (DefaultMutableTreeNode) rootNode.getChildAt(0); // Ordered
-            } else {
-                return (DefaultMutableTreeNode) rootNode.getChildAt(1); // Not ordered
-            }
-        });
+        rootOrder = new Order("All");
+        rootOrder.setCanBeSaved(false);
 
-        ordersTree = new ITree(treeModel);
+        ordersTree = new IOrderTree(rootOrder, false, false);
         ordersTree.addTreeSelectionListener(this);
-        ordersTree.setCellRenderer(ITree.getOrdersRenderer());
         ordersTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -373,7 +353,6 @@ public abstract class OrderPanelLayout extends IPanel implements
                 }
             }
         });
-        treeModel.setTree(ordersTree);
 
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
@@ -543,8 +522,7 @@ public abstract class OrderPanelLayout extends IPanel implements
                 }
             }
 
-            treeModel.expandNodes(0, ordersTree.getRowCount());
-
+            ordersTree.expandAll();
             updateToolBar(selectedOrder);
 
             // Update detail panel

@@ -235,13 +235,13 @@ public class MainPanel extends MainPanelLayout {
         divisionsChanged = new CacheChangedListener<Division>() {
             @Override
             public void onInserted(Division division) {
-               divisionTree.addDivision(division);
+               divisionTree.addItem(division);
                updateComponents(division);
             }
 
             @Override
             public void onUpdated(Division division) {
-                divisionTree.updateDivision(division);
+                divisionTree.updateItem(division);
                 updateComponents(division);
             }
 
@@ -289,9 +289,9 @@ public class MainPanel extends MainPanelLayout {
         if (!Application.isUpdating(MainPanel.this)) {
             if (e.getSource().equals(divisionTree)) {
                 selectedItem = null;
-                updateComponents(divisionTree.getSelectedDivision());
+                updateComponents(divisionTree.getSelectedItem());
             } else {
-                updateComponents(setTree.getSelectedSet());
+                updateComponents(setTree.getSelectedItem());
             }
         }
     }
@@ -299,7 +299,7 @@ public class MainPanel extends MainPanelLayout {
     @Override
     void onTreeRightClick(MouseEvent e) {
         if (e.getSource().equals(divisionTree)) {
-            selectedDivision = divisionTree.getSelectedDivision();
+            selectedDivision = divisionTree.getSelectedItem();
             if (selectedDivision != null) {
                 JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
                     @Override
@@ -320,7 +320,7 @@ public class MainPanel extends MainPanelLayout {
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         } else {
-            selectedSet = setTree.getSelectedSet();
+            selectedSet = setTree.getSelectedItem();
             if (selectedSet != null) {
                 JPopupMenu popupMenu = new SetPopup(selectedSet) {
                     @Override

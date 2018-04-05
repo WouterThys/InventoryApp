@@ -6,9 +6,10 @@ import com.waldo.inventory.gui.components.ITree;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
-import java.util.Enumeration;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -43,88 +44,8 @@ public class IDivisionTree extends ITree<Division> implements TreeModelListener 
         return node;
     }
 
-    public Division getSelectedDivision() {
-        Division selected = null;
-        DefaultMutableTreeNode selectedNode = getSelectedNode();
-        if (selectedNode != null) {
-            selected = (Division) selectedNode.getUserObject();
-        }
-        return selected;
-    }
-
-    private DefaultMutableTreeNode getSelectedNode() {
-        DefaultMutableTreeNode selected = null;
-        TreePath path = getSelectionModel().getSelectionPath();
-        if (path != null) {
-            selected = (DefaultMutableTreeNode) path.getLastPathComponent();
-        }
-        return selected;
-    }
-
-    public void setSelectedDivision(Division division) {
-        if (division != null) {
-            DefaultMutableTreeNode node = findNodeFromDivision(division);
-            if (node != null) {
-                TreeNode[] nodes = ((DefaultTreeModel)getModel()).getPathToRoot(node);
-                TreePath path = new TreePath(nodes);
-
-                setSelectionPath(path);
-                scrollPathToVisible(path);
-            }
-        } else {
-            clearSelection();
-        }
-    }
-
-    public void updateTree() {
-        treeModel.reload();
-    }
-
-    public void updateDivision(Division division) {
-        if (division != null) {
-            DefaultMutableTreeNode node = findNodeFromDivision(division);
-            if (node != null) {
-                treeModel.nodeChanged(node);
-            }
-        }
-    }
-
-    public void addDivision(Division division) {
-        if (division != null) {
-            DefaultMutableTreeNode parentNode = getSelectedNode();
-            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(division);
-
-            if (parentNode == null) {
-                parentNode = rootNode;
-            }
-
-            treeModel.insertNodeInto(childNode, parentNode, parentNode.getChildCount());
-            scrollPathToVisible(new TreePath(childNode.getPath()));
-        }
-    }
-
     public void removeDivision(Division division) {
-        if (division != null) {
-            MutableTreeNode divisionNode = findNodeFromDivision(division);
-            MutableTreeNode parentNode = findNodeFromDivision(division.getParentDivision());
-            if (parentNode != null && divisionNode != null) {
-                treeModel.removeNodeFromParent(divisionNode);
-            }
-        }
-    }
-
-    private DefaultMutableTreeNode findNodeFromDivision(Division division) {
-        Enumeration e = rootNode.depthFirstEnumeration();
-        while (e.hasMoreElements()) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            Division nodeObject = (Division) node.getUserObject();
-            if (nodeObject != null) {
-                if (nodeObject.equals(division)) {
-                    return node;
-                }
-            }
-        }
-        return null;
+        super.removeItem(division.getParentDivision(), division);
     }
 
     private void setRenderer() {

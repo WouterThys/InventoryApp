@@ -201,8 +201,8 @@ public class OrderPanel extends OrderPanelLayout {
 
                 tableInitialize(order);
                 tableSelectOrderItem(selectedOrderItem);
+                ordersTree.addItem(order);
 
-                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
@@ -220,7 +220,6 @@ public class OrderPanel extends OrderPanelLayout {
                 selectedOrder = newOrder;
 
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
-                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
@@ -252,7 +251,6 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onCacheCleared() {
                 tableSelectOrderItem(selectedOrderItem); // When deleted, this should be null
-                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
@@ -823,7 +821,6 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
         if (source.equals(treeToolBar)) {
-            treeRecreateNodes();
             final long orderId = treeUpdate();
             final long orderItemId = tableUpdate();
 
@@ -837,7 +834,6 @@ public class OrderPanel extends OrderPanelLayout {
             Application.beginWait(OrderPanel.this);
             try {
                 tableInitialize(selectedOrder);
-                treeRecreateNodes();
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {

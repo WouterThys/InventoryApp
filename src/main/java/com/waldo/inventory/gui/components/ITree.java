@@ -8,10 +8,9 @@ import java.awt.*;
 import java.io.File;
 import java.util.Enumeration;
 
-import static com.waldo.inventory.gui.Application.imageResource;
-
 public abstract class ITree<T extends DbObject> extends JTree {
 
+    protected T root;
     protected DefaultMutableTreeNode rootNode;
     protected DefaultTreeModel treeModel;
 
@@ -30,6 +29,7 @@ public abstract class ITree<T extends DbObject> extends JTree {
     public ITree(T root, boolean showRoot, boolean allowMultiSelect) {
         super();
 
+        this.root = root;
         treeModel = createModel(root);
         setModel(treeModel);
 
@@ -49,6 +49,14 @@ public abstract class ITree<T extends DbObject> extends JTree {
 
     protected abstract DefaultTreeModel createModel(T root);
 
+
+    public void collapseAll() {
+
+    }
+
+    public void expandAll() {
+
+    }
 
 
     public T getSelectedItem() {
@@ -71,16 +79,19 @@ public abstract class ITree<T extends DbObject> extends JTree {
 
     public void setSelectedItem(T item) {
         if (item != null) {
-            DefaultMutableTreeNode node = findNode(item);
-            if (node != null) {
-                TreeNode[] nodes = ((DefaultTreeModel)getModel()).getPathToRoot(node);
-                TreePath path = new TreePath(nodes);
-
-                setSelectionPath(path);
-                scrollPathToVisible(path);
-            }
+            setSelectedNode(findNode(item));
         } else {
             clearSelection();
+        }
+    }
+
+    public void setSelectedNode(TreeNode node) {
+        if (node != null) {
+            TreeNode[] nodes = ((DefaultTreeModel)getModel()).getPathToRoot(node);
+            TreePath path = new TreePath(nodes);
+
+            setSelectionPath(path);
+            scrollPathToVisible(path);
         }
     }
 
@@ -121,7 +132,7 @@ public abstract class ITree<T extends DbObject> extends JTree {
         }
     }
 
-    private DefaultMutableTreeNode findNode(T item) {
+    public DefaultMutableTreeNode findNode(T item) {
         Enumeration e = rootNode.depthFirstEnumeration();
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -136,42 +147,6 @@ public abstract class ITree<T extends DbObject> extends JTree {
     }
 
 
-
-    public static DefaultTreeCellRenderer getOrdersRenderer() {
-        return new DefaultTreeCellRenderer() {
-            private final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
-            private final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
-            private final ImageIcon plannedIcon = imageResource.readIcon("Orders.Tree.Planned");
-
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-                if (value instanceof DefaultMutableTreeNode) {
-                    DbObject object = (DbObject) ((DefaultMutableTreeNode) value).getUserObject();
-                    if (!object.canBeSaved()) {
-                        switch (object.getName()) {
-                            case "Planned":
-                                setIcon(plannedIcon);
-                                break;
-                            case "Ordered":
-                                setIcon(orderedIcon);
-                                break;
-                            case "Received":
-                                setIcon(receivedIcon);
-                                break;
-                            default:
-                                break;
-                        }
-                    } else {
-                        setIcon(null);
-                    }
-                }
-
-                return c;
-            }
-        };
-    }
 
     public static DefaultTreeCellRenderer getFilesRenderer() {
         return new DefaultTreeCellRenderer() {
@@ -190,37 +165,5 @@ public abstract class ITree<T extends DbObject> extends JTree {
         };
     }
 
-    public static DefaultTreeCellRenderer getProjectsRenderer() {
-        return new DefaultTreeCellRenderer() {
-            private final ImageIcon codeIcon = imageResource.readIcon("Projects.Tree.Code");
-            private final ImageIcon pcbIcon = imageResource.readIcon("Projects.Tree.Pcb");
-            private final ImageIcon otherIcon = imageResource.readIcon("Projects.Tree.Other");
 
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
-                if (value instanceof DefaultMutableTreeNode) {
-                    DbObject object = (DbObject) ((DefaultMutableTreeNode) value).getUserObject();
-                    if (!object.canBeSaved()) {
-                        switch (DbObject.getType(object)) {
-                            case DbObject.TYPE_PROJECT_CODE:
-                                setIcon(codeIcon);
-                                break;
-                            case DbObject.TYPE_PROJECT_PCB:
-                                setIcon(pcbIcon);
-                                break;
-                            case DbObject.TYPE_PROJECT_OTHER:
-                                setIcon(otherIcon);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-
-                return c;
-            }
-        };
-    }
 }

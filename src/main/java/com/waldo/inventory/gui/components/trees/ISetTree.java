@@ -4,17 +4,16 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.components.ITree;
 
-import javax.swing.tree.*;
-import java.util.Enumeration;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ISetTree extends ITree<Set> {
 
-    public ISetTree(Set rootSet, boolean showRoot) {
-        super(rootSet, showRoot, false);
-
+    public ISetTree(Set rootSet, boolean showRoot, boolean allowMultiSelect) {
+        super(rootSet, showRoot, allowMultiSelect);
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         renderer.setLeafIcon(imageResource.readIcon("Items.Tree.Set"));
         setCellRenderer(renderer);
@@ -22,9 +21,9 @@ public class ISetTree extends ITree<Set> {
 
     @Override
     protected DefaultTreeModel createModel(Set set) {
-        rootNode = new DefaultMutableTreeNode(rootSet);
+        rootNode = new DefaultMutableTreeNode(set);
 
-        for(Item item : rootSet.getSetItems()) {
+        for(Item item : set.getSetItems()) {
             rootNode.add(new DefaultMutableTreeNode(item, false));
         }
 
@@ -32,86 +31,8 @@ public class ISetTree extends ITree<Set> {
     }
 
     public Set getRootSet() {
-        return rootSet;
+        return root;
     }
 
-    public Set getSelectedSet() {
-        Set selected = null;
-        DefaultMutableTreeNode selectedNode = getSelectedNode();
-        if (selectedNode != null) {
-            selected = (Set) selectedNode.getUserObject();
-        }
-        return selected;
-    }
 
-    private DefaultMutableTreeNode getSelectedNode() {
-        DefaultMutableTreeNode selected = null;
-        TreePath path = getSelectionModel().getSelectionPath();
-        if (path != null) {
-            selected = (DefaultMutableTreeNode) path.getLastPathComponent();
-        }
-        return selected;
-    }
-
-    public void setSelectedSet(Set set) {
-        if (set != null) {
-            DefaultMutableTreeNode node = findNodeFromSet(set);
-            if (node != null) {
-                TreeNode[] nodes = ((DefaultTreeModel) getModel()).getPathToRoot(node);
-                TreePath path = new TreePath(nodes);
-
-                setSelectionPath(path);
-                scrollPathToVisible(path);
-            }
-        } else {
-            clearSelection();
-        }
-    }
-
-    public void updateTree() {
-        treeModel.reload();
-    }
-
-    public void updateSet(Set set) {
-        if (set != null) {
-            DefaultMutableTreeNode node = findNodeFromSet(set);
-            if (node != null) {
-                treeModel.nodeChanged(node);
-            }
-        }
-    }
-
-    public void addSet(Set set) {
-        if (set != null) {
-            rootSet.getSetItems().add(set);
-
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(set);
-            treeModel.insertNodeInto(node, rootNode, rootNode.getChildCount());
-            scrollPathToVisible(new TreePath(node.getPath()));
-        }
-    }
-
-    public void removeSet(Set set) {
-        if (set != null) {
-            DefaultMutableTreeNode node = findNodeFromSet(set);
-            if (node != null) {
-                treeModel.removeNodeFromParent(node);
-            }
-            rootSet.getSetItems().remove(set);
-        }
-    }
-
-    private DefaultMutableTreeNode findNodeFromSet(Set set) {
-        Enumeration e = rootNode.depthFirstEnumeration();
-        while (e.hasMoreElements()) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            Set nodeObject = (Set) node.getUserObject();
-            if (nodeObject != null) {
-                if (nodeObject.equals(set)) {
-                    return node;
-                }
-            }
-        }
-        return null;
-    }
 }

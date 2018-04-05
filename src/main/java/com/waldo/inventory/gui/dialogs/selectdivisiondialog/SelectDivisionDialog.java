@@ -17,7 +17,7 @@ public class SelectDivisionDialog extends SelectDivisionDialogLayout {
     }
 
     public Division getSelectedDivision() {
-        return divisionTree.getSelectedDivision();
+        return divisionTree.getSelectedItem();
     }
 
 }

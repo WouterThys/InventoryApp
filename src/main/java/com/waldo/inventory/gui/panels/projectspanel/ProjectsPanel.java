@@ -54,7 +54,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
         updateProjectObjects(project);
 
         updatePanels(TAB_CODE, project);
-        treeRecreateNodes();
+        projectsTree.addItem(project);
         final long projectId = treeUpdate();
 
         SwingUtilities.invokeLater(() -> {
@@ -73,7 +73,6 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
         updateProjectObjects(project);
 
         updatePanels(getSelectedTab(), project);
-        treeRecreateNodes();
         final long projectId = treeUpdate();
 
         SwingUtilities.invokeLater(() -> {

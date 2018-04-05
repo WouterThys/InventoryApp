@@ -62,7 +62,7 @@ abstract class SelectDivisionDialogLayout extends IDialog {
         if (args.length > 0 && args[0] != null) {
             Division division = (Division)args[0];
             if (division.canBeSaved()) {
-                divisionTree.setSelectedDivision(division);
+                divisionTree.setSelectedItem(division);
             }
         }
     }
