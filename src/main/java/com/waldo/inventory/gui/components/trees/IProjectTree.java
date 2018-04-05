@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import java.awt.*;
 
@@ -31,32 +32,45 @@ public class IProjectTree extends ITree<Project> {
 
         for (Project p : cache().getProjects()) {
             if (!p.isUnknown()) {
-                ProjectCode code = new ProjectCode("Code  ");
-                ProjectPcb pcb = new ProjectPcb("Pcbs  ");
-                ProjectOther other = new ProjectOther("Other  ");
-
-                code.setCanBeSaved(false);
-                pcb.setCanBeSaved(false);
-                other.setCanBeSaved(false);
-
-                DefaultMutableTreeNode codeNode = new DefaultMutableTreeNode(code, false);
-                DefaultMutableTreeNode pcbNode = new DefaultMutableTreeNode(pcb, false);
-                DefaultMutableTreeNode otherNode = new DefaultMutableTreeNode(other, false);
-                DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(p);
-
-                projectNode.add(codeNode);
-                projectNode.add(pcbNode);
-                projectNode.add(otherNode);
-
-                rootNode.add(projectNode);
+                rootNode.add(createProjectNode(p));
             }
         }
 
         return new DefaultTreeModel(rootNode);
     }
 
-    public void removeProject(Project project) {
+    private DefaultMutableTreeNode createProjectNode(Project project) {
+        ProjectCode code = new ProjectCode("Code  ");
+        ProjectPcb pcb = new ProjectPcb("Pcbs  ");
+        ProjectOther other = new ProjectOther("Other  ");
 
+        code.setCanBeSaved(false);
+        pcb.setCanBeSaved(false);
+        other.setCanBeSaved(false);
+
+        DefaultMutableTreeNode codeNode = new DefaultMutableTreeNode(code, false);
+        DefaultMutableTreeNode pcbNode = new DefaultMutableTreeNode(pcb, false);
+        DefaultMutableTreeNode otherNode = new DefaultMutableTreeNode(other, false);
+        DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project);
+
+        projectNode.add(codeNode);
+        projectNode.add(pcbNode);
+        projectNode.add(otherNode);
+
+        return projectNode;
+    }
+
+    public void removeProject(Project project) {
+        super.removeItem(root, project);
+    }
+
+    public void addProject(Project project) {
+        if (project != null) {
+            DefaultMutableTreeNode parentNode = rootNode;
+            DefaultMutableTreeNode childNode = createProjectNode(project);
+            treeModel.insertNodeInto(childNode, parentNode, parentNode.getChildCount());
+            scrollPathToVisible(new TreePath(childNode.getPath()));
+        }
     }
 
     public void collapseAll() {

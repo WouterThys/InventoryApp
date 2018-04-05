@@ -14,10 +14,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener /*, ActionListener */ {
@@ -73,6 +70,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     @Override
     public void initializeComponents() {
         iconBtn = new JButton();
+        iconBtn.setPreferredSize(new Dimension(70,70));
+        iconBtn.setMinimumSize(new Dimension(70,70));
+        iconBtn.setMaximumSize(new Dimension(70,70));
         iconBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         iconBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
         iconBtn.addMouseListener(this);
@@ -111,10 +111,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     @Override
     public void updateComponents(Object... object) {
         ProjectIDE ide = projectObject.getProjectIDE();
-        Path path;
+
         if (ide != null) {
-            path = Paths.get(settings().getFileSettings().getImgIdesPath(), projectObject.getProjectIDE().getIconPath());
-            setIcon(path.toString(), projectObject.isValid());
+            setIcon(projectObject.getProjectIDE().getIconPath(), projectObject.isValid());
         } else {
             String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
             String iconPath = "";
@@ -144,9 +143,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     private void setIcon(String path, boolean isValid) {
         if (!path.isEmpty()) {
             try {
-                ImageIcon ideIcon = imageResource.readIdeIcon(path);
+                ImageIcon ideIcon = ImageResource.scaleImage(imageResource.readIdeIcon(path), new Dimension(60,60));
                 if (isValid) {
-                    iconBtn.setIcon(ImageResource.scaleImage(ideIcon, new Dimension(48,48)));
+                    iconBtn.setIcon(ideIcon);
                 } else {
                     ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
                     iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
@@ -182,17 +181,19 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         }
 
         public int getIconHeight() {
+            //return 60;
             return center.getIconHeight();// + (error.getIconHeight()/2);
         }
 
         public int getIconWidth() {
+            //return 60;
             return center.getIconWidth();// + (error.getIconWidth()/2);
         }
 
         public void paintIcon(Component c, Graphics g, int x, int y) {
             center.paintIcon(c, g, x, y);
-            int errorX = x + center.getIconWidth() - (error.getIconWidth()/3);
-            int errorY = y - (error.getIconWidth()/3);
+            int errorX = 50;//x + center.getIconWidth() - (error.getIconWidth()/3);
+            int errorY = 5;//y - (error.getIconWidth()/3);
             error.paintIcon(c, g, errorX, errorY);
         }
     }
