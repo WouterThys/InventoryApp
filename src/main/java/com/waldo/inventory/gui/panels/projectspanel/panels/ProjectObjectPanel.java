@@ -7,7 +7,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.ProjectObjectPopup;
-import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPreviewPanel;
+import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectPreviewPanel;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;

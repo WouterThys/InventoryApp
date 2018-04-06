@@ -140,7 +140,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             projectId = selectedProject.getId();
         }
         projectsTree.updateTree();
-        projectsTree.expandAll();
+        //projectsTree.expandAll();
         return projectId;
     }
 

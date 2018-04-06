@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel;
+package com.waldo.inventory.gui.panels.projectspanel.preview;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;

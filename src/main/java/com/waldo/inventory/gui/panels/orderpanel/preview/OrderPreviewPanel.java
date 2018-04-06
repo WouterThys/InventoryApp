@@ -1,91 +1,95 @@
-package com.waldo.inventory.gui.panels.mainpanel.preview;
+package com.waldo.inventory.gui.panels.orderpanel.preview;
 
-import com.waldo.inventory.classes.dbclasses.Division;
+import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.IdBToolBar.IdbToolBarListener;
-import com.waldo.inventory.gui.dialogs.editdivisiondialog.EditDivisionDialog;
+import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
+import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.utils.GuiUtils;
+import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
+import org.apache.xpath.operations.Or;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
+public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarListener {
 
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     private ITextField totalItemsTf;
     private ITextField totalPriceTf;
-    private IdBToolBar divisionTb;
+    private ITextField orderByTf;
+    private IdBToolBar orderTb;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
-    private final Division rootDivision;
+    private final Order rootOrder;
 
-    private Division selectedDivision;
+    private Order selectedOrder;
+
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public DivisionPreviewPanel(Application application, Division rootDivision) {
-        super();
+    public OrderPreviewPanel(Application application, Order rootOrder) {
         this.application = application;
-        this.rootDivision = rootDivision;
+        this.rootOrder = rootOrder;
         initializeComponents();
         initializeLayouts();
+        updateComponents();
     }
 
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        boolean enabled = selectedDivision != null && selectedDivision.canBeSaved();
-        divisionTb.setEditActionEnabled(enabled);
-        divisionTb.setDeleteActionEnabled(enabled);
+        boolean enabled = selectedOrder != null;
+        orderTb.setEditActionEnabled(enabled);
+        orderTb.setDeleteActionEnabled(enabled);
     }
 
-    private void setDetails(Division division) {
-        if (division != null) {
-            totalPriceTf.setText(String.valueOf(division.getTotalItemPrice()));
-            totalItemsTf.setText(String.valueOf(division.getItemList().size()));
+    private void setDetails(Order order) {
+        if (order != null) {
+            totalItemsTf.setText(String.valueOf(order.getOrderItems().size()));
+            totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
         }
     }
 
-    public void addDivision(Division division) {
-        Division parent;
-        if (division != null && division.canBeSaved()) {
-            parent = division;
-        } else {
-            parent = rootDivision;
-        }
-        EditDivisionDialog dialog = new EditDivisionDialog(application, new Division(parent), parent);
+    public void addOrder() {
+        EditOrdersDialog dialog = new EditOrdersDialog(application, new Order(), true);
         dialog.showDialog();
     }
 
-    public void editDivision(Division division) {
-        Division parent = null;
-        if (division != null && division.canBeSaved()) {
-            parent = division.getParentDivision();
+    public void editOrder(Order order) {
+        if (order != null) {
+            EditOrdersDialog dialog = new EditOrdersDialog(application, order, true);
+            dialog.showDialog();
         }
-        if (parent == null) {
-            parent = rootDivision;
-        }
-        EditDivisionDialog dialog = new EditDivisionDialog(application, division, parent);
-        dialog.showDialog();
     }
 
-    public void deleteDivision(Division division) {
-        if (division != null && division.canBeSaved()) {
-            int res = JOptionPane.showConfirmDialog(application, "Are you sure you want to delete " + division);
-            if (res == JOptionPane.YES_OPTION) {
-                division.delete();
+    public void deleteOrder(Order order) {
+        if (order != null && order.canBeSaved()) {
+            int res = JOptionPane.showConfirmDialog(OrderPreviewPanel.this, "Are you sure you want to delete \"" + order.getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                SwingUtilities.invokeLater(() -> {
+                    List<OrderItem> orderItems = selectedOrder.getOrderItems();
+                    order.delete(); // Cascaded delete will delete order items too
+
+                    // Do this after delete: items will not be updated in change listener for orders
+                    for (OrderItem orderItem : orderItems) {
+                        orderItem.updateOrderState();
+                    }
+                });
             }
         }
     }
@@ -93,27 +97,28 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     //
     // Tool bar
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        setDetails(selectedDivision);
+        setDetails(selectedOrder);
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        addDivision(selectedDivision);
+        addOrder(selectedOrder);
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        deleteDivision(selectedDivision);
+        deleteOrder(selectedOrder);
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        editDivision(selectedDivision);
+        editOrder(selectedOrder);
     }
 
     //
@@ -123,7 +128,8 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
     public void initializeComponents() {
         totalItemsTf = new ITextField(false, 8);
         totalPriceTf = new ITextField(false, 8);
-        divisionTb = new IdBToolBar(this);
+        orderByTf = new ITextField(false);
+        orderTb = new IdBToolBar(this);
     }
 
     @Override
@@ -138,16 +144,12 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
         gbc = new GuiUtils.GridBagHelper(totalPricePnl);
         gbc.addLine("Total price", imageResource.readIcon("Preview.Price"), totalPriceTf);
 
-        JPanel infoPnl = new JPanel();
-        infoPnl.setLayout(new BoxLayout(infoPnl, BoxLayout.X_AXIS));
-        infoPnl.add(totalItemsPnl);
-        infoPnl.add(totalPricePnl);
-
         JPanel centerPnl = new JPanel(new BorderLayout());
         JPanel southPnl = new JPanel(new BorderLayout());
 
-        centerPnl.add(infoPnl, BorderLayout.SOUTH);
-        southPnl.add(divisionTb, BorderLayout.WEST);
+        centerPnl.add(totalItemsPnl, BorderLayout.EAST);
+        centerPnl.add(divisionPanel, BorderLayout.CENTER);
+        southPnl.add(setTb, BorderLayout.WEST);
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);
@@ -158,13 +160,13 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
     public void updateComponents(Object... args) {
         if (args.length == 0 || args[0] == null) {
             setVisible(false);
-            selectedDivision = null;
+            selectedOrder = null;
         } else {
             setVisible(true);
-            if (args[0] instanceof Division) {
-                selectedDivision = (Division) args[0];
+            if (args[0] instanceof Order) {
+                selectedOrder = (Order) args[0];
             }
-            setDetails(selectedDivision);
+            setDetails(selectedOrder);
             updateEnabledComponents();
         }
     }

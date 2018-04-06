@@ -5,7 +5,7 @@ import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
-import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectPcbPreviewPanel;
+import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectPcbPreviewPanel;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -127,7 +127,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         if (selectedProjectObject != null) {
             EditProjectPcbDialog dialog = new EditProjectPcbDialog(application, "Edit " + selectedProjectObject.getName(), selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
-                selectedProjectObject.save();
+                //selectedProjectObject.save();
                 updateComponents(selectedProjectObject);
             }
         }

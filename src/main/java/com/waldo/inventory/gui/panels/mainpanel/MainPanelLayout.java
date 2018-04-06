@@ -91,7 +91,7 @@ abstract class MainPanelLayout extends JPanel implements
         setPreviewPanel.updateComponents(selectedSet);
     }
 
-    abstract void onTreeRightClick(MouseEvent e);
+    abstract void onTreeRowClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
 
     //
@@ -238,10 +238,10 @@ abstract class MainPanelLayout extends JPanel implements
         divisionTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
+                if (SwingUtilities.isRightMouseButton(e) || e.getClickCount() >= 2) {
                     int row = divisionTree.getClosestRowForLocation(e.getX(), e.getY());
                     divisionTree.setSelectionRow(row);
-                    onTreeRightClick(e);
+                    onTreeRowClick(e);
                 }
             }
         });
@@ -258,10 +258,10 @@ abstract class MainPanelLayout extends JPanel implements
         setTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
+                if (SwingUtilities.isRightMouseButton(e) || e.getClickCount() >= 2) {
                     int row = setTree.getClosestRowForLocation(e.getX(), e.getY());
                     setTree.setSelectionRow(row);
-                    onTreeRightClick(e);
+                    onTreeRowClick(e);
                 }
             }
         });

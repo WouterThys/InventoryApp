@@ -178,6 +178,17 @@ public class SearchManager {
         return null;
     }
 
+    public Order findOrderByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (Order o : cache().getOrders()) {
+                if (o.getName().equals(name)) {
+                    return o;
+                }
+            }
+        }
+        return null;
+    }
+
     public OrderItem findOrderItemById(long id) {
         for (OrderItem t : cache().getOrderItems()) {
             if (t.getId() == id) {

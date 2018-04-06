@@ -313,53 +313,61 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
-    void onTreeRightClick(MouseEvent e) {
+    void onTreeRowClick(MouseEvent e) {
         if (e.getSource().equals(divisionTree)) {
             selectedDivision = divisionTree.getSelectedItem();
             if (selectedDivision != null) {
-                JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
-                    @Override
-                    public void onAddDivision() {
-                        divisionPreviewPanel.addDivision(selectedDivision);
-                    }
+                if (e.getClickCount() >= 2) {
+                    divisionPreviewPanel.editDivision(selectedDivision);
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    JPopupMenu popupMenu = new DivisionPopup(selectedDivision) {
+                        @Override
+                        public void onAddDivision() {
+                            divisionPreviewPanel.addDivision(selectedDivision);
+                        }
 
-                    @Override
-                    public void onEditDivision() {
-                        divisionPreviewPanel.editDivision(selectedDivision);
-                    }
+                        @Override
+                        public void onEditDivision() {
+                            divisionPreviewPanel.editDivision(selectedDivision);
+                        }
 
-                    @Override
-                    public void onDeleteDivision() {
-                        divisionPreviewPanel.deleteDivision(selectedDivision);
-                    }
-                };
-                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        @Override
+                        public void onDeleteDivision() {
+                            divisionPreviewPanel.deleteDivision(selectedDivision);
+                        }
+                    };
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
             }
         } else {
             selectedSet = setTree.getSelectedItem();
             if (selectedSet != null) {
-                JPopupMenu popupMenu = new SetPopup(selectedSet) {
-                    @Override
-                    public void onEditSet(Set set) {
-                        setPreviewPanel.editSet(set);
-                    }
+                if (e.getClickCount() >= 2) {
+                    setPreviewPanel.editSet(selectedSet);
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    JPopupMenu popupMenu = new SetPopup(selectedSet) {
+                        @Override
+                        public void onEditSet(Set set) {
+                            setPreviewPanel.editSet(set);
+                        }
 
-                    @Override
-                    public void onDeleteSet(Set set) {
-                        setPreviewPanel.deleteSet(set);
-                    }
+                        @Override
+                        public void onDeleteSet(Set set) {
+                            setPreviewPanel.deleteSet(set);
+                        }
 
-                    @Override
-                    public void onAddItemsToSet(Set set) {
-                        // todo
-                    }
+                        @Override
+                        public void onAddItemsToSet(Set set) {
+                            // todo
+                        }
 
-                    @Override
-                    public void onSetWizard(Set set) {
-                        setPreviewPanel.onSetWizard(set);
-                    }
-                };
-                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        @Override
+                        public void onSetWizard(Set set) {
+                            setPreviewPanel.onSetWizard(set);
+                        }
+                    };
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
             }
         }
     }

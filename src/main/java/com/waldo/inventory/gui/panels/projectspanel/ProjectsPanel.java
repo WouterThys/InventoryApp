@@ -7,7 +7,6 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.EditProjectDialog;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -116,10 +115,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     public void onToolBarAdd(IdBToolBar source) {
         if (source.equals(projectsToolBar)) {
             EditProjectDialog dialog = new EditProjectDialog(application, "New Project", new Project());
-            if (dialog.showDialog() == IDialog.OK) {
-                // Project is saved in dialog, update
-                onInserted(dialog.getProject());
-            }
+            dialog.showDialog();
         }
     }
 
@@ -137,10 +133,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProject != null) {
             EditProjectDialog dialog = new EditProjectDialog(application, "Edit Project", selectedProject);
-            if (dialog.showDialog() == IDialog.OK) {
-                // Project is saved in dialog, update
-                onUpdated(dialog.getProject());
-            }
+            dialog.showDialog();
         }
     }
 
@@ -164,7 +157,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
                     return; // Not a selectable node
                 }
 
-                treeCollapseAll();
+                //treeCollapseAll();
                 int tabToSelect = 0;
                 switch (DbObject.getType(object)) {
                     case DbObject.TYPE_PROJECT_CODE:

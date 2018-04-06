@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel;
+package com.waldo.inventory.gui.panels.projectspanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
@@ -224,7 +224,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel commonPnl = new JPanel();
         commonPnl.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
         gbc = new GuiUtils.GridBagHelper(commonPnl, 0);
-        gbc.addLine("Directory", imageResource.readIcon(""), directoryTf);
+        gbc.addLine("Directory", imageResource.readIcon("Actions.BrowseFile"), directoryTf);
 
         // Specific code/pcb/other
         JPanel infoPnl = createInfoPanel();

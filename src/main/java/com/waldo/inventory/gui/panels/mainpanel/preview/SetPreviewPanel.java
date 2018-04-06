@@ -20,7 +20,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ITextField setNameTf;
+
     private IDivisionPanel divisionPanel;
     private ITextField totalItemsTf;
     private IdBToolBar setTb;
@@ -56,7 +56,6 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
 
     private void setDetails(Set set) {
         if (set != null) {
-            setNameTf.setText(set.toString());
             divisionPanel.updateComponents(set.getDivision());
             totalItemsTf.setText(String.valueOf(set.getSetItems().size()));
         }
@@ -127,7 +126,6 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     public void initializeComponents() {
         divisionPanel = new IDivisionPanel(false);
         totalItemsTf = new ITextField(false, 4);
-        setNameTf = new ITextField(false, 12);
         setTb = new IdBToolBar(this);
     }
 
@@ -139,20 +137,11 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
         gbc = new GuiUtils.GridBagHelper(totalItemsPnl);
         gbc.addLine("Total items", imageResource.readIcon("Preview.Amount"), totalItemsTf);
 
-        JPanel setNamePnl = new JPanel();
-        gbc = new GuiUtils.GridBagHelper(setNamePnl);
-        gbc.addLine("Set name", imageResource.readIcon("Items.Tree.Set"), setNameTf);
-
-        JPanel infoPnl = new JPanel();
-        infoPnl.setLayout(new BoxLayout(infoPnl, BoxLayout.X_AXIS));
-        infoPnl.add(setNamePnl);
-        infoPnl.add(totalItemsPnl);
-
         JPanel centerPnl = new JPanel(new BorderLayout());
         JPanel southPnl = new JPanel(new BorderLayout());
 
-        centerPnl.add(infoPnl, BorderLayout.CENTER);
-        centerPnl.add(divisionPanel, BorderLayout.SOUTH);
+        centerPnl.add(totalItemsPnl, BorderLayout.EAST);
+        centerPnl.add(divisionPanel, BorderLayout.CENTER);
         southPnl.add(setTb, BorderLayout.WEST);
 
         setLayout(new BorderLayout());

@@ -7,7 +7,7 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
+import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -102,7 +102,7 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
 
     @Override
     void addNewOrder() {
-        OrdersDialog dialog = new OrdersDialog(this, "New order", new Order(), false);
+        EditOrdersDialog dialog = new EditOrdersDialog(this, "New order", new Order(), false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
             newOrder.save();

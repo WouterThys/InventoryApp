@@ -7,7 +7,7 @@ import com.waldo.inventory.gui.components.ITree;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.treemodels.IFileTreeModel;
 import com.waldo.inventory.gui.dialogs.editprojectcodedialog.EditProjectCodeDialog;
-import com.waldo.inventory.gui.panels.projectspanel.projectpreviewpanel.ProjectCodePreviewPanel;
+import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectCodePreviewPanel;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;

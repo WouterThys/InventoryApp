@@ -11,7 +11,7 @@ import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistrib
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
-import com.waldo.inventory.gui.dialogs.ordersdialog.OrdersDialog;
+import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
@@ -442,7 +442,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     void onAddOrder() {
-        OrdersDialog dialog = new OrdersDialog(application, "New order", new Order(), true);
+        EditOrdersDialog dialog = new EditOrdersDialog(application, "New order", new Order(), true);
         if (dialog.showDialog() == IDialog.OK) {
             Order o = dialog.getOrder();
             o.save();
@@ -452,7 +452,7 @@ public class OrderPanel extends OrderPanelLayout {
     @Override
     void onEditOrder(Order order) {
         if (order != null && order.canBeSaved()) {
-            OrdersDialog dialog = new OrdersDialog(application, "Edit order", order);
+            EditOrdersDialog dialog = new EditOrdersDialog(application, "Edit order", order);
             if (dialog.showDialog() == IDialog.OK) {
                 Order o = dialog.getOrder();
                 o.save();

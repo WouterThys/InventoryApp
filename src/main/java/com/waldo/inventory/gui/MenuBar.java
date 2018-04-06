@@ -164,7 +164,7 @@ public class MenuBar extends JMenuBar {
 
 
 //    private ActionListener ordersSelected() {
-//        OrdersDialog dialog = new OrdersDialog(application, "Orders");
+//        EditOrdersDialog dialog = new EditOrdersDialog(application, "Orders");
 //        return e -> dialog.setVisible(true);
 //    }
 //
