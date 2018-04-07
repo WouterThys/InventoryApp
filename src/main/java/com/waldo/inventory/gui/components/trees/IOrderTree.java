@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.trees;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.utils.DateUtils;
@@ -23,6 +22,9 @@ public class IOrderTree extends ITree<Order> {
     private final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
     private final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
     private final ImageIcon plannedIcon = imageResource.readIcon("Orders.Tree.Planned");
+
+    private final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Set");
+    private final ImageIcon pcbIcon = imageResource.readIcon("Projects.Details.Pcb");
 
     private DefaultMutableTreeNode orderedNode;
     private DefaultMutableTreeNode plannedNode;
@@ -211,9 +213,9 @@ public class IOrderTree extends ITree<Order> {
                 Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
                 if (value instanceof DefaultMutableTreeNode) {
-                    DbObject object = (DbObject) ((DefaultMutableTreeNode) value).getUserObject();
-                    if (!object.canBeSaved()) {
-                        switch (object.getName()) {
+                    Order order = (Order) ((DefaultMutableTreeNode) value).getUserObject();
+                    if (!order.canBeSaved()) {
+                        switch (order.getName()) {
                             case "Planned":
                                 setIcon(plannedIcon);
                                 break;
@@ -228,7 +230,11 @@ public class IOrderTree extends ITree<Order> {
                                 break;
                         }
                     } else {
-                        setIcon(null);
+                        switch (order.getOrderType()) {
+                            default:
+                            case Items: setIcon(itemIcon); break;
+                            case Pcbs: setIcon(pcbIcon); break;
+                        }
                     }
                 }
 

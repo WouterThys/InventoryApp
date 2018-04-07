@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
@@ -65,7 +65,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     private void setDetails(Order order) {
         if (order != null) {
-            totalItemsTf.setText(String.valueOf(order.getOrderItems().size()));
+            totalItemsTf.setText(String.valueOf(order.getOrderLines().size()));
             totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
             orderByTf.setText(order.getDistributor().toString());
         }
@@ -90,11 +90,11 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
                     "Are you sure you want to delete \"" + order.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
                 SwingUtilities.invokeLater(() -> {
-                    List<OrderItem> orderItems = selectedOrder.getOrderItems();
+                    List<OrderLine> orderItems = selectedOrder.getOrderLines();
                     order.delete(); // Cascaded delete will delete order items too
 
                     // Do this after delete: items will not be updated in change listener for orders
-                    for (OrderItem orderItem : orderItems) {
+                    for (OrderLine orderItem : orderItems) {
                         orderItem.updateOrderState();
                     }
                 });

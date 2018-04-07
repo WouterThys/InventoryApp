@@ -49,6 +49,7 @@ public abstract class DbObject {
     public static final int TYPE_PENDING_ORDER = 25;
     public static final int TYPE_CREATED_PCB = 26;
     public static final int TYPE_CREATED_PCB_LINK = 27;
+    public static final int TYPE_ORDER_PCB = 28;
 
     public static final int TYPE_KC_COMPONENT = 30;
     public static final int TYPE_KC_ITEM_LINK = 31;
@@ -111,6 +112,7 @@ public abstract class DbObject {
         if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
         if (dbObject instanceof Statistics) return TYPE_STATISTICS;
         if (dbObject instanceof PendingOrder) return TYPE_PENDING_ORDER;
+        if (dbObject instanceof OrderPcb) return TYPE_ORDER_PCB;
 
         return TYPE_UNKNOWN;
     }
@@ -118,7 +120,7 @@ public abstract class DbObject {
     public static DbObject createDummy(String tableName, String objectName, long objectId) {
         DbObject obj = new DbObject(tableName) {
             @Override
-            public int addParameters(PreparedStatement statement) throws SQLException {
+            public int addParameters(PreparedStatement statement) {
                 return 0;
             }
 

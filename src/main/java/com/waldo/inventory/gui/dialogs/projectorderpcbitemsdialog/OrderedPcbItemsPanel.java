@@ -112,7 +112,7 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
             List<OrderItem> itemList = new ArrayList<>(order.getTempOrderItems());
             for (OrderItem item : itemList ) {
                 if (item.getId() < DbObject.UNKNOWN_ID && item.getAmount() == 0) {
-                    order.removeItemFromList(item);
+                    order.removeOrderLine(item);
                 }
             }
 
@@ -126,17 +126,17 @@ class OrderedPcbItemsPanel extends JPanel implements GuiUtils.GuiInterface {
     //
     // Table
     //
-    void orderTableInit(List<Order> orderList) {
-        if (orderList.size() > 0) {
-            List<OrderItem> orderItems = new ArrayList<>();
-            for (Order order : orderList) {
-                orderItems.addAll(order.getOrderItems());
-                orderItems.addAll(order.getTempOrderItems());
-            }
-            orderTableModel.setItemList(orderItems);
-        } else {
-            orderTableModel.clearItemList();
-        }
+    private void orderTableInit(List<Order> orderList) {
+//        if (orderList.size() > 0) {
+//            List<OrderLine> orderItems = new ArrayList<>();
+//            for (Order order : orderList) {
+//                orderItems.addAll(order.getOrderLines());
+//                orderItems.addAll(order.getTempOrderItems());
+//            }
+//            orderTableModel.setItemList(orderItems);
+//        } else {
+//            orderTableModel.clearItemList();
+//        }
     }
 
     //

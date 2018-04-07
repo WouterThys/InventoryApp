@@ -14,19 +14,19 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
+public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
 
     private boolean isEditable = false;
 
-    public IOrderItemTableModel() {
+    public IOrderLineTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
     @Override
-    public void setItemList(List<OrderItem> itemList) {
+    public void setItemList(List<OrderLine> itemList) {
         super.setItemList(itemList);
 
         if (itemList.size() > 0) {
@@ -43,33 +43,40 @@ public class IOrderItemTableModel extends IAbstractTableModel<OrderItem> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderItem orderItem = getItemAt(rowIndex);
-        if (orderItem != null) {
+        OrderLine line = getItemAt(rowIndex);
+        if (line != null) {
             switch (columnIndex) {
                 case 0:
                 case -1: // Reference to object itself
-                    return orderItem;
+                    return line;
                 case 1: // Amount
-                    return orderItem.getAmount();
+                    return line.getAmount();
                 case 2: // Name
-                    return orderItem.getItem().toString();
+                    return line.getObject().toString();
                 case 3: // Manufacturer
-                    Manufacturer m = SearchManager.sm().findManufacturerById(orderItem.getItem().getManufacturerId());
-                    if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
-                        return m.toString();
+                    if (line instanceof OrderItem) {
+                        Manufacturer m = SearchManager.sm().findManufacturerById(((OrderItem)line).getItem().getManufacturerId());
+                        if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
+                            return m.toString();
+                        }
+                    } else {
+                        Project p = SearchManager.sm().findProjectById(((OrderPcb)line).getPcb().getProjectId());
+                        if (p != null && p.getId() != DbObject.UNKNOWN_ID) {
+                            return p.toString();
+                        }
                     }
                     return "";
                 case 4: // Reference
-                    DistributorPartLink pn = orderItem.getDistributorPartLink();
+                    DistributorPartLink pn = line.getDistributorPartLink();
                     if (pn != null) {
                         return pn.toString();
                     } else {
                         return "";
                     }
                 case 5: // Price
-                    return orderItem.getPrice();
+                    return line.getPrice();
                 case 6: // Total
-                    return orderItem.getTotalPrice(); // Amount * price
+                    return line.getTotalPrice(); // Amount * price
             }
         }
         return null;

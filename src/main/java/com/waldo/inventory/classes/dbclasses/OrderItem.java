@@ -1,28 +1,14 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.Price;
-import com.waldo.inventory.managers.LogManager;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import static com.waldo.inventory.database.DatabaseAccess.db;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class OrderItem extends DbObject {
+public class OrderItem extends OrderLine {
 
-    private static final LogManager LOG = LogManager.LOG(OrderItem.class);
     public static final String TABLE_NAME = "orderitems";
-
-    private long orderId;
-    private Order order;
-
-    private long itemId;
-    private Item item;
-
-    private int amount;
-    private DistributorPartLink distributorPartLink;
 
     public OrderItem() {
         super(TABLE_NAME);
@@ -32,34 +18,10 @@ public class OrderItem extends DbObject {
         super(TABLE_NAME);
 
         setOrderId(orderId);
-        setItemId(itemId);
+        setObjectId(itemId);
         setAmount(amount);
 
         setName(getOrder().toString() + " - " + getItem().toString());
-    }
-
-    @Override
-    public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = 1;
-        String name = "";
-        try {
-            name = getOrder().getName() + " - " + getItem().getName();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (getOrderId() < UNKNOWN_ID) {
-            orderId = UNKNOWN_ID;
-        }
-        if (getItemId() < UNKNOWN_ID) {
-            itemId = UNKNOWN_ID;
-        }
-
-        statement.setString(ndx++, name);
-        statement.setLong(ndx++, getOrderId());
-        statement.setLong(ndx++, getItemId());
-        statement.setInt(ndx++, getAmount());
-        return ndx;
     }
 
     @Override
@@ -67,7 +29,7 @@ public class OrderItem extends DbObject {
         OrderItem orderItem = (OrderItem) copyInto;
         copyBaseFields(orderItem);
         orderItem.setOrderId(getOrderId());
-        orderItem.setItemId(getItemId());
+        orderItem.setObjectId(getObjectId());
         orderItem.setAmount(getAmount());
         return orderItem;
     }
@@ -75,6 +37,23 @@ public class OrderItem extends DbObject {
     @Override
     public OrderItem createCopy() {
         return createCopy(new OrderItem());
+    }
+
+    @Override
+    public void removeFromOrder() {
+        db().removeItemFromOrder(this);
+    }
+
+    @Override
+    public Item getObject() {
+        if (object == null) {
+            object = sm().findItemById(getObjectId());
+        }
+        return (Item) object;
+    }
+
+    public Item getItem() {
+        return getObject();
     }
 
     //
@@ -94,99 +73,36 @@ public class OrderItem extends DbObject {
         }
     }
 
+    @Override
     public void updateOrderState() {
-        if (itemId > DbObject.UNKNOWN_ID) {
+        if (getObjectId() > DbObject.UNKNOWN_ID) {
             getItem().updateOrderState();
         }
     }
 
-    public long getOrderId() {
-        return orderId;
-    }
-
-    public long getItemId() {
-        return itemId;
-    }
-
-    public void setOrderId(long orderId) {
-        if (order != null && order.getId() != orderId) {
-            order = null;
-        }
-        this.orderId = orderId;
-    }
-
-    public void setItemId(long itemId) {
-        if (item != null && item.getId() != itemId) {
-            item = null;
-        }
-        this.itemId = itemId;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public void setAmount(String amount) {
-        try {
-            if (!amount.isEmpty()) {
-                this.amount = Integer.valueOf(amount);
+    @Override
+    public void updateLineAmount(boolean increment) {
+        if (getItem() != null) {
+            Item item = getItem();
+            int current = item.getAmount();
+            item.setAmountType(Statics.ItemAmountTypes.Exact);
+            if (increment) {
+                item.setAmount(current + getAmount());
+            } else {
+                item.setAmount(current - getAmount());
+                if (item.getAmount() < 0) {
+                    item.setAmount(0);
+                }
             }
-        } catch (Exception e) {
-            LOG.error("Error setting amount.", e);
+            item.save();
         }
     }
 
-    public long getDistributorPartId() {
-        if (distributorPartLink == null) {
-            distributorPartLink = getDistributorPartLink();
-        }
-        if (distributorPartLink != null) {
-            return distributorPartLink.getId();
-        }
-        return UNKNOWN_ID;
-    }
-
+    @Override
     public DistributorPartLink getDistributorPartLink() {
         if (distributorPartLink == null && getOrder() != null) {
-            distributorPartLink = sm().findDistributorPartLink(getOrder().getDistributorId(), getItemId());
+            distributorPartLink = sm().findDistributorPartLink(getOrder().getDistributorId(), getObjectId());
         }
         return distributorPartLink;
-    }
-
-    public void updateDistributorPart() {
-        distributorPartLink = null;
-    }
-
-    public Order getOrder() {
-        if (order == null) {
-            order = sm().findOrderById(orderId);
-        }
-        return order;
-    }
-
-    public Item getItem() {
-        if (item == null) {
-            item = sm().findItemById(itemId);
-        }
-        return item;
-    }
-
-    public Price getPrice() {
-        if (getDistributorPartLink() != null) {
-            return distributorPartLink.getPrice();
-        }
-        return new Price();
-    }
-
-    public Price getTotalPrice() {
-        return Price.multiply(getPrice(), getAmount());
-    }
-
-    public boolean isLocked() {
-        return getOrder() != null && order.isLocked();
     }
 }

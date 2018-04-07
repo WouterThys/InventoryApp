@@ -739,4 +739,61 @@ public class Statics {
             }
         }
     }
+
+    public enum OrderType {
+        Items (0, "Items"),
+        Pcbs  (1, "PCB's");
+
+        private final int intValue;
+        private final String name;
+        OrderType(int intValue, String name) {
+            this.intValue = intValue;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public static OrderType fromInt(int intValue) {
+            switch (intValue) {
+                default:
+                case 0: return Items;
+                case 1: return Pcbs;
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

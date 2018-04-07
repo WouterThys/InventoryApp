@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
@@ -36,12 +34,12 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout implements Cach
     }
 
     private void checkOrderedItemsLocations(Order order) {
-        if (order.isReceived()) {
+        if (order.isReceived() && order.getOrderType() == Statics.OrderType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
-            for (OrderItem oi : order.getOrderItems()) {
-                if (oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID) {
-                    itemsWithoutLocation.add(oi.getItem());
+            for (OrderLine oi : order.getOrderLines()) {
+                if (((OrderItem)oi).getItem().getLocationId() <= DbObject.UNKNOWN_ID) {
+                    itemsWithoutLocation.add(((OrderItem)oi).getItem());
                 }
             }
 
@@ -114,7 +112,7 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout implements Cach
 
     private String createOrderText(Order order) {
         StringBuilder builder = new StringBuilder();
-        for (OrderItem orderItem : order.getOrderItems()) {
+        for (OrderLine orderItem : order.getOrderLines()) {
             builder.append(orderItem.getDistributorPartLink().getItemRef());
             builder.append(order.getDistributor().getOrderFileFormat().getSeparator());
             builder.append(orderItem.getAmount());

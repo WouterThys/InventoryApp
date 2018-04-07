@@ -67,7 +67,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
 
 //        // Find items already in order
 //        if (selectedOrder != null && selectedPcb != null) {
-//            for (OrderItem oi : selectedOrder.getOrderItems()) {
+//            for (OrderItem oi : selectedOrder.getOrderLines()) {
 //                for (PcbItem pcb : pcbItemPnl.pcbTableGetItemList()) {
 //                    if (oi.getItemId() == pcb.getMatchedItemLink().getItemId()) {
 //                        pcb.setOrderItem(oi);

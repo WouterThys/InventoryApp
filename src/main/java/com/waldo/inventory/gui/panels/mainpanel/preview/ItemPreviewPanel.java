@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -57,7 +58,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Item selectedItem;
-    private OrderItem selectedOrderItem;
+    private OrderLine selectedOrderLine;
 
     private final ItemDetailListener itemDetailListener;
     private final OrderDetailListener orderDetailListener;
@@ -94,17 +95,17 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         starRater.setRating(item.getRating());
     }
 
-    private void updateData(Item item, OrderItem orderItem) {
+    private void updateData(Item item, OrderLine orderLine) {
         if (!isOrderType) {
             divisionPnl.updateComponents(item.getDivision());
         } else {
-            if (orderItem != null) {
-                amountTf.setText(String.valueOf(orderItem.getAmount()));
-                if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                    priceTf.setText(orderItem.getPrice().toString());
-                    referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+            if (orderLine != null) {
+                amountTf.setText(String.valueOf(orderLine.getAmount()));
+                if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                    priceTf.setText(orderLine.getPrice().toString());
+                    referenceTf.setText(orderLine.getDistributorPartLink().getItemRef());
                 }
-                boolean locked = orderItem.isLocked();
+                boolean locked = orderLine.isLocked();
                 editPriceAction.setEnabled(!locked);
                 editReferenceAction.setEnabled(!locked);
                 plusOneAction.setEnabled(!locked);
@@ -317,38 +318,38 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         plusOneAction = new IActions.PlusOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderItem.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount + 1);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         minOneAction = new IActions.MinOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderItem.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount - 1);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         editReferenceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderItem);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedOrderLine);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         editPriceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderItem);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedOrderLine);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
@@ -381,19 +382,21 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (args.length == 0 || args[0] == null) {
             setVisible(false);
             selectedItem = null;
-            selectedOrderItem = null;
+            selectedOrderLine = null;
         } else {
             setVisible(true);
             if (args[0] instanceof Item) {
                 selectedItem = (Item) args[0];
-                selectedOrderItem = null;
+                selectedOrderLine = null;
             } else {
-                selectedOrderItem = (OrderItem) args[0];
-                selectedItem = selectedOrderItem.getItem();
+                selectedOrderLine = (OrderLine) args[0];
+                if (selectedOrderLine instanceof OrderItem) {
+                    selectedItem = ((OrderItem) selectedOrderLine).getItem();
+                }
             }
             updateToolbar(selectedItem);
             updateHeader(selectedItem);
-            updateData(selectedItem, selectedOrderItem);
+            updateData(selectedItem, selectedOrderLine);
             updateRemarks(selectedItem);
         }
     }

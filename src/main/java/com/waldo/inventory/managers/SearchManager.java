@@ -189,6 +189,30 @@ public class SearchManager {
         return null;
     }
 
+    public List<OrderItem> findOrderItemsForOrder(long orderId) {
+        List<OrderItem> items = new ArrayList<>();
+        if (orderId > DbObject.UNKNOWN_ID) {
+            for (OrderItem i : cache().getOrderItems()) {
+                if (i.getOrderId() == orderId) {
+                    items.add(i);
+                }
+            }
+        }
+        return items;
+    }
+
+    public List<OrderPcb> findOrderPcbsForOrder(long orderId) {
+        List<OrderPcb> items = new ArrayList<>();
+        if (orderId > DbObject.UNKNOWN_ID) {
+            for (OrderPcb p : cache().getOrderPcbs()) {
+                if (p.getOrderId() == orderId) {
+                    items.add(p);
+                }
+            }
+        }
+        return items;
+    }
+
     public OrderItem findOrderItemById(long id) {
         for (OrderItem t : cache().getOrderItems()) {
             if (t.getId() == id) {
@@ -242,16 +266,13 @@ public class SearchManager {
     public List<Order> findOrdersForItem(long itemId) {
         List<Order> orders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
-//            for (OrderItem oi : cache().getOrderItems()) {
-//                if (oi.getItemId() == itemId) {
-//                    orders.add(oi.getOrder());
-//                }
-//            }
             for (Order o : cache().getOrders()) {
-                for (OrderItem oi : o.getOrderItems()) {
-                    if (oi.getItemId() == itemId) {
-                        orders.add(o);
-                        break;
+                if (o.getOrderType() == Statics.OrderType.Items) {
+                    for (OrderLine oi : o.getOrderLines()) {
+                        if (oi.getObjectId() == itemId) {
+                            orders.add(o);
+                            break;
+                        }
                     }
                 }
             }

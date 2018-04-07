@@ -117,7 +117,7 @@ abstract class HistoryDialogLayout extends IDialog implements GuiUtils.GuiInterf
 //                // Select order
 //                application.getOrderPanel().treeSelectOrder(order);
 //                // Select order item
-//                application.getOrderPanel().tableSelectOrderItem(order.findOrderItemInOrder(historyItem.getId()));
+//                application.getOrderPanel().tableSelectOrderItem(order.findOrderLineInOrder(historyItem.getId()));
 //            }
 //        };
 //

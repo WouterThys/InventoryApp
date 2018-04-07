@@ -69,6 +69,7 @@ public class CacheManager {
     private final CacheList<LocationType> locationTypes = new CacheList<>();
     private final CacheList<Order> orders = new CacheList<>();
     private final CacheList<OrderItem> orderItems = new CacheList<>();
+    private final CacheList<OrderPcb> orderPcbs = new CacheList<>();
     private final CacheList<Distributor> distributors = new CacheList<>();
     private final CacheList<DistributorPartLink> distributorPartLinks = new CacheList<>();
     private final CacheList<PackageType> packageTypes = new CacheList<>();
@@ -176,6 +177,7 @@ public class CacheManager {
         locationTypes.clear();
         orders.clear();
         orderItems.clear();
+        orderPcbs.clear();
         distributors.clear();
         distributorPartLinks.clear();
         packageTypes.clear();
@@ -360,16 +362,23 @@ public class CacheManager {
     }
 
 
-    public List<OrderItem> getOrderedItems(long orderId) {
-        List<OrderItem> items = new ArrayList<>();
-        for (OrderItem i : getOrderItems()) {
-            if (i.getOrderId() == orderId || orderId == -1) {
-                items.add(i);
-            }
+    public synchronized CacheList<OrderPcb> getOrderPcbs() {
+        if (!orderPcbs.isFetched()) {
+            long start = System.nanoTime();
+            orderPcbs.setList(db().updateOrderPcbs(), (System.nanoTime() - start));
         }
-        return items;
+        return orderPcbs;
     }
 
+    public synchronized void add(OrderPcb element) {
+        if (!getOrderPcbs().contains(element)) {
+            orderPcbs.add(element);
+        }
+    }
+
+    public synchronized void remove(OrderPcb element) {
+        getOrderPcbs().remove(element);
+    }
 
 
     public synchronized CacheList<Distributor> getDistributors() {

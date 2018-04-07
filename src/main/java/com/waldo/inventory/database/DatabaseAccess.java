@@ -735,6 +735,7 @@ public class DatabaseAccess {
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
+                    o.setOrderType(rs.getInt("orderType"));
                     o.setLocked(o.getOrderState() != Statics.ItemOrderStates.Planned);
 
                     o.setInserted(true);
@@ -774,7 +775,7 @@ public class DatabaseAccess {
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setOrderId(rs.getLong("orderId"));
-                    o.setItemId(rs.getLong("itemId"));
+                    o.setObjectId(rs.getLong("itemId"));
                     o.setAmount(rs.getInt("amount"));
 
                     o.setInserted(true);
@@ -794,6 +795,43 @@ public class DatabaseAccess {
         return orderItems;
     }
 
+    public List<OrderPcb> updateOrderPcbs() {
+        List<OrderPcb> orderPcbs = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return orderPcbs;
+        }
+        Status().setMessage("Fetching order pcbs from DB");
+        OrderPcb o = null;
+        String sql = scriptResource.readString(OrderPcb.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new OrderPcb();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setOrderId(rs.getLong("orderId"));
+                    o.setObjectId(rs.getLong("pcbId"));
+                    o.setAmount(rs.getInt("amount"));
+
+                    o.setInserted(true);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        orderPcbs.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return orderPcbs;
+    }
+
     public void removeItemFromOrder(OrderItem orderItem) {
         if (Main.CACHE_ONLY) {
             return;
@@ -804,7 +842,7 @@ public class DatabaseAccess {
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setLong(1, orderItem.getOrderId());
-                stmt.setLong(2, orderItem.getItemId());
+                stmt.setLong(2, orderItem.getObjectId());
                 stmt.execute();
 
             } catch (SQLException e) {

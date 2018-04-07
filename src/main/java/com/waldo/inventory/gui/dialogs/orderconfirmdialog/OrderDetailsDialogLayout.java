@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.utils.DateUtils;
@@ -90,14 +90,14 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
                 if (order.getDistributor().getOrderFileFormat() == null || order.getDistributor().getOrderFileFormat().isUnknown()) {
                     errorList.add(" - Order's distributor had no selected file format");
                 } else {
-                    if (order.getOrderItems().size() < 1) {
+                    if (order.getOrderLines().size() < 1) {
                         errorList.add(" - Order has no items..");
                     } else {
-                        List<OrderItem> errorItems = order.missingOrderReferences();
+                        List<OrderLine> errorItems = order.missingOrderReferences();
                         if (errorItems.size() > 0) {
                             errorList.add(" - Next order items have no reference: ");
-                            for (OrderItem oi : errorItems) {
-                                errorList.add(" \t * " + oi.getItem().getName());
+                            for (OrderLine oi : errorItems) {
+                                errorList.add(" \t * " + oi.getObject().getName());
                             }
                         }
                     }
@@ -110,12 +110,12 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
     }
 
     void fillTableData() {
-        List<OrderItem> orderItemList = order.getOrderItems();
+        List<OrderLine> orderItemList = order.getOrderLines();
         try {
             String[] references = new String[orderItemList.size()];
             String[] amounts = new String[orderItemList.size()];
             for (int i = 0; i < references.length; i++) {
-                OrderItem orderItem = orderItemList.get(i);
+                OrderLine orderItem = orderItemList.get(i);
                 references[i] = orderItem.getDistributorPartLink().getItemRef();
                 amounts[i] = String.valueOf(orderItem.getAmount());
             }
@@ -405,7 +405,7 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
             } else {
                 dateReceivedTf.setText("Not received");
             }
-            itemsTf.setText(String.valueOf(order.getOrderItems().size()));
+            itemsTf.setText(String.valueOf(order.getOrderLines().size()));
             totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
 
         }

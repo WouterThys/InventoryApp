@@ -182,11 +182,11 @@ public class ProjectPcb extends ProjectObject {
             List<Order> planned = SearchManager.sm().findPlannedOrders();
             if (planned.size() > 0) {
                 for (Order order : planned) {
-                    for (OrderItem oi : order.getOrderItems()) {
+                    for (OrderLine oi : order.getOrderLines()) {
                         for (PcbItemProjectLink link : projectLinks) {
                             if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
-                                if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {
-                                    link.getPcbItem().setOrderItem(oi);
+                                if (oi.getObjectId() == link.getPcbItemItemLink().getItemId()) {
+                                    link.getPcbItem().setOrderItem((OrderItem) oi);
                                     link.getPcbItem().setOrderAmount(oi.getAmount());
                                     break;
                                 }

@@ -43,7 +43,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
                 OrderItem orderItem = pcbItem.getOrderItem();
                 if (orderItem.getId() < DbObject.UNKNOWN_ID) {
                     // Remove it from order
-                    orderItem.getOrder().removeItemFromList(orderItem);
+                    orderItem.getOrder().removeOrderLine(orderItem);
                     // Remove from pcb item
                     pcbItem.setOrderAmount(0);
                     pcbItem.setOrderItem(null);
