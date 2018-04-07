@@ -68,9 +68,9 @@ public class Order extends DbObject {
         } else {
             statement.setDate(ndx++, null);
         }
-        statement.setLong(ndx++, distributorId);
-        statement.setString(ndx++, orderReference);
-        statement.setString(ndx++, trackingNumber);
+        statement.setLong(ndx++, getDistributorId());
+        statement.setString(ndx++, getOrderReference());
+        statement.setString(ndx++, getTrackingNumber());
         return ndx;
     }
 
@@ -275,14 +275,10 @@ public class Order extends DbObject {
     }
 
     public Price getTotalPrice() {
-        Price total = new Price();
+        Price total = new Price(0, Statics.PriceUnits.Euro);
         for (OrderItem oi : getOrderItems()) {
             total = Price.add(total, oi.getTotalPrice());
         }
-
-//        BigDecimal bd = new BigDecimal(total);
-//        bd = bd.setScale(2, RoundingMode.HALF_UP);
-//        return bd.doubleValue();
         return total;
     }
 
@@ -338,7 +334,7 @@ public class Order extends DbObject {
 
     public List<OrderItem> getOrderItems() {
         if (orderItems == null) {
-            orderItems = cache().getOrderedItems(id);
+            orderItems = cache().getOrderedItems(getId());
         }
         return orderItems;
     }
@@ -376,30 +372,29 @@ public class Order extends DbObject {
     }
 
     public Distributor getDistributor() {
-        if (distributor == null) {
+        if (distributor == null && getDistributorId() > UNKNOWN_ID) {
             distributor = SearchManager.sm().findDistributorById(distributorId);
         }
         return distributor;
     }
 
     public long getDistributorId() {
+        if (distributorId <= UNKNOWN_ID) {
+            distributorId = UNKNOWN_ID;
+        }
         return distributorId;
     }
 
     public void setDistributorId(long id) {
         if (distributor != null && distributor.getId() != id) {
             distributor = null;
+            if (getOrderItems().size() > 0) {
+                for (OrderItem orderItem : orderItems) {
+                    orderItem.updateDistributorPart();
+                }
+            }
         }
         this.distributorId = id;
-    }
-
-    public void setDistributor(String id) {
-        try {
-            this.distributorId = Long.valueOf(id);
-            distributor = null;
-        } catch (Exception e) {
-            LOG.error("Error setting distributor.", e);
-        }
     }
 
     public boolean isOrdered() {

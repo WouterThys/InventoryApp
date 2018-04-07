@@ -10,8 +10,6 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderItemTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
-import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
-import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
@@ -441,66 +439,6 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     @Override
-    void onAddOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(application, "New order", new Order(), true);
-        if (dialog.showDialog() == IDialog.OK) {
-            Order o = dialog.getOrder();
-            o.save();
-        }
-    }
-
-    @Override
-    void onEditOrder(Order order) {
-        if (order != null && order.canBeSaved()) {
-            EditOrdersDialog dialog = new EditOrdersDialog(application, "Edit order", order);
-            if (dialog.showDialog() == IDialog.OK) {
-                Order o = dialog.getOrder();
-                o.save();
-            }
-        }
-    }
-
-    @Override
-    void onDeleteOrder(Order order) {
-        if (order != null && order.canBeSaved()) {
-            int res = JOptionPane.showConfirmDialog(OrderPanel.this, "Are you sure you want to delete \"" + order.getName() + "\"?");
-            if (res == JOptionPane.OK_OPTION) {
-                SwingUtilities.invokeLater(() -> {
-                    List<OrderItem> orderItems = selectedOrder.getOrderItems();
-
-                    order.delete(); // Cascaded delete will delete order items too
-                    selectedOrder = null;
-                    selectedOrderItem = null;
-
-                    // Do this after delete: items will not be updated in change listener for orders
-                    for (OrderItem orderItem : orderItems) {
-                        orderItem.updateOrderState();
-                        //orderItem.getItem().save();
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    void onOrderDetails(Order order) {
-        if (order != null && order.canBeSaved()) {
-            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", order);
-            if (order.isReceived()) {
-                dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
-            } else {
-                dialog.showDialog();
-            }
-        }
-    }
-
-    @Override
-    void onViewPendingOrders() {
-        PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
-        dialog.showDialog();
-    }
-
-    @Override
     void onMoveToOrdered(Order order) {
         if (order != null && order.canBeSaved() && !order.isOrdered()) {
             // Check
@@ -668,17 +606,17 @@ public class OrderPanel extends OrderPanelLayout {
                 popupMenu = new OrderPopup(selectedOrder) {
                     @Override
                     public void onEditOrder(Order order) {
-                        OrderPanel.this.onEditOrder(order);
+                        previewPanel.editOrder(order);
                     }
 
                     @Override
                     public void onDeleteOrder(Order order) {
-                        OrderPanel.this.onDeleteOrder(order);
+                        previewPanel.deleteOrder(order);
                     }
 
                     @Override
                     public void onOrderDetails(Order order) {
-                        OrderPanel.this.onOrderDetails(order);
+                        previewPanel.viewOrderDetails(order);
                     }
 
                     @Override
@@ -821,19 +759,9 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        if (source.equals(treeToolBar)) {
-            final long orderId = treeUpdate();
-            final long orderItemId = tableUpdate();
-
-            SwingUtilities.invokeLater(() -> {
-                selectedOrder = SearchManager.sm().findOrderById(orderId);
-                treeSelectOrder(selectedOrder);
-                selectedOrderItem = SearchManager.sm().findOrderItemById(orderItemId);
-                tableSelectOrderItem(selectedOrderItem);
-            });
-        } else {
             Application.beginWait(OrderPanel.this);
             try {
+                treeReload();
                 tableInitialize(selectedOrder);
                 final long orderId = treeUpdate();
 
@@ -847,14 +775,11 @@ public class OrderPanel extends OrderPanelLayout {
             } finally {
                 Application.endWait(OrderPanel.this);
             }
-        }
+
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (source.equals(treeToolBar)) {
-            onAddOrder();
-        } else {
             if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
 //                OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
 //                if (dialog.showDialog() == IDialog.OK) {
@@ -871,25 +796,17 @@ public class OrderPanel extends OrderPanelLayout {
 //                }
                 // TODO #1 Advanced search dialog
             }
-        }
+
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        if (source.equals(treeToolBar)) {
-            onDeleteOrder(selectedOrder);
-        } else {
-            deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
-        }
+        deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (source.equals(treeToolBar)) {
-            onEditOrder(selectedOrder);
-        } else {
-            onEditItem(selectedOrderItem);
-        }
+        onEditItem(selectedOrderItem);
     }
 
     //

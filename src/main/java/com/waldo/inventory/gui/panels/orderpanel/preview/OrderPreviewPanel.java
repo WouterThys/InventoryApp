@@ -5,15 +5,15 @@ import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
-import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
+import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
-import org.apache.xpath.operations.Or;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -28,6 +28,8 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     private ITextField totalPriceTf;
     private ITextField orderByTf;
     private IdBToolBar orderTb;
+
+    private AbstractAction orderDetailsAa;
 
     /*
      *                  VARIABLES
@@ -53,15 +55,19 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        boolean enabled = selectedOrder != null;
-        orderTb.setEditActionEnabled(enabled);
-        orderTb.setDeleteActionEnabled(enabled);
+        boolean orderSelected = selectedOrder != null;
+        boolean locked = orderSelected && selectedOrder.isLocked();
+
+        orderTb.setEditActionEnabled(!locked);
+        orderTb.setDeleteActionEnabled(!locked);
+        orderDetailsAa.setEnabled(orderSelected);
     }
 
     private void setDetails(Order order) {
         if (order != null) {
             totalItemsTf.setText(String.valueOf(order.getOrderItems().size()));
             totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
+            orderByTf.setText(order.getDistributor().toString());
         }
     }
 
@@ -79,7 +85,9 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     public void deleteOrder(Order order) {
         if (order != null && order.canBeSaved()) {
-            int res = JOptionPane.showConfirmDialog(OrderPreviewPanel.this, "Are you sure you want to delete \"" + order.getName() + "\"?");
+            int res = JOptionPane.showConfirmDialog(
+                    application,
+                    "Are you sure you want to delete \"" + order.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
                 SwingUtilities.invokeLater(() -> {
                     List<OrderItem> orderItems = selectedOrder.getOrderItems();
@@ -92,6 +100,22 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
                 });
             }
         }
+    }
+
+    public void viewOrderDetails(Order order) {
+        if (order != null && order.canBeSaved()) {
+            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", order); // TODO
+            if (order.isReceived()) {
+                dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
+            } else {
+                dialog.showDialog();
+            }
+        }
+    }
+
+    void viewPendingOrders() {
+        PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+        dialog.showDialog();
     }
 
     /*
@@ -108,7 +132,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        addOrder(selectedOrder);
+        addOrder();
     }
 
     @Override
@@ -126,10 +150,30 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     //
     @Override
     public void initializeComponents() {
-        totalItemsTf = new ITextField(false, 8);
-        totalPriceTf = new ITextField(false, 8);
+        totalItemsTf = new ITextField(false, 7);
+        totalPriceTf = new ITextField(false, 7);
         orderByTf = new ITextField(false);
         orderTb = new IdBToolBar(this);
+
+        orderDetailsAa = new AbstractAction("Details", imageResource.readIcon("Orders.Flow.Details")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewOrderDetails(selectedOrder);
+            }
+        };
+        orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
+
+        AbstractAction pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewPendingOrders();
+            }
+        };
+        pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
+
+        orderTb = new IdBToolBar(this);
+        orderTb.addSeparateAction(orderDetailsAa);
+        orderTb.addAction(pendingOrderAa);
     }
 
     @Override
@@ -144,12 +188,21 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         gbc = new GuiUtils.GridBagHelper(totalPricePnl);
         gbc.addLine("Total price", imageResource.readIcon("Preview.Price"), totalPriceTf);
 
+        JPanel orderByPnl = new JPanel();
+        gbc = new GuiUtils.GridBagHelper(orderByPnl);
+        gbc.addLine("Order by", imageResource.readIcon("Distributors.Menu"), orderByTf);
+
+        JPanel infoPnl = new JPanel();
+        infoPnl.add(totalItemsPnl);
+        infoPnl.add(totalPricePnl);
+
+
         JPanel centerPnl = new JPanel(new BorderLayout());
         JPanel southPnl = new JPanel(new BorderLayout());
 
-        centerPnl.add(totalItemsPnl, BorderLayout.EAST);
-        centerPnl.add(divisionPanel, BorderLayout.CENTER);
-        southPnl.add(setTb, BorderLayout.WEST);
+        centerPnl.add(infoPnl, BorderLayout.NORTH);
+        centerPnl.add(orderByPnl, BorderLayout.CENTER);
+        southPnl.add(orderTb, BorderLayout.WEST);
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);
@@ -159,10 +212,8 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     @Override
     public void updateComponents(Object... args) {
         if (args.length == 0 || args[0] == null) {
-            setVisible(false);
             selectedOrder = null;
         } else {
-            setVisible(true);
             if (args[0] instanceof Order) {
                 selectedOrder = (Order) args[0];
             }
