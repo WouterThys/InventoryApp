@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.Utils.Statics.OrderType;
 import com.waldo.inventory.classes.Price;
-import com.waldo.inventory.managers.LogManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.OpenUtils;
@@ -27,7 +26,6 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class Order extends DbObject {
 
-    private static final LogManager LOG = LogManager.LOG(Order.class);
     public static final String TABLE_NAME = "orders";
 
     private Date dateOrdered;

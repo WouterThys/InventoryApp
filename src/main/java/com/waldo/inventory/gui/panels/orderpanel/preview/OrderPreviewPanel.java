@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
@@ -67,7 +68,11 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         if (order != null) {
             totalItemsTf.setText(String.valueOf(order.getOrderLines().size()));
             totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
-            orderByTf.setText(order.getDistributor().toString());
+            if (order.getDistributorId() > DbObject.UNKNOWN_ID) {
+                orderByTf.setText(order.getDistributor().toString());
+            } else {
+                orderByTf.setText("");
+            }
         }
     }
 

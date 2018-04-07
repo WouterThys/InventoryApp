@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.editordersdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics.OrderType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -18,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.sql.Date;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -25,6 +27,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class EditOrdersDialog extends IObjectDialog<Order> implements ActionListener {
 
     private ITextField nameField;
+    private IComboBox<OrderType> orderTypeCb;
     private IComboBox<Distributor> distributorCb;
 
     private JCheckBox isOrderedCb;
@@ -100,6 +103,15 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
     public void initializeComponents() {
         nameField = new ITextField("Order name");
         nameField.addEditedListener(this, "name");
+
+        orderTypeCb = new IComboBox<>(OrderType.values());
+        orderTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                getOrder().setOrderType((OrderType) orderTypeCb.getSelectedItem());
+                onValueChanged(orderTypeCb, "orderType", null, null);
+            }
+        });
+
         distributorCb = new IComboBox<>(cache().getDistributors(), new ComparatorUtils.DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
@@ -125,6 +137,7 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(getContentPanel());
         gbc.addLine("Name: ", nameField);
+        gbc.addLine("Type: ", orderTypeCb);
         gbc.addLine("Distributor: ", distributorCb);
 
         if (showDates) {
@@ -150,6 +163,7 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
     public void updateComponents(Object... objects) {
         if (getOrder() != null) {
             nameField.setText(getOrder().getName());
+            orderTypeCb.setSelectedItem(getObject().getOrderType());
             distributorCb.setSelectedItem(getOrder().getDistributor());
         }
     }

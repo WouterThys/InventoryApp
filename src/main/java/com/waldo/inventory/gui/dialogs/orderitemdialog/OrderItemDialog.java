@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.orderitemdialog;
 
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -105,6 +106,7 @@ public class OrderItemDialog extends OrderItemDialogLayout implements CacheChang
         EditOrdersDialog dialog = new EditOrdersDialog(this, new Order(), false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
+            newOrder.setOrderType(Statics.OrderType.Items);
             newOrder.save();
         }
     }
