@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
 
     private void selectOrder() {
         Order order;
-        OrderItemDialog orderItemDialog = new OrderItemDialog(application, "Order", new ArrayList<>(), false, true);
+        AddToOrderDialog orderItemDialog = new AddToOrderDialog(application, "Order", new ArrayList<>(), false, true);
         if (orderItemDialog.showDialog() == IDialog.OK) {
             order = orderItemDialog.getSelectedOrder();
             updateComponents(selectedPcb, order);

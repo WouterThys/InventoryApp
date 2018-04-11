@@ -1,6 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.OrderType;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 
@@ -267,7 +268,7 @@ public class SearchManager {
         List<Order> orders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (Order o : cache().getOrders()) {
-                if (o.getOrderType() == Statics.OrderType.Items) {
+                if (o.getOrderType() == OrderType.Items) {
                     for (OrderLine oi : o.getOrderLines()) {
                         if (oi.getObjectId() == itemId) {
                             orders.add(o);
@@ -284,6 +285,16 @@ public class SearchManager {
         List<Order> orders = new ArrayList<>();
         for (Order o : cache().getOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
+                orders.add(o);
+            }
+        }
+        return orders;
+    }
+
+    public List<Order> findPlannedOrders(OrderType orderType) {
+        List<Order> orders = new ArrayList<>();
+        for (Order o : cache().getOrders()) {
+            if (!o.isUnknown() && !o.isOrdered() && o.getOrderType().equals(orderType)) {
                 orders.add(o);
             }
         }

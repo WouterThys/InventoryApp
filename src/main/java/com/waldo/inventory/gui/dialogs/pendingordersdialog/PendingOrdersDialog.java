@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editpendingorderdialog.EditPendingOrderDialog;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class PendingOrdersDialog extends PendingOrdersDialogLayout implements Ca
                 itemsToOrder.add(po.getItem());
             }
 
-            OrderItemDialog dialog = new OrderItemDialog(application, "Order", itemsToOrder, true, false);
+            AddToOrderDialog dialog = new AddToOrderDialog(application, "Order", itemsToOrder, true, false);
             if (dialog.showDialog() == IDialog.OK) {
                 for (PendingOrder po : pendingOrders) {
                     po.delete();

@@ -12,7 +12,7 @@ import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -386,7 +386,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             );
         }
         if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
@@ -407,7 +407,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         }
         if (itemList.size() > 0) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order items", itemList, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order items", itemList, true, true);
             dialog.showDialog();
         }
     }

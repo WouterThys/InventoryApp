@@ -25,8 +25,9 @@ public abstract class OrderLine extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = addBaseParameters(statement);
+        int ndx = 1;//addBaseParameters(statement);
 
+        statement.setString(ndx++, "");
         statement.setLong(ndx++, getOrderId());
         statement.setLong(ndx++, getObjectId());
         statement.setInt(ndx++, getAmount());
