@@ -1,7 +1,8 @@
 package com.waldo.inventory.gui.dialogs.addtoorderdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
-import com.waldo.inventory.Utils.Statics.OrderType;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.components.IDialog;
@@ -36,15 +37,15 @@ abstract class AddToOrderDialogLayout extends IDialog {
     private GoAction addPendingAa;
 
     private boolean pendingOption;
-    private OrderType orderType;
+    private DistributorType distributorType;
 
     /*
     *                  CONSTRUCTOR
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    AddToOrderDialogLayout(Window parent, String title, boolean pendingOption, OrderType orderType) {
+    AddToOrderDialogLayout(Window parent, String title, boolean pendingOption, Statics.DistributorType distributorType) {
         super(parent, title);
         this.pendingOption = pendingOption;
-        this.orderType = orderType;
+        this.distributorType = distributorType;
     }
 
     abstract void addNewOrder();
@@ -115,7 +116,7 @@ abstract class AddToOrderDialogLayout extends IDialog {
     public void updateComponents(Object... object) {
 
         DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>();
-        List<Order> plannedOrders = SearchManager.sm().findPlannedOrders(orderType);
+        List<Order> plannedOrders = SearchManager.sm().findPlannedOrders(distributorType);
         for (Order o : plannedOrders) {
             orderCbModel.addElement(o);
         }

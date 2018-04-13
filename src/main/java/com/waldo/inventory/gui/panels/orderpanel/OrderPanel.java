@@ -32,7 +32,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     private CacheChangedListener<Item> itemsChanged;
     private CacheChangedListener<Order> ordersChanged;
-    private CacheChangedListener<OrderItem> orderItemsChanged;
+    private CacheChangedListener<OrderLine> orderLinesChanged;
     private CacheChangedListener<DistributorPartLink> partNumbersChanged;
 
     public OrderPanel(Application application) {
@@ -44,7 +44,7 @@ public class OrderPanel extends OrderPanelLayout {
 
         cache().addListener(Item.class, itemsChanged);
         cache().addListener(Order.class, ordersChanged);
-        cache().addListener(OrderItem.class, orderItemsChanged);
+        cache().addListener(OrderLine.class, orderLinesChanged);
         cache().addListener(DistributorPartLink.class, partNumbersChanged);
 
         updateComponents();
@@ -61,45 +61,53 @@ public class OrderPanel extends OrderPanelLayout {
 
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
-        for (Item item : itemsToOrder) {
-            try {
-                if (!order.containsItemId(item.getId())) {
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setObjectId(item.getId());
-                    orderItem.setOrderId(order.getId());
-                    orderItem.setName(item.toString() + " - " + order.toString());
-                    orderItem.save();
-                } else {
-                    OrderLine orderItem = order.findOrderLineInOrder(item.getId());
-                    orderItem.setAmount(orderItem.getAmount() + 1);
-                    orderItem.save();
+        if (order.getDistributorType() == Statics.DistributorType.Items) {
+            for (Item item : itemsToOrder) {
+                try {
+                    OrderLine orderLine = order.findOrderLineFor(item);
+                    if (orderLine == null) {
+                        orderLine = new OrderLine(order, item, 1);
+                    }
+                    orderLine.save();
+                } catch (Exception e) {
+                    if (failedItems == null) {
+                        failedItems = new HashMap<>();
+                    }
+                    failedItems.put("Failed to add item " + item.toString(), item);
                 }
-            } catch (Exception e) {
-                if (failedItems == null) {
-                    failedItems = new HashMap<>();
-                }
-                failedItems.put("Failed to add item " + item.toString(), item);
+            }
+        } else {
+            failedItems = new HashMap<>();
+            for(Item item : itemsToOrder) {
+                failedItems.put("Can not add items to an order for PCB's", item);
             }
         }
         checkPendingOrders(order);
         return failedItems;
     }
 
-    public Map<String, Item> addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+    public Map<String, Item> addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
-        for (OrderItem oi : itemsToOrder) {
-            try {
-                if (!order.containsItemId(oi.getObjectId())) {
-                    oi.save();
-                } else {
-                    oi.setAmount(oi.getAmount() + 1);
-                    oi.save();
+        if (order.getDistributorType() == Statics.DistributorType.Items) {
+            for (OrderLine ol : itemsToOrder) {
+                try {
+                    if (!order.getOrderLines().contains(ol)) {
+                        ol.save();
+                    } else {
+                        ol.setAmount(ol.getAmount() + 1);
+                        ol.save();
+                    }
+                } catch (Exception e) {
+                    if (failedItems == null) {
+                        failedItems = new HashMap<>();
+                    }
+                    failedItems.put("Failed to add item " + ol.toString(), ol.getItem());
                 }
-            } catch (Exception e) {
-                if (failedItems == null) {
-                    failedItems = new HashMap<>();
-                }
-                failedItems.put("Failed to add item " + oi.toString(), oi.getItem());
+            }
+        } else {
+            failedItems = new HashMap<>();
+            for(OrderLine orderLine : itemsToOrder) {
+                failedItems.put("Can not add items to an order for PCB's", orderLine.getItem());
             }
         }
         checkPendingOrders(order);
@@ -171,7 +179,7 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onUpdated(Item newItem) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(newItem.getId())) { // when new items are added, this should be false
+                    if (selectedOrder.containsOrderLineFor(newItem)) { // when new items are added, this should be false
                         tableUpdate();
                     }
                     if (selectedOrderLine != null) {
@@ -265,11 +273,11 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setOrderItemsChangedListener() {
-        orderItemsChanged = new CacheChangedListener<OrderItem>() {
+        orderLinesChanged = new CacheChangedListener<OrderLine>() {
             @Override
-            public void onInserted(OrderItem orderItem) {
-                Order order = sm().findOrderById(orderItem.getOrderId());
-                order.addOrderLine(orderItem);
+            public void onInserted(OrderLine orderLine) {
+                Order order = sm().findOrderById(orderLine.getOrderId());
+                order.addOrderLine(orderLine);
                 // Update table
                 selectedOrder = order;
                 tableInitialize(selectedOrder);
@@ -277,9 +285,9 @@ public class OrderPanel extends OrderPanelLayout {
 
                 // Select and highlight in table
                 SwingUtilities.invokeLater(() -> {
-                    selectedOrderLine = orderItem;
+                    selectedOrderLine = orderLine;
                     tableAddOrderItem(selectedOrderLine);
-                    tableSelectOrderItem(orderItem);
+                    tableSelectOrderItem(orderLine);
 
                     // Update stuff
                     updateEnabledComponents();
@@ -288,14 +296,14 @@ public class OrderPanel extends OrderPanelLayout {
             }
 
             @Override
-            public void onUpdated(OrderItem newOrderItem) {
-                selectedOrder = sm().findOrderById(newOrderItem.getOrderId());
-                selectedOrderLine = newOrderItem;
+            public void onUpdated(OrderLine orderLine) {
+                selectedOrder = sm().findOrderById(orderLine.getOrderId());
+                selectedOrderLine = orderLine;
 
                 final long orderItemId = tableUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedOrderLine = SearchManager.sm().findOrderItemById(orderItemId);
+                    selectedOrderLine = SearchManager.sm().findOrderLineById(orderItemId);
                     tableSelectOrderItem(selectedOrderLine);
                     treeSelectOrder(selectedOrder);
 
@@ -305,7 +313,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
 
             @Override
-            public void onDeleted(OrderItem orderItem) {
+            public void onDeleted(OrderLine orderLine) {
                 // Handled in order change listener
             }
 
@@ -320,18 +328,14 @@ public class OrderPanel extends OrderPanelLayout {
             @Override
             public void onInserted(DistributorPartLink distributorPartLink) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(distributorPartLink.getItemId())) {
-                        tableUpdate();
-                    }
+                    tableUpdate();
                 }
             }
 
             @Override
             public void onUpdated(DistributorPartLink newDistributorPartLink) {
                 if (selectedOrder != null) {
-                    if (selectedOrder.containsItemId(newDistributorPartLink.getItemId())) {
-                        tableUpdate();
-                    }
+                    tableUpdate();
                 }
             }
 
@@ -347,12 +351,12 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void checkOrderedItemsLocations(Order order) {
-        if (order.isReceived() && order.getOrderType() == Statics.OrderType.Items) {
+        if (order.isReceived() && order.getDistributorType() == Statics.DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
             for (OrderLine oi : order.getOrderLines()) {
-                if (((OrderItem)oi).getItem().getLocationId() <= DbObject.UNKNOWN_ID) {
-                    itemsWithoutLocation.add(((OrderItem) oi).getItem());
+                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
+                    itemsWithoutLocation.add(oi.getItem());
                 }
             }
 
@@ -401,7 +405,7 @@ public class OrderPanel extends OrderPanelLayout {
                         if (errorItems.size() > 0) {
                             errorList.add(" - Next order items have no reference: ");
                             for (OrderLine oi : errorItems) {
-                                errorList.add(" \t * " + oi.getObject().getName());
+                                errorList.add(" \t * " + oi.getName());
                             }
                         }
                     }
@@ -697,8 +701,8 @@ public class OrderPanel extends OrderPanelLayout {
             }
         }
         if (e.getClickCount() == 2) {
-            if (selectedOrder.getOrderType() == Statics.OrderType.Items) {
-                EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", (Item)selectedOrderLine.getObject());
+            if (selectedOrder.getDistributorType() == Statics.DistributorType.Items) {
+                EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", selectedOrderLine.getItem());
                 dialog.showDialog();
             }
         }
@@ -809,7 +813,16 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        onEditItem((Item) selectedOrderLine.getObject());
+        if (selectedOrder != null) {
+            switch (selectedOrder.getDistributorType()) {
+                case Items:
+                    onEditItem( selectedOrderLine.getItem());
+                    break;
+                case Pcbs:
+                    // TODO
+                    break;
+            }
+        }
     }
 
     //

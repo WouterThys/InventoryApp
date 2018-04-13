@@ -97,7 +97,7 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
                         if (errorItems.size() > 0) {
                             errorList.add(" - Next order items have no reference: ");
                             for (OrderLine oi : errorItems) {
-                                errorList.add(" \t * " + oi.getObject().getName());
+                                errorList.add(" \t * " + oi.getName());
                             }
                         }
                     }
@@ -116,7 +116,7 @@ abstract class OrderDetailsDialogLayout extends IDialog implements ListSelection
             String[] amounts = new String[orderItemList.size()];
             for (int i = 0; i < references.length; i++) {
                 OrderLine orderItem = orderItemList.get(i);
-                references[i] = orderItem.getDistributorPartLink().getItemRef();
+                references[i] = orderItem.getDistributorPartLink().getReference();
                 amounts[i] = String.valueOf(orderItem.getAmount());
             }
             orderFileTableModel = new DefaultTableModel();

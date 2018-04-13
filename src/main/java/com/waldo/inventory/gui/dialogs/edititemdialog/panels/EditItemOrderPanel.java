@@ -54,7 +54,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        DistributorPartLink link = new DistributorPartLink(newItem.getId());
+        DistributorPartLink link = new DistributorPartLink(newItem);
         EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, "Add link", link);
         if (dialog.showDialog() == IDialog.OK) {
             link.save();

@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
 
@@ -23,18 +23,18 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         if (object.length == 0 || object[0] == null) {
             setVisible(false);
             selectedItem = null;
-            selectedOrderItem = null;
+            selectedOrderLine = null;
         } else {
             setVisible(true);
             if (object[0] instanceof Item) {
                 selectedItem = (Item) object[0];
-                selectedOrderItem = null;
+                selectedOrderLine = null;
             } else {
-                selectedOrderItem = (OrderItem) object[0];
-                selectedItem = selectedOrderItem.getItem();
+                selectedOrderLine = (OrderLine) object[0];
+                selectedItem = selectedOrderLine.getItem();
             }
             updateHeader(selectedItem);
-            updateData(selectedItem, selectedOrderItem);
+            updateData(selectedItem, selectedOrderLine);
             updateRemarks(selectedItem);
             updateButtons(selectedItem);
         }
@@ -51,14 +51,14 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
         starRater.setRating(item.getRating());
     }
 
-    private void updateData(Item item, OrderItem orderItem) {
+    private void updateData(Item item, OrderLine orderLine) {
         if (isOrderType) {
-            amountTf.setText(String.valueOf(orderItem.getAmount()));
-            if (orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                priceTf.setText(orderItem.getPrice().toString());
-                referenceTf.setText(orderItem.getDistributorPartLink().getItemRef());
+            amountTf.setText(String.valueOf(orderLine.getAmount()));
+            if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                priceTf.setText(orderLine.getPrice().toString());
+                referenceTf.setText(orderLine.getDistributorPartLink().getReference());
             }
-            boolean locked = orderItem.isLocked();
+            boolean locked = orderLine.isLocked();
             editPriceAction.setEnabled(!locked);
             editReferenceAction.setEnabled(!locked);
             plusOneAction.setEnabled(!locked);

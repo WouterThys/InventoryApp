@@ -1,5 +1,6 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Price;
@@ -20,22 +21,46 @@ public class DistributorPartLink extends DbObject {
     private long itemId;
     private Item item;
 
-    private String itemRef;
+    private long projectPcbId;
+    private ProjectPcb projectPcb;
+
+    private String reference;
     private Price price;
 
     public DistributorPartLink() {
         super(TABLE_NAME);
     }
 
-    public DistributorPartLink(long itemId) {
-        super(TABLE_NAME);
-        setItemId(itemId);
+    public DistributorPartLink(@NotNull Item item) {
+        this();
+
+        this.item = item;
+        this.distributor = null;
+        this.distributorId = UNKNOWN_ID;
+        this.projectPcb = null;
+        this.projectPcbId = UNKNOWN_ID;
     }
 
-    public DistributorPartLink(long distributorId, long itemId) {
+    public DistributorPartLink(@NotNull Distributor distributor, long linkId) {
         super(TABLE_NAME);
-        setDistributorId(distributorId);
-        setItemId(itemId);
+
+        this.distributor = distributor;
+        this.distributorId = distributor.getId();
+
+        switch (distributor.getDistributorType()) {
+            case Items:
+                item = null;
+                itemId = linkId;
+                projectPcb = null;
+                projectPcbId = UNKNOWN_ID;
+                break;
+            case Pcbs:
+                item = null;
+                itemId = UNKNOWN_ID;
+                projectPcb = null;
+                projectPcbId = linkId;
+                break;
+        }
     }
 
     @Override
@@ -43,7 +68,8 @@ public class DistributorPartLink extends DbObject {
         int ndx = addBaseParameters(statement);
         statement.setLong(ndx++, getDistributorId());
         statement.setLong(ndx++, getItemId());
-        statement.setString(ndx++, getItemRef());
+        statement.setLong(ndx++, getPcbId());
+        statement.setString(ndx++, getReference());
         statement.setDouble(ndx++, getPrice().getValue());
         statement.setInt(ndx++, getPrice().getPriceUnits().getIntValue());
         return ndx;
@@ -53,16 +79,16 @@ public class DistributorPartLink extends DbObject {
     public String toString() {
         if (id == -1) {
             if (canBeSaved) {
-                return getItemRef() + "*";
+                return getReference() + "*";
             }
         }
         if (id == UNKNOWN_ID) {
             return "";
         }
         if (Main.DEBUG_MODE) {
-            return getItemRef() + " (" + id + ")";
+            return getReference() + " (" + id + ")";
         }
-        return getItemRef();
+        return getReference();
     }
 
     @Override
@@ -70,7 +96,9 @@ public class DistributorPartLink extends DbObject {
         if (super.equals(obj)) {
             if (obj instanceof DistributorPartLink) {
                 DistributorPartLink dpl = (DistributorPartLink) obj;
-                return dpl.getItemId() == getItemId() && dpl.getDistributorId() == getDistributorId();
+                return (dpl.getItemId() == getItemId()) &&
+                        (dpl.getDistributorId() == getDistributorId()) &&
+                        (dpl.getPcbId() == getPcbId());
             }
         }
         return false;
@@ -78,13 +106,14 @@ public class DistributorPartLink extends DbObject {
 
     @Override
     public DistributorPartLink createCopy(DbObject copyInto) {
-        DistributorPartLink distributorPartLink = (DistributorPartLink) copyInto;
-        copyBaseFields(distributorPartLink);
-        distributorPartLink.setDistributorId(getDistributorId());
-        distributorPartLink.setItemId(getItemId());
-        distributorPartLink.setItemRef(getItemRef());
-        distributorPartLink.setPrice(getPrice().getValue(), getPrice().getPriceUnits());
-        return distributorPartLink;
+        DistributorPartLink cpy = (DistributorPartLink) copyInto;
+        copyBaseFields(cpy);
+        cpy.setDistributorId(getDistributorId());
+        cpy.setItemId(getItemId());
+        cpy.setPcbId(getPcbId());
+        cpy.setReference(getReference());
+        cpy.setPrice(getPrice().getValue(), getPrice().getPriceUnits());
+        return cpy;
     }
 
     @Override
@@ -129,32 +158,62 @@ public class DistributorPartLink extends DbObject {
     }
 
     public long getItemId() {
+        if (itemId < UNKNOWN_ID) {
+            itemId = UNKNOWN_ID;
+        }
         return itemId;
     }
 
     public void setItemId(long itemId) {
-        if (item != null && item.getId() != itemId) {
-            item = null;
+        if (getDistributor() != null && distributor.getDistributorType() == Statics.DistributorType.Items) {
+            if (item != null && item.getId() != itemId) {
+                item = null;
+            }
+            this.itemId = itemId;
         }
-        this.itemId = itemId;
     }
 
     public Item getItem() {
-        if (item == null) {
+        if (item == null && getItemId() > UNKNOWN_ID) {
             item = SearchManager.sm().findItemById(itemId);
         }
         return item;
     }
 
-    public String getItemRef() {
-        if (itemRef == null) {
-            itemRef = "";
+
+    public long getPcbId() {
+        if (projectPcbId < UNKNOWN_ID) {
+            projectPcbId = UNKNOWN_ID;
         }
-        return itemRef;
+        return projectPcbId;
     }
 
-    public void setItemRef(String itemRef) {
-        this.itemRef = itemRef;
+    public void setPcbId(long pcbId) {
+        if (getDistributor() != null && distributor.getDistributorType() == Statics.DistributorType.Pcbs) {
+            if (projectPcb != null && projectPcb.getId() != pcbId) {
+                projectPcb = null;
+            }
+            this.projectPcbId = pcbId;
+        }
+    }
+
+    public ProjectPcb getPcb() {
+        if (projectPcb == null && getPcbId() > UNKNOWN_ID) {
+            projectPcb = SearchManager.sm().findProjectPcbById(projectPcbId);
+        }
+        return projectPcb;
+    }
+
+
+    public String getReference() {
+        if (reference == null) {
+            reference = "";
+        }
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public Price getPrice() {

@@ -25,7 +25,7 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
     private boolean createOnConfirm;
 
     public AddToOrderDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
-        super(parent, title, pendingOption);
+        super(parent, title, pendingOption, Statics.DistributorType.Items);
         this.application = parent;
         this.itemToOrder = itemToOrder;
         this.orderList = false;
@@ -39,7 +39,7 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
     }
 
     public AddToOrderDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm, boolean pendingOption) {
-        super(parent, title, pendingOption);
+        super(parent, title, pendingOption, Statics.DistributorType.Items);
         this.application = parent;
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;
@@ -106,7 +106,6 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
         EditOrdersDialog dialog = new EditOrdersDialog(this, new Order(), false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
-            newOrder.setOrderType(Statics.OrderType.Items);
             newOrder.save();
         }
     }

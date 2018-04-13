@@ -40,13 +40,13 @@ public class OrderPcbItemDialog extends OrderPcbItemDialogLayout implements Cach
         for (PcbItemProjectLink link : pcbItemPnl.pcbTableGetItemList()) {
             PcbItem pcbItem = link.getPcbItem();
             if (pcbItem.isOrdered()) {
-                OrderItem orderItem = pcbItem.getOrderItem();
+                OrderLine orderItem = pcbItem.getOrderItem();
                 if (orderItem.getId() < DbObject.UNKNOWN_ID) {
                     // Remove it from order
                     orderItem.getOrder().removeOrderLine(orderItem);
                     // Remove from pcb item
                     pcbItem.setOrderAmount(0);
-                    pcbItem.setOrderItem(null);
+                    pcbItem.setOrderLine(null);
                 }
             }
         }

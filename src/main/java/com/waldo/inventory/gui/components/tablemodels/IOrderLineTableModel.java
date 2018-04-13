@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -52,15 +51,15 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
                 case 1: // Amount
                     return line.getAmount();
                 case 2: // Name
-                    return line.getObject().toString();
+                    return line.toString();
                 case 3: // Manufacturer
-                    if (line instanceof OrderItem) {
-                        Manufacturer m = SearchManager.sm().findManufacturerById(((OrderItem)line).getItem().getManufacturerId());
+                    if (line.getItem() != null) {
+                        Manufacturer m = line.getItem().getManufacturer();
                         if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
                             return m.toString();
                         }
                     } else {
-                        Project p = SearchManager.sm().findProjectById(((OrderPcb)line).getPcb().getProjectId());
+                        Project p = line.getPcb().getProject();
                         if (p != null && p.getId() != DbObject.UNKNOWN_ID) {
                             return p.toString();
                         }
@@ -110,7 +109,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (value instanceof OrderItem) {
+            if (value instanceof OrderLine) {
                 if (!done && row == 0) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
@@ -119,7 +118,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
                 }
 
                 label.updateBackground(c.getBackground(), row, isSelected);
-                OrderItem orderItem = (OrderItem) value;
+                OrderLine orderItem = (OrderLine) value;
 
                 boolean amountOk = orderItem.getAmount() > 0;
                 boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;

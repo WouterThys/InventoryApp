@@ -740,13 +740,13 @@ public class Statics {
         }
     }
 
-    public enum OrderType {
+    public enum DistributorType {
         Items (0, "Items"),
         Pcbs  (1, "PCB's");
 
         private final int intValue;
         private final String name;
-        OrderType(int intValue, String name) {
+        DistributorType(int intValue, String name) {
             this.intValue = intValue;
             this.name = name;
         }
@@ -760,7 +760,7 @@ public class Statics {
             return intValue;
         }
 
-        public static OrderType fromInt(int intValue) {
+        public static DistributorType fromInt(int intValue) {
             switch (intValue) {
                 default:
                 case 0: return Items;

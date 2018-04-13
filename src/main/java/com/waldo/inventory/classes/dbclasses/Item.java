@@ -547,7 +547,6 @@ public class Item extends DbObject {
 
             int inPlanned = 0;
             int inOrdered = 0;
-            int inReceived = 0;
 
             for (Order o : orders) {
                 if (o.isPlanned()) {
@@ -555,9 +554,6 @@ public class Item extends DbObject {
                 }
                 if (o.isOrdered() && !o.isReceived()) {
                     inOrdered++;
-                }
-                if (o.isOrdered() && o.isReceived()) {
-                    inReceived++;
                 }
             }
 

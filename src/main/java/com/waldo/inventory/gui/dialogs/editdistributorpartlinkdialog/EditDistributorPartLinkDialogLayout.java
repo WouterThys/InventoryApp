@@ -137,7 +137,7 @@ abstract class EditDistributorPartLinkDialogLayout extends IDialog implements IE
             updateDistributorCb(distributorPartLink);
 
             distributorCb.setSelectedItem(distributorPartLink.getDistributor());
-            referenceTf.setText(distributorPartLink.getItemRef());
+            referenceTf.setText(distributorPartLink.getReference());
 
             priceTf.setValue(distributorPartLink.getPrice().getValue());
             priceUnitsCb.setSelectedItem(distributorPartLink.getPrice().getPriceUnits());

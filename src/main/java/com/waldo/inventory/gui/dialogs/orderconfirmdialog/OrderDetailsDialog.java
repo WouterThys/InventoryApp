@@ -34,12 +34,12 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout implements Cach
     }
 
     private void checkOrderedItemsLocations(Order order) {
-        if (order.isReceived() && order.getOrderType() == Statics.OrderType.Items) {
+        if (order.isReceived() && order.getDistributorType() == Statics.DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
             for (OrderLine oi : order.getOrderLines()) {
-                if (((OrderItem)oi).getItem().getLocationId() <= DbObject.UNKNOWN_ID) {
-                    itemsWithoutLocation.add(((OrderItem)oi).getItem());
+                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
+                    itemsWithoutLocation.add(oi.getItem());
                 }
             }
 
@@ -113,7 +113,7 @@ public class OrderDetailsDialog extends OrderDetailsDialogLayout implements Cach
     private String createOrderText(Order order) {
         StringBuilder builder = new StringBuilder();
         for (OrderLine orderItem : order.getOrderLines()) {
-            builder.append(orderItem.getDistributorPartLink().getItemRef());
+            builder.append(orderItem.getDistributorPartLink().getReference());
             builder.append(order.getDistributor().getOrderFileFormat().getSeparator());
             builder.append(orderItem.getAmount());
             builder.append("\n");

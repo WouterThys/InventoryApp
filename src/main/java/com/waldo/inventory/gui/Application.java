@@ -7,7 +7,7 @@ import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
@@ -186,14 +186,14 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
     }
 
-    public void addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+    public void addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
         beginWait(this);
         try {
             // Switch tab
             setSelectedTab(TAB_ORDERS);
             // Update items
-            for (OrderItem orderItem : itemsToOrder) {
-                orderItem.updateOrderState();
+            for (OrderLine ol : itemsToOrder) {
+                ol.updateOrderState();
                 //orderItem.getItem().save();
             }
         } finally {

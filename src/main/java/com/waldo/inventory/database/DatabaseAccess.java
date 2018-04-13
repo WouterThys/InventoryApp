@@ -735,7 +735,6 @@ public class DatabaseAccess {
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
-                    o.setOrderType(rs.getInt("orderType"));
                     o.setLocked(o.getOrderState() != Statics.ItemOrderStates.Planned);
 
                     o.setInserted(true);
@@ -758,29 +757,29 @@ public class DatabaseAccess {
         return orders;
     }
 
-    public List<OrderItem> updateOrderItems() {
-        List<OrderItem> orderItems = new ArrayList<>();
+    public List<OrderLine> updateOrderLines() {
+        List<OrderLine> orderLines = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return orderItems;
+            return orderLines;
         }
-        Status().setMessage("Fetching order items from DB");
-        OrderItem o = null;
-        String sql = scriptResource.readString(OrderItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        Status().setMessage("Fetching order lines from DB");
+        OrderLine o = null;
+        String sql = scriptResource.readString(OrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new OrderItem();
+                    o = new OrderLine();
                     o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
                     o.setOrderId(rs.getLong("orderId"));
-                    o.setObjectId(rs.getLong("itemId"));
                     o.setAmount(rs.getInt("amount"));
+                    o.setItemId(rs.getLong("itemId"));
+                    o.setPcbId(rs.getLong("pcbId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orderItems.add(o);
+                        orderLines.add(o);
                     }
                 }
             }
@@ -792,66 +791,29 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        return orderItems;
+        return orderLines;
     }
 
-    public List<OrderPcb> updateOrderPcbs() {
-        List<OrderPcb> orderPcbs = new ArrayList<>();
-        if (Main.CACHE_ONLY) {
-            return orderPcbs;
-        }
-        Status().setMessage("Fetching order pcbs from DB");
-        OrderPcb o = null;
-        String sql = scriptResource.readString(OrderPcb.TABLE_NAME + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    o = new OrderPcb();
-                    o.setId(rs.getLong("id"));
-                    o.setName(rs.getString("name"));
-                    o.setOrderId(rs.getLong("orderId"));
-                    o.setObjectId(rs.getLong("pcbId"));
-                    o.setAmount(rs.getInt("amount"));
-
-                    o.setInserted(true);
-                    if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orderPcbs.add(o);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
-            try {
-                nonoList.put(object);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }
-        return orderPcbs;
-    }
-
-    public void removeItemFromOrder(OrderItem orderItem) {
-        if (Main.CACHE_ONLY) {
-            return;
-        }
-        Status().setMessage("Removing \"" + orderItem.getItem().toString() + "\" from \"" + orderItem.getOrder().toString());
-
-        String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setLong(1, orderItem.getOrderId());
-                stmt.setLong(2, orderItem.getObjectId());
-                stmt.execute();
-
-            } catch (SQLException e) {
-                Status().setError("Failed to delete item from order");
-            }
-        } catch (SQLException e) {
-            Status().setError("Failed to delete item from order");
-        }
-    }
+//    public void removeItemFromOrder(OrderItem orderItem) {
+//        if (Main.CACHE_ONLY) {
+//            return;
+//        }
+//        Status().setMessage("Removing \"" + orderItem.getItem().toString() + "\" from \"" + orderItem.getOrder().toString());
+//
+//        String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
+//        try (Connection connection = getConnection()) {
+//            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//                stmt.setLong(1, orderItem.getOrderId());
+//                stmt.setLong(2, orderItem.getObjectId());
+//                stmt.execute();
+//
+//            } catch (SQLException e) {
+//                Status().setError("Failed to delete item from order");
+//            }
+//        } catch (SQLException e) {
+//            Status().setError("Failed to delete item from order");
+//        }
+//    }
 
     public List<Distributor> updateDistributors() {
         List<Distributor> distributors = new ArrayList<>();
@@ -873,6 +835,7 @@ public class DatabaseAccess {
                     d.setWebsite(rs.getString("website"));
                     d.setOrderLink(rs.getString("orderLink"));
                     d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
+                    d.setDistributorType(rs.getInt("distributorType"));
 
                     d.setInserted(true);
                     if (d.getId() != DbObject.UNKNOWN_ID) {
@@ -911,7 +874,7 @@ public class DatabaseAccess {
                     pn.setIconPath(rs.getString("iconPath"));
                     pn.setDistributorId(rs.getLong("distributorId"));
                     pn.setItemId(rs.getLong("itemId"));
-                    pn.setItemRef(rs.getString("itemRef"));
+                    pn.setReference(rs.getString("itemRef"));
                     pn.setPrice(rs.getDouble("price"), rs.getInt("priceUnits"));
 
                     pn.setInserted(true);

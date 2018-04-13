@@ -38,7 +38,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Locations", locations, "locationsCount"));
         objectLogList.add(new ObjectLog("Location types", locationTypes));
         objectLogList.add(new ObjectLog("Orders", orders, "ordersCount"));
-        objectLogList.add(new ObjectLog("Order items", orderItems));
+        objectLogList.add(new ObjectLog("Order lines", orderLines));
         objectLogList.add(new ObjectLog("Distributors", distributors, "distributorsCount"));
         objectLogList.add(new ObjectLog("Distributor part links", distributorPartLinks));
         objectLogList.add(new ObjectLog("Packages", packages, "packagesCount"));
@@ -68,8 +68,7 @@ public class CacheManager {
     private final CacheList<Location> locations = new CacheList<>();
     private final CacheList<LocationType> locationTypes = new CacheList<>();
     private final CacheList<Order> orders = new CacheList<>();
-    private final CacheList<OrderItem> orderItems = new CacheList<>();
-    private final CacheList<OrderPcb> orderPcbs = new CacheList<>();
+    private final CacheList<OrderLine> orderLines = new CacheList<>();
     private final CacheList<Distributor> distributors = new CacheList<>();
     private final CacheList<DistributorPartLink> distributorPartLinks = new CacheList<>();
     private final CacheList<PackageType> packageTypes = new CacheList<>();
@@ -176,8 +175,7 @@ public class CacheManager {
         locations.clear();
         locationTypes.clear();
         orders.clear();
-        orderItems.clear();
-        orderPcbs.clear();
+        orderLines.clear();
         distributors.clear();
         distributorPartLinks.clear();
         packageTypes.clear();
@@ -343,41 +341,22 @@ public class CacheManager {
     }
 
 
-    public synchronized CacheList<OrderItem> getOrderItems() {
-        if (!orderItems.isFetched()) {
+    public synchronized CacheList<OrderLine> getOrderLines() {
+        if (!orderLines.isFetched()) {
             long start = System.nanoTime();
-            orderItems.setList(db().updateOrderItems(), (System.nanoTime() - start));
+            orderLines.setList(db().updateOrderLines(), (System.nanoTime() - start));
         }
-        return orderItems;
+        return orderLines;
     }
 
-    public synchronized void add(OrderItem element) {
-        if (!getOrderItems().contains(element)) {
-            orderItems.add(element);
-        }
-    }
-
-    public synchronized void remove(OrderItem element) {
-        getOrderItems().remove(element);
-    }
-
-
-    public synchronized CacheList<OrderPcb> getOrderPcbs() {
-        if (!orderPcbs.isFetched()) {
-            long start = System.nanoTime();
-            orderPcbs.setList(db().updateOrderPcbs(), (System.nanoTime() - start));
-        }
-        return orderPcbs;
-    }
-
-    public synchronized void add(OrderPcb element) {
-        if (!getOrderPcbs().contains(element)) {
-            orderPcbs.add(element);
+    public synchronized void add(OrderLine element) {
+        if (!getOrderLines().contains(element)) {
+            orderLines.add(element);
         }
     }
 
-    public synchronized void remove(OrderPcb element) {
-        getOrderPcbs().remove(element);
+    public synchronized void remove(OrderLine element) {
+        getOrderLines().remove(element);
     }
 
 
