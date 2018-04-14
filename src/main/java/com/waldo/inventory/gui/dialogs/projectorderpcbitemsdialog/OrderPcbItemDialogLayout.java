@@ -70,7 +70,7 @@ abstract class OrderPcbItemDialogLayout extends IDialog implements
 //            for (OrderItem oi : selectedOrder.getOrderLines()) {
 //                for (PcbItem pcb : pcbItemPnl.pcbTableGetItemList()) {
 //                    if (oi.getItemId() == pcb.getMatchedItemLink().getItemId()) {
-//                        pcb.setOrderItem(oi);
+//                        pcb.setOrderLine(oi);
 //                        pcb.setOrderAmount(oi.getAmount());
 //                        break;
 //                    }

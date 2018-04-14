@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 
@@ -47,58 +46,56 @@ public abstract class OrderLinePopup extends JPopupMenu {
         add(deleteOrderItemAction);
         add(editReferenceAction);
 
-        if (orderLine instanceof OrderItem) {
+        Item item = orderLine.getItem();
 
-            Item item = ((OrderItem) orderLine).getItem();
+        IActions.EditAction editAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OrderLinePopup.this.onEditItem(item);
+            }
+        };
+        editAction.setName("Edit order item");
 
-            // Item
-            IActions.EditAction editAction = new IActions.EditAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    OrderLinePopup.this.onEditItem(item);
-                }
-            };
-            editAction.setName("Edit order item");
+        IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOpenLocalDataSheet(item);
+            }
+        };
 
-            IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    onOpenLocalDataSheet(item);
-                }
-            };
+        IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOpenOnlineDataSheet(item);
+            }
+        };
 
-            IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    onOpenOnlineDataSheet(item);
-                }
-            };
+        IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOrderItem(item);
+            }
+        };
 
-            IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    onOrderItem(item);
-                }
-            };
-
-            IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    onShowHistory(item);
-                }
-            };
+        IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onShowHistory(item);
+            }
+        };
 
 
-            JMenu dsMenu = new JMenu("Open data sheet");
-            dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
-            dsMenu.add(new JMenuItem(openItemDataSheetLocalAction));
+        JMenu dsMenu = new JMenu("Open data sheet");
+        dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
+        dsMenu.add(new JMenuItem(openItemDataSheetLocalAction));
 
-            openItemDataSheetOnlineAction.setEnabled(item != null && !item.getOnlineDataSheet().isEmpty());
-            openItemDataSheetLocalAction.setEnabled(item != null && !item.getLocalDataSheet().isEmpty());
-            editAction.setEnabled(item != null);
-            showItemHistoryAction.setEnabled(item != null);
-            orderItemAction.setEnabled(item != null);
+        openItemDataSheetOnlineAction.setEnabled(item != null && !item.getOnlineDataSheet().isEmpty());
+        openItemDataSheetLocalAction.setEnabled(item != null && !item.getLocalDataSheet().isEmpty());
+        editAction.setEnabled(item != null);
+        showItemHistoryAction.setEnabled(item != null);
+        orderItemAction.setEnabled(item != null);
 
+        if (item != null)
             addSeparator();
             add(editAction);
             add(showItemHistoryAction);
@@ -109,4 +106,4 @@ public abstract class OrderLinePopup extends JPopupMenu {
     }
 
 
-}
+

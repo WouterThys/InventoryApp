@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 
-public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderItem> {
+public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderLine> {
 
     private static final String[] COLUMN_NAME = {"Order", "Item", "#"};
     private static final Class[] COLUMN_CLASSES = {String.class, String.class, Integer.class};
@@ -14,7 +14,7 @@ public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderItem> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderItem orderItem = getItemAt(rowIndex);
+        OrderLine orderItem = getItemAt(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
                 case -1: // Reference to object itself

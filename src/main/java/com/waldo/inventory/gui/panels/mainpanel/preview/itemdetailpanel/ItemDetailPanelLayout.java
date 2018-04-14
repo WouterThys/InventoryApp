@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
@@ -24,9 +24,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     ILabel iconLbl;
     ITextField nameTf;
     ITextField descriptionTa;
-    ITextField categoryTf;
-    ITextField productTf;
-    ITextField typeTf;
+    private ITextField categoryTf;
+    private ITextField productTf;
+    private ITextField typeTf;
     ITextField manufacturerTf;
     ITextField footprintTf;
     ITextField locationTf;
@@ -53,7 +53,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item selectedItem;
-    OrderItem selectedOrderItem;
+    OrderLine selectedOrderLine;
 
     private final ItemDetailListener itemDetailListener;
     private final OrderDetailListener orderDetailListener;
@@ -230,38 +230,38 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         plusOneAction = new IActions.PlusOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderItem.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount + 1);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         minOneAction = new IActions.MinOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderItem.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderItem, currentAmount - 1);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         editReferenceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderItem);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedOrderLine);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };
         editPriceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderItem != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderItem);
-                    updateComponents(selectedOrderItem);
+                if (selectedOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedOrderLine);
+                    updateComponents(selectedOrderLine);
                 }
             }
         };

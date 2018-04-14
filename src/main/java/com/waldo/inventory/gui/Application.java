@@ -7,12 +7,12 @@ import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
+import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
-import com.waldo.inventory.gui.dialogs.orderitemdialog.OrderItemDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
@@ -186,14 +186,14 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
     }
 
-    public void addOrderItemsToOrder(List<OrderItem> itemsToOrder, Order order) {
+    public void addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
         beginWait(this);
         try {
             // Switch tab
             setSelectedTab(TAB_ORDERS);
             // Update items
-            for (OrderItem orderItem : itemsToOrder) {
-                orderItem.updateOrderState();
+            for (OrderLine ol : itemsToOrder) {
+                ol.updateOrderState();
                 //orderItem.getItem().save();
             }
         } finally {
@@ -386,7 +386,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             );
         }
         if (result == JOptionPane.YES_OPTION) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
@@ -407,7 +407,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         }
         if (itemList.size() > 0) {
-            OrderItemDialog dialog = new OrderItemDialog(this, "Order items", itemList, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order items", itemList, true, true);
             dialog.showDialog();
         }
     }

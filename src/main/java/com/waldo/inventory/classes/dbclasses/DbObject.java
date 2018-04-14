@@ -32,7 +32,7 @@ public abstract class DbObject {
     public static final int TYPE_MANUFACTURER = 5;
     public static final int TYPE_LOCATION = 6;
     public static final int TYPE_ORDER = 7;
-    public static final int TYPE_ORDER_ITEM = 8;
+    public static final int TYPE_ORDER_LINE = 8;
     public static final int TYPE_DISTRIBUTOR = 9;
     public static final int TYPE_PACKAGE_TYPE = 10;
     public static final int TYPE_PACKAGE = 11;
@@ -94,7 +94,7 @@ public abstract class DbObject {
         if (dbObject instanceof Location) return TYPE_LOCATION;
         if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;
         if (dbObject instanceof Order) return TYPE_ORDER;
-        if (dbObject instanceof OrderItem) return TYPE_ORDER_ITEM;
+        if (dbObject instanceof OrderLine) return TYPE_ORDER_LINE;
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
@@ -112,7 +112,6 @@ public abstract class DbObject {
         if (dbObject instanceof SetItemLink) return TYPE_SET_ITEM_LINK;
         if (dbObject instanceof Statistics) return TYPE_STATISTICS;
         if (dbObject instanceof PendingOrder) return TYPE_PENDING_ORDER;
-        if (dbObject instanceof OrderPcb) return TYPE_ORDER_PCB;
 
         return TYPE_UNKNOWN;
     }

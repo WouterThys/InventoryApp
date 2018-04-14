@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemOrderStates;
-import com.waldo.inventory.Utils.Statics.OrderType;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
@@ -32,7 +32,6 @@ public class Order extends DbObject {
     private Date dateModified;
     private Date dateReceived;
 
-    private OrderType orderType;
     private List<OrderLine> orderLines;
 
     private long distributorId;
@@ -43,7 +42,7 @@ public class Order extends DbObject {
 
     // Runtime variables
     private boolean isLocked;
-    private final List<OrderItem> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+    private final List<OrderLine> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
 
     public Order() {
         super(TABLE_NAME);
@@ -73,7 +72,6 @@ public class Order extends DbObject {
         statement.setLong(ndx++, getDistributorId());
         statement.setString(ndx++, getOrderReference());
         statement.setString(ndx++, getTrackingNumber());
-        statement.setInt(ndx++, getOrderType().getIntValue());
         return ndx;
     }
 
@@ -104,7 +102,6 @@ public class Order extends DbObject {
         order.setDistributorId(getDistributorId());
         order.setOrderReference(getOrderReference());
         order.setTrackingNumber(getTrackingNumber());
-        order.setOrderType(getOrderType());
 
         return order;
     }
@@ -125,12 +122,10 @@ public class Order extends DbObject {
 
                 if (!compareIfEqual(ref.getDateOrdered(), getDateOrdered())) return false;
                 if (!compareIfEqual(ref.getDateReceived(), getDateReceived())) return false;
-                //if (!compareIfEqual(ref.getDateModified(), getDateModified())) return false;
-                if (!(ref.getOrderLines().equals(getOrderLines()))) return false;
+                if (!(ref.getOrderLines().size() == (getOrderLines().size()))) return false;
                 if (!(ref.getDistributorId() == (getDistributorId()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
-                if (!(ref.getOrderType().equals(getOrderType()))) return false;
 
             }
         }
@@ -209,7 +204,7 @@ public class Order extends DbObject {
     private String createOrderText() {
         StringBuilder builder = new StringBuilder();
         for (OrderLine orderLine : getOrderLines()) {
-            builder.append(orderLine.getDistributorPartLink().getItemRef());
+            builder.append(orderLine.getDistributorPartLink().getReference());
             builder.append(getDistributor().getOrderFileFormat().getSeparator());
             builder.append(orderLine.getAmount());
             builder.append("\n");
@@ -231,13 +226,30 @@ public class Order extends DbObject {
         return o;
     }
 
-    public boolean containsItemId(long id) {
-        for (OrderLine oi : getOrderLines()) {
-            if (oi.getObjectId() == id) {
-                return true;
+    public boolean containsOrderLineFor(Item item) {
+        return findOrderLineFor(item) != null;
+    }
+
+    public boolean containsOrderLineFor(ProjectPcb pcb) {
+        if (pcb != null && getDistributorType() == DistributorType.Items) {
+            for (OrderLine ol : getOrderLines()) {
+                if (ol.getItemId() == pcb.getId()) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    public OrderLine findOrderLineFor(Item item) {
+        if (item != null && getDistributorType() == DistributorType.Items) {
+            for (OrderLine ol : getOrderLines()) {
+                if (ol.getItemId() == item.getId()) {
+                    return ol;
+                }
+            }
+        }
+        return null;
     }
 
     public void addOrderLine(OrderLine line) {
@@ -249,7 +261,7 @@ public class Order extends DbObject {
         }
     }
 
-    public void addItemToTempList(OrderItem item) {
+    public void addItemToTempList(OrderLine item) {
         if (item != null) {
             if (!tempOrderItems.contains(item)) {
                 tempOrderItems.add(item);
@@ -261,7 +273,7 @@ public class Order extends DbObject {
         if (line != null) {
             if (orderLines.contains(line)) {
                 // Remove OrderItem from db
-                line.removeFromOrder();
+                line.delete();
                 // Remove from list
                 orderLines.remove(line);
                 // Update modification date
@@ -298,15 +310,6 @@ public class Order extends DbObject {
         }
     }
 
-    public OrderLine findOrderLineInOrder(long itemId) {
-        for (OrderLine oi : getOrderLines()) {
-            if (oi.getObjectId() == itemId) {
-                return oi;
-            }
-        }
-        return null;
-    }
-
     private boolean compareIfEqual(Date d1, Date d2) {
         return d1 == null && d2 == null || !(d1 != null && d2 == null || d1 == null) && d1.equals(d2);
     }
@@ -327,17 +330,7 @@ public class Order extends DbObject {
 
     public List<OrderLine> getOrderLines() {
         if (orderLines == null) {
-            orderLines = new ArrayList<>();
-            switch (getOrderType()) {
-                default:
-                case Items:
-                    orderLines.addAll(SearchManager.sm().findOrderItemsForOrder(getId()));
-                    break;
-                case Pcbs:
-                    orderLines.addAll(SearchManager.sm().findOrderPcbsForOrder(getId()));
-                    break;
-            }
-
+            orderLines = SearchManager.sm().findOrderLinesForOrder(getId());
         }
         return orderLines;
     }
@@ -452,19 +445,11 @@ public class Order extends DbObject {
         this.trackingNumber = trackingNumber;
     }
 
-    public OrderType getOrderType() {
-        if (orderType == null) {
-            orderType = OrderType.Items;
+    public DistributorType getDistributorType() {
+        if (getDistributor() != null) {
+            return distributor.getDistributorType();
         }
-        return orderType;
-    }
-
-    public void setOrderType(OrderType orderType) {
-        this.orderType = orderType;
-    }
-
-    public void setOrderType(int orderType) {
-        this.orderType = OrderType.fromInt(orderType);
+        return null;
     }
 
 
@@ -477,7 +462,7 @@ public class Order extends DbObject {
     }
 
 
-    public List<OrderItem> getTempOrderItems() {
+    public List<OrderLine> getTempOrderItems() {
         return tempOrderItems;
     }
 

@@ -4,7 +4,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderItem;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -103,7 +102,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 amountTf.setText(String.valueOf(orderLine.getAmount()));
                 if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
                     priceTf.setText(orderLine.getPrice().toString());
-                    referenceTf.setText(orderLine.getDistributorPartLink().getItemRef());
+                    referenceTf.setText(orderLine.getDistributorPartLink().getReference());
                 }
                 boolean locked = orderLine.isLocked();
                 editPriceAction.setEnabled(!locked);
@@ -390,8 +389,8 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 selectedOrderLine = null;
             } else {
                 selectedOrderLine = (OrderLine) args[0];
-                if (selectedOrderLine instanceof OrderItem) {
-                    selectedItem = ((OrderItem) selectedOrderLine).getItem();
+                if (selectedOrderLine != null) {
+                    selectedItem = selectedOrderLine.getItem();
                 }
             }
             updateToolbar(selectedItem);

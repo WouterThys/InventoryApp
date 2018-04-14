@@ -31,7 +31,7 @@ public class EditDistributorPartLinkDialog extends EditDistributorPartLinkDialog
         }
 
         if (ok) {
-            if (distributorPartLink.getItemRef().isEmpty()) {
+            if (distributorPartLink.getReference().isEmpty()) {
                 referenceTf.setError("Reference can not be empty..");
                 ok = false;
             }

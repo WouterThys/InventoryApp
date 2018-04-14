@@ -190,10 +190,10 @@ class OrderPcbItemPanel extends JPanel implements GuiUtils.GuiInterface {
                     PcbItemItemLink itemLink = projectLink.getPcbItemItemLink();
                     Item item = itemLink.getItem();
 
-                    OrderItem orderItem = new OrderItem(order.getId(), item.getId(), projectLink.getPcbItem().getOrderAmount());
+                    OrderLine orderItem = new OrderLine(order, item, projectLink.getPcbItem().getOrderAmount());
                     order.addItemToTempList(orderItem);
 
-                    projectLink.getPcbItem().setOrderItem(orderItem);
+                    projectLink.getPcbItem().setOrderLine(orderItem);
                 }
             }
         }

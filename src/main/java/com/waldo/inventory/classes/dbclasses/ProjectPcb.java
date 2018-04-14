@@ -27,6 +27,7 @@ public class ProjectPcb extends ProjectObject {
     private Date lastParsedDate; // Compare with pcb file's 'Last modified' date to check if should parse again
     private List<PcbItemProjectLink> pcbItemProjectLinks;
     private boolean hasParsed;
+    private int amount;
 
     public ProjectPcb() {
         super(TABLE_NAME);
@@ -62,6 +63,7 @@ public class ProjectPcb extends ProjectObject {
             statement.setTimestamp(ndx++, null);
         }
         statement.setString(ndx++, getDescription());
+        statement.setInt(ndx++, getAmount());
 
         return ndx;
     }
@@ -80,6 +82,7 @@ public class ProjectPcb extends ProjectObject {
     public ProjectPcb createCopy(DbObject copyInto) {
         ProjectPcb cpy = (ProjectPcb) super.createCopy(copyInto);
         cpy.setLastParsedDate(getLastParsedDate());
+        cpy.setAmount(getAmount());
         return cpy;
     }
 
@@ -98,6 +101,10 @@ public class ProjectPcb extends ProjectObject {
                 break;
             }
         }
+    }
+
+    public void updateOrderState() {
+
     }
 
     public int numberOfComponents() {
@@ -179,14 +186,14 @@ public class ProjectPcb extends ProjectObject {
 
     private void findKnownOrders(List<PcbItemProjectLink> projectLinks) {
         if (projectLinks != null && projectLinks.size() > 0) {
-            List<Order> planned = SearchManager.sm().findPlannedOrders();
+            List<Order> planned = SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items);
             if (planned.size() > 0) {
                 for (Order order : planned) {
                     for (OrderLine oi : order.getOrderLines()) {
                         for (PcbItemProjectLink link : projectLinks) {
                             if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
-                                if (oi.getObjectId() == link.getPcbItemItemLink().getItemId()) {
-                                    link.getPcbItem().setOrderItem((OrderItem) oi);
+                                if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {
+                                    link.getPcbItem().setOrderLine(oi);
                                     link.getPcbItem().setOrderAmount(oi.getAmount());
                                     break;
                                 }
@@ -257,5 +264,16 @@ public class ProjectPcb extends ProjectObject {
     @Override
     public long getProjectId() {
         return super.getProjectId();
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        if (amount < 0) {
+            amount = 0;
+        }
+        this.amount = amount;
     }
 }

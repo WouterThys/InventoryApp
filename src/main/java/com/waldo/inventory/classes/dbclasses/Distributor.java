@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
@@ -16,6 +17,7 @@ public class Distributor extends DbObject {
     private String orderLink;
     private long orderFileFormatId = -1;
     private OrderFileFormat orderFileFormat;
+    private DistributorType distributorType;
 
     public Distributor() {
         super(TABLE_NAME);
@@ -31,6 +33,7 @@ public class Distributor extends DbObject {
             orderFileFormatId = UNKNOWN_ID;
         }
         statement.setLong(ndx++, getOrderFileFormatId());
+        statement.setInt(ndx++, getDistributorType().getIntValue());
         return ndx;
     }
 
@@ -44,6 +47,7 @@ public class Distributor extends DbObject {
             if (!(((Distributor)obj).getWebsite().equals(getWebsite()))) return false;
             if (!(((Distributor)obj).getOrderLink().equals(getOrderLink()))) return false;
             if (!(((Distributor)obj).getOrderFileFormatId() == getOrderFileFormatId())) return false;
+            if (!(((Distributor)obj).getDistributorType().equals(getDistributorType()))) return false;
         }
         return result;
     }
@@ -55,6 +59,7 @@ public class Distributor extends DbObject {
         distributor.setWebsite(getWebsite());
         distributor.setOrderLink(getOrderLink());
         distributor.setOrderFileFormatId(getOrderFileFormatId());
+        distributor.setDistributorType(getDistributorType());
         return distributor;
     }
 
@@ -118,5 +123,20 @@ public class Distributor extends DbObject {
             orderFileFormat = SearchManager.sm().findOrderFileFormatById(orderFileFormatId);
         }
         return orderFileFormat;
+    }
+
+    public DistributorType getDistributorType() {
+        if (distributorType == null) {
+            distributorType = DistributorType.Items;
+        }
+        return distributorType;
+    }
+
+    public void setDistributorType(DistributorType distributorType) {
+        this.distributorType = distributorType;
+    }
+
+    public void setDistributorType(int distributorType) {
+        this.distributorType = DistributorType.fromInt(distributorType);
     }
 }

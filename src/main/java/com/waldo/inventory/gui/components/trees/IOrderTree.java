@@ -230,7 +230,7 @@ public class IOrderTree extends ITree<Order> {
                                 break;
                         }
                     } else {
-                        switch (order.getOrderType()) {
+                        switch (order.getDistributorType()) {
                             default:
                             case Items: setIcon(itemIcon); break;
                             case Pcbs: setIcon(pcbIcon); break;

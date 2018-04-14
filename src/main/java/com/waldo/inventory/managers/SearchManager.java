@@ -1,6 +1,7 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 
@@ -189,32 +190,20 @@ public class SearchManager {
         return null;
     }
 
-    public List<OrderItem> findOrderItemsForOrder(long orderId) {
-        List<OrderItem> items = new ArrayList<>();
+    public List<OrderLine> findOrderLinesForOrder(long orderId) {
+        List<OrderLine> lines = new ArrayList<>();
         if (orderId > DbObject.UNKNOWN_ID) {
-            for (OrderItem i : cache().getOrderItems()) {
+            for (OrderLine i : cache().getOrderLines()) {
                 if (i.getOrderId() == orderId) {
-                    items.add(i);
+                    lines.add(i);
                 }
             }
         }
-        return items;
+        return lines;
     }
 
-    public List<OrderPcb> findOrderPcbsForOrder(long orderId) {
-        List<OrderPcb> items = new ArrayList<>();
-        if (orderId > DbObject.UNKNOWN_ID) {
-            for (OrderPcb p : cache().getOrderPcbs()) {
-                if (p.getOrderId() == orderId) {
-                    items.add(p);
-                }
-            }
-        }
-        return items;
-    }
-
-    public OrderItem findOrderItemById(long id) {
-        for (OrderItem t : cache().getOrderItems()) {
+    public OrderLine findOrderLineById(long id) {
+        for (OrderLine t : cache().getOrderLines()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -242,10 +231,23 @@ public class SearchManager {
         return null;
     }
 
-    public DistributorPartLink findDistributorPartLink(long distributorId, long itemId) {
-        for (DistributorPartLink pn : cache().getDistributorPartLinks()) {
-            if (pn.getDistributorId() == distributorId && pn.getItemId() == itemId) {
-                return pn;
+    public DistributorPartLink findDistributorPartLink(long distributorId, Item item) {
+        if (distributorId > DbObject.UNKNOWN_ID && item != null) {
+            for (DistributorPartLink pn : cache().getDistributorPartLinks()) {
+                if ((pn.getDistributorId() == distributorId) && (pn.getItemId() == item.getId())) {
+                    return pn;
+                }
+            }
+        }
+        return null;
+    }
+
+    public DistributorPartLink findDistributorPartLink(long distributorId, ProjectPcb pcb) {
+        if (distributorId > DbObject.UNKNOWN_ID && pcb != null) {
+            for (DistributorPartLink pn : cache().getDistributorPartLinks()) {
+                if ((pn.getDistributorId() == distributorId) && (pn.getPcbId() == pcb.getId())) {
+                    return pn;
+                }
             }
         }
         return null;
@@ -267,9 +269,9 @@ public class SearchManager {
         List<Order> orders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (Order o : cache().getOrders()) {
-                if (o.getOrderType() == Statics.OrderType.Items) {
+                if (o.getDistributorType() == DistributorType.Items) {
                     for (OrderLine oi : o.getOrderLines()) {
-                        if (oi.getObjectId() == itemId) {
+                        if (oi.getItemId() == itemId) {
                             orders.add(o);
                             break;
                         }
@@ -284,6 +286,16 @@ public class SearchManager {
         List<Order> orders = new ArrayList<>();
         for (Order o : cache().getOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
+                orders.add(o);
+            }
+        }
+        return orders;
+    }
+
+    public List<Order> findPlannedOrders(DistributorType distributorType) {
+        List<Order> orders = new ArrayList<>();
+        for (Order o : cache().getOrders()) {
+            if (!o.isUnknown() && !o.isOrdered() && o.getDistributorType().equals(distributorType)) {
                 orders.add(o);
             }
         }

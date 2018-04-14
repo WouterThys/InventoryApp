@@ -116,7 +116,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         }
     }
 
-    void viewPendingOrders() {
+    private void viewPendingOrders() {
         PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
         dialog.showDialog();
     }
