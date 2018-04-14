@@ -33,6 +33,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
             Item foundItem = objectMatch.getFoundObject();
             switch (columnIndex) {
                 case -1:
+                    return objectMatch;
                 case 0: // Amount label
                     return foundItem;
                 case 1: // Name

@@ -199,7 +199,7 @@ public class PcbItemParser {
 
                 if (parseFile != null) {
                     try {
-                        resultMap = createMap(kiCadParser.parse(fileToParse));
+                        resultMap = createMap(kiCadParser.parse(parseFile));
                     } catch (com.waldo.kicadparser.KiCadParser.KiCadParserException e) {
                         e.printStackTrace();
                     }

@@ -323,7 +323,7 @@ public class Item extends DbObject {
             // Value
             if (getValue().hasValue()) {
                 Value value = Value.tryFindValue(pValue);
-                if (value.equalsIgnoreUnits(getValue())) {
+                if (value != null && value.equalsIgnoreUnits(getValue())) {
                     matchList.add(new SearchMatch(32, value, getValue()));
                 }
             } else {

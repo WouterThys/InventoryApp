@@ -178,7 +178,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         tableModel = new IFoundItemsTableModel();
         foundItemTable = new ITable<>(tableModel);
         if (!allowMultiSelect) {
-            foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            //foundItemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         }
         foundItemTable.getSelectionModel().addListSelectionListener(this);
         foundItemTable.addMouseListener(new MouseAdapter() {
