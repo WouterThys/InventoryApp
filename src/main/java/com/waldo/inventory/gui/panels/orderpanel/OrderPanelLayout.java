@@ -270,7 +270,7 @@ abstract class OrderPanelLayout extends IPanel implements
             ));
         }
 
-        previewPanel = new OrderPreviewPanel(application, rootOrder);
+        previewPanel = new OrderPreviewPanel(application);
 
         // Item table
         tableModel = new IOrderLineTableModel();

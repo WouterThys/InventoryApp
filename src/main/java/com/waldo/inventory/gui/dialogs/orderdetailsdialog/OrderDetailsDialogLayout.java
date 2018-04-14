@@ -1,4 +1,4 @@
-package com.waldo.inventory.gui.dialogs.orderconfirmdialog;
+package com.waldo.inventory.gui.dialogs.orderdetailsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Order;

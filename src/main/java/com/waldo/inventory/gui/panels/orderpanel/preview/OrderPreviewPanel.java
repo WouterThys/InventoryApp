@@ -6,7 +6,7 @@ import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
-import com.waldo.inventory.gui.dialogs.orderconfirmdialog.OrderDetailsDialog;
+import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IPanel;
@@ -36,7 +36,6 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
-    private final Order rootOrder;
 
     private Order selectedOrder;
 
@@ -44,9 +43,8 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public OrderPreviewPanel(Application application, Order rootOrder) {
+    public OrderPreviewPanel(Application application) {
         this.application = application;
-        this.rootOrder = rootOrder;
         initializeComponents();
         initializeLayouts();
         updateComponents();
