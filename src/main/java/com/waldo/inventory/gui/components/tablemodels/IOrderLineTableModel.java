@@ -106,6 +106,8 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, imageOk, "");
 
         private boolean done = false;
+        private Color defaultBackground;
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -114,14 +116,24 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
                     tableColumn.setMinWidth(32);
+                    defaultBackground = c.getBackground();
                     done = true;
                 }
 
+                c.setBackground(defaultBackground);
                 label.updateBackground(c.getBackground(), row, isSelected);
-                OrderLine orderItem = (OrderLine) value;
+                OrderLine orderLine = (OrderLine) value;
 
-                boolean amountOk = orderItem.getAmount() > 0;
-                boolean referenceOk = orderItem.getDistributorPartId() > DbObject.UNKNOWN_ID;
+                if (orderLine.getItem() != null) {
+                    Item item = orderLine.getItem();
+                    if (item.isDiscourageOrder()) {
+                        label.setBackground(Color.ORANGE);
+                        c.setBackground(Color.ORANGE);
+                    }
+                }
+
+                boolean amountOk = orderLine.getAmount() > 0;
+                boolean referenceOk = orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID;
                 if (amountOk && referenceOk) {
                     label.setIcon(imageOk);
                     label.setToolTipText(null);
