@@ -84,7 +84,7 @@ public class ProjectCodePanel extends ProjectObjectPanel<ProjectCode> {
         super.initializeLayouts();
 
         JScrollPane pane = new JScrollPane(codeFilesTree);
-        eastPanel.add(pane, BorderLayout.CENTER);
+        bottomPanel.add(pane, BorderLayout.CENTER);
     }
 
     @Override

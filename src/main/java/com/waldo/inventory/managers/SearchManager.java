@@ -231,6 +231,20 @@ public class SearchManager {
         return null;
     }
 
+    public List<Distributor> findDistributorsByType(DistributorType type) {
+        List<Distributor> distributorList = new ArrayList<>();
+        if (type != null) {
+            for (Distributor distributor : cache().getDistributors()) {
+                if (distributor.getDistributorType().equals(type)) {
+                    distributorList.add(distributor);
+                }
+            }
+        } else {
+            distributorList.addAll(cache().getDistributors());
+        }
+        return distributorList;
+    }
+
     public DistributorPartLink findDistributorPartLink(long distributorId, Item item) {
         if (distributorId > DbObject.UNKNOWN_ID && item != null) {
             for (DistributorPartLink pn : cache().getDistributorPartLinks()) {

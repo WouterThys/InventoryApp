@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.editordersdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
@@ -20,8 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 
-import static com.waldo.inventory.managers.CacheManager.cache;
-
 public class EditOrdersDialog extends IObjectDialog<Order> implements ActionListener {
 
     private ITextField nameField;
@@ -32,10 +31,12 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
     private JDatePickerImpl receivedDatePicker;
 
     private final boolean showDates;
+    private final DistributorType type;
 
-    public EditOrdersDialog(Window window, Order order, boolean showDates) {
+    public EditOrdersDialog(Window window, Order order, DistributorType type, boolean showDates) {
         super(window, "Order", order, Order.class);
         this.showDates = showDates;
+        this.type = type;
         initializeComponents();
         initializeLayouts();
         updateComponents(order);
@@ -101,7 +102,7 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
         nameField = new ITextField("Order name");
         nameField.addEditedListener(this, "name");
 
-        distributorCb = new IComboBox<>(cache().getDistributors(), new ComparatorUtils.DbObjectNameComparator<>(), false);
+        distributorCb = new IComboBox<>(SearchManager.sm().findDistributorsByType(type), new ComparatorUtils.DbObjectNameComparator<>(), false);
         distributorCb.addEditedListener(this, "distributorId");
 
         isOrderedCb = new JCheckBox("Is ordered");

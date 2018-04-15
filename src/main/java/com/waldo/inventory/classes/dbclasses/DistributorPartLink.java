@@ -97,6 +97,8 @@ public class DistributorPartLink extends DbObject {
             if (obj instanceof DistributorPartLink) {
                 DistributorPartLink dpl = (DistributorPartLink) obj;
                 return (dpl.getItemId() == getItemId()) &&
+                        (dpl.getReference().equals(getReference())) &&
+                        (dpl.getPrice().equals(getPrice())) &&
                         (dpl.getDistributorId() == getDistributorId()) &&
                         (dpl.getPcbId() == getPcbId());
             }
@@ -221,6 +223,10 @@ public class DistributorPartLink extends DbObject {
             price = new Price(0, Statics.PriceUnits.Euro);
         }
         return price;
+    }
+
+    public void setPrice(double price) {
+        setPrice(price, Statics.PriceUnits.Euro);
     }
 
     public void setPrice(double price, Statics.PriceUnits priceUnits) {

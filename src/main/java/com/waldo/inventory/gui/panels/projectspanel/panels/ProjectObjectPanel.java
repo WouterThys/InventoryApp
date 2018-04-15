@@ -29,16 +29,15 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectGridPanel<T> gridPanel;
+    protected ProjectGridPanel<T> gridPanel;
     private IdBToolBar objectToolBar;
     private ILabel projectObjectNameLbl;
 
-    final JPanel eastPanel = new JPanel(new BorderLayout());
+    protected final JPanel bottomPanel = new JPanel(new BorderLayout());
     private final JPanel centerPanel = new JPanel(new BorderLayout());
-    private final JPanel remarksPanel = new JPanel(new BorderLayout());
     private final JPanel menuPanel = new JPanel(new BorderLayout());
 
-    ProjectPreviewPanel<T> previewPanel;
+    protected ProjectPreviewPanel<T> previewPanel;
 
 
     /*
@@ -46,13 +45,13 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected final Application application;
     private final ProjectObjectListener objectListener;
-    Project selectedProject;
-    T selectedProjectObject;
+    protected Project selectedProject;
+    protected T selectedProjectObject;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectObjectPanel(Application application, ProjectObjectListener objectListener) {
+    protected ProjectObjectPanel(Application application, ProjectObjectListener objectListener) {
         this.application = application;
         this.objectListener = objectListener;
 
@@ -181,14 +180,12 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         centerPanel.add(objectToolBar, BorderLayout.PAGE_START);
 
-        //eastPanel.add(menuPanel, BorderLayout.PAGE_START);
-        eastPanel.add(remarksPanel, BorderLayout.SOUTH);
-        eastPanel.setMinimumSize(new Dimension(300, 0));
+        //bottomPanel.add(menuPanel, BorderLayout.PAGE_START);
+        bottomPanel.setMinimumSize(new Dimension(300, 0));
 
         // Add
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, eastPanel);
-        splitPane.setResizeWeight(.3d);
-        splitPane.setOneTouchExpandable(true);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, bottomPanel);
+        splitPane.setResizeWeight(0.1);
 
         previewPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(2, 2, -1, -1),

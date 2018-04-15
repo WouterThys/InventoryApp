@@ -10,7 +10,7 @@ import com.waldo.inventory.gui.components.trees.IProjectTree;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectCodePanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectOtherPanel;
-import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectPcbPanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.pcbs.ProjectPcbPanel;
 import com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel.ProjectDetailsPanel;
 import com.waldo.utils.icomponents.ILabel;
 

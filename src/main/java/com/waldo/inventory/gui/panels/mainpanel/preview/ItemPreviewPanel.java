@@ -77,21 +77,42 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void updateToolbar(Item item) {
-        aliasLbl.setText(item.getAlias());
+    private void updateToolbar(DbObject object) {
+        if (object != null) {
+            if (object instanceof Item) {
+                Item item = (Item) object;
+                aliasLbl.setText(item.getAlias());
 
-        if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
-            dataSheetAa.setEnabled(false);
-        } else {
-            dataSheetAa.setEnabled(true);
+                if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
+                    dataSheetAa.setEnabled(false);
+                } else {
+                    dataSheetAa.setEnabled(true);
+                }
+            } else if (object instanceof OrderLine) {
+                aliasLbl.setText("");
+                dataSheetAa.setEnabled(false);
+            }
         }
     }
 
-    private void updateHeader(Item item) {
-        iconLbl.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
-        nameTf.setText(item.toString());
-        descriptionTa.setText(item.getDescription());
-        starRater.setRating(item.getRating());
+    private void updateHeader(DbObject object) {
+        if (object != null) {
+            if (object instanceof Item) {
+                Item item = (Item) object;
+                iconLbl.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
+                nameTf.setText(item.toString());
+                descriptionTa.setText(item.getDescription());
+                starRater.setRating(item.getRating());
+            }
+            else if (object instanceof OrderLine) {
+                OrderLine orderLine = (OrderLine) object;
+                ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
+                iconLbl.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
+                nameTf.setText(orderLine.getName());
+                descriptionTa.setText(orderLine.getPcb().getDescription());
+                starRater.setRating(0);
+            }
+        }
     }
 
     private void updateData(Item item, OrderLine orderLine) {
@@ -103,6 +124,9 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
                     priceTf.setText(orderLine.getPrice().toString());
                     referenceTf.setText(orderLine.getDistributorPartLink().getReference());
+                } else {
+                    priceTf.setText("");
+                    referenceTf.setText("");
                 }
                 boolean locked = orderLine.isLocked();
                 editPriceAction.setEnabled(!locked);
@@ -112,27 +136,43 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         }
 
-        if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
-            manufacturerTf.setText(item.getManufacturer().toString());
+        if (item != null) {
+            if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
+                manufacturerTf.setText(item.getManufacturer().toString());
+            } else {
+                manufacturerTf.setText("");
+            }
+
+            if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+                footprintTf.setText(item.getPackageType().getPrettyString());
+            } else {
+                footprintTf.setText("");
+            }
+
+            if (item.getLocationId() > DbObject.UNKNOWN_ID) {
+                locationTf.setText(item.getLocation().getPrettyString());
+            } else {
+                locationTf.setText("");
+            }
         } else {
             manufacturerTf.setText("");
-        }
-
-        if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
-            footprintTf.setText(item.getPackageType().getPrettyString());
-        } else {
             footprintTf.setText("");
-        }
-
-        if (item.getLocationId() > DbObject.UNKNOWN_ID) {
-            locationTf.setText(item.getLocation().getPrettyString());
-        } else {
             locationTf.setText("");
         }
     }
 
-    private void updateRemarks(Item item) {
-        remarksTp.setFile(item.getRemarksFile());
+    private void updateRemarks(DbObject object) {
+        if (object != null) {
+            if (object instanceof Item) {
+                Item item = (Item) object;
+                remarksTp.setFile(item.getRemarksFile());
+            } else {
+                OrderLine orderLine = (OrderLine) object;
+                remarksTp.setFile(orderLine.getPcb().getRemarksFile());
+            }
+        } else {
+            remarksTp.setText("");
+        }
     }
 
     private JPanel createToolBarPanel() {
@@ -387,16 +427,26 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             if (args[0] instanceof Item) {
                 selectedItem = (Item) args[0];
                 selectedOrderLine = null;
+                updateToolbar(selectedItem);
+                updateHeader(selectedItem);
+                updateRemarks(selectedItem);
             } else {
                 selectedOrderLine = (OrderLine) args[0];
                 if (selectedOrderLine != null) {
                     selectedItem = selectedOrderLine.getItem();
                 }
+                if (selectedItem != null) {
+                    updateToolbar(selectedItem);
+                    updateHeader(selectedItem);
+                    updateRemarks(selectedItem);
+                } else {
+                    updateToolbar(selectedOrderLine);
+                    updateHeader(selectedOrderLine);
+                    updateRemarks(selectedOrderLine);
+                }
             }
-            updateToolbar(selectedItem);
-            updateHeader(selectedItem);
+
             updateData(selectedItem, selectedOrderLine);
-            updateRemarks(selectedItem);
         }
     }
 

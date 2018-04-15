@@ -37,7 +37,7 @@ abstract class AddToOrderDialogLayout extends IDialog {
     private GoAction addPendingAa;
 
     private boolean pendingOption;
-    private DistributorType distributorType;
+    DistributorType distributorType;
 
     /*
     *                  CONSTRUCTOR

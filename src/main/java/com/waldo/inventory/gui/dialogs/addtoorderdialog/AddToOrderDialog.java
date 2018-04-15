@@ -103,7 +103,7 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
 
     @Override
     void addNewOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(this, new Order(), false);
+        EditOrdersDialog dialog = new EditOrdersDialog(this, new Order(), distributorType,false);
         if (dialog.showDialog() == IDialog.OK) {
             Order newOrder = dialog.getOrder();
             newOrder.save();

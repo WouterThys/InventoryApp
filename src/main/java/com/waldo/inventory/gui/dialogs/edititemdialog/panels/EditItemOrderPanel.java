@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -8,7 +9,6 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IDistributorPartTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
@@ -55,10 +55,8 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         DistributorPartLink link = new DistributorPartLink(newItem);
-        EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, "Add link", link);
-        if (dialog.showDialog() == IDialog.OK) {
-            link.save();
-        }
+        EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, link, Statics.DistributorType.Items);
+        dialog.showDialog();
     }
 
     @Override
@@ -80,10 +78,8 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     public void onToolBarEdit(IdBToolBar source) {
         DistributorPartLink link = linkTable.getSelectedItem();
         if (link != null) {
-            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, "Edit link", link);
-            if (dialog.showDialog() == IDialog.OK) {
-                link.save();
-            }
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(parent, link);
+            dialog.showDialog();
         }
     }
 
@@ -127,7 +123,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         linkTable.getSelectionModel().addListSelectionListener(e -> updateEnabledComponents());
 
         // Toolbar
-        toolBar  = new IdBToolBar(this, IdBToolBar.VERTICAL);
+        toolBar = new IdBToolBar(this, IdBToolBar.VERTICAL);
     }
 
     @Override
@@ -144,7 +140,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         distributorPanel.setBorder(GuiUtils.createInlineTitleBorder("Distributor reference"));
 
         // Add to panel
-        setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add(distributorPanel);
     }
 

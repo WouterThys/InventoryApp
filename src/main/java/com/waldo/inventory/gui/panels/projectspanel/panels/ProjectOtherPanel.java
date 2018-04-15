@@ -79,7 +79,7 @@ public class ProjectOtherPanel extends ProjectObjectPanel<ProjectOther> {
         super.initializeLayouts();
 
         JScrollPane pane = new JScrollPane(otherFilesTree);
-        eastPanel.add(pane, BorderLayout.CENTER);
+        bottomPanel.add(pane, BorderLayout.CENTER);
     }
 
     @Override

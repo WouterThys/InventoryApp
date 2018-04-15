@@ -582,15 +582,23 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onEditReference(OrderLine line) {
-        if (line != null) {
+        if (line != null && selectedOrder != null) {
             DistributorPartLink link = line.getDistributorPartLink();
-            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(
-                    application,
-                    "Reference & price",
-                    link);
+            if (link == null) {
+                long id = 0;
+                switch (selectedOrder.getDistributorType()) {
+                    case Items:
+                        id = line.getItemId();
+                        break;
+                    case Pcbs:
+                        id = line.getPcbId();
+                        break;
+                }
+                link = new DistributorPartLink(selectedOrder.getDistributor(), id);
+            }
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, link);
             dialog.enableDistributor(false);
             if (dialog.showDialog() == IDialog.OK) {
-                link.save();
                 tableUpdate();
             }
         }

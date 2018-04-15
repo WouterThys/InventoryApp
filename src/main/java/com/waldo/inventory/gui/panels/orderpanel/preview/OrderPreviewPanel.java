@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
@@ -75,13 +76,19 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     }
 
     public void addOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(application, new Order(), true);
+        EditOrdersDialog dialog = new EditOrdersDialog(application, new Order(), null, true);
         dialog.showDialog();
     }
 
     public void editOrder(Order order) {
         if (order != null) {
-            EditOrdersDialog dialog = new EditOrdersDialog(application, order, true);
+            Distributor distributor = order.getDistributor();
+            EditOrdersDialog dialog;
+            if (distributor != null) {
+                dialog = new EditOrdersDialog(application, order,distributor.getDistributorType(),  true);
+            } else {
+                dialog = new EditOrdersDialog(application, order, null, true);
+            }
             dialog.showDialog();
         }
     }

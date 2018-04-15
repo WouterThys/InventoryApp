@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
@@ -17,6 +18,7 @@ import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -29,6 +31,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browseDistributorPanel;
     private GuiUtils.IBrowseWebPanel browseOrderLinkPanel;
+    private IComboBox<DistributorType> distributorTypeCb;
     private ILabel detailLogo;
     private IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     private IdBToolBar detailOrderFileFormatTb;
@@ -54,6 +57,14 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         detailName.setEnabled(false);
         detailLogo = new ILabel();
         detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        distributorTypeCb = new IComboBox<>(DistributorType.values());
+        distributorTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                getObject().setDistributorType((DistributorType) distributorTypeCb.getSelectedItem());
+                onValueChanged(distributorTypeCb, "distributorType", null, null);
+            }
+        });
 
         browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
         browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
@@ -117,7 +128,8 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
         gbh.addLine("Name: ", detailName);
         gbh.addLine("Web site: ", browseDistributorPanel);
-        gbh.add(detailLogo, 1, 2, 1, 1);
+        gbh.addLine("Type: ", distributorTypeCb);
+        gbh.add(detailLogo, 1, 3, 1, 1);
 
         // - Order stuff
         gbh = new GuiUtils.GridBagHelper(orderPanel);
@@ -141,6 +153,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         if (getObject() != null) {
             detailOrderFileFormatTb.setRefreshActionEnabled(true);
             detailOrderFileFormatTb.setAddActionEnabled(true);
+            distributorTypeCb.setEnabled(true);
 
             OrderFileFormat off = getObject().getOrderFileFormat();
             if (off != null && !off.isUnknown()) {
@@ -151,6 +164,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
                 detailOrderFileFormatTb.setEditActionEnabled(false);
             }
         } else {
+            distributorTypeCb.setEnabled(false);
             detailOrderFileFormatTb.setRefreshActionEnabled(false);
             detailOrderFileFormatTb.setAddActionEnabled(false);
             detailOrderFileFormatTb.setDeleteActionEnabled(false);
@@ -160,14 +174,25 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
 
     @Override
     protected void setDetails(Distributor distributor) {
-        detailName.setText(distributor.getName());
-        browseDistributorPanel.setText(distributor.getWebsite());
-        detailLogo.setIcon(ImageResource.scaleImage(
-                imageResource.readDistributorIcon(distributor.getIconPath()), new Dimension(48,48)));
+        if (distributor != null) {
+            detailName.setText(distributor.getName());
+            browseDistributorPanel.setText(distributor.getWebsite());
+            detailLogo.setIcon(ImageResource.scaleImage(
+                    imageResource.readDistributorIcon(distributor.getIconPath()), new Dimension(48, 48)));
 
-        // Orders
-        browseOrderLinkPanel.setText(distributor.getOrderLink());
-        detailOrderFileFormatCb.setSelectedItem(distributor.getOrderFileFormat());
+            distributorTypeCb.setSelectedItem(distributor.getDistributorType());
+
+            // Orders
+            browseOrderLinkPanel.setText(distributor.getOrderLink());
+            detailOrderFileFormatCb.setSelectedItem(distributor.getOrderFileFormat());
+        } else {
+            detailName.clearText();
+            browseDistributorPanel.clearText();
+            detailLogo.setIcon(null);
+            distributorTypeCb.setSelectedItem(null);
+            browseOrderLinkPanel.clearText();
+            detailOrderFileFormatCb.setSelectedItem(null);
+        }
     }
 
     @Override

@@ -874,6 +874,7 @@ public class DatabaseAccess {
                     pn.setIconPath(rs.getString("iconPath"));
                     pn.setDistributorId(rs.getLong("distributorId"));
                     pn.setItemId(rs.getLong("itemId"));
+                    pn.setPcbId(rs.getLong("pcbId"));
                     pn.setReference(rs.getString("reference"));
                     pn.setPrice(rs.getDouble("price"), rs.getInt("priceUnits"));
 
