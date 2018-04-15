@@ -116,8 +116,11 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
                     tableColumn.setMinWidth(32);
-                    defaultBackground = c.getBackground();
                     done = true;
+                }
+
+                if (defaultBackground == null && !isSelected) {
+                    defaultBackground = c.getBackground();
                 }
 
                 c.setBackground(defaultBackground);

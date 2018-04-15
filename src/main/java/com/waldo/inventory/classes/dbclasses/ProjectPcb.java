@@ -29,6 +29,8 @@ public class ProjectPcb extends ProjectObject {
     private boolean hasParsed;
     private int amount;
 
+    private List<CreatedPcb> createdPcbs;
+
     public ProjectPcb() {
         super(TABLE_NAME);
     }
@@ -67,6 +69,22 @@ public class ProjectPcb extends ProjectObject {
 
         return ndx;
     }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        boolean res = super.equals(obj);
+//        if (res) {
+//            if (obj instanceof ProjectPcb) {
+//                ProjectPcb ref = (ProjectPcb) obj;
+//
+//                return ((ref.getProj))
+//
+//            } else {
+//                res = false;
+//            }
+//        }
+//        return res;
+//    }
 
     @Override
     public String createRemarksFileName() {
@@ -275,5 +293,16 @@ public class ProjectPcb extends ProjectObject {
             amount = 0;
         }
         this.amount = amount;
+    }
+
+    public List<CreatedPcb> getCreatedPcbs() {
+        if (createdPcbs == null) {
+            createdPcbs = SearchManager.sm().findCreatedPcbsForProjectPcb(getId());
+        }
+        return createdPcbs;
+    }
+
+    public void updateCreatedPcbs() {
+        createdPcbs = null;
     }
 }

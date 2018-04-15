@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.panels.orderpanel;
 
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -61,7 +61,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
-        if (order.getDistributorType() == Statics.DistributorType.Items) {
+        if (order.getDistributorType() == DistributorType.Items) {
             for (Item item : itemsToOrder) {
                 try {
                     OrderLine orderLine = order.findOrderLineFor(item);
@@ -88,7 +88,7 @@ public class OrderPanel extends OrderPanelLayout {
 
     public Map<String, Item> addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
-        if (order.getDistributorType() == Statics.DistributorType.Items) {
+        if (order.getDistributorType() == DistributorType.Items) {
             for (OrderLine ol : itemsToOrder) {
                 try {
                     if (!order.getOrderLines().contains(ol)) {
@@ -238,7 +238,14 @@ public class OrderPanel extends OrderPanelLayout {
                     updateEnabledComponents();
 
                     if (selectedOrder.isReceived()) {
-                        checkOrderedItemsLocations(selectedOrder);
+                        switch (selectedOrder.getDistributorType()) {
+                            case Items:
+                                checkOrderedItemsLocations(selectedOrder);
+                                break;
+                            case Pcbs:
+                                checkOrderedPcbs(selectedOrder);
+                                break;
+                        }
                     }
                 });
             }
@@ -351,7 +358,7 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void checkOrderedItemsLocations(Order order) {
-        if (order.isReceived() && order.getDistributorType() == Statics.DistributorType.Items) {
+        if (order.isReceived() && order.getDistributorType() == DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
             for (OrderLine oi : order.getOrderLines()) {
@@ -373,6 +380,31 @@ public class OrderPanel extends OrderPanelLayout {
                 if (res == JOptionPane.YES_OPTION) {
                     EditReceivedItemsLocationDialog dialog = new EditReceivedItemsLocationDialog(application, "Set location", itemsWithoutLocation);
                     dialog.showDialog();
+                }
+            }
+        }
+    }
+
+    private void checkOrderedPcbs(Order order) {
+        if (order.isReceived() && order.getDistributorType() == DistributorType.Pcbs) {
+            for (OrderLine orderLine : order.getOrderLines()) {
+                ProjectPcb pcb = orderLine.getPcb();
+                if (pcb != null) {
+                    List<CreatedPcb> createdPcbs = SearchManager.sm().findCreatedPcbsByPcbAndOrder(pcb.getId(), order.getId());
+                    if (createdPcbs.size() == 0) {
+                        for (int i = 0; i < orderLine.getAmount(); i++) {
+                            CreatedPcb createdPcb = new CreatedPcb(orderLine.getName() + i, pcb, order);
+                            createdPcb.setDateCreated(order.getDateReceived());
+                            createdPcb.save();
+                        }
+
+                        JOptionPane.showMessageDialog(
+                                OrderPanel.this,
+                                "Created " + orderLine.getAmount() + " pcbs!",
+                                "Pcb's created",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
                 }
             }
         }
@@ -709,7 +741,7 @@ public class OrderPanel extends OrderPanelLayout {
             }
         }
         if (e.getClickCount() == 2) {
-            if (selectedOrder.getDistributorType() == Statics.DistributorType.Items) {
+            if (selectedOrder.getDistributorType() == DistributorType.Items) {
                 EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", selectedOrderLine.getItem());
                 dialog.showDialog();
             }

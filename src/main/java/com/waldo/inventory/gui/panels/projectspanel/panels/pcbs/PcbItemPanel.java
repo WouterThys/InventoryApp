@@ -96,14 +96,17 @@ public class PcbItemPanel extends JPanel implements
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null && object[0] instanceof ProjectPcb) {
             setVisible(true);
-            projectPcb = (ProjectPcb) object[0];
 
-            Application.beginWait(PcbItemPanel.this);
-            try {
-                clearComponentTable();
-                updateComponentTable(projectPcb.getPcbItemList());
-            } finally {
-                Application.endWait(PcbItemPanel.this);
+            ProjectPcb pcb = (ProjectPcb) object[0];
+            if (projectPcb == null || !projectPcb.equals(pcb)) {
+                projectPcb = pcb;
+                Application.beginWait(PcbItemPanel.this);
+                try {
+                    clearComponentTable();
+                    updateComponentTable(projectPcb.getPcbItemList());
+                } finally {
+                    Application.endWait(PcbItemPanel.this);
+                }
             }
 
         } else {

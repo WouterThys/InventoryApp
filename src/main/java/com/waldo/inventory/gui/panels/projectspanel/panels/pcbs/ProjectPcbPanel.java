@@ -1,13 +1,11 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels.pcbs;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
-import com.waldo.inventory.classes.dbclasses.Project;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.createpcbdialog.CreatePcbDialog;
+import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbDialog;
+import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
@@ -31,7 +29,6 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     private PcbItemPanel pcbItemPanel;
-    private PcbOrderedPanel pcbOrderedPanel;
     private PcbCreatedPanel pcbCreatedPanel;
 
     private AbstractAction orderItemsAa;
@@ -114,8 +111,19 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onCreatePcb() {
         if (selectedProjectObject != null) {
-            CreatePcbDialog dialog = new CreatePcbDialog(application, "PCB", selectedProjectObject);
-            dialog.showDialog();
+            SelectPcbDialog dialog = new SelectPcbDialog(application, "PCB", selectedProjectObject);
+            if (dialog.showDialog() == IDialog.OK) {
+                CreatedPcb pcb = dialog.getCreatedPcb();
+                if (pcb != null) {
+                    EditCreatedPcbLinksDialog linksDialog = new EditCreatedPcbLinksDialog(
+                            application,
+                            "Edit pcb",
+                            selectedProjectObject,
+                            pcb
+                    );
+                    linksDialog.showDialog();
+                }
+            }
         } else {
             JOptionPane.showMessageDialog(
                     application,
@@ -153,7 +161,6 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
         // PCB panels
         pcbItemPanel = new PcbItemPanel(application);
-        pcbOrderedPanel = new PcbOrderedPanel();
         pcbCreatedPanel = new PcbCreatedPanel();
 
 
@@ -215,7 +222,6 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         });
 
         tabbedPane.addTab("Pcb items ", imageResource.readIcon("Items.S.Title"), pcbItemPanel);
-        tabbedPane.addTab("Ordered ", imageResource.readIcon("Projects.Pcb.Ordered"), pcbOrderedPanel);
         tabbedPane.addTab("Created ", imageResource.readIcon("Projects.Details.Pcb"), pcbCreatedPanel);
 
         bottomPanel.add(tabbedPane, BorderLayout.CENTER);
@@ -235,12 +241,15 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
             if (project != null && !project.equals(selectedProject)) {
                 selectedProject = project;
+                selectedProjectObject = null;
                 gridPanel.drawTiles(selectedProject.getProjectPcbs());
             }
         } else {
             selectedProject = null;
         }
         previewPanel.updateComponents(selectedProject);
+        pcbCreatedPanel.updateComponents(selectedProjectObject);
+        pcbItemPanel.updateComponents(selectedProjectObject);
         updateEnabledComponents();
     }
 

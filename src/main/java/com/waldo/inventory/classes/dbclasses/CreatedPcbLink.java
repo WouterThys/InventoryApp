@@ -60,6 +60,11 @@ public class CreatedPcbLink extends DbObject {
 
         statement.setLong(ndx++, getPcbItemProjectLinkId());
         statement.setLong(ndx++, getCreatedPcbId());
+        if (getPcbItemProjectLink() != null) {
+            statement.setLong(ndx++, getPcbItemProjectLink().getPcbItemId());
+        } else {
+            statement.setLong(ndx++, UNKNOWN_ID);
+        }
         statement.setLong(ndx++, getUsedItemId());
         statement.setInt(ndx++, getUsedAmount());
 

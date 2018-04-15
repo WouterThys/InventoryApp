@@ -202,6 +202,18 @@ public class SearchManager {
         return lines;
     }
 
+    public List<OrderLine> findOrderLinesForPcb(long pcbId) {
+        List<OrderLine> lines = new ArrayList<>();
+        if (pcbId > DbObject.UNKNOWN_ID) {
+            for (OrderLine ol : cache().getOrderLines()) {
+                if (ol.getItemId() <= DbObject.UNKNOWN_ID && ol.getPcbId() == pcbId) {
+                    lines.add(ol);
+                }
+            }
+        }
+        return lines;
+    }
+
     public OrderLine findOrderLineById(long id) {
         for (OrderLine t : cache().getOrderLines()) {
             if (t.getId() == id) {
@@ -542,11 +554,23 @@ public class SearchManager {
         return null;
     }
 
-    public List<CreatedPcb> findCreatedPcbsByForProjectPcb(long projectPcbId) {
+    public List<CreatedPcb> findCreatedPcbsForProjectPcb(long projectPcbId) {
         List<CreatedPcb> createdPcbList = new ArrayList<>();
         if (projectPcbId > 0) {
             for (CreatedPcb cp : cache().getCreatedPcbs()) {
                 if (cp.getProjectPcbId() == projectPcbId) {
+                    createdPcbList.add(cp);
+                }
+            }
+        }
+        return createdPcbList;
+    }
+
+    public List<CreatedPcb> findCreatedPcbsByPcbAndOrder(long pcbId, long orderId) {
+        List<CreatedPcb> createdPcbList = new ArrayList<>();
+        if (pcbId > DbObject.UNKNOWN_ID && orderId > DbObject.UNKNOWN_ID) {
+            for (CreatedPcb cp : cache().getCreatedPcbs()) {
+                if (cp.getProjectPcbId() == pcbId && cp.getOrderId() == orderId) {
                     createdPcbList.add(cp);
                 }
             }

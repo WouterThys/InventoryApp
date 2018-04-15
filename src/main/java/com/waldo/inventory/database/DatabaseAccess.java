@@ -1192,10 +1192,16 @@ public class DatabaseAccess {
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconPath"));
                     p.setProjectPcbId(rs.getLong("projectPcbId"));
+                    p.setOrderId(rs.getLong("orderId"));
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         p.setDateCreated(rs.getTimestamp("dateCreated"));
                     } else {
                         p.setDateCreated(DateUtils.sqLiteToDate(rs.getString("dateCreated")));
+                    }
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setDateSoldered(rs.getTimestamp("dateSoldered"));
+                    } else {
+                        p.setDateSoldered(DateUtils.sqLiteToDate(rs.getString("dateSoldered")));
                     }
 
                     p.setInserted(true);

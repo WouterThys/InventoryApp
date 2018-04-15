@@ -7,7 +7,7 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbLinkTableModel;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
@@ -26,7 +26,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ICreatedPcbTableModel tableModel;
+    private ICreatedPcbLinkTableModel tableModel;
     private ITable<CreatedPcbLink> createdPcbTable;
 
     // Created pcb
@@ -47,7 +47,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
 
     // Actions
     private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
-    private IActions.SaveAction saveAllAction;
     private IActions.EditAction editItemAction;
     private IActions.SearchAction searchUsedItemAction;
     private IActions.DeleteAction deleteUsedItemAction;
@@ -60,8 +59,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ProjectPcb projectPcb;
-    private CreatedPcb createdPcb;
-
+    CreatedPcb createdPcb;
     private CreatedPcbLink selectedLink;
 
     /*
@@ -82,7 +80,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
     abstract void onDeleteUsedItem(CreatedPcbLink link);
-    abstract void onSaveAll(CreatedPcb createdPcb);
     abstract void onCreatePcb(CreatedPcb createdPcb);
     abstract void onEditRemark(CreatedPcbLink link);
     abstract void onMagicWizard(CreatedPcb createdPcb);
@@ -92,18 +89,18 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         boolean enabled = selectedLink != null;
         boolean hasLink = enabled && selectedLink.getPcbItemItemLink() != null;
         boolean hasUsed = enabled && selectedLink.getUsedItemId() > DbObject.UNKNOWN_ID;
-        boolean isCreated = createdPcb != null && createdPcb.isCreated();
+        boolean isSoldered = createdPcb != null && createdPcb.isSoldered();
 
         editItemAction.setEnabled(hasLink);
-        searchUsedItemAction.setEnabled(!isCreated && enabled);
-        deleteUsedItemAction.setEnabled(!isCreated && hasUsed);
+        searchUsedItemAction.setEnabled(!isSoldered && enabled);
+        deleteUsedItemAction.setEnabled(!isSoldered && hasUsed);
 
-        autoCalculateUsedAction.setEnabled(!isCreated && hasUsed);
-        usedAmountSp.setEnabled(!isCreated && hasLink);
+        autoCalculateUsedAction.setEnabled(!isSoldered && hasUsed);
+        usedAmountSp.setEnabled(!isSoldered && hasLink);
 
-        createPcbAction.setEnabled(!isCreated);
+        createPcbAction.setEnabled(!isSoldered);
         editRemarksAa.setEnabled(enabled);
-        removeAllAction.setEnabled(isCreated);
+        removeAllAction.setEnabled(isSoldered);
     }
 
     private void initTable() {
@@ -197,7 +194,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine("Created: ", pcbDateTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
-        JToolBar tb = GuiUtils.createNewToolbar(saveAllAction, removeAllAction, wizardAction);
+        JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, wizardAction);
 
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tb, BorderLayout.WEST);
@@ -263,8 +260,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     @Override
     public void initializeComponents() {
         setResizable(true);
-        setModal(false);
-        setTitleName(getTitle());
+        showTitlePanel(false);
+        getButtonNeutral().setVisible(true);
+
         if (projectPcb != null && projectPcb.getProject() != null && !projectPcb.getProject().getIconPath().isEmpty()) {
 //            Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), projectPcb.getProject().getIconPath());
 //            try {
@@ -289,7 +287,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             }
         });
 
-        tableModel = new ICreatedPcbTableModel();
+        tableModel = new ICreatedPcbLinkTableModel();
         createdPcbTable = new ITable<>(tableModel);
         createdPcbTable.setPreferredScrollableViewportSize(createdPcbTable.getPreferredSize());
         createdPcbTable.getSelectionModel().addListSelectionListener(e -> {
@@ -338,13 +336,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 onDeleteUsedItem(selectedLink);
             }
         };
-        saveAllAction = new IActions.SaveAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onSaveAll(createdPcb);
-            }
-        };
-        saveAllAction.setIcon(imageResource.readIcon("Actions.M.Save"));
         createPcbAction = new IActions.UseAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -386,7 +377,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pcbItemsPanel, infoPanel);
-        centerSplitPane.setOneTouchExpandable(true);
+        centerSplitPane.setResizeWeight(1);
 
         mainPanel.add(centerSplitPane, BorderLayout.CENTER);
 

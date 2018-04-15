@@ -34,7 +34,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
     private void createPcb(CreatedPcb pcb) {
         if (pcb != null) {
-            if (!pcb.isCreated()) {
+            if (!pcb.isSoldered()) {
                 if (hasErrors(pcb)) {
                     JOptionPane.showMessageDialog(
                             this,
@@ -75,7 +75,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                             usedItem.save();
                         }
                     }
-                    pcb.setDateCreated(DateUtils.now());
+                    pcb.setDateSoldered(DateUtils.now());
                     pcb.save();
 
                     updateComponents();
@@ -146,8 +146,9 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     //
     // Gui events
     //
+
     @Override
-    void onSaveAll(CreatedPcb createdPcb) {
+    protected void onNeutral() {
         if (createdPcb != null) {
             List<CreatedPcbLink> linkList = createdPcb.getCreatedPcbLinks();
             if (linkList != null && linkList.size() > 0) {
@@ -235,10 +236,10 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     @Override
     void onMagicWizard(CreatedPcb createdPcb) {
         if (createdPcb != null) {
-            if (createdPcb.isCreated()) {
+            if (createdPcb.isSoldered()) {
                 JOptionPane.showMessageDialog(
                         parent,
-                        "Can not do this on a PCB that is already created..",
+                        "Can not do this on a PCB that is already soldered..",
                         "Error",
                         JOptionPane.ERROR_MESSAGE
                 );

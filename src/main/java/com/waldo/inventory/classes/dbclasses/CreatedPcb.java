@@ -20,7 +20,11 @@ public class CreatedPcb extends DbObject {
     private long projectPcbId;
     private ProjectPcb projectPcb;
 
+    private long orderId; // Was created when this order was received
+    private Order order;
+
     private Date dateCreated;
+    private Date dateSoldered;
 
     private List<CreatedPcbLink> createdPcbLinks;
 
@@ -28,12 +32,17 @@ public class CreatedPcb extends DbObject {
         super(TABLE_NAME);
     }
 
-    public CreatedPcb(String name, ProjectPcb projectPcb) {
+    public CreatedPcb(String name, ProjectPcb projectPcb, Order order) {
         this();
         setName(name);
         this.projectPcb = projectPcb;
+        this.order = order;
+
         if (projectPcb != null) {
             this.projectPcbId = projectPcb.getId();
+        }
+        if (order != null) {
+            this.orderId = order.getId();
         }
     }
 
@@ -45,9 +54,16 @@ public class CreatedPcb extends DbObject {
             setProjectPcbId(UNKNOWN_ID);
         }
         statement.setLong(ndx++, getProjectPcbId());
+        statement.setLong(ndx++, getOrderId());
 
-        if (dateCreated != null) {
+        if (getDateCreated() != null) {
             statement.setTimestamp(ndx++, new Timestamp(dateCreated.getTime()));
+        } else {
+            statement.setDate(ndx++, null);
+        }
+
+        if (getDateCreated() != null) {
+            statement.setTimestamp(ndx++, new Timestamp(dateSoldered.getTime()));
         } else {
             statement.setDate(ndx++, null);
         }
@@ -79,15 +95,19 @@ public class CreatedPcb extends DbObject {
         CreatedPcb cpy = new CreatedPcb();
         copyBaseFields(cpy);
         cpy.setProjectPcbId(getProjectPcbId());
+        cpy.setOrderId(getOrderId());
+        cpy.setDateCreated(getDateCreated());
+        cpy.setDateSoldered(getDateSoldered());
         return cpy;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof CreatedPcb) {
+        boolean result = super.equals(obj);
+        if (result && obj instanceof CreatedPcb) {
             CreatedPcb ref = (CreatedPcb) obj;
 
-            return ref.getProjectPcbId() == getProjectPcbId();
+            return (ref.getProjectPcbId() == getProjectPcbId()) && (ref.getOrderId() == getOrderId());
         }
         return false;
     }
@@ -96,8 +116,15 @@ public class CreatedPcb extends DbObject {
         return dateCreated != null && !dateCreated.equals(DateUtils.minDate());
     }
 
+    public boolean isSoldered() {
+        return dateSoldered != null && !dateSoldered.equals(DateUtils.minDate());
+    }
+
 
     public long getProjectPcbId() {
+        if (projectPcbId < UNKNOWN_ID) {
+            projectPcbId = UNKNOWN_ID;
+        }
         return projectPcbId;
     }
 
@@ -109,10 +136,33 @@ public class CreatedPcb extends DbObject {
     }
 
     public ProjectPcb getProjectPcb() {
-        if (projectPcb == null) {
+        if (projectPcb == null && getProjectPcbId() > UNKNOWN_ID) {
             projectPcb = SearchManager.sm().findProjectPcbById(projectPcbId);
         }
         return projectPcb;
+    }
+
+
+
+    public long getOrderId() {
+        if (orderId < UNKNOWN_ID) {
+            orderId = UNKNOWN_ID;
+        }
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        if (order != null && order.getId() != orderId) {
+            order = null;
+        }
+        this.orderId = orderId;
+    }
+
+    public Order getOrder() {
+        if (order == null && getOrderId() > DbObject.UNKNOWN_ID) {
+            order = SearchManager.sm().findOrderById(orderId);
+        }
+        return order;
     }
 
     public Date getDateCreated() {
@@ -128,6 +178,22 @@ public class CreatedPcb extends DbObject {
             this.dateCreated = new Date(dateCreated.getTime());
         }
     }
+
+
+    public Date getDateSoldered() {
+        return dateSoldered;
+    }
+
+    public void setDateSoldered(Date dateSoldered) {
+        this.dateSoldered = dateSoldered;
+    }
+
+    public void setDateSoldered(Timestamp dateSoldered) {
+        if (dateSoldered != null) {
+            this.dateSoldered = new Date(dateSoldered.getTime());
+        }
+    }
+
 
     public List<CreatedPcbLink> getCreatedPcbLinks() {
         if (createdPcbLinks == null) {

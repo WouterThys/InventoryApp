@@ -158,6 +158,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
 
             @Override
             public void onGridComponentRightClick(MouseEvent e, T projectObject) {
+                selectProjectObject(projectObject);
                 JPopupMenu popup = showPopup(projectObject);
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
