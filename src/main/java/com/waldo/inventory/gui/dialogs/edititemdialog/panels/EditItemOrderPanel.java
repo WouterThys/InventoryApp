@@ -141,7 +141,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
 
         distributorPanel.add(pane, BorderLayout.CENTER);
         distributorPanel.add(toolBar, BorderLayout.EAST);
-        distributorPanel.setBorder(GuiUtils.createTitleBorder("Distributor reference"));
+        distributorPanel.setBorder(GuiUtils.createInlineTitleBorder("Distributor reference"));
 
         // Add to panel
         setBorder(BorderFactory.createEmptyBorder(5,5,5,5));

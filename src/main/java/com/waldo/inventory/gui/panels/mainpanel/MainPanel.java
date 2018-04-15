@@ -145,17 +145,23 @@ public class MainPanel extends MainPanelLayout {
         setsChanged = new CacheChangedListener<Set>() {
             @Override
             public void onInserted(Set set) {
-                //treeModel.addObject(set, false);
+                setTree.addItem(set);
+                setTree.setSelectedItem(set);
             }
 
             @Override
             public void onUpdated(Set set) {
-                //treeModel.updateObject(set);
+                setTree.updateItem(set);
+                setTree.setSelectedItem(set);
             }
 
             @Override
             public void onDeleted(Set set) {
-                //treeModel.removeObject(set);
+                selectedSet = null;
+                setTree.removeSet(set);
+
+                itemDetailPanel.updateComponents();
+                updateEnabledComponents();
             }
 
             @Override
@@ -174,7 +180,7 @@ public class MainPanel extends MainPanelLayout {
             Application.beginWait(MainPanel.this);
             try {
                 selectedItem = itemTable.getSelectedItem();
-                updateComponents(selectedDivision);
+                updateDetails();
             } finally {
                 Application.endWait(MainPanel.this);
             }
@@ -481,10 +487,10 @@ public class MainPanel extends MainPanelLayout {
         if (res == JOptionPane.YES_OPTION) {
             for (Item item : selectedItems) {
                 tableRemoveItem(item);
-//                ((Set)selectedDivision).removeSetItem(item);
-//                if (checkBox.isSelected()) {
-//                    item.delete();
-//                }
+                selectedSet.removeSetItem(item);
+                if (checkBox.isSelected()) {
+                    item.delete();
+                }
             }
             selectedItem = null;
             updateEnabledComponents();

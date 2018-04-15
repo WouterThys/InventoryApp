@@ -18,7 +18,7 @@ import com.waldo.utils.icomponents.ISpinner;
 import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -72,7 +72,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         JPanel amountPanel = new JPanel(new GridBagLayout());
 
         // Border
-        TitledBorder amountBorder = GuiUtils.createTitleBorder("Amount");
+        Border amountBorder = GuiUtils.createInlineTitleBorder("Amount");
 
         // Labels
         ILabel amountLabel = new ILabel("Amount: ");
@@ -117,7 +117,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         JPanel locationPanel = new JPanel(new GridBagLayout());
 
         // Border
-        TitledBorder amountBorder = GuiUtils.createTitleBorder("Location");
+        Border amountBorder = GuiUtils.createInlineTitleBorder("Location");
 
         // Grid bags
         GridBagConstraints gbc = new GridBagConstraints();
@@ -258,10 +258,15 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
 
     @Override
     public void initializeLayouts() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
 
-        add(createAmountPanel());
-        add(createLocationPanel());
+        JPanel stockPnl = new JPanel();
+        stockPnl.setLayout(new BoxLayout(stockPnl, BoxLayout.Y_AXIS));
+
+        stockPnl.add(createAmountPanel());
+        stockPnl.add(createLocationPanel());
+
+        add(stockPnl, BorderLayout.NORTH);
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.Border;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -232,19 +232,19 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         GuiUtils.GridBagHelper gbc;
 
         JPanel idPnl = new JPanel();
-        idPnl.setBorder(GuiUtils.createTitleBorder("Identification"));
+        idPnl.setBorder(GuiUtils.createInlineTitleBorder("Identification"));
         gbc = new GuiUtils.GridBagHelper(idPnl);
         gbc.addLine("Name: ", nameValuePnl);
         gbc.addLine("Alias: ", aliasPnl);
         gbc.addLine("Description: ", new JScrollPane(descriptionTa));
 
         JPanel divPnl = new JPanel(new BorderLayout());
-        divPnl.setBorder(GuiUtils.createTitleBorder("Division"));
+        divPnl.setBorder(GuiUtils.createInlineTitleBorder("Division"));
         divPnl.add(divisionPnl, BorderLayout.CENTER);
         divPnl.add(GuiUtils.createNewToolbar(editDivisionAction), BorderLayout.EAST);
 
         JPanel dsPnl = new JPanel();
-        dsPnl.setBorder(GuiUtils.createTitleBorder("Data sheets"));
+        dsPnl.setBorder(GuiUtils.createInlineTitleBorder("Data sheets"));
         gbc = new GuiUtils.GridBagHelper(dsPnl);
         gbc.addLine("Local: ", localDataSheetPnl);
         gbc.addLine("Online: ", onlineDataSheetPnl);
@@ -263,9 +263,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
 
 
         // Borders
-        TitledBorder packageBorder = GuiUtils.createTitleBorder("Package");
-        TitledBorder manufacturerBorder = GuiUtils.createTitleBorder("Manufacturer");
-        TitledBorder remarksBorder = GuiUtils.createTitleBorder("Remarks");
+        Border packageBorder = GuiUtils.createInlineTitleBorder("Package");
+        Border manufacturerBorder = GuiUtils.createInlineTitleBorder("Manufacturer");
+        Border remarksBorder = GuiUtils.createInlineTitleBorder("Remarks");
 
         packagePanel.setBorder(packageBorder);
         manufacturerPanel.setBorder(manufacturerBorder);
@@ -335,12 +335,22 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
-        // Add tabs
-        tabbedPane.addTab("Basic", createBasicPanel());
-        tabbedPane.addTab("Details", createDetailsPanel());
-        //tabbedPane.addTab("Set items", createSetItemsPanel());
 
-        add(tabbedPane, BorderLayout.CENTER);
+        JPanel basicPnl = createBasicPanel();
+        JPanel detailPnl = createDetailsPanel();
+
+        JPanel mainPnl = new JPanel();
+        mainPnl.setLayout(new BoxLayout(mainPnl, BoxLayout.Y_AXIS));
+        mainPnl.add(basicPnl);
+        mainPnl.add(detailPnl);
+
+        // Add tabs
+        //tabbedPane.addTab("Basic", createBasicPanel());
+        //tabbedPane.addTab("Details", createDetailsPanel());
+        //tabbedPane.addTab("Set items", createSetItemsPanel());
+        //add(tabbedPane, BorderLayout.CENTER);
+
+        add(mainPnl, BorderLayout.CENTER);
     }
 
     @Override

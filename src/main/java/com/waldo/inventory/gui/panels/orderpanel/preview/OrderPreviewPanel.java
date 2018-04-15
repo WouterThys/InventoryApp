@@ -209,7 +209,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);
-        add(southPnl, BorderLayout.NORTH);
+        add(southPnl, BorderLayout.SOUTH);
     }
 
     @Override

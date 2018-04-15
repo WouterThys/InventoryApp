@@ -73,7 +73,6 @@ public class OrderLine extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;//addBaseParameters(statement);
 
-        statement.setString(ndx++, ""); // Name
         statement.setInt(ndx++, getAmount());
 
         statement.setLong(ndx++, getOrderId());

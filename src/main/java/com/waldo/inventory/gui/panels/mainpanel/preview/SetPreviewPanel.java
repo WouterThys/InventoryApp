@@ -29,7 +29,6 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
-    private final Set rootSet;
 
     private Set selectedSet;
 
@@ -37,9 +36,8 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public SetPreviewPanel(Application application, Set rootSet) {
+    public SetPreviewPanel(Application application) {
         this.application = application;
-        this.rootSet = rootSet;
         initializeComponents();
         initializeLayouts();
         updateComponents();
@@ -61,9 +59,8 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
         }
     }
 
-    public void addSet(Set set) {
+    public void addSet() {
         EditItemDialog dialog = new EditItemDialog<>(application, "Add set", new Set());
-        dialog.setValuesForSet(set);
         dialog.showDialog();
     }
 
@@ -106,7 +103,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        addSet(selectedSet);
+        addSet();
     }
 
     @Override
@@ -146,7 +143,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
 
         setLayout(new BorderLayout());
         add(centerPnl, BorderLayout.CENTER);
-        add(southPnl, BorderLayout.NORTH);
+        add(southPnl, BorderLayout.SOUTH);
     }
 
     @Override

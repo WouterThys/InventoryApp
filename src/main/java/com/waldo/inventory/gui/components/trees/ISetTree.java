@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.components.ITree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -34,5 +35,17 @@ public class ISetTree extends ITree<Set> {
         return root;
     }
 
+    public void removeSet(Set set) {
+        removeItem(getRootSet(), set);
+    }
 
+    @Override
+    public void addItem(Set set) {
+        if (set != null) {
+            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(set);
+
+            treeModel.insertNodeInto(childNode, rootNode, rootNode.getChildCount());
+            scrollPathToVisible(new TreePath(childNode.getPath()));
+        }
+    }
 }

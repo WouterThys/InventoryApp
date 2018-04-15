@@ -193,11 +193,17 @@ abstract class MainPanelLayout extends JPanel implements
                 int ndx = tabbedPane.getSelectedIndex();
                 if (ndx == 1){
                     selectedTreeTab = TREE_SETS;
-                    updateComponents(selectedSet);
+                    if (selectedSet != null) {
+                        setItemTableList(selectedSet.getSetItems(), false, true);
+                    }
                 } else {
                     selectedTreeTab = TREE_ITEMS;
-                    updateComponents(selectedDivision);
+                    if (selectedDivision != null) {
+                        setItemTableList(selectedDivision.getItemList());
+                    }
                 }
+                updateDetails();
+                updateEnabledComponents();
             }
         });
 
@@ -266,7 +272,7 @@ abstract class MainPanelLayout extends JPanel implements
             }
         });
         selectedSet = setTree.getRootSet();
-        setPreviewPanel = new SetPreviewPanel(application, setTree.getRootSet());
+        setPreviewPanel = new SetPreviewPanel(application);
 
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
@@ -340,14 +346,14 @@ abstract class MainPanelLayout extends JPanel implements
             // Update table if needed
             if (args.length != 0 && args[0] != null) {
                 if (args[0] instanceof Division) {
-                    if (selectedDivision == null || !selectedDivision.equals(args[0])) {
+                    if (selectedDivision == null || !selectedDivision.equals(args[0]) || !selectedDivision.canBeSaved()) {
                         selectedDivision = (Division) args[0];
                         if (selectedDivision != null) {
                             setItemTableList(selectedDivision.getItemList());
                         }
                     }
                 } else if (args[0] instanceof Set ) {
-                    if (selectedSet == null || !selectedSet.equals(args[0])) {
+                    if (selectedSet == null || !selectedSet.equals(args[0]) || !selectedSet.canBeSaved()) {
                         selectedSet = (Set) args[0];
                         if (selectedSet != null) {
                             setItemTableList(selectedSet.getSetItems(), false, true);
