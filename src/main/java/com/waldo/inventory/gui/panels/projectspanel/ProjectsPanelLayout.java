@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.other.ProjectOtherPanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.pcbs.ProjectPcbPanel;
 import com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel.ProjectDetailsPanel;
+import com.waldo.inventory.managers.CacheManager;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
@@ -265,6 +266,9 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         Application.beginWait(ProjectsPanelLayout.this);
         try {
             selectedProject = (Project) object[0];
+            if (selectedProject == null) {
+                selectedProject = CacheManager.cache().getProjects().get(0);
+            }
             selectTreeTab(TAB_CODE, selectedProject);
             projectCodePanel.updateComponents(selectedProject);
 

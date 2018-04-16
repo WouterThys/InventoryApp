@@ -32,7 +32,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     // Created pcb
     private ITextField projectPcbTf;
     private ITextField pcbNameTf;
-    private ITextField pcbDateTf;
+    private ITextField pcbCreatedTf;
+    private ITextField pcbSolderedTf;
     ILabel pcbImageLbl;
 
 
@@ -123,7 +124,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         }
         if (createdPcb != null) {
             pcbNameTf.setText(createdPcb.toString());
-            pcbDateTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
+            pcbCreatedTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
+            pcbSolderedTf.setText(DateUtils.formatDateTime(createdPcb.getDateSoldered()));
             if (!createdPcb.getIconPath().isEmpty()) {
 //                Path path = Paths.get(createdPcb.getIconPath());
 //                try {
@@ -136,6 +138,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             }
         } else {
             pcbNameTf.setText("");
+            pcbCreatedTf.setText("");
+            pcbSolderedTf.setText("");
         }
         updateLinkInfo(link);
     }
@@ -191,7 +195,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
         gbc.addLine("Project: ", projectPcbTf);
         gbc.addLine("PCB name: ", pcbNameTf);
-        gbc.addLine("Created: ", pcbDateTf);
+        gbc.addLine("Created: ", pcbCreatedTf);
+        gbc.addLine("Soldered: ", pcbSolderedTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
         JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, wizardAction);
@@ -263,18 +268,10 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         showTitlePanel(false);
         getButtonNeutral().setVisible(true);
 
-        if (projectPcb != null && projectPcb.getProject() != null && !projectPcb.getProject().getIconPath().isEmpty()) {
-//            Path path = Paths.get(settings().getFileSettings().getImgProjectsPath(), projectPcb.getProject().getIconPath());
-//            try {
-//                setTitleIcon(imageResource.readImage(path, 48,48));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-        }
-
         projectPcbTf = new ITextField(false);
         pcbNameTf = new ITextField(false);
-        pcbDateTf = new ITextField(false);
+        pcbCreatedTf = new ITextField(false);
+        pcbSolderedTf = new ITextField(false);
         pcbImageLbl = new ILabel();
         pcbImageLbl.setPreferredSize(new Dimension(200, 90));
         pcbImageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 2));

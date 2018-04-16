@@ -241,13 +241,16 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
             if (project != null && !project.equals(selectedProject)) {
                 selectedProject = project;
-                selectedProjectObject = null;
+                if (selectedProjectObject == null) {
+                    selectedProjectObject = project.getProjectPcbs().get(0);
+                }
                 gridPanel.drawTiles(selectedProject.getProjectPcbs());
+                gridPanel.selectTile(selectedProjectObject);
             }
         } else {
             selectedProject = null;
         }
-        previewPanel.updateComponents(selectedProject);
+        previewPanel.updateComponents(selectedProjectObject);
         pcbCreatedPanel.updateComponents(selectedProjectObject);
         pcbItemPanel.updateComponents(selectedProjectObject);
         updateEnabledComponents();

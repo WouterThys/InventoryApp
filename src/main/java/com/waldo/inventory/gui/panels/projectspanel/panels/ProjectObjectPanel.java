@@ -186,7 +186,7 @@ public abstract class ProjectObjectPanel<T extends ProjectObject> extends JPanel
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, bottomPanel);
-        splitPane.setResizeWeight(0.1);
+        splitPane.setResizeWeight(0.2);
 
         previewPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(2, 2, -1, -1),
