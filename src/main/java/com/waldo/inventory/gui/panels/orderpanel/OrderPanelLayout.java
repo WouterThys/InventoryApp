@@ -172,7 +172,7 @@ abstract class OrderPanelLayout extends IPanel implements
         if (order != null) {
             tbOrderNameLbl.setText(order.getName());
 
-            if (order.getOrderState() != Statics.ItemOrderStates.Planned && !order.isLocked()) {
+            if (order.getOrderState() != Statics.OrderStates.Planned && !order.isLocked()) {
                 orderLineTable.setHeaderPanelBackground(Color.red);
             } else {
                 orderLineTable.setHeaderPanelBackground(null);

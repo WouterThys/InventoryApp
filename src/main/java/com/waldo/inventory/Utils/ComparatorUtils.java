@@ -259,4 +259,14 @@ public class ComparatorUtils {
             }
         }
     }
+
+    //
+    // Distributor Order Flow
+    //
+    public static class DistributorOrderFlowComparator implements Comparator<DistributorOrderFlow> {
+        @Override
+        public int compare(DistributorOrderFlow o1, DistributorOrderFlow o2) {
+            return Integer.compare(o1.getSequenceNumber(), o2.getSequenceNumber());
+        }
+    }
 }

@@ -138,7 +138,7 @@ public class Statics {
         }
     }
 
-    public enum ItemOrderStates {
+    public enum OrderStates {
         NoOrder  (0, "Not ordered"),
         Ordered  (1, "Ordered"),
         Received (2, "Received"),
@@ -146,7 +146,7 @@ public class Statics {
 
         private final int value;
         private final String string;
-        ItemOrderStates(int value, String string) {
+        OrderStates(int value, String string) {
             this.value = value;
             this.string = string;
         }
@@ -156,11 +156,11 @@ public class Statics {
             return string;
         }
 
-        public int getValue() {
+        public int getIntValue() {
             return value;
         }
 
-        public static ItemOrderStates fromInt(int value) {
+        public static OrderStates fromInt(int value) {
             switch (value) {
                 default:
                 case 0: return NoOrder;

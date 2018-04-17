@@ -100,9 +100,9 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 label.updateBackground(component.getBackground(), row, isSelected);
                 label.setText(txt);
 
-                if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
+                if (item.getOrderState() == Statics.OrderStates.Ordered) {
                     label.setIcon(blueBall);
-                } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
+                } else if (item.getOrderState() == Statics.OrderStates.Planned) {
                     label.setIcon(yellowBall);
                 } else {
                     if (item.getAmount() > 0) {

@@ -735,7 +735,7 @@ public class DatabaseAccess {
                     o.setDistributorId(rs.getLong("distributorId"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
-                    o.setLocked(o.getOrderState() != Statics.ItemOrderStates.Planned);
+                    o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -894,6 +894,47 @@ public class DatabaseAccess {
         }
 
         return distributorPartLinks;
+    }
+
+    public List<DistributorOrderFlow> updateDistributorOrderFlows() {
+        List<DistributorOrderFlow> distributorOrderFlows = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return distributorOrderFlows;
+        }
+        Status().setMessage("Fetching distributor order flows from DB");
+        DistributorOrderFlow dof = null;
+        String sql = scriptResource.readString(DistributorOrderFlow.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    dof = new DistributorOrderFlow();
+                    dof.setId(rs.getLong("id"));
+                    dof.setName(rs.getString("name"));
+                    dof.setIconPath(rs.getString("iconPath"));
+                    dof.setDistributorId(rs.getLong("distributorId"));
+                    dof.setSequenceNumber(rs.getInt("sequenceNumber"));
+                    dof.setOrderState(rs.getInt("orderState"));
+                    dof.setDescription(rs.getString("description"));
+                    dof.setDateEntered(rs.getTimestamp("dateEntered"));
+
+                    dof.setInserted(true);
+                    if (dof.getId() != DbObject.UNKNOWN_ID) {
+                        distributorOrderFlows.add(dof);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(dof, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return distributorOrderFlows;
     }
 
     public List<Package> updatePackages() {

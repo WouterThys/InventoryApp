@@ -78,9 +78,9 @@ public class ISimpleItemTableModel extends IAbstractTableModel<Item> {
 //                    Item item = (Item) value;
 //                    String txt = String.valueOf(item.getAmount());
 //
-////                    if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
+////                    if (item.getOrderState() == Statics.OrderStates.Ordered) {
 ////                        lbl = new ITableIcon(component.getBackground(), row, isSelected, blueBall, txt);
-////                    } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
+////                    } else if (item.getOrderState() == Statics.OrderStates.Planned) {
 ////                        lbl = new ITableIcon(component.getBackground(), row, isSelected, yellowBall, txt);
 ////                    } else {
 ////                        if (item.getAmount() > 0) {

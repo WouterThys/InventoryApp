@@ -41,6 +41,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Order lines", orderLines));
         objectLogList.add(new ObjectLog("Distributors", distributors, "distributorsCount"));
         objectLogList.add(new ObjectLog("Distributor part links", distributorPartLinks));
+        objectLogList.add(new ObjectLog("Distributor order flows", distributorOrderFlows));
         objectLogList.add(new ObjectLog("Packages", packages, "packagesCount"));
         objectLogList.add(new ObjectLog("Package types", packageTypes));
         objectLogList.add(new ObjectLog("Projects", projects, "projectsCount"));
@@ -71,6 +72,7 @@ public class CacheManager {
     private final CacheList<OrderLine> orderLines = new CacheList<>();
     private final CacheList<Distributor> distributors = new CacheList<>();
     private final CacheList<DistributorPartLink> distributorPartLinks = new CacheList<>();
+    private final CacheList<DistributorOrderFlow> distributorOrderFlows = new CacheList<>();
     private final CacheList<PackageType> packageTypes = new CacheList<>();
     private final CacheList<Project> projects = new CacheList<>();
     private final CacheList<ProjectIDE> projectIDES = new CacheList<>();
@@ -376,6 +378,25 @@ public class CacheManager {
 
     public synchronized void remove(Distributor element) {
         getDistributors().remove(element);
+    }
+
+
+    public synchronized CacheList<DistributorOrderFlow> getDistributorOrderFlows() {
+        if (!distributorOrderFlows.isFetched()) {
+            long start = System.nanoTime();
+            distributorOrderFlows.setList(db().updateDistributorOrderFlows(), (System.nanoTime() - start));
+        }
+        return distributorOrderFlows;
+    }
+
+    public synchronized void add(DistributorOrderFlow element) {
+        if (!getDistributorOrderFlows().contains(element)) {
+            distributorOrderFlows.add(element);
+        }
+    }
+
+    public synchronized void remove(DistributorOrderFlow element) {
+        getDistributorOrderFlows().remove(element);
     }
 
 

@@ -1,11 +1,13 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.managers.SearchManager;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -18,6 +20,8 @@ public class Distributor extends DbObject {
     private long orderFileFormatId = -1;
     private OrderFileFormat orderFileFormat;
     private DistributorType distributorType;
+
+    private List<DistributorOrderFlow> orderFlowTemplate;
 
     public Distributor() {
         super(TABLE_NAME);
@@ -138,5 +142,17 @@ public class Distributor extends DbObject {
 
     public void setDistributorType(int distributorType) {
         this.distributorType = DistributorType.fromInt(distributorType);
+    }
+
+    public List<DistributorOrderFlow> getOrderFlowTemplate() {
+        if (orderFlowTemplate == null) {
+            orderFlowTemplate = SearchManager.sm().findOrderFlowTemplateForDistributor(getId());
+            orderFlowTemplate.sort(new ComparatorUtils.DistributorOrderFlowComparator());
+        }
+        return orderFlowTemplate;
+    }
+
+    public void updateOrderFlowTemplate() {
+        orderFlowTemplate = null;
     }
 }

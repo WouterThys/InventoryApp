@@ -97,9 +97,9 @@ public class IWizardSetItemsTableModel extends IAbstractTableModel<Item> {
                 String txt = String.valueOf(item.getAmount());
                 label.setText(txt);
 
-                if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
+                if (item.getOrderState() == Statics.OrderStates.Ordered) {
                     label.setIcon(blueBall);
-                } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
+                } else if (item.getOrderState() == Statics.OrderStates.Planned) {
                     label.setIcon(yellowBall);
                 } else {
                     if (item.getAmount() > 0) {

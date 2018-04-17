@@ -10,6 +10,8 @@ import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.gui.components.IDialog;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.dialogs.editdistributororderflowdialog.EditDistributorOrderflowDialog;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IComboBox;
@@ -18,13 +20,14 @@ import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class DistributorsDialog extends IResourceDialog<Distributor> {
+public class DistributorsDialog extends IResourceDialog<Distributor> implements IdBToolBar.IdbToolBarListener {
 
     private static final ImageIcon icon = imageResource.readIcon("Distributors.Title");
 
@@ -35,6 +38,8 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
     private ILabel detailLogo;
     private IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     private IdBToolBar detailOrderFileFormatTb;
+
+    private IActions.EditAction editOrderFlowAa;
 
     public DistributorsDialog(Window window) {
         super(window, "Distributors", Distributor.class);
@@ -69,49 +74,17 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
         browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
 
+        editOrderFlowAa = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditDistributorOrderflowDialog dialog = new EditDistributorOrderflowDialog(DistributorsDialog.this, getSelectedResource());
+                dialog.showDialog();
+            }
+        };
+
         detailOrderFileFormatCb = new IComboBox<>(cache().getOrderFileFormats(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         detailOrderFileFormatCb.addEditedListener(this, "orderFileFormatId");
-        detailOrderFileFormatTb = new IdBToolBar(new IdBToolBar.IdbToolBarListener() {
-            @Override
-            public void onToolBarRefresh(IdBToolBar source) {
-                detailOrderFileFormatCb.updateList();
-            }
-
-            @Override
-            public void onToolBarAdd(IdBToolBar source) {
-                EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Add format", new OrderFileFormat());
-                if (dialog.showDialog() == IDialog.OK) {
-                    OrderFileFormat off = dialog.getOrderFileFormat();
-                    off.save();
-                }
-            }
-
-            @Override
-            public void onToolBarDelete(IdBToolBar source) {
-                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
-                if (off != null) {
-                    int result = JOptionPane.showConfirmDialog(DistributorsDialog.this,
-                            "Are you sure you want to delete " + off.getName(),
-                            "Delete format",
-                            JOptionPane.YES_NO_OPTION);
-                    if (result == JOptionPane.YES_OPTION) {
-                        off.delete();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onToolBarEdit(IdBToolBar source) {
-                OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
-                if (off != null) {
-                    EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Edit format", off);
-                    if (dialog.showDialog() == IDialog.OK) {
-                        off.save();
-                    }
-                }
-            }
-        });
+        detailOrderFileFormatTb = new IdBToolBar(this);
         detailOrderFileFormatTb.setAlignmentX(RIGHT_ALIGNMENT);
         detailOrderFileFormatCb.updateList();
     }
@@ -130,6 +103,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         gbh.addLine("Web site: ", browseDistributorPanel);
         gbh.addLine("Type: ", distributorTypeCb);
         gbh.add(detailLogo, 1, 3, 1, 1);
+        gbh.addLine("", GuiUtils.createNewToolbar(editOrderFlowAa));
 
         // - Order stuff
         gbh = new GuiUtils.GridBagHelper(orderPanel);
@@ -154,6 +128,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
             detailOrderFileFormatTb.setRefreshActionEnabled(true);
             detailOrderFileFormatTb.setAddActionEnabled(true);
             distributorTypeCb.setEnabled(true);
+            editOrderFlowAa.setEnabled(true);
 
             OrderFileFormat off = getObject().getOrderFileFormat();
             if (off != null && !off.isUnknown()) {
@@ -165,6 +140,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
             }
         } else {
             distributorTypeCb.setEnabled(false);
+            editOrderFlowAa.setEnabled(false);
             detailOrderFileFormatTb.setRefreshActionEnabled(false);
             detailOrderFileFormatTb.setAddActionEnabled(false);
             detailOrderFileFormatTb.setDeleteActionEnabled(false);
@@ -181,6 +157,9 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
                     imageResource.readDistributorIcon(distributor.getIconPath()), new Dimension(48, 48)));
 
             distributorTypeCb.setSelectedItem(distributor.getDistributorType());
+
+            // Order flow
+            //..
 
             // Orders
             browseOrderLinkPanel.setText(distributor.getOrderLink());
@@ -218,9 +197,56 @@ public class DistributorsDialog extends IResourceDialog<Distributor> {
         detailName.setText("");
         browseDistributorPanel.clearText();
         detailLogo.setIcon(null);
+
+        // Order flow
+        //..
+
         // List
         browseOrderLinkPanel.clearText();
         detailOrderFileFormatCb.setSelectedItem(null);
+    }
+
+    //
+    // Tool bars
+    //
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+        detailOrderFileFormatCb.updateList();
+    }
+
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+        EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Add format", new OrderFileFormat());
+        if (dialog.showDialog() == IDialog.OK) {
+            OrderFileFormat off = dialog.getOrderFileFormat();
+            off.save();
+        }
+    }
+
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+        OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+        if (off != null) {
+            int result = JOptionPane.showConfirmDialog(DistributorsDialog.this,
+                    "Are you sure you want to delete " + off.getName(),
+                    "Delete format",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                off.delete();
+            }
+        }
+
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+        OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
+        if (off != null) {
+            EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Edit format", off);
+            if (dialog.showDialog() == IDialog.OK) {
+                off.save();
+            }
+        }
     }
 
 }

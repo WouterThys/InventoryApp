@@ -291,6 +291,18 @@ public class SearchManager {
         return linkList;
     }
 
+    public List<DistributorOrderFlow> findOrderFlowTemplateForDistributor(long distributorId) {
+        List<DistributorOrderFlow> distributorOrderFlows = new ArrayList<>();
+        if (distributorId > DbObject.UNKNOWN_ID) {
+            for (DistributorOrderFlow dof : cache().getDistributorOrderFlows()) {
+                if (dof.getDistributorId() == distributorId) {
+                    distributorOrderFlows.add(dof);
+                }
+            }
+        }
+        return distributorOrderFlows;
+    }
+
     public List<Order> findOrdersForItem(long itemId) {
         List<Order> orders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {

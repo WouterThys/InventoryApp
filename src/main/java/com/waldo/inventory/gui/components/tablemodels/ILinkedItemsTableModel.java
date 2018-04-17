@@ -80,7 +80,7 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                 }
 
                 int amount;
-                Statics.ItemOrderStates orderState;
+                Statics.OrderStates orderState;
                 Item item;
 
                 PcbItemItemLink link = (PcbItemItemLink) value;
@@ -91,9 +91,9 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                 label.updateBackground(component.getBackground(), row, isSelected);
                 label.setText(String.valueOf(amount));
 
-                if (orderState == Statics.ItemOrderStates.Ordered) {
+                if (orderState == Statics.OrderStates.Ordered) {
                     label.setIcon(blueBall);
-                } else if (orderState== Statics.ItemOrderStates.Planned) {
+                } else if (orderState== Statics.OrderStates.Planned) {
                     label.setIcon(yellowBall);
                 } else {
                     if (amount > 0) {

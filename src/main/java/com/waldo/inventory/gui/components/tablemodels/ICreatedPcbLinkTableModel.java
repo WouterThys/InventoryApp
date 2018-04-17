@@ -110,9 +110,9 @@ public class ICreatedPcbLinkTableModel extends IAbstractTableModel<CreatedPcbLin
                 itemPanel.updateBallText(txt);
                 itemPanel.setText(item.toString());
 
-                if (item.getOrderState() == Statics.ItemOrderStates.Ordered) {
+                if (item.getOrderState() == Statics.OrderStates.Ordered) {
                     itemPanel.updateBallIcon(blueBall);
-                } else if (item.getOrderState() == Statics.ItemOrderStates.Planned) {
+                } else if (item.getOrderState() == Statics.OrderStates.Planned) {
                     itemPanel.updateBallIcon(yellowBall);
                 } else {
                     if (item.getAmount() > 0) {

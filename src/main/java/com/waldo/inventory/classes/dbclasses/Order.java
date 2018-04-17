@@ -1,7 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.Statics.ItemOrderStates;
+import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.managers.SearchManager;
@@ -401,15 +401,15 @@ public class Order extends DbObject {
         return (dateOrdered == null && dateReceived == null);
     }
 
-    public ItemOrderStates getOrderState() {
+    public Statics.OrderStates getOrderState() {
         if (!isOrdered() && !isReceived()) {
-            return ItemOrderStates.Planned;
+            return Statics.OrderStates.Planned;
         } else if (isOrdered() && !isReceived()) {
-            return ItemOrderStates.Ordered;
+            return Statics.OrderStates.Ordered;
         } else if (isOrdered() && isReceived()) {
-            return ItemOrderStates.Received;
+            return OrderStates.Received;
         } else {
-            return ItemOrderStates.NoOrder;
+            return Statics.OrderStates.NoOrder;
         }
     }
 

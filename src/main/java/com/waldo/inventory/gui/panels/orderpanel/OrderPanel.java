@@ -834,7 +834,7 @@ public class OrderPanel extends OrderPanelLayout {
 //                    if (itemsToOrder != null) {
 //                        // Update item
 //                        for (Item item : itemsToOrder) {
-//                            item.updateOrderState();//(Statics.ItemOrderStates.Planned);
+//                            item.updateOrderState();//(Statics.OrderStates.Planned);
 //                            //item.save();
 //                        }
 //

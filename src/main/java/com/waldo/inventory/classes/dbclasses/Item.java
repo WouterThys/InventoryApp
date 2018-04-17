@@ -3,7 +3,6 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
-import com.waldo.inventory.Utils.Statics.ItemOrderStates;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.inventory.managers.SearchManager;
@@ -45,7 +44,7 @@ public class Item extends DbObject {
     protected Location location;
     protected int amount = 0;
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
-    private ItemOrderStates orderState = null;
+    private Statics.OrderStates orderState = null;
 
     private long packageTypeId = UNKNOWN_ID;
     private PackageType packageType;
@@ -381,10 +380,10 @@ public class Item extends DbObject {
 //            switch (getDivision().getDisplayType()) {
 //                default: break;
 //                case R_THT:
-//                    if (getValue().hasValue()) {
+//                    if (getIntValue().hasValue()) {
 //                        Resistor r = new Resistor();
 //                        try {
-//                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getValue(), Statics.ResistorBandValue.Gold);
+//                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getIntValue(), Statics.ResistorBandValue.Gold);
 //                            IResistorImage image = new IResistorImage(r);
 //                            icon = new ImageIcon(image.createImage(150, 150));
 //                        } catch (Exception e) {
@@ -540,10 +539,10 @@ public class Item extends DbObject {
         this.amountType = ItemAmountTypes.fromInt(amountType);
     }
 
-    public ItemOrderStates getOrderState() {
+    public Statics.OrderStates getOrderState() {
         if (orderState == null) {
             List<Order> orders = SearchManager.sm().findOrdersForItem(getId());
-            orderState = ItemOrderStates.NoOrder;
+            orderState = Statics.OrderStates.NoOrder;
 
             int inPlanned = 0;
             int inOrdered = 0;
@@ -557,9 +556,9 @@ public class Item extends DbObject {
                 }
             }
 
-            if (inPlanned > 0) orderState = ItemOrderStates.Planned;
-            else if (inOrdered > 0) orderState = ItemOrderStates.Ordered;
-            else orderState = ItemOrderStates.NoOrder;
+            if (inPlanned > 0) orderState = Statics.OrderStates.Planned;
+            else if (inOrdered > 0) orderState = Statics.OrderStates.Ordered;
+            else orderState = Statics.OrderStates.NoOrder;
         }
         return orderState;
     }
