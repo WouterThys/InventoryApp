@@ -62,7 +62,7 @@ public class CreatedPcb extends DbObject {
             statement.setDate(ndx++, null);
         }
 
-        if (getDateCreated() != null) {
+        if (getDateSoldered() != null) {
             statement.setTimestamp(ndx++, new Timestamp(dateSoldered.getTime()));
         } else {
             statement.setDate(ndx++, null);
