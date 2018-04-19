@@ -72,6 +72,57 @@ public class Distributor extends DbObject {
         return createCopy(new Distributor());
     }
 
+    public void moveFlowUp(DistributorOrderFlow flow) {
+        if (flow != null) {
+            DistributorOrderFlow prevFlow = getPreviousOrderFlow(flow);
+            if (prevFlow != null) {
+                switchFlowSequence(prevFlow, flow);
+
+                prevFlow.save();
+                flow.save();
+                updateOrderFlowTemplate();
+            }
+        }
+    }
+
+    public void moveFlowDown(DistributorOrderFlow flow) {
+        if (flow != null) {
+            DistributorOrderFlow nextFlow = getNextOrderFlow(flow);
+            if (nextFlow != null) {
+                switchFlowSequence(nextFlow, flow);
+
+                nextFlow.save();
+                flow.save();
+                updateOrderFlowTemplate();
+            }
+        }
+    }
+
+    private void switchFlowSequence(DistributorOrderFlow flow1, DistributorOrderFlow flow2) {
+        if (flow1 != null && flow2 != null) {
+            int f1 = flow1.getSequenceNumber();
+            int f2 = flow2.getSequenceNumber();
+            flow1.setSequenceNumber(f2);
+            flow2.setSequenceNumber(f1);
+        }
+    }
+
+    private DistributorOrderFlow getPreviousOrderFlow(DistributorOrderFlow flow) {
+        int prevNdx = flow.getSequenceNumber() - 2;
+        if (prevNdx >= 0) {
+            return getOrderFlowTemplate().get(prevNdx);
+        }
+        return null;
+    }
+
+    private DistributorOrderFlow getNextOrderFlow(DistributorOrderFlow flow) {
+        int nextNdx = flow.getSequenceNumber();
+        if (nextNdx < getOrderFlowTemplate().size()) {
+            return getOrderFlowTemplate().get(nextNdx);
+        }
+        return null;
+    }
+
     //
     // DatabaseAccess tells the object is updated
     //
@@ -89,6 +140,9 @@ public class Distributor extends DbObject {
         }
     }
 
+    //
+    // Getters, setters
+    //
     public String getWebsite() {
         if (website == null) {
             website = "";

@@ -71,7 +71,7 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         cache().addListener(c, listener);
     }
 
-    public void setOriginalObject(T originalObject) {
+    protected void setOriginalObject(T originalObject) {
         this.originalObject = originalObject;
         if (originalObject != null) {
             this.copyObject = (T) originalObject.createCopy();
@@ -79,11 +79,11 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         getButtonNeutral().setEnabled(false);
     }
 
-    public boolean hasChanged() {
+    protected boolean hasChanged() {
         return originalObject != null && copyObject != null && !(copyObject.equals(originalObject));
     }
 
-    private void doSave() {
+    protected void doSave() {
         copyObject.createCopy(originalObject);
         originalObject.setCanBeSaved(true);
         originalObject.save();

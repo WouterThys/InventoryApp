@@ -10,9 +10,11 @@ import com.waldo.utils.icomponents.ITable;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
-public class PcbCreatedPanel extends IPanel implements ListSelectionListener, CacheChangedListener<CreatedPcb> {
+public abstract class PcbCreatedPanel extends IPanel implements ListSelectionListener, CacheChangedListener<CreatedPcb> {
 
     /*
      *                  COMPONENTS
@@ -33,6 +35,8 @@ public class PcbCreatedPanel extends IPanel implements ListSelectionListener, Ca
         initializeComponents();
         initializeLayouts();
     }
+
+    public abstract void createPcb(CreatedPcb pcb);
 
     /*
      *                  METHODS
@@ -103,6 +107,14 @@ public class PcbCreatedPanel extends IPanel implements ListSelectionListener, Ca
         tableModel = new ICreatedPcbTableModel();
         createdPcbTable = new ITable<>(tableModel);
         createdPcbTable.getSelectionModel().addListSelectionListener(this);
+        createdPcbTable.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    createPcb(createdPcbTable.getSelectedItem());
+                }
+            }
+        });
     }
 
     @Override

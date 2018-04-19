@@ -192,7 +192,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
 
         public void paintIcon(Component c, Graphics g, int x, int y) {
             center.paintIcon(c, g, x, y);
-            int errorX = 50;//x + center.getIconWidth() - (error.getIconWidth()/3);
+            int errorX = 40;//x + center.getIconWidth() - (error.getIconWidth()/3);
             int errorY = 5;//y - (error.getIconWidth()/3);
             error.paintIcon(c, g, errorX, errorY);
         }

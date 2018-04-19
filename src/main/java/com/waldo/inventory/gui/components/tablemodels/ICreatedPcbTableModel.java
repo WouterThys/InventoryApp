@@ -60,11 +60,12 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
 
     static class CreatedPcbCellRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
-        private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
-        private static final ImageIcon blueBall = imageResource.readIcon("Ball.blue");
+        private static final ImageIcon redBall = imageResource.readIcon("Ball.red");;
+        private static final ImageIcon receivedIcon = imageResource.readIcon("Actions.Received");
+        private static final ImageIcon createdIcon = imageResource.readIcon("Actions.Created");
+        private static final ImageIcon destroyedIcon = imageResource.readIcon("Actions.Destroyed");
 
-        private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, greenBall);
+        private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, receivedIcon);
 
         private boolean done = false;
         @Override
@@ -82,12 +83,15 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
                 CreatedPcb pcb = (CreatedPcb) value;
                 if (pcb.isCreated()) {
                     if (pcb.isSoldered()) {
-                        stateLabel.setIcon(greenBall);
+                        stateLabel.setIcon(createdIcon);
+                        stateLabel.setToolTipText("Created PCB: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
                     } else {
-                        stateLabel.setIcon(blueBall);
+                        stateLabel.setIcon(receivedIcon);
+                        stateLabel.setToolTipText("Received PCB: " + DateUtils.formatDateTime(pcb.getDateCreated()));
                     }
                 } else {
                     stateLabel.setIcon(redBall);
+                    stateLabel.setToolTipText(null);
                 }
                 stateLabel.updateWithTableComponent(component, row, isSelected);
 

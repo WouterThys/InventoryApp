@@ -289,7 +289,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
     @Override
     void onRemoveAll(CreatedPcb createdPcb) {
-        if (createdPcb != null && createdPcb.isCreated()) {
+        if (createdPcb != null && createdPcb.isSoldered()) {
 
             JCheckBox setBackAmountCb = new JCheckBox("Add used amounts back to item amount ");
             String message = "This will remove all used items and set the used items back to zero, all data will be removed from the database.";
@@ -311,7 +311,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     cpl.delete();
                 }
                 createdPcb.updateCreatedPcbLinks();
-                createdPcb.setDateCreated((Date)null);
+                createdPcb.setDateSoldered((Date)null);
                 createdPcb.save();
                 updateComponents();
             }

@@ -106,6 +106,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
 
     private void initTable() {
         tableModel.setItemList(createdPcb.getCreatedPcbLinks());
+        createdPcbTable.setPreferredScrollableViewportSize(createdPcbTable.getPreferredSize());
     }
 
     void updateTable() {

@@ -317,4 +317,18 @@ public class IActions {
             setTooltip("Inventory");
         }
     }
+
+    public static abstract class NavigateUpAction extends IAbstractAction {
+        protected NavigateUpAction() {
+            super("Up", imageResource.readIcon("Actions.M.Up"));
+            setTooltip("Up");
+        }
+    }
+
+    public static abstract class NavigateDownAction extends IAbstractAction {
+        protected NavigateDownAction() {
+            super("Down", imageResource.readIcon("Actions.M.Down"));
+            setTooltip("Down");
+        }
+    }
 }

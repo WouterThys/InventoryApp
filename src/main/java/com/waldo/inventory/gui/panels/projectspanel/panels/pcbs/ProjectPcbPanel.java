@@ -109,19 +109,13 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         }
     }
 
-    private void onCreatePcb() {
+    private void onSelectForCreation() {
         if (selectedProjectObject != null) {
             SelectPcbDialog dialog = new SelectPcbDialog(application, "PCB", selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
                 CreatedPcb pcb = dialog.getCreatedPcb();
                 if (pcb != null) {
-                    EditCreatedPcbLinksDialog linksDialog = new EditCreatedPcbLinksDialog(
-                            application,
-                            "Edit pcb",
-                            selectedProjectObject,
-                            pcb
-                    );
-                    linksDialog.showDialog();
+                   createPcb(pcb);
                 }
             }
         } else {
@@ -131,6 +125,18 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
+        }
+    }
+
+    private void createPcb(CreatedPcb pcb) {
+        if (pcb != null) {
+            EditCreatedPcbLinksDialog linksDialog = new EditCreatedPcbLinksDialog(
+                    application,
+                    "Edit pcb",
+                    selectedProjectObject,
+                    pcb
+            );
+            linksDialog.showDialog();
         }
     }
 
@@ -161,8 +167,12 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
         // PCB panels
         pcbItemPanel = new PcbItemPanel(application);
-        pcbCreatedPanel = new PcbCreatedPanel();
-
+        pcbCreatedPanel = new PcbCreatedPanel() {
+            @Override
+            public void createPcb(CreatedPcb pcb) {
+                ProjectPcbPanel.this.createPcb(pcb);
+            }
+        };
 
         // Preview panel
         previewPanel = new ProjectPcbPreviewPanel(application) {
@@ -195,7 +205,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         createPcbAa = new AbstractAction("Create", imageResource.readIcon("Projects.Pcb.UsedBtn")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> onCreatePcb());
+                SwingUtilities.invokeLater(() -> onSelectForCreation());
             }
         };
 
@@ -239,20 +249,26 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
                 project = selectedProjectObject.getProject();
             }
 
-            if (project != null && !project.equals(selectedProject)) {
+            if (selectedProject == null || !selectedProject.equals(project)) {
                 selectedProject = project;
-                if (selectedProjectObject == null) {
-                    selectedProjectObject = project.getProjectPcbs().get(0);
+                if (selectedProject != null) {
+                    if (selectedProjectObject == null) {
+                        selectedProjectObject = selectedProject.getProjectPcbs().get(0);
+                    }
+                    gridPanel.drawTiles(selectedProject.getProjectPcbs());
+                    gridPanel.selectTile(selectedProjectObject);
                 }
-                gridPanel.drawTiles(selectedProject.getProjectPcbs());
-                gridPanel.selectTile(selectedProjectObject);
+            } else {
+                selectedProject = null;
             }
         } else {
             selectedProject = null;
         }
         previewPanel.updateComponents(selectedProjectObject);
-        pcbCreatedPanel.updateComponents(selectedProjectObject);
-        pcbItemPanel.updateComponents(selectedProjectObject);
+        if (selectedPanel == null) {
+            selectedPanel = pcbItemPanel;
+        }
+        selectedPanel.updateComponents(selectedProjectObject);
         updateEnabledComponents();
     }
 

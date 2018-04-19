@@ -29,6 +29,23 @@ public class EditDistributorOrderflowDialog extends EditDistributorOrderflowDial
     }
 
     //
+    // This
+    //
+    @Override
+    public void moveUp(DistributorOrderFlow flow) {
+        if (distributor != null) {
+            distributor.moveFlowUp(flow);
+        }
+    }
+
+    @Override
+    public void moveDown(DistributorOrderFlow flow) {
+        if (distributor != null) {
+            distributor.moveFlowDown(flow);
+        }
+    }
+
+    //
     // Table
     //
     @Override
@@ -51,6 +68,7 @@ public class EditDistributorOrderflowDialog extends EditDistributorOrderflowDial
 
     @Override
     public void onUpdated(DistributorOrderFlow flow) {
+        tableInitialize(distributor.getOrderFlowTemplate());
         orderFlowTable.selectItem(flow);
     }
 
