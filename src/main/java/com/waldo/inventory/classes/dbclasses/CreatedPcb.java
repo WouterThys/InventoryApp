@@ -25,6 +25,7 @@ public class CreatedPcb extends DbObject {
 
     private Date dateCreated;
     private Date dateSoldered;
+    private Date dateDestroyed;
 
     private List<CreatedPcbLink> createdPcbLinks;
 
@@ -68,6 +69,12 @@ public class CreatedPcb extends DbObject {
             statement.setDate(ndx++, null);
         }
 
+        if (getDateDestroyed() != null) {
+            statement.setTimestamp(ndx++, new Timestamp(dateDestroyed.getTime()));
+        } else {
+            statement.setDate(ndx++, null);
+        }
+
         return ndx;
     }
 
@@ -98,6 +105,7 @@ public class CreatedPcb extends DbObject {
         cpy.setOrderId(getOrderId());
         cpy.setDateCreated(getDateCreated());
         cpy.setDateSoldered(getDateSoldered());
+        cpy.setDateDestroyed(getDateDestroyed());
         return cpy;
     }
 
@@ -118,6 +126,10 @@ public class CreatedPcb extends DbObject {
 
     public boolean isSoldered() {
         return dateSoldered != null && !dateSoldered.equals(DateUtils.minDate());
+    }
+
+    public boolean isDestroyed() {
+        return dateDestroyed != null && !dateDestroyed.equals(DateUtils.minDate());
     }
 
 
@@ -195,23 +207,50 @@ public class CreatedPcb extends DbObject {
     }
 
 
+    public Date getDateDestroyed() {
+        return dateDestroyed;
+    }
+
+    public void setDateDestroyed(Date dateDestroyed) {
+        this.dateDestroyed = dateDestroyed;
+    }
+
+    public void setDateDestroyed(Timestamp dateDestroyed) {
+        if (dateDestroyed != null) {
+            this.dateDestroyed = new Date(dateDestroyed.getTime());
+        }
+    }
+
+
     public List<CreatedPcbLink> getCreatedPcbLinks() {
         if (createdPcbLinks == null) {
-            createdPcbLinks = new ArrayList<>();
-            List<PcbItemProjectLink> pcbItemList = getProjectPcb().getPcbItemList();
-            List<CreatedPcbLink> createdPcbLinkList = new ArrayList<>(SearchManager.sm().findCreatedPcbLinks(getProjectPcb().getId(), getId()));
-
-            for (PcbItemProjectLink pipl : pcbItemList) {
-                CreatedPcbLink link = findPcbItem(createdPcbLinkList, pipl.getPcbItemId());
-                if (link != null) {
-                    createdPcbLinkList.remove(link);
-                } else {
-                    link = new CreatedPcbLink(pipl.getId(), getId(), 0);
-                }
-                createdPcbLinks.add(link);
-            }
+            createdPcbLinks = SearchManager.sm().findCreatedPcbLinks(getProjectPcbId(), getId());
         }
         return createdPcbLinks;
+    }
+
+    public void updateCreatedPcbLinks() {
+        createdPcbLinks = null;
+    }
+
+    public void createPcbLinks() {
+        createdPcbLinks = new ArrayList<>();
+        List<PcbItemProjectLink> pcbItemList = getProjectPcb().getPcbItemList();
+        List<CreatedPcbLink> createdPcbLinkList = new ArrayList<>(SearchManager.sm().findCreatedPcbLinks(getProjectPcb().getId(), getId()));
+
+        for (PcbItemProjectLink pipl : pcbItemList) {
+            CreatedPcbLink link = findPcbItem(createdPcbLinkList, pipl.getPcbItemId());
+            if (link != null) {
+                createdPcbLinkList.remove(link);
+            } else {
+                link = new CreatedPcbLink(pipl.getId(), getId(), 0);
+            }
+            createdPcbLinks.add(link);
+        }
+
+        for (CreatedPcbLink link : createdPcbLinks) {
+            link.save();
+        }
     }
 
     private CreatedPcbLink findPcbItem(List<CreatedPcbLink> searchList, long pcbItemId) {
@@ -223,9 +262,5 @@ public class CreatedPcb extends DbObject {
             }
         }
         return null;
-    }
-
-    public void updateCreatedPcbLinks() {
-        createdPcbLinks = null;
     }
 }

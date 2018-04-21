@@ -12,12 +12,13 @@ import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class IObjectSearchPanel<T extends DbObject> extends JPanel implements GuiUtils.GuiInterface {
 
@@ -226,7 +227,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private void setError(String error) {
         infoLabel.setForeground(Color.RED);
         infoLabel.setText(error);
-        Status().setError(error);
+        //Status().setError(error);
     }
 
     private void clearLabel() {
@@ -236,7 +237,7 @@ public class IObjectSearchPanel<T extends DbObject> extends JPanel implements Gu
     private void setInfo(String info) {
         infoLabel.setForeground(Color.BLACK);
         infoLabel.setText(info);
-        Status().setMessage(info);
+        //Status().setMessage(info);
     }
 
     @Override

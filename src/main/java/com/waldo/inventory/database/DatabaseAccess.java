@@ -1244,6 +1244,11 @@ public class DatabaseAccess {
                     } else {
                         p.setDateSoldered(DateUtils.sqLiteToDate(rs.getString("dateSoldered")));
                     }
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        p.setDateDestroyed(rs.getTimestamp("dateDestroyed"));
+                    } else {
+                        p.setDateDestroyed(DateUtils.sqLiteToDate(rs.getString("dateDestroyed")));
+                    }
 
                     p.setInserted(true);
                     createdPcbs.add(p);

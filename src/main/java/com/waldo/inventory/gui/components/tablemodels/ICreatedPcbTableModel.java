@@ -83,8 +83,13 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
                 CreatedPcb pcb = (CreatedPcb) value;
                 if (pcb.isCreated()) {
                     if (pcb.isSoldered()) {
-                        stateLabel.setIcon(createdIcon);
-                        stateLabel.setToolTipText("Created PCB: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
+                        if (pcb.isDestroyed()) {
+                            stateLabel.setIcon(destroyedIcon);
+                            stateLabel.setToolTipText("Destroyed PCB: " + DateUtils.formatDateTime(pcb.getDateDestroyed()));
+                        } else {
+                            stateLabel.setIcon(createdIcon);
+                            stateLabel.setToolTipText("Created PCB: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
+                        }
                     } else {
                         stateLabel.setIcon(receivedIcon);
                         stateLabel.setToolTipText("Received PCB: " + DateUtils.formatDateTime(pcb.getDateCreated()));

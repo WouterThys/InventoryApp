@@ -68,19 +68,37 @@ public class ImageResource extends Resource{
             if (map.containsKey(name)) {
                 icon = map.get(name);
             } else {
-                Path path = Paths.get(imagePath, name);
-                try {
-                    URL url = path.toUri().toURL();
-                    icon = new ImageIcon(ImageIO.read(url));
-                } catch (Exception e) {
-                    //
-                }
+                icon = readImage(imagePath, name);
             }
         }
         if (icon == null) {
             icon = map.get(DEFAULT);
         }
         map.put(name, icon);
+        return icon;
+    }
+
+    public ImageIcon readImage(String imagePath, String name) {
+        ImageIcon icon = null;
+        Path path = Paths.get(imagePath, name);
+        try {
+            URL url = path.toUri().toURL();
+            icon = new ImageIcon(ImageIO.read(url));
+        } catch (Exception e) {
+            //
+        }
+        return icon;
+    }
+
+    public ImageIcon readImage(String imagePath) {
+        ImageIcon icon = null;
+        Path path = Paths.get(imagePath);
+        try {
+            URL url = path.toUri().toURL();
+            icon = new ImageIcon(ImageIO.read(url));
+        } catch (Exception e) {
+            //
+        }
         return icon;
     }
 

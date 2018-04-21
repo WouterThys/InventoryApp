@@ -1,25 +1,31 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink> {
 
     private final Window parent;
+    private boolean creatingLinks = false;
 
     public EditCreatedPcbLinksDialog(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
         super(window, title, projectPcb, createdPcb);
@@ -78,6 +84,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     pcb.setDateSoldered(DateUtils.now());
                     pcb.save();
 
+                    saveComponents();
+
                     updateComponents();
                 }
             }
@@ -124,13 +132,23 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     @Override
     public void onInserted(CreatedPcbLink link) {
         //updateLinkInfo(link);
-        updateTable();
+        if (!creatingLinks) {
+            selectedLink = link;
+            updateLinkInfo(link);
+            updateEnabledComponents();
+            updateTable();
+        }
     }
 
     @Override
     public void onUpdated(CreatedPcbLink link) {
         //updateLinkInfo(link);
-        updateTable();
+        if (!creatingLinks) {
+            selectedLink = link;
+            updateLinkInfo(link);
+            updateEnabledComponents();
+            updateTable();
+        }
     }
 
     @Override
@@ -143,12 +161,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
         // Don't care
     }
 
-    //
-    // Gui events
-    //
-
-    @Override
-    protected void onNeutral() {
+    private void saveComponents() {
         if (createdPcb != null) {
             List<CreatedPcbLink> linkList = createdPcb.getCreatedPcbLinks();
             if (linkList != null && linkList.size() > 0) {
@@ -166,8 +179,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
     @Override
     void onAutoCalculateUsed(CreatedPcbLink link) {
-        if (link != null && link.getPcbItemItemLink() != null && link.getPcbItemProjectLink() != null) {
-            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfItems(), link.getPcbItemItemLink().getItem().getAmount());
+        if (link != null && link.getUsedItem() != null && link.getPcbItemProjectLink() != null) {
+            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfItems(), link.getUsedItem().getAmount());
             usedAmountSp.setTheValue(desired);
         }
     }
@@ -190,9 +203,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 if (newUsedItem != null) {
                     link.setUsedItemId(newUsedItem.getId());
                 }
-                updateLinkInfo(link);
-                updateEnabledComponents();
-                updateTable();
+                link.setUsedAmount(0);
+                link.save();
             }
         }
     }
@@ -210,9 +222,23 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
             if (res == JOptionPane.YES_OPTION) {
                 link.setUsedItemId(0);
-                updateLinkInfo(link);
-                updateEnabledComponents();
-                updateTable();
+                link.setUsedAmount(0);
+                link.save();
+            }
+        }
+    }
+
+    @Override
+    void onNotUsed(CreatedPcbLink link) {
+        if (link != null) {
+
+            if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
+                onDeleteUsedItem(link);
+            }
+
+            if (link.getUsedItemId() <= DbObject.UNKNOWN_ID) {
+                link.setUsedAmount(CreatedPcbLink.NOT_USED);
+                link.save();
             }
         }
     }
@@ -220,6 +246,69 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     @Override
     void onCreatePcb(CreatedPcb createdPcb) {
         createPcb(createdPcb);
+    }
+
+    @Override
+    void onDestroyPcb(CreatedPcb createdPcb) {
+        if (createdPcb != null && !createdPcb.isDestroyed()) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "Destroy PCB?",
+                    "Destroy",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (res == JOptionPane.YES_OPTION) {
+                createdPcb.setDateDestroyed(DateUtils.now());
+                createdPcb.save();
+            }
+        }
+    }
+
+    @Override
+    void onCalculatePrice(CreatedPcb createdPcb) {
+        if (createdPcb != null && createdPcb.isSoldered() && createdPcb.getCreatedPcbLinks().size() > 0) {
+            beginWait();
+            try {
+
+                Price totalPrice;
+                Price orderPrice = new Price(0, Statics.PriceUnits.Euro);
+                Price itemsPrice = new Price(0, Statics.PriceUnits.Euro);
+
+                // Price for order
+                Order order = createdPcb.getOrder();
+                if (order != null && order.getOrderLines().size() > 0) {
+                    orderPrice = order.getOrderLines().get(0).getPrice();
+                }
+
+                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
+                    int amount = link.getUsedAmount();
+                    Item usedItem = link.getUsedItem();
+
+                    if (amount > 0 && usedItem != null) {
+                        List<DistributorPartLink> distributorPartLinks = SearchManager.sm().findDistributorPartLinksForItem(usedItem.getId());
+                        if (distributorPartLinks.size() > 0) {
+                            double v = distributorPartLinks.get(0).getPrice().getValue();
+                            itemsPrice = Price.add(itemsPrice, v * amount);
+                        }
+                    }
+                }
+
+                totalPrice = Price.add(itemsPrice, orderPrice);
+
+                final String message = "Order price: " + orderPrice.toString() + "\n" +
+                        "Items price: " + itemsPrice.toString() + "\n" +
+                        "Total price: " + totalPrice.toString();
+
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                        EditCreatedPcbLinksDialog.this,
+                        message
+                ));
+
+            } finally {
+                endWait();
+            }
+        }
     }
 
     @Override
@@ -282,6 +371,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
+                saveComponents();
                 updateComponents();
             }
         }
@@ -328,11 +418,43 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
             if (!iconPath.isEmpty()) {
                 createdPcb.setIconPath(iconPath);
                 createdPcb.save();
-//                try {
-//                    pcbImageLbl.setIcon(imageResource.readImage(new File(iconPath).toPath()));
-//                } catch (Exception e2) {
-//                    e2.printStackTrace();
-//                }
+                try {
+                    pcbImageLbl.setIcon(imageResource.readImage(createdPcb.getIconPath()));
+                } catch (Exception e) {
+                    //
+                }
+            }
+        }
+    }
+
+    //
+    // Start up
+    //
+    @Override
+    public void windowActivated(WindowEvent e) {
+        super.windowActivated(e);
+
+        if (createdPcb != null && createdPcb.getCreatedPcbLinks().size() == 0) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "There are no components created for this PCB, create them now?",
+                    "Create",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (res == JOptionPane.YES_OPTION) {
+                creatingLinks = true;
+                try {
+                    createdPcb.createPcbLinks();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    creatingLinks = false;
+                    updateComponents();
+                }
+            } else {
+                onCancel();
             }
         }
     }
@@ -342,7 +464,10 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     //
     @Override
     public void onValueChanged(Component component, String s, Object o, Object o1) {
-        updateTable();
+        if (selectedLink != null) {
+            selectedLink.save();
+        }
+        //updateTable();
     }
 
     @Override

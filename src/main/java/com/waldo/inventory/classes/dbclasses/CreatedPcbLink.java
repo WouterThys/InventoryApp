@@ -15,6 +15,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class CreatedPcbLink extends DbObject {
 
     public static final String TABLE_NAME = "createdpcblinks";
+    public static final int NOT_USED = -2;
 
     // Link between ProjectPcb and CreatedPcb
     private long pcbItemProjectLinkId;
@@ -124,31 +125,35 @@ public class CreatedPcbLink extends DbObject {
         if (getId() < DbObject.UNKNOWN_ID) {
             state = CreatedPcbLinkState.NotSaved;
         } else {
-            state = CreatedPcbLinkState.Ok;
-            if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
-                state = CreatedPcbLinkState.Error;
-                state.clearMessages();
-                state.addMessage("No project found..");
+            if (getUsedAmount() == NOT_USED) {
+                state = CreatedPcbLinkState.NotUsed;
             } else {
-                if (getPcbItemProjectLink().getPcbItemId() <= DbObject.UNKNOWN_ID) {
-                    state = CreatedPcbLinkState.Warning;
-                    state.addMessage("No PCB item..");
+                state = CreatedPcbLinkState.Ok;
+                if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
+                    state = CreatedPcbLinkState.Error;
+                    state.clearMessages();
+                    state.addMessage("No project found..");
+                } else {
+                    if (getPcbItemProjectLink().getPcbItemId() <= DbObject.UNKNOWN_ID) {
+                        state = CreatedPcbLinkState.Warning;
+                        state.addMessage("No PCB item..");
+                    }
+                    if (getPcbItemItemLink() == null) {
+                        if (state != CreatedPcbLinkState.Warning) {
+                            state = CreatedPcbLinkState.Warning;
+                            state.clearMessages();
+                        }
+                        state.addMessage("No linked item..");
+                    }
                 }
-                if (getPcbItemItemLink() == null) {
+
+                if (usedItemId <= DbObject.UNKNOWN_ID) {
                     if (state != CreatedPcbLinkState.Warning) {
                         state = CreatedPcbLinkState.Warning;
                         state.clearMessages();
                     }
-                    state.addMessage("No linked item..");
+                    state.addMessage("No used item..");
                 }
-            }
-
-            if (usedItemId <= DbObject.UNKNOWN_ID) {
-                if (state != CreatedPcbLinkState.Warning) {
-                    state = CreatedPcbLinkState.Warning;
-                    state.clearMessages();
-                }
-                state.addMessage("No used item..");
             }
             // TODO..
         }

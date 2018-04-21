@@ -151,6 +151,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
             @Override
             protected List<ObjectMatch<Item>> doSearch(String searchWord) {
                 if (searchDbObject) {
+                    searchDbObject = false; // Only search for db object the first time
                     return onSearch(searchObject);
                 } else {
                     return onSearch(searchWord);

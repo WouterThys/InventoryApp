@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
 import com.waldo.inventory.classes.dbclasses.DbObject;
@@ -46,22 +47,27 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     ISpinner usedAmountSp;
     private ITextPane remarksTp;
 
-    // Actions
+    // Pcb actions
     private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
+
+    // Pcb item actions
     private IActions.EditAction editItemAction;
     private IActions.SearchAction searchUsedItemAction;
     private IActions.DeleteAction deleteUsedItemAction;
     private IActions.UseAction createPcbAction;
+    private IActions.DeleteAction destroyPcbAction;
+    private IActions.NotUsedAction notUsedAction;
     private AbstractAction editRemarksAa;
     private IActions.WizardAction wizardAction;
     private IActions.RemoveAllAction removeAllAction;
+    private IActions.DoItAction calculatePriceAction;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ProjectPcb projectPcb;
+    ProjectPcb projectPcb;
     CreatedPcb createdPcb;
-    private CreatedPcbLink selectedLink;
+    CreatedPcbLink selectedLink;
 
     /*
      *                  CONSTRUCTOR
@@ -81,10 +87,14 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
     abstract void onDeleteUsedItem(CreatedPcbLink link);
-    abstract void onCreatePcb(CreatedPcb createdPcb);
+    abstract void onNotUsed(CreatedPcbLink link);
     abstract void onEditRemark(CreatedPcbLink link);
+
+    abstract void onCreatePcb(CreatedPcb createdPcb);
+    abstract void onDestroyPcb(CreatedPcb createdPcb);
     abstract void onMagicWizard(CreatedPcb createdPcb);
     abstract void onRemoveAll(CreatedPcb createdPcb);
+    abstract void onCalculatePrice(CreatedPcb createdPcb);
 
     void updateEnabledComponents() {
         boolean enabled = selectedLink != null;
@@ -95,11 +105,14 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         editItemAction.setEnabled(hasLink);
         searchUsedItemAction.setEnabled(!isSoldered && enabled);
         deleteUsedItemAction.setEnabled(!isSoldered && hasUsed);
+        notUsedAction.setEnabled(enabled && !isSoldered && !selectedLink.getState().equals(CreatedPcbLinkState.NotUsed));
 
         autoCalculateUsedAction.setEnabled(!isSoldered && hasUsed);
-        usedAmountSp.setEnabled(!isSoldered && hasLink);
+        usedAmountSp.setEnabled(!isSoldered && hasUsed);
 
         createPcbAction.setEnabled(!isSoldered);
+        destroyPcbAction.setEnabled(isSoldered);
+        calculatePriceAction.setEnabled(isSoldered);
         editRemarksAa.setEnabled(enabled);
         removeAllAction.setEnabled(isSoldered);
     }
@@ -128,12 +141,15 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
             pcbCreatedTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
             pcbSolderedTf.setText(DateUtils.formatDateTime(createdPcb.getDateSoldered()));
             if (!createdPcb.getIconPath().isEmpty()) {
-//                Path path = Paths.get(createdPcb.getIconPath());
-//                try {
-//                    pcbImageLbl.setIcon(imageResource.readImage(path));
-//                } catch (Exception e) {
-//                    //
-//                }
+                try {
+                    ImageIcon icon = imageResource.readImage(createdPcb.getIconPath());
+                    if (icon != null) {
+                        icon = ImageResource.scaleImage(icon, pcbImageLbl.getSize());//new Dimension(250,100));
+                    }
+                    pcbImageLbl.setIcon(icon);
+                } catch (Exception e) {
+                    //
+                }
             } else {
                 pcbImageLbl.setIcon(null);
             }
@@ -200,11 +216,11 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         gbc.addLine("Soldered: ", pcbSolderedTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
-        JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, wizardAction);
+        JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, wizardAction, calculatePriceAction);
 
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tb, BorderLayout.WEST);
-        tbPanel.add(new JButton(createPcbAction), BorderLayout.EAST);
+        tbPanel.add(GuiUtils.createNewToolbar(createPcbAction, destroyPcbAction), BorderLayout.EAST);
 
         mainPnl.add(infoPnl, BorderLayout.CENTER);
         mainPnl.add(tbPanel, BorderLayout.PAGE_START);
@@ -231,7 +247,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(pnl);
         gbc.addLine(pcbItemLbl, pcbItemTf);
         gbc.addLine(linkedItemLbl, GuiUtils.createComponentWithActions(linkedItemTf, editItemAction));
-        gbc.addLine(usedItemLbl, GuiUtils.createComponentWithActions(usedItemTf, searchUsedItemAction, deleteUsedItemAction));
+        gbc.addLine(usedItemLbl, GuiUtils.createComponentWithActions(usedItemTf, searchUsedItemAction, deleteUsedItemAction, notUsedAction));
         gbc.addLine("Amount: ", GuiUtils.createComponentWithActions(usedAmountSp, autoCalculateUsedAction));
 
         JPanel remarksPnl = new JPanel(new BorderLayout());
@@ -267,14 +283,15 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
     public void initializeComponents() {
         setResizable(true);
         showTitlePanel(false);
-        getButtonNeutral().setVisible(true);
 
         projectPcbTf = new ITextField(false);
         pcbNameTf = new ITextField(false);
         pcbCreatedTf = new ITextField(false);
         pcbSolderedTf = new ITextField(false);
         pcbImageLbl = new ILabel();
-        pcbImageLbl.setPreferredSize(new Dimension(200, 90));
+        pcbImageLbl.setMinimumSize(new Dimension(200, 90));
+        pcbImageLbl.setPreferredSize(new Dimension(250, 100));
+        pcbImageLbl.setMaximumSize(new Dimension(300, 120));
         pcbImageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 2));
         pcbImageLbl.addMouseListener(new MouseAdapter() {
             @Override
@@ -334,14 +351,30 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 onDeleteUsedItem(selectedLink);
             }
         };
+        notUsedAction = new IActions.NotUsedAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onNotUsed(selectedLink);
+            }
+        };
         createPcbAction = new IActions.UseAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCreatePcb(createdPcb);
             }
         };
-        createPcbAction.setIcon(imageResource.readIcon("Actions.M.Use"));
-        createPcbAction.setName("Create");
+        createPcbAction.setIcon(imageResource.readIcon("Actions.M.Created"));
+        createPcbAction.setTooltip("Set PCB soldered");
+
+        destroyPcbAction = new IActions.DeleteAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDestroyPcb(createdPcb);
+            }
+        };
+        destroyPcbAction.setIcon(imageResource.readIcon("Actions.M.Destroyed"));
+        destroyPcbAction.setTooltip("Destroy PCB");
+
         editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -363,6 +396,15 @@ abstract class EditCreatedPcbLinksDialogLayout extends IDialog implements IEdite
                 onRemoveAll(createdPcb);
             }
         };
+
+        calculatePriceAction = new IActions.DoItAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCalculatePrice(createdPcb);
+            }
+        };
+        calculatePriceAction.setTooltip("Calculate estimated price");
+        calculatePriceAction.setIcon(imageResource.readIcon("Actions.M.Calculate"));
     }
 
     @Override

@@ -268,6 +268,16 @@ public class IActions {
         }
     }
 
+    public static abstract class NotUsedAction extends IAbstractAction {
+        protected NotUsedAction() {
+            super("Not used", imageResource.readIcon("Actions.NotUsed"));
+        }
+        protected NotUsedAction(ImageIcon icon) {
+            super("Not used", icon);
+            setTooltip("Not used");
+        }
+    }
+
     public static abstract class TestAction extends IAbstractAction {
         protected TestAction() {
             super("Test", imageResource.readIcon("Actions.Test"));

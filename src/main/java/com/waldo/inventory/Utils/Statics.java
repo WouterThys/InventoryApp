@@ -666,7 +666,8 @@ public class Statics {
         Ok (imageResource.readIcon("Actions.SaveOk"), "Ok", Color.BLACK),
         Warning(imageResource.readIcon("Actions.SaveWarn"), "", Color.ORANGE),
         Error(imageResource.readIcon("Actions.SaveError"), "", Color.RED),
-        NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY)
+        NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY),
+        NotUsed(imageResource.readIcon("Actions.NotUsed"), "Not used..", Color.BLUE)
         ;
 
         private final ImageIcon imageIcon;
