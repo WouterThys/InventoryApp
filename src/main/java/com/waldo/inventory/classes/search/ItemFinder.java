@@ -29,7 +29,11 @@ public class ItemFinder {
             // Division
             if (divisionFilter.hasFilter()) {
                 for (Division d : divisionFilter.getFilters()) {
-                    itemList.addAll(d.getItemList());
+                    for (Item item : d.getItemList()) {
+                        if (!itemList.contains(item)) {
+                            itemList.add(item);
+                        }
+                    }
                 }
             }
 
@@ -88,7 +92,13 @@ public class ItemFinder {
         for (Item item : filterItems()) {
             List<SearchMatch> searchMatches = item.searchByKeyWord(keyWord);
             if (searchMatches.size() > 0) {
-                objectMatches.add(new ObjectMatch<>(item, searchMatches));
+                if (divisionFilter.hasFilter()) {
+                    if (divisionFilter.getFilters().contains(item.getDivision())) {
+                        objectMatches.add(new ObjectMatch<>(item, searchMatches));
+                    }
+                } else {
+                    objectMatches.add(new ObjectMatch<>(item, searchMatches));
+                }
             }
         }
 

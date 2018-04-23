@@ -252,6 +252,15 @@ public class ComparatorUtils {
                 int res = -Integer.compare(m1.getPercent(), m2.getPercent());
                 if (res == 0) {
                     res = -Integer.compare(m2.getTotalMatches(), m1.getTotalMatches());
+//                    if (res == 0) {
+//                        if (m2.getFoundObject() instanceof Item && m1.getFoundObject() instanceof Item) {
+//                            Item i1 = (Item) m1.getFoundObject();
+//                            Item i2 = (Item) m2.getFoundObject();
+//                            if (i1.getValue().hasValue() && i2.getValue().hasValue()) {
+//                                res = Double.compare(i1.getValue().getDoubleValue(), i2.getValue().getDoubleValue());
+//                            }
+//                        }
+//                    }
                 }
                 return res;
             } else {

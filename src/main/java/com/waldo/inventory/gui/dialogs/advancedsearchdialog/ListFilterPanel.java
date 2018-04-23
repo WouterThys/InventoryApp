@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterPanel<T> extends IPanel {
+public class ListFilterPanel<T> extends IPanel {
 
     private ILabel nameLbl;
     private ILabel statusLbl;
@@ -24,7 +24,7 @@ public class FilterPanel<T> extends IPanel {
     private List<T> listData;
     private List<T> selectedList = new ArrayList<>();
 
-    public FilterPanel(String name, List<T> listData) {
+    public ListFilterPanel(String name, List<T> listData) {
         super(new BorderLayout());
         this.name = name;
         this.listData = listData;

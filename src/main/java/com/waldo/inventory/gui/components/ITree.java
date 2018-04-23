@@ -70,6 +70,14 @@ public abstract class ITree<T extends DbObject> extends JTree {
         }
     }
 
+    public T getItemFromPath(TreePath path) {
+        T t = null;
+        if (path != null) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            t = (T) node.getUserObject();
+        }
+        return t;
+    }
 
     public T getSelectedItem() {
         T selected = null;

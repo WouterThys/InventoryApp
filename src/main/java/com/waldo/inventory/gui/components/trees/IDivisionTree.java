@@ -4,8 +4,6 @@ import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.gui.components.ITree;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -13,7 +11,7 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IDivisionTree extends ITree<Division> implements TreeModelListener {
+public class IDivisionTree extends ITree<Division> {
 
     private final ImageIcon categoryIcon = imageResource.readIcon("Items.Tree.Category");
     private final ImageIcon productIcon = imageResource.readIcon("Items.Tree.Product");
@@ -70,27 +68,5 @@ public class IDivisionTree extends ITree<Division> implements TreeModelListener 
             }
         });
 
-    }
-
-    //
-    // TreeModelListener
-    @Override
-    public void treeNodesChanged(TreeModelEvent e) {
-        System.out.println("IDivsionTree: treeNodesChanged");
-    }
-
-    @Override
-    public void treeNodesInserted(TreeModelEvent e) {
-        System.out.println("IDivsionTree: treeNodesInserted");
-    }
-
-    @Override
-    public void treeNodesRemoved(TreeModelEvent e) {
-        System.out.println("IDivsionTree: treeNodesRemoved");
-    }
-
-    @Override
-    public void treeStructureChanged(TreeModelEvent e) {
-        System.out.println("IDivsionTree: treeStructureChanged");
     }
 }

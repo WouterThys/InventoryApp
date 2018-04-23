@@ -32,9 +32,9 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     IObjectSearchPanel<Item> itemSearchPnl;
 
-    FilterPanel<Manufacturer> manufacturerFilterPanel;
-    FilterPanel<Division> divisionFilterPanel;
-    FilterPanel<Location> locationFilterPanel;
+    ListFilterPanel<Manufacturer> manufacturerFilterPanel;
+    DivisionFilterPanel divisionFilterPanel;
+    ListFilterPanel<Location> locationFilterPanel;
 
     private IFoundItemsTableModel tableModel;
     private ITable<ObjectMatch<Item>> foundItemTable;
@@ -172,9 +172,9 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
                 }
             }
         };
-        manufacturerFilterPanel = new FilterPanel<>("Manufacturers", cache().getManufacturers());
-        divisionFilterPanel = new FilterPanel<>("Divisions", SearchManager.sm().findDivisionsWithoutParent());
-        locationFilterPanel = new FilterPanel<>("Locations", cache().getLocations().subList(0, 20));
+        manufacturerFilterPanel = new ListFilterPanel<>("Manufacturers", cache().getManufacturers());
+        divisionFilterPanel = new DivisionFilterPanel("Divisions");
+        locationFilterPanel = new ListFilterPanel<>("Locations", cache().getLocations().subList(0, 20));
 
         tableModel = new IFoundItemsTableModel();
         foundItemTable = new ITable<>(tableModel);
