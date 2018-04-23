@@ -105,7 +105,7 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
                 return label;
             }
             else if (value instanceof ObjectMatch) {
-                return new MatchValue(((ObjectMatch)value).getPercent());
+                return new MatchValue(((ObjectMatch)value));
             }
             return component;
         }
@@ -123,8 +123,11 @@ public class IFoundItemsTableModel extends IAbstractTableModel<ObjectMatch<Item>
 
         private int val;
 
-        MatchValue(int value) {
-            this.val = value;
+        MatchValue(ObjectMatch match) {
+            if (match != null) {
+                this.val = match.getPercent();
+                this.setToolTipText(match.getMatchString());
+            }
             setPreferredSize(new Dimension(100, 25));
             setMaximumSize(getPreferredSize());
         }

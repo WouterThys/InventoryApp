@@ -50,6 +50,21 @@ public class ObjectMatch<T extends DbObject> {
         return foundObject;
     }
 
+    public List<SearchMatch> getMatches() {
+        return matches;
+    }
+
+    public String getMatchString() {
+        StringBuilder result = new StringBuilder();
+        if (matches != null && matches.size() > 0) {
+            result.append(matches.size()).append(" found for: ");
+            for (SearchMatch match : matches) {
+                result.append(match.toString());
+            }
+        }
+        return result.toString();
+    }
+
     @Override
     public String toString() {
         return "ObjectMatch{" +

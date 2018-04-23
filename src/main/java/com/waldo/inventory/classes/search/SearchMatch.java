@@ -20,12 +20,7 @@ public class SearchMatch {
 
     @Override
     public String toString() {
-        return "Match{" +
-                "weight=" + weight +
-                ", percent=" + getPercent() + "%" +
-                ", searchMe=" + searchMe +
-                ", findMe=" + findMe +
-                '}';
+        return findMe.toString();
     }
 
     public static SearchMatch hasMatch(int weight, String s1, String s2) {
