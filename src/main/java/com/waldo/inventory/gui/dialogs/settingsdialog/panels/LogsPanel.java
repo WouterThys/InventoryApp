@@ -132,7 +132,7 @@ public class LogsPanel extends SettingsPnl<LogSettings> {
         settingsPanel.add(logErrorCb, gbc);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                GuiUtils.createTitleBorder("Log options"),
+                GuiUtils.createInlineTitleBorder("Log options"),
                 BorderFactory.createEmptyBorder(5,5,5,5)
         ));
 

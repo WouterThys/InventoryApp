@@ -167,7 +167,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         gbc.addLine("Start up full screen: ", fullScreenCb);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                GuiUtils.createTitleBorder("Gui options"),
+                GuiUtils.createInlineTitleBorder("Gui options"),
                 BorderFactory.createEmptyBorder(5,5,5,5)
         ));
 
