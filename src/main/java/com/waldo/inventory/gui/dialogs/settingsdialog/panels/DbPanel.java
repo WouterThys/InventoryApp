@@ -220,7 +220,7 @@ public class DbPanel extends SettingsPnl<DbSettings> {
         gbc.addLine("Db user password: ", userPwTf);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                GuiUtils.createTitleBorder("Database options"),
+                GuiUtils.createInlineTitleBorder("Database options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
@@ -284,7 +284,7 @@ public class DbPanel extends SettingsPnl<DbSettings> {
         JPanel backup = createDbBackupPanel();
 
         //settings.setBorder(GuiUtils.createTitleBorder("Settings"));
-        backup.setBorder(GuiUtils.createTitleBorder("Backups and Cache"));
+        backup.setBorder(GuiUtils.createInlineTitleBorder("Backups and Cache"));
 
        contentPanel.add(settings);
        contentPanel.add(backup);

@@ -156,7 +156,7 @@ public class FilesPanel extends SettingsPnl<FileSettings> {
         gbc.addLine("Order file images: ", orderFilesPathPnl);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                GuiUtils.createTitleBorder("File options"),
+                GuiUtils.createInlineTitleBorder("File options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
