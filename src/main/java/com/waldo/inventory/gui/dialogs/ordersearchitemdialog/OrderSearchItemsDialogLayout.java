@@ -1,24 +1,22 @@
 package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
-import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.inventory.gui.components.tablemodels.IOrderSearchItemsTableModel;
 import com.waldo.inventory.gui.components.wrappers.SelectableTableItem;
-import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
+import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.orderitemwizarddialog.OrderItemWizardDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +29,7 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
     private ITable<SelectableTableItem> orderItemTable;
 
     // Filters
-    private IComboBox<Order> orderCb;
+    private IActions.WizardAction wizardAction;
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -103,14 +101,18 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         orderItemTable = new ITable<>(tableModel);
 
         // Filters
-        orderCb = new IComboBox<>(SearchManager.sm().findPlannedOrders(), new ComparatorUtils.DbObjectNameComparator<>(), true);
-        orderCb.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                selectedOrder = (Order) orderCb.getSelectedItem();
-                tableInitialize();
-                updateEnabledComponents();
+        wizardAction = new IActions.WizardAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OrderItemWizardDialog dialog = new OrderItemWizardDialog(OrderSearchItemsDialogLayout.this, selectedOrder);
+                if (dialog.showDialog() == IDialog.OK) {
+                    // Get order items
+
+
+                    updateEnabledComponents();
+                }
             }
-        });
+        };
     }
 
     @Override
@@ -120,18 +122,8 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         JScrollPane scrollPane = new JScrollPane(orderItemTable);
         scrollPane.setPreferredSize(new Dimension(600, 400));
 
-        JPanel filterPanel = new JPanel();
-        filterPanel.add(GuiUtils.createComponentWithAddAction(orderCb, e -> {
-            EditOrdersDialog dialog = new EditOrdersDialog(OrderSearchItemsDialogLayout.this, new Order(), Statics.DistributorType.Items, false);
-            if (dialog.showDialog() == IDialog.OK) {
-                selectedOrder = dialog.getOrder();
-                orderCb.addItem(selectedOrder);
-                orderCb.setSelectedItem(selectedOrder);
-
-                tableInitialize();
-                updateEnabledComponents();
-            }
-        }));
+        JPanel filterPanel = new JPanel(new BorderLayout());
+        filterPanel.add(GuiUtils.createNewToolbar(wizardAction), BorderLayout.WEST);
 
         panel.add(filterPanel, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
