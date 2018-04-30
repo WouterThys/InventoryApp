@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
@@ -17,7 +18,7 @@ import java.io.File;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener /*, ActionListener */ {
+public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener, ImageResource.ImageRequester /*, ActionListener */ {
 
     public interface TileClickListener<IT extends ProjectObject> {
         void onTileClick(MouseEvent e, IT projectObject);
@@ -112,8 +113,10 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     public void updateComponents(Object... object) {
         ProjectIDE ide = projectObject.getProjectIDE();
 
-        if (ide != null) {
-            setIcon(projectObject.getProjectIDE().getIconPath(), projectObject.isValid());
+        if (ide != null && !ide.getIconPath().isEmpty()) {
+            //setIcon(projectObject.getProjectIDE().getIconPath(), projectObject.isValid());
+            imageResource.requestImage(this);
+
         } else {
             String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
             String iconPath = "";
@@ -134,6 +137,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
                     break;
             }
             setIcon(iconPath, projectObject.isValid());
+            //imageResource.requestImage(this);
         }
 
 
@@ -225,6 +229,28 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     @Override
     public void mouseExited(MouseEvent e) {
         setSelected(isSelected);
+    }
+
+    //
+    // Image request
+    //
+    @Override
+    public ImageType getImageType() {
+        return ImageType.IdeImage;
+    }
+
+    @Override
+    public String getImageName() {
+        if (projectObject != null && projectObject.getProjectIDE() != null) {
+            return  projectObject.getProjectIDE().getIconPath();
+        }
+        return "";
+    }
+
+    @Override
+    public void setImage(ImageIcon image) {
+        ImageIcon ideIcon = ImageResource.scaleImage(image, new Dimension(60,60));
+        iconBtn.setIcon(ideIcon);
     }
 }
 

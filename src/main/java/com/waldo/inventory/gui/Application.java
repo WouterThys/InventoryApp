@@ -11,9 +11,9 @@ import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderCacheDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
-import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
-import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
+import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
 import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
@@ -60,9 +60,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // Resource manager
         try {
-            imageResource = ImageResource.getInstance();
-            imageResource.init("settings/", "Icons.properties");
-            //imageResource = new ResourceManager("settings/", "Icons.properties");
             scriptResource = new ResourceManager("settings/", "Scripts.properties");
             colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
@@ -81,7 +78,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         result = initDatabases();
 
         if (!result) {
-            SettingsDialog dialog = new SettingsDialog(this, "Settings", true);
+            SettingsCacheDialog dialog = new SettingsCacheDialog(this, "Settings", true);
             if (dialog.showDialog() == IDialog.OK) {
                 // Try again
                 if (!initDatabases()) {
@@ -89,6 +86,13 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 }
             } else {
                 System.exit(-1);
+            }
+        } else {
+            try {
+                imageResource = ImageResource.getInstance();
+                imageResource.init("settings/", "Icons.properties");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -386,7 +390,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             );
         }
         if (result == JOptionPane.YES_OPTION) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
@@ -407,7 +411,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         }
         if (itemList.size() > 0) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order items", itemList, true, true);
+            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order items", itemList, true, true);
             dialog.showDialog();
         }
     }

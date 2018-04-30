@@ -11,7 +11,7 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderLineTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -126,7 +126,7 @@ public class OrderPanel extends OrderPanelLayout {
                 );
 
                 if (res == JOptionPane.YES_OPTION) {
-                    PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+                    PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
                     dialog.showDialog();
                 }
             }
@@ -829,7 +829,7 @@ public class OrderPanel extends OrderPanelLayout {
     public void onToolBarAdd(IdBToolBar source) {
             if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
 //                OrderSearchItemDialog dialog = new OrderSearchItemDialog(application, "Search item to order");
-//                if (dialog.showDialog() == IDialog.OK) {
+//                if (dialog.showDialog() == ICacheDialog.OK) {
 //                    List<Item> itemsToOrder = dialog.getItemsToOrder();
 //                    if (itemsToOrder != null) {
 //                        // Update item

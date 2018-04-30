@@ -7,10 +7,10 @@ import com.waldo.inventory.gui.dialogs.kicadparserdialog.KiCadDialog;
 import com.waldo.inventory.gui.dialogs.locationtypedialog.LocationTypeDialog;
 import com.waldo.inventory.gui.dialogs.logsdialog.LogsDialog;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
-import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeCacheDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.ProjectIDEDialog;
 import com.waldo.inventory.gui.dialogs.querydialog.QueryDialog;
-import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsDialog;
+import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -92,7 +92,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener settingsSelected() {
         return e -> {
-            SettingsDialog dialog = new SettingsDialog(application, "Settings", false);
+            SettingsCacheDialog dialog = new SettingsCacheDialog(application, "Settings", false);
             dialog.showDialog();
         };
     }
@@ -120,7 +120,7 @@ public class MenuBar extends JMenuBar {
 
     private ActionListener packagesSelected() {
         return (e -> {
-            PackageTypeDialog dialog = new PackageTypeDialog(application, "Packages");
+            PackageTypeCacheDialog dialog = new PackageTypeCacheDialog(application, "Packages");
             dialog.showDialog();
         });
     }

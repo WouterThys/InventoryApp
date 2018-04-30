@@ -1,12 +1,13 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -23,7 +24,7 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browsePanel;
-    private ILabel detailLogo;
+    private IImagePanel detailLogo;
     private JList<Item> detailItemList;
     private DefaultListModel<Item> detailItemDefaultListModel;
 
@@ -54,9 +55,10 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new ILabel();
-        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-        detailLogo.setMaximumSize(new Dimension(300, 60));
+//        detailLogo = new ILabel();
+//        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+//        detailLogo.setMaximumSize(new Dimension(300, 60));
+        detailLogo = new IImagePanel(this, ImageType.ManufacturerImage, "", this, new Dimension(128, 128));
         browsePanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
 
         detailItemDefaultListModel = new DefaultListModel<>();
@@ -95,7 +97,8 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         if (manufacturer != null) {
             detailName.setText(manufacturer.getName());
             browsePanel.setText(manufacturer.getWebsite());
-            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(manufacturer.getIconPath()), new Dimension(48,48)));
+            //detailLogo.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(manufacturer.getIconPath()), new Dimension(48,48)));
+            detailLogo.setImage(manufacturer.getIconPath());
             detailItemDefaultListModel.removeAllElements();
             for (Item item : SearchManager.sm().getItemsForManufacturer(manufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
@@ -107,7 +110,7 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
     protected void clearDetails() {
         detailName.setText("");
         browsePanel.clearText();
-        detailLogo.setIcon(null);
+        detailLogo.setImage((ImageIcon)null);
         detailItemDefaultListModel.removeAllElements();
     }
 

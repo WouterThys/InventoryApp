@@ -1,20 +1,12 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
-import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
-import com.waldo.utils.FileUtils;
-import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
 
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -33,8 +25,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
         setValues(item);
         initializeComponents();
         initializeLayouts();
-
-        initIconDoubleClicked();
         initTabChangedAction();
 
         updateComponents(item);
@@ -127,32 +117,6 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
 
     public void setAllowSave(boolean allowSave) {
         this.allowSave = allowSave;
-    }
-
-    private void initIconDoubleClicked() {
-        getTitleIconLabel().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    ILabel lbl = (ILabel)e.getSource();
-
-                    String initialPath = SettingsManager.settings().getFileSettings().getImgItemsPath();
-
-                    JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-                    fileChooser.setCurrentDirectory(new File(initialPath));
-                    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-                    if (fileChooser.showDialog(EditItemDialog.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                        String iconPath = fileChooser.getSelectedFile().getPath();
-                        if (!iconPath.isEmpty()) {
-                            selectedItem.setIconPath(FileUtils.createIconPath(initialPath, iconPath));
-                            lbl.setIcon(ImageResource.scaleImage(selectedItem.getItemIcon(), new Dimension(64, 64)));
-                            onValueChanged(lbl, "iconPath", "", iconPath);
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private void initTabChangedAction() {

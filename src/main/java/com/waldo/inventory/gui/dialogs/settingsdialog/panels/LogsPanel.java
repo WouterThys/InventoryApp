@@ -4,8 +4,8 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.LogSettings;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.utils.icomponents.ICheckBox;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ public class LogsPanel extends SettingsPnl<LogSettings> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LogsPanel(IDialog parent) {
+    public LogsPanel(iDialog parent) {
         super(parent, settings().getLogSettings());
         settings().addLogSettingsListener(this);
         initializeComponents();

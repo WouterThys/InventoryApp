@@ -6,7 +6,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.editprojectdialog.EditProjectDialog;
+import com.waldo.inventory.gui.dialogs.editprojectdialog.EditProjectCacheDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -114,7 +114,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         if (source.equals(projectsToolBar)) {
-            EditProjectDialog dialog = new EditProjectDialog(application, "New Project", new Project());
+            EditProjectCacheDialog dialog = new EditProjectCacheDialog(application, "New Project", new Project());
             dialog.showDialog();
         }
     }
@@ -132,7 +132,7 @@ public class ProjectsPanel extends ProjectsPanelLayout implements CacheChangedLi
     @Override
     public void onToolBarEdit(IdBToolBar source) {
         if (selectedProject != null) {
-            EditProjectDialog dialog = new EditProjectDialog(application, "Edit Project", selectedProject);
+            EditProjectCacheDialog dialog = new EditProjectCacheDialog(application, "Edit Project", selectedProject);
             dialog.showDialog();
         }
     }

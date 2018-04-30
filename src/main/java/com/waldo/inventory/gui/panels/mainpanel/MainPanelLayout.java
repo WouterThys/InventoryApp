@@ -285,7 +285,7 @@ abstract class MainPanelLayout extends JPanel implements
 
                 @Override
                 public void onToolBarEdit(IdBToolBar source) {
-                    //ResistorDialog dialog = new ResistorDialog(application, "resistor");
+                    //ResistorCacheDialog dialog = new ResistorCacheDialog(application, "resistor");
                     //dialog.showDialog();
                     MainPanelLayout.this.onToolBarEdit(source);
                 }

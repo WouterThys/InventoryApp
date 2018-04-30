@@ -7,7 +7,7 @@ import com.waldo.inventory.classes.dbclasses.PackageType;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
-import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeDialog;
+import com.waldo.inventory.gui.dialogs.packagedialog.PackageTypeCacheDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.OpenUtils;
 import com.waldo.utils.icomponents.*;
@@ -77,6 +77,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
 
         private String defaultPath = "";
         private int fileType = JFileChooser.DIRECTORIES_ONLY;
+        private File selectedFile;
 
         public IBrowseFilePanel() {
             this("", "");
@@ -84,6 +85,16 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
 
         public IBrowseFilePanel(String hint, String defaultPath) {
             this(hint, defaultPath, null, "");
+        }
+
+        public IBrowseFilePanel(String hint, String defaultPath, boolean filesOnly) {
+            this(hint, defaultPath);
+
+            if (filesOnly) {
+                fileType = JFileChooser.FILES_ONLY;
+            } else {
+                fileType = JFileChooser.DIRECTORIES_ONLY;
+            }
         }
 
         public IBrowseFilePanel(String hint, String defaultPath, IEditedListener listener, String fieldName) {
@@ -119,7 +130,8 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             fileChooser.setFileSelectionMode(fileType);
 
             if (fileChooser.showDialog(IBrowseFilePanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                selectedFile = fileChooser.getSelectedFile();
+                textField.setText(selectedFile.getAbsolutePath());
                 textField.fireValueChanged();
             }
         }
@@ -138,6 +150,10 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
 
         public void setEditable(boolean editable) {
             textField.setEditable(editable);
+        }
+
+        public File getSelectedFile() {
+            return selectedFile;
         }
     }
 
@@ -239,7 +255,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             }
 
             if (fileChooser.showDialog(IBrowseImagePanel.this, "Open") == JFileChooser.APPROVE_OPTION) {
-                textField.setText(fileChooser.getSelectedFile().getName());
+                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
                 textField.fireValueChanged();
             }
         }
@@ -669,7 +685,7 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
         //
         @Override
         public void actionPerformed(ActionEvent e) {
-            PackageTypeDialog dialog = new PackageTypeDialog(parent, "Packages");
+            PackageTypeCacheDialog dialog = new PackageTypeCacheDialog(parent, "Packages");
             dialog.showDialog();
 
             // TODO update comboboxes

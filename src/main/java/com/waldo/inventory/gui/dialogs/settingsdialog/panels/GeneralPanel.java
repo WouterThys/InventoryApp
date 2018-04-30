@@ -5,9 +5,9 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.GeneralSettings;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.utils.icomponents.ICheckBox;
 import com.waldo.utils.icomponents.IComboBox;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public GeneralPanel(IDialog dialog) {
+    public GeneralPanel(iDialog dialog) {
         super(dialog, settings().getGeneralSettings());
 
         initializeComponents();

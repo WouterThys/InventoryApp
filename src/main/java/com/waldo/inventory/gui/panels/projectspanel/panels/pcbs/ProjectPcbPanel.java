@@ -4,11 +4,11 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbDialog;
-import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
+import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
+import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksCacheDialog;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
-import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemDialog;
+import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemCacheDialog;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectPcbPreviewPanel;
 import com.waldo.utils.GuiUtils;
@@ -82,7 +82,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     private void onOrderItems() {
         if (selectedProjectObject != null) {
             if (selectedProjectObject.hasLinkedItems()) {
-                OrderPcbItemDialog orderDialog = new OrderPcbItemDialog(
+                OrderPcbItemCacheDialog orderDialog = new OrderPcbItemCacheDialog(
                         application,
                         "Order items",
                         selectedProjectObject);
@@ -111,7 +111,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onSelectForCreation() {
         if (selectedProjectObject != null) {
-            SelectPcbDialog dialog = new SelectPcbDialog(application, "PCB", selectedProjectObject);
+            SelectPcbCacheDialog dialog = new SelectPcbCacheDialog(application, "PCB", selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
                 CreatedPcb pcb = dialog.getCreatedPcb();
                 if (pcb != null) {
@@ -130,7 +130,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void createPcb(CreatedPcb pcb) {
         if (pcb != null) {
-            EditCreatedPcbLinksDialog linksDialog = new EditCreatedPcbLinksDialog(
+            EditCreatedPcbLinksCacheDialog linksDialog = new EditCreatedPcbLinksCacheDialog(
                     application,
                     "Edit pcb",
                     selectedProjectObject,

@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.editdivisiondialog;
 import com.waldo.inventory.Utils.Statics.IconDisplayType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Division;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IObjectDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog;
@@ -66,7 +66,7 @@ public class EditDivisionDialog extends IObjectDialog<Division> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectDivisionDialog dialog = new SelectDivisionDialog(EditDivisionDialog.this, getObject());
-                if (dialog.showDialog() == IDialog.OK) {
+                if (dialog.showDialog() == ICacheDialog.OK) {
                     Division newParent = dialog.getSelectedDivision();
                     if (newParent != null && !newParent.equals(parentDivision)) {
                         getObject().setParentDivisionId(newParent.getId());

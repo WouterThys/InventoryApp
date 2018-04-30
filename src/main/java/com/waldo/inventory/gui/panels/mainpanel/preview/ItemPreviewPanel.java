@@ -1,16 +1,17 @@
 package com.waldo.inventory.gui.panels.mainpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.IDivisionPanel;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -24,7 +25,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     /*
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel iconLbl;
+    private IImagePanel imagePanel;
 
     private ITextField nameTf;
     private ILabel aliasLbl;
@@ -99,7 +100,8 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (object != null) {
             if (object instanceof Item) {
                 Item item = (Item) object;
-                iconLbl.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
+                //imagePanel.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
+                imagePanel.setImage(item.getIconPath());
                 nameTf.setText(item.toString());
                 descriptionTa.setText(item.getDescription());
                 starRater.setRating(item.getRating());
@@ -107,7 +109,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             else if (object instanceof OrderLine) {
                 OrderLine orderLine = (OrderLine) object;
                 ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
-                iconLbl.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
+                //imagePanel.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
                 nameTf.setText(orderLine.getName());
                 descriptionTa.setText(orderLine.getPcb().getDescription());
                 starRater.setRating(0);
@@ -190,11 +192,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private JPanel createHeaderPanel() {
         JPanel headerPnl = new JPanel(new BorderLayout());
 
-        iconLbl.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY, 1),
-                BorderFactory.createEmptyBorder(2,2,2,2)
-        ));
-
         JPanel raterPnl = new JPanel();
         raterPnl.add(starRater);
 
@@ -207,7 +204,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.gridwidth = 1; gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        headerPnl.add(iconLbl, gbc);
+        headerPnl.add(imagePanel, gbc);
 
         // Name
         gbc.gridx = 1; gbc.weightx = 1;
@@ -284,15 +281,17 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     @Override
     public void initializeComponents() {
-        // Label
-        iconLbl = new ILabel();
-        iconLbl.setBackground(Color.WHITE);
-        iconLbl.setOpaque(true);
-        iconLbl.setHorizontalAlignment(ILabel.CENTER);
-        iconLbl.setVerticalAlignment(ILabel.CENTER);
-        iconLbl.setPreferredSize(new Dimension(150,150));
-        iconLbl.setMaximumSize(new Dimension(150,150));
-        iconLbl.setMinimumSize(new Dimension(150,150));
+//        // Label
+//        imagePanel = new ILabel();
+//        imagePanel.setBackground(Color.WHITE);
+//        imagePanel.setOpaque(true);
+//        imagePanel.setHorizontalAlignment(ILabel.CENTER);
+//        imagePanel.setVerticalAlignment(ILabel.CENTER);
+//        imagePanel.setPreferredSize(new Dimension(150,150));
+//        imagePanel.setMaximumSize(new Dimension(150,150));
+//        imagePanel.setMinimumSize(new Dimension(150,150));
+
+        imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);

@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.filechooserdialog;
 
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
@@ -26,10 +27,10 @@ public class ImageFileChooser {
     }
 
     private static class ImageFileView extends FileView {
-        final ImageIcon jpgIcon = imageResource.readIcon("IFC.Jpg");
-        final ImageIcon gifIcon = imageResource.readIcon("IFC.Gif");
-        final ImageIcon tiffIcon =imageResource.readIcon("IFC.Tiff");
-        final ImageIcon pngIcon = imageResource.readIcon("IFC.Png");
+        final ImageIcon jpgIcon = ImageResource.scaleImage(imageResource.readIcon("IFC.Jpg"), new Dimension(32, 32));
+        final ImageIcon gifIcon = ImageResource.scaleImage(imageResource.readIcon("IFC.Gif"), new Dimension(32, 32));
+        final ImageIcon tiffIcon = ImageResource.scaleImage(imageResource.readIcon("IFC.Tiff"), new Dimension(32, 32));
+        final ImageIcon pngIcon = ImageResource.scaleImage(imageResource.readIcon("IFC.Png"), new Dimension(32, 32));
 
         public String getName(File f) {
             return null; //let the L&F FileView figure this out

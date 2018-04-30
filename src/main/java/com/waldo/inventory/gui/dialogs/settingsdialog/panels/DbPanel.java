@@ -6,7 +6,7 @@ import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.OpenUtils;
 import com.waldo.utils.icomponents.IComboBox;
@@ -35,6 +35,8 @@ public class DbPanel extends SettingsPnl<DbSettings> {
     private ITextField userNameTf;
     private IPasswordField userPwTf;
 
+    private IActions.TestAction testAction;
+
     // Backups and cache settings
     private ITextFieldActionPanel backupPathPnl;
     private JButton createBackupBtn;
@@ -47,7 +49,7 @@ public class DbPanel extends SettingsPnl<DbSettings> {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public DbPanel(IDialog parent) {
+    public DbPanel(ICacheDialog parent) {
         super(parent, settings().getDbSettings());
         initializeComponents();
         initializeLayouts();
@@ -207,8 +209,10 @@ public class DbPanel extends SettingsPnl<DbSettings> {
     }
 
     private JPanel createDbSettingsPanel() {
-        JPanel dbSettingsPanel = new JPanel();
-        dbSettingsPanel.setLayout(new BorderLayout());
+        JPanel dbSettingsPanel = new JPanel(new BorderLayout());
+
+        JPanel toolbarPanel = new JPanel(new BorderLayout());
+        toolbarPanel.add(GuiUtils.createNewToolbar(testAction), BorderLayout.EAST);
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         // - Add to panel
@@ -226,6 +230,7 @@ public class DbPanel extends SettingsPnl<DbSettings> {
 
         // Add to panel
         dbSettingsPanel.add(settingsPanel, BorderLayout.CENTER);
+        dbSettingsPanel.add(toolbarPanel, BorderLayout.SOUTH);
 
         return dbSettingsPanel;
     }
@@ -262,14 +267,14 @@ public class DbPanel extends SettingsPnl<DbSettings> {
         userNameTf.addEditedListener(this, "dbUserName");
         userPwTf.addEditedListener(this, "dbUserPw");
 
-        IActions.TestAction testAction = new IActions.TestAction(imageResource.readIcon("Actions.M.Test")) {
+        testAction = new IActions.TestAction(imageResource.readIcon("Actions.M.Test")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 testDatabaseValues();
             }
         };
-        footerTb.add(testAction);
-        footerTb.addSeparator();
+        //footerTb.add(testAction);
+        //footerTb.addSeparator();
 
         // BACKUP
         backupPathPnl = new GuiUtils.IBrowseFilePanel("", "/home/");

@@ -7,8 +7,8 @@ import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
-import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersDialog;
+import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsCacheDialog;
+import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
@@ -114,9 +114,9 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     public void viewOrderDetails(Order order) {
         if (order != null && order.canBeSaved()) {
-            OrderDetailsDialog dialog = new OrderDetailsDialog(application, "Confirm receive", order); // TODO
+            OrderDetailsCacheDialog dialog = new OrderDetailsCacheDialog(application, "Confirm receive", order); // TODO
             if (order.isReceived()) {
-                dialog.showDialog(OrderDetailsDialog.TAB_ORDER_DETAILS, null);
+                dialog.showDialog(OrderDetailsCacheDialog.TAB_ORDER_DETAILS, null);
             } else {
                 dialog.showDialog();
             }
@@ -124,7 +124,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     }
 
     private void viewPendingOrders() {
-        PendingOrdersDialog dialog = new PendingOrdersDialog(application, "Pending orders");
+        PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
         dialog.showDialog();
     }
 

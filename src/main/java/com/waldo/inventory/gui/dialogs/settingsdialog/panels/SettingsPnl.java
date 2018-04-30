@@ -6,8 +6,8 @@ import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettingsObject;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.utils.icomponents.IComboBox;
-import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ILabel;
 
@@ -49,12 +49,12 @@ public abstract class SettingsPnl<T extends DbSettingsObject> extends JPanel imp
     T originalSettings;
     T currentSettings;
 
-    protected final IDialog parent;
+    protected final iDialog parent;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    SettingsPnl(IDialog parent, T currentSettings) {
+    SettingsPnl(iDialog parent, T currentSettings) {
         this.parent = parent;
         this.currentSettings = currentSettings;
     }

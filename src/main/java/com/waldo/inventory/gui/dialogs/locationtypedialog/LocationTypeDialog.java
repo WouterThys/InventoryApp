@@ -3,12 +3,12 @@ package com.waldo.inventory.gui.dialogs.locationtypedialog;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.LocationType;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
-import com.waldo.inventory.gui.dialogs.inventorydialog.InventoryDialog;
+import com.waldo.inventory.gui.dialogs.inventorydialog.InventoryCacheDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -128,7 +128,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
     private void editLocationType(LocationType locationType) {
         if (locationType != null) {
             CustomLocationDialog dialog = new CustomLocationDialog(this, "Custom", locationType);
-            if (dialog.showDialog() == IDialog.OK) {
+            if (dialog.showDialog() == ICacheDialog.OK) {
                 locationType.updateLocations();
                 setDetails(locationType);
             }
@@ -137,7 +137,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
 
     private void doInventory(LocationType locationType) {
         if (locationType != null) {
-            InventoryDialog dialog = new InventoryDialog(LocationTypeDialog.this, "Inventory", locationType);
+            InventoryCacheDialog dialog = new InventoryCacheDialog(LocationTypeDialog.this, "Inventory", locationType);
             dialog.showDialog();
         }
     }

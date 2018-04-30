@@ -5,7 +5,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardDialog;
+import com.waldo.inventory.gui.dialogs.setitemswizaddialog.SetItemsWizardCacheDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
@@ -84,7 +84,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
     public void onSetWizard(Set set) {
         if (set != null && set.canBeSaved()) {
             // Add set items wizard dialog
-            SetItemsWizardDialog dialog = new SetItemsWizardDialog(application, "Set item magic", set);
+            SetItemsWizardCacheDialog dialog = new SetItemsWizardCacheDialog(application, "Set item magic", set);
             dialog.showDialog();
         }
     }

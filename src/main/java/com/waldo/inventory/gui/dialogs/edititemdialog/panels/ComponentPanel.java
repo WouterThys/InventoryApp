@@ -5,7 +5,7 @@ import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -135,7 +135,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private ActionListener createManufacturerAddListener() {
         return e -> {
             ManufacturersDialog manufacturersDialog = new ManufacturersDialog(parent);
-            if (manufacturersDialog.showDialog() == IDialog.OK) {
+            if (manufacturersDialog.showDialog() == ICacheDialog.OK) {
                 updateManufacturerCbValues();
             }
         };
@@ -148,7 +148,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
             @Override
             public void actionPerformed(ActionEvent e) {
                 AllAliasesDialog dialog = new AllAliasesDialog(parent, "Alias", aliasPnl.getText());
-                if (dialog.showDialog() == IDialog.OK) {
+                if (dialog.showDialog() == ICacheDialog.OK) {
                     String selectedAlias = dialog.getSelectedAlias();
                     if (selectedAlias != null && !selectedAlias.isEmpty()) {
                         aliasPnl.setText(selectedAlias);
@@ -178,7 +178,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectDivisionDialog dialog = new SelectDivisionDialog(parent, selectedItem.getDivision());
-                if (dialog.showDialog() == IDialog.OK) {
+                if (dialog.showDialog() == ICacheDialog.OK) {
                     Division newDivision = dialog.getSelectedDivision();
                     if (newDivision != null && !newDivision.equals(selectedItem.getDivision())) {
                         selectedItem.setDivisionId(newDivision.getId());

@@ -341,4 +341,25 @@ public class IActions {
             setTooltip("Down");
         }
     }
+
+    public static abstract class ConnectAction extends IAbstractAction {
+        protected ConnectAction() {
+            super("Connect", imageResource.readIcon("Actions.M.Connect"));
+            setTooltip("Connect");
+        }
+    }
+
+    public static abstract class DisconnectAction extends IAbstractAction {
+        protected DisconnectAction() {
+            super("Disconnect", imageResource.readIcon("Actions.M.Disconnect"));
+            setTooltip("Disconnect");
+        }
+    }
+
+    public static abstract class SendContentAction extends IAbstractAction {
+        protected SendContentAction() {
+            super("Send content", imageResource.readIcon("Actions.M.SendFolder"));
+            setTooltip("Send content");
+        }
+    }
 }

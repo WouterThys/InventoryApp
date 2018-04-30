@@ -8,7 +8,7 @@ import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorOrderFlow;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -258,7 +258,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
         EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Add format", new OrderFileFormat());
-        if (dialog.showDialog() == IDialog.OK) {
+        if (dialog.showDialog() == ICacheDialog.OK) {
             OrderFileFormat off = dialog.getOrderFileFormat();
             off.save();
         }
@@ -294,7 +294,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     private void editOrderFile(OrderFileFormat off) {
         if (off != null) {
             EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Edit format", off);
-            if (dialog.showDialog() == IDialog.OK) {
+            if (dialog.showDialog() == ICacheDialog.OK) {
                 off.save();
             }
         }
@@ -305,7 +305,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         OrderFileFormat off = (OrderFileFormat) detailOrderFileFormatCb.getSelectedItem();
         if (off != null) {
             EditOrderFileFormatDialog dialog = new EditOrderFileFormatDialog(DistributorsDialog.this, "Edit format", off);
-            if (dialog.showDialog() == IDialog.OK) {
+            if (dialog.showDialog() == ICacheDialog.OK) {
                 off.save();
             }
         }

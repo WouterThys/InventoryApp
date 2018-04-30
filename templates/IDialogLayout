@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 
 import javax.swing.*;
 import java.awt.*;

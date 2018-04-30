@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class DbObjectDialog<T extends DbObject> extends IDialog {
@@ -54,16 +53,19 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
     }
 
     private void determineInitialPath() {
-        if (T.getType(dbObject) == DbObject.TYPE_DISTRIBUTOR) initialPath = settings().getFileSettings().getImgDistributorsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_DIVISION) initialPath = settings().getFileSettings().getImgDivisionsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT_TYPE) initialPath = settings().getFileSettings().getImgIdesPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_ITEM) initialPath = settings().getFileSettings().getImgItemsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_MANUFACTURER) initialPath = settings().getFileSettings().getImgManufacturersPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT) initialPath = settings().getFileSettings().getImgProjectsPath();
-        else if (T.getType(dbObject) == DbObject.TYPE_ORDER) initialPath = settings().getFileSettings().getFileOrdersPath();
-        else {
-            initialPath = "home/";
-        }
+//        if (T.getType(dbObject) == DbObject.TYPE_DISTRIBUTOR) initialPath = settings().getFileSettings().getImgDistributorsPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_DIVISION) initialPath = settings().getFileSettings().getImgDivisionsPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT_TYPE) initialPath = settings().getFileSettings().getImgIdesPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_ITEM) initialPath = settings().getFileSettings().getImgItemsPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_MANUFACTURER) initialPath = settings().getFileSettings().getImgManufacturersPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_PROJECT) initialPath = settings().getFileSettings().getImgProjectsPath();
+//        else if (T.getType(dbObject) == DbObject.TYPE_ORDER) initialPath = settings().getFileSettings().getFileOrdersPath();
+//        else {
+//            initialPath = "home/";
+//        }
+
+
+        initialPath = "home/";
 
     }
 

@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.editparse
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.ParserItemLink;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IObjectDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog;
@@ -66,7 +66,7 @@ public class EditParserItemLinkDialog extends IObjectDialog<ParserItemLink> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectDivisionDialog dialog = new SelectDivisionDialog(EditParserItemLinkDialog.this, getObject().getDivision());
-                if (dialog.showDialog() == IDialog.OK) {
+                if (dialog.showDialog() == ICacheDialog.OK) {
                     Division newDivision = dialog.getSelectedDivision();
                     if (newDivision != null && !newDivision.equals(getObject().getDivision())) {
                         getObject().setDivisionId(newDivision.getId());

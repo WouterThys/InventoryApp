@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public abstract class DbSettingsObject extends DbObject {
 
     public static final int SETTINGS_TYPE_LOG = 200;
-    public static final int SETTINGS_TYPE_FILE = 201;
+    public static final int SETTINGS_TYPE_IMAGE = 201;
     public static final int SETTINGS_TYPE_DB = 202;
     public static final int SETTINGS_TYPE_GENERAL = 203;
 
@@ -48,7 +48,7 @@ public abstract class DbSettingsObject extends DbObject {
     public static int getType(DbSettingsObject object) {
         if (object instanceof LogSettings) return SETTINGS_TYPE_LOG;
         if (object instanceof DbSettings) return SETTINGS_TYPE_DB;
-        if (object instanceof FileSettings) return SETTINGS_TYPE_FILE;
+        if (object instanceof ImageServerSettings) return SETTINGS_TYPE_IMAGE;
         if (object instanceof GeneralSettings) return SETTINGS_TYPE_GENERAL;
 
         return TYPE_UNKNOWN;

@@ -9,7 +9,7 @@ import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.gui.components.IDialog;
+import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import com.waldo.utils.icomponents.IEditedListener;
@@ -212,7 +212,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
                 dialog = new EditItemLocation(parent,
                         "Select",
                         selectedItem.getLocation());
-                if (dialog.showDialog() == IDialog.OK) {
+                if (dialog.showDialog() == ICacheDialog.OK) {
                     Location newLocation = dialog.getItemLocation();
                     if (newLocation != null) {
                         selectedItem.setLocationId(newLocation.getId());

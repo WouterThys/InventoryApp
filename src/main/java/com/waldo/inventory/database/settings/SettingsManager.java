@@ -44,8 +44,8 @@ public class SettingsManager {
     private List<DbSettings> dbSettingsList = null;
 
     // File settings
-    private String selectedFileSettings = DEFAULT;
-    private List<FileSettings> fileSettingsList = null;
+    private String selectedImageServerSettings = DEFAULT;
+    private List<ImageServerSettings> imageServerSettingsList = null;
 
     // Log settings
     private String selectedLogSettings = DEFAULT;
@@ -54,7 +54,7 @@ public class SettingsManager {
     // Listeners
     private final List<DbSettingsListener<LogSettings>> onLogSettingsChangedList = new ArrayList<>();
     private final List<DbSettingsListener<DbSettings>> onDbSettingsChangedList = new ArrayList<>();
-    private final List<DbSettingsListener<FileSettings>> onFileSettingsChangedList = new ArrayList<>();
+    private final List<DbSettingsListener<ImageServerSettings>> onImageServerSettingsChangedList = new ArrayList<>();
     private final List<DbSettingsListener<GeneralSettings>> onGeneralSettingsChangedList = new ArrayList<>();
 
     /*
@@ -136,9 +136,9 @@ public class SettingsManager {
         }
     }
 
-    public void addFileSettingsListener(DbSettingsListener<FileSettings> listener) {
-        if (!onFileSettingsChangedList.contains(listener)) {
-            onFileSettingsChangedList.add(listener);
+    public void addImageServerSettingsListener(DbSettingsListener<ImageServerSettings> listener) {
+        if (!onImageServerSettingsChangedList.contains(listener)) {
+            onImageServerSettingsChangedList.add(listener);
         }
     }
 
@@ -153,7 +153,7 @@ public class SettingsManager {
             notifyListeners(getGeneralSettings(), onGeneralSettingsChangedList);
             notifyListeners(getLogSettings(), onLogSettingsChangedList);
             notifyListeners(getDbSettings(), onDbSettingsChangedList);
-            notifyListeners(getFileSettings(), onFileSettingsChangedList);
+            notifyListeners(getImageServerSettings(), onImageServerSettingsChangedList);
         });
     }
 
@@ -178,9 +178,9 @@ public class SettingsManager {
         return null;
     }
 
-    public FileSettings getFileSettings() {
-        for (FileSettings settings : getFileSettingsList()) {
-            if (settings.getName().equals(getSelectedFileSettingsName())) {
+    public ImageServerSettings getImageServerSettings() {
+        for (ImageServerSettings settings : getImageServerSettingsList()) {
+            if (settings.getName().equals(getSelectedImageServerSettingsName())) {
                 return settings;
             }
         }
@@ -221,16 +221,16 @@ public class SettingsManager {
         return selectedDbSettings;
     }
 
-    public String getSelectedFileSettingsName() {
-        if (selectedFileSettings == null || selectedFileSettings.isEmpty()) {
+    public String getSelectedImageServerSettingsName() {
+        if (selectedImageServerSettings == null || selectedImageServerSettings.isEmpty()) {
             try {
                 readSelectedSettingsFromDb();
             } catch (SQLException e) {
                 e.printStackTrace();
-                selectedFileSettings = DEFAULT;
+                selectedImageServerSettings = DEFAULT;
             }
         }
-        return selectedFileSettings;
+        return selectedImageServerSettings;
     }
 
     public String getSelectedLogSettingsName() {
@@ -267,11 +267,11 @@ public class SettingsManager {
         return logSettingsList;
     }
 
-    public List<FileSettings> getFileSettingsList() {
-        if (fileSettingsList == null) {
-            readFileSettingsFromDb();
+    public List<ImageServerSettings> getImageServerSettingsList() {
+        if (imageServerSettingsList == null) {
+            readImageServerSettingsFromDb();
         }
-        return fileSettingsList;
+        return imageServerSettingsList;
     }
 
 
@@ -302,8 +302,8 @@ public class SettingsManager {
         return null;
     }
 
-    public FileSettings getFileSettingsByName(String name) {
-        for (FileSettings settings : getFileSettingsList()) {
+    public ImageServerSettings getImageServerSettingsByName(String name) {
+        for (ImageServerSettings settings : getImageServerSettingsList()) {
             if (settings.getName().equals(name)) {
                 return settings;
             }
@@ -336,8 +336,8 @@ public class SettingsManager {
         dbSettingsList = null;
     }
 
-    public void updateFileSettings() {
-        fileSettingsList = null;
+    public void updateImageServerSettings() {
+        imageServerSettingsList = null;
     }
 
 
@@ -356,10 +356,10 @@ public class SettingsManager {
                     selectNewSettings(getLogSettingsByName(DEFAULT));
                     break;
                 case SETTINGS_TYPE_DB:
-                    selectNewSettings(getLogSettingsByName(DEFAULT));
+                    selectNewSettings(getDbSettingsByName(DEFAULT));
                     break;
-                case SETTINGS_TYPE_FILE:
-                    selectNewSettings(getLogSettingsByName(DEFAULT));
+                case SETTINGS_TYPE_IMAGE:
+                    selectNewSettings(getImageServerSettingsByName(DEFAULT));
                     break;
             }
 
@@ -396,8 +396,8 @@ public class SettingsManager {
             case SETTINGS_TYPE_DB:
                 saveDbSettings((DbSettings) settings);
                 break;
-            case SETTINGS_TYPE_FILE:
-                saveFileSettings((FileSettings) settings);
+            case SETTINGS_TYPE_IMAGE:
+                saveImageServerSettings((ImageServerSettings) settings);
                 break;
         }
         settings.setSaved(true);
@@ -430,16 +430,16 @@ public class SettingsManager {
         }
     }
 
-    private void saveFileSettings(FileSettings fileSettings) {
-        if (fileSettings.isSaved()) {
+    private void saveImageServerSettings(ImageServerSettings imageServerSettings) {
+        if (imageServerSettings.isSaved()) {
             // Update
-            updateFileSetting(fileSettings);
-            readFileSettingsFromDb();
+            updateImageServerSetting(imageServerSettings);
+            readImageServerSettingsFromDb();
             notifyListeners(getLogSettings(), onLogSettingsChangedList);
         } else {
             // Insert
-            insertFileSetting(fileSettings);
-            readFileSettingsFromDb();
+            insertImageServerSetting(imageServerSettings);
+            readImageServerSettingsFromDb();
         }
     }
 
@@ -472,8 +472,8 @@ public class SettingsManager {
             case SETTINGS_TYPE_DB:
                 sql = scriptResource.readString("settings.sqlUpdateDb");
                 break;
-            case SETTINGS_TYPE_FILE:
-                sql = scriptResource.readString("settings.sqlUpdateFile");
+            case SETTINGS_TYPE_IMAGE:
+                sql = scriptResource.readString("settings.sqlUpdateImageServer");
                 break;
         }
 
@@ -496,9 +496,9 @@ public class SettingsManager {
                 selectedDbSettings = settings.getName();
                 notifyListeners((DbSettings) settings, onDbSettingsChangedList);
                 break;
-            case SETTINGS_TYPE_FILE:
-                selectedFileSettings = settings.getName();
-                notifyListeners((FileSettings) settings, onFileSettingsChangedList);
+            case SETTINGS_TYPE_IMAGE:
+                selectedImageServerSettings = settings.getName();
+                notifyListeners((ImageServerSettings) settings, onImageServerSettingsChangedList);
                 break;
         }
     }
@@ -515,7 +515,7 @@ public class SettingsManager {
 
                 if (rs.next()) {
                     selectedDbSettings = rs.getString("dbsettings");
-                    selectedFileSettings = rs.getString("filesettings");
+                    selectedImageServerSettings = rs.getString("imageserversettings");
                     selectedLogSettings = rs.getString("logsettings");
                     selectedGeneralSettings = rs.getString("generalsettings");
                 }
@@ -585,29 +585,24 @@ public class SettingsManager {
         }
     }
 
-    private void readFileSettingsFromDb() {
-        fileSettingsList = new ArrayList<>();
+    private void readImageServerSettingsFromDb() {
+        imageServerSettingsList = new ArrayList<>();
 
-        String sql = scriptResource.readString("filesettings.sqlSelectAll");
+        String sql = scriptResource.readString("imageserversettings.sqlSelectAll");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    FileSettings fileSettings = new FileSettings();
+                    ImageServerSettings imageServerSettings = new ImageServerSettings();
 
-                    fileSettings.setName(rs.getString("name"));
-                    fileSettings.setImgDistributorsPath(rs.getString("distributors"));
-                    fileSettings.setImgDivisionsPath(rs.getString("divisions"));
-                    fileSettings.setImgIdesPath(rs.getString("ides"));
-                    fileSettings.setImgItemsPath(rs.getString("items"));
-                    fileSettings.setImgManufacturersPath(rs.getString("manufacturers"));
-                    fileSettings.setImgProjectsPath(rs.getString("projects"));
-                    fileSettings.setFileOrdersPath(rs.getString("orders"));
+                    imageServerSettings.setName(rs.getString("name"));
+                    imageServerSettings.setImageServerName(rs.getString("imageServerName"));
+                    imageServerSettings.setConnectAsName(rs.getString("connectAsName"));
 
-                    fileSettings.setSaved(true);
+                    imageServerSettings.setSaved(true);
 
-                    fileSettingsList.add(fileSettings);
+                    imageServerSettingsList.add(imageServerSettings);
                 }
             }
         } catch (SQLException e) {
@@ -674,18 +669,13 @@ public class SettingsManager {
         }
     }
 
-    private void insertFileSetting(FileSettings set) {
-        String sql = scriptResource.readString("filesettings.sqlInsert");
+    private void insertImageServerSetting(ImageServerSettings set) {
+        String sql = scriptResource.readString("imageserversettings.sqlInsert");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1,  set.getName());
-                stmt.setString(2, set.getImgDistributorsPath());
-                stmt.setString(3, set.getImgDivisionsPath());
-                stmt.setString(4, set.getImgIdesPath());
-                stmt.setString(5, set.getImgItemsPath());
-                stmt.setString(6, set.getImgManufacturersPath());
-                stmt.setString(7, set.getImgProjectsPath());
-                stmt.setString(8, set.getFileOrdersPath());
+                stmt.setString(2, set.getImageServerName());
+                stmt.setString(3, set.getConnectAsName());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -745,17 +735,12 @@ public class SettingsManager {
         }
     }
 
-    private void updateFileSetting(FileSettings set) {
-        String sql = scriptResource.readString("filesettings.sqlUpdate");
+    private void updateImageServerSetting(ImageServerSettings set) {
+        String sql = scriptResource.readString("imageserversettings.sqlUpdate");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, set.getImgDistributorsPath());
-                stmt.setString(2, set.getImgDivisionsPath());
-                stmt.setString(3, set.getImgIdesPath());
-                stmt.setString(4, set.getImgItemsPath());
-                stmt.setString(5, set.getImgManufacturersPath());
-                stmt.setString(6, set.getImgProjectsPath());
-                stmt.setString(7, set.getFileOrdersPath());
+                stmt.setString(1, set.getImageServerName());
+                stmt.setString(2, set.getConnectAsName());
 
                 stmt.setString(8,  set.getName()); // Where name
 
