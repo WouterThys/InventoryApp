@@ -34,6 +34,11 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     private ImageResource() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (client != null) {
+                client.disconnectClient(true);
+            }
+        }));
     }
 
     public static final String DEFAULT = "default";
@@ -110,24 +115,8 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         });
     }
 
-    public ImageIcon readItemIcon(String name) {
-        return fromMap(itemImageMap, name, ImageType.ItemImage);
-    }
-
-    public ImageIcon readDistributorIcon(String name) {
-        return fromMap(distributorImageMap, name, ImageType.DistributorImage);
-    }
-
-    public ImageIcon readManufacturerIcon(String name) {
-        return fromMap(manufacturerImageMap, name, ImageType.ManufacturerImage);
-    }
-
     public ImageIcon readIdeIcon(String name) {
         return fromMap(ideImageMap, name, ImageType.IdeImage);
-    }
-
-    public ImageIcon readProjectIcon(String name) {
-        return fromMap(projectImageMap, name, ImageType.ProjectImage);
     }
 
     private ImageIcon fromMap(Map<String, ImageIcon> map, String name, ImageType imageType) {
@@ -276,7 +265,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         if (client == null || !client.getClientName().equalsIgnoreCase(clientName) || !client.isConnected()) {
 
             if (client != null) {
-                client.disconnectClient(false);
+                client.disconnectClient(true);
             }
 
             client = new Client(imageServerSettings.getImageServerName(), imageServerSettings.getConnectAsName());
@@ -291,6 +280,36 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ImageIcon saveImage(BufferedImage image, ImageType imageType, String imageName) {
+        ImageIcon imageIcon = null;
+        try {
+            if (image != null) {
+                client.sendImage(image, imageName, imageType);
+                imageIcon = new ImageIcon(image);
+                switch (imageType) {
+                    case ItemImage:
+                        itemImageMap.put(imageName, imageIcon);
+                        break;
+                    case DistributorImage:
+                        distributorImageMap.put(imageName, imageIcon);
+                        break;
+                    case ManufacturerImage:
+                        manufacturerImageMap.put(imageName, imageIcon);
+                        break;
+                    case IdeImage:
+                        ideImageMap.put(imageName, imageIcon);
+                        break;
+                    case ProjectImage:
+                        projectImageMap.put(imageName, imageIcon);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imageIcon;
     }
 
     public ImageIcon saveImage(File file, ImageType imageType, String imageName) {

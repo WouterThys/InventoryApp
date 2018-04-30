@@ -12,8 +12,13 @@ import com.waldo.utils.icomponents.IPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -34,18 +39,30 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         this(imageType, "", null, imageDimension);
     }
 
+    public IImagePanel(ImageType imageType, Dimension imageDimension, boolean editable) {
+        this(null, imageType, "", editable, null, imageDimension);
+    }
+
     public IImagePanel(ImageType imageType, String imageName, IEditedListener editedListener, Dimension imageDimension) {
         this(null, imageType, imageName, editedListener, imageDimension);
     }
 
     public IImagePanel(Window parent, ImageType imageType, String imageName, IEditedListener editedListener, Dimension imageDimension) {
+        this(parent, imageType, imageName, false, editedListener, imageDimension);
+    }
+
+    public IImagePanel(Window parent, ImageType imageType, String imageName, boolean editable, IEditedListener editedListener, Dimension imageDimension) {
         super(new BorderLayout());
 
         this.parent = parent;
         this.imageType = imageType;
         this.imageName = imageName;
         this.editedListener = editedListener;
-        this.editable = editedListener != null;
+        if (editable) {
+            this.editable = editable;
+        } else {
+            this.editable = editedListener != null;
+        }
         this.imageDimension = imageDimension;
 
         initializeComponents();
@@ -66,10 +83,6 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         updateComponents();
     }
 
-
-    public boolean isEditable() {
-        return editable;
-    }
 
     public void setEditable(boolean editable) {
         this.editable = editable;
@@ -99,6 +112,44 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
     }
 
 
+    private TransferHandler createNewTransferHandler() {
+        return new TransferHandler() {
+            @Override
+            public boolean importData(JComponent component, Transferable transferable) {
+                Object transferData = null;
+                try {
+                    transferData = transferable.getTransferData(DataFlavor.imageFlavor);
+                } catch (UnsupportedFlavorException | IOException e) {
+                    e.printStackTrace();
+                }
+                if (transferData != null && transferData instanceof BufferedImage) {
+                    BufferedImage image = (BufferedImage) transferData;
+
+                    if (editedListener != null) {
+                        DbObject object = (DbObject) editedListener.getGuiObject();
+                        if (getImageName().isEmpty()) {
+                            imageName = object.getName() + ".jpg";
+                        }
+                        object.setIconPath(imageName);
+                        editedListener.onValueChanged(IImagePanel.this, "iconPath", "", imageName);
+                    }
+
+                    imageResource.saveImage(image, imageType, imageName);
+                    setImage(imageName);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+                return true;
+            }
+
+
+        };
+    }
+
+
     //
     // Gui
     //
@@ -110,6 +161,8 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         imageLbl.setMinimumSize(imageDimension);
         imageLbl.setOpaque(true);
         imageLbl.setBackground(Color.WHITE);
+
+        imageLbl.setTransferHandler(createNewTransferHandler());
 
         IActions.EditAction editImageAction = new IActions.EditAction() {
             @Override

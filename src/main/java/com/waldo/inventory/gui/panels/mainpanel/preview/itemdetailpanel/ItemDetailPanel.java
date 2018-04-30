@@ -42,7 +42,7 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
 
     private void updateHeader(Item item) {
         try {
-            iconLbl.setIcon(item.getItemIcon());
+            //iconLbl.setIcon(item.getItemIcon());
         } catch (Exception e) {
             Status().setError("Failed to set item icon");
         }

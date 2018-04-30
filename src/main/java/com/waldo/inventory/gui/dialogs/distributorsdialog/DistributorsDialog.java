@@ -3,12 +3,12 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics.DistributorType;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorOrderFlow;
 import com.waldo.inventory.classes.dbclasses.OrderFileFormat;
 import com.waldo.inventory.gui.components.ICacheDialog;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -16,8 +16,8 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderFlowTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributororderflowdialog.EditDistributorOrderflowDialog;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IComboBox;
-import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITable;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -38,7 +38,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     private GuiUtils.IBrowseWebPanel browseDistributorPanel;
     private GuiUtils.IBrowseWebPanel browseOrderLinkPanel;
     private IComboBox<DistributorType> distributorTypeCb;
-    private ILabel detailLogo;
+    private IImagePanel detailLogo;
     private IComboBox<OrderFileFormat> detailOrderFileFormatCb;
     //private IdBToolBar detailOrderFileFormatTb;
     private IActions.EditAction editOrderFileAa;
@@ -70,8 +70,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new ILabel();
-        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+        detailLogo = new IImagePanel(this, ImageType.DistributorImage, "", this, new Dimension(128, 128));
 
         distributorTypeCb = new IComboBox<>(DistributorType.values());
         distributorTypeCb.addItemListener(e -> {
@@ -193,9 +192,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         if (distributor != null) {
             detailName.setText(distributor.getName());
             browseDistributorPanel.setText(distributor.getWebsite());
-            detailLogo.setIcon(ImageResource.scaleImage(
-                    imageResource.readDistributorIcon(distributor.getIconPath()), new Dimension(48, 48)));
-
+            detailLogo.setImage(distributor.getIconPath());
             distributorTypeCb.setSelectedItem(distributor.getDistributorType());
 
             // Order flow
@@ -207,7 +204,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         } else {
             detailName.clearText();
             browseDistributorPanel.clearText();
-            detailLogo.setIcon(null);
+            detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
             distributorTypeCb.setSelectedItem(null);
             tableModel.clearItemList();
             browseOrderLinkPanel.clearText();
@@ -237,7 +234,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     public void clearDetails() {
         detailName.setText("");
         browseDistributorPanel.clearText();
-        detailLogo.setIcon(null);
+        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
 
         // Order flow
         //..

@@ -6,8 +6,10 @@ import com.waldo.inventory.Utils.Statics.ProjectTypes;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -38,7 +40,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     IObjectSearchPanel<ProjectIDE> searchPanel;
 
     ITextField detailName;
-    ILabel detailLogo;
+    IImagePanel detailLogo;
 
     private JList<Project> detailProjectList;
     DefaultListModel<Project> detailProjectModel;
@@ -186,8 +188,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new ILabel();
-        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+        detailLogo = new IImagePanel(this, ImageType.IdeImage, "", this, new Dimension(128, 128));
 
         List<ProjectTypes> types = Arrays.asList(ProjectTypes.values());
         projectTypeCb = new IComboBox<>(types, null, true);

@@ -108,7 +108,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
             else if (object instanceof OrderLine) {
                 OrderLine orderLine = (OrderLine) object;
-                ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
+                //ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
                 //imagePanel.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
                 nameTf.setText(orderLine.getName());
                 descriptionTa.setText(orderLine.getPcb().getDescription());

@@ -1,10 +1,14 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.managers.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.waldo.inventory.database.DatabaseAccess.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
 
@@ -20,6 +24,10 @@ public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
 
     private JLabel statusLabel;
     private JLabel dbConnectionLabel;
+
+    private JLabel dbConnectedIcon;
+    private JLabel imageConnectedIcon;
+
     private Timer timer;
 
     private IStatusStrip() {}
@@ -98,15 +106,43 @@ public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
         statusLabel.setText(" ");
     }
 
+//    Status.dbOk
+//    Status.dbNok
+//    Status.serverOk
+//    Status.serverNok
+
+    public void updateConnectionStatus() {
+        if (db().isInitialized()) {
+            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.dbOk"), new Dimension(16,16)));
+            dbConnectedIcon.setToolTipText("Connected");
+        } else {
+            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.dbNok"), new Dimension(16,16)));
+            dbConnectedIcon.setToolTipText("Not connected..");
+        }
+
+        if (imageResource.serverConnected()) {
+            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.serverOk"), new Dimension(16,16)));
+            imageConnectedIcon.setToolTipText("Connected as " + imageResource.getClient().getClientName());
+        } else {
+            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.serverNok"), new Dimension(16,16)));
+            imageConnectedIcon.setToolTipText("Not connected..");
+        }
+    }
+
     @Override
     public void initializeComponents() {
         statusLabel = new JLabel("", JLabel.LEFT);
         dbConnectionLabel = new JLabel("", JLabel.RIGHT);
+
+        dbConnectedIcon = new JLabel();
+        imageConnectedIcon = new JLabel();
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
+
+        JPanel connectionPnl = new JPanel();
 
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(0,2,2,2),
@@ -116,10 +152,12 @@ public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
                 )
         ));
 
+        connectionPnl.add(dbConnectionLabel);
+        connectionPnl.add(dbConnectedIcon);
+        connectionPnl.add(imageConnectedIcon);
 
-        //setBorder(BorderFactory.createEmptyBorder(3,10,3,20));
         add(statusLabel, BorderLayout.WEST);
-        add(dbConnectionLabel, BorderLayout.EAST);
+        add(connectionPnl, BorderLayout.EAST);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
-import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 import com.waldo.utils.icomponents.ITextPane;
 
@@ -26,7 +26,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel iconLbl;
+    private IImagePanel iconLbl;
 
     private ITextField nameTf;
     private ITextField directoryTf;
@@ -69,9 +69,9 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateIcon(ProjectObject project) {
         if (project != null) {
-            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(project.getProject().getIconPath()), new Dimension(120,120)));
+            iconLbl.setImage(project.getIconPath());
         } else {
-            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(ImageResource.DEFAULT), new Dimension(120, 120)));
+            iconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
         }
     }
 
@@ -106,7 +106,6 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
             }
         }
     }
-
 
     private JPanel createIconPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -205,10 +204,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        iconLbl = new ILabel();
-        iconLbl.setHorizontalAlignment(ILabel.CENTER);
-        iconLbl.setVerticalAlignment(ILabel.CENTER);
-        iconLbl.setPreferredSize(new Dimension(150,150));
+        iconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
 
         nameTf = new ITextField(false);
         directoryTf = new ITextField(false);

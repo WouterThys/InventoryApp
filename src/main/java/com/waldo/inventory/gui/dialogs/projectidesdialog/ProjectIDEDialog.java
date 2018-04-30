@@ -1,6 +1,5 @@
 package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
@@ -12,6 +11,7 @@ import com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog.Detecti
 import com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog.LauncherDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.ParserDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -80,7 +80,7 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
         if (selectedProjectIDE != null) {
             detailName.setText(selectedProjectIDE.getName());
             projectTypeCb.setSelectedItem(selectedProjectIDE.getProjectType());
-            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readIdeIcon(selectedProjectIDE.getIconPath()), new Dimension(48,48)));
+            detailLogo.setImage(selectedProjectIDE.getIconPath());
 
             detailProjectModel.removeAllElements();
             for (Project project : SearchManager.sm().findProjectsWithIde(selectedProjectIDE.getId())) {
@@ -88,14 +88,14 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
             }
         } else {
             detailName.setText("");
-            detailLogo.setIcon(ImageResource.scaleImage(imageResource.readIdeIcon(ImageResource.DEFAULT), new Dimension(48,48)));
+            detailLogo.setImage(imageResource.getDefaultImage(ImageType.IdeImage));
         }
     }
 
     private void clearDetails() {
         detailName.setText("");
         projectTypeCb.setSelectedItem(null);
-        detailLogo.setIcon(null);
+        detailLogo.setImage(imageResource.getDefaultImage(ImageType.IdeImage));
         detailProjectModel.removeAllElements();
     }
 

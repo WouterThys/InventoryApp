@@ -10,10 +10,10 @@ import com.waldo.utils.icomponents.IDialog;
 import javax.swing.*;
 import java.awt.*;
 
-public class PcbItemDetailsCacheDialog extends PcbItemDetailsCacheDialogLayout implements CacheChangedListener<PcbItemItemLink> {
+public class PcbItemDetailsDialog extends PcbItemDetailsDialogLayout implements CacheChangedListener<PcbItemItemLink> {
 
 
-    public PcbItemDetailsCacheDialog(Window parent, String title, PcbItemProjectLink itemProjectLink) {
+    public PcbItemDetailsDialog(Window parent, String title, PcbItemProjectLink itemProjectLink) {
         super(parent, title, itemProjectLink);
 
         addCacheListener(PcbItemItemLink.class, this);

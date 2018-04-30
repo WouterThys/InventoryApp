@@ -3,16 +3,17 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IDivisionPanel;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -53,7 +54,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     // Details
     private GuiUtils.IPackagePanel packagePnl;
     private IComboBox<Manufacturer> manufacturerCb;
-    private ILabel manufacturerIconLbl;
+    private IImagePanel manufacturerIconLbl;
     private IStarRater starRater;
     private ICheckBox discourageOrderCb;
     private IRemarksPanel remarksPnl;
@@ -113,12 +114,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         manufacturerCb.setSelectedItem(manufacturer);
 
         if (manufacturer != null) {
-            try {
-                String p = manufacturer.getIconPath();
-                manufacturerIconLbl.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(p), new Dimension(48,48)));
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            manufacturerIconLbl.setImage(manufacturer.getIconPath());
+        } else {
+            manufacturerIconLbl.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
         }
     }
 
@@ -206,11 +204,13 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Manufacturer m = (Manufacturer) manufacturerCb.getSelectedItem();
                 if (m != null) {
-                    manufacturerIconLbl.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(m.getIconPath()), new Dimension(48,48)));
+                    manufacturerIconLbl.setImage(m.getIconPath());
+                } else {
+                    manufacturerIconLbl.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
                 }
             }
         });
-        manufacturerIconLbl = new ILabel("", ILabel.RIGHT);
+        manufacturerIconLbl = new IImagePanel(ImageType.ManufacturerImage, new Dimension(48,48));
 
         // Remarks stuff
         starRater = new IStarRater(5, 0,0);
@@ -279,7 +279,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         // MANUFACTURER
         gbc = new GuiUtils.GridBagHelper(manufacturerPanel);
         gbc.addLine("Name: ", GuiUtils.createComponentWithAddAction(manufacturerCb, createManufacturerAddListener()));
-        gbc.add(manufacturerIconLbl, 2,0,1,1);
+        gbc.add(manufacturerIconLbl, 2,0,0,0);
 
         // REMARKS
         JPanel headerPnl = new JPanel();

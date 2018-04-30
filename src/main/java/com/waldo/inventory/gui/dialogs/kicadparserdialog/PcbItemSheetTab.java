@@ -7,7 +7,7 @@ import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.gui.components.popups.PcbItemPopup;
 import com.waldo.inventory.gui.components.tablemodels.IPcbItemModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsCacheDialog;
+import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsDialog;
 import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
@@ -93,7 +93,7 @@ public class PcbItemSheetTab extends JPanel implements GuiUtils.GuiInterface, Li
 
                                     @Override
                                     public void onPcbItemEdit(PcbItemProjectLink pcbItemProjectLink) {
-                                        PcbItemDetailsCacheDialog dialog = new PcbItemDetailsCacheDialog(
+                                        PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(
                                                 parent,
                                                 pcbItemProjectLink.getPrettyName(),
                                                 pcbItemProjectLink);
@@ -106,7 +106,7 @@ public class PcbItemSheetTab extends JPanel implements GuiUtils.GuiInterface, Li
                         }
 
                 } else if (e.getClickCount() == 2) {
-                    PcbItemDetailsCacheDialog dialog = new PcbItemDetailsCacheDialog(
+                    PcbItemDetailsDialog dialog = new PcbItemDetailsDialog(
                             parent,
                             pcbItemProjectLink.getPrettyName(),
                             pcbItemProjectLink);

@@ -158,6 +158,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
+        Status().updateConnectionStatus();
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {

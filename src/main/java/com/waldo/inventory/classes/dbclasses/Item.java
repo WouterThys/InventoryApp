@@ -9,7 +9,6 @@ import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.swing.*;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -372,33 +370,6 @@ public class Item extends DbObject {
             result += " (" + id + ")";
         }
         return result;
-    }
-
-    public ImageIcon getItemIcon() {
-//        ImageIcon icon = null;
-//        if (getDivision() != null) {
-//            switch (getDivision().getDisplayType()) {
-//                default: break;
-//                case R_THT:
-//                    if (getIntValue().hasValue()) {
-//                        Resistor r = new Resistor();
-//                        try {
-//                            r.setBandsForValue(Statics.ResistorBandType.FourBand, getIntValue(), Statics.ResistorBandValue.Gold);
-//                            IResistorImage image = new IResistorImage(r);
-//                            icon = new ImageIcon(image.createImage(150, 150));
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    break;
-//            }
-//        }
-//
-//        if (icon == null) {
-//            icon = getIconFromPath(getIconPath());
-//        }
-//        return icon;
-        return imageResource.readItemIcon(iconPath);
     }
 
     public String getAlias() {

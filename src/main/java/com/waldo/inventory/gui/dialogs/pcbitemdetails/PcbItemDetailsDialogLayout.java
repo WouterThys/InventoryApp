@@ -1,10 +1,11 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -16,7 +17,7 @@ import java.awt.event.ActionEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-abstract class PcbItemDetailsCacheDialogLayout extends ICacheDialog implements IEditedListener {
+abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEditedListener {
 
     private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
     private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
@@ -25,7 +26,7 @@ abstract class PcbItemDetailsCacheDialogLayout extends ICacheDialog implements I
     *                  COMPONENTS
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     // Project
-    private ILabel projectIconLbl;
+    private IImagePanel projectIconLbl;
     private ITextField projectTf;
     private ITextField pcbProjectTf;
 
@@ -61,7 +62,7 @@ abstract class PcbItemDetailsCacheDialogLayout extends ICacheDialog implements I
     /*
    *                  CONSTRUCTOR
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    PcbItemDetailsCacheDialogLayout(Window parent, String title, PcbItemProjectLink pcbItemProjectLink) {
+    PcbItemDetailsDialogLayout(Window parent, String title, PcbItemProjectLink pcbItemProjectLink) {
         super(parent, title);
 
         this.pcbItemProjectLink = pcbItemProjectLink;
@@ -87,10 +88,10 @@ abstract class PcbItemDetailsCacheDialogLayout extends ICacheDialog implements I
         if (pcbProject != null) {
             Project project = pcbProject.getProject();
             if (project != null) {
-                projectIconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(project.getIconPath()), new Dimension(48,48)));
+                projectIconLbl.setImage(project.getIconPath());
                 projectTf.setText(project.toString());
             } else {
-                projectIconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(ImageResource.DEFAULT), new Dimension(48,48)));
+                projectIconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
                 projectTf.setText("");
             }
             pcbProjectTf.setText(pcbProject.toString());
@@ -237,7 +238,7 @@ abstract class PcbItemDetailsCacheDialogLayout extends ICacheDialog implements I
 
         // This
         // Project
-        projectIconLbl = new ILabel();
+        projectIconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(64,64));
         projectTf = new ITextField(false);
         pcbProjectTf = new ITextField(false);
 

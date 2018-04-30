@@ -1,16 +1,16 @@
 package com.waldo.inventory.gui.panels.projectspanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.Application;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.utils.icomponents.ILabel;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextArea;
 import com.waldo.utils.icomponents.ITextField;
@@ -27,7 +27,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ILabel iconLbl;
+    private IImagePanel iconLbl;
 
     private ITextField nameTf;
     private ITextArea descriptionTa;
@@ -137,11 +137,11 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
     private void updateHeader(P projectObject) {
         if (projectObject != null) {
-            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(projectObject.getProject().getIconPath()), new Dimension(150,150)));
+            iconLbl.setImage(projectObject.getIconPath());
             nameTf.setText(projectObject.toString());
             descriptionTa.setText(projectObject.getDescription());
         } else {
-            iconLbl.setIcon(ImageResource.scaleImage(imageResource.readProjectIcon(ImageResource.DEFAULT), new Dimension(150, 150)));
+            iconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
             nameTf.setText("");
             descriptionTa.setText("");
         }
@@ -242,15 +242,8 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
     @Override
     public void initializeComponents() {
-        // Label
-        iconLbl = new ILabel();
-        iconLbl.setBackground(Color.WHITE);
-        iconLbl.setOpaque(true);
-        iconLbl.setHorizontalAlignment(ILabel.CENTER);
-        iconLbl.setVerticalAlignment(ILabel.CENTER);
-        iconLbl.setPreferredSize(new Dimension(150,150));
-        iconLbl.setMaximumSize(new Dimension(150,150));
-        iconLbl.setMinimumSize(new Dimension(150,150));
+        // Image
+        iconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);
