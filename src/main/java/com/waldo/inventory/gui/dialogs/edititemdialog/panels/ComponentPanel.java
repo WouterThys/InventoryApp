@@ -144,6 +144,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private void initializeBasicComponents() {
         // Identification
         nameValuePnl = new GuiUtils.INameValuePanel(editedListener, "name", editedListener);
+        nameValuePnl.requestFocus();
         aliasPnl = new ITextFieldActionPanel("Alias", "alias", editedListener, new IActions.SearchAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -261,7 +262,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         JPanel manufacturerPanel = new JPanel(new GridBagLayout());
         JPanel remarksPanel = new JPanel(new BorderLayout());
 
-
         // Borders
         Border packageBorder = GuiUtils.createInlineTitleBorder("Package");
         Border manufacturerBorder = GuiUtils.createInlineTitleBorder("Manufacturer");
@@ -301,21 +301,14 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         remarksPanel.add(remarksPnl, BorderLayout.CENTER);
 
         // Add to panel
-        JPanel panel = new JPanel();
-
-        panel.setLayout(new GridBagLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        gbc = new GuiUtils.GridBagHelper(panel);
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
+        Box box = Box.createVerticalBox();
+        box.add(packagePanel);
+        box.add(manufacturerPanel);
 
-        panel.add(packagePanel, gbc); gbc.gridy++;
-        panel.add(manufacturerPanel, gbc); gbc.gridy++;
-        gbc.weighty = 1;
-        gbc.fill = GuiUtils.GridBagHelper.BOTH;
-        panel.add(remarksPanel, gbc);
+        panel.add(box, BorderLayout.NORTH);
+        panel.add(remarksPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -339,16 +332,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         JPanel basicPnl = createBasicPanel();
         JPanel detailPnl = createDetailsPanel();
 
-        JPanel mainPnl = new JPanel();
-        mainPnl.setLayout(new BoxLayout(mainPnl, BoxLayout.Y_AXIS));
-        mainPnl.add(basicPnl);
-        mainPnl.add(detailPnl);
-
-        // Add tabs
-        //tabbedPane.addTab("Basic", createBasicPanel());
-        //tabbedPane.addTab("Details", createDetailsPanel());
-        //tabbedPane.addTab("Set items", createSetItemsPanel());
-        //add(tabbedPane, BorderLayout.CENTER);
+        JPanel mainPnl = new JPanel(new BorderLayout());
+        mainPnl.add(basicPnl, BorderLayout.NORTH);
+        mainPnl.add(detailPnl, BorderLayout.CENTER);
 
         add(mainPnl, BorderLayout.CENTER);
     }

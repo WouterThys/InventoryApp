@@ -28,6 +28,7 @@ public class EditItemDialog<T extends Item> extends EditItemDialogLayout {
         initTabChangedAction();
 
         updateComponents(item);
+
     }
 
     public void setValuesForSet(Set set) {

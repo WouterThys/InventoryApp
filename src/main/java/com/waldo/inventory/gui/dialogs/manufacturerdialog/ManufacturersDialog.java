@@ -55,9 +55,6 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-//        detailLogo = new ILabel();
-//        detailLogo.setHorizontalAlignment(SwingConstants.RIGHT);
-//        detailLogo.setMaximumSize(new Dimension(300, 60));
         detailLogo = new IImagePanel(this, ImageType.ManufacturerImage, "", this, new Dimension(128, 128));
         browsePanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
 
@@ -74,9 +71,8 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         gbc.addLine("Name: ", detailName);
         gbc.addLine("Web site: ", browsePanel);
 
-        JPanel iconPnl = new JPanel();
-        iconPnl.add(detailLogo);
-        iconPnl.setMaximumSize(new Dimension(300, 60));
+        JPanel iconPnl = new JPanel(new BorderLayout());
+        iconPnl.add(detailLogo, BorderLayout.EAST);
 
         JPanel itemsPnl = new JPanel(new BorderLayout());
         itemsPnl.add(new ILabel("Items: "));
@@ -103,6 +99,8 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
             for (Item item : SearchManager.sm().getItemsForManufacturer(manufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
             }
+        } else {
+            clearDetails();
         }
     }
 
@@ -110,7 +108,7 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
     protected void clearDetails() {
         detailName.setText("");
         browsePanel.clearText();
-        detailLogo.setImage((ImageIcon)null);
+        detailLogo.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
         detailItemDefaultListModel.removeAllElements();
     }
 

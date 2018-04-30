@@ -259,10 +259,17 @@ public abstract class DbObject {
     }
 
     public String getIconPath() {
-        if (iconPath != null) {
-            return iconPath;
+        if (iconPath == null) {
+            iconPath = "";
+        } else {
+            if (iconPath.contains(".png")) {
+                iconPath = iconPath.replace(".png", ".jpg");
+            }
+            if (iconPath.contains(".jpeg")) {
+                iconPath = iconPath.replace(".jpeg", ".jpg");
+            }
         }
-        return "";
+        return iconPath;
     }
 
     public void setIconPath(String iconPath) {

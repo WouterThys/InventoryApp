@@ -339,6 +339,10 @@ public class GuiUtils extends com.waldo.utils.GuiUtils {
             }
         }
 
+        public void requestFocus() {
+            nameTf.requestFocus();
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             setValuePanelVisible(!valuePnl.isVisible());

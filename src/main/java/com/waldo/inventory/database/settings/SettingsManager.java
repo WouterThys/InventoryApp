@@ -20,7 +20,6 @@ import static com.waldo.inventory.gui.Application.scriptResource;
 
 public class SettingsManager {
 
-    private LogManager LOG;
     public static final String DEFAULT = "default";
 
     // Variables
@@ -43,7 +42,7 @@ public class SettingsManager {
     private String selectedDbSettings = DEFAULT;
     private List<DbSettings> dbSettingsList = null;
 
-    // File settings
+    // Image settings
     private String selectedImageServerSettings = DEFAULT;
     private List<ImageServerSettings> imageServerSettingsList = null;
 
