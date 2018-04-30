@@ -78,7 +78,7 @@ public class ILinkItemTableModel extends IAbstractTableModel<PcbItemItemLink> {
                 label.setText(String.valueOf(amount));
                 label.updateBackground(c.getBackground(), row, isSelected);
 
-                if (amount > 0) {
+                if (amount >= link.getItem().getMinimum()) {
                     label.setIcon(greenBall);
                 } else {
                     label.setIcon(redBall);

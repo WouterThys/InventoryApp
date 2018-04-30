@@ -101,12 +101,15 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             if (object instanceof Item) {
                 Item item = (Item) object;
                 //imagePanel.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
-                imagePanel.setImage(item.getIconPath());
+                if (item.getIconPath().isEmpty()) {
+                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+                } else {
+                    imagePanel.setImage(item.getIconPath());
+                }
                 nameTf.setText(item.toString());
                 descriptionTa.setText(item.getDescription());
                 starRater.setRating(item.getRating());
-            }
-            else if (object instanceof OrderLine) {
+            } else if (object instanceof OrderLine) {
                 OrderLine orderLine = (OrderLine) object;
                 //ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
                 //imagePanel.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));

@@ -142,7 +142,7 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
 
             @Override
             public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
-                return true;
+                return editable;
             }
 
 
@@ -162,7 +162,9 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         imageLbl.setOpaque(true);
         imageLbl.setBackground(Color.WHITE);
 
-        imageLbl.setTransferHandler(createNewTransferHandler());
+        if (editable) {
+            imageLbl.setTransferHandler(createNewTransferHandler());
+        }
 
         IActions.EditAction editImageAction = new IActions.EditAction() {
             @Override

@@ -527,8 +527,9 @@ public class DatabaseAccess {
                         i.setManufacturerId(rs.getLong("manufacturerId"));
                         i.setLocationId(rs.getLong("locationId"));
                         i.setAmount(rs.getInt("amount"));
+                        i.setMinimum(rs.getInt("minimum"));
+                        i.setMaximum(rs.getInt("maximum"));
                         i.setAmountType(rs.getInt("amountType"));
-                        //i.setOrderState(rs.getInt("orderState"));
                         i.setPackageTypeId(rs.getLong("packageTypeId"));
                         i.setPins(rs.getInt("pins"));
                         i.setRating(rs.getFloat("rating"));

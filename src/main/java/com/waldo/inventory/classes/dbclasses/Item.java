@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
@@ -40,7 +41,11 @@ public class Item extends DbObject {
     protected Manufacturer manufacturer;
     private long locationId = UNKNOWN_ID;
     protected Location location;
+
     protected int amount = 0;
+    protected int minimum = 0;
+    protected int maximum = 1;
+
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
     private Statics.OrderStates orderState = null;
 
@@ -72,6 +77,8 @@ public class Item extends DbObject {
         this.packageType = packageType;
         this.pins = pins;
         this.amount = amount;
+        this.minimum = 1;
+        this.maximum = 1;
         this.alias = alias;
         this.description = alias + " " + value.toString();
 
@@ -100,6 +107,8 @@ public class Item extends DbObject {
         statement.setLong(ndx++, getManufacturerId());
         statement.setLong(ndx++, getLocationId());
         statement.setInt(ndx++, getAmount());
+        statement.setInt(ndx++, getMinimum());
+        statement.setInt(ndx++, getMaximum());
         statement.setInt(ndx++, getAmountType().getValue());
         statement.setInt(ndx++, 0);
         statement.setLong(ndx++, getPackageTypeId()); // PackageId
@@ -145,6 +154,8 @@ public class Item extends DbObject {
         item.setManufacturerId(getManufacturerId());
         item.setLocationId(getLocationId());
         item.setAmount(getAmount());
+        item.setMinimum(getMinimum());
+        item.setMaximum(getMaximum());
         item.setAmountType(getAmountType());
         //item.setOrderState(getOrderState());
         item.setPackageTypeId(getPackageTypeId());
@@ -163,90 +174,122 @@ public class Item extends DbObject {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        boolean result = super.equals(obj);
-        if (result) {
-            if (!(obj instanceof Item)) {
-                return false;
-            } else {
-                Item ref = (Item) obj;
-                if (!(ref.getAlias().equals(getAlias()))) {
-                    cache().clearAliases();
-                    if (Main.DEBUG_MODE) System.out.println(ref.getAlias() + " != " + getAlias());
-                    return false;
-                }
-                if (!(ref.getValue().equals(getValue()))) {
-                    if (Main.DEBUG_MODE) System.out.println(ref.getValue() + " != " + getValue());
-                    return false;
-                }
-                if (!(ref.getIconPath().equals(getIconPath()))) {
-                    if (Main.DEBUG_MODE) System.out.println(ref.getIconPath() + " != " + getIconPath());
-                    return false;
-                }
-                if (!(ref.getDescription().equals(getDescription()))) {
-                    if (Main.DEBUG_MODE) System.out.println(ref.getDescription() + " != " + getDescription());
-                    return false;
-                }
-                if (!(ref.getDivisionId() == getDivisionId())) {
-                    if (Main.DEBUG_MODE) System.out.println("DivisionId: " + ref.getDivisionId() + " != " + getDivisionId());
-                    return false;
-                }
-                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) {
-                    if (Main.DEBUG_MODE) System.out.println(ref.getLocalDataSheet() + " != " + getLocalDataSheet());
-                    return false;
-                }
-                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) {
-                    if (Main.DEBUG_MODE) System.out.println(ref.getOnlineDataSheet() + " != " + getOnlineDataSheet());
-                    return false;
-                }
-                if (!(ref.getManufacturerId() == getManufacturerId())) {
-                    if (Main.DEBUG_MODE) System.out.println("Manuf. Id: " + ref.getManufacturerId() + " != " + getManufacturerId());
-                    return false;
-                }
-                if (!(ref.getLocationId() == getLocationId())) {
-                    if (Main.DEBUG_MODE) System.out.println("LocationId: " + ref.getLocationId() + " != " + getLocationId());
-                    return false;
-                }
-                if (!(ref.getAmount() == getAmount())) {
-                    if (Main.DEBUG_MODE) System.out.println("Amount: " + ref.getAmount() + " != " + getAmount());
-                    return false;
-                }
-                if (!(ref.getAmountType() == getAmountType())) {
-                    if (Main.DEBUG_MODE) System.out.println("Amount type: " + ref.getAmountType() + " != " + getAmountType());
-                    return false;
-                }
-                if (!(ref.getOrderState() == getOrderState())) {
-                    if (Main.DEBUG_MODE) System.out.println("Order st: " + ref.getOrderState() + " != " + getOrderState());
-                    return false;
-                }
-                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
-                    if (Main.DEBUG_MODE) System.out.println("PackageTypeId: " + ref.getPackageTypeId() + " != " + getPackageTypeId());
-                    return false;
-                }
-                if (!(ref.getPins() == getPins())) {
-                    if (Main.DEBUG_MODE) System.out.println("Pins: " + ref.getPins() + " != " + getPins());
-                    return false;
-                }
-                if (!(ref.getRating() == getRating())) {
-                    if (Main.DEBUG_MODE) System.out.println("Rating: " + ref.getRating() + " != " + getRating());
-                    return false;
-                }
-                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) {
-                    if (Main.DEBUG_MODE) System.out.println("Discourage: " + ref.isDiscourageOrder() + " != " + isDiscourageOrder());
-                    return false;
-                }
-                if (!(ref.isSet() == isSet())) {
-                    if (Main.DEBUG_MODE) System.out.println("Set: " + ref.isSet() + " != " + isSet());
-                    return false;
-                }
-                if (!(ref.getRemarksFileName().equals(getRemarksFileName()))) {
-                    if (Main.DEBUG_MODE) System.out.println("Remarks files differ");
-                    return false;
-                }
-            }
-        }
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
+        if (!super.equals(o)) return false;
+        Item item = (Item) o;
+        return getDivisionId() == item.getDivisionId() &&
+                isSet() == item.isSet() &&
+                getManufacturerId() == item.getManufacturerId() &&
+                getLocationId() == item.getLocationId() &&
+                getAmount() == item.getAmount() &&
+                getMinimum() == item.getMinimum() &&
+                getMaximum() == item.getMaximum() &&
+                getPackageTypeId() == item.getPackageTypeId() &&
+                getPins() == item.getPins() &&
+                Float.compare(item.getRating(), getRating()) == 0 &&
+                isDiscourageOrder() == item.isDiscourageOrder() &&
+                Objects.equals(getAlias(), item.getAlias()) &&
+                Objects.equals(getValue(), item.getValue()) &&
+                Objects.equals(getDescription(), item.getDescription()) &&
+                Objects.equals(getLocalDataSheet(), item.getLocalDataSheet()) &&
+                Objects.equals(getOnlineDataSheet(), item.getOnlineDataSheet()) &&
+                getAmountType() == item.getAmountType() &&
+                getOrderState() == item.getOrderState() &&
+                Objects.equals(getRemarksFile(), item.getRemarksFile());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAlias(), getValue(), getDescription(), getDivisionId(), isSet(), getLocalDataSheet(), getOnlineDataSheet(), getManufacturerId(), getLocationId(), getAmount(), getMinimum(), getAmountType(), getOrderState(), getPackageTypeId(), getPins(), getRating(), isDiscourageOrder(), getRemarksFile());
+    }
+
+    //    @Override
+//    public boolean equals(Object obj) {
+//        boolean result = super.equals(obj);
+//        if (result) {
+//            if (!(obj instanceof Item)) {
+//                return false;
+//            } else {
+//                Item ref = (Item) obj;
+//                if (!(ref.getAlias().equals(getAlias()))) {
+//                    cache().clearAliases();
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getAlias() + " != " + getAlias());
+//                    return false;
+//                }
+//                if (!(ref.getValue().equals(getValue()))) {
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getValue() + " != " + getValue());
+//                    return false;
+//                }
+//                if (!(ref.getIconPath().equals(getIconPath()))) {
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getIconPath() + " != " + getIconPath());
+//                    return false;
+//                }
+//                if (!(ref.getDescription().equals(getDescription()))) {
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getDescription() + " != " + getDescription());
+//                    return false;
+//                }
+//                if (!(ref.getDivisionId() == getDivisionId())) {
+//                    if (Main.DEBUG_MODE) System.out.println("DivisionId: " + ref.getDivisionId() + " != " + getDivisionId());
+//                    return false;
+//                }
+//                if (!(ref.getLocalDataSheet().equals(getLocalDataSheet()))) {
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getLocalDataSheet() + " != " + getLocalDataSheet());
+//                    return false;
+//                }
+//                if (!(ref.getOnlineDataSheet().equals(getOnlineDataSheet()))) {
+//                    if (Main.DEBUG_MODE) System.out.println(ref.getOnlineDataSheet() + " != " + getOnlineDataSheet());
+//                    return false;
+//                }
+//                if (!(ref.getManufacturerId() == getManufacturerId())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Manuf. Id: " + ref.getManufacturerId() + " != " + getManufacturerId());
+//                    return false;
+//                }
+//                if (!(ref.getLocationId() == getLocationId())) {
+//                    if (Main.DEBUG_MODE) System.out.println("LocationId: " + ref.getLocationId() + " != " + getLocationId());
+//                    return false;
+//                }
+//                if (!(ref.getAmount() == getAmount())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Amount: " + ref.getAmount() + " != " + getAmount());
+//                    return false;
+//                }
+//                if (!(ref.getAmountType() == getAmountType())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Amount type: " + ref.getAmountType() + " != " + getAmountType());
+//                    return false;
+//                }
+//                if (!(ref.getOrderState() == getOrderState())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Order st: " + ref.getOrderState() + " != " + getOrderState());
+//                    return false;
+//                }
+//                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
+//                    if (Main.DEBUG_MODE) System.out.println("PackageTypeId: " + ref.getPackageTypeId() + " != " + getPackageTypeId());
+//                    return false;
+//                }
+//                if (!(ref.getPins() == getPins())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Pins: " + ref.getPins() + " != " + getPins());
+//                    return false;
+//                }
+//                if (!(ref.getRating() == getRating())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Rating: " + ref.getRating() + " != " + getRating());
+//                    return false;
+//                }
+//                if (!(ref.isDiscourageOrder() == isDiscourageOrder())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Discourage: " + ref.isDiscourageOrder() + " != " + isDiscourageOrder());
+//                    return false;
+//                }
+//                if (!(ref.isSet() == isSet())) {
+//                    if (Main.DEBUG_MODE) System.out.println("Set: " + ref.isSet() + " != " + isSet());
+//                    return false;
+//                }
+//                if (!(ref.getRemarksFileName().equals(getRemarksFileName()))) {
+//                    if (Main.DEBUG_MODE) System.out.println("Remarks files differ");
+//                    return false;
+//                }
+//            }
+//        }
+//        return result;
+//    }
 
     public List<SearchMatch> searchByKeyWord(String searchTerm) {
         List<SearchMatch> matchList = new ArrayList<>();
@@ -493,6 +536,25 @@ public class Item extends DbObject {
             amount = 0;
         }
         this.amount = amount;
+    }
+
+    public int getMinimum() {
+        if (minimum < 0) {
+            minimum = 0;
+        }
+        return minimum;
+    }
+
+    public void setMinimum(int minimum) {
+        this.minimum = minimum;
+    }
+
+    public int getMaximum() {
+        return maximum;
+    }
+
+    public void setMaximum(int maximum) {
+        this.maximum = maximum;
     }
 
     public ItemAmountTypes getAmountType() {

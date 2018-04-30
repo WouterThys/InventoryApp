@@ -145,10 +145,10 @@ public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
         JPanel connectionPnl = new JPanel();
 
         setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0,2,2,2),
+                BorderFactory.createEmptyBorder(0,1,1,1),
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(Color.GRAY, 1),
-                        BorderFactory.createEmptyBorder(3,10,3,20)
+                        BorderFactory.createEmptyBorder(0,10,0,10)
                 )
         ));
 

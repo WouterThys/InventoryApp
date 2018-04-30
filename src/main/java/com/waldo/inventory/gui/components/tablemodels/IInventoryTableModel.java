@@ -78,7 +78,7 @@ public class IInventoryTableModel extends IAbstractTableModel<Item> {
                 } else if (item.getOrderState() == Statics.OrderStates.Planned) {
                     itemPanel.updateBallIcon(yellowBall);
                 } else {
-                    if (item.getAmount() > 0) {
+                    if (item.getAmount() >= item.getMinimum()) {
                         itemPanel.updateBallIcon(greenBall);
                     } else {
                         itemPanel.updateBallIcon(redBall);

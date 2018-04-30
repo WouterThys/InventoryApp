@@ -79,7 +79,7 @@ public class ISetItemTableModel extends IAbstractTableModel<Item> {
                 label.updateBackground(c.getBackground(), row, isSelected);
                 label.setText(String.valueOf(amount));
 
-                if (amount > 0) {
+                if (amount > setItem.getMinimum()) {
                     label.setIcon(greenBall);
                 } else {
                     label.setIcon(redBall);

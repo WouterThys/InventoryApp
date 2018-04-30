@@ -96,7 +96,7 @@ public class ILinkedItemsTableModel extends IAbstractTableModel<PcbItemItemLink>
                 } else if (orderState== Statics.OrderStates.Planned) {
                     label.setIcon(yellowBall);
                 } else {
-                    if (amount > 0) {
+                    if (amount > item.getMinimum()) {
                         label.setIcon(greenBall);
                     } else {
                         label.setIcon(redBall);

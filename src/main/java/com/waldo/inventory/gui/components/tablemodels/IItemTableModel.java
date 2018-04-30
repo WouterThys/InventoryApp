@@ -105,7 +105,7 @@ public class IItemTableModel extends IAbstractTableModel<Item> {
                 } else if (item.getOrderState() == Statics.OrderStates.Planned) {
                     label.setIcon(yellowBall);
                 } else {
-                    if (item.getAmount() > 0) {
+                    if (item.getAmount() >= item.getMinimum()) {
                         label.setIcon(greenBall);
                     } else {
                         label.setIcon(redBall);

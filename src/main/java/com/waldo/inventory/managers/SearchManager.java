@@ -39,6 +39,16 @@ public class SearchManager {
         return null;
     }
 
+    public List<Item> findItemsToOrder() {
+        List<Item> itemsToOrder = new ArrayList<>();
+        for (Item item : cache().getItems()) {
+            if (item.getAmount() < item.getMinimum()) {
+                itemsToOrder.add(item);
+            }
+        }
+        return itemsToOrder;
+    }
+
     public Division findDivisionById(long id) {
         if (id > DbObject.UNKNOWN_ID) {
             for (Division d : cache().getDivisions()) {
