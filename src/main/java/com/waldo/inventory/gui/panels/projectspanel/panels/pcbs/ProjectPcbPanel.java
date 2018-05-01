@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
 import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksCacheDialog;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
-import com.waldo.inventory.gui.dialogs.projectorderpcbitemsdialog.OrderPcbItemCacheDialog;
+import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectPcbPreviewPanel;
 import com.waldo.utils.GuiUtils;
@@ -82,11 +82,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     private void onOrderItems() {
         if (selectedProjectObject != null) {
             if (selectedProjectObject.hasLinkedItems()) {
-                OrderPcbItemCacheDialog orderDialog = new OrderPcbItemCacheDialog(
-                        application,
-                        "Order items",
-                        selectedProjectObject);
-                orderDialog.showDialog();
+                OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application, selectedProjectObject);
+                dialog.showDialog();
             } else {
                 JOptionPane.showMessageDialog(
                         this,

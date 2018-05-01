@@ -769,6 +769,21 @@ public class Statics {
             }
         }
     }
+
+    public enum OrderImportType {
+        FromQuantities ("From available quantities"),
+        FromPcb ("From PCB");
+
+        private final String name;
+        OrderImportType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 }
 
 

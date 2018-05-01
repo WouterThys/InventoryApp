@@ -36,15 +36,16 @@ public abstract class iDialog extends JDialog implements GuiUtils.GuiInterface, 
     protected boolean isShown = false;
 
     protected int dialogResult = -1;
+    protected Window parent;
 
     public iDialog(Window parent) {
         super(parent);
-        initializeDialog();
+        initializeDialog(parent);
     }
 
     public iDialog(Window parent, String title) {
         super(parent, title);
-        initializeDialog();
+        initializeDialog(parent);
     }
 
     public int showDialog() {
@@ -74,8 +75,8 @@ public abstract class iDialog extends JDialog implements GuiUtils.GuiInterface, 
         return dialogResult;
     }
 
-    private void initializeDialog() {
-
+    private void initializeDialog(Window parent) {
+        this.parent = parent;
         setContentPane(createPanels());
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);

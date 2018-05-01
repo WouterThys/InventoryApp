@@ -180,7 +180,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     @Override
     void onAutoCalculateUsed(CreatedPcbLink link) {
         if (link != null && link.getUsedItem() != null && link.getPcbItemProjectLink() != null) {
-            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfItems(), link.getUsedItem().getAmount());
+            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfReferences(), link.getUsedItem().getAmount());
             usedAmountSp.setTheValue(desired);
         }
     }
@@ -359,7 +359,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                     for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
                         Item usedItem = cpl.getUsedItem();
                         if (usedItem != null && cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
-                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfItems()));
+                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfReferences()));
                         }
                     }
                 }

@@ -82,7 +82,6 @@ public class IOrderSearchItemsTableModel extends IAbstractTableModel<SelectableT
         private static final ImageIcon yellowBall = imageResource.readIcon("Ball.yellow");
         private static final ImageIcon blueBall = imageResource.readIcon("Ball.blue");
 
-        //private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, greenBall, "");
         private static final ITableBallPanel namePnl = new ITableBallPanel(Color.gray, 0, false, greenBall, "1", "Name");
 
 
@@ -103,6 +102,8 @@ public class IOrderSearchItemsTableModel extends IAbstractTableModel<SelectableT
                 SelectableTableItem item = (SelectableTableItem) value;
                 String txt = String.valueOf(item.getAmount());
                 namePnl.updateBackground(component.getBackground(), row, isSelected);
+                namePnl.updateForeground(component.getForeground());
+
                 namePnl.setText(item.getItem().toString());
                 namePnl.updateBallText(txt);
 

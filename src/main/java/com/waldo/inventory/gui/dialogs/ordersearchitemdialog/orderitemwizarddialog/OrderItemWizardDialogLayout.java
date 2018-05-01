@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.ordersearchitemdialog.orderitemwizarddia
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.OrderImportType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
@@ -18,6 +19,7 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.util.List;
 
 abstract class OrderItemWizardDialogLayout extends iDialog {
@@ -30,28 +32,37 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
     IComboBox<Order> orderCb;
     private ILabel distributorLbl;
 
-    // Filter
-    private ICheckBox allowEmptyDistributorCb;
-    private ICheckBox availableLessThanMinimumCb;
-    private ICheckBox forPcbCb;
+    // Select
+    IComboBox<OrderImportType> importTypeCb;
 
+    // Filter
+    private ICheckBox allowEmptyReferenceCb;
+
+    // Pcbs
     private IProjectPcbTableModel tableModel;
     private ITable<ProjectPcb> pcbTable;
 
     private IActions.AddAction addPcbAction;
     private IActions.DeleteAction removePcbAction;
 
+    // View
+    private JPanel cardPanel;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Order selectedOrder;
+    OrderImportType orderImportType;
+    ProjectPcb projectPcb;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    OrderItemWizardDialogLayout(Window window, Order selectedOrder) {
+    OrderItemWizardDialogLayout(Window window, Order selectedOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
         super(window, "");
         this.selectedOrder = selectedOrder;
+        this.orderImportType = orderImportType;
+        this.projectPcb = projectPcb;
 
     }
 
@@ -60,24 +71,16 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     void updateEnabledComponents() {
-        boolean withPcbs = forPcbCb.isSelected();
         boolean pcbsSelected = pcbTable.getSelectedItems().size()  > 0;
-
-        pcbTable.setEnabled(withPcbs);
-        addPcbAction.setEnabled(withPcbs);
-        removePcbAction.setEnabled(withPcbs && pcbsSelected);
+        removePcbAction.setEnabled(pcbsSelected);
     }
 
     boolean isAllowEmptyReference() {
-        return allowEmptyDistributorCb.isSelected();
+        return allowEmptyReferenceCb.isSelected();
     }
 
-    boolean isAvailableLessThanMinimum() {
-        return availableLessThanMinimumCb.isSelected();
-    }
-
-    boolean isFromPcb() {
-        return forPcbCb.isSelected();
+    OrderImportType getSelectedType() {
+        return (OrderImportType) importTypeCb.getSelectedItem();
     }
 
     List<ProjectPcb> getPcbs() {
@@ -110,38 +113,52 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         JPanel orderPanel = new JPanel();
 
         GridBagHelper gbc = new GridBagHelper(orderPanel);
-        gbc.addLine("Order: ", GuiUtils.createComponentWithAddAction(orderCb, e -> {
-            EditOrdersDialog dialog = new EditOrdersDialog(OrderItemWizardDialogLayout.this, new Order(), Statics.DistributorType.Items, false);
-            if (dialog.showDialog() == IDialog.OK) {
-                addOrder(dialog.getOrder());
-            }
-        }));
+        if (selectedOrder == null) {
+            gbc.addLine("Order: ", GuiUtils.createComponentWithAddAction(orderCb, e -> {
+                EditOrdersDialog dialog = new EditOrdersDialog(OrderItemWizardDialogLayout.this, new Order(), Statics.DistributorType.Items, false);
+                if (dialog.showDialog() == IDialog.OK) {
+                    addOrder(dialog.getOrder());
+                }
+            }));
+        } else {
+            gbc.addLine("Order: ", orderCb);
+        }
         gbc.addLine("Distributor: ", distributorLbl);
+        gbc.addLine("Type: ", importTypeCb);
 
         orderPanel.setBorder(GuiUtils.createInlineTitleBorder("Order"));
 
         return orderPanel;
     }
 
-    private JPanel createFilterPanel() {
-        JPanel filterPanel = new JPanel(new BorderLayout());
+    private JPanel createFromQuantityPanel() {
+        JPanel quantityPnl = new JPanel(new BorderLayout());
 
-        JPanel checkBoxPnl = new JPanel();
-        GridBagHelper gbc = new GridBagHelper(checkBoxPnl, 250);
-        gbc.addLine("Allow empty reference: ", allowEmptyDistributorCb);
-        gbc.addLine("Item available < minimum: ", availableLessThanMinimumCb);
-        gbc.addLine("Search for creating PCB: ", forPcbCb);
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(allowEmptyReferenceCb, BorderLayout.NORTH);
+        //GridBagHelper gbc = new GridBagHelper(panel);
+        //gbc.addLine("Allow empty reference: ", allowEmptyReferenceCb);
 
+        quantityPnl.add(panel, BorderLayout.CENTER);
+        quantityPnl.setBorder(GuiUtils.createInlineTitleBorder("From quantity"));
+
+        return quantityPnl;
+    }
+
+    private JPanel createFromPcbPanel() {
         JPanel pcbPnl = new JPanel(new BorderLayout());
+
+        JPanel tablePnl = new JPanel(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(pcbTable);
-        pcbPnl.add(scrollPane, BorderLayout.CENTER);
-        pcbPnl.add(GuiUtils.createNewToolbar(addPcbAction, removePcbAction), BorderLayout.SOUTH);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
 
-        filterPanel.add(checkBoxPnl, BorderLayout.NORTH);
-        filterPanel.add(pcbPnl, BorderLayout.CENTER);
-        filterPanel.setBorder(GuiUtils.createInlineTitleBorder("Filters"));
+        tablePnl.add(scrollPane, BorderLayout.CENTER);
+        tablePnl.add(GuiUtils.createNewToolbar(addPcbAction, removePcbAction), BorderLayout.SOUTH);
 
-        return filterPanel;
+        pcbPnl.add(tablePnl, BorderLayout.CENTER);
+        pcbPnl.setBorder(GuiUtils.createInlineTitleBorder("From PCBs"));
+
+        return pcbPnl;
     }
 
     /*
@@ -154,17 +171,23 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
 
         // Order
         orderCb = new IComboBox<>(SearchManager.sm().findPlannedOrders(), new ComparatorUtils.DbObjectNameComparator<>(), true);
-        orderCb.addItemListener(e -> {
-            editOrder((Order) orderCb.getSelectedItem());
-        });
+        orderCb.addItemListener(e -> editOrder((Order) orderCb.getSelectedItem()));
         distributorLbl = new ILabel();
         distributorLbl.setEnabled(false);
 
+        // Select
+        cardPanel = new JPanel(new CardLayout());
+        importTypeCb = new IComboBox<>(OrderImportType.values());
+        importTypeCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                CardLayout cl = (CardLayout) cardPanel.getLayout();
+                OrderImportType type = (OrderImportType) e.getItem();
+                cl.show(cardPanel, type.toString());
+            }
+        });
+
         // Filter
-        allowEmptyDistributorCb = new ICheckBox("", true);
-        availableLessThanMinimumCb = new ICheckBox("", true);
-        forPcbCb = new ICheckBox("", false);
-        forPcbCb.addActionListener(e -> updateEnabledComponents());
+        allowEmptyReferenceCb = new ICheckBox("Allow empty reference", true);
 
         tableModel = new IProjectPcbTableModel();
         pcbTable = new ITable<>(tableModel);
@@ -219,10 +242,14 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel orderPanel = createOrderPanel();
-        JPanel filterPanel = createFilterPanel();
+        JPanel quantityPanel = createFromQuantityPanel();
+        JPanel pcbPanel = createFromPcbPanel();
+
+        cardPanel.add(OrderImportType.FromQuantities.toString(), quantityPanel);
+        cardPanel.add(OrderImportType.FromPcb.toString(), pcbPanel);
 
         mainPanel.add(orderPanel, BorderLayout.NORTH);
-        mainPanel.add(filterPanel, BorderLayout.CENTER);
+        mainPanel.add(cardPanel, BorderLayout.CENTER);
 
         getContentPanel().setLayout(new BorderLayout());
         getContentPanel().add(mainPanel, BorderLayout.CENTER);
@@ -235,6 +262,14 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         if (selectedOrder != null) {
             orderCb.setSelectedItem(selectedOrder);
             editOrder(selectedOrder);
+        }
+
+        if (orderImportType != null) {
+            importTypeCb.setSelectedItem(orderImportType);
+        }
+
+        if (projectPcb != null) {
+            tableModel.addItem(projectPcb);
         }
 
         updateEnabledComponents();

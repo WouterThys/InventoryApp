@@ -110,7 +110,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                         tableColumn.setMinWidth(32);
                     }
 
-                    String txt = String.valueOf(projectLink.getNumberOfItems());
+                    String txt = String.valueOf(projectLink.getNumberOfReferences());
                     partLabel.updateBackground(c.getBackground(), row, isSelected);
                     partLabel.setText(txt);
                     return partLabel;

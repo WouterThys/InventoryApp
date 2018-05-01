@@ -43,7 +43,7 @@ public class ILinkedPcbItemTableModel extends IAbstractTableModel<PcbItemProject
                 case 0: // Amount
                     int amount = 0;
                     switch (amountType) {
-                        case ItemAmount: amount = link.getNumberOfItems(); break;
+                        case ItemAmount: amount = link.getNumberOfReferences(); break;
                         case OrderAmount: amount = pcbItem.getOrderAmount(); break;
                         case UsedAmount: amount = 0; break;// TODO #13 link.getUsedCount(); break;
                     }

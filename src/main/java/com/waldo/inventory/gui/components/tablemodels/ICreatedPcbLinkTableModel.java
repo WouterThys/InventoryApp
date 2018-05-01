@@ -100,7 +100,7 @@ public class ICreatedPcbLinkTableModel extends IAbstractTableModel<CreatedPcbLin
                 PcbItemProjectLink pcbItemLink = (PcbItemProjectLink) value;
 
                 pcbPanel.updateBallIcon(blueBall);
-                pcbPanel.updateBallText(String.valueOf(pcbItemLink.getNumberOfItems()));
+                pcbPanel.updateBallText(String.valueOf(pcbItemLink.getNumberOfReferences()));
                 pcbPanel.updateWithTableComponent(component, row, isSelected);
                 pcbPanel.setText(pcbItemLink.getPrettyName());
                 return pcbPanel;

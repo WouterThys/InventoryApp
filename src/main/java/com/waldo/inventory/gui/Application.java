@@ -39,8 +39,8 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 public class Application extends JFrame implements ChangeListener, DbErrorListener {
 
     private static final LogManager LOG = LogManager.LOG(Application.class);
-    private static final int TAB_ITEMS = 0;
-    private static final int TAB_ORDERS = 1;
+    public static final int TAB_ITEMS = 0;
+    public static final int TAB_ORDERS = 1;
     private static final int TAB_PROJECTS = 2;
 
     public static String startUpPath;
@@ -233,7 +233,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         component.setCursor(Cursor.getDefaultCursor());
     }
 
-    private void setSelectedTab(int tab) {
+    public void setSelectedTab(int tab) {
         tabbedPane.setSelectedIndex(tab);
     }
 

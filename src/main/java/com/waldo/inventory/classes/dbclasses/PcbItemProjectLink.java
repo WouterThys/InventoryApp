@@ -174,7 +174,7 @@ public class PcbItemProjectLink extends DbObject {
         return "";
     }
 
-    public int getNumberOfItems() {
+    public int getNumberOfReferences() {
         return getReferences().size();
     }
 
