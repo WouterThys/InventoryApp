@@ -94,6 +94,7 @@ public class DatabaseAccess {
 
     private void initMySql(DbSettings settings) {
         dataSource = new BasicDataSource(); // new MySqlDataSource
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
         dataSource.setUsername(settings.getDbUserName());
         dataSource.setPassword(settings.getDbUserPw());

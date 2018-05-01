@@ -70,15 +70,15 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         updateComponents();
     }
 
-
-    public void setImage(ImageIcon imageIcon) {
+    @Override
+    public synchronized void setImage(ImageIcon imageIcon) {
         if (imageIcon != null) {
             imageIcon = ImageResource.scaleImage(imageIcon, imageDimension);
         }
         imageLbl.setIcon(imageIcon);
     }
 
-    public void setImage(String name) {
+    public synchronized void setImage(String name) {
         setImageName(name);
         updateComponents();
     }
@@ -88,25 +88,23 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
         this.editable = editable;
     }
 
-    public ImageType getImageType() {
+    @Override
+    public synchronized ImageType getImageType() {
         if (imageType == null) {
             imageType = ImageType.Other;
         }
         return imageType;
     }
 
-    public void setImageType(ImageType imageType) {
-        this.imageType = imageType;
-    }
-
-    public String getImageName() {
+    @Override
+    public synchronized String getImageName() {
         if (imageName == null) {
             imageName = "";
         }
         return imageName;
     }
 
-    public void setImageName(String imageName) {
+    public synchronized void setImageName(String imageName) {
         this.imageName = imageName;
         setToolTipText(getImageName());
     }

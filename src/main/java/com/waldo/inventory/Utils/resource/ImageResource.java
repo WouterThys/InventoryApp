@@ -15,9 +15,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
+import java.util.List;
 
 public class ImageResource extends Resource implements Client.ImageClientListener {
 
@@ -55,7 +56,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     private final Map<String, ImageIcon> otherImageMap = new HashMap<>();
 
     // Requests for image
-    private Vector<ImageRequester> imageRequests = new Vector<>();
+    private ArrayList<ImageRequester> imageRequests = new ArrayList<>();
 
     private Client client;
 
@@ -86,7 +87,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     public void requestImage(final ImageRequester imageRequester) {
-        SwingUtilities.invokeLater(() -> {
+
             if (imageRequester != null) {
                 switch (imageRequester.getImageType()) {
                     case ItemImage:
@@ -112,7 +113,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
                         break;
                 }
             }
-        });
+
     }
 
     public ImageIcon readIdeIcon(String name) {
@@ -125,7 +126,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
             if (map.containsKey(name)) {
                 icon = map.get(name);
             } else {
-                fetchImage(imageType, name);
+                SwingUtilities.invokeLater(() -> fetchImage(imageType, name));
             }
         }
         if (icon == null) {
@@ -141,10 +142,11 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         if ((name != null) && (!name.isEmpty())) {
             if (map.containsKey(name)) {
                 requester.setImage(map.get(name));
+                imageRequests.remove(requester);
             } else {
                 if (!imageRequests.contains(requester)) {
                     imageRequests.add(requester);
-                    fetchImage(imageType, name);
+                    SwingUtilities.invokeLater(() -> fetchImage(imageType, name));
                 }
             }
         }
@@ -343,16 +345,12 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     private void checkRequests(ImageIcon icon, ImageType imageType, String name) {
-        Vector<ImageRequester> foundRequests = new Vector<>();
-        for (ImageRequester requester : imageRequests) {
-            if (requester.getImageType().equals(imageType) && requester.getImageName().equalsIgnoreCase(name)) {
-                requester.setImage(icon);
-                foundRequests.add(requester);
-            }
-        }
 
-        for (ImageRequester req : foundRequests) {
-            imageRequests.remove(req);
+        List<ImageRequester> copyOfList = new ArrayList<>(imageRequests);
+
+        for (ImageRequester requester : copyOfList) {
+            // Request again
+            requestImage(requester);
         }
     }
 

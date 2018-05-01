@@ -54,7 +54,11 @@ abstract class SettingsCacheDialogLayout extends ICacheDialog implements ChangeL
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readIcon("Settings.Title"));
+        try {
+            setTitleIcon(imageResource.readIcon("Settings.Title"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setTitleName("Settings");
 
         // Panels
