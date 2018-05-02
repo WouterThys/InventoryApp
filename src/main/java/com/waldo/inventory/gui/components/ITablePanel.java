@@ -127,7 +127,7 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.
         int[] selectedRows = table.getSelectedRows();
         if (selectedRows.length > 0) {
             for (int row : selectedRows) {
-                T t = (T) table.getValueAtRow(row);
+                T t = table.getValueAtRow(row);
                 if (t != null) {
                     selectedItems.add(t);
                 }

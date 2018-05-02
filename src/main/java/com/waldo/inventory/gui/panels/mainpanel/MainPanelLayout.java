@@ -161,7 +161,7 @@ abstract class MainPanelLayout extends JPanel implements
 
     void tableSelectItem(int row) {
         if (row >= 0) {
-            this.selectedItem = (Item) tableModel.getValueAt(row, -1);
+            this.selectedItem = itemTable.getItemAtRow(row);
             itemTable.selectItem(selectedItem);
         }
     }

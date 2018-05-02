@@ -46,6 +46,17 @@ public class IActions {
     }
 
 
+    public static abstract class CopyAction extends IAbstractAction {
+        protected CopyAction() {
+            super("Copy", imageResource.readIcon("TextEdit.Copy"));
+        }
+    }
+
+    public static abstract class PasteAction extends IAbstractAction {
+        protected PasteAction() {
+            super("Paste", imageResource.readIcon("TextEdit.Paste"));
+        }
+    }
 
     public static abstract class AddItemToSetAction extends IAbstractAction {
 

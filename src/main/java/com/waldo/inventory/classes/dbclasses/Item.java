@@ -179,7 +179,9 @@ public class Item extends DbObject {
         if (!(o instanceof Item)) return false;
         if (!super.equals(o)) return false;
         Item item = (Item) o;
-        return getDivisionId() == item.getDivisionId() &&
+        return Objects.equals(getName(), item.getName()) &&
+                Objects.equals(getIconPath(), item.getIconPath()) &&
+                getDivisionId() == item.getDivisionId() &&
                 isSet() == item.isSet() &&
                 getManufacturerId() == item.getManufacturerId() &&
                 getLocationId() == item.getLocationId() &&
