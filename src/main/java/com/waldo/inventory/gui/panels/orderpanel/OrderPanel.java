@@ -59,7 +59,6 @@ public class OrderPanel extends OrderPanelLayout {
         return tableModel;
     }
 
-
     public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
         Map<String, Item> failedItems = null;
         if (order.getDistributorType() == DistributorType.Items) {
@@ -83,35 +82,6 @@ public class OrderPanel extends OrderPanelLayout {
                 failedItems.put("Can not add items to an order for PCB's", item);
             }
         }
-        checkPendingOrders(order);
-        return failedItems;
-    }
-
-    public Map<String, Item> addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
-        Map<String, Item> failedItems = null;
-        if (order.getDistributorType() == DistributorType.Items) {
-            for (OrderLine ol : itemsToOrder) {
-                try {
-                    if (!order.getOrderLines().contains(ol)) {
-                        ol.save();
-                    } else {
-                        ol.setAmount(ol.getAmount() + 1);
-                        ol.save();
-                    }
-                } catch (Exception e) {
-                    if (failedItems == null) {
-                        failedItems = new HashMap<>();
-                    }
-                    failedItems.put("Failed to add item " + ol.toString(), ol.getItem());
-                }
-            }
-        } else {
-            failedItems = new HashMap<>();
-            for(OrderLine orderLine : itemsToOrder) {
-                failedItems.put("Can not add items to an order for PCB's", orderLine.getItem());
-            }
-        }
-        checkPendingOrders(order);
         return failedItems;
     }
 

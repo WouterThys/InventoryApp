@@ -7,7 +7,6 @@ import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
@@ -177,36 +176,6 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
         // Add
         Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
-        if (failedItems != null && failedItems.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (String er : failedItems.keySet()) {
-                builder.append(er).append("\n");
-            }
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to order: \n " + builder.toString(),
-                    "Order error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }
-
-    public void addOrderItemsToOrder(List<OrderLine> itemsToOrder, Order order) {
-        beginWait(this);
-        try {
-            // Switch tab
-            setSelectedTab(TAB_ORDERS);
-            // Update items
-            for (OrderLine ol : itemsToOrder) {
-                ol.updateOrderState();
-                //orderItem.getItem().save();
-            }
-        } finally {
-            endWait(this);
-        }
-        // Add
-        Map<String, Item> failedItems = orderPanel.addOrderItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (String er : failedItems.keySet()) {

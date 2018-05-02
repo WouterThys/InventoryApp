@@ -77,10 +77,12 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         JPanel itemsPnl = new JPanel(new BorderLayout());
         itemsPnl.add(new ILabel("Items: "));
         itemsPnl.add(new JScrollPane(detailItemList));
+        itemsPnl.setBorder(GuiUtils.createInlineTitleBorder("Known items"));
 
         JPanel northPanel = new JPanel(new BorderLayout());
         northPanel.add(infoPnl, BorderLayout.NORTH);
         northPanel.add(iconPnl, BorderLayout.CENTER);
+        northPanel.setBorder(GuiUtils.createInlineTitleBorder("Details"));
 
         panel.add(northPanel, BorderLayout.NORTH);
         panel.add(itemsPnl, BorderLayout.CENTER);

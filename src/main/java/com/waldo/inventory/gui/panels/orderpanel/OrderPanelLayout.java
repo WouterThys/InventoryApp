@@ -192,7 +192,7 @@ abstract class OrderPanelLayout extends IPanel implements
             orderLineTable.setDbToolBarEnabled(true);
             orderLineTable.setDbToolBarEditDeleteEnabled(itemSelected && !locked);
         } else {
-            orderLineTable.setDbToolBarEnabled(true);
+            orderLineTable.setDbToolBarEnabled(false);
         }
 
         tbOrderFlowPanel.updateComponents(selectedOrder);

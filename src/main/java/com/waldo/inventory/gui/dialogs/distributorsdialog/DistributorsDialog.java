@@ -144,6 +144,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         gbh.addLine("Web site: ", browseDistributorPanel);
         gbh.addLine("Type: ", distributorTypeCb);
         gbh.add(detailLogo, 1, 3, 1, 1);
+        textFieldPanel.setBorder(GuiUtils.createInlineTitleBorder("Details"));
 
         // - Order stuff
         gbh = new GuiUtils.GridBagHelper(orderPanel);
