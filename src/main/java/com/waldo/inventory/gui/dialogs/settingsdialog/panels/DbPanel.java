@@ -273,8 +273,6 @@ public class DbPanel extends SettingsPnl<DbSettings> {
                 testDatabaseValues();
             }
         };
-        //footerTb.add(testAction);
-        //footerTb.addSeparator();
 
         // BACKUP
         backupPathPnl = new GuiUtils.IBrowseFilePanel("", "/home/");

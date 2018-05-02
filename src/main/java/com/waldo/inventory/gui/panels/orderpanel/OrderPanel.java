@@ -67,7 +67,7 @@ public class OrderPanel extends OrderPanelLayout {
                 try {
                     OrderLine orderLine = order.findOrderLineFor(item);
                     if (orderLine == null) {
-                        orderLine = new OrderLine(order, item, 1);
+                        orderLine = new OrderLine(order, item, (item.getMaximum() - item.getAmount()));
                     }
                     orderLine.save();
                 } catch (Exception e) {

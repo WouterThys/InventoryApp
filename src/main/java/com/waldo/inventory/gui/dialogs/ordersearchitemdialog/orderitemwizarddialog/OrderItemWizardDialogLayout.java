@@ -52,18 +52,17 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Order selectedOrder;
-    OrderImportType orderImportType;
-    ProjectPcb projectPcb;
+    private OrderImportType orderImportType;
+    private ProjectPcb projectPcb;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     OrderItemWizardDialogLayout(Window window, Order selectedOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
-        super(window, "");
+        super(window, "Find items to order");
         this.selectedOrder = selectedOrder;
         this.orderImportType = orderImportType;
         this.projectPcb = projectPcb;
-
     }
 
     /*
@@ -136,8 +135,6 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(allowEmptyReferenceCb, BorderLayout.NORTH);
-        //GridBagHelper gbc = new GridBagHelper(panel);
-        //gbc.addLine("Allow empty reference: ", allowEmptyReferenceCb);
 
         quantityPnl.add(panel, BorderLayout.CENTER);
         quantityPnl.setBorder(GuiUtils.createInlineTitleBorder("From quantity"));

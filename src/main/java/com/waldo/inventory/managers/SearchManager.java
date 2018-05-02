@@ -42,7 +42,9 @@ public class SearchManager {
     public List<Item> findItemsToOrder() {
         List<Item> itemsToOrder = new ArrayList<>();
         for (Item item : cache().getItems()) {
-            if (item.getAmount() < item.getMinimum()) {
+            if (item.getOrderState().equals(Statics.OrderStates.NoOrder) &&
+                    !item.isDiscourageOrder() &&
+                    item.getAmount() < item.getMinimum()) {
                 itemsToOrder.add(item);
             }
         }

@@ -61,6 +61,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Resource manager
         try {
             imageResource = ImageResource.getInstance();
+            imageResource.initIcons("settings/", "Icons.properties");
             scriptResource = new ResourceManager("settings/", "Scripts.properties");
             colorResource = new ResourceManager("settings/", "Colors.properties");
         } catch (Exception e) {
@@ -90,8 +91,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         } else {
             try {
-                imageResource.init("settings/", "Icons.properties");
-            } catch (IOException e) {
+                imageResource.initServer();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

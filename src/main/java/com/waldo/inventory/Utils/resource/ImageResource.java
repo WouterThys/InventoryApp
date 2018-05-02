@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils.resource;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
 import com.waldo.test.ImageSocketServer.ImageType;
@@ -47,7 +48,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         }));
     }
 
-    public static final String DEFAULT = "default";
+    private static final String DEFAULT = "default";
 
     // Local images
     private final Map<String, ImageIcon> iconImageMap = new HashMap<>();
@@ -65,7 +66,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     private Client client;
 
-    public void init(String propertiesUrl, String fileName) throws IOException {
+    public void initIcons(String propertiesUrl, String fileName) throws IOException {
         super.initProperties(propertiesUrl, fileName);
 
         iconImageMap.put(DEFAULT, readIcon("Common.UnknownIcon32"));
@@ -74,8 +75,10 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         manufacturerImageMap.put(DEFAULT, readIcon("Manufacturers.Title"));
         ideImageMap.put(DEFAULT, readIcon("Ides.Title"));
         projectImageMap.put(DEFAULT, readIcon("Projects.Icon"));
-        otherImageMap.put(DEFAULT, readIcon("Common.UnknownIcon48 "));
+        otherImageMap.put(DEFAULT, readIcon("Common.UnknownIcon48"));
+    }
 
+    public void initServer() {
         updateImageServerConnection();
     }
 
@@ -208,22 +211,6 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         return new Dimension(new_width, new_height);
     }
 
-    private ImageIcon getScaledImageIcon(BufferedImage image, int width, int height) {
-        int newWidth;
-        int newHeight;
-        double targetRatio = (double) width / height;
-        double originalRatio = (double) image.getWidth() / image.getHeight();
-        if (originalRatio >= targetRatio) {
-            newWidth = width;
-            newHeight = newWidth;
-        } else {
-            newHeight = height;
-            newWidth = newHeight;
-        }
-        Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
-    }
-
     public ImageIcon readIcon(String key) {
         if (iconImageMap.containsKey(key)) {
             return iconImageMap.get(key);
@@ -233,7 +220,10 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         if (icon == null) {
             icon = iconImageMap.get(DEFAULT);
         }
-        iconImageMap.put(key, icon);
+
+        if (icon != null) {
+            iconImageMap.put(key, icon);
+        }
 
         return icon;
     }
@@ -293,8 +283,8 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         }
     }
 
-    public ImageIcon saveImage(BufferedImage image, ImageType imageType, String imageName) {
-        ImageIcon imageIcon = null;
+    public void saveImage(BufferedImage image, ImageType imageType, String imageName) {
+        ImageIcon imageIcon;
         try {
             if (image != null) {
                 client.sendImage(image, imageName, imageType);
@@ -320,11 +310,10 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return imageIcon;
     }
 
-    public ImageIcon saveImage(File file, ImageType imageType, String imageName) {
-        ImageIcon imageIcon = null;
+    public void saveImage(File file, ImageType imageType, String imageName) {
+        ImageIcon imageIcon;
         try {
             BufferedImage image = client.sendImage(file, imageType, imageName);
             if (image != null) {
@@ -350,18 +339,17 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return imageIcon;
     }
 
     @Override
     public void onConnected(String clientName) {
-        System.out.println("Client " + clientName + " connected");
+        if (Main.DEBUG_MODE) System.out.println("Client " + clientName + " connected");
         Status().updateConnectionStatus();
     }
 
     @Override
     public void onDisconnected(String clientName) {
-        System.out.println("Client " + clientName + " disconnected");
+        if (Main.DEBUG_MODE) System.out.println("Client " + clientName + " disconnected");
         Status().updateConnectionStatus();
     }
 
@@ -394,30 +382,33 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
             checkRequests(icon, imageType, imageName);
         } else {
-            System.out.println("IR: onImageReceived - Empty image received for " + imageType + ", " + imageName);
+            if (Main.DEBUG_MODE) System.out.println("IR: onImageReceived - Empty image received for " + imageType + ", " + imageName);
         }
     }
 
     private void checkRequests(ImageIcon icon, ImageType imageType, String imageName) {
         ImageRequest request = findImageRequest(imageType, imageName);
         if (request != null) {
-            ImageRequester requester = request.getImageRequester();
-            if (requester != null) {
-                // Is requester still interested?
-                if (requester.getImageType().equals(imageType) && request.getImageName().equals(imageName)) {
-                    requester.setImage(icon);
-                    System.out.println("IR: checkRequests - set image " + imageType + ", " + imageName);
+            for (ImageRequester requester : request.getImageRequesters()) {
+                if (requester != null) {
+                    // Is requester still interested?
+                    if (requester.getImageType().equals(imageType) && request.getImageName().equals(imageName)) {
+                        requester.setImage(icon);
+                        if (Main.DEBUG_MODE)
+                            System.out.println("IR: checkRequests - set image " + imageType + ", " + imageName);
+                    } else {
+                        if (Main.DEBUG_MODE)
+                            System.out.println("IR: checkRequests - no requester changed his mind " + imageType + ", " + imageName);
+                    }
                 } else {
-                    System.out.println("IR: checkRequests - no requester changed his mind " + imageType + ", " + imageName);
+                    if (Main.DEBUG_MODE)
+                        System.out.println("IR: checkRequests - no requester found for " + imageType + ", " + imageName);
                 }
-            } else {
-                System.out.println("IR: checkRequests - no requester found for " + imageType + ", " + imageName);
             }
-
             imageRequests.remove(request);
 
         } else {
-            System.out.println("IR: checkRequests - no request found for " + imageType + ", " + imageName);
+            if (Main.DEBUG_MODE) System.out.println("IR: checkRequests - no request found for " + imageType + ", " + imageName);
         }
     }
 
@@ -434,11 +425,14 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     private void createRequest(ImageRequester requester) {
         if (requester != null) {
-            ImageRequest request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
+            ImageRequest request = findImageRequest(requester.getImageType(), requester.getImageName());
+            if (request == null) {
+                request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
 
-            if (!imageRequests.contains(request)) {
                 imageRequests.add(request);
                 fetchImage(request.getImageType(), request.getImageName());
+            } else {
+                request.addRequester(requester);
             }
         }
     }
@@ -447,12 +441,13 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
         private String imageName;
         private ImageType imageType;
-        private ImageRequester imageRequester;
+        private List<ImageRequester> imageRequesters;
 
-        public ImageRequest(String imageName, ImageType imageType, ImageRequester imageRequester) {
+        ImageRequest(String imageName, ImageType imageType, ImageRequester imageRequest) {
             this.imageName = imageName;
             this.imageType = imageType;
-            this.imageRequester = imageRequester;
+            this.imageRequesters = new ArrayList<>();
+            this.imageRequesters.add(imageRequest);
         }
 
         @Override
@@ -469,20 +464,26 @@ public class ImageResource extends Resource implements Client.ImageClientListene
             return Objects.hash(getImageName(), getImageType());
         }
 
-        public boolean isThis(ImageType imageType, String imageName) {
+        boolean isThis(ImageType imageType, String imageName) {
             return imageType != null && imageName != null && getImageType().equals(imageType) && getImageName().equals(imageName);
         }
 
-        public String getImageName() {
+        void addRequester(ImageRequester requester) {
+            if (!imageRequesters.contains(requester)) {
+                imageRequesters.add(requester);
+            }
+        }
+
+        String getImageName() {
             return imageName;
         }
 
-        public ImageType getImageType() {
+        ImageType getImageType() {
             return imageType;
         }
 
-        public ImageRequester getImageRequester() {
-            return imageRequester;
+        List<ImageRequester> getImageRequesters() {
+            return imageRequesters;
         }
     }
 }
