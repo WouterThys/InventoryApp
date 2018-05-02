@@ -19,12 +19,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Objects;
+
+import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ImageResource extends Resource implements Client.ImageClientListener {
 
     public interface ImageRequester {
         ImageType getImageType();
+
         String getImageName();
+
         void setImage(ImageIcon image);
     }
 
@@ -56,7 +61,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     private final Map<String, ImageIcon> otherImageMap = new HashMap<>();
 
     // Requests for image
-    private ArrayList<ImageRequester> imageRequests = new ArrayList<>();
+    private List<ImageRequest> imageRequests = new ArrayList<>();
 
     private Client client;
 
@@ -76,19 +81,25 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     public ImageIcon getDefaultImage(ImageType imageType) {
         switch (imageType) {
-            case ItemImage: return itemImageMap.get(DEFAULT);
-            case IdeImage: return ideImageMap.get(DEFAULT);
-            case ProjectImage: return projectImageMap.get(DEFAULT);
-            case DistributorImage: return distributorImageMap.get(DEFAULT);
-            case ManufacturerImage: return manufacturerImageMap.get(DEFAULT);
+            case ItemImage:
+                return itemImageMap.get(DEFAULT);
+            case IdeImage:
+                return ideImageMap.get(DEFAULT);
+            case ProjectImage:
+                return projectImageMap.get(DEFAULT);
+            case DistributorImage:
+                return distributorImageMap.get(DEFAULT);
+            case ManufacturerImage:
+                return manufacturerImageMap.get(DEFAULT);
             //case DivisionImage: return .get(DEFAULT);
-            default: return otherImageMap.get(DEFAULT);
+            default:
+                return otherImageMap.get(DEFAULT);
         }
     }
 
     public void requestImage(final ImageRequester imageRequester) {
-
-            if (imageRequester != null) {
+        if (imageRequester != null) {
+            SwingUtilities.invokeLater(() -> {
                 switch (imageRequester.getImageType()) {
                     case ItemImage:
                         fromMap(itemImageMap, imageRequester);
@@ -112,8 +123,8 @@ public class ImageResource extends Resource implements Client.ImageClientListene
                     default:
                         break;
                 }
-            }
-
+            });
+        }
     }
 
     public ImageIcon readIdeIcon(String name) {
@@ -137,17 +148,12 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     private void fromMap(Map<String, ImageIcon> map, ImageRequester requester) {
-        String name = requester.getImageName();
-        ImageType imageType = requester.getImageType();
-        if ((name != null) && (!name.isEmpty())) {
-            if (map.containsKey(name)) {
-                requester.setImage(map.get(name));
-                imageRequests.remove(requester);
+        String imageName = requester.getImageName();
+        if ((imageName != null) && (!imageName.isEmpty())) {
+            if (map.containsKey(imageName)) {
+                requester.setImage(map.get(imageName));
             } else {
-                if (!imageRequests.contains(requester)) {
-                    imageRequests.add(requester);
-                    SwingUtilities.invokeLater(() -> fetchImage(imageType, name));
-                }
+                createRequest(requester);
             }
         }
     }
@@ -165,13 +171,16 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     public static ImageIcon scaleImage(ImageIcon imageIcon, Dimension boundary) {
+        if (imageIcon == null || boundary == null) {
+            return null;
+        }
         Dimension newScale = getScaledDimension(imageIcon, boundary);
         Image icon = imageIcon.getImage();
         Image scaledImage = icon.getScaledInstance(newScale.width, newScale.height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
     }
 
-    public static Dimension getScaledDimension(ImageIcon icon, Dimension boundary) {
+    private static Dimension getScaledDimension(ImageIcon icon, Dimension boundary) {
 
         int original_width = icon.getIconWidth();
         int original_height = icon.getIconHeight();
@@ -344,24 +353,16 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         return imageIcon;
     }
 
-    private void checkRequests(ImageIcon icon, ImageType imageType, String name) {
-
-        List<ImageRequester> copyOfList = new ArrayList<>(imageRequests);
-
-        for (ImageRequester requester : copyOfList) {
-            // Request again
-            requestImage(requester);
-        }
-    }
-
     @Override
     public void onConnected(String clientName) {
         System.out.println("Client " + clientName + " connected");
+        Status().updateConnectionStatus();
     }
 
     @Override
     public void onDisconnected(String clientName) {
         System.out.println("Client " + clientName + " disconnected");
+        Status().updateConnectionStatus();
     }
 
     @Override
@@ -371,8 +372,6 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     @Override
     public void onImageReceived(BufferedImage bufferedImage, String imageName, ImageType imageType) {
-        System.out.println("Image "+ imageName +" received");
-
         if (bufferedImage != null) {
             ImageIcon icon = new ImageIcon(bufferedImage);
             switch (imageType) {
@@ -394,6 +393,96 @@ public class ImageResource extends Resource implements Client.ImageClientListene
             }
 
             checkRequests(icon, imageType, imageName);
+        } else {
+            System.out.println("IR: onImageReceived - Empty image received for " + imageType + ", " + imageName);
+        }
+    }
+
+    private void checkRequests(ImageIcon icon, ImageType imageType, String imageName) {
+        ImageRequest request = findImageRequest(imageType, imageName);
+        if (request != null) {
+            ImageRequester requester = request.getImageRequester();
+            if (requester != null) {
+                // Is requester still interested?
+                if (requester.getImageType().equals(imageType) && request.getImageName().equals(imageName)) {
+                    requester.setImage(icon);
+                    System.out.println("IR: checkRequests - set image " + imageType + ", " + imageName);
+                } else {
+                    System.out.println("IR: checkRequests - no requester changed his mind " + imageType + ", " + imageName);
+                }
+            } else {
+                System.out.println("IR: checkRequests - no requester found for " + imageType + ", " + imageName);
+            }
+
+            imageRequests.remove(request);
+
+        } else {
+            System.out.println("IR: checkRequests - no request found for " + imageType + ", " + imageName);
+        }
+    }
+
+    private ImageRequest findImageRequest(ImageType imageType, String imageName) {
+
+        for (ImageRequest imageRequest : imageRequests) {
+            if (imageRequest.isThis(imageType, imageName)) {
+                return imageRequest;
+            }
+        }
+
+        return null;
+    }
+
+    private void createRequest(ImageRequester requester) {
+        if (requester != null) {
+            ImageRequest request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
+
+            if (!imageRequests.contains(request)) {
+                imageRequests.add(request);
+                fetchImage(request.getImageType(), request.getImageName());
+            }
+        }
+    }
+
+    private class ImageRequest {
+
+        private String imageName;
+        private ImageType imageType;
+        private ImageRequester imageRequester;
+
+        public ImageRequest(String imageName, ImageType imageType, ImageRequester imageRequester) {
+            this.imageName = imageName;
+            this.imageType = imageType;
+            this.imageRequester = imageRequester;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ImageRequest)) return false;
+            ImageRequest that = (ImageRequest) o;
+            return Objects.equals(getImageName(), that.getImageName()) &&
+                    getImageType() == that.getImageType();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getImageName(), getImageType());
+        }
+
+        public boolean isThis(ImageType imageType, String imageName) {
+            return imageType != null && imageName != null && getImageType().equals(imageType) && getImageName().equals(imageName);
+        }
+
+        public String getImageName() {
+            return imageName;
+        }
+
+        public ImageType getImageType() {
+            return imageType;
+        }
+
+        public ImageRequester getImageRequester() {
+            return imageRequester;
         }
     }
 }

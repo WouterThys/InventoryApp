@@ -148,6 +148,7 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
             @Override
             public void actionPerformed(ActionEvent e) {
                 imageResource.updateImageServerConnection();
+                imageResource.getClient().addImageClientListener(ImageServerPanel.this);
             }
         };
         disconnectAction = new IActions.DisconnectAction() {

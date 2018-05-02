@@ -71,14 +71,14 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
     }
 
     @Override
-    public synchronized void setImage(ImageIcon imageIcon) {
+    public void setImage(ImageIcon imageIcon) {
         if (imageIcon != null) {
             imageIcon = ImageResource.scaleImage(imageIcon, imageDimension);
         }
         imageLbl.setIcon(imageIcon);
     }
 
-    public synchronized void setImage(String name) {
+    public void setImage(String name) {
         setImageName(name);
         updateComponents();
     }
@@ -89,7 +89,7 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
     }
 
     @Override
-    public synchronized ImageType getImageType() {
+    public ImageType getImageType() {
         if (imageType == null) {
             imageType = ImageType.Other;
         }
@@ -97,14 +97,14 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester 
     }
 
     @Override
-    public synchronized String getImageName() {
+    public String getImageName() {
         if (imageName == null) {
             imageName = "";
         }
         return imageName;
     }
 
-    public synchronized void setImageName(String imageName) {
+    public void setImageName(String imageName) {
         this.imageName = imageName;
         setToolTipText(getImageName());
     }
