@@ -362,4 +362,11 @@ public class IActions {
             setTooltip("Send content");
         }
     }
+
+    public static abstract class PrintAction extends IAbstractAction {
+        protected PrintAction() {
+            super("Print", imageResource.readIcon("Actions.Print"));
+            //setTooltip("Send content");
+        }
+    }
 }

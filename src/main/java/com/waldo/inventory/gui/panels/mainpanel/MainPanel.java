@@ -231,6 +231,11 @@ public class MainPanel extends MainPanelLayout {
                             public void onAddToSet(Set set, Item item) {
                                 MainPanel.this.onAddItemToSet(set, item);
                             }
+
+                            @Override
+                            public void onPrint(Item item) {
+                                itemTable.print("Items");
+                            }
                         };
                     }
                 } else {

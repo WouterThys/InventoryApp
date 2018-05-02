@@ -15,6 +15,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.awt.print.PrinterException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -80,6 +82,16 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.
     // Table
     public void addListSelectionListener(ListSelectionListener listSelectionListener) {
         table.getSelectionModel().addListSelectionListener(listSelectionListener);
+    }
+
+    public void print(String headerName) {
+        MessageFormat header = new MessageFormat(headerName);
+        MessageFormat footer = new MessageFormat(" - {0} - ");
+        try {
+            table.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+        } catch (PrinterException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addTableRenderer(TableCellRenderer cellRenderer) {

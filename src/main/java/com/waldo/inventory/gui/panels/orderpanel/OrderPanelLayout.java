@@ -164,7 +164,6 @@ abstract class OrderPanelLayout extends IPanel implements
         return orderLineTable.getAllSelectedItems();
     }
 
-
     //
     // Table tool bar stuff
     //

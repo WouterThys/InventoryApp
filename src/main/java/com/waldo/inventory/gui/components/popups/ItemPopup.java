@@ -23,6 +23,7 @@ public abstract class ItemPopup extends JPopupMenu {
     public abstract void onOrderItem(Item item);
     public abstract void onShowHistory(Item item);
     public abstract void onAddToSet(Set set, Item item);
+    public abstract void onPrint(Item item);
 
     private void init(final Item item) {
 
@@ -70,6 +71,13 @@ public abstract class ItemPopup extends JPopupMenu {
             }
         };
 
+        IActions.PrintAction printAction = new IActions.PrintAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPrint(item);
+            }
+        };
+
         // Data sheets
         JMenu dsMenu = new JMenu("Open data sheet");
         dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
@@ -98,5 +106,7 @@ public abstract class ItemPopup extends JPopupMenu {
         add(dsMenu);
         addSeparator();
         add(setMenu);
+        addSeparator();
+        add(printAction);
     }
 }
