@@ -175,7 +175,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             endWait(this);
         }
         // Add
-        Map<String, Item> failedItems = orderPanel.addItemsToOrder(itemsToOrder, order);
+        Map<String, Item> failedItems = order.addItemsToOrder(itemsToOrder);//orderPanel.addItemsToOrder(itemsToOrder, order);
         if (failedItems != null && failedItems.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (String er : failedItems.keySet()) {

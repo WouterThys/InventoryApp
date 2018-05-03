@@ -12,7 +12,6 @@ import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistrib
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -23,7 +22,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -59,50 +60,50 @@ public class OrderPanel extends OrderPanelLayout {
         return tableModel;
     }
 
-    public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
-        Map<String, Item> failedItems = null;
-        if (order.getDistributorType() == DistributorType.Items) {
-            for (Item item : itemsToOrder) {
-                try {
-                    OrderLine orderLine = order.findOrderLineFor(item);
-                    if (orderLine == null) {
-                        orderLine = new OrderLine(order, item, (item.getMaximum() - item.getAmount()));
-                    }
-                    orderLine.save();
-                } catch (Exception e) {
-                    if (failedItems == null) {
-                        failedItems = new HashMap<>();
-                    }
-                    failedItems.put("Failed to add item " + item.toString(), item);
-                }
-            }
-        } else {
-            failedItems = new HashMap<>();
-            for(Item item : itemsToOrder) {
-                failedItems.put("Can not add items to an order for PCB's", item);
-            }
-        }
-        return failedItems;
-    }
+//    public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
+//        Map<String, Item> failedItems = null;
+//        if (order.getDistributorType() == DistributorType.Items) {
+//            for (Item item : itemsToOrder) {
+//                try {
+//                    OrderLine orderLine = order.findOrderLineFor(item);
+//                    if (orderLine == null) {
+//                        orderLine = new OrderLine(order, item, (item.getMaximum() - item.getAmount()));
+//                    }
+//                    orderLine.save();
+//                } catch (Exception e) {
+//                    if (failedItems == null) {
+//                        failedItems = new HashMap<>();
+//                    }
+//                    failedItems.put("Failed to add item " + item.toString(), item);
+//                }
+//            }
+//        } else {
+//            failedItems = new HashMap<>();
+//            for(Item item : itemsToOrder) {
+//                failedItems.put("Can not add items to an order for PCB's", item);
+//            }
+//        }
+//        return failedItems;
+//    }
 
-    private void checkPendingOrders(Order order) {
-        if (order != null && order.getDistributorId() > DbObject.UNKNOWN_ID) {
-            if (SearchManager.sm().findPendingOrdersByDistributorId(order.getDistributorId()).size() > 0) {
-                int res = JOptionPane.showConfirmDialog(
-                        this,
-                        "There are pending orders for " + order.getDistributor() + ", do you want to add them now?",
-                        "Pending orders",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-
-                if (res == JOptionPane.YES_OPTION) {
-                    PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
-                    dialog.showDialog();
-                }
-            }
-        }
-    }
+//    private void checkPendingOrders(Order order) {
+//        if (order != null && order.getDistributorId() > DbObject.UNKNOWN_ID) {
+//            if (SearchManager.sm().findPendingOrdersByDistributorId(order.getDistributorId()).size() > 0) {
+//                int res = JOptionPane.showConfirmDialog(
+//                        this,
+//                        "There are pending orders for " + order.getDistributor() + ", do you want to add them now?",
+//                        "Pending orders",
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE
+//                );
+//
+//                if (res == JOptionPane.YES_OPTION) {
+//                    PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
+//                    dialog.showDialog();
+//                }
+//            }
+//        }
+//    }
 
     private void deleteSelectedOrderItems(final List<OrderLine> itemsToDelete) {
         if (selectedOrder == null) {

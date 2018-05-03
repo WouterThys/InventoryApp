@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.ordersearchitemdialog.orderitemwizarddia
 
 import com.waldo.inventory.Utils.Statics.OrderImportType;
 import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.gui.components.wrappers.SelectableTableItem;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
 
-    private List<Item> itemsToOrder = new ArrayList<>();
+    private List<SelectableTableItem> itemsToOrder = new ArrayList<>();
 
     public OrderItemWizardDialog(Window window, Order order, OrderImportType orderImportType, ProjectPcb projectPcb) {
         super(window, order, orderImportType, projectPcb);
@@ -24,7 +25,7 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
         importTypeCb.setEnabled(orderImportType == null);
     }
 
-    public List<Item> getItemsToOrder() {
+    public List<SelectableTableItem> getItemsToOrder() {
         return itemsToOrder;
     }
 
@@ -36,13 +37,13 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
         boolean allowEmptyRef = isAllowEmptyReference();
         List<Item> quantityItems = SearchManager.sm().findItemsToOrder();
 
-        if (allowEmptyRef) {
-            itemsToOrder.addAll(quantityItems);
-        } else {
-            for (Item item : quantityItems) {
+        for (Item item : quantityItems) {
+            if (allowEmptyRef) {
+                itemsToOrder.add(new SelectableTableItem(item));
+            } else {
                 DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
                 if (link != null) {
-                    itemsToOrder.add(item);
+                    itemsToOrder.add(new SelectableTableItem(item));
                 }
             }
         }
@@ -57,9 +58,9 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
                         PcbItemItemLink itemLink = projectLink.getPcbItemItemLink();
                         Item item = itemLink.getItem();
                         if (item != null) {
-                            if (item.getAmount() < projectLink.getNumberOfReferences()) {
-                                itemsToOrder.add(item);
-                            }
+                            SelectableTableItem selectableTableItem = new SelectableTableItem(item);
+                            selectableTableItem.setSelected(item.getAmount() < projectLink.getNumberOfReferences());
+                            itemsToOrder.add(selectableTableItem);
                         }
                     }
                 }

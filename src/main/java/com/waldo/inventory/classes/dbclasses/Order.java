@@ -1,8 +1,8 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.Utils.Statics.DistributorType;
+import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
@@ -17,9 +17,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -193,6 +191,34 @@ public class Order extends DbObject {
             }
         }
     }
+
+
+    public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder) {
+        Map<String, Item> failedItems = null;
+        if (getDistributorType() == DistributorType.Items) {
+            for (Item item : itemsToOrder) {
+                try {
+                    OrderLine orderLine = findOrderLineFor(item);
+                    if (orderLine == null) {
+                        orderLine = new OrderLine(this, item, Math.max(0, item.getMaximum() - item.getAmount()));
+                    }
+                    orderLine.save();
+                } catch (Exception e) {
+                    if (failedItems == null) {
+                        failedItems = new HashMap<>();
+                    }
+                    failedItems.put("Failed to add item " + item.toString(), item);
+                }
+            }
+        } else {
+            failedItems = new HashMap<>();
+            for(Item item : itemsToOrder) {
+                failedItems.put("Can not add items to an order for PCB's", item);
+            }
+        }
+        return failedItems;
+    }
+
 
     public void copyOrderLinesToClipboard() {
         String orderText = createOrderText();

@@ -663,9 +663,9 @@ public class Statics {
 
     public enum CreatedPcbLinkState {
 
-        Ok (imageResource.readIcon("Actions.SaveOk"), "Ok", Color.BLACK),
-        Warning(imageResource.readIcon("Actions.SaveWarn"), "", Color.ORANGE),
-        Error(imageResource.readIcon("Actions.SaveError"), "", Color.RED),
+        Ok (imageResource.readIcon("Actions.Ok"), "Ok", Color.BLACK),
+        Warning(imageResource.readIcon("Actions.Warn"), "", Color.ORANGE),
+        Error(imageResource.readIcon("Actions.Error"), "", Color.RED),
         NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY),
         NotUsed(imageResource.readIcon("Actions.NotUsed"), "Not used..", Color.BLUE)
         ;
