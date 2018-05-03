@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -117,6 +118,14 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         return null;
     }
 
+    List<Item> tableGetAllSelected() {
+        List<Item> selectedItems = new ArrayList<>();
+        for (ObjectMatch<Item> match : foundItemTable.getSelectedItems()) {
+            selectedItems.add(match.getFoundObject());
+        }
+        return selectedItems;
+    }
+
     private JPanel createFilterPanel() {
         JPanel filterPanel = new JPanel(new BorderLayout());
         filterPanel.setBorder(GuiUtils.createTitleBorder("Filters"));
@@ -208,6 +217,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
         JPanel northPanel = new JPanel(new BorderLayout());
         northPanel.add(searchWordPnl, BorderLayout.NORTH);
         northPanel.add(createFilterPanel(), BorderLayout.CENTER);
+        northPanel.setMaximumSize(new Dimension(600, 300));
 
         getContentPanel().add(northPanel, BorderLayout.NORTH);
         getContentPanel().add(resultPnl, BorderLayout.CENTER);

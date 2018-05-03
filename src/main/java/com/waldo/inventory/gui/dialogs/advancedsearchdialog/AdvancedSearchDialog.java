@@ -27,6 +27,10 @@ public class AdvancedSearchDialog extends AdvancedSearchDialogLayout {
         return tableGetSelected();
     }
 
+    public List<Item> getAllSelectedItems() {
+        return tableGetAllSelected();
+    }
+
     @Override
     void onMouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {

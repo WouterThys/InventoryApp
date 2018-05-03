@@ -123,6 +123,7 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
             gbc.addLine("Order: ", orderCb);
         }
         gbc.addLine("Distributor: ", distributorLbl);
+        gbc.addLine("  ", allowEmptyReferenceCb);
         gbc.addLine("Type: ", importTypeCb);
 
         orderPanel.setBorder(GuiUtils.createInlineTitleBorder("Order"));
@@ -134,10 +135,10 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         JPanel quantityPnl = new JPanel(new BorderLayout());
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(allowEmptyReferenceCb, BorderLayout.NORTH);
+        //panel.add(allowEmptyReferenceCb, BorderLayout.NORTH);
 
         quantityPnl.add(panel, BorderLayout.CENTER);
-        quantityPnl.setBorder(GuiUtils.createInlineTitleBorder("From quantity"));
+        //quantityPnl.setBorder(GuiUtils.createInlineTitleBorder("From quantity"));
 
         return quantityPnl;
     }
@@ -185,6 +186,7 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
 
         // Filter
         allowEmptyReferenceCb = new ICheckBox("Allow empty reference", true);
+        allowEmptyReferenceCb.setHorizontalTextPosition(SwingConstants.LEFT);
 
         tableModel = new IProjectPcbTableModel();
         pcbTable = new ITable<>(tableModel);
@@ -258,6 +260,9 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
     public void updateComponents(Object... args) {
         if (selectedOrder != null) {
             orderCb.setSelectedItem(selectedOrder);
+            editOrder(selectedOrder);
+        } else {
+            selectedOrder = orderCb.getItemAt(0);
             editOrder(selectedOrder);
         }
 

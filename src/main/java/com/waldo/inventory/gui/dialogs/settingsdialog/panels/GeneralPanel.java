@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.settings.SettingsManager;
@@ -27,6 +28,8 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
     private IComboBox<Statics.GuiDetailsView> detailsViewCb;
     private IComboBox<String> lookAndFeelCb;
     private ICheckBox fullScreenCb;
+    private ICheckBox debugCb;
+    private ICheckBox logHistoryCb;
 
     /*
      *                  VARIABLES
@@ -76,6 +79,8 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         detailsViewCb.setEnabled(enabled);
         lookAndFeelCb.setEnabled(enabled);
         fullScreenCb.setEnabled(enabled);
+        debugCb.setEnabled(enabled);
+        logHistoryCb.setEnabled(enabled);
 
         return enabled;
     }
@@ -87,6 +92,8 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
             detailsViewCb.setSelectedItem(selectedSettings.getGuiDetailsView());
             lookAndFeelCb.setSelectedItem(selectedSettings.getGuiLookAndFeel());
             fullScreenCb.setSelected(selectedSettings.isGuiStartUpFullScreen());
+            debugCb.setSelected(Main.DEBUG_MODE);
+            logHistoryCb.setSelected(Main.LOG_HISTORY);
         }
     }
 
@@ -150,6 +157,11 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         }
         lookAndFeelCb = new IComboBox<>(listModel);
         fullScreenCb = new ICheckBox();
+        debugCb = new ICheckBox();
+        logHistoryCb = new ICheckBox();
+
+        debugCb.addActionListener(e -> Main.DEBUG_MODE = debugCb.isSelected());
+        logHistoryCb.addActionListener(e -> Main.LOG_HISTORY = logHistoryCb.isSelected());
 
         detailsViewCb.addEditedListener(this, "guiDetailsView", String.class);
         lookAndFeelCb.addEditedListener(this, "guiLookAndFeel", String.class);
@@ -161,10 +173,12 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         JPanel settingsPanel = new JPanel();
 
         // Add to panel
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 180);
         gbc.addLine("Details panel position: ", detailsViewCb);
         gbc.addLine("Look and feel: ", lookAndFeelCb);
         gbc.addLine("Start up full screen: ", fullScreenCb);
+        gbc.addLine("Debug mode: ", debugCb);
+        gbc.addLine("Log history: ", logHistoryCb);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 GuiUtils.createInlineTitleBorder("Gui options"),

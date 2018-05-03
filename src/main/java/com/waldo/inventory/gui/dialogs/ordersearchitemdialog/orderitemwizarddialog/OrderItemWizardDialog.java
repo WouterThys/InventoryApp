@@ -38,20 +38,24 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
         List<Item> quantityItems = SearchManager.sm().findItemsToOrder();
 
         for (Item item : quantityItems) {
-            if (allowEmptyRef) {
+            addItemToOrder(item, allowEmptyRef);
+        }
+    }
+
+    private void addItemToOrder(Item item, boolean allowEmptyRef) {
+        if (allowEmptyRef) {
+            itemsToOrder.add(new SelectableTableItem(item));
+        } else {
+            DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
+            if (link != null) {
                 itemsToOrder.add(new SelectableTableItem(item));
-            } else {
-                DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
-                if (link != null) {
-                    itemsToOrder.add(new SelectableTableItem(item));
-                }
             }
         }
     }
 
     private void findItemsForPcbs(List<ProjectPcb> pcbList) {
         if (pcbList != null && pcbList.size() > 0) {
-
+            boolean allowEmptyRef = isAllowEmptyReference();
             for (ProjectPcb pcb : pcbList) {
                 for (PcbItemProjectLink projectLink : pcb.getPcbItemList()) {
                     if (projectLink.getPcbItemItemLinkId() > DbObject.UNKNOWN_ID) {
@@ -60,7 +64,14 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
                         if (item != null) {
                             SelectableTableItem selectableTableItem = new SelectableTableItem(item);
                             selectableTableItem.setSelected(item.getAmount() < projectLink.getNumberOfReferences());
-                            itemsToOrder.add(selectableTableItem);
+                            if (allowEmptyRef) {
+                                itemsToOrder.add(selectableTableItem);
+                            } else {
+                                DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
+                                if (link != null) {
+                                    itemsToOrder.add(selectableTableItem);
+                                }
+                            }
                         }
                     }
                 }
@@ -71,6 +82,7 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
 
     @Override
     protected void onOK() {
+        selectedOrder = (Order) orderCb.getSelectedItem();
         if (selectedOrder == null) {
             JOptionPane.showMessageDialog(
                     this,

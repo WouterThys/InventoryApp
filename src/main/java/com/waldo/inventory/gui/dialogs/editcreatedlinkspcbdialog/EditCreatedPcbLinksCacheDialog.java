@@ -86,7 +86,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
 
                     saveComponents();
 
-                    updateComponents();
+                    //updateComponents();
                 }
             }
         }

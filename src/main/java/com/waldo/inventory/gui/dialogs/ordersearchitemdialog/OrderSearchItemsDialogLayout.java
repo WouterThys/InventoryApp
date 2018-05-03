@@ -9,7 +9,6 @@ import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.inventory.gui.components.tablemodels.IOrderSearchItemsTableModel;
 import com.waldo.inventory.gui.components.wrappers.SelectableTableItem;
-import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.ITable;
 
 import javax.swing.*;
@@ -30,6 +29,8 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
 
     // Filters
     private IActions.WizardAction wizardAction;
+    private IActions.SearchAction searchAction;
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -53,6 +54,7 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
 
     abstract void onImportItems(Order order);
     abstract void onRowDoubleClicked(int row);
+    abstract void onSearchItems();
 
     void updateEnabledComponents() {
         boolean hasOrder = selectedOrder != null;
@@ -61,7 +63,7 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         getButtonOK().setEnabled(hasOrder && hasSelected);
     }
 
-    public List<Item> getSelectedItems() {
+    List<Item> getSelectedItems() {
         List<Item> selectedItems = new ArrayList<>();
         for (SelectableTableItem selectableTableItem : tableModel.getItemList()) {
             if (selectableTableItem.isSelected()) {
@@ -69,6 +71,10 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
             }
         }
         return selectedItems;
+    }
+
+    boolean hasItems() {
+        return tableModel.getItemList().size() > 0;
     }
 
     public Item getSelectedItem() {
@@ -81,6 +87,10 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
 
     void tableInitialize(List<SelectableTableItem> itemsToOrder) {
        tableModel.setItemList(itemsToOrder);
+    }
+
+    void tableAddItems(List<SelectableTableItem> itemsToOrder) {
+        tableModel.addItems(itemsToOrder);
     }
 
     /*
@@ -110,7 +120,14 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         wizardAction = new IActions.WizardAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onImportItems(selectedOrder);
+                SwingUtilities.invokeLater(() -> onImportItems(selectedOrder));
+            }
+        };
+
+        searchAction = new IActions.SearchAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onSearchItems());
             }
         };
     }
@@ -123,7 +140,12 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         scrollPane.setPreferredSize(new Dimension(600, 400));
 
         JPanel filterPanel = new JPanel(new BorderLayout());
-        filterPanel.add(GuiUtils.createNewToolbar(wizardAction), BorderLayout.WEST);
+        JButton wizardBtn = new JButton(wizardAction);
+        JButton searchBtn = new JButton(searchAction);
+        Box box = Box.createHorizontalBox();
+        box.add(wizardBtn);
+        box.add(searchBtn);
+        filterPanel.add(box, BorderLayout.EAST);
 
         panel.add(filterPanel, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);

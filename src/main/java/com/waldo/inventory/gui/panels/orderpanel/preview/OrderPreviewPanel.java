@@ -6,8 +6,10 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsCacheDialog;
+import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IPanel;
@@ -128,6 +130,11 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         dialog.showDialog();
     }
 
+    private void searchOrderItems() {
+        OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application);
+        dialog.showDialog();
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -173,17 +180,26 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         };
         orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
 
-        AbstractAction pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
+//        AbstractAction pendingOrderAa = new AbstractAction("Pending orders", imageResource.readIcon("Actions.M.Pending")) {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                viewPendingOrders();
+//            }
+//        };
+//        pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
+
+        IActions.SearchAction searchAction = new IActions.SearchAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                viewPendingOrders();
+                searchOrderItems();
             }
         };
-        pendingOrderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Pending orders");
+        searchAction.setIcon(imageResource.readIcon("Actions.M.Search"));
 
         orderTb = new IdBToolBar(this);
         orderTb.addSeparateAction(orderDetailsAa);
-        orderTb.addAction(pendingOrderAa);
+        //orderTb.addAction(pendingOrderAa);
+        orderTb.addAction(searchAction);
     }
 
     @Override
