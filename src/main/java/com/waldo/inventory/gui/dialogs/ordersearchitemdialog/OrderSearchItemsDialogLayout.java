@@ -79,15 +79,8 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         return null;
     }
 
-    void tableInitialize(List<Item> itemsToOrder) {
-       tableModel.clearItemList();
-       List<SelectableTableItem> tableItems = new ArrayList<>();
-
-       for (Item item : itemsToOrder) {
-           tableItems.add(new SelectableTableItem(item));
-       }
-
-       tableModel.setItemList(tableItems);
+    void tableInitialize(List<SelectableTableItem> itemsToOrder) {
+       tableModel.setItemList(itemsToOrder);
     }
 
     /*
