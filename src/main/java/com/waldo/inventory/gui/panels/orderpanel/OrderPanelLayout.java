@@ -14,8 +14,8 @@ import com.waldo.inventory.gui.components.trees.IOrderTree;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
-import com.waldo.inventory.gui.panels.mainpanel.preview.ItemPreviewPanel;
 import com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel.ItemDetailPanel;
+import com.waldo.inventory.gui.panels.orderpanel.preview.OrderItemPreviewPanel;
 import com.waldo.inventory.gui.panels.orderpanel.preview.OrderPreviewPanel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.IPanel;
@@ -252,7 +252,7 @@ abstract class OrderPanelLayout extends IPanel implements
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (vertical) {
-            detailPanel = new ItemPreviewPanel(this, this) {
+            detailPanel = new OrderItemPreviewPanel(this, this) {
                 @Override
                 public void onToolBarDelete(IdBToolBar source) {
                     OrderPanelLayout.this.onToolBarDelete(source);

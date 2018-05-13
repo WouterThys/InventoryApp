@@ -201,6 +201,10 @@ public class OrderLine extends DbObject {
         }
     }
 
+    public boolean isItemOrderType() {
+        return getOrder() != null && getOrder().getDistributorType().equals(DistributorType.Items);
+    }
+
     //
     // Getters, setters
     //
