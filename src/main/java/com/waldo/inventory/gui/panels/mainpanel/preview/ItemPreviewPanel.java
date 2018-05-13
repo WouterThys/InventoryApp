@@ -100,7 +100,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (object != null) {
             if (object instanceof Item) {
                 Item item = (Item) object;
-                //imagePanel.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
                 if (item.getIconPath().isEmpty()) {
                     imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
                 } else {
@@ -111,8 +110,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 starRater.setRating(item.getRating());
             } else if (object instanceof OrderLine) {
                 OrderLine orderLine = (OrderLine) object;
-                //ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
-                //imagePanel.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
                 nameTf.setText(orderLine.getName());
                 descriptionTa.setText(orderLine.getPcb().getDescription());
                 starRater.setRating(0);
@@ -284,16 +281,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     @Override
     public void initializeComponents() {
-//        // Label
-//        imagePanel = new ILabel();
-//        imagePanel.setBackground(Color.WHITE);
-//        imagePanel.setOpaque(true);
-//        imagePanel.setHorizontalAlignment(ILabel.CENTER);
-//        imagePanel.setVerticalAlignment(ILabel.CENTER);
-//        imagePanel.setPreferredSize(new Dimension(150,150));
-//        imagePanel.setMaximumSize(new Dimension(150,150));
-//        imagePanel.setMinimumSize(new Dimension(150,150));
-
+        // Image
         imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150,150));
 
         // Data

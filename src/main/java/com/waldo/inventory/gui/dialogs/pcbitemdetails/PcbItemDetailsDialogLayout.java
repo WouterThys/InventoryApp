@@ -156,7 +156,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
     private JPanel createProjectHeader() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(GuiUtils.createTitleBorder("Project"));
+        panel.setBorder(GuiUtils.createInlineTitleBorder("Project"));
 
         JPanel infoPnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
@@ -171,7 +171,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
     private JPanel createPcbItemInfo() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(GuiUtils.createTitleBorder("Pcb item"));
+        panel.setBorder(GuiUtils.createInlineTitleBorder("Pcb item"));
 
         // Info
         JPanel infoPnl = new JPanel();
@@ -197,7 +197,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
     private JPanel createReferencesPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(GuiUtils.createTitleBorder("References"));
+        panel.setBorder(GuiUtils.createInlineTitleBorder("References"));
 
         JPanel itemPnl = new JPanel(new BorderLayout());
         JToolBar itemTb = new JToolBar();

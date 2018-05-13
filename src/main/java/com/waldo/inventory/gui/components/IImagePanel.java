@@ -76,8 +76,10 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
     }
 
     public void setImage(String name) {
-        setImageName(name);
-        updateComponents();
+        if (name == null || !name.equalsIgnoreCase(getImageName())) {
+            setImageName(name);
+            updateComponents();
+        }
     }
 
 
@@ -126,7 +128,7 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
                 } catch (UnsupportedFlavorException | IOException e) {
                     e.printStackTrace();
                 }
-                if (transferData != null && transferData instanceof BufferedImage) {
+                if (transferData instanceof BufferedImage) {
                     BufferedImage image = (BufferedImage) transferData;
 
                     if (editedListener != null) {
@@ -290,7 +292,9 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         imageToolbar.setOrientation(JToolBar.VERTICAL);
         imageToolbar.setVisible(editable);
 
-        setToolTipText(getImageName());
+        if (!getImageName().isEmpty()) {
+            setToolTipText(getImageName());
+        }
     }
 
     @Override
