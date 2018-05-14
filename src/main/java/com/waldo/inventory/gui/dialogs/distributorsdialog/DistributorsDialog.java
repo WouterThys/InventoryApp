@@ -134,6 +134,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         orderFileTbPnl.add(GuiUtils.createNewToolbar(deleteOrderFileAa, editOrderFileAa), BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(orderFlowTable);
+        scrollPane.setPreferredSize(new Dimension(400,200));
         orderFlowPanel.add(orderFlowTbPnl, BorderLayout.SOUTH);
         orderFlowPanel.add(scrollPane, BorderLayout.CENTER);
         orderFlowPanel.setBorder(GuiUtils.createInlineTitleBorder("Order flow"));
@@ -190,6 +191,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
     @Override
     protected void setDetails(Distributor distributor) {
+        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
         if (distributor != null) {
             detailName.setText(distributor.getName());
             browseDistributorPanel.setText(distributor.getWebsite());
@@ -205,7 +207,6 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         } else {
             detailName.clearText();
             browseDistributorPanel.clearText();
-            detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
             distributorTypeCb.setSelectedItem(null);
             tableModel.clearItemList();
             browseOrderLinkPanel.clearText();
