@@ -261,13 +261,6 @@ public abstract class DbObject {
     public String getIconPath() {
         if (iconPath == null) {
             iconPath = "";
-        } else {
-            if (iconPath.contains(".png")) {
-                iconPath = iconPath.replace(".png", ".jpg");
-            }
-            if (iconPath.contains(".jpeg")) {
-                iconPath = iconPath.replace(".jpeg", ".jpg");
-            }
         }
         return iconPath;
     }

@@ -122,7 +122,9 @@ public class ImageResource extends Resource implements Client.ImageClientListene
                     case DivisionImage:
                         //fromMap(divisio)
                         break;
-
+                    case Other:
+                        fromMap(otherImageMap, imageRequester);
+                        break;
                     default:
                         break;
                 }

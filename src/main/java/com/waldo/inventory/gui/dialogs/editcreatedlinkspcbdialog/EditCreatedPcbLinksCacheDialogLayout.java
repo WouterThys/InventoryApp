@@ -1,14 +1,15 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.ICacheDialog;
+import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbLinkTableModel;
+import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
@@ -16,8 +17,6 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -35,7 +34,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     private ITextField pcbNameTf;
     private ITextField pcbCreatedTf;
     private ITextField pcbSolderedTf;
-    ILabel pcbImageLbl;
+    private IImagePanel pcbImagePanel;
 
 
     // Link panel
@@ -65,7 +64,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    ProjectPcb projectPcb;
+    private ProjectPcb projectPcb;
     CreatedPcb createdPcb;
     CreatedPcbLink selectedLink;
 
@@ -82,7 +81,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    abstract void onImageIconDoubleClicked(CreatedPcb createdPcb, ILabel imageLabel);
+
     abstract void onAutoCalculateUsed(CreatedPcbLink link);
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
@@ -141,22 +140,15 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
             pcbCreatedTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
             pcbSolderedTf.setText(DateUtils.formatDateTime(createdPcb.getDateSoldered()));
             if (!createdPcb.getIconPath().isEmpty()) {
-                try {
-                    ImageIcon icon = imageResource.fetchImage(createdPcb.getIconPath());
-                    if (icon != null) {
-                        icon = ImageResource.scaleImage(icon, pcbImageLbl.getSize());//new Dimension(250,100));
-                    }
-                    pcbImageLbl.setIcon(icon);
-                } catch (Exception e) {
-                    //
-                }
+                pcbImagePanel.setImage(createdPcb.getIconPath());
             } else {
-                pcbImageLbl.setIcon(null);
+                pcbImagePanel.setImage((ImageIcon)null);
             }
         } else {
             pcbNameTf.setText("");
             pcbCreatedTf.setText("");
             pcbSolderedTf.setText("");
+            pcbImagePanel.setImage((ImageIcon)null);
         }
         updateLinkInfo(link);
     }
@@ -225,7 +217,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         mainPnl.add(infoPnl, BorderLayout.CENTER);
         mainPnl.add(tbPanel, BorderLayout.PAGE_START);
 
-        panel.add(pcbImageLbl, BorderLayout.WEST);
+        panel.add(pcbImagePanel, BorderLayout.WEST);
         panel.add(mainPnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.gray, 1),
@@ -288,19 +280,21 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         pcbNameTf = new ITextField(false);
         pcbCreatedTf = new ITextField(false);
         pcbSolderedTf = new ITextField(false);
-        pcbImageLbl = new ILabel();
-        pcbImageLbl.setMinimumSize(new Dimension(200, 90));
-        pcbImageLbl.setPreferredSize(new Dimension(250, 100));
-        pcbImageLbl.setMaximumSize(new Dimension(300, 120));
-        pcbImageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 2));
-        pcbImageLbl.addMouseListener(new MouseAdapter() {
+
+        IEditedListener editedListener = new IEditedListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    onImageIconDoubleClicked(createdPcb, pcbImageLbl);
+            public void onValueChanged(Component component, String s, Object o, Object o1) {
+                if (createdPcb != null) {
+                    createdPcb.save();
                 }
             }
-        });
+            @Override
+            public Object getGuiObject() {
+                return createdPcb;
+            }
+        };
+
+        pcbImagePanel = new IImagePanel(this, ImageType.Other, "", editedListener, new Dimension(250, 170));
 
         tableModel = new ICreatedPcbLinkTableModel();
         createdPcbTable = new ITable<>(tableModel);

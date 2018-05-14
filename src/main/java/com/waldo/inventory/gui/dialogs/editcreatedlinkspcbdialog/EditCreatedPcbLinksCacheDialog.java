@@ -7,11 +7,9 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
-import com.waldo.inventory.gui.dialogs.filechooserdialog.ImageFileChooser;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
-import com.waldo.utils.icomponents.ILabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +17,6 @@ import java.awt.event.WindowEvent;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.waldo.inventory.gui.Application.imageResource;
 
 public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDialogLayout implements CacheChangedListener<CreatedPcbLink> {
 
@@ -404,25 +400,6 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                 createdPcb.setDateSoldered((Date)null);
                 createdPcb.save();
                 updateComponents();
-            }
-        }
-    }
-
-    @Override
-    void onImageIconDoubleClicked(CreatedPcb createdPcb, ILabel imageLabel) {
-        JFileChooser fileChooser = ImageFileChooser.getFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-        if (fileChooser.showDialog(parent, "Open") == JFileChooser.APPROVE_OPTION) {
-            String iconPath = fileChooser.getSelectedFile().getPath();
-            if (!iconPath.isEmpty()) {
-                createdPcb.setIconPath(iconPath);
-                createdPcb.save();
-                try {
-                    pcbImageLbl.setIcon(imageResource.fetchImage(createdPcb.getIconPath()));
-                } catch (Exception e) {
-                    //
-                }
             }
         }
     }
