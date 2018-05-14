@@ -26,7 +26,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IImagePanel iconLbl;
+    private IImagePanel imagePanel;
 
     private ITextField nameTf;
     private ITextField directoryTf;
@@ -62,16 +62,17 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
 
         initializeComponents();
         initializeLayouts();
+        updateComponents();
     }
 
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void updateIcon(ProjectObject project) {
-        if (project != null) {
-            iconLbl.setImage(project.getIconPath());
+    private void updateIcon(ProjectObject projectObject) {
+        if (projectObject != null && projectObject.getProject() != null) {
+            imagePanel.setImage(projectObject.getProject().getIconPath());
         } else {
-            iconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
+            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
         }
     }
 
@@ -109,8 +110,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
 
     private JPanel createIconPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(iconLbl, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        panel.add(imagePanel, BorderLayout.CENTER);
         return panel;
     }
 
@@ -204,7 +204,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        iconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
 
         nameTf = new ITextField(false);
         directoryTf = new ITextField(false);

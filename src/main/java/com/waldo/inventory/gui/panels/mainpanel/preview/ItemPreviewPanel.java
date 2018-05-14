@@ -2,15 +2,13 @@ package com.waldo.inventory.gui.panels.mainpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.IDivisionPanel;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
-import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
 import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
@@ -41,16 +39,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private AbstractAction orderAa;
     private AbstractAction historyAa;
 
-    // Order
-    private ITextField amountTf;
-    private ITextField priceTf;
-    private ITextField referenceTf;
-
-    private IActions.EditAction editPriceAction;
-    private IActions.PlusOneAction plusOneAction;
-    private IActions.MinOneAction minOneAction;
-    private IActions.EditAction editReferenceAction;
-
     private IdBToolBar dbToolbar;
 
 
@@ -58,19 +46,13 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Item selectedItem;
-    private OrderLine selectedOrderLine;
-
     private final ItemDetailListener itemDetailListener;
-    private final OrderDetailListener orderDetailListener;
-    private final boolean isOrderType;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected ItemPreviewPanel(ItemDetailListener itemDetailListener, OrderDetailListener orderDetailListener) {
+    protected ItemPreviewPanel(ItemDetailListener itemDetailListener) {
         this.itemDetailListener = itemDetailListener;
-        this.orderDetailListener = orderDetailListener;
-        this.isOrderType = orderDetailListener != null;
         initializeComponents();
         initializeLayouts();
     }
@@ -78,70 +60,43 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     /*
      *                  PRIVATE METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private void updateToolbar(DbObject object) {
-        if (object != null) {
-            if (object instanceof Item) {
-                Item item = (Item) object;
-                aliasLbl.setText(item.getAlias());
-
-                if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
-                    dataSheetAa.setEnabled(false);
-                } else {
-                    dataSheetAa.setEnabled(true);
-                }
-            } else if (object instanceof OrderLine) {
-                aliasLbl.setText("");
-                dataSheetAa.setEnabled(false);
-            }
-        }
-    }
-
-    private void updateHeader(DbObject object) {
-        if (object != null) {
-            if (object instanceof Item) {
-                Item item = (Item) object;
-                //imagePanel.setIcon(ImageResource.scaleImage(item.getItemIcon(), new Dimension(150, 150)));
-                if (item.getIconPath().isEmpty()) {
-                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
-                } else {
-                    imagePanel.setImage(item.getIconPath());
-                }
-                nameTf.setText(item.toString());
-                descriptionTa.setText(item.getDescription());
-                starRater.setRating(item.getRating());
-            } else if (object instanceof OrderLine) {
-                OrderLine orderLine = (OrderLine) object;
-                //ImageIcon icon = imageResource.readProjectIcon(orderLine.getPcb().getProject().getIconPath());
-                //imagePanel.setIcon(ImageResource.scaleImage(icon, new Dimension(150,150)));
-                nameTf.setText(orderLine.getName());
-                descriptionTa.setText(orderLine.getPcb().getDescription());
-                starRater.setRating(0);
-            }
-        }
-    }
-
-    private void updateData(Item item, OrderLine orderLine) {
-        if (!isOrderType) {
-            divisionPnl.updateComponents(item.getDivision());
-        } else {
-            if (orderLine != null) {
-                amountTf.setText(String.valueOf(orderLine.getAmount()));
-                if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                    priceTf.setText(orderLine.getPrice().toString());
-                    referenceTf.setText(orderLine.getDistributorPartLink().getReference());
-                } else {
-                    priceTf.setText("");
-                    referenceTf.setText("");
-                }
-                boolean locked = orderLine.isLocked();
-                editPriceAction.setEnabled(!locked);
-                editReferenceAction.setEnabled(!locked);
-                plusOneAction.setEnabled(!locked);
-                minOneAction.setEnabled(!locked);
-            }
-        }
-
+    private void updateToolbar(Item item) {
         if (item != null) {
+            aliasLbl.setText(item.getAlias());
+
+            if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
+                dataSheetAa.setEnabled(false);
+            } else {
+                dataSheetAa.setEnabled(true);
+            }
+        } else {
+            aliasLbl.setText("");
+            dataSheetAa.setEnabled(false);
+        }
+    }
+
+    private void updateHeader(Item item) {
+        if (item != null) {
+            if (item.getIconPath().isEmpty()) {
+                imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+            } else {
+                imagePanel.setImage(item.getIconPath());
+            }
+            nameTf.setText(item.toString());
+            descriptionTa.setText(item.getDescription());
+            starRater.setRating(item.getRating());
+        } else {
+            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+            nameTf.setText("");
+            descriptionTa.setText("");
+            starRater.setRating(0);
+        }
+    }
+
+    private void updateData(Item item) {
+        if (item != null) {
+            divisionPnl.updateComponents(item.getDivision());
+
             if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
                 manufacturerTf.setText(item.getManufacturer().toString());
             } else {
@@ -159,22 +114,18 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             } else {
                 locationTf.setText("");
             }
+
         } else {
+            divisionPnl.updateComponents((Division)null);
             manufacturerTf.setText("");
             footprintTf.setText("");
             locationTf.setText("");
         }
     }
 
-    private void updateRemarks(DbObject object) {
-        if (object != null) {
-            if (object instanceof Item) {
-                Item item = (Item) object;
-                remarksTp.setFile(item.getRemarksFile());
-            } else {
-                OrderLine orderLine = (OrderLine) object;
-                remarksTp.setFile(orderLine.getPcb().getRemarksFile());
-            }
+    private void updateRemarks(Item item) {
+        if (item != null) {
+            remarksTp.setFile(item.getRemarksFile());
         } else {
             remarksTp.setText("");
         }
@@ -241,19 +192,8 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         JPanel divisionPanel = new JPanel();
         divisionPanel.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
-        if (isOrderType) {
-            gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-            JPanel amountPnl = GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction);
-            JPanel refPnl = GuiUtils.createComponentWithActions(referenceTf, editReferenceAction);
-            JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
-            gbc.addLine("Amount", imageResource.readIcon("Preview.Amount"), amountPnl);
-            gbc.addLine("Price", imageResource.readIcon("Preview.Price"), pricePnl);
-            gbc.addLine("Reference", imageResource.readIcon("Actions.OrderReference"), refPnl);
-        } else {
-            divisionPanel.setLayout(new BorderLayout());
-            divisionPanel.add(divisionPnl, BorderLayout.CENTER);
-        }
-
+        divisionPanel.setLayout(new BorderLayout());
+        divisionPanel.add(divisionPnl, BorderLayout.CENTER);
 
         JPanel infoPnl = new JPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
@@ -262,7 +202,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         gbc.addLine("Footprint", imageResource.readIcon("Packages.Menu"), footprintTf);
         gbc.addLine("Location", imageResource.readIcon("Locations.Menu"), locationTf);
 
-        //dataPnl.add(createDivisionPanel());
         dataPnl.add(divisionPanel);
         dataPnl.add(infoPnl);
 
@@ -284,16 +223,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     @Override
     public void initializeComponents() {
-//        // Label
-//        imagePanel = new ILabel();
-//        imagePanel.setBackground(Color.WHITE);
-//        imagePanel.setOpaque(true);
-//        imagePanel.setHorizontalAlignment(ILabel.CENTER);
-//        imagePanel.setVerticalAlignment(ILabel.CENTER);
-//        imagePanel.setPreferredSize(new Dimension(150,150));
-//        imagePanel.setMaximumSize(new Dimension(150,150));
-//        imagePanel.setMinimumSize(new Dimension(150,150));
-
+        // Image
         imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150,150));
 
         // Data
@@ -311,10 +241,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         descriptionTa.setEnabled(false);
         descriptionTa.setLineWrap(true);
         descriptionTa.setWrapStyleWord(true);
-
-        amountTf = new ITextField(false);
-        priceTf = new ITextField(false, 6);
-        referenceTf = new ITextField(false);
 
         starRater = new IStarRater();
         starRater.setEnabled(false);
@@ -353,47 +279,6 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         };
         historyAa.putValue(AbstractAction.SHORT_DESCRIPTION, "History");
-
-
-        // Order
-        plusOneAction = new IActions.PlusOneAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
-                    updateComponents(selectedOrderLine);
-                }
-            }
-        };
-        minOneAction = new IActions.MinOneAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
-                    updateComponents(selectedOrderLine);
-                }
-            }
-        };
-        editReferenceAction = new IActions.EditAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
-                }
-            }
-        };
-        editPriceAction = new IActions.EditAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
-                }
-            }
-        };
     }
 
     @Override
@@ -423,32 +308,16 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (args.length == 0 || args[0] == null) {
             setVisible(false);
             selectedItem = null;
-            selectedOrderLine = null;
         } else {
             setVisible(true);
             if (args[0] instanceof Item) {
                 selectedItem = (Item) args[0];
-                selectedOrderLine = null;
                 updateToolbar(selectedItem);
                 updateHeader(selectedItem);
                 updateRemarks(selectedItem);
-            } else {
-                selectedOrderLine = (OrderLine) args[0];
-                if (selectedOrderLine != null) {
-                    selectedItem = selectedOrderLine.getItem();
-                }
-                if (selectedItem != null) {
-                    updateToolbar(selectedItem);
-                    updateHeader(selectedItem);
-                    updateRemarks(selectedItem);
-                } else {
-                    updateToolbar(selectedOrderLine);
-                    updateHeader(selectedOrderLine);
-                    updateRemarks(selectedOrderLine);
-                }
             }
 
-            updateData(selectedItem, selectedOrderLine);
+            updateData(selectedItem);
         }
     }
 

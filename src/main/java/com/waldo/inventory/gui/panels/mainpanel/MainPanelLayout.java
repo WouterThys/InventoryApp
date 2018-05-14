@@ -277,7 +277,7 @@ abstract class MainPanelLayout extends JPanel implements
         // Preview
         boolean vertical = settings().getGeneralSettings().getGuiDetailsView() == Statics.GuiDetailsView.VerticalSplit;
         if (vertical) {
-            itemDetailPanel = new ItemPreviewPanel(this, null) {
+            itemDetailPanel = new ItemPreviewPanel(this) {
                 @Override
                 public void onToolBarDelete(IdBToolBar source) {
                     MainPanelLayout.this.onToolBarDelete(source);

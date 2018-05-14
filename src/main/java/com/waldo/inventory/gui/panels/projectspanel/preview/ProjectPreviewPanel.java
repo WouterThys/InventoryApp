@@ -27,32 +27,30 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private IImagePanel iconLbl;
+    private IImagePanel imagePanel;
 
     private ITextField nameTf;
     private ITextArea descriptionTa;
     private ITextField directoryTf;
     private IRemarksPanel remarksPnl;
-    //private ITextPane remarksTp;
-    //private AbstractAction editRemarksAa;
 
     private IActions.DoItAction runIdeAction;
     private IActions.BrowseFileAction openProjectFolderAction;
 
     private IdBToolBar dbToolbar;
-    protected JToolBar actionToolBar;
+    private JToolBar actionToolBar;
 
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    final Application application;
-    protected P selectedProjectObject;
+    private final Application application;
+    private P selectedProjectObject;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    protected ProjectPreviewPanel(Application application) {
+    ProjectPreviewPanel(Application application) {
         super();
         this.application = application;
         initializeComponents();
@@ -137,11 +135,15 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
     private void updateHeader(P projectObject) {
         if (projectObject != null) {
-            iconLbl.setImage(projectObject.getIconPath());
+            if (projectObject.getProject() != null) {
+                imagePanel.setImage(projectObject.getProject().getIconPath());
+            } else {
+                imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
+            }
             nameTf.setText(projectObject.toString());
             descriptionTa.setText(projectObject.getDescription());
         } else {
-            iconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
+
             nameTf.setText("");
             descriptionTa.setText("");
         }
@@ -181,11 +183,6 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     private JPanel createHeaderPanel() {
         JPanel headerPnl = new JPanel(new BorderLayout());
 
-        iconLbl.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY, 1),
-                BorderFactory.createEmptyBorder(2,2,2,2)
-        ));
-
         JScrollPane scrollPane = new JScrollPane(descriptionTa);
         scrollPane.setBorder(null);
 
@@ -195,7 +192,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         gbc.gridy = 0; gbc.weighty = 0;
         gbc.gridwidth = 1; gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        headerPnl.add(iconLbl, gbc);
+        headerPnl.add(imagePanel, gbc);
 
         // Name
         gbc.gridx = 1; gbc.weightx = 1;
@@ -243,7 +240,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     @Override
     public void initializeComponents() {
         // Image
-        iconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);

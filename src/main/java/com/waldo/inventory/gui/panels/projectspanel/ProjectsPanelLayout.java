@@ -7,11 +7,10 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.TopToolBar;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.trees.IProjectTree;
-import com.waldo.inventory.gui.panels.projectspanel.panels.code.ProjectCodePanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
+import com.waldo.inventory.gui.panels.projectspanel.panels.code.ProjectCodePanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.other.ProjectOtherPanel;
 import com.waldo.inventory.gui.panels.projectspanel.panels.pcbs.ProjectPcbPanel;
-import com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel.ProjectDetailsPanel;
 import com.waldo.inventory.managers.CacheManager;
 import com.waldo.utils.icomponents.ILabel;
 
@@ -45,7 +44,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     IdBToolBar projectsToolBar;
-    private ProjectDetailsPanel detailsPanel;
+    //private ProjectDetailsPanel detailsPanel;
 
     JTabbedPane tabbedPane;
     private ProjectCodePanel projectCodePanel;
@@ -81,7 +80,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     }
 
     void updateVisibleComponents() {
-        detailsPanel.updateComponents(getSelectedProjectObject());
+        //detailsPanel.updateComponents(getSelectedProjectObject());
     }
 
     void updateToolBar() {
@@ -192,7 +191,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         });
 
         // Details
-        detailsPanel = new ProjectDetailsPanel(application);
+        //detailsPanel = new ProjectDetailsPanel(application);
 
         // Tabs
         tabbedPane = new JTabbedPane();
@@ -234,10 +233,10 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Panels
         JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
-        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(2, 3, 2, 3),
-                BorderFactory.createLineBorder(Color.GRAY, 1)
-        ));
+//        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
+//                BorderFactory.createEmptyBorder(2, 3, 2, 3),
+//                BorderFactory.createLineBorder(Color.GRAY, 1)
+//        ));
 
         projectsTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectsTree);
@@ -283,6 +282,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     @Override
     public void onSelected(ProjectObject selectedObject) {
-        detailsPanel.updateComponents(selectedObject);
+        //detailsPanel.updateComponents(selectedObject);
     }
 }
