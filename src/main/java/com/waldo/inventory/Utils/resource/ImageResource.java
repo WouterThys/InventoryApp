@@ -271,7 +271,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
             client = new Client(imageServerSettings.getImageServerName(), imageServerSettings.getConnectAsName());
             client.addImageClientListener(this);
-            client.connectClient(imageServerSettings.getConnectAsName());
+            client.connectClient();
         }
     }
 
