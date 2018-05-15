@@ -134,7 +134,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
             selectedLink = link;
             updateLinkInfo(link);
             updateEnabledComponents();
-            updateTable();
+            updateLinkTable();
         }
     }
 
@@ -145,7 +145,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
             selectedLink = link;
             updateLinkInfo(link);
             updateEnabledComponents();
-            updateTable();
+            updateLinkTable();
         }
     }
 
@@ -446,7 +446,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         if (selectedLink != null) {
             selectedLink.save();
         }
-        //updateTable();
+        //updateLinkTable();
     }
 
     @Override

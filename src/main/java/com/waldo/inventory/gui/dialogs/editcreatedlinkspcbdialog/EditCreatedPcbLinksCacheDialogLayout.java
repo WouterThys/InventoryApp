@@ -4,10 +4,12 @@ import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.SolderItem;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbLinkTableModel;
+import com.waldo.inventory.gui.components.tablemodels.ISolderItemTableModel;
 import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
@@ -25,8 +27,11 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ICreatedPcbLinkTableModel tableModel;
-    private ITable<CreatedPcbLink> createdPcbTable;
+    private ICreatedPcbLinkTableModel linkTableModel;
+    private ITable<CreatedPcbLink> linkTable;
+
+    private ISolderItemTableModel solderTableModel;
+    private ITable<SolderItem> solderItemTable;
 
     // Created pcb
     private ITextField projectPcbTf;
@@ -115,13 +120,13 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         removeAllAction.setEnabled(isSoldered);
     }
 
-    private void initTable() {
-        tableModel.setItemList(createdPcb.getCreatedPcbLinks());
-        createdPcbTable.setPreferredScrollableViewportSize(createdPcbTable.getPreferredSize());
+    private void initLinkTable() {
+        linkTableModel.setItemList(createdPcb.getCreatedPcbLinks());
+        linkTable.setPreferredScrollableViewportSize(linkTable.getPreferredSize());
     }
 
-    void updateTable() {
-        tableModel.updateTable();
+    void updateLinkTable() {
+        linkTableModel.updateTable();
     }
 
     CreatedPcbLink getSelectedLink() {
@@ -260,10 +265,14 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     private JPanel createPcbItemsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        JScrollPane scrollPane = new JScrollPane(createdPcbTable);
-        scrollPane.setPreferredSize(new Dimension(600, 400));
+        JScrollPane linkScrollPane = new JScrollPane(linkTable);
+        //scrollPane.setPreferredSize(new Dimension(600, 400));
+        JScrollPane solderScollPane = new JScrollPane(solderItemTable);
 
-        panel.add(scrollPane);
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, linkScrollPane, solderScollPane);
+        split.setOneTouchExpandable(true);
+
+        panel.add(split, BorderLayout.CENTER);
 
         return panel;
     }
@@ -296,16 +305,27 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
 
         pcbImagePanel = new IImagePanel(this, ImageType.Other, "", editedListener, new Dimension(250, 170));
 
-        tableModel = new ICreatedPcbLinkTableModel();
-        createdPcbTable = new ITable<>(tableModel);
-        createdPcbTable.setPreferredScrollableViewportSize(createdPcbTable.getPreferredSize());
-        createdPcbTable.getSelectionModel().addListSelectionListener(e -> {
+        linkTableModel = new ICreatedPcbLinkTableModel();
+        linkTable = new ITable<>(linkTableModel);
+        linkTable.setPreferredScrollableViewportSize(linkTable.getPreferredScrollableViewportSize());
+        linkTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                selectedLink = createdPcbTable.getSelectedItem();
+                selectedLink = linkTable.getSelectedItem();
                 updateLinkInfo(selectedLink);
                 updateEnabledComponents();
             }
         });
+
+        solderTableModel = new ISolderItemTableModel();
+        solderItemTable = new ITable<>(solderTableModel);
+        solderItemTable.setPreferredScrollableViewportSize(solderItemTable.getPreferredScrollableViewportSize());
+        solderItemTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // set soldered items for link
+                updateEnabledComponents();
+            }
+        });
+
 
         stateLbl = new ILabel("Ok", CreatedPcbLinkState.Ok.getImageIcon(), SwingConstants.CENTER);
         stateLbl.setAlignmentX(CENTER_ALIGNMENT);
@@ -423,10 +443,10 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
 
     @Override
     public void updateComponents(Object... args) {
-        initTable();
+        initLinkTable();
 
         updateInfo(projectPcb, createdPcb, selectedLink);
-        createdPcbTable.resizeColumns();
+        linkTable.resizeColumns();
         updateEnabledComponents();
     }
 }
