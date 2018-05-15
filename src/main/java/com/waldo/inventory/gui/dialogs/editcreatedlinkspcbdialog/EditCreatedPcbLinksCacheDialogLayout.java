@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
-import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
-import com.waldo.inventory.classes.dbclasses.CreatedPcb;
-import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
-import com.waldo.inventory.classes.dbclasses.SolderItem;
+import com.waldo.inventory.Utils.Statics.SolderItemState;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -18,6 +15,9 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -40,27 +40,26 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     private ITextField pcbSolderedTf;
     private IImagePanel pcbImagePanel;
 
-
-    // Link panel
-    private ILabel stateLbl;
+    // Link
     private ITextField pcbItemTf;
     private ITextField linkedItemTf;
-    private ITextField usedItemTf;
-    private SpinnerNumberModel usedAmountSpModel;
-    ISpinner usedAmountSp;
+
+    // Soldered item
     private ITextPane remarksTp;
 
-    // Pcb actions
-    private IActions.AutoCalculateUsedAction autoCalculateUsedAction;
+    private IActions.SearchAction searchUsedItemAction;
+    private IActions.DeleteAction deleteUsedItemAction;
+    private IActions.NotUsedAction notUsedAction;
+    private IActions.SolderedAction solderedAction;
+    private IActions.DesolderedAction desolderedAction;
+    private AbstractAction editRemarksAa;
 
     // Pcb item actions
     private IActions.EditAction editItemAction;
-    private IActions.SearchAction searchUsedItemAction;
-    private IActions.DeleteAction deleteUsedItemAction;
+
+    // Created pcb actions
     private IActions.UseAction createPcbAction;
     private IActions.DeleteAction destroyPcbAction;
-    private IActions.NotUsedAction notUsedAction;
-    private AbstractAction editRemarksAa;
     private IActions.WizardAction wizardAction;
     private IActions.RemoveAllAction removeAllAction;
     private IActions.DoItAction calculatePriceAction;
@@ -85,13 +84,16 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    abstract void onLinkTableDoubleClicked();
+    abstract void onSolderTableDoubleClicked();
 
-    abstract void onAutoCalculateUsed(CreatedPcbLink link);
     abstract void onEditItem(CreatedPcbLink link);
     abstract void onSearchUsedItem(CreatedPcbLink link);
-    abstract void onDeleteUsedItem(CreatedPcbLink link);
-    abstract void onNotUsed(CreatedPcbLink link);
-    abstract void onEditRemark(CreatedPcbLink link);
+    abstract void onDeleteUsedItem();
+    abstract void onNotUsed();
+    abstract void onSoldered();
+    abstract void onDesoldered();
+    abstract void onEditRemark(SolderItem solderItem);
 
     abstract void onCreatePcb(CreatedPcb createdPcb);
     abstract void onDestroyPcb(CreatedPcb createdPcb);
@@ -102,31 +104,71 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     void updateEnabledComponents() {
         boolean enabled = selectedLink != null;
         boolean hasLink = enabled && selectedLink.getPcbItemItemLink() != null;
-        boolean hasUsed = false; // TODO enabled && selectedLink.getUsedItemId() > DbObject.UNKNOWN_ID;
         boolean isSoldered = createdPcb != null && createdPcb.isSoldered();
+        boolean oneSelected = solderItemTable.getSelectedItem() != null;
+        boolean moreSelected = solderItemTable.getSelectedItems().size() > 0;
 
         editItemAction.setEnabled(hasLink);
-        searchUsedItemAction.setEnabled(!isSoldered && enabled);
-        deleteUsedItemAction.setEnabled(!isSoldered && hasUsed);
-        notUsedAction.setEnabled(enabled && !isSoldered && !selectedLink.getState().equals(CreatedPcbLinkState.NotUsed));
 
-        autoCalculateUsedAction.setEnabled(!isSoldered && hasUsed);
-        usedAmountSp.setEnabled(!isSoldered && hasUsed);
+        editRemarksAa.setEnabled(oneSelected);
+        searchUsedItemAction.setEnabled(oneSelected || moreSelected);
+        deleteUsedItemAction.setEnabled(false);
+        notUsedAction.setEnabled(false);
+        solderedAction.setEnabled(false);
+        desolderedAction.setEnabled(false);
+        if (moreSelected) {
+            for (SolderItem solderItem : getSelectedSolderItems()) {
+                if (solderItem.getUsedItemId() > DbObject.UNKNOWN_ID) {
+                    deleteUsedItemAction.setEnabled(true);
+                }
+                if (solderItem.getState() != SolderItemState.NotUsed) {
+                    notUsedAction.setEnabled(true);
+                }
+                if (solderItem.getUsedItemId() > DbObject.UNKNOWN_ID && solderItem.getState() != SolderItemState.Soldered) {
+                    solderedAction.setEnabled(true);
+                }
+                if (solderItem.getState() == SolderItemState.Soldered) {
+                    desolderedAction.setEnabled(true);
+                }
+            }
+        }
 
         createPcbAction.setEnabled(!isSoldered);
         destroyPcbAction.setEnabled(isSoldered);
         calculatePriceAction.setEnabled(isSoldered);
-        editRemarksAa.setEnabled(enabled);
         removeAllAction.setEnabled(isSoldered);
     }
 
-    private void initLinkTable() {
-        linkTableModel.setItemList(createdPcb.getCreatedPcbLinks());
-        linkTable.setPreferredScrollableViewportSize(linkTable.getPreferredSize());
+    private void initLinkTable(CreatedPcb createdPcb) {
+        if (createdPcb != null) {
+            linkTableModel.setItemList(createdPcb.getCreatedPcbLinks());
+        } else {
+            linkTableModel.clearItemList();
+        }
+    }
+
+    private void initSolderItemTable(CreatedPcbLink link) {
+        if (link != null) {
+            solderTableModel.setItemList(link.getSolderItems());
+        } else {
+            solderTableModel.clearItemList();
+        }
+    }
+
+    List<SolderItem> getSelectedSolderItems() {
+        return solderItemTable.getSelectedItems();
+    }
+
+    SolderItem getSelectedSolderItem() {
+        return solderItemTable.getSelectedItem();
     }
 
     void updateLinkTable() {
         linkTableModel.updateTable();
+    }
+
+    void updateSolderTable() {
+        solderTableModel.updateTable();
     }
 
     CreatedPcbLink getSelectedLink() {
@@ -160,45 +202,21 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     void updateLinkInfo(CreatedPcbLink link) {
         pcbItemTf.setText("");
         linkedItemTf.setText("");
-        usedItemTf.setText("");
-        usedAmountSp.setTheValue(0);
-        stateLbl.setText(" ");
-        stateLbl.setIcon(null);
-        remarksTp.setFile(null);
         if (link != null) {
-            CreatedPcbLinkState state = link.getState();
-            if (state != CreatedPcbLinkState.Ok) {
-                stateLbl.setIcon(state.getImageIcon());
-                stateLbl.setForeground(state.getMessageColor());
-                StringBuilder builder = null;
-                boolean first = true;
-                for (String m : state.getMessages()) {
-                    if (first) {
-                        builder = new StringBuilder(m);
-                        first = false;
-                    } else {
-                        builder.append(", ").append(m);
-                    }
-                }
-                if (builder != null) {
-                    stateLbl.setText(builder.toString());
-                }
-            }
-
-            // TODO usedAmountSp.setTheValue(link.getUsedAmount());
-            remarksTp.setFile(link.getRemarksFile());
-
             if (link.getPcbItemProjectLink() != null) {
                 pcbItemTf.setText(link.getPcbItemProjectLink().getPrettyName());
             }
             if (link.getPcbItemItemLink() != null) {
                 linkedItemTf.setText(link.getPcbItemItemLink().getLinkedItemName());
-                usedAmountSpModel.setMaximum(link.getPcbItemItemLink().getItem().getAmount());
             }
-            // TODO
-//            if (link.getUsedItem() != null) {
-//                usedItemTf.setText(link.getUsedItem().toString());
-//            }
+        }
+    }
+
+    void updateSolderInfo(SolderItem solderItem) {
+        if (solderItem != null) {
+            remarksTp.setFile(solderItem.getRemarksFile());
+        } else {
+            remarksTp.setFile(null);
         }
     }
 
@@ -232,44 +250,85 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         return panel;
     }
 
-    private JPanel createInfoPanel() {
+    private JPanel createSolderInfoPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        JPanel infoPnl = new JPanel(new BorderLayout());
+        JToolBar toolBar = GuiUtils.createNewToolbar();
+
+        toolBar.add(solderedAction);
+        toolBar.add(desolderedAction);
+        toolBar.addSeparator();
+        toolBar.add(searchUsedItemAction);
+        toolBar.add(deleteUsedItemAction);
+        toolBar.add(notUsedAction);
+
+        JPanel toolbarPnl = new JPanel(new BorderLayout());
+        toolbarPnl.add(toolBar, BorderLayout.EAST);
+
+        JScrollPane scrollPane = new JScrollPane(remarksTp);
+        scrollPane.setPreferredSize(new Dimension(200, 100));
+
+        JPanel remarksPnl = new JPanel(new BorderLayout());
+        remarksPnl.add(GuiUtils.createNewToolbar(editRemarksAa), BorderLayout.NORTH);
+        remarksPnl.add(scrollPane, BorderLayout.CENTER);
+
+        panel.add(toolbarPnl, BorderLayout.NORTH);
+        panel.add(remarksPnl, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(1,1,1,1),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.lightGray, 1),
+                        BorderFactory.createEmptyBorder(2,10,10,10)
+                )
+        ));
+
+        return panel;
+    }
+
+    private JPanel createLinkInfoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
         ILabel pcbItemLbl = new ILabel("Pcb item: ", imageResource.readIcon("Projects.Details.Pcb"), SwingConstants.CENTER);
         ILabel linkedItemLbl = new ILabel("Linked item: ", imageResource.readIcon("Projects.Pcb.Linked"), SwingConstants.CENTER);
-        ILabel usedItemLbl = new ILabel("Used item: ", imageResource.readIcon("Projects.Pcb.Used"), SwingConstants.CENTER);
 
         JPanel pnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(pnl);
         gbc.addLine(pcbItemLbl, pcbItemTf);
         gbc.addLine(linkedItemLbl, GuiUtils.createComponentWithActions(linkedItemTf, editItemAction));
-        gbc.addLine(usedItemLbl, GuiUtils.createComponentWithActions(usedItemTf, searchUsedItemAction, deleteUsedItemAction, notUsedAction));
-        gbc.addLine("Amount: ", GuiUtils.createComponentWithActions(usedAmountSp, autoCalculateUsedAction));
 
-        JPanel remarksPnl = new JPanel(new BorderLayout());
-        remarksPnl.add(GuiUtils.createNewToolbar(editRemarksAa), BorderLayout.NORTH);
-        remarksPnl.add(new JScrollPane(remarksTp), BorderLayout.CENTER);
-
-        stateLbl.setBorder(BorderFactory.createEmptyBorder(3,5,3,5));
-
-        infoPnl.add(stateLbl, BorderLayout.NORTH);
-        infoPnl.add(pnl, BorderLayout.CENTER);
-
-        panel.add(infoPnl, BorderLayout.NORTH);
-        panel.add(remarksPnl, BorderLayout.CENTER);
+        panel.add(pnl, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(1,1,1,1),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.lightGray, 1),
+                        BorderFactory.createEmptyBorder(2,10,10,10)
+                )
+        ));
 
         return panel;
     }
 
-    private JPanel createPcbItemsPanel() {
+    private JPanel createMainPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+        JPanel eastPnl = new JPanel(new BorderLayout());
+        JPanel westPnl = new JPanel(new BorderLayout());
 
+        // Tables
         JScrollPane linkScrollPane = new JScrollPane(linkTable);
-        //scrollPane.setPreferredSize(new Dimension(600, 400));
-        JScrollPane solderScollPane = new JScrollPane(solderItemTable);
+        linkScrollPane.setPreferredSize(new Dimension(500, 500));
 
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, linkScrollPane, solderScollPane);
+        JScrollPane solderScrollPane = new JScrollPane(solderItemTable);
+        solderScrollPane.setPreferredSize(new Dimension(500, 500));
+
+        // Together
+        eastPnl.add(linkScrollPane, BorderLayout.CENTER);
+        eastPnl.add(createLinkInfoPanel(), BorderLayout.SOUTH);
+
+        westPnl.add(solderScrollPane, BorderLayout.CENTER);
+        westPnl.add(createSolderInfoPanel(), BorderLayout.SOUTH);
+
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, eastPnl, westPnl);
+        split.setResizeWeight(0.5);
         split.setOneTouchExpandable(true);
 
         panel.add(split, BorderLayout.CENTER);
@@ -307,70 +366,88 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
 
         linkTableModel = new ICreatedPcbLinkTableModel();
         linkTable = new ITable<>(linkTableModel);
-        linkTable.setPreferredScrollableViewportSize(linkTable.getPreferredScrollableViewportSize());
+        linkTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         linkTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 selectedLink = linkTable.getSelectedItem();
+                initSolderItemTable(selectedLink);
                 updateLinkInfo(selectedLink);
                 updateEnabledComponents();
+            }
+        });
+        linkTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() >= 2) {
+                    onLinkTableDoubleClicked();
+                }
             }
         });
 
         solderTableModel = new ISolderItemTableModel();
         solderItemTable = new ITable<>(solderTableModel);
-        solderItemTable.setPreferredScrollableViewportSize(solderItemTable.getPreferredScrollableViewportSize());
         solderItemTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                // set soldered items for link
+                updateSolderInfo(solderItemTable.getSelectedItem());
                 updateEnabledComponents();
             }
         });
+        solderItemTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() >= 2) {
+                    onSolderTableDoubleClicked();
+                }
+            }
+        });
 
-
-        stateLbl = new ILabel("Ok", CreatedPcbLinkState.Ok.getImageIcon(), SwingConstants.CENTER);
-        stateLbl.setAlignmentX(CENTER_ALIGNMENT);
-        stateLbl.setAlignmentY(CENTER_ALIGNMENT);
         pcbItemTf = new ITextField(false);
         linkedItemTf = new ITextField(false);
-        usedItemTf = new ITextField(false);
-
-        usedAmountSpModel = new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1);
-        usedAmountSp = new ISpinner(usedAmountSpModel);
-        usedAmountSp.addEditedListener(this, "usedAmount");
 
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
 
-        autoCalculateUsedAction = new IActions.AutoCalculateUsedAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onAutoCalculateUsed(selectedLink);
-            }
-        };
+        // Pcb item actions
         editItemAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onEditItem(selectedLink);
             }
         };
-        searchUsedItemAction = new IActions.SearchAction() {
+
+        // Soldered item actions
+        searchUsedItemAction = new IActions.SearchAction(imageResource.readIcon("Actions.M.Search")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSearchUsedItem(selectedLink);
             }
         };
-        deleteUsedItemAction = new IActions.DeleteAction() {
+        deleteUsedItemAction = new IActions.DeleteAction(imageResource.readIcon("Actions.M.Delete")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onDeleteUsedItem(selectedLink);
+                onDeleteUsedItem();
             }
         };
         notUsedAction = new IActions.NotUsedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onNotUsed(selectedLink);
+                onNotUsed();
             }
         };
+        solderedAction = new IActions.SolderedAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onSoldered();
+            }
+        };
+        desolderedAction = new IActions.DesolderedAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDesoldered();
+            }
+        };
+
+        // Created pcb action
         createPcbAction = new IActions.UseAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -392,7 +469,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onEditRemark(selectedLink);
+                onEditRemark(solderItemTable.getSelectedItem());
             }
         };
         editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
@@ -425,26 +502,18 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     public void initializeLayouts() {
         getContentPanel().setLayout(new BorderLayout());
 
-        JPanel infoPanel = createInfoPanel();
         JPanel headerPanel = createHeaderPanel();
-        JPanel pcbItemsPanel = createPcbItemsPanel();
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        JSplitPane centerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pcbItemsPanel, infoPanel);
-        centerSplitPane.setResizeWeight(1);
-
-        mainPanel.add(centerSplitPane, BorderLayout.CENTER);
+        JPanel pcbItemsPanel = createMainPanel();
 
         getContentPanel().add(headerPanel, BorderLayout.NORTH);
-        getContentPanel().add(mainPanel, BorderLayout.CENTER);
+        getContentPanel().add(pcbItemsPanel, BorderLayout.CENTER);
 
         pack();
     }
 
     @Override
     public void updateComponents(Object... args) {
-        initLinkTable();
-
+        initLinkTable(createdPcb);
         updateInfo(projectPcb, createdPcb, selectedLink);
         linkTable.resizeColumns();
         updateEnabledComponents();

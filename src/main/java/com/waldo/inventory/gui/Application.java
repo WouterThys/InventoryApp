@@ -252,7 +252,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 message = error + " error";
             }
             if (object != null) {
-                title = error + " error on " + object.getName();
+                title = error + " error on " + object.getClass().getSimpleName() + " " + object.getName();
             } else {
                 title = error + " error";
             }

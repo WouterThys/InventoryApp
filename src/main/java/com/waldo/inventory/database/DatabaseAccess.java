@@ -1328,6 +1328,7 @@ public class DatabaseAccess {
 
                     si.setCreatedPcbLinkId(rs.getLong("createdPcbLinkId"));
                     si.setUsedItemId(rs.getLong("usedItemId"));
+                    si.setState(rs.getInt("state"));
                     si.setNumTimesSoldered(rs.getInt("numTimesSoldered"));
                     si.setNumTimesDesoldered(rs.getInt("numTimesDesoldered"));
 

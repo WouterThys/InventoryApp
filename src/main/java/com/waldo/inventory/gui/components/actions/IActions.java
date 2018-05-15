@@ -25,6 +25,9 @@ public class IActions {
         protected DeleteAction() {
             super("Delete", imageResource.readIcon("Actions.Delete"));
         }
+        protected DeleteAction(ImageIcon imageIcon) {
+            super("Delete", imageIcon);
+        }
     }
 
     public static abstract class SaveAction extends IAbstractAction {
@@ -41,6 +44,10 @@ public class IActions {
     public static abstract class SearchAction extends IAbstractAction {
         protected SearchAction() {
             super("Search", imageResource.readIcon("Actions.Search"));
+            setTooltip("Search");
+        }
+        protected SearchAction(ImageIcon imageIcon) {
+            super("Search", imageIcon);
             setTooltip("Search");
         }
     }
@@ -281,7 +288,7 @@ public class IActions {
 
     public static abstract class NotUsedAction extends IAbstractAction {
         protected NotUsedAction() {
-            super("Not used", imageResource.readIcon("Actions.NotUsed"));
+            super("Not used", imageResource.readIcon("Actions.M.NotUsed"));
         }
         protected NotUsedAction(ImageIcon icon) {
             super("Not used", icon);
@@ -378,6 +385,20 @@ public class IActions {
         protected PrintAction() {
             super("Print", imageResource.readIcon("Actions.Print"));
             //setTooltip("Send content");
+        }
+    }
+
+    public static abstract class SolderedAction extends IAbstractAction {
+        protected SolderedAction() {
+            super("Set soldered", imageResource.readIcon("Actions.M.Soldered"));
+            setTooltip("Set soldered");
+        }
+    }
+
+    public static abstract class DesolderedAction extends IAbstractAction {
+        protected DesolderedAction() {
+            super("Desolder", imageResource.readIcon("Actions.M.Desoldered"));
+            setTooltip("Desoldered");
         }
     }
 }

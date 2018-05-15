@@ -1,11 +1,14 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
 import com.waldo.inventory.classes.dbclasses.Item;
+import com.waldo.inventory.classes.dbclasses.PcbItemProjectLink;
 import com.waldo.inventory.classes.dbclasses.SolderItem;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableBallPanel;
+import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -17,8 +20,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Ref", "Used"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, ILabel.class};
+    private static final String[] COLUMN_NAMES = {"", "Ref", "Value", "Used item"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, ILabel.class};
 
     public ISolderItemTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -36,7 +39,16 @@ public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
                     return solderItem.getState();
                 case 1: // Reference
                     return solderItem.toString();
-                case 2: // Used item
+                case 2:
+                    CreatedPcbLink createdLink = solderItem.getCreatedPcbLink();
+                    if (createdLink != null) {
+                        PcbItemProjectLink projectLink = createdLink.getPcbItemProjectLink();
+                        if (projectLink != null) {
+                            return projectLink.getValue();
+                        }
+                    }
+                    break;
+                case 3: // Used item
                     return solderItem.getUsedItem();
             }
         }
@@ -57,8 +69,15 @@ public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
+        private static final ImageIcon noneIcon = imageResource.readIcon("SolderState.None");
+        private static final ImageIcon solderedIcon = imageResource.readIcon("SolderState.Soldered");
+        private static final ImageIcon desolderedIcon = imageResource.readIcon("SolderState.Desoldered");
+        private static final ImageIcon noUseIcon = imageResource.readIcon("SolderState.NoUsed");
+
         private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
         private static final ImageIcon redBall = imageResource.readIcon("Ball.red");
+
+        private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, noneIcon);
         private static final ITableBallPanel itemLabel = new ITableBallPanel(Color.gray, 0, false, greenBall, "", "");
 
         private boolean first = true;
@@ -68,7 +87,7 @@ public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             if (first) {
-                TableColumn tableColumn = table.getColumnModel().getColumn(column);
+                TableColumn tableColumn = table.getColumnModel().getColumn(0);
                 tableColumn.setMaxWidth(32);
                 tableColumn.setMinWidth(32);
                 first = false;
@@ -78,8 +97,27 @@ public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
             if (value instanceof Statics.SolderItemState) {
                 Statics.SolderItemState state = (Statics.SolderItemState) value;
 
-                // Create icons for state
+                stateLabel.updateWithTableComponent(c, row, isSelected);
 
+                // Create icons for state
+                switch (state) {
+                    case None:
+                        stateLabel.setIcon(noneIcon);
+                        break;
+                    case Soldered:
+                        stateLabel.setIcon(solderedIcon);
+                        break;
+                    case Desoldered:
+                        stateLabel.setIcon(desolderedIcon);
+                        break;
+                    case NotUsed:
+                        stateLabel.setIcon(noUseIcon);
+                        break;
+                        default:
+                            stateLabel.setIcon(null);
+                            break;
+                }
+                return stateLabel;
             }
 
             // Used item

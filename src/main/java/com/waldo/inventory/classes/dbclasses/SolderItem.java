@@ -79,8 +79,9 @@ public class SolderItem extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = addBaseParameters(statement);
+        int ndx = 1;
 
+        statement.setString(ndx++, getName());
         statement.setLong(ndx++, getCreatedPcbLinkId());
         statement.setLong(ndx++, getUsedItemId());
 
@@ -113,14 +114,12 @@ public class SolderItem extends DbObject {
     @Override
     public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case Insert: {
+            case Insert:
                 cache().add(this);
                 break;
-            }
-            case Delete: {
+            case Delete:
                 cache().remove(this);
                 break;
-            }
         }
     }
 
@@ -200,6 +199,10 @@ public class SolderItem extends DbObject {
 
     public void setState(SolderItemState state) {
         this.state = state;
+    }
+
+    public void setState(int state) {
+        this.state = SolderItemState.fromInt(state);
     }
 
     public int getNumTimesSoldered() {

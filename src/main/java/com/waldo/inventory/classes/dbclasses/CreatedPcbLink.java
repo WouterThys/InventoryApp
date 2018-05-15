@@ -69,6 +69,12 @@ public class CreatedPcbLink extends DbObject {
         switch (changedHow) {
             case Insert: {
                 cache().add(this);
+
+                for (SolderItem solderItem : getSolderItems()) {
+                    solderItem.setCreatedPcbLinkId(getId());
+                    solderItem.save();
+                }
+
                 break;
             }
             case Delete: {
