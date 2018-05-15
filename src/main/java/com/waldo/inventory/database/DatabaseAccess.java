@@ -1286,8 +1286,6 @@ public class DatabaseAccess {
 
                     p.setPcbItemProjectLinkId(rs.getLong("pcbItemProjectLinkId"));
                     p.setCreatedPcbId(rs.getLong("createdPcbId"));
-                    p.setUsedItemId(rs.getLong("usedItemId"));
-                    p.setUsedAmount(rs.getInt("usedAmount"));
 
                     if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                         p.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), p.createRemarksFileName()));
@@ -1309,6 +1307,62 @@ public class DatabaseAccess {
         }
 
         return createdPcbLinks;
+    }
+
+    public List<SolderItem> updateSolderItems() {
+        List<SolderItem> solderItems = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return solderItems;
+        }
+        Status().setMessage("Fetching SolderItem from DB");
+        SolderItem si = null;
+        String sql = scriptResource.readString(SolderItem.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    si = new SolderItem();
+                    si.setId(rs.getLong("id"));
+                    si.setName(rs.getString("name"));
+
+                    si.setCreatedPcbLinkId(rs.getLong("createdPcbLinkId"));
+                    si.setUsedItemId(rs.getLong("usedItemId"));
+                    si.setNumTimesSoldered(rs.getInt("numTimesSoldered"));
+                    si.setNumTimesDesoldered(rs.getInt("numTimesDesoldered"));
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        si.setSolderDate(rs.getTimestamp("solderDate"));
+                    } else {
+                        si.setSolderDate(DateUtils.sqLiteToDate(rs.getString("solderDate")));
+                    }
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        si.setDesolderDate(rs.getTimestamp("desolderDate"));
+                    } else {
+                        si.setDesolderDate(DateUtils.sqLiteToDate(rs.getString("desolderDate")));
+                    }
+
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        si.setRemarksFile(FileUtils.blobToFile(rs.getBlob("remarks"), si.createRemarksFileName()));
+                    } else {
+                        si.setRemarksFile(null);
+                    }
+
+                    si.setInserted(true);
+                    solderItems.add(si);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(si, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return solderItems;
     }
 
     public List<ProjectIDE> updateProjectIDEs() {

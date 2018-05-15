@@ -240,14 +240,22 @@ public class CreatedPcb extends DbObject {
 
         for (PcbItemProjectLink pipl : pcbItemList) {
             CreatedPcbLink link = findPcbItem(createdPcbLinkList, pipl.getPcbItemId());
+
             if (link != null) {
+                // Ok already there..
                 createdPcbLinkList.remove(link);
             } else {
-                link = new CreatedPcbLink(pipl.getId(), getId(), 0);
+                link = new CreatedPcbLink(pipl.getId(), getId());
+                for (String reference : pipl.getReferences()) {
+                    SolderItem solderItem = new SolderItem(reference, link);
+                    link.getSolderItems().add(solderItem);
+                }
             }
+
             createdPcbLinks.add(link);
         }
 
+        // Save links
         for (CreatedPcbLink link : createdPcbLinks) {
             link.save();
         }

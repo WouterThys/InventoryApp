@@ -9,6 +9,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -24,40 +25,26 @@ public class CreatedPcbLink extends DbObject {
     private long createdPcbId;
     private CreatedPcb createdPcb;
 
-    // Used item stuff
-    private long usedItemId;
-    private Item usedItem;
-    private int usedAmount;
-
     // Remarks
     private String remarksFile;
 
+    // Items
+    private List<SolderItem> solderItems;
 
     public CreatedPcbLink() {
         super(TABLE_NAME);
     }
 
-    public CreatedPcbLink(long pcbItemProjectLinkId, long createdPcbId, long usedItemId) {
+    public CreatedPcbLink(long pcbItemProjectLinkId, long createdPcbId) {
         this();
 
         this.pcbItemProjectLinkId = pcbItemProjectLinkId;
         this.createdPcbId = createdPcbId;
-        this.usedItemId = usedItemId;
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
-
-        if (pcbItemProjectLinkId < UNKNOWN_ID) {
-            setPcbItemProjectLinkId(UNKNOWN_ID);
-        }
-        if (createdPcbId < UNKNOWN_ID) {
-            setCreatedPcbId(UNKNOWN_ID);
-        }
-        if (usedItemId < UNKNOWN_ID) {
-            setUsedItemId(UNKNOWN_ID);
-        }
 
         statement.setLong(ndx++, getPcbItemProjectLinkId());
         statement.setLong(ndx++, getCreatedPcbId());
@@ -66,8 +53,6 @@ public class CreatedPcbLink extends DbObject {
         } else {
             statement.setLong(ndx++, UNKNOWN_ID);
         }
-        statement.setLong(ndx++, getUsedItemId());
-        statement.setInt(ndx++, getUsedAmount());
 
         SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
         if (blob != null) {
@@ -104,60 +89,52 @@ public class CreatedPcbLink extends DbObject {
         copyBaseFields(cpy);
         cpy.setPcbItemProjectLinkId(getPcbItemProjectLinkId());
         cpy.setCreatedPcbId(getCreatedPcbId());
-        cpy.setUsedItemId(getUsedItemId());
-        cpy.setUsedAmount(getUsedAmount());
         return cpy;
     }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj != null && obj instanceof CreatedPcb) {
-//            CreatedPcb ref = (CreatedPcb) obj;
-//
-//            return ref.getProjectPcbId() == getProjectPcbId();
-//        }
-//        return false;
-//    }
-
 
     public CreatedPcbLinkState getState() {
-        CreatedPcbLinkState state;
-        if (getId() < DbObject.UNKNOWN_ID) {
-            state = CreatedPcbLinkState.NotSaved;
-        } else {
-            if (getUsedAmount() == NOT_USED) {
-                state = CreatedPcbLinkState.NotUsed;
-            } else {
-                state = CreatedPcbLinkState.Ok;
-                if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
-                    state = CreatedPcbLinkState.Error;
-                    state.clearMessages();
-                    state.addMessage("No project found..");
-                } else {
-                    if (getPcbItemProjectLink().getPcbItemId() <= DbObject.UNKNOWN_ID) {
-                        state = CreatedPcbLinkState.Warning;
-                        state.addMessage("No PCB item..");
-                    }
-                    if (getPcbItemItemLink() == null) {
-                        if (state != CreatedPcbLinkState.Warning) {
-                            state = CreatedPcbLinkState.Warning;
-                            state.clearMessages();
-                        }
-                        state.addMessage("No linked item..");
-                    }
-                }
+//        CreatedPcbLinkState state;
+//        if (getId() < DbObject.UNKNOWN_ID) {
+//            state = CreatedPcbLinkState.NotSaved;
+//        } else {
+//            if (getUsedAmount() == NOT_USED) {
+//                state = CreatedPcbLinkState.NotUsed;
+//            } else {
+//                state = CreatedPcbLinkState.Ok;
+//                if (pcbItemProjectLinkId <= DbObject.UNKNOWN_ID) {
+//                    state = CreatedPcbLinkState.Error;
+//                    state.clearMessages();
+//                    state.addMessage("No project found..");
+//                } else {
+//                    if (getPcbItemProjectLink().getPcbItemId() <= DbObject.UNKNOWN_ID) {
+//                        state = CreatedPcbLinkState.Warning;
+//                        state.addMessage("No PCB item..");
+//                    }
+//                    if (getPcbItemItemLink() == null) {
+//                        if (state != CreatedPcbLinkState.Warning) {
+//                            state = CreatedPcbLinkState.Warning;
+//                            state.clearMessages();
+//                        }
+//                        state.addMessage("No linked item..");
+//                    }
+//                }
+//            }
+//            // TODO..
+//        }
+//        return state;
+        return CreatedPcbLinkState.Ok;
+    }
 
-                if (usedItemId <= DbObject.UNKNOWN_ID) {
-                    if (state != CreatedPcbLinkState.Warning) {
-                        state = CreatedPcbLinkState.Warning;
-                        state.clearMessages();
-                    }
-                    state.addMessage("No used item..");
-                }
-            }
-            // TODO..
+    public List<SolderItem> getSolderItems() {
+        if (solderItems == null) {
+            solderItems = SearchManager.sm().findSolderItemsForCreatedPcbLinkId(getId());
         }
-        return state;
+        return solderItems;
+    }
+
+    public void updateSolderItems() {
+        solderItems = null;
     }
 
     public PcbItemItemLink getPcbItemItemLink() {
@@ -172,6 +149,9 @@ public class CreatedPcbLink extends DbObject {
 
 
     public long getPcbItemProjectLinkId() {
+        if (pcbItemProjectLinkId < UNKNOWN_ID) {
+            pcbItemProjectLinkId = UNKNOWN_ID;
+        }
         return pcbItemProjectLinkId;
     }
 
@@ -206,32 +186,6 @@ public class CreatedPcbLink extends DbObject {
             createdPcb = SearchManager.sm().findCreatedPcbById(createdPcbId);
         }
         return createdPcb;
-    }
-
-    public long getUsedItemId() {
-        return usedItemId;
-    }
-
-    public void setUsedItemId(long usedItemId) {
-        if (usedItem != null && usedItem.getId() != usedItemId) {
-            usedItem = null;
-        }
-        this.usedItemId = usedItemId;
-    }
-
-    public Item getUsedItem() {
-        if (usedItem == null) {
-            usedItem = SearchManager.sm().findItemById(usedItemId);
-        }
-        return usedItem;
-    }
-
-    public int getUsedAmount() {
-        return usedAmount;
-    }
-
-    public void setUsedAmount(int usedAmount) {
-        this.usedAmount = usedAmount;
     }
 
     public String createRemarksFileName() {

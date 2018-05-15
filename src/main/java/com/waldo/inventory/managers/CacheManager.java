@@ -88,6 +88,7 @@ public class CacheManager {
     private final CacheList<ProjectOther> projectOthers = new CacheList<>();
     private final CacheList<CreatedPcb> createdPcbs = new CacheList<>();
     private final CacheList<CreatedPcbLink> createdPcbLinks = new CacheList<>();
+    private final CacheList<SolderItem> solderItems = new CacheList<>();
     private final CacheList<ParserItemLink> parserItemLinks = new CacheList<>();
     private final CacheList<Set> sets = new CacheList<>();
     private final CacheList<SetItemLink> setItemLinks = new CacheList<>();
@@ -549,6 +550,25 @@ public class CacheManager {
 
     public synchronized void remove(CreatedPcbLink element) {
         getCreatedPcbLinks().remove(element);
+    }
+
+
+    public synchronized CacheList<SolderItem> getSolderItems() {
+        if (!solderItems.isFetched()) {
+            long start = System.nanoTime();
+            solderItems.setList(db().updateSolderItems(), (System.nanoTime() - start));
+        }
+        return solderItems;
+    }
+
+    public synchronized void add(SolderItem element) {
+        if (!getSolderItems().contains(element)) {
+            solderItems.add(element);
+        }
+    }
+
+    public synchronized void remove(SolderItem element) {
+        getSolderItems().remove(element);
     }
 
 

@@ -784,6 +784,40 @@ public class Statics {
             return name;
         }
     }
+
+    public enum SolderItemState {
+        None       (0, "Nothing"),
+        Soldered   (1, "Soldered"),
+        Desoldered (2, "Desoldered"),
+        NotUsed    (3, "Not used")
+            ;
+
+        private final int intValue;
+        private final String name;
+        SolderItemState(int intValue, String name) {
+            this.intValue = intValue;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public static SolderItemState fromInt(int intValue) {
+            switch (intValue) {
+                default:
+                case 0: return None;
+                case 1: return Soldered;
+                case 2: return Desoldered;
+                case 3: return NotUsed;
+            }
+        }
+    }
 }
 
 

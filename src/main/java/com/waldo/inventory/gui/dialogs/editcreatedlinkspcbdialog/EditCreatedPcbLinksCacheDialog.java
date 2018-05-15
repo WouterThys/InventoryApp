@@ -2,12 +2,14 @@ package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Price;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
+import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
+import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
-import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -70,13 +72,13 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                 }
 
                 if (canGoOn) {
-                    for (CreatedPcbLink link : pcb.getCreatedPcbLinks()) {
-                        if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
-                            Item usedItem = link.getUsedItem();
-                            usedItem.setAmount(usedItem.getAmount() - link.getUsedAmount());
-                            usedItem.save();
-                        }
-                    }
+//                    for (CreatedPcbLink link : pcb.getCreatedPcbLinks()) {
+//                        if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
+//                            Item usedItem = link.getUsedItem();
+//                            usedItem.setAmount(usedItem.getAmount() - link.getUsedAmount());
+//                            usedItem.save();
+//                        }
+//                    } TODO
                     pcb.setDateSoldered(DateUtils.now());
                     pcb.save();
 
@@ -175,10 +177,10 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
 
     @Override
     void onAutoCalculateUsed(CreatedPcbLink link) {
-        if (link != null && link.getUsedItem() != null && link.getPcbItemProjectLink() != null) {
-            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfReferences(), link.getUsedItem().getAmount());
-            usedAmountSp.setTheValue(desired);
-        }
+//        if (link != null && link.getUsedItem() != null && link.getPcbItemProjectLink() != null) {
+//            int desired = Math.min(link.getPcbItemProjectLink().getNumberOfReferences(), link.getUsedItem().getAmount());
+//            usedAmountSp.setTheValue(desired);
+//        } TODO
     }
 
     @Override
@@ -195,12 +197,12 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
             AdvancedSearchDialog dialog = new AdvancedSearchDialog(EditCreatedPcbLinksCacheDialog.this, false);
             dialog.searchPcbItem(link.getPcbItemProjectLink());
             if (dialog.showDialog() == IDialog.OK) {
-                Item newUsedItem = dialog.getSelectedItem();
-                if (newUsedItem != null) {
-                    link.setUsedItemId(newUsedItem.getId());
-                }
-                link.setUsedAmount(0);
-                link.save();
+//                Item newUsedItem = dialog.getSelectedItem();
+//                if (newUsedItem != null) {
+//                    link.setUsedItemId(newUsedItem.getId());
+//                }
+//                link.setUsedAmount(0);
+//                link.save(); TODO
             }
         }
     }
@@ -208,19 +210,19 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     @Override
     void onDeleteUsedItem(CreatedPcbLink link) {
         if (link != null) {
-            int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
-                    "Delete used item " + link.getUsedItem() + " from PCB?",
-                    "Delete",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            if (res == JOptionPane.YES_OPTION) {
-                link.setUsedItemId(0);
-                link.setUsedAmount(0);
-                link.save();
-            }
+//            int res = JOptionPane.showConfirmDialog(
+//                    EditCreatedPcbLinksCacheDialog.this,
+//                    "Delete used item " + link.getUsedItem() + " from PCB?",
+//                    "Delete",
+//                    JOptionPane.YES_NO_OPTION,
+//                    JOptionPane.WARNING_MESSAGE
+//            );
+//
+//            if (res == JOptionPane.YES_OPTION) {
+//                link.setUsedItemId(0);
+//                link.setUsedAmount(0);
+//                link.save();
+//            } TODO
         }
     }
 
@@ -228,14 +230,14 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     void onNotUsed(CreatedPcbLink link) {
         if (link != null) {
 
-            if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
-                onDeleteUsedItem(link);
-            }
-
-            if (link.getUsedItemId() <= DbObject.UNKNOWN_ID) {
-                link.setUsedAmount(CreatedPcbLink.NOT_USED);
-                link.save();
-            }
+//            if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
+//                onDeleteUsedItem(link);
+//            }
+//
+//            if (link.getUsedItemId() <= DbObject.UNKNOWN_ID) {
+//                link.setUsedAmount(CreatedPcbLink.NOT_USED);
+//                link.save();
+//            } TODO
         }
     }
 
@@ -277,18 +279,18 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                     orderPrice = order.getOrderLines().get(0).getPrice();
                 }
 
-                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
-                    int amount = link.getUsedAmount();
-                    Item usedItem = link.getUsedItem();
-
-                    if (amount > 0 && usedItem != null) {
-                        List<DistributorPartLink> distributorPartLinks = SearchManager.sm().findDistributorPartLinksForItem(usedItem.getId());
-                        if (distributorPartLinks.size() > 0) {
-                            double v = distributorPartLinks.get(0).getPrice().getValue();
-                            itemsPrice = Price.add(itemsPrice, v * amount);
-                        }
-                    }
-                }
+//                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
+//                    int amount = link.getUsedAmount();
+//                    Item usedItem = link.getUsedItem();
+//
+//                    if (amount > 0 && usedItem != null) {
+//                        List<DistributorPartLink> distributorPartLinks = SearchManager.sm().findDistributorPartLinksForItem(usedItem.getId());
+//                        if (distributorPartLinks.size() > 0) {
+//                            double v = distributorPartLinks.get(0).getPrice().getValue();
+//                            itemsPrice = Price.add(itemsPrice, v * amount);
+//                        }
+//                    }
+//                } TODO
 
                 totalPrice = Price.add(itemsPrice, orderPrice);
 
@@ -341,23 +343,23 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                     JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
                 if (usedItemsCb.isSelected()) {
-                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
-                        if (cpl.getUsedItemId() <= DbObject.UNKNOWN_ID) {
-                            PcbItemItemLink itemItemLink = cpl.getPcbItemItemLink();
-                            if (itemItemLink != null) {
-                                cpl.setUsedItemId(itemItemLink.getItemId());
-                            }
-                        }
-                    }
+//                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
+//                        if (cpl.getUsedItemId() <= DbObject.UNKNOWN_ID) {
+//                            PcbItemItemLink itemItemLink = cpl.getPcbItemItemLink();
+//                            if (itemItemLink != null) {
+//                                cpl.setUsedItemId(itemItemLink.getItemId());
+//                            }
+//                        }
+//                    } TODO
                 }
 
                 if (usedAmountCb.isSelected()) {
-                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
-                        Item usedItem = cpl.getUsedItem();
-                        if (usedItem != null && cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
-                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfReferences()));
-                        }
-                    }
+//                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
+//                        Item usedItem = cpl.getUsedItem();
+//                        if (usedItem != null && cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
+//                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfReferences()));
+//                        }
+//                    } TODO
                 }
 
                 JOptionPane.showMessageDialog(
@@ -388,14 +390,14 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
             if (res == JOptionPane.OK_OPTION) {
                 boolean setBackAmount = setBackAmountCb.isSelected();
                 List<CreatedPcbLink> toDelete = new ArrayList<>(createdPcb.getCreatedPcbLinks());
-                for (CreatedPcbLink cpl : toDelete) {
-                    if (setBackAmount && cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
-                        Item usedItem = cpl.getUsedItem();
-                        usedItem.setAmount(usedItem.getAmount() + cpl.getUsedAmount());
-                        usedItem.save();
-                    }
-                    cpl.delete();
-                }
+//                for (CreatedPcbLink cpl : toDelete) {
+//                    if (setBackAmount && cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
+//                        Item usedItem = cpl.getUsedItem();
+//                        usedItem.setAmount(usedItem.getAmount() + cpl.getUsedAmount());
+//                        usedItem.save();
+//                    }
+//                    cpl.delete();
+//                } TODO
                 createdPcb.updateCreatedPcbLinks();
                 createdPcb.setDateSoldered((Date)null);
                 createdPcb.save();

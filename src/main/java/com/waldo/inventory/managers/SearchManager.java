@@ -602,18 +602,15 @@ public class SearchManager {
         return createdPcbList;
     }
 
-    public List<Item> findUsedItemsByCreatedPcbId(long createdPcbId) {
-        List<Item> items = new ArrayList<>();
-        if (createdPcbId > 0) {
+    public CreatedPcbLink findCreatedPcbLinkById(long linkId) {
+        if (linkId > DbObject.UNKNOWN_ID) {
             for (CreatedPcbLink cpl : cache().getCreatedPcbLinks()) {
-                if (cpl.getCreatedPcbId() == createdPcbId) {
-                    if (cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
-                        items.add(cpl.getUsedItem());
-                    }
+                if (cpl.getId() == linkId) {
+                    return cpl;
                 }
             }
         }
-        return items;
+        return null;
     }
 
     public List<CreatedPcbLink> findCreatedPcbLinksByProjectPcbId(long projectPcbId) {
@@ -640,16 +637,28 @@ public class SearchManager {
         return createdPcbLinks;
     }
 
-//    public CreatedPcbLink findCreatedPcbLink(long projectPcbId, long createdPcbId, long pcbItemId) {
-//        if (projectPcbId > 0 && createdPcbId > 0 && pcbItemId > 0) {
-//            for (CreatedPcbLink cpl : findCreatedPcbLinks(projectPcbId, createdPcbId)) {
-//                if (cpl.getPcbItemId() == pcbItemId) {
-//                    return cpl;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    public SolderItem findSolderItemById(long solderItemId) {
+        if (solderItemId > DbObject.UNKNOWN_ID) {
+            for (SolderItem solderItem : cache().getSolderItems()) {
+                if (solderItem.getId() == solderItemId) {
+                    return solderItem;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<SolderItem> findSolderItemsForCreatedPcbLinkId(long createdPcbLinkId) {
+        List<SolderItem> solderItems = new ArrayList<>();
+        if (createdPcbLinkId > DbObject.UNKNOWN_ID) {
+            for (SolderItem solderItem : cache().getSolderItems()) {
+                if (solderItem.getCreatedPcbLinkId() == createdPcbLinkId) {
+                    solderItems.add(solderItem);
+                }
+            }
+        }
+        return solderItems;
+    }
 
     public List<ProjectOther> findProjectOthersByProjectId(long projectId) {
         List<ProjectOther> projectOthers = new ArrayList<>();

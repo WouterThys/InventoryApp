@@ -3,7 +3,6 @@ package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 import com.waldo.inventory.Utils.Statics.CreatedPcbLinkState;
 import com.waldo.inventory.classes.dbclasses.CreatedPcb;
 import com.waldo.inventory.classes.dbclasses.CreatedPcbLink;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
@@ -98,7 +97,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     void updateEnabledComponents() {
         boolean enabled = selectedLink != null;
         boolean hasLink = enabled && selectedLink.getPcbItemItemLink() != null;
-        boolean hasUsed = enabled && selectedLink.getUsedItemId() > DbObject.UNKNOWN_ID;
+        boolean hasUsed = false; // TODO enabled && selectedLink.getUsedItemId() > DbObject.UNKNOWN_ID;
         boolean isSoldered = createdPcb != null && createdPcb.isSoldered();
 
         editItemAction.setEnabled(hasLink);
@@ -181,7 +180,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
                 }
             }
 
-            usedAmountSp.setTheValue(link.getUsedAmount());
+            // TODO usedAmountSp.setTheValue(link.getUsedAmount());
             remarksTp.setFile(link.getRemarksFile());
 
             if (link.getPcbItemProjectLink() != null) {
@@ -191,9 +190,10 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
                 linkedItemTf.setText(link.getPcbItemItemLink().getLinkedItemName());
                 usedAmountSpModel.setMaximum(link.getPcbItemItemLink().getItem().getAmount());
             }
-            if (link.getUsedItem() != null) {
-                usedItemTf.setText(link.getUsedItem().toString());
-            }
+            // TODO
+//            if (link.getUsedItem() != null) {
+//                usedItemTf.setText(link.getUsedItem().toString());
+//            }
         }
     }
 

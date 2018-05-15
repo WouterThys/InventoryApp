@@ -20,8 +20,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ICreatedPcbLinkTableModel extends IAbstractTableModel<CreatedPcbLink> {
 
-    private static final String[] COLUMN_NAMES = {"", "PCB item", "Linked item", "Used item", "Used"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class, ILabel.class, String.class};
+    private static final String[] COLUMN_NAMES = {"", "PCB item", "Linked item"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class};
 
     public ICreatedPcbLinkTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -40,14 +40,6 @@ public class ICreatedPcbLinkTableModel extends IAbstractTableModel<CreatedPcbLin
                     return link.getPcbItemProjectLink();
                 case 2: // Linked item
                     return link.getPcbItemItemLink();
-                case 3: // Used item
-                    return link.getUsedItem();
-                case 4:
-                    if (link.getUsedAmount() >= 0) {
-                        return String.valueOf(link.getUsedAmount());
-                    } else {
-                        return "/";
-                    }
             }
         }
         return null;
