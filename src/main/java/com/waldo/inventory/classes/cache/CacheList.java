@@ -1,6 +1,5 @@
 package com.waldo.inventory.classes.cache;
 
-import com.sun.istack.internal.NotNull;
 import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
@@ -20,14 +19,19 @@ public class CacheList<T> extends Vector<T> {
         this.isFetched = false;
     }
 
-    public void setList(@NotNull Collection<? extends T> collection, long fetchTimeInNanos) {
+    public void setList(Collection<? extends T> collection, long fetchTimeInNanos) {
         if (size() > 0) {
             this.clear();
         }
-        this.addAll(collection);
-        this.initialisationTime = DateUtils.now();
-        this.fetchTimeInNanos = fetchTimeInNanos;
-        this.isFetched = true;
+        if (collection != null) {
+            this.addAll(collection);
+            this.initialisationTime = DateUtils.now();
+            this.fetchTimeInNanos = fetchTimeInNanos;
+            this.isFetched = true;
+        } else {
+            this.clear();
+            this.isFetched = false;
+        }
     }
 
     @Override

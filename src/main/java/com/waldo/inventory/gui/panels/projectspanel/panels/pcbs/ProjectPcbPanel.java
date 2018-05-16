@@ -249,7 +249,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             if (selectedProject == null || !selectedProject.equals(project)) {
                 selectedProject = project;
                 if (selectedProject != null) {
-                    if (selectedProjectObject == null) {
+                    if (selectedProjectObject == null && selectedProject.getProjectPcbs().size() > 0) {
                         selectedProjectObject = selectedProject.getProjectPcbs().get(0);
                     }
                     gridPanel.drawTiles(selectedProject.getProjectPcbs());

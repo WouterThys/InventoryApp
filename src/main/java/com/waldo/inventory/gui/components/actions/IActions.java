@@ -9,6 +9,19 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IActions {
 
+    public static abstract class IAction extends IAbstractAction {
+        protected IAction() {
+            this("", null);
+        }
+        protected IAction(String name) {
+            this(name, null);
+        }
+        protected IAction(String name, ImageIcon imageIcon) {
+            super(name, imageIcon);
+            setTooltip(name);
+        }
+    }
+
     public static abstract class AddAction extends IAbstractAction {
         protected AddAction() {
             super("Add", imageResource.readIcon("Actions.Add"));
@@ -288,11 +301,11 @@ public class IActions {
 
     public static abstract class NotUsedAction extends IAbstractAction {
         protected NotUsedAction() {
-            super("Not used", imageResource.readIcon("Actions.M.NotUsed"));
+            this(imageResource.readIcon("Actions.M.NotUsed"));
         }
         protected NotUsedAction(ImageIcon icon) {
             super("Not used", icon);
-            setTooltip("Not used");
+            setTooltip("Not used on PCB");
         }
     }
 

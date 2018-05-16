@@ -1132,6 +1132,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            projectPcbs = null;
         }
         return projectPcbs;
     }
@@ -1175,6 +1176,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            projectOthers = null;
         }
         return projectOthers;
     }
@@ -1212,6 +1214,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            pcbItemProjectLinks = null;
         }
 
         return pcbItemProjectLinks;
@@ -1263,6 +1266,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            createdPcbs = null;
         }
 
         return createdPcbs;
@@ -1304,6 +1308,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            createdPcbLinks = null;
         }
 
         return createdPcbLinks;
@@ -1361,6 +1366,7 @@ public class DatabaseAccess {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            solderItems = null;
         }
 
         return solderItems;

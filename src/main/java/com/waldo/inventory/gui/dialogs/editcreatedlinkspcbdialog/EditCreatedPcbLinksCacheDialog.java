@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
 import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsDialog;
+import com.waldo.inventory.gui.dialogs.solderiteminfodialog.SolderItemInfoDialog;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -209,10 +210,17 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
-    void onEditItem(CreatedPcbLink link) {
-        if (link != null && link.getPcbItemItemLink() != null) {
-            EditItemDialog dialog = new EditItemDialog<>(EditCreatedPcbLinksCacheDialog.this, "Item", link.getPcbItemItemLink().getItem());
-            dialog.showDialog();
+    void onEditPcbItem(CreatedPcbLink link) {
+        if (link != null) {
+            PcbItemDetailsDialog itemDetailsDialog = new PcbItemDetailsDialog(
+                    EditCreatedPcbLinksCacheDialog.this,
+                    "Pcb item",
+                    link.getPcbItemProjectLink()
+            );
+            if (itemDetailsDialog.showDialog() == IDialog.OK) {
+                updateLinkInfo(link);
+                updateEnabledComponents();
+            }
         }
     }
 
@@ -237,6 +245,29 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                         updateSolderTable();
                     }
                 }
+            }
+        }
+    }
+
+    @Override
+    void onOrderInfo(SolderItem solderItem) {
+        if (solderItem != null) {
+            SolderItemInfoDialog dialog = new SolderItemInfoDialog(this, solderItem);
+            dialog.showDialog();
+        }
+    }
+
+    @Override
+    void onCopyLink(CreatedPcbLink link) {
+        if (link != null && link.getPcbItemItemLink() != null) {
+            List<SolderItem> selectedItems = getSelectedSolderItems();
+            if (selectedItems != null && selectedItems.size() > 0) {
+                for (SolderItem solderItem : selectedItems) {
+                    solderItem.setUsedItemId(link.getPcbItemItemLink().getItemId());
+                    solderItem.save();
+                }
+                updateSolderTable();
+                updateEnabledComponents();
             }
         }
     }

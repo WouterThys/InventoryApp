@@ -786,7 +786,7 @@ public class Statics {
     }
 
     public enum SolderItemState {
-        None       (0, "Nothing"),
+        None       (0, " / "),
         Soldered   (1, "Soldered"),
         Desoldered (2, "Desoldered"),
         NotUsed    (3, "Not used")
