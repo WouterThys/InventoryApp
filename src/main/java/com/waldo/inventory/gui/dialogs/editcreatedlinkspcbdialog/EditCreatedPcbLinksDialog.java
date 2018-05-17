@@ -8,6 +8,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
+import com.waldo.inventory.gui.dialogs.messageprogressdialog.MessageProgressDialog;
 import com.waldo.inventory.gui.dialogs.pcbitemdetails.PcbItemDetailsDialog;
 import com.waldo.inventory.gui.dialogs.solderiteminfodialog.SolderItemInfoDialog;
 import com.waldo.utils.DateUtils;
@@ -20,12 +21,15 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDialogLayout implements CacheChangedListener<CreatedPcbLink> {
+import static com.waldo.inventory.managers.CacheManager.cache;
+
+public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout implements CacheChangedListener<CreatedPcbLink> {
 
     private final Window parent;
     private boolean creatingLinks = false;
+    private MessageProgressDialog logDialog;
 
-    public EditCreatedPcbLinksCacheDialog(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
+    public EditCreatedPcbLinksDialog(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
         super(window, title, projectPcb, createdPcb);
         this.parent = window;
         addCacheListener(CreatedPcbLink.class, this);
@@ -174,7 +178,41 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         }
     }
 
+    private void logMainProgress(int progress) {
+        if (logDialog != null) {
+            logDialog.setMainProgress(progress);
+        }
+    }
 
+    private void logSubProgress(int progress) {
+        if (logDialog != null) {
+            logDialog.setSubProgress(progress);
+        }
+    }
+
+    private void logText(String text) {
+        if (logDialog != null && text != null) {
+            logDialog.appendText(text);
+        }
+    }
+
+    private void logWarn(String text) {
+        if (logDialog != null && text != null) {
+            logDialog.appendWarning(text);
+        }
+    }
+
+    private void logError(String text) {
+        if (logDialog != null && text != null) {
+            logDialog.appendError(text);
+        }
+    }
+
+    private void logProgress(int progress) {
+        if (logDialog != null) {
+            logDialog.setMainProgress(progress);
+        }
+    }
 
 
     //
@@ -184,7 +222,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     void onLinkTableDoubleClicked() {
         if (selectedLink != null) {
             PcbItemDetailsDialog itemDetailsDialog = new PcbItemDetailsDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Pcb item",
                     selectedLink.getPcbItemProjectLink()
             );
@@ -199,7 +237,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         SolderItem solderItem = getSelectedSolderItem();
         if (solderItem != null && solderItem.getUsedItemId() > DbObject.UNKNOWN_ID) {
             EditItemDialog dialog = new EditItemDialog<>(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Item",
                     solderItem.getUsedItem()
             );
@@ -210,10 +248,82 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
+    void onRecreateSolderItems(CreatedPcbLink link) {
+        if (link != null) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "Recreating solder items for " + link.getPcbItemProjectLink().getPrettyName() + " " +
+                            "will discard all previous work. Do you want to go on?",
+                    "Recreate",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            if (res == JOptionPane.YES_OPTION) {
+                for (SolderItem solderItem : link.getSolderItems()) {
+                    solderItem.delete();
+                }
+                link.updateSolderItems();
+                cache().getSolderItems().clear();
+
+                PcbItemProjectLink projectLink = link.getPcbItemProjectLink();
+                for (String reference : projectLink.getReferences()) {
+                    SolderItem solderItem = new SolderItem(reference, link);
+                    solderItem.save();
+                }
+                link.updateSolderItems();
+                initSolderItemTable(link);
+                updateEnabledComponents();
+            }
+        }
+    }
+
+    @Override
+    void onSolderWizard(CreatedPcbLink link) {
+        if (link != null) {
+            List<SolderItem> selectedItems = getSelectedSolderItems();
+            if (selectedItems != null && selectedItems.size() > 0) {
+
+                JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
+                JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
+                String message = "This wizard will copy all links to the used item field, and set them soldered. " +
+                        "\nSelect options: ";
+                Object[] params = {message, overwriteStateCb, overwriteLinkCb};
+                int res = JOptionPane.showConfirmDialog(
+                        EditCreatedPcbLinksDialog.this,
+                        params,
+                        "Wizard options",
+                        JOptionPane.OK_CANCEL_OPTION);
+                if (res == JOptionPane.OK_OPTION) {
+                    logDialog = new MessageProgressDialog(EditCreatedPcbLinksDialog.this);
+                    logDialog.initMainProgress(0, 2);
+                    logDialog.initSubProgress(0, selectedItems.size());
+                    logDialog.showDialog();
+
+                    final boolean overwrite = overwriteStateCb.isSelected();
+                    SwingUtilities.invokeLater(() -> {
+                        logDialog.appendHeader("Copying links into used items");
+                        logDialog.setMainProgress(0);
+                        onCopyLink(getSelectedSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
+
+                        logDialog.appendHeader("Soldering items");
+                        logDialog.setMainProgress(1);
+                        onSetSoldered(getSelectedSolderItems(), overwrite, true);
+
+                        logDialog.setMainProgress(2);
+                        logDialog.setDone(false);
+                    });
+                }
+
+            }
+        }
+    }
+
+    @Override
     void onEditPcbItem(CreatedPcbLink link) {
         if (link != null) {
             PcbItemDetailsDialog itemDetailsDialog = new PcbItemDetailsDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Pcb item",
                     link.getPcbItemProjectLink()
             );
@@ -225,11 +335,20 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
+    void onEditLinkedItem(CreatedPcbLink link) {
+        if (link != null && link.getPcbItemItemLink() != null) {
+            EditItemDialog dialog = new EditItemDialog<>(this, "Edit item", link.getPcbItemItemLink().getItem());
+            dialog.showDialog();
+            updateLinkInfo(link);
+        }
+    }
+
+    @Override
     void onSearchUsedItem(CreatedPcbLink link) {
         if (link != null) {
             List<SolderItem> selectedItems = getSelectedSolderItems();
             if (selectedItems != null && selectedItems.size() > 0) {
-                AdvancedSearchDialog dialog = new AdvancedSearchDialog(EditCreatedPcbLinksCacheDialog.this, false);
+                AdvancedSearchDialog dialog = new AdvancedSearchDialog(EditCreatedPcbLinksDialog.this, false);
                 dialog.searchPcbItem(link.getPcbItemProjectLink());
                 if (dialog.showDialog() == IDialog.OK) {
                     Item newUsedItem = dialog.getSelectedItem();
@@ -258,16 +377,84 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
-    void onCopyLink(CreatedPcbLink link) {
-        if (link != null && link.getPcbItemItemLink() != null) {
-            List<SolderItem> selectedItems = getSelectedSolderItems();
-            if (selectedItems != null && selectedItems.size() > 0) {
-                for (SolderItem solderItem : selectedItems) {
-                    solderItem.setUsedItemId(link.getPcbItemItemLink().getItemId());
-                    solderItem.save();
+    void onCopyLink(List<SolderItem> selectedItems, CreatedPcbLink link, boolean overwriteIfNotUsed, boolean overwriteIfAlreadyHasItem, boolean logging) {
+        if (link != null) {
+            if (link.getPcbItemItemLink() == null) {
+                if (logging) logWarn("No linked item available");
+            } else {
+                if (selectedItems != null && selectedItems.size() > 0) {
+//                    SynchronousDbSaver<SolderItem> synchronousDbSaver = new SynchronousDbSaver<>(
+//                            SolderItem.class,
+//                            selectedItems,
+//                            new SynchronousDbSaver.SynchronousSaveListener<SolderItem>() {
+//                                @Override
+//                                public void beforeSave(SolderItem solderItem) {
+//                                    int p = 0;
+//
+//                                    if (logging) logText("Linking item " + solderItem);
+//                                    if (overwriteIfNotUsed || (!solderItem.getState().equals(SolderItemState.NotUsed))) {
+//                                        long usedItemId = solderItem.getUsedItemId();
+//                                        long linkItemId = link.getPcbItemItemLink().getItemId();
+//                                        if (linkItemId <= DbObject.UNKNOWN_ID) {
+//                                            if (logging) logWarn("No linked item available");
+//                                        } else {
+//                                            if (overwriteIfAlreadyHasItem || !(usedItemId > DbObject.UNKNOWN_ID)) {
+//                                                solderItem.setUsedItemId(link.getPcbItemItemLink().getItemId());
+//                                                solderItem.save();
+//                                                if (logging) logText("\tCopied linked item into used item!");
+//                                            } else {
+//                                                if (logging) logWarn("\tAlready used item defined, not overwriting");
+//                                            }
+//                                        }
+//                                    } else {
+//                                        if (logging) logWarn("\tDid not link item with state 'Not used'");
+//                                    }
+//                                    p++;
+//                                    if (logging) logSubProgress(p);
+//                                }
+//
+//                                @Override
+//                                public void saved(SolderItem saveObject) {
+//
+//                                }
+//
+//                                @Override
+//                                public void done() {
+//                                    updateSolderTable();
+//                                    updateEnabledComponents();
+//                                }
+//                            }
+//                    );
+//                    synchronousDbSaver.startSaving();
+
+                    int p = 0;
+                    for (SolderItem solderItem : selectedItems) {
+                        if (logging) logText("Linking item " + solderItem);
+                        if (overwriteIfNotUsed || (!solderItem.getState().equals(SolderItemState.NotUsed))) {
+                            long usedItemId = solderItem.getUsedItemId();
+                            long linkItemId = link.getPcbItemItemLink().getItemId();
+                            if (linkItemId <= DbObject.UNKNOWN_ID) {
+                                if (logging) logWarn("No linked item available");
+                            } else {
+                                if (overwriteIfAlreadyHasItem || !(usedItemId > DbObject.UNKNOWN_ID)) {
+                                    solderItem.setUsedItemId(link.getPcbItemItemLink().getItemId());
+                                    solderItem.save();
+                                    if (logging) logText("\tCopied linked item into used item!");
+                                } else {
+                                    if (logging) logWarn("\tAlready used item defined, not overwriting");
+                                }
+                            }
+                        } else {
+                            if (logging) logWarn("\tDid not link item with state 'Not used'");
+                        }
+                        p++;
+                        if (logging) logSubProgress(p);
+                    }
+                    updateSolderTable();
+                    updateEnabledComponents();
+                } else {
+                    if (logging) logError("No solder items found to solder");
                 }
-                updateSolderTable();
-                updateEnabledComponents();
             }
         }
     }
@@ -277,7 +464,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         List<SolderItem> selectedItems = getSelectedSolderItems();
         if (selectedItems != null && selectedItems.size() > 0) {
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Delete used item(s)?",
                     "Delete",
                     JOptionPane.YES_NO_OPTION,
@@ -301,7 +488,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         List<SolderItem> selectedItems = getSelectedSolderItems();
         if (selectedItems != null && selectedItems.size() > 0) {
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Set not used for these item(s)?",
                     "Not used",
                     JOptionPane.YES_NO_OPTION,
@@ -320,20 +507,32 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
-    void onSoldered() {
-        List<SolderItem> selectedItems = getSelectedSolderItems();
+    void onSetSoldered(List<SolderItem> selectedItems, boolean overwriteIfNotUsed, boolean logging) {
         if (selectedItems != null && selectedItems.size() > 0) {
+            int p = 0;
             for (SolderItem solderItem : selectedItems) {
+                if (logging) logText("Soldering item " + solderItem);
                 if (solderItem.getUsedItemId() > DbObject.UNKNOWN_ID) {
-                    solderItem.setState(SolderItemState.Soldered);
-                    solderItem.setNumTimesSoldered(solderItem.getNumTimesSoldered() + 1);
-                    solderItem.setSolderDate(DateUtils.now());
-                    solderItem.save();
-                    // TODO -> substract from item
+                    if (overwriteIfNotUsed || (!solderItem.getState().equals(SolderItemState.NotUsed))) {
+                        solderItem.setState(SolderItemState.Soldered);
+                        solderItem.setNumTimesSoldered(solderItem.getNumTimesSoldered() + 1);
+                        solderItem.setSolderDate(DateUtils.now());
+                        solderItem.save();
+                        // TODO -> substract from item
+                        if (logging) logText("\tSoldered item!");
+                    } else {
+                        if (logging) logWarn("\tDid not solder item with state 'Not used'");
+                    }
+                } else {
+                    if (logging) logWarn("\tCannot solder when there is no used item");
                 }
+                p++;
+                if (logging) logSubProgress(p);
             }
             updateEnabledComponents();
             updateSolderTable();
+        } else {
+            if (logging) logError("No solder items found to solder");
         }
     }
 
@@ -342,7 +541,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
         List<SolderItem> selectedItems = getSelectedSolderItems();
         if (selectedItems != null && selectedItems.size() > 0) {
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     "Desolder these item(s)?",
                     "Desolder",
                     JOptionPane.YES_NO_OPTION,
@@ -420,7 +619,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
                         "Total price: " + totalPrice.toString();
 
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
-                        EditCreatedPcbLinksCacheDialog.this,
+                        EditCreatedPcbLinksDialog.this,
                         message
                 ));
 
@@ -442,58 +641,49 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
     }
 
     @Override
-    void onMagicWizard(CreatedPcb createdPcb) {
+    void onSolderAllWizard(CreatedPcb createdPcb) {
         if (createdPcb != null) {
-            if (createdPcb.isSoldered()) {
-                JOptionPane.showMessageDialog(
-                        parent,
-                        "Can not do this on a PCB that is already soldered..",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-                return;
-            }
-            JCheckBox usedItemsCb = new JCheckBox("Fill in all used items from linked items ", true);
-            JCheckBox usedAmountCb = new JCheckBox("Enter all used amounts from PCB references ", true);
-            String message = "Select options, this will overwrite all the previously selected work..";
-            Object[] params = {message, usedItemsCb, usedAmountCb};
+
+            JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
+            JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
+            String message = "This wizard will copy all links to the used item field, and set them soldered for al pcb items on this PCB " +
+                    "\nSelect options: ";
+            Object[] params = {message, overwriteStateCb, overwriteLinkCb};
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     params,
-                    "Wizzard options",
+                    "Wizard options",
                     JOptionPane.OK_CANCEL_OPTION);
+
             if (res == JOptionPane.OK_OPTION) {
-                if (usedItemsCb.isSelected()) {
-//                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
-//                        if (cpl.getUsedItemId() <= DbObject.UNKNOWN_ID) {
-//                            PcbItemItemLink itemItemLink = cpl.getPcbItemItemLink();
-//                            if (itemItemLink != null) {
-//                                cpl.setUsedItemId(itemItemLink.getItemId());
-//                            }
-//                        }
-//                    } TODO
+
+                logDialog = new MessageProgressDialog(EditCreatedPcbLinksDialog.this);
+                logDialog.initMainProgress(0, createdPcb.getCreatedPcbLinks().size());
+                logDialog.showDialog();
+
+                int p = 0;
+
+                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
+                    List<SolderItem> selectedItems = getSelectedSolderItems();
+
+                    if (selectedItems != null && selectedItems.size() > 0) {
+
+                        logDialog.initSubProgress(0, selectedItems.size());
+                        final boolean overwrite = overwriteStateCb.isSelected();
+                        //SwingUtilities.invokeLater(() -> {
+                            logDialog.appendHeader("Copying links into used items");
+                            onCopyLink(link.getSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
+                            logDialog.appendHeader("Soldering items");
+                            onSetSoldered(link.getSolderItems(), overwrite, true);
+                        //});
+                    }
+
+                    p++;
+                    logMainProgress(p);
                 }
-
-                if (usedAmountCb.isSelected()) {
-//                    for (CreatedPcbLink cpl : createdPcb.getCreatedPcbLinks()) {
-//                        Item usedItem = cpl.getUsedItem();
-//                        if (usedItem != null && cpl.getPcbItemProjectLinkId() > DbObject.UNKNOWN_ID) {
-//                            cpl.setUsedAmount(Math.min(usedItem.getAmount(), cpl.getPcbItemProjectLink().getNumberOfReferences()));
-//                        }
-//                    } TODO
-                }
-
-                JOptionPane.showMessageDialog(
-                        EditCreatedPcbLinksCacheDialog.this,
-                        "Done!",
-                        "Done",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-
-                saveComponents();
-                updateComponents();
             }
         }
+
     }
 
     @Override
@@ -504,7 +694,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
             String message = "This will remove all used items and set the used items back to zero, all data will be removed from the database.";
             Object[] params = {message, setBackAmountCb};
             int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksCacheDialog.this,
+                    EditCreatedPcbLinksDialog.this,
                     params,
                     "Remove",
                     JOptionPane.OK_CANCEL_OPTION);
@@ -520,7 +710,7 @@ public class EditCreatedPcbLinksCacheDialog extends EditCreatedPcbLinksCacheDial
 //                    cpl.delete();
 //                } TODO
                 createdPcb.updateCreatedPcbLinks();
-                createdPcb.setDateSoldered((Date)null);
+                createdPcb.setDateSoldered((Date) null);
                 createdPcb.save();
                 updateComponents();
             }

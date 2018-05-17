@@ -273,7 +273,14 @@ public class IActions {
 
     public static abstract class WizardAction  extends IAbstractAction {
         protected WizardAction() {
-            super("Wizard", imageResource.readIcon("Actions.Wizard"));
+            this("Wizard", imageResource.readIcon("Actions.Wizard"));
+        }
+        protected WizardAction(String name) {
+            this(name, imageResource.readIcon("Actions.Wizard"));
+        }
+        protected WizardAction(String name, ImageIcon imageIcon) {
+            super(name, imageIcon);
+            setTooltip(name);
         }
     }
 

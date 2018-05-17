@@ -5,7 +5,7 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
-import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksCacheDialog;
+import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
@@ -127,7 +127,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void createPcb(CreatedPcb pcb) {
         if (pcb != null) {
-            EditCreatedPcbLinksCacheDialog linksDialog = new EditCreatedPcbLinksCacheDialog(
+            EditCreatedPcbLinksDialog linksDialog = new EditCreatedPcbLinksDialog(
                     application,
                     "Edit pcb",
                     selectedProjectObject,

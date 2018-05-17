@@ -22,7 +22,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 
 
-abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog implements IEditedListener {
+abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements IEditedListener {
 
     /*
      *                  COMPONENTS
@@ -52,17 +52,21 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     private IActions.NotUsedAction notUsedAction;
     private IActions.SolderedAction solderedAction;
     private IActions.DesolderedAction desolderedAction;
-    private AbstractAction editRemarksAa;
+    private IActions.WizardAction solderWizardAction;
+    private IActions.IAction editRemarksAa;
     private IActions.IAction copyLinkAction;
     private IActions.IAction solderInfoAction;
+    private IActions.IAction selectAllAction;
+    private IActions.IAction recreateSolderItemsAction;
 
     // Pcb item actions
     private IActions.EditAction editPcbItemAction;
+    private IActions.EditAction editLinkedItemAction;
 
     // Created pcb actions
     private IActions.UseAction createPcbAction;
     private IActions.DeleteAction destroyPcbAction;
-    private IActions.WizardAction wizardAction;
+    private IActions.WizardAction solderAllWizardAction;
     private IActions.RemoveAllAction removeAllAction;
     private IActions.DoItAction calculatePriceAction;
 
@@ -76,7 +80,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditCreatedPcbLinksCacheDialogLayout(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
+    EditCreatedPcbLinksDialogLayout(Window window, String title, ProjectPcb projectPcb, CreatedPcb createdPcb) {
         super(window, title);
 
         this.projectPcb = projectPcb;
@@ -90,18 +94,22 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
     abstract void onSolderTableDoubleClicked();
 
     abstract void onEditPcbItem(CreatedPcbLink link);
+    abstract void onEditLinkedItem(CreatedPcbLink link);
+
     abstract void onSearchUsedItem(CreatedPcbLink link);
     abstract void onDeleteUsedItem();
-    abstract void onCopyLink(CreatedPcbLink link);
+    abstract void onCopyLink(List<SolderItem> selectedItems, CreatedPcbLink link, boolean overwriteNotUsed, boolean overwriteIfAlreadyHasItem, boolean logging);
     abstract void onNotUsed();
-    abstract void onSoldered();
+    abstract void onSetSoldered(List<SolderItem> solderItems, boolean overWriteNotUsed, boolean logging);
     abstract void onDesoldered();
+    abstract void onSolderWizard(CreatedPcbLink link);
     abstract void onOrderInfo(SolderItem solderItem);
+    abstract void onRecreateSolderItems(CreatedPcbLink link);
     abstract void onEditRemark(SolderItem solderItem);
 
     abstract void onCreatePcb(CreatedPcb createdPcb);
     abstract void onDestroyPcb(CreatedPcb createdPcb);
-    abstract void onMagicWizard(CreatedPcb createdPcb);
+    abstract void onSolderAllWizard(CreatedPcb createdPcb);
     abstract void onRemoveAll(CreatedPcb createdPcb);
     abstract void onCalculatePrice(CreatedPcb createdPcb);
 
@@ -113,6 +121,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         boolean moreSelected = solderItemTable.getSelectedItems().size() > 0;
 
         editPcbItemAction.setEnabled(enabled);
+        editLinkedItemAction.setEnabled(hasLink);
 
         editRemarksAa.setEnabled(oneSelected);
         searchUsedItemAction.setEnabled(oneSelected || moreSelected);
@@ -159,7 +168,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         }
     }
 
-    private void initSolderItemTable(CreatedPcbLink link) {
+    void initSolderItemTable(CreatedPcbLink link) {
         if (link != null) {
             List<SolderItem> solderItemList = link.getSolderItems();
             solderTableModel.setItemList(solderItemList);
@@ -248,7 +257,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         gbc.addLine("Soldered: ", pcbSolderedTf);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
-        JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, wizardAction, calculatePriceAction);
+        JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, calculatePriceAction);
 
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tb, BorderLayout.WEST);
@@ -269,6 +278,15 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
 
     private JPanel createSolderInfoPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+
+        JPanel recreatePnl = new JPanel(new BorderLayout());
+        ILabel recreateLbl = new ILabel("  ", SwingConstants.CENTER);
+        recreateLbl.setFont(10, Font.ITALIC);
+        recreateLbl.setForeground(Color.gray);
+        JToolBar recreateTb = GuiUtils.createNewToolbar();
+        recreateTb.add(recreateSolderItemsAction);
+        recreatePnl.add(recreateLbl, BorderLayout.NORTH);
+        recreatePnl.add(recreateTb, BorderLayout.CENTER);
 
         JPanel solderPnl = new JPanel(new BorderLayout());
         ILabel solderLbl = new ILabel("Solder state", SwingConstants.CENTER);
@@ -293,15 +311,19 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         usedPbl.add(usedTb, BorderLayout.CENTER);
 
         JPanel otherPnl = new JPanel(new BorderLayout());
-        ILabel otherLbl = new ILabel("Info", SwingConstants.CENTER);
+        ILabel otherLbl = new ILabel("Other", SwingConstants.CENTER);
         otherLbl.setFont(10, Font.ITALIC);
         otherLbl.setForeground(Color.gray);
         JToolBar otherTb = GuiUtils.createNewToolbar();
         otherTb.add(solderInfoAction);
+        otherTb.add(selectAllAction);
+        otherTb.add(solderWizardAction);
         otherPnl.add(otherLbl, BorderLayout.NORTH);
         otherPnl.add(otherTb, BorderLayout.CENTER);
 
         Box box = Box.createHorizontalBox();
+        box.add(recreatePnl);
+        box.add(new JSeparator(JSeparator.VERTICAL));
         box.add(solderPnl);
         box.add(new JSeparator(JSeparator.VERTICAL));
         box.add(usedPbl);
@@ -340,8 +362,9 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         JPanel pnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(pnl);
         gbc.addLine(pcbItemLbl, GuiUtils.createComponentWithActions(pcbItemTf, editPcbItemAction));
-        gbc.addLine(linkedItemLbl, linkedItemTf);
+        gbc.addLine(linkedItemLbl, GuiUtils.createComponentWithActions(linkedItemTf, editLinkedItemAction));
 
+        panel.add(GuiUtils.createNewToolbar(solderAllWizardAction), BorderLayout.NORTH);
         panel.add(pnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(1,1,1,1),
@@ -460,8 +483,20 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
                 onEditPcbItem(selectedLink);
             }
         };
+        editLinkedItemAction = new IActions.EditAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onEditLinkedItem(selectedLink);
+            }
+        };
 
         // Soldered item actions
+        recreateSolderItemsAction = new IActions.IAction("Recreate solder items", imageResource.readIcon("Actions.M.Rename")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onRecreateSolderItems(selectedLink);
+            }
+        };
         searchUsedItemAction = new IActions.SearchAction(imageResource.readIcon("Actions.M.Search")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -474,16 +509,28 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
                 onDeleteUsedItem();
             }
         };
+        selectAllAction = new IActions.IAction("Select all", imageResource.readIcon("Actions.M.SelectAll")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                solderItemTable.selectAll();
+            }
+        };
         copyLinkAction = new IActions.IAction("Copy link into used item", imageResource.readIcon("Actions.M.CopyLink")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onCopyLink(selectedLink);
+                onCopyLink(getSelectedSolderItems(), selectedLink, true, true, false);
             }
         };
         solderInfoAction = new IActions.IAction("Solder info", imageResource.readIcon("Actions.M.Info")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onOrderInfo(getSelectedSolderItem());
+            }
+        };
+        solderWizardAction = new IActions.WizardAction("Solder item wizard", imageResource.readIcon("Actions.M.Wizard")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onSolderWizard(selectedLink);
             }
         };
         notUsedAction = new IActions.NotUsedAction() {
@@ -495,7 +542,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         solderedAction = new IActions.SolderedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onSoldered();
+                onSetSoldered(getSelectedSolderItems(), true, false);
             }
         };
         desolderedAction = new IActions.DesolderedAction() {
@@ -524,7 +571,7 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         destroyPcbAction.setIcon(imageResource.readIcon("Actions.M.Destroyed"));
         destroyPcbAction.setTooltip("Destroy PCB");
 
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
+        editRemarksAa = new IActions.IAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onEditRemark(solderItemTable.getSelectedItem());
@@ -532,13 +579,13 @@ abstract class EditCreatedPcbLinksCacheDialogLayout extends ICacheDialog impleme
         };
         editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
         editRemarksAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit remarks");
-        wizardAction = new IActions.WizardAction() {
+        solderAllWizardAction = new IActions.WizardAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onMagicWizard(createdPcb);
+                onSolderAllWizard(createdPcb);
             }
         };
-        wizardAction.setIcon(imageResource.readIcon("Actions.M.Wizard"));
+        solderAllWizardAction.setIcon(imageResource.readIcon("Actions.M.Wizard"));
         removeAllAction = new IActions.RemoveAllAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

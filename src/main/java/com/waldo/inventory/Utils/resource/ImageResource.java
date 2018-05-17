@@ -102,7 +102,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     public void requestImage(final ImageRequester imageRequester) {
         if (imageRequester != null) {
-            SwingUtilities.invokeLater(() -> {
+            //SwingUtilities.invokeLater(() -> {
                 switch (imageRequester.getImageType()) {
                     case ItemImage:
                         fromMap(itemImageMap, imageRequester);
@@ -128,7 +128,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
                     default:
                         break;
                 }
-            });
+            //});
         }
     }
 
@@ -259,21 +259,23 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     public boolean serverConnected() {
-        return client != null && client.isConnected();
+        return Main.IMAGE_SERVER && client != null && client.isConnected();
     }
 
     public void updateImageServerConnection() {
-        ImageServerSettings imageServerSettings = SettingsManager.settings().getImageServerSettings();
-        String clientName = imageServerSettings.getConnectAsName();
-        if (client == null || !client.getClientName().equalsIgnoreCase(clientName) || !client.isConnected()) {
+        if (Main.IMAGE_SERVER) {
+            ImageServerSettings imageServerSettings = SettingsManager.settings().getImageServerSettings();
+            String clientName = imageServerSettings.getConnectAsName();
+            if (client == null || !client.getClientName().equalsIgnoreCase(clientName) || !client.isConnected()) {
 
-            if (client != null) {
-                client.disconnectClient(true);
+                if (client != null) {
+                    client.disconnectClient(true);
+                }
+
+                client = new Client(imageServerSettings.getImageServerName(), imageServerSettings.getConnectAsName());
+                client.addImageClientListener(this);
+                client.connectClient();
             }
-
-            client = new Client(imageServerSettings.getImageServerName(), imageServerSettings.getConnectAsName());
-            client.addImageClientListener(this);
-            client.connectClient();
         }
     }
 
@@ -289,7 +291,9 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         ImageIcon imageIcon;
         try {
             if (image != null) {
-                client.sendImage(image, imageName, imageType);
+                if (serverConnected()) {
+                    client.sendImage(image, imageName, imageType);
+                }
                 imageIcon = new ImageIcon(image);
                 switch (imageType) {
                     case ItemImage:
@@ -425,17 +429,19 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         return null;
     }
 
-    private void createRequest(ImageRequester requester) {
-        if (requester != null) {
-            ImageRequest request = findImageRequest(requester.getImageType(), requester.getImageName());
-            if (request == null) {
-                request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
+    private void createRequest(final ImageRequester requester) {
+        if (serverConnected() && requester != null) {
+            SwingUtilities.invokeLater(() -> {
+                ImageRequest request = findImageRequest(requester.getImageType(), requester.getImageName());
+                if (request == null) {
+                    request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
 
-                imageRequests.add(request);
-                fetchImage(request.getImageType(), request.getImageName());
-            } else {
-                request.addRequester(requester);
-            }
+                    imageRequests.add(request);
+                    fetchImage(request.getImageType(), request.getImageName());
+                } else {
+                    request.addRequester(requester);
+                }
+            });
         }
     }
 

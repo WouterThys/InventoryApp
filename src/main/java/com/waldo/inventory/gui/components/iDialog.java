@@ -302,6 +302,10 @@ public abstract class iDialog extends JDialog implements GuiUtils.GuiInterface, 
         return buttonNeutral;
     }
 
+    protected JButton getButtonCancel() {
+        return buttonCancel;
+    }
+
     protected void setTitleIcon(ImageIcon titleIcon) {
         if (titleImage != null) {
             titleImage.setImage(titleIcon);

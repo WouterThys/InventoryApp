@@ -28,11 +28,13 @@ public class Main {
 
     private static final String CO = "CACHE_ONLY";
     private static final String DM = "DEBUG_MODE";
+    private static final String IS = "IMAGE_SERVER";
     private static final String FS = "FULL_SCREEN";
     private static final String LH = "LOG_HISTORY";
 
     public static boolean CACHE_ONLY = false;
     public static boolean DEBUG_MODE = false;
+    public static boolean IMAGE_SERVER = true;
     public static boolean FULL_SCREEN = false;
     public static boolean LOG_HISTORY = false;
 
@@ -84,6 +86,9 @@ public class Main {
                             break;
                         case LH:
                             LOG_HISTORY = Boolean.valueOf(value);
+                            break;
+                        case IS:
+                            IMAGE_SERVER = Boolean.valueOf(value);
                             break;
                     }
                 } catch (Exception e) {

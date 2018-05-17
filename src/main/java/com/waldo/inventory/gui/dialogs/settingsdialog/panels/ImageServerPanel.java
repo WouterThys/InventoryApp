@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
@@ -10,6 +11,7 @@ import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImag
 import com.waldo.inventory.gui.dialogs.imagedialogs.sendfullcontentdialog.SendFullContentDialog;
 import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.test.client.Client;
+import com.waldo.utils.icomponents.ICheckBox;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
@@ -29,6 +31,7 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private ICheckBox imageServerEnabledCb;
 
     private ITextField imageServerNameTf;
     private ITextField connectAsNameTf;
@@ -111,9 +114,14 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     @Override
     protected boolean updateEnabledComponents() {
         boolean enabled = super.updateEnabledComponents();
+        boolean serverEnabled = imageServerEnabledCb.isSelected();
 
-        imageServerNameTf.setEnabled(enabled);
-        connectAsNameTf.setEnabled(enabled);
+        imageServerNameTf.setEnabled(serverEnabled && enabled);
+        connectAsNameTf.setEnabled(serverEnabled && enabled);
+
+        connectAction.setEnabled(serverEnabled);
+        disconnectAction.setEnabled(serverEnabled);
+        sendContentAction.setEnabled(serverEnabled);
 
         return enabled;
     }
@@ -138,6 +146,17 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     @Override
     public void initializeComponents() {
         super.initializeComponents();
+
+        imageServerEnabledCb = new ICheckBox("Enabled", Main.IMAGE_SERVER);
+        imageServerEnabledCb.addActionListener(e -> {
+            if (imageResource.serverConnected()) {
+                if (imageResource.getClient() != null) {
+                    imageResource.getClient().disconnectClient(true);
+                }
+            }
+            Main.IMAGE_SERVER = imageServerEnabledCb.isSelected();
+            updateEnabledComponents();
+        });
 
         imageServerNameTf = new ITextField(this, "imageServerName");
         connectAsNameTf = new ITextField(this, "connectAsName");
@@ -184,7 +203,8 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
-        mainPanel.add(settingsPanel, BorderLayout.NORTH);
+        mainPanel.add(imageServerEnabledCb, BorderLayout.PAGE_START);
+        mainPanel.add(settingsPanel, BorderLayout.CENTER);
         mainPanel.add(toolbarPanel, BorderLayout.SOUTH);
 
         contentPanel.setLayout(new BorderLayout());
