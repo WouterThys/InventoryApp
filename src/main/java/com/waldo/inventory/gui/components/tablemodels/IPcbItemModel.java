@@ -17,9 +17,9 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
 
-    private static final String[] COLUMN_NAMES = {"", "Part", "Reference", "", "", ""};
-    private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "PCB Reference", "Is linked", "Is ordered", "Is used"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, Icon.class, Icon.class, Icon.class};
+    private static final String[] COLUMN_NAMES = {"", "Part", "Value", "Reference", "", "", ""};
+    private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "Value", "PCB Reference", "Is linked", "Is ordered", "Is used"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, Icon.class, Icon.class, Icon.class};
 
     private static final ImageIcon linked = imageResource.readIcon("Projects.Pcb.Linked");
     private static final ImageIcon ordered = imageResource.readIcon("Projects.Pcb.Ordered");
@@ -41,19 +41,21 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                 case 0: // Amount
                 case 1: // LibSource value
                     return link;
-                case 2: // Reference
+                case 2: // Value
+                    return link.getValue();
+                case 3: // Reference
                     return link.getReferenceString();
-                case 3: // Linked
+                case 4: // Linked
                     if (link.hasMatchedItem()) {
                         return linked;
                     }
                     break;
-                case 4: // Ordered
+                case 5: // Ordered
                     if (component.isOrdered()) {
                         return ordered;
                     }
                     break;
-                case 5: // Used
+                case 6: // Used
                     // TODO #13
 //                    if (link.isUsed()) {
 //                        return used;
@@ -100,7 +102,7 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
                         linkLabel.setForeground(colorResource.readColor("Green"));
                         linkLabel.setFont(Font.BOLD);
                     } else {
-                        linkLabel.setText(projectLink.getPrettyName());
+                        linkLabel.setText(projectLink.getPartName());
                         linkLabel.setForeground(c.getForeground());
                     }
                     return linkLabel;

@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.Statics.SolderItemState;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
+import com.waldo.inventory.gui.components.IMenuBar;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbLinkTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ISolderItemTableModel;
@@ -100,8 +101,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     abstract void onDeleteUsedItem();
     abstract void onCopyLink(List<SolderItem> selectedItems, CreatedPcbLink link, boolean overwriteNotUsed, boolean overwriteIfAlreadyHasItem, boolean logging);
     abstract void onNotUsed();
-    abstract void onSetSoldered(List<SolderItem> solderItems, boolean overWriteNotUsed, boolean logging);
-    abstract void onDesoldered();
+    abstract void onSetSoldered(List<SolderItem> solderItems, boolean decrementStock, boolean overWriteNotUsed, boolean logging);
+    abstract void onDesoldered(boolean incrementStock);
     abstract void onSolderWizard(CreatedPcbLink link);
     abstract void onOrderInfo(SolderItem solderItem);
     abstract void onRecreateSolderItems(CreatedPcbLink link);
@@ -264,7 +265,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         tbPanel.add(GuiUtils.createNewToolbar(createPcbAction, destroyPcbAction), BorderLayout.EAST);
 
         mainPnl.add(infoPnl, BorderLayout.CENTER);
-        mainPnl.add(tbPanel, BorderLayout.PAGE_START);
+        //mainPnl.add(tbPanel, BorderLayout.PAGE_START);
 
         panel.add(pcbImagePanel, BorderLayout.WEST);
         panel.add(mainPnl, BorderLayout.CENTER);
@@ -276,62 +277,20 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         return panel;
     }
 
+    private IMenuBar createSolderMenu() {
+        IMenuBar menuBar = new IMenuBar();
+
+        menuBar.addGroup(" ", recreateSolderItemsAction, solderInfoAction);
+        menuBar.addGroup("Solder state", solderedAction, desolderedAction);
+        menuBar.addGroup("Used item", copyLinkAction, searchUsedItemAction);
+        menuBar.addGroup("", false, deleteUsedItemAction, notUsedAction);
+        menuBar.addGroup("Other", selectAllAction, solderWizardAction);
+
+        return menuBar;
+    }
+
     private JPanel createSolderInfoPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-
-        JPanel recreatePnl = new JPanel(new BorderLayout());
-        ILabel recreateLbl = new ILabel("  ", SwingConstants.CENTER);
-        recreateLbl.setFont(10, Font.ITALIC);
-        recreateLbl.setForeground(Color.gray);
-        JToolBar recreateTb = GuiUtils.createNewToolbar();
-        recreateTb.add(recreateSolderItemsAction);
-        recreatePnl.add(recreateLbl, BorderLayout.NORTH);
-        recreatePnl.add(recreateTb, BorderLayout.CENTER);
-
-        JPanel solderPnl = new JPanel(new BorderLayout());
-        ILabel solderLbl = new ILabel("Solder state", SwingConstants.CENTER);
-        solderLbl.setFont(10, Font.ITALIC);
-        solderLbl.setForeground(Color.gray);
-        JToolBar solderTb = GuiUtils.createNewToolbar();
-        solderTb.add(solderedAction);
-        solderTb.add(desolderedAction);
-        solderPnl.add(solderLbl, BorderLayout.NORTH);
-        solderPnl.add(solderTb, BorderLayout.CENTER);
-
-        JPanel usedPbl = new JPanel(new BorderLayout());
-        ILabel usedLbl = new ILabel("Used item", SwingConstants.CENTER);
-        usedLbl.setFont(10, Font.ITALIC);
-        usedLbl.setForeground(Color.gray);
-        JToolBar usedTb = GuiUtils.createNewToolbar();
-        usedTb.add(copyLinkAction);
-        usedTb.add(searchUsedItemAction);
-        usedTb.add(deleteUsedItemAction);
-        usedTb.add(notUsedAction);
-        usedPbl.add(usedLbl, BorderLayout.NORTH);
-        usedPbl.add(usedTb, BorderLayout.CENTER);
-
-        JPanel otherPnl = new JPanel(new BorderLayout());
-        ILabel otherLbl = new ILabel("Other", SwingConstants.CENTER);
-        otherLbl.setFont(10, Font.ITALIC);
-        otherLbl.setForeground(Color.gray);
-        JToolBar otherTb = GuiUtils.createNewToolbar();
-        otherTb.add(solderInfoAction);
-        otherTb.add(selectAllAction);
-        otherTb.add(solderWizardAction);
-        otherPnl.add(otherLbl, BorderLayout.NORTH);
-        otherPnl.add(otherTb, BorderLayout.CENTER);
-
-        Box box = Box.createHorizontalBox();
-        box.add(recreatePnl);
-        box.add(new JSeparator(JSeparator.VERTICAL));
-        box.add(solderPnl);
-        box.add(new JSeparator(JSeparator.VERTICAL));
-        box.add(usedPbl);
-        box.add(new JSeparator(JSeparator.VERTICAL));
-        box.add(otherPnl);
-
-        JPanel toolbarPnl = new JPanel(new BorderLayout());
-        toolbarPnl.add(box, BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(remarksTp);
         scrollPane.setPreferredSize(new Dimension(200, 100));
@@ -340,7 +299,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         remarksPnl.add(GuiUtils.createNewToolbar(editRemarksAa), BorderLayout.NORTH);
         remarksPnl.add(scrollPane, BorderLayout.CENTER);
 
-        panel.add(toolbarPnl, BorderLayout.NORTH);
+        //panel.add(toolbarPnl, BorderLayout.NORTH);
         panel.add(remarksPnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(1,1,1,1),
@@ -382,6 +341,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         JPanel eastPnl = new JPanel(new BorderLayout());
         JPanel westPnl = new JPanel(new BorderLayout());
 
+        JPanel toolbarPnl = new JPanel(new BorderLayout());
+        toolbarPnl.add(createSolderMenu(), BorderLayout.EAST);
+
         // Tables
         JScrollPane linkScrollPane = new JScrollPane(linkTable);
         linkScrollPane.setPreferredSize(new Dimension(500, 500));
@@ -393,6 +355,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         eastPnl.add(linkScrollPane, BorderLayout.CENTER);
         eastPnl.add(createLinkInfoPanel(), BorderLayout.SOUTH);
 
+        westPnl.add(toolbarPnl, BorderLayout.NORTH);
         westPnl.add(solderScrollPane, BorderLayout.CENTER);
         westPnl.add(createSolderInfoPanel(), BorderLayout.SOUTH);
 
@@ -491,7 +454,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         };
 
         // Soldered item actions
-        recreateSolderItemsAction = new IActions.IAction("Recreate solder items", imageResource.readIcon("Actions.M.Rename")) {
+        recreateSolderItemsAction = new IActions.IAction("Recreate", imageResource.readIcon("Actions.M.Rename")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRecreateSolderItems(selectedLink);
@@ -515,7 +478,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
                 solderItemTable.selectAll();
             }
         };
-        copyLinkAction = new IActions.IAction("Copy link into used item", imageResource.readIcon("Actions.M.CopyLink")) {
+        copyLinkAction = new IActions.IAction("Copy link", imageResource.readIcon("Actions.M.CopyLink")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCopyLink(getSelectedSolderItems(), selectedLink, true, true, false);
@@ -527,7 +490,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
                 onOrderInfo(getSelectedSolderItem());
             }
         };
-        solderWizardAction = new IActions.WizardAction("Solder item wizard", imageResource.readIcon("Actions.M.Wizard")) {
+        solderWizardAction = new IActions.WizardAction("Solder wizard", imageResource.readIcon("Actions.M.Wizard")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSolderWizard(selectedLink);
@@ -542,13 +505,13 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         solderedAction = new IActions.SolderedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onSetSoldered(getSelectedSolderItems(), true, false);
+                onSetSoldered(getSelectedSolderItems(), true,true, false);
             }
         };
         desolderedAction = new IActions.DesolderedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onDesoldered();
+                onDesoldered(true);
             }
         };
 
@@ -610,6 +573,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         JPanel headerPanel = createHeaderPanel();
         JPanel pcbItemsPanel = createMainPanel();
 
+        headerPanel.setBorder(GuiUtils.createInlineTitleBorder("PCB"));
+        pcbItemsPanel.setBorder(GuiUtils.createInlineTitleBorder("Soldering"));
+
         getContentPanel().add(headerPanel, BorderLayout.NORTH);
         getContentPanel().add(pcbItemsPanel, BorderLayout.CENTER);
 
@@ -624,3 +590,67 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         updateEnabledComponents();
     }
 }
+
+
+
+
+//    private IMenuBar createSolderMenu() {
+//        JPanel tbPanel = new JPanel();
+//
+//        JPanel recreatePnl = new JPanel(new BorderLayout());
+//        ILabel recreateLbl = new ILabel("  ", SwingConstants.CENTER);
+//        recreateLbl.setFont(10, Font.ITALIC);
+//        recreateLbl.setForeground(Color.gray);
+//        JToolBar recreateTb = GuiUtils.createNewToolbar();
+//        recreateTb.add((recreateSolderItemsAction));
+//        recreatePnl.add(recreateLbl, BorderLayout.NORTH);
+//        recreatePnl.add(recreateTb, BorderLayout.CENTER);
+//
+//        JButton test = new JButton(solderedAction);
+//        test.setBorderPainted(false);
+//
+//        JPanel solderPnl = new JPanel(new BorderLayout());
+//        ILabel solderLbl = new ILabel("Solder state", SwingConstants.CENTER);
+//        solderLbl.setFont(10, Font.ITALIC);
+//        solderLbl.setForeground(Color.gray);
+//        JToolBar solderTb = GuiUtils.createNewToolbar();
+//        solderTb.add((solderedAction));
+//        solderTb.add((desolderedAction));
+//        solderPnl.add(solderLbl, BorderLayout.NORTH);
+//        solderPnl.add(solderTb, BorderLayout.CENTER);
+//
+//        JPanel usedPbl = new JPanel(new BorderLayout());
+//        ILabel usedLbl = new ILabel("Used item", SwingConstants.CENTER);
+//        usedLbl.setFont(10, Font.ITALIC);
+//        usedLbl.setForeground(Color.gray);
+//        JToolBar usedTb = GuiUtils.createNewToolbar();
+//        usedTb.add((copyLinkAction));
+//        usedTb.add((searchUsedItemAction));
+//        usedTb.add((deleteUsedItemAction));
+//        usedTb.add((notUsedAction));
+//        usedPbl.add(usedLbl, BorderLayout.NORTH);
+//        usedPbl.add(usedTb, BorderLayout.CENTER);
+//
+//        JPanel otherPnl = new JPanel(new BorderLayout());
+//        ILabel otherLbl = new ILabel("Other", SwingConstants.CENTER);
+//        otherLbl.setFont(10, Font.ITALIC);
+//        otherLbl.setForeground(Color.gray);
+//        JToolBar otherTb = GuiUtils.createNewToolbar();
+//        otherTb.add((solderInfoAction));
+//        otherTb.add((selectAllAction));
+//        otherTb.add((solderWizardAction));
+//        otherPnl.add(otherLbl, BorderLayout.NORTH);
+//        otherPnl.add(otherTb, BorderLayout.CENTER);
+//
+//        Box box = Box.createHorizontalBox();
+//        box.add(recreatePnl);
+//        box.add(new JSeparator(JSeparator.VERTICAL));
+//        box.add(solderPnl);
+//        box.add(new JSeparator(JSeparator.VERTICAL));
+//        box.add(usedPbl);
+//        box.add(new JSeparator(JSeparator.VERTICAL));
+//        box.add(otherPnl);
+//
+//        tbPanel.add(box);
+//        return tbPanel;
+//    }

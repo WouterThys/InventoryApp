@@ -140,6 +140,7 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
 
         filterPanel.add(northPanel, BorderLayout.NORTH);
         filterPanel.add(optionsPnl, BorderLayout.CENTER);
+        filterPanel.setMaximumSize(new Dimension(600, 300));
 
         return filterPanel;
     }
@@ -227,6 +228,8 @@ public abstract class AdvancedSearchDialogLayout extends IDialog implements List
 
     @Override
     public void updateComponents(Object... args) {
+        optionsPnl.setVisible(false);
+        showOptionsAction.setIcon(openIcon);
 //        switch (searchType) {
 //            case SearchWord:
 //                if (searchWord != null && !searchWord.isEmpty()) {
