@@ -282,8 +282,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
 
         menuBar.addGroup(" ", recreateSolderItemsAction, solderInfoAction);
         menuBar.addGroup("Solder state", solderedAction, desolderedAction);
-        menuBar.addGroup("Used item", copyLinkAction, searchUsedItemAction);
-        menuBar.addGroup("", false, deleteUsedItemAction, notUsedAction);
+        menuBar.addGroup("Used item", 2, copyLinkAction, searchUsedItemAction, deleteUsedItemAction, notUsedAction);
         menuBar.addGroup("Other", selectAllAction, solderWizardAction);
 
         return menuBar;
