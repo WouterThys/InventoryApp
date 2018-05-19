@@ -487,16 +487,26 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     void onNotUsed() {
         List<SolderItem> selectedItems = getSelectedSolderItems();
         if (selectedItems != null && selectedItems.size() > 0) {
+            JCheckBox putBackInStockCb = new JCheckBox("Put item back in stock ", true);
+
+            String message = "Set not used for these item(s)?";
+            Object[] params = {message, putBackInStockCb};
             int res = JOptionPane.showConfirmDialog(
                     EditCreatedPcbLinksDialog.this,
-                    "Set not used for these item(s)?",
+                    params,
                     "Not used",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
+                    JOptionPane.YES_NO_OPTION);
 
             if (res == JOptionPane.YES_OPTION) {
+                boolean putBack = putBackInStockCb.isSelected();
                 for (SolderItem solderItem : selectedItems) {
+                    if (putBack && solderItem.getState() == SolderItemState.Soldered) {
+                        // Set back amounts?
+                        Item item = solderItem.getUsedItem();
+                        if (item != null) {
+                            item.setAmount(item.getAmount() + 1);
+                        }
+                    }
                     solderItem.setState(SolderItemState.NotUsed);
                     solderItem.save();
                 }
