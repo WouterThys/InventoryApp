@@ -161,6 +161,13 @@ public class PcbItemProjectLink extends DbObject {
         this.pcbSheetName = pcbSheetName;
     }
 
+    public String getPartName() {
+        if (pcbItemId > UNKNOWN_ID) {
+            return getPcbItem().getPartName();
+        }
+        return "";
+    }
+
     public String getPrettyName() {
         if (pcbItemId > UNKNOWN_ID) {
             String part = getPcbItem().getPartName();

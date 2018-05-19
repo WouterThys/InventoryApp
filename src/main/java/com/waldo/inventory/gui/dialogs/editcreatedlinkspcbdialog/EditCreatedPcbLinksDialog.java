@@ -208,12 +208,6 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
         }
     }
 
-    private void logProgress(int progress) {
-        if (logDialog != null) {
-            logDialog.setMainProgress(progress);
-        }
-    }
-
 
     //
     // Dialog custom events
@@ -284,11 +278,12 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
             List<SolderItem> selectedItems = getSelectedSolderItems();
             if (selectedItems != null && selectedItems.size() > 0) {
 
+                JCheckBox decrementStockCb = new JCheckBox("Decrement stock per soldered item", true);
                 JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
                 JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
                 String message = "This wizard will copy all links to the used item field, and set them soldered. " +
                         "\nSelect options: ";
-                Object[] params = {message, overwriteStateCb, overwriteLinkCb};
+                Object[] params = {message, decrementStockCb, overwriteStateCb, overwriteLinkCb};
                 int res = JOptionPane.showConfirmDialog(
                         EditCreatedPcbLinksDialog.this,
                         params,
@@ -301,6 +296,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     logDialog.showDialog();
 
                     final boolean overwrite = overwriteStateCb.isSelected();
+                    final boolean decrement = decrementStockCb.isSelected();
                     SwingUtilities.invokeLater(() -> {
                         logDialog.appendHeader("Copying links into used items");
                         logDialog.setMainProgress(0);
@@ -308,11 +304,15 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
                         logDialog.appendHeader("Soldering items");
                         logDialog.setMainProgress(1);
-                        onSetSoldered(getSelectedSolderItems(), overwrite, true);
+                        onSetSoldered(getSelectedSolderItems(), decrement, overwrite, true);
 
                         logDialog.setMainProgress(2);
                         logDialog.setDone(false);
                     });
+
+                    updateLinkTable();
+                    updateSolderTable();
+                    updateEnabledComponents();
                 }
 
             }
@@ -383,49 +383,6 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 if (logging) logWarn("No linked item available");
             } else {
                 if (selectedItems != null && selectedItems.size() > 0) {
-//                    SynchronousDbSaver<SolderItem> synchronousDbSaver = new SynchronousDbSaver<>(
-//                            SolderItem.class,
-//                            selectedItems,
-//                            new SynchronousDbSaver.SynchronousSaveListener<SolderItem>() {
-//                                @Override
-//                                public void beforeSave(SolderItem solderItem) {
-//                                    int p = 0;
-//
-//                                    if (logging) logText("Linking item " + solderItem);
-//                                    if (overwriteIfNotUsed || (!solderItem.getState().equals(SolderItemState.NotUsed))) {
-//                                        long usedItemId = solderItem.getUsedItemId();
-//                                        long linkItemId = link.getPcbItemItemLink().getItemId();
-//                                        if (linkItemId <= DbObject.UNKNOWN_ID) {
-//                                            if (logging) logWarn("No linked item available");
-//                                        } else {
-//                                            if (overwriteIfAlreadyHasItem || !(usedItemId > DbObject.UNKNOWN_ID)) {
-//                                                solderItem.setUsedItemId(link.getPcbItemItemLink().getItemId());
-//                                                solderItem.save();
-//                                                if (logging) logText("\tCopied linked item into used item!");
-//                                            } else {
-//                                                if (logging) logWarn("\tAlready used item defined, not overwriting");
-//                                            }
-//                                        }
-//                                    } else {
-//                                        if (logging) logWarn("\tDid not link item with state 'Not used'");
-//                                    }
-//                                    p++;
-//                                    if (logging) logSubProgress(p);
-//                                }
-//
-//                                @Override
-//                                public void saved(SolderItem saveObject) {
-//
-//                                }
-//
-//                                @Override
-//                                public void done() {
-//                                    updateSolderTable();
-//                                    updateEnabledComponents();
-//                                }
-//                            }
-//                    );
-//                    synchronousDbSaver.startSaving();
 
                     int p = 0;
                     for (SolderItem solderItem : selectedItems) {
@@ -517,19 +474,35 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     }
 
     @Override
-    void onSetSoldered(List<SolderItem> selectedItems, boolean overwriteIfNotUsed, boolean logging) {
+    void onSetSoldered(List<SolderItem> selectedItems, boolean decrementStock, boolean overwriteIfNotUsed, boolean logging) {
         if (selectedItems != null && selectedItems.size() > 0) {
             int p = 0;
             for (SolderItem solderItem : selectedItems) {
                 if (logging) logText("Soldering item " + solderItem);
                 if (solderItem.getUsedItemId() > DbObject.UNKNOWN_ID) {
                     if (overwriteIfNotUsed || (!solderItem.getState().equals(SolderItemState.NotUsed))) {
-                        solderItem.setState(SolderItemState.Soldered);
-                        solderItem.setNumTimesSoldered(solderItem.getNumTimesSoldered() + 1);
-                        solderItem.setSolderDate(DateUtils.now());
-                        solderItem.save();
-                        // TODO -> substract from item
-                        if (logging) logText("\tSoldered item!");
+                        boolean doSolder = true;
+                        if (decrementStock) {
+                            Item item = solderItem.getUsedItem();
+                            int amount = item.getAmount();
+                            if (amount > 0) {
+                                item.setAmount(amount - 1);
+                                item.save();
+                                if (logging) logText("\tDecremented stock!");
+                            } else {
+                                doSolder = false;
+                                if (logging) logError("\tCannot decrement stock because no items left..");
+                            }
+                        }
+
+                        if (doSolder) {
+                            solderItem.setState(SolderItemState.Soldered);
+                            solderItem.setNumTimesSoldered(solderItem.getNumTimesSoldered() + 1);
+                            solderItem.setSolderDate(DateUtils.now());
+                            solderItem.save();
+                            if (logging) logText("\tSoldered item!");
+                        }
+
                     } else {
                         if (logging) logWarn("\tDid not solder item with state 'Not used'");
                     }
@@ -547,7 +520,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     }
 
     @Override
-    void onDesoldered() {
+    void onDesoldered(boolean incrementStock) {
         List<SolderItem> selectedItems = getSelectedSolderItems();
         if (selectedItems != null && selectedItems.size() > 0) {
             int res = JOptionPane.showConfirmDialog(
@@ -564,6 +537,13 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     solderItem.setNumTimesDesoldered(solderItem.getNumTimesDesoldered() + 1);
                     solderItem.setDesolderDate(DateUtils.now());
                     solderItem.save();
+
+                    if (incrementStock) {
+                        Item item = solderItem.getUsedItem();
+                        int amount = item.getAmount();
+                        item.setAmount(amount + 1);
+                        item.save();
+                    }
                 }
                 updateEnabledComponents();
                 updateSolderTable();
@@ -654,11 +634,12 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     void onSolderAllWizard(CreatedPcb createdPcb) {
         if (createdPcb != null) {
 
+            JCheckBox decrementStockCb = new JCheckBox("Decrement stock per soldered item", true);
             JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
             JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
             String message = "This wizard will copy all links to the used item field, and set them soldered for al pcb items on this PCB " +
                     "\nSelect options: ";
-            Object[] params = {message, overwriteStateCb, overwriteLinkCb};
+            Object[] params = {message, decrementStockCb, overwriteStateCb, overwriteLinkCb};
             int res = JOptionPane.showConfirmDialog(
                     EditCreatedPcbLinksDialog.this,
                     params,
@@ -680,17 +661,23 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
                         logDialog.initSubProgress(0, selectedItems.size());
                         final boolean overwrite = overwriteStateCb.isSelected();
+                        final boolean decrement = decrementStockCb.isSelected();
                         //SwingUtilities.invokeLater(() -> {
-                            logDialog.appendHeader("Copying links into used items");
-                            onCopyLink(link.getSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
-                            logDialog.appendHeader("Soldering items");
-                            onSetSoldered(link.getSolderItems(), overwrite, true);
+                        logDialog.appendHeader("Copying links into used items");
+                        onCopyLink(link.getSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
+                        logDialog.appendHeader("Soldering items");
+                        onSetSoldered(link.getSolderItems(), decrement, overwrite, true);
                         //});
+                        logDialog.setDone(false);
                     }
 
                     p++;
                     logMainProgress(p);
                 }
+
+                updateLinkTable();
+                updateSolderTable();
+                updateEnabledComponents();
             }
         }
 
