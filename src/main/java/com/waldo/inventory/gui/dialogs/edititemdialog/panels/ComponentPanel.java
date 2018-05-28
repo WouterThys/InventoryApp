@@ -224,6 +224,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
            selectedItem.setRemarksFile(newFile);
            editedListener.onValueChanged(remarksPnl, "remarksFile", null, null);
         });
+        remarksPnl.setPreferredSize(new Dimension(400, 100));
     }
 
     private JPanel createBasicPanel() {

@@ -3,7 +3,7 @@ rm -f /opt/Inventory/InventoryApp.jar
 #rm -rf /opt/Inventory/Images
 
 echo "Copy .jar file to /opt/Inventory"
-cp -ar /home/wouter/Documents/Geeken/InventoryApp/out/artifacts/InventoryApp_jar/InventoryApp.jar /opt/Inventory/
+cp -ar /home/wouter/Documents/Geeken/InventoryApp/out/artifacts/InventoryApp_jar2/InventoryApp.jar /opt/Inventory/
 
 echo "Copy setting db /opt/Inventory"
 cp -ar /home/wouter/Documents/Geeken/InventoryApp/settings.db /opt/Inventory/

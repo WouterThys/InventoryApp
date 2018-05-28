@@ -308,9 +308,13 @@ public class OrderLine extends DbObject {
         if (getOrder() != null) {
             switch (order.getDistributorType()) {
                 case Items:
-                    return getItem().getName();
+                    if (getItem() != null) {
+                        return getItem().getName();
+                    }
                 case Pcbs:
-                    return getPcb().getName();
+                    if (getPcb() != null) {
+                        return getPcb().getName();
+                    }
             }
         }
         return "";
