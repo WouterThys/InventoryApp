@@ -60,7 +60,6 @@ public class Main {
             setLookAndFeel(settings().getGeneralSettings().getGuiLookAndFeel());
             app.initComponents();
             app.pack();
-
             app.setVisible(true);
         });
     }
@@ -107,10 +106,12 @@ public class Main {
                     UIDefaults defaults = super.getDefaults();
 
                     defaults.put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+                    defaults.put("nimbusOrange", new Color(10, 180, 0)); //defaults.get("nimbusFocus")
 
                     return defaults;
                 }
             });
+
         } catch (UnsupportedLookAndFeelException e) {
             LOG.error("Error settings look and feel.", e);
         }

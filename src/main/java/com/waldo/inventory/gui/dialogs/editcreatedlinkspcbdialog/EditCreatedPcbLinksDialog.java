@@ -18,7 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -39,92 +38,92 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
         updateComponents();
     }
 
-    private void createPcb(CreatedPcb pcb) {
-        if (pcb != null) {
-            if (!pcb.isSoldered()) {
-                if (hasErrors(pcb)) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "There are errors in the PCB items, solve them before creating the PCB..",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                    return;
-                }
+//    private void createPcb(CreatedPcb pcb) {
+//        if (pcb != null) {
+//            if (!pcb.isSoldered()) {
+//                if (hasErrors(pcb)) {
+//                    JOptionPane.showMessageDialog(
+//                            this,
+//                            "There are errors in the PCB items, solve them before creating the PCB..",
+//                            "Error",
+//                            JOptionPane.ERROR_MESSAGE
+//                    );
+//                    return;
+//                }
+//
+//                boolean canGoOn = true;
+//                if (hasUnsaved(pcb)) {
+//                    int res = JOptionPane.showConfirmDialog(
+//                            this,
+//                            "There are still unsaved links in the PCB items, are you sure you want to create the PCB?",
+//                            "Unsaved",
+//                            JOptionPane.YES_NO_OPTION,
+//                            JOptionPane.WARNING_MESSAGE
+//                    );
+//                    canGoOn = (res == JOptionPane.YES_OPTION);
+//                }
+//                if (canGoOn && hasWarnings(pcb)) {
+//                    int res = JOptionPane.showConfirmDialog(
+//                            this,
+//                            "There are warnings in the PCB items, are you sure you want to create the PCB?",
+//                            "Warnings",
+//                            JOptionPane.YES_NO_OPTION,
+//                            JOptionPane.WARNING_MESSAGE
+//                    );
+//                    canGoOn = (res == JOptionPane.YES_OPTION);
+//                }
+//
+//                if (canGoOn) {
+////                    for (CreatedPcbLink link : pcb.getCreatedPcbLinks()) {
+////                        if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
+////                            Item usedItem = link.getUsedItem();
+////                            usedItem.setAmount(usedItem.getAmount() - link.getUsedAmount());
+////                            usedItem.save();
+////                        }
+////                    } TODO
+//                    pcb.setDateSoldered(DateUtils.now());
+//                    pcb.save();
+//
+//                    saveComponents();
+//
+//                    //updateComponents();
+//                }
+//            }
+//        }
+//    }
 
-                boolean canGoOn = true;
-                if (hasUnsaved(pcb)) {
-                    int res = JOptionPane.showConfirmDialog(
-                            this,
-                            "There are still unsaved links in the PCB items, are you sure you want to create the PCB?",
-                            "Unsaved",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE
-                    );
-                    canGoOn = (res == JOptionPane.YES_OPTION);
-                }
-                if (canGoOn && hasWarnings(pcb)) {
-                    int res = JOptionPane.showConfirmDialog(
-                            this,
-                            "There are warnings in the PCB items, are you sure you want to create the PCB?",
-                            "Warnings",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE
-                    );
-                    canGoOn = (res == JOptionPane.YES_OPTION);
-                }
-
-                if (canGoOn) {
-//                    for (CreatedPcbLink link : pcb.getCreatedPcbLinks()) {
-//                        if (link.getUsedItemId() > DbObject.UNKNOWN_ID) {
-//                            Item usedItem = link.getUsedItem();
-//                            usedItem.setAmount(usedItem.getAmount() - link.getUsedAmount());
-//                            usedItem.save();
-//                        }
-//                    } TODO
-                    pcb.setDateSoldered(DateUtils.now());
-                    pcb.save();
-
-                    saveComponents();
-
-                    //updateComponents();
-                }
-            }
-        }
-    }
-
-    private boolean hasUnsaved(CreatedPcb pcb) {
-        if (pcb != null) {
-            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
-                if (cpl.getState() == Statics.CreatedPcbLinkState.NotSaved) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasErrors(CreatedPcb pcb) {
-        if (pcb != null) {
-            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
-                if (cpl.getState() == Statics.CreatedPcbLinkState.Error) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasWarnings(CreatedPcb pcb) {
-        if (pcb != null) {
-            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
-                if (cpl.getState() == Statics.CreatedPcbLinkState.Warning) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    private boolean hasUnsaved(CreatedPcb pcb) {
+//        if (pcb != null) {
+//            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
+//                if (cpl.getState() == Statics.CreatedPcbLinkState.NotSaved) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+//
+//    private boolean hasErrors(CreatedPcb pcb) {
+//        if (pcb != null) {
+//            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
+//                if (cpl.getState() == Statics.CreatedPcbLinkState.Error) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+//
+//    private boolean hasWarnings(CreatedPcb pcb) {
+//        if (pcb != null) {
+//            for (CreatedPcbLink cpl : pcb.getCreatedPcbLinks()) {
+//                if (cpl.getState() == Statics.CreatedPcbLinkState.Warning) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
     //
@@ -162,27 +161,27 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
         // Don't care
     }
 
-    private void saveComponents() {
-        if (createdPcb != null) {
-            List<CreatedPcbLink> linkList = createdPcb.getCreatedPcbLinks();
-            if (linkList != null && linkList.size() > 0) {
-                for (CreatedPcbLink link : linkList) {
-                    link.save();
-                }
+//    private void saveComponents() {
+//        if (createdPcb != null) {
+//            List<CreatedPcbLink> linkList = createdPcb.getCreatedPcbLinks();
+//            if (linkList != null && linkList.size() > 0) {
+//                for (CreatedPcbLink link : linkList) {
+//                    link.save();
+//                }
+//
+//                JOptionPane.showMessageDialog(
+//                        parent,
+//                        "Saved!"
+//                );
+//            }
+//        }
+//    }
 
-                JOptionPane.showMessageDialog(
-                        parent,
-                        "Saved!"
-                );
-            }
-        }
-    }
-
-    private void logMainProgress(int progress) {
-        if (logDialog != null) {
-            logDialog.setMainProgress(progress);
-        }
-    }
+//    private void logMainProgress(int progress) {
+//        if (logDialog != null) {
+//            logDialog.setMainProgress(progress);
+//        }
+//    }
 
     private void logSubProgress(int progress) {
         if (logDialog != null) {
@@ -266,6 +265,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     solderItem.save();
                 }
                 link.updateSolderItems();
+                updateSolderProgress();
                 initSolderItemTable(link);
                 updateEnabledComponents();
             }
@@ -467,6 +467,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     solderItem.setState(SolderItemState.NotUsed);
                     solderItem.save();
                 }
+                createdPcb.updateAmountSoldered();
+                updateSolderProgress();
                 updateEnabledComponents();
                 updateSolderTable();
             }
@@ -512,6 +514,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 p++;
                 if (logging) logSubProgress(p);
             }
+            createdPcb.updateAmountSoldered();
+            updateSolderProgress();
             updateEnabledComponents();
             updateSolderTable();
         } else {
@@ -545,6 +549,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                         item.save();
                     }
                 }
+                createdPcb.updateAmountSoldered();
+                updateSolderProgress();
                 updateEnabledComponents();
                 updateSolderTable();
             }
@@ -552,8 +558,32 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
     }
 
     @Override
-    void onCreatePcb(CreatedPcb createdPcb) {
-        createPcb(createdPcb);
+    void onSetPcbDone(CreatedPcb createdPcb) {
+        if (createdPcb != null) {
+            List<SolderItem> selectedItems = getSelectedSolderItems();
+            if (selectedItems != null && selectedItems.size() > 0) {
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        "All items that are not soldered will get the state 'Not Used', continue?",
+                        "PCB done",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+                if (res == JOptionPane.YES_OPTION) {
+                    for (SolderItem solderItem : selectedItems) {
+                        SolderItemState state = solderItem.getState();
+                        if (state.equals(SolderItemState.None)) {
+                            solderItem.setState(SolderItemState.NotUsed);
+                            solderItem.save();
+                        }
+                    }
+                    createdPcb.updateAmountSoldered();
+                    updateSolderProgress();
+                    updateEnabledComponents();
+                    updateSolderTable();
+                }
+            }
+        }
     }
 
     @Override
@@ -630,58 +660,58 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
         }
     }
 
-    @Override
-    void onSolderAllWizard(CreatedPcb createdPcb) {
-        if (createdPcb != null) {
-
-            JCheckBox decrementStockCb = new JCheckBox("Decrement stock per soldered item", true);
-            JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
-            JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
-            String message = "This wizard will copy all links to the used item field, and set them soldered for al pcb items on this PCB " +
-                    "\nSelect options: ";
-            Object[] params = {message, decrementStockCb, overwriteStateCb, overwriteLinkCb};
-            int res = JOptionPane.showConfirmDialog(
-                    EditCreatedPcbLinksDialog.this,
-                    params,
-                    "Wizard options",
-                    JOptionPane.OK_CANCEL_OPTION);
-
-            if (res == JOptionPane.OK_OPTION) {
-
-                logDialog = new MessageProgressDialog(EditCreatedPcbLinksDialog.this);
-                logDialog.initMainProgress(0, createdPcb.getCreatedPcbLinks().size());
-                logDialog.showDialog();
-
-                int p = 0;
-
-                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
-                    List<SolderItem> selectedItems = getSelectedSolderItems();
-
-                    if (selectedItems != null && selectedItems.size() > 0) {
-
-                        logDialog.initSubProgress(0, selectedItems.size());
-                        final boolean overwrite = overwriteStateCb.isSelected();
-                        final boolean decrement = decrementStockCb.isSelected();
-                        //SwingUtilities.invokeLater(() -> {
-                        logDialog.appendHeader("Copying links into used items");
-                        onCopyLink(link.getSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
-                        logDialog.appendHeader("Soldering items");
-                        onSetSoldered(link.getSolderItems(), decrement, overwrite, true);
-                        //});
-                        logDialog.setDone(false);
-                    }
-
-                    p++;
-                    logMainProgress(p);
-                }
-
-                updateLinkTable();
-                updateSolderTable();
-                updateEnabledComponents();
-            }
-        }
-
-    }
+//    @Override
+//    void onSolderAllWizard(CreatedPcb createdPcb) {
+//        if (createdPcb != null) {
+//
+//            JCheckBox decrementStockCb = new JCheckBox("Decrement stock per soldered item", true);
+//            JCheckBox overwriteStateCb = new JCheckBox("Overwrite 'Not Used' items ", true);
+//            JCheckBox overwriteLinkCb = new JCheckBox("Overwrite if item already has link ", false);
+//            String message = "This wizard will copy all links to the used item field, and set them soldered for al pcb items on this PCB " +
+//                    "\nSelect options: ";
+//            Object[] params = {message, decrementStockCb, overwriteStateCb, overwriteLinkCb};
+//            int res = JOptionPane.showConfirmDialog(
+//                    EditCreatedPcbLinksDialog.this,
+//                    params,
+//                    "Wizard options",
+//                    JOptionPane.OK_CANCEL_OPTION);
+//
+//            if (res == JOptionPane.OK_OPTION) {
+//
+//                logDialog = new MessageProgressDialog(EditCreatedPcbLinksDialog.this);
+//                logDialog.initMainProgress(0, createdPcb.getCreatedPcbLinks().size());
+//                logDialog.showDialog();
+//
+//                int p = 0;
+//
+//                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
+//                    List<SolderItem> selectedItems = getSelectedSolderItems();
+//
+//                    if (selectedItems != null && selectedItems.size() > 0) {
+//
+//                        logDialog.initSubProgress(0, selectedItems.size());
+//                        final boolean overwrite = overwriteStateCb.isSelected();
+//                        final boolean decrement = decrementStockCb.isSelected();
+//                        //SwingUtilities.invokeLater(() -> {
+//                        logDialog.appendHeader("Copying links into used items");
+//                        onCopyLink(link.getSolderItems(), link, overwriteStateCb.isSelected(), overwriteLinkCb.isSelected(), true);
+//                        logDialog.appendHeader("Soldering items");
+//                        onSetSoldered(link.getSolderItems(), decrement, overwrite, true);
+//                        //});
+//                        logDialog.setDone(false);
+//                    }
+//
+//                    p++;
+//                    logMainProgress(p);
+//                }
+//
+//                updateLinkTable();
+//                updateSolderTable();
+//                updateEnabledComponents();
+//            }
+//        }
+//
+//    }
 
     @Override
     void onRemoveAll(CreatedPcb createdPcb) {
@@ -696,8 +726,8 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                     "Remove",
                     JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
-                boolean setBackAmount = setBackAmountCb.isSelected();
-                List<CreatedPcbLink> toDelete = new ArrayList<>(createdPcb.getCreatedPcbLinks());
+//                boolean setBackAmount = setBackAmountCb.isSelected();
+//                List<CreatedPcbLink> toDelete = new ArrayList<>(createdPcb.getCreatedPcbLinks());
 //                for (CreatedPcbLink cpl : toDelete) {
 //                    if (setBackAmount && cpl.getUsedItemId() > DbObject.UNKNOWN_ID) {
 //                        Item usedItem = cpl.getUsedItem();

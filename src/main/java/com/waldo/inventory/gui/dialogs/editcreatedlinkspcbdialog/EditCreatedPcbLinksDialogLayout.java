@@ -25,6 +25,11 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements IEditedListener {
 
+    private static final ImageIcon receivedIcon = imageResource.readIcon("Actions.Received");
+    private static final ImageIcon inProgressIcon = imageResource.readIcon("Actions.Created");
+    private static final ImageIcon doneIcon = imageResource.readIcon("Actions.Ok");
+    private static final ImageIcon destroyedIcon = imageResource.readIcon("Actions.Destroyed");
+
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -38,8 +43,9 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     private ITextField projectPcbTf;
     private ITextField pcbNameTf;
     private ITextField pcbCreatedTf;
-    private ITextField pcbSolderedTf;
     private IImagePanel pcbImagePanel;
+    private JProgressBar solderProgressPb;
+    private ILabel solderProgressLbl;
 
     // Link
     private ITextField pcbItemTf;
@@ -65,9 +71,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     private IActions.EditAction editLinkedItemAction;
 
     // Created pcb actions
-    private IActions.UseAction createPcbAction;
+    private IActions.UseAction pcbDoneAction;
     private IActions.DeleteAction destroyPcbAction;
-    private IActions.WizardAction solderAllWizardAction;
     private IActions.RemoveAllAction removeAllAction;
     private IActions.DoItAction calculatePriceAction;
 
@@ -108,9 +113,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     abstract void onRecreateSolderItems(CreatedPcbLink link);
     abstract void onEditRemark(SolderItem solderItem);
 
-    abstract void onCreatePcb(CreatedPcb createdPcb);
+    abstract void onSetPcbDone(CreatedPcb createdPcb);
     abstract void onDestroyPcb(CreatedPcb createdPcb);
-    abstract void onSolderAllWizard(CreatedPcb createdPcb);
     abstract void onRemoveAll(CreatedPcb createdPcb);
     abstract void onCalculatePrice(CreatedPcb createdPcb);
 
@@ -149,8 +153,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
             }
         }
 
-        createPcbAction.setEnabled(!isSoldered);
-        destroyPcbAction.setEnabled(isSoldered);
         calculatePriceAction.setEnabled(isSoldered);
         removeAllAction.setEnabled(isSoldered);
     }
@@ -208,10 +210,10 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         } else {
             projectPcbTf.setText("");
         }
+        updateSolderProgress();
         if (createdPcb != null) {
             pcbNameTf.setText(createdPcb.toString());
             pcbCreatedTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
-            pcbSolderedTf.setText(DateUtils.formatDateTime(createdPcb.getDateSoldered()));
             if (!createdPcb.getIconPath().isEmpty()) {
                 pcbImagePanel.setImage(createdPcb.getIconPath());
             } else {
@@ -220,10 +222,41 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         } else {
             pcbNameTf.setText("");
             pcbCreatedTf.setText("");
-            pcbSolderedTf.setText("");
             pcbImagePanel.setImage((ImageIcon)null);
         }
         updateLinkInfo(link);
+    }
+
+    void updateSolderProgress() {
+        if (createdPcb != null) {
+            solderProgressPb.setValue(createdPcb.getAmountDone());
+            solderProgressPb.setString(createdPcb.getAmountDone() + " / " + createdPcb.getAmountOfSolderItems());
+
+            String tooltip =
+                    createdPcb.getAmountSoldered() + " items soldered, " +
+                    createdPcb.getAmountNotUsed() + " items not used";
+
+            solderProgressPb.setToolTipText(tooltip);
+
+            if (createdPcb.isDestroyed()) {
+                solderProgressLbl.setIcon(destroyedIcon);
+            } else {
+                int total = createdPcb.getAmountOfSolderItems();
+                int done = createdPcb.getAmountDone();
+
+                if (done == 0) {
+                    solderProgressLbl.setIcon(receivedIcon);
+                } else if (done < total) {
+                    solderProgressLbl.setIcon(inProgressIcon);
+                } else {
+                    solderProgressLbl.setIcon(doneIcon);
+                }
+            }
+
+        } else {
+            solderProgressLbl.setIcon(null);
+            solderProgressPb.setValue(0);
+        }
     }
 
     void updateLinkInfo(CreatedPcbLink link) {
@@ -250,22 +283,26 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
+        JPanel progressPnl = new JPanel(new BorderLayout());
+        progressPnl.add(solderProgressPb, BorderLayout.CENTER);
+        progressPnl.add(solderProgressLbl, BorderLayout.EAST);
+
         JPanel infoPnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
         gbc.addLine("Project: ", projectPcbTf);
         gbc.addLine("PCB name: ", pcbNameTf);
         gbc.addLine("Created: ", pcbCreatedTf);
-        gbc.addLine("Soldered: ", pcbSolderedTf);
+        gbc.addLine("Progress: ", progressPnl);
 
         JPanel mainPnl = new JPanel(new BorderLayout());
         JToolBar tb = GuiUtils.createNewToolbar(removeAllAction, calculatePriceAction);
 
         JPanel tbPanel = new JPanel(new BorderLayout());
         tbPanel.add(tb, BorderLayout.WEST);
-        tbPanel.add(GuiUtils.createNewToolbar(createPcbAction, destroyPcbAction), BorderLayout.EAST);
+        tbPanel.add(GuiUtils.createNewToolbar(pcbDoneAction, destroyPcbAction), BorderLayout.EAST);
 
         mainPnl.add(infoPnl, BorderLayout.CENTER);
-        //mainPnl.add(tbPanel, BorderLayout.PAGE_START);
+        mainPnl.add(tbPanel, BorderLayout.PAGE_START);
 
         panel.add(pcbImagePanel, BorderLayout.WEST);
         panel.add(mainPnl, BorderLayout.CENTER);
@@ -322,7 +359,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         gbc.addLine(pcbItemLbl, GuiUtils.createComponentWithActions(pcbItemTf, editPcbItemAction));
         gbc.addLine(linkedItemLbl, GuiUtils.createComponentWithActions(linkedItemTf, editLinkedItemAction));
 
-        panel.add(GuiUtils.createNewToolbar(solderAllWizardAction), BorderLayout.NORTH);
+        //panel.add(GuiUtils.createNewToolbar(solderAllWizardAction), BorderLayout.NORTH);
         panel.add(pnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(1,1,1,1),
@@ -378,7 +415,15 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         projectPcbTf = new ITextField(false);
         pcbNameTf = new ITextField(false);
         pcbCreatedTf = new ITextField(false);
-        pcbSolderedTf = new ITextField(false);
+
+        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        defaults.put("nimbusOrange", new Color(10, 180, 0));
+        solderProgressPb = new JProgressBar();
+        solderProgressPb.setStringPainted(true);
+        solderProgressPb.setPreferredSize(new Dimension(100, 25));
+
+        solderProgressLbl = new ILabel(receivedIcon, SwingConstants.CENTER);
+        solderProgressLbl.setPreferredSize(new Dimension(24,24));
 
         IEditedListener editedListener = new IEditedListener() {
             @Override
@@ -515,14 +560,14 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         };
 
         // Created pcb action
-        createPcbAction = new IActions.UseAction() {
+        pcbDoneAction = new IActions.UseAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onCreatePcb(createdPcb);
+                onSetPcbDone(createdPcb);
             }
         };
-        createPcbAction.setIcon(imageResource.readIcon("Actions.M.Created"));
-        createPcbAction.setTooltip("Set PCB soldered");
+        pcbDoneAction.setIcon(imageResource.readIcon("Actions.M.Ok"));
+        pcbDoneAction.setTooltip("Set PCB soldered");
 
         destroyPcbAction = new IActions.DeleteAction() {
             @Override
@@ -541,13 +586,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         };
         editRemarksAa.putValue(AbstractAction.LONG_DESCRIPTION, "Edit remarks");
         editRemarksAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Edit remarks");
-        solderAllWizardAction = new IActions.WizardAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onSolderAllWizard(createdPcb);
-            }
-        };
-        solderAllWizardAction.setIcon(imageResource.readIcon("Actions.M.Wizard"));
         removeAllAction = new IActions.RemoveAllAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -585,6 +623,16 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     public void updateComponents(Object... args) {
         initLinkTable(createdPcb);
         updateInfo(projectPcb, createdPcb, selectedLink);
+
+        // Progress
+        if (createdPcb != null) {
+            solderProgressPb.setMaximum(createdPcb.getAmountOfSolderItems());
+            solderProgressPb.setMinimum(0);
+            updateSolderProgress();
+        } else {
+            solderProgressPb.setVisible(false);
+        }
+
         linkTable.resizeColumns();
         updateEnabledComponents();
     }
