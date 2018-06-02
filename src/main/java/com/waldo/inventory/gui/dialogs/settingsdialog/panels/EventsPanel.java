@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbExecuteListener;
 import com.waldo.inventory.gui.Application;

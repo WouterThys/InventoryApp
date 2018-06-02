@@ -1,4 +1,4 @@
-package com.waldo.inventory.classes.database;
+package com.waldo.inventory.database.classes;
 
 import com.waldo.inventory.Utils.Statics.EventIntervalField;
 import com.waldo.inventory.Utils.Statics.EventType;

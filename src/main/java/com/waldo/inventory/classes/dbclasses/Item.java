@@ -57,6 +57,12 @@ public class Item extends DbObject {
     private boolean discourageOrder;
     private String remarksFile;
 
+    // Links with other items
+    private long relatedItemId;
+    private Item relatedItem;
+    private long replacementItemId;
+    private Item replacementItem;
+
     public Item() {
         this("");
     }
@@ -137,6 +143,10 @@ public class Item extends DbObject {
         statement.setString(ndx++, getAud().getUpdatedBy());
         statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()), Calendar.getInstance());
 
+        // Linked items
+        statement.setLong(ndx++, getRelatedItemId());
+        statement.setLong(ndx++, getReplacementItemId());
+
         return ndx;
     }
 
@@ -164,6 +174,8 @@ public class Item extends DbObject {
         item.setDiscourageOrder(isDiscourageOrder());
         item.setRemarksFile(getRemarksFile());
         item.setIsSet(isSet());
+        item.setRelatedItemId(getRelatedItemId());
+        item.setReplacementItemId(getReplacementItemId());
 
         return item;
     }
@@ -199,6 +211,8 @@ public class Item extends DbObject {
                 Objects.equals(getOnlineDataSheet(), item.getOnlineDataSheet()) &&
                 getAmountType() == item.getAmountType() &&
                 getOrderState() == item.getOrderState() &&
+                getReplacementItemId() == item.getReplacementItemId() &&
+                getRelatedItemId() == item.getRelatedItemId() &&
                 Objects.equals(getRemarksFile(), item.getRemarksFile());
     }
 
@@ -417,6 +431,7 @@ public class Item extends DbObject {
         return result;
     }
 
+
     public String getAlias() {
         if (alias == null) {
             alias = "";
@@ -428,6 +443,7 @@ public class Item extends DbObject {
         this.alias = alias;
     }
 
+
     public String getDescription() {
         if (description == null) {
             setDescription("");
@@ -438,6 +454,7 @@ public class Item extends DbObject {
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public long getDivisionId() {
         if (divisionId < UNKNOWN_ID) {
@@ -459,6 +476,7 @@ public class Item extends DbObject {
         }
         this.divisionId = divisionId;
     }
+
 
     public String getLocalDataSheet() {
         if (localDataSheet == null) {
@@ -482,6 +500,7 @@ public class Item extends DbObject {
         this.onlineDataSheet = onlineDataSheet;
     }
 
+
     public long getManufacturerId() {
         if (manufacturerId < UNKNOWN_ID) {
             manufacturerId = UNKNOWN_ID;
@@ -502,6 +521,7 @@ public class Item extends DbObject {
         }
         this.manufacturerId = manufacturerId;
     }
+
 
     public long getLocationId() {
         if (locationId < UNKNOWN_ID) {
@@ -528,6 +548,7 @@ public class Item extends DbObject {
         }
         return location;
     }
+
 
     public int getAmount() {
         return amount;
@@ -574,6 +595,7 @@ public class Item extends DbObject {
         this.amountType = ItemAmountTypes.fromInt(amountType);
     }
 
+
     public Statics.OrderStates getOrderState() {
         if (orderState == null) {
             List<Order> orders = SearchManager.sm().findOrdersForItem(getId());
@@ -598,6 +620,7 @@ public class Item extends DbObject {
         return orderState;
     }
 
+
     public float getRating() {
         return rating;
     }
@@ -606,6 +629,7 @@ public class Item extends DbObject {
         this.rating = rating;
     }
 
+
     public boolean isDiscourageOrder() {
         return discourageOrder;
     }
@@ -613,6 +637,7 @@ public class Item extends DbObject {
     public void setDiscourageOrder(boolean discourageOrder) {
         this.discourageOrder = discourageOrder;
     }
+
 
     private String getRemarksFileName() {
         if (remarksFile == null) {
@@ -635,6 +660,7 @@ public class Item extends DbObject {
             this.remarksFile = null;
         }
     }
+
 
     public long getPackageTypeId() {
         if (packageTypeId < UNKNOWN_ID) {
@@ -676,6 +702,7 @@ public class Item extends DbObject {
         return packageType;
     }
 
+
     public boolean isSetItem() {
         return SearchManager.sm().findSetsByItemId(getId()).size() > 0;
     }
@@ -687,6 +714,7 @@ public class Item extends DbObject {
     public void setIsSet(boolean isSet) {
         this.isSet = isSet;
     }
+
 
     public Value getValue() {
         if (value == null) {
@@ -704,4 +732,46 @@ public class Item extends DbObject {
     }
 
 
+    public long getReplacementItemId() {
+        if (replacementItemId < UNKNOWN_ID) {
+            replacementItemId = UNKNOWN_ID;
+        }
+        return replacementItemId;
+    }
+
+    public Item getReplacementItem() {
+        if (replacementItem == null && replacementItemId > UNKNOWN_ID) {
+            replacementItem = sm().findItemById(replacementItemId);
+        }
+        return replacementItem;
+    }
+
+    public void setReplacementItemId(long replacementItemId) {
+        if (replacementItem != null && replacementItem.getId() != replacementItemId) {
+            replacementItem = null;
+        }
+        this.replacementItemId = replacementItemId;
+    }
+
+
+    public long getRelatedItemId() {
+        if (relatedItemId < UNKNOWN_ID) {
+            relatedItemId = UNKNOWN_ID;
+        }
+        return relatedItemId;
+    }
+
+    public Item getRelatedItem() {
+        if (relatedItem == null && relatedItemId > UNKNOWN_ID) {
+            relatedItem = sm().findItemById(relatedItemId);
+        }
+        return relatedItem;
+    }
+
+    public void setRelatedItemId(long relatedItemId) {
+        if (relatedItem != null && relatedItem.getId() != relatedItemId) {
+            relatedItem = null;
+        }
+        this.relatedItemId = relatedItemId;
+    }
 }

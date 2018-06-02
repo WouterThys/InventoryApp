@@ -3,7 +3,7 @@ package com.waldo.inventory.managers;
 import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.ObjectLog;
 import com.waldo.inventory.classes.cache.CacheList;
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -206,7 +206,7 @@ public class CacheManager {
     public synchronized CacheList<Item> getItems() {
         if (!items.isFetched()) {
             long start = System.nanoTime();
-            items.setList(db().updateItems(), (System.nanoTime() - start));
+            items.setList(db().fetchItems(), (System.nanoTime() - start));
         }
         return items;
     }
@@ -252,7 +252,7 @@ public class CacheManager {
     public synchronized CacheList<Division> getDivisions() {
         if (!divisions.isFetched()) {
             long start = System.nanoTime();
-            divisions.setList(db().updateDivisions(), (System.nanoTime() - start));
+            divisions.setList(db().fetchDivisions(), (System.nanoTime() - start));
         }
         return divisions;
     }
@@ -271,7 +271,7 @@ public class CacheManager {
     public synchronized CacheList<Manufacturer> getManufacturers() {
         if (!manufacturers.isFetched()) {
             long start = System.nanoTime();
-            manufacturers.setList(db().updateManufacturers(), (System.nanoTime() - start));
+            manufacturers.setList(db().fetchManufacturers(), (System.nanoTime() - start));
         }
         return manufacturers;
     }
@@ -290,7 +290,7 @@ public class CacheManager {
     public synchronized CacheList<Location> getLocations() {
         if (!locations.isFetched()) {
             long start = System.nanoTime();
-            locations.setList(db().updateLocations(), (System.nanoTime() - start));
+            locations.setList(db().fetchLocations(), (System.nanoTime() - start));
         }
         return locations;
     }
@@ -309,7 +309,7 @@ public class CacheManager {
     public synchronized CacheList<LocationType> getLocationTypes() {
         if (!locationTypes.isFetched()) {
             long start = System.nanoTime();
-            locationTypes.setList(db().updateLocationTypes(), (System.nanoTime() - start));
+            locationTypes.setList(db().fetchLocationTypes(), (System.nanoTime() - start));
         }
         return locationTypes;
     }
@@ -328,7 +328,7 @@ public class CacheManager {
     public synchronized CacheList<Order> getOrders() {
         if (!orders.isFetched()) {
             long start = System.nanoTime();
-            orders.setList(db().updateOrders(), (System.nanoTime() - start));
+            orders.setList(db().fetchOrders(), (System.nanoTime() - start));
         }
         return orders;
     }
@@ -347,7 +347,7 @@ public class CacheManager {
     public synchronized CacheList<OrderLine> getOrderLines() {
         if (!orderLines.isFetched()) {
             long start = System.nanoTime();
-            orderLines.setList(db().updateOrderLines(), (System.nanoTime() - start));
+            orderLines.setList(db().fetchOrderLines(), (System.nanoTime() - start));
         }
         return orderLines;
     }
@@ -366,7 +366,7 @@ public class CacheManager {
     public synchronized CacheList<Distributor> getDistributors() {
         if (!distributors.isFetched()) {
             long start = System.nanoTime();
-            distributors.setList(db().updateDistributors(), (System.nanoTime() - start));
+            distributors.setList(db().fetchDistributors(), (System.nanoTime() - start));
         }
         return distributors;
     }
@@ -385,7 +385,7 @@ public class CacheManager {
     public synchronized CacheList<DistributorOrderFlow> getDistributorOrderFlows() {
         if (!distributorOrderFlows.isFetched()) {
             long start = System.nanoTime();
-            distributorOrderFlows.setList(db().updateDistributorOrderFlows(), (System.nanoTime() - start));
+            distributorOrderFlows.setList(db().fetchDistributorOrderFlows(), (System.nanoTime() - start));
         }
         return distributorOrderFlows;
     }
@@ -404,7 +404,7 @@ public class CacheManager {
     public synchronized CacheList<DistributorPartLink> getDistributorPartLinks() {
         if (!distributorPartLinks.isFetched()) {
             long start = System.nanoTime();
-            distributorPartLinks.setList(db().updateDistributorParts(), (System.nanoTime() - start));
+            distributorPartLinks.setList(db().fetchDistributorParts(), (System.nanoTime() - start));
         }
         return distributorPartLinks;
     }
@@ -423,7 +423,7 @@ public class CacheManager {
     public synchronized CacheList<Package> getPackages() {
         if (!packages.isFetched()) {
             long start = System.nanoTime();
-            packages.setList(db().updatePackages(), (System.nanoTime() - start));
+            packages.setList(db().fetchPackages(), (System.nanoTime() - start));
         }
         return packages;
     }
@@ -442,7 +442,7 @@ public class CacheManager {
     public synchronized CacheList<PackageType> getPackageTypes() {
         if (!packageTypes.isFetched()) {
             long start = System.nanoTime();
-            packageTypes.setList(db().updatePackageTypes(), (System.nanoTime() - start));
+            packageTypes.setList(db().fetchPackageTypes(), (System.nanoTime() - start));
         }
         return packageTypes;
     }
@@ -461,7 +461,7 @@ public class CacheManager {
     public synchronized CacheList<Project> getProjects() {
         if (!projects.isFetched()) {
             long start = System.nanoTime();
-            projects.setList(db().updateProjects(), (System.nanoTime() - start));
+            projects.setList(db().fetchProjects(), (System.nanoTime() - start));
         }
         return projects;
     }
@@ -480,7 +480,7 @@ public class CacheManager {
     public synchronized CacheList<ProjectCode> getProjectCodes() {
         if (!projectCodes.isFetched()) {
             long start = System.nanoTime();
-            projectCodes.setList(db().updateProjectCodes(), (System.nanoTime() - start));
+            projectCodes.setList(db().fetchProjectCodes(), (System.nanoTime() - start));
         }
         return projectCodes;
     }
@@ -499,7 +499,7 @@ public class CacheManager {
     public synchronized CacheList<ProjectPcb> getProjectPcbs() {
         if (!projectPcbs.isFetched()) {
             long start = System.nanoTime();
-            projectPcbs.setList(db().updateProjectPcbs(), (System.nanoTime() - start));
+            projectPcbs.setList(db().fetchProjectPcbs(), (System.nanoTime() - start));
         }
         return projectPcbs;
     }
@@ -518,7 +518,7 @@ public class CacheManager {
     public synchronized CacheList<CreatedPcb> getCreatedPcbs() {
         if (!createdPcbs.isFetched()) {
             long start = System.nanoTime();
-            createdPcbs.setList(db().updateCreatedPcbs(), (System.nanoTime() - start));
+            createdPcbs.setList(db().fetchCreatedPcbs(), (System.nanoTime() - start));
         }
         return createdPcbs;
     }
@@ -537,7 +537,7 @@ public class CacheManager {
     public synchronized CacheList<CreatedPcbLink> getCreatedPcbLinks() {
         if (!createdPcbLinks.isFetched()) {
             long start = System.nanoTime();
-            createdPcbLinks.setList(db().updateCreatedPcbLinks(), (System.nanoTime() - start));
+            createdPcbLinks.setList(db().fetchCreatedPcbLinks(), (System.nanoTime() - start));
         }
         return createdPcbLinks;
     }
@@ -556,7 +556,7 @@ public class CacheManager {
     public synchronized CacheList<SolderItem> getSolderItems() {
         if (!solderItems.isFetched()) {
             long start = System.nanoTime();
-            solderItems.setList(db().updateSolderItems(), (System.nanoTime() - start));
+            solderItems.setList(db().fetchSolderItems(), (System.nanoTime() - start));
         }
         return solderItems;
     }
@@ -575,7 +575,7 @@ public class CacheManager {
     public synchronized CacheList<ProjectOther> getProjectOthers() {
         if (!projectOthers.isFetched()) {
             long start = System.nanoTime();
-            projectOthers.setList(db().updateProjectOthers(), (System.nanoTime() - start));
+            projectOthers.setList(db().fetchProjectOthers(), (System.nanoTime() - start));
         }
         return projectOthers;
     }
@@ -594,7 +594,7 @@ public class CacheManager {
     public synchronized CacheList<PcbItemProjectLink> getPcbItemProjectLinks() {
         if (!pcbItemProjectLinks.isFetched()) {
             long start = System.nanoTime();
-            pcbItemProjectLinks.setList(db().updatePcbItemLinks(), (System.nanoTime() - start));
+            pcbItemProjectLinks.setList(db().fetchPcbItemLinks(), (System.nanoTime() - start));
         }
         return pcbItemProjectLinks;
     }
@@ -613,7 +613,7 @@ public class CacheManager {
     public synchronized CacheList<ProjectIDE> getProjectIDES() {
         if (!projectIDES.isFetched()) {
             long start = System.nanoTime();
-            projectIDES.setList(db().updateProjectIDEs(), (System.nanoTime() - start));
+            projectIDES.setList(db().fetchProjectIDEs(), (System.nanoTime() - start));
         }
         return projectIDES;
     }
@@ -632,7 +632,7 @@ public class CacheManager {
     public synchronized CacheList<ParserItemLink> getParserItemLinks() {
         if (!parserItemLinks.isFetched()) {
             long start = System.nanoTime();
-            parserItemLinks.setList(db().updateParserItemLinks(), (System.nanoTime() - start));
+            parserItemLinks.setList(db().fetchParserItemLinks(), (System.nanoTime() - start));
         }
         return parserItemLinks;
     }
@@ -651,7 +651,7 @@ public class CacheManager {
     public synchronized CacheList<OrderFileFormat> getOrderFileFormats() {
         if (!orderFileFormats.isFetched()) {
             long start = System.nanoTime();
-            orderFileFormats.setList(db().updateOrderFileFormats(), (System.nanoTime() - start));
+            orderFileFormats.setList(db().fetchOrderFileFormats(), (System.nanoTime() - start));
         }
         return orderFileFormats;
     }
@@ -670,7 +670,7 @@ public class CacheManager {
     public synchronized CacheList<PcbItem> getPcbItems() {
         if (!pcbItems.isFetched()) {
             long start = System.nanoTime();
-            pcbItems.setList(db().updatePcbItems(), (System.nanoTime() - start));
+            pcbItems.setList(db().fetchPcbItems(), (System.nanoTime() - start));
         }
         return pcbItems;
     }
@@ -689,7 +689,7 @@ public class CacheManager {
     public synchronized CacheList<PcbItemItemLink> getPcbItemItemLinks() {
         if (!pcbItemItemLinks.isFetched()) {
             long start = System.nanoTime();
-            pcbItemItemLinks.setList(db().updateKcItemLinks(), (System.nanoTime() - start));
+            pcbItemItemLinks.setList(db().fetchKcItemLinks(), (System.nanoTime() - start));
         }
         return pcbItemItemLinks;
     }
@@ -708,7 +708,7 @@ public class CacheManager {
     public synchronized CacheList<Log> getLogs() {
         if (!logs.isFetched()) {
             long start = System.nanoTime();
-            logs.setList(db().updateLogs(), (System.nanoTime() - start));
+            logs.setList(db().fetchLogs(), (System.nanoTime() - start));
         }
         return logs;
     }
@@ -727,7 +727,7 @@ public class CacheManager {
     public synchronized CacheList<DbHistory> getDbHistory() {
         if (!dbHistoryList.isFetched()) {
             long start = System.nanoTime();
-            dbHistoryList.setList(db().updateDbHistoryList(), (System.nanoTime() - start));
+            dbHistoryList.setList(db().fetchDbHistoryList(), (System.nanoTime() - start));
         }
         return dbHistoryList;
     }
@@ -746,7 +746,7 @@ public class CacheManager {
     public synchronized CacheList<Set> getSets() {
         if (!sets.isFetched()) {
             long start = System.nanoTime();
-            sets.setList(db().updateSets(), (System.nanoTime() - start));
+            sets.setList(db().fetchSets(), (System.nanoTime() - start));
         }
         return sets;
     }
@@ -765,7 +765,7 @@ public class CacheManager {
     public synchronized CacheList<SetItemLink> getSetItemLinks() {
         if (!setItemLinks.isFetched()) {
             long start = System.nanoTime();
-            setItemLinks.setList(db().updateSetItemLinks(), (System.nanoTime() - start));
+            setItemLinks.setList(db().fetchSetItemLinks(), (System.nanoTime() - start));
         }
         return setItemLinks;
     }
@@ -784,7 +784,7 @@ public class CacheManager {
     public synchronized CacheList<DbEvent> getDbEvents() {
         if (!dbEvents.isFetched()) {
             long start = System.nanoTime();
-            dbEvents.setList(db().updateDbEvents(), (System.nanoTime() - start));
+            dbEvents.setList(db().fetchDbEvents(), (System.nanoTime() - start));
         }
         return dbEvents;
     }
@@ -803,7 +803,7 @@ public class CacheManager {
     public synchronized CacheList<Statistics> getStatistics() {
         if (!statistics.isFetched()) {
             long start = System.nanoTime();
-            statistics.setList(db().updateStatistics(), (System.nanoTime() - start));
+            statistics.setList(db().fetchStatistics(), (System.nanoTime() - start));
         }
         return statistics;
     }
@@ -822,7 +822,7 @@ public class CacheManager {
     public synchronized CacheList<PendingOrder> getPendingOrders() {
         if (!pendingOrders.isFetched()) {
             long start = System.nanoTime();
-            pendingOrders.setList(db().updatePendingOrders(), (System.nanoTime() - start));
+            pendingOrders.setList(db().fetchPendingOrders(), (System.nanoTime() - start));
         }
         return pendingOrders;
     }

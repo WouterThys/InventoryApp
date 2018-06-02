@@ -56,7 +56,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
     private IComboBox<Manufacturer> manufacturerCb;
     private IImagePanel manufacturerIconLbl;
     private IStarRater starRater;
-    private ICheckBox discourageOrderCb;
     private IRemarksPanel remarksPnl;
 
     public ComponentPanel(Window parent, T selectedItem, @NotNull IEditedListener listener) {
@@ -94,7 +93,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         selectedItem.setRating(set.getRating());
         starRater.setRating(set.getRating());
         starRater.setSelection(0);
-        discourageOrderCb.setSelected(set.isDiscourageOrder());
     }
 
     public void setSelectedTab(int tab) {
@@ -216,10 +214,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         starRater = new IStarRater(5, 0,0);
         starRater.addEditedListener(editedListener, "rating");
         starRater.setName(EditItemDialogLayout.COMP_RATING);
-        discourageOrderCb = new ICheckBox("Discourage future orders");
-        discourageOrderCb.addEditedListener(editedListener, "discourageOrder");
-        discourageOrderCb.setAlignmentX(RIGHT_ALIGNMENT);
-        discourageOrderCb.setName(EditItemDialogLayout.COMP_DISCOURAGE);
+
         remarksPnl = new IRemarksPanel(parent, newFile -> {
            selectedItem.setRemarksFile(newFile);
            editedListener.onValueChanged(remarksPnl, "remarksFile", null, null);
@@ -283,22 +278,9 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         gbc.add(manufacturerIconLbl, 2,0,0,0);
 
         // REMARKS
-        JPanel headerPnl = new JPanel();
-        gbc = new GuiUtils.GridBagHelper(headerPnl);
-
-        gbc.gridx = 0; gbc.weightx = 0;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        headerPnl.add(starRater, gbc);
-
-        gbc.gridx = 1; gbc.weightx = 1;
-        gbc.gridy = 0; gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        headerPnl.add(discourageOrderCb, gbc);
-
-        remarksPanel.add(headerPnl, BorderLayout.NORTH);
+        JPanel starPnl = new JPanel(new BorderLayout());
+        starPnl.add(starRater, BorderLayout.CENTER);
+        remarksPnl.addSomethingToHeader(starPnl);
         remarksPanel.add(remarksPnl, BorderLayout.CENTER);
 
         // Add to panel
@@ -372,7 +354,6 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         // REMARKS
         starRater.setRating(selectedItem.getRating());
         starRater.setSelection(0);
-        discourageOrderCb.setSelected(selectedItem.isDiscourageOrder());
         remarksPnl.updateComponents(selectedItem.getRemarksFile());
     }
 

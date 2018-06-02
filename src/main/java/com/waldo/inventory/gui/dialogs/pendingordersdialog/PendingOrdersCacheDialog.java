@@ -8,7 +8,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.editpendingorderdialog.EditPendingOrderCacheDialog;
-import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderCacheDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class PendingOrdersCacheDialog extends PendingOrdersCacheDialogLayout imp
                 itemsToOrder.add(po.getItem());
             }
 
-            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(application, "Order", itemsToOrder, true, false);
+            AddToOrderDialog dialog = new AddToOrderDialog(application, "Order", itemsToOrder, true, false);
             if (dialog.showDialog() == ICacheDialog.OK) {
                 for (PendingOrder po : pendingOrders) {
                     po.delete();

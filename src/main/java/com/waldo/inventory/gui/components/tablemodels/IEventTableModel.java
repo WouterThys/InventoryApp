@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;

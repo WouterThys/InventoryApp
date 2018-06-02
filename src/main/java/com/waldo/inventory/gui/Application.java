@@ -10,7 +10,7 @@ import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
-import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderCacheDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
@@ -351,6 +351,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     public void orderItem(Item item) {
         int result = JOptionPane.YES_OPTION;
+
+        // Check if discouraged
         if (item.isDiscourageOrder()) {
             result = JOptionPane.showConfirmDialog(
                     this,
@@ -360,18 +362,36 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                     JOptionPane.WARNING_MESSAGE
             );
         }
+
+        // Check if item is replaced
+        if (item.getReplacementItemId() > DbObject.UNKNOWN_ID) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "This item is replaced with item '" + item.getReplacementItem() + "'. Do you want to order the replacement in stead?",
+                    "Replaced with item",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (res == JOptionPane.YES_OPTION) {
+                item = item.getReplacementItem();
+            }
+        }
+
+        // Order
         if (result == JOptionPane.YES_OPTION) {
-            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
 
     public void orderItems(List<Item> itemList) {
+
+        // Check discourage
         for (Item item : new ArrayList<>(itemList)) {
             if (item.isDiscourageOrder()) {
                 int result = JOptionPane.showConfirmDialog(
                         this,
-                        "This item is marked to discourage new orders, \n do you really want to order it?",
+                        item + " is marked to discourage new orders, \n do you really want to order it?",
                         "Discouraged to order",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE
@@ -381,8 +401,28 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 }
             }
         }
+
+        // Check replacements
+        for (int i = 0; i < itemList.size(); i++) {
+            Item item = itemList.get(i);
+            if (item.getReplacementItemId() > DbObject.UNKNOWN_ID) {
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        item + "is replaced with '" + item.getReplacementItem() + "'. Do you want to order the replacement in stead?",
+                        "Replaced with item",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+                if (res == JOptionPane.YES_OPTION) {
+                    itemList.set(i, item.getReplacementItem());
+                }
+            }
+        }
+
+
+        // Order
         if (itemList.size() > 0) {
-            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order items", itemList, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order items", itemList, true, true);
             dialog.showDialog();
         }
     }

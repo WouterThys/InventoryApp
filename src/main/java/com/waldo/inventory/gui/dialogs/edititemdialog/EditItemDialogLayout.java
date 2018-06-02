@@ -95,7 +95,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
         editItemStockPanel.setLayout(new BoxLayout(editItemStockPanel, BoxLayout.Y_AXIS));
         editItemStockPanel.initializeComponents();
 
-        editItemOrderPanel = new EditItemOrderPanel<>(this, selectedItem);
+        editItemOrderPanel = new EditItemOrderPanel<>(this, selectedItem, this);
         editItemOrderPanel.setLayout(new BoxLayout(editItemOrderPanel, BoxLayout.Y_AXIS));
         editItemOrderPanel.initializeComponents();
 

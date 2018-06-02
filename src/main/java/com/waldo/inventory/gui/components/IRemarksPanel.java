@@ -30,6 +30,8 @@ public class IRemarksPanel extends IPanel {
     private AbstractAction editRemarksAa;
     private IActions.DeleteAction deleteAction;
 
+    private JPanel headerPnl;
+
     private File remarksFile;
 
     public IRemarksPanel(Window parent, FileChangedListener fileChangedListener) {
@@ -38,6 +40,12 @@ public class IRemarksPanel extends IPanel {
 
         initializeComponents();
         initializeLayouts();
+    }
+
+    public void addSomethingToHeader(Component component) {
+        if (headerPnl != null && component != null) {
+            headerPnl.add(component, BorderLayout.WEST);
+        }
     }
 
     @Override
@@ -113,17 +121,12 @@ public class IRemarksPanel extends IPanel {
     @Override
     public void initializeLayouts() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel headerPnl = new JPanel(new BorderLayout());
 
-        //JToolBar toolBar = GuiUtils.createNewToolbar();
-        //JButton b = toolBar.add(editRemarksAa);
-        //b.setText("Edit remarks ");
-        //b.setVerticalTextPosition(SwingConstants.CENTER);
-        //b.setHorizontalTextPosition(SwingConstants.RIGHT);
+        JToolBar remarksTb = GuiUtils.createNewToolbar(deleteAction, editRemarksAa);
 
-
+        headerPnl = new JPanel(new BorderLayout());
         headerPnl.add(new ILabel("Remarks: "), BorderLayout.WEST);
-        headerPnl.add(GuiUtils.createNewToolbar(deleteAction, editRemarksAa), BorderLayout.EAST);
+        headerPnl.add(remarksTb, BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(remarksTp);
         panel.add(headerPnl, BorderLayout.PAGE_START);
