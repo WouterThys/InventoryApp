@@ -416,8 +416,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         pcbNameTf = new ITextField(false);
         pcbCreatedTf = new ITextField(false);
 
-        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        defaults.put("nimbusOrange", new Color(10, 180, 0));
         solderProgressPb = new JProgressBar();
         solderProgressPb.setStringPainted(true);
         solderProgressPb.setPreferredSize(new Dimension(100, 25));

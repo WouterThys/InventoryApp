@@ -24,12 +24,11 @@ public class CacheManager {
     private final List<ObjectLog> objectLogList;
     private final Date initTime;
 
+    // Singleton
     private static final CacheManager INSTANCE = new CacheManager();
-
     public static CacheManager cache() {
         return INSTANCE;
     }
-
     private CacheManager() {
         objectLogList = new ArrayList<>();
         objectLogList.add(new ObjectLog("Items", items, "itemsCount"));
@@ -125,39 +124,41 @@ public class CacheManager {
     }
 
     public <T extends DbObject> void notifyListeners(QueryType queryType, T object) {
-        Class t = object.getClass();
-        if (changedListenerMap.containsKey(t)) {
-            for (CacheChangedListener l : changedListenerMap.get(t)) {
-                switch (queryType) {
-                    case Insert:
-                        try {
-                            SwingUtilities.invokeLater(() -> l.onInserted(object));
-                        } catch (Exception e) {
-                            LOG.error("Error after insert of " + object.getName(), e);
-                        }
-                        break;
-                    case Update:
-                        try {
-                            SwingUtilities.invokeLater(() -> l.onUpdated(object));
-                        } catch (Exception e) {
-                            LOG.error("Error after update of " + object.getName(), e);
-                        }
-                        break;
-                    case Delete:
-                        try {
-                            SwingUtilities.invokeLater(() -> l.onDeleted(object));
-                        } catch (Exception e) {
-                            LOG.error("Error after delete of " + object.getName(), e);
-                        }
-                        break;
-                    case Custom:
-                        break;
-                    case CacheClear:
-                        try {
-                            SwingUtilities.invokeLater(l::onCacheCleared);
-                        } catch (Exception e) {
-                            LOG.error("Error after clearing cache", e);
-                        }
+        if (queryType != null && object != null) {
+            Class t = object.getClass();
+            if (changedListenerMap.containsKey(t)) {
+                for (CacheChangedListener l : changedListenerMap.get(t)) {
+                    switch (queryType) {
+                        case Insert:
+                            try {
+                                SwingUtilities.invokeLater(() -> l.onInserted(object));
+                            } catch (Exception e) {
+                                LOG.error("Error after insert of " + object.getName(), e);
+                            }
+                            break;
+                        case Update:
+                            try {
+                                SwingUtilities.invokeLater(() -> l.onUpdated(object));
+                            } catch (Exception e) {
+                                LOG.error("Error after update of " + object.getName(), e);
+                            }
+                            break;
+                        case Delete:
+                            try {
+                                SwingUtilities.invokeLater(() -> l.onDeleted(object));
+                            } catch (Exception e) {
+                                LOG.error("Error after delete of " + object.getName(), e);
+                            }
+                            break;
+                        case Custom:
+                            break;
+                        case CacheClear:
+                            try {
+                                SwingUtilities.invokeLater(l::onCacheCleared);
+                            } catch (Exception e) {
+                                LOG.error("Error after clearing cache", e);
+                            }
+                    }
                 }
             }
         }

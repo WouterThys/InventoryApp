@@ -48,6 +48,11 @@ public class IEventTableModel extends IAbstractTableModel<DbEvent> {
         return renderer;
     }
 
+    @Override
+    public boolean hasTableCellRenderer() {
+        return true;
+    }
+
     private static class IRenderer extends DefaultTableCellRenderer {
 
         private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");

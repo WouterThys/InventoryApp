@@ -43,8 +43,8 @@ public class Item extends DbObject {
     protected Location location;
 
     protected int amount = 0;
-    protected int minimum = 0;
-    protected int maximum = 1;
+    private int minimum = 0;
+    private int maximum = 1;
 
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
     private Statics.OrderStates orderState = null;
@@ -54,10 +54,15 @@ public class Item extends DbObject {
     protected int pins;
 
     private float rating;
-    private boolean discourageOrder;
     private String remarksFile;
 
-    // Links with other items
+    // Order rules
+    private boolean discourageOrder;
+    private boolean autoOrder;
+
+    private long autoOrderById;
+    private Distributor autoOrderBy;
+
     private long relatedItemId;
     private Item relatedItem;
     private long replacementItemId;
@@ -121,6 +126,7 @@ public class Item extends DbObject {
         statement.setInt(ndx++, getPins());
         statement.setFloat(ndx++, getRating());
         statement.setBoolean(ndx++, isDiscourageOrder());
+        statement.setBoolean(ndx++, isAutoOrder());
         // Remarks
         SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
         if (blob != null) {
@@ -146,6 +152,7 @@ public class Item extends DbObject {
         // Linked items
         statement.setLong(ndx++, getRelatedItemId());
         statement.setLong(ndx++, getReplacementItemId());
+        statement.setLong(ndx++, getAutoOrderById());
 
         return ndx;
     }
@@ -167,15 +174,16 @@ public class Item extends DbObject {
         item.setMinimum(getMinimum());
         item.setMaximum(getMaximum());
         item.setAmountType(getAmountType());
-        //item.setOrderState(getOrderState());
         item.setPackageTypeId(getPackageTypeId());
         item.setPins(getPins());
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
+        item.setAutoOrder(isAutoOrder());
         item.setRemarksFile(getRemarksFile());
         item.setIsSet(isSet());
         item.setRelatedItemId(getRelatedItemId());
         item.setReplacementItemId(getReplacementItemId());
+        item.setAutoOrderById(getAutoOrderById());
 
         return item;
     }
@@ -204,6 +212,7 @@ public class Item extends DbObject {
                 getPins() == item.getPins() &&
                 Float.compare(item.getRating(), getRating()) == 0 &&
                 isDiscourageOrder() == item.isDiscourageOrder() &&
+                isAutoOrder() == item.isAutoOrder() &&
                 Objects.equals(getAlias(), item.getAlias()) &&
                 Objects.equals(getValue(), item.getValue()) &&
                 Objects.equals(getDescription(), item.getDescription()) &&
@@ -213,6 +222,7 @@ public class Item extends DbObject {
                 getOrderState() == item.getOrderState() &&
                 getReplacementItemId() == item.getReplacementItemId() &&
                 getRelatedItemId() == item.getRelatedItemId() &&
+                getAutoOrderById() == item.getAutoOrderById() &&
                 Objects.equals(getRemarksFile(), item.getRemarksFile());
     }
 
@@ -630,22 +640,6 @@ public class Item extends DbObject {
     }
 
 
-    public boolean isDiscourageOrder() {
-        return discourageOrder;
-    }
-
-    public void setDiscourageOrder(boolean discourageOrder) {
-        this.discourageOrder = discourageOrder;
-    }
-
-
-    private String getRemarksFileName() {
-        if (remarksFile == null) {
-            return "";
-        }
-        return remarksFile;
-    }
-
     public File getRemarksFile() {
         if (remarksFile != null && !remarksFile.isEmpty()) {
             return new File(remarksFile);
@@ -732,6 +726,23 @@ public class Item extends DbObject {
     }
 
 
+    public boolean isDiscourageOrder() {
+        return discourageOrder;
+    }
+
+    public void setDiscourageOrder(boolean discourageOrder) {
+        this.discourageOrder = discourageOrder;
+    }
+
+    public boolean isAutoOrder() {
+        return autoOrder;
+    }
+
+    public void setAutoOrder(boolean autoOrder) {
+        this.autoOrder = autoOrder;
+    }
+
+
     public long getReplacementItemId() {
         if (replacementItemId < UNKNOWN_ID) {
             replacementItemId = UNKNOWN_ID;
@@ -773,5 +784,27 @@ public class Item extends DbObject {
             relatedItem = null;
         }
         this.relatedItemId = relatedItemId;
+    }
+
+
+    public long getAutoOrderById() {
+        if (autoOrderById < UNKNOWN_ID) {
+            autoOrderById = UNKNOWN_ID;
+        }
+        return autoOrderById;
+    }
+
+    public Distributor getAutoOrderBy() {
+        if (autoOrderBy == null && autoOrderById > UNKNOWN_ID) {
+            autoOrderBy = sm().findDistributorById(autoOrderById);
+        }
+        return autoOrderBy;
+    }
+
+    public void setAutoOrderById(long autoOrderById) {
+        if (autoOrderBy != null && autoOrderBy.getId() != autoOrderById) {
+            autoOrderBy = null;
+        }
+        this.autoOrderById = autoOrderById;
     }
 }

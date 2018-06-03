@@ -535,10 +535,12 @@ public class DatabaseAccess {
                         i.setPins(rs.getInt("pins"));
                         i.setRating(rs.getFloat("rating"));
                         i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                        i.setAutoOrder(rs.getBoolean("autoOrder"));
                         i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                         i.setIsSet(rs.getBoolean("isSet"));
                         i.setReplacementItemId(rs.getLong("replacementItemId"));
                         i.setRelatedItemId(rs.getLong("relatedItemId"));
+                        i.setAutoOrderById(rs.getLong("autoOrderById"));
 
                         if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                             i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));

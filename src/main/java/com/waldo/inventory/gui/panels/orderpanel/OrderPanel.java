@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistrib
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -21,9 +22,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
@@ -60,50 +59,6 @@ public class OrderPanel extends OrderPanelLayout {
         return tableModel;
     }
 
-//    public Map<String, Item> addItemsToOrder(List<Item> itemsToOrder, Order order) {
-//        Map<String, Item> failedItems = null;
-//        if (order.getDistributorType() == DistributorType.Items) {
-//            for (Item item : itemsToOrder) {
-//                try {
-//                    OrderLine orderLine = order.findOrderLineFor(item);
-//                    if (orderLine == null) {
-//                        orderLine = new OrderLine(order, item, (item.getMaximum() - item.getAmount()));
-//                    }
-//                    orderLine.save();
-//                } catch (Exception e) {
-//                    if (failedItems == null) {
-//                        failedItems = new HashMap<>();
-//                    }
-//                    failedItems.put("Failed to add item " + item.toString(), item);
-//                }
-//            }
-//        } else {
-//            failedItems = new HashMap<>();
-//            for(Item item : itemsToOrder) {
-//                failedItems.put("Can not add items to an order for PCB's", item);
-//            }
-//        }
-//        return failedItems;
-//    }
-
-//    private void checkPendingOrders(Order order) {
-//        if (order != null && order.getDistributorId() > DbObject.UNKNOWN_ID) {
-//            if (SearchManager.sm().findPendingOrdersByDistributorId(order.getDistributorId()).size() > 0) {
-//                int res = JOptionPane.showConfirmDialog(
-//                        this,
-//                        "There are pending orders for " + order.getDistributor() + ", do you want to add them now?",
-//                        "Pending orders",
-//                        JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE
-//                );
-//
-//                if (res == JOptionPane.YES_OPTION) {
-//                    PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
-//                    dialog.showDialog();
-//                }
-//            }
-//        }
-//    }
 
     private void deleteSelectedOrderItems(final List<OrderLine> itemsToDelete) {
         if (selectedOrder == null) {
@@ -382,56 +337,6 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
-    private boolean validateOrderlines(Order order) {
-        List<String> errors = checkOrder(order);
-        if (errors.size() > 0) {
-            showErrors(errors);
-            return false;
-        }
-        return true;
-    }
-
-    private List<String> checkOrder(Order order) {
-        List<String> errorList = new ArrayList<>();
-
-        if (order == null) {
-            errorList.add(" - No order selected..");
-        } else {
-            if (order.getDistributor() == null) {
-                errorList.add(" - Order had no distributor..");
-            } else {
-                if (order.getDistributor().getOrderFileFormat() != null && !order.getDistributor().getOrderFileFormat().isUnknown()) {
-
-                    if (order.getOrderLines().size() < 1) {
-                        errorList.add(" - Order has no items..");
-                    } else {
-                        List<OrderLine> errorItems = order.missingOrderReferences();
-                        if (errorItems.size() > 0) {
-                            errorList.add(" - Next order items have no reference: ");
-                            for (OrderLine oi : errorItems) {
-                                errorList.add(" \t * " + oi.getName());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return errorList;
-    }
-
-    private void showErrors(List<String> errorList) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Creation of order file failed with next ").append(errorList.size()).append("error(s): ").append("\n");
-        for (String error : errorList) {
-            builder.append(error).append("\n");
-        }
-
-        JOptionPane.showMessageDialog(this,
-                builder.toString(),
-                "Order file errors",
-                JOptionPane.ERROR_MESSAGE);
-    }
-
 
     //
     // Actions
@@ -449,20 +354,9 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     void onMoveToOrdered(Order order) {
-        if (order != null && order.canBeSaved() && !order.isOrdered()) {
-            // Check
-            if (validateOrderlines(order)) {
-                // Do order
-                order.setDateOrdered(new Date(Calendar.getInstance().getTimeInMillis()));
-                order.setLocked(true);
-                Application.beginWait(OrderPanel.this);
-                try {
-                    order.updateLineStates();
-                } finally {
-                    Application.endWait(OrderPanel.this);
-                }
-                order.save();
-
+        Application.beginWait(OrderPanel.this);
+        try {
+            if (OrderManager.moveToOrdered(order)) {
                 int res = JOptionPane.showConfirmDialog(
                         this,
                         "Browse order page?",
@@ -474,30 +368,27 @@ public class OrderPanel extends OrderPanelLayout {
                 if (res == JOptionPane.YES_OPTION) {
                     // Go to website
                     order.copyOrderLinesToClipboard();
-                    try {
-                        order.browseOrderPage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            order.browseOrderPage();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }
+        } finally {
+            Application.endWait(OrderPanel.this);
         }
     }
 
     @Override
     void onMoveToReceived(Order order) {
-        if (order != null && order.canBeSaved() && !order.isReceived()) {
-            // Do receive
-            order.setDateReceived(new Date(Calendar.getInstance().getTimeInMillis()));
-            order.setLocked(true);
-            Application.beginWait(OrderPanel.this);
-            try {
-                order.updateLineStates();
-                order.updateLineAmounts(true);
-            } finally {
-                Application.endWait(OrderPanel.this);
-            }
-            order.save();
+        Application.beginWait(OrderPanel.this);
+        try {
+            OrderManager.moveToReceived(order);
+        } finally {
+            Application.endWait(OrderPanel.this);
         }
     }
 
@@ -512,16 +403,12 @@ public class OrderPanel extends OrderPanelLayout {
                     JOptionPane.QUESTION_MESSAGE
             );
             if (res == JOptionPane.YES_OPTION) {
-                order.setDateReceived((Date) null);
-                order.setLocked(true);
                 Application.beginWait(OrderPanel.this);
                 try {
-                    order.updateLineStates();
-                    order.updateLineAmounts(false);
+                    OrderManager.backToOrdered(order);
                 } finally {
                     Application.endWait(OrderPanel.this);
                 }
-                order.save();
             }
         }
     }
@@ -537,16 +424,12 @@ public class OrderPanel extends OrderPanelLayout {
                     JOptionPane.QUESTION_MESSAGE
             );
             if (res == JOptionPane.YES_OPTION) {
-                order.setDateReceived((Date) null);
-                order.setDateOrdered((Date) null);
-                order.setLocked(false);
                 Application.beginWait(OrderPanel.this);
                 try {
-                    order.updateLineStates();
+                    OrderManager.backToPlanned(order);
                 } finally {
                     Application.endWait(OrderPanel.this);
                 }
-                order.save();
             }
         }
     }
@@ -778,30 +661,30 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-            Application.beginWait(OrderPanel.this);
-            try {
-                treeReload();
-                tableInitialize(selectedOrder);
-                final long orderId = treeUpdate();
+        Application.beginWait(OrderPanel.this);
+        try {
+            treeReload();
+            tableInitialize(selectedOrder);
+            final long orderId = treeUpdate();
 
-                SwingUtilities.invokeLater(() -> {
-                    selectedOrder = SearchManager.sm().findOrderById(orderId);
-                    treeSelectOrder(selectedOrder);
+            SwingUtilities.invokeLater(() -> {
+                selectedOrder = SearchManager.sm().findOrderById(orderId);
+                treeSelectOrder(selectedOrder);
 
-                    updateVisibleComponents();
-                    updateEnabledComponents();
-                });
-            } finally {
-                Application.endWait(OrderPanel.this);
-            }
+                updateVisibleComponents();
+                updateEnabledComponents();
+            });
+        } finally {
+            Application.endWait(OrderPanel.this);
+        }
 
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-            if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
-                OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application, selectedOrder);
-                dialog.showDialog();
+        if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
+            OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application, selectedOrder);
+            dialog.showDialog();
 //                if (dialog.showDialog() == ICacheDialog.OK) {
 //                    List<Item> itemsToOrder = dialog.getItemsToOrder();
 //                    if (itemsToOrder != null) {
@@ -814,8 +697,8 @@ public class OrderPanel extends OrderPanelLayout {
 //                        addItemsToOrder(itemsToOrder, selectedOrder);
 //                    }
 //                }
-                // TODO #1 Advanced search dialog
-            }
+            // TODO #1 Advanced search dialog
+        }
 
     }
 
@@ -829,7 +712,7 @@ public class OrderPanel extends OrderPanelLayout {
         if (selectedOrder != null) {
             switch (selectedOrder.getDistributorType()) {
                 case Items:
-                    onEditItem( selectedOrderLine.getItem());
+                    onEditItem(selectedOrderLine.getItem());
                     break;
                 case Pcbs:
                     // TODO

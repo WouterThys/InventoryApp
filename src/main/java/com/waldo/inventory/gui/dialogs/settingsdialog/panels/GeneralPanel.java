@@ -30,6 +30,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
     private ICheckBox fullScreenCb;
     private ICheckBox debugCb;
     private ICheckBox logHistoryCb;
+    private ICheckBox autoOrderCb;
 
     /*
      *                  VARIABLES
@@ -80,6 +81,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         lookAndFeelCb.setEnabled(enabled);
         fullScreenCb.setEnabled(enabled);
         debugCb.setEnabled(enabled);
+        autoOrderCb.setEnabled(enabled);
         logHistoryCb.setEnabled(enabled);
 
         return enabled;
@@ -93,6 +95,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
             lookAndFeelCb.setSelectedItem(selectedSettings.getGuiLookAndFeel());
             fullScreenCb.setSelected(selectedSettings.isGuiStartUpFullScreen());
             debugCb.setSelected(Main.DEBUG_MODE);
+            autoOrderCb.setSelected(Main.AUTO_ORDER);
             logHistoryCb.setSelected(Main.LOG_HISTORY);
         }
     }
@@ -159,9 +162,11 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         fullScreenCb = new ICheckBox();
         debugCb = new ICheckBox();
         logHistoryCb = new ICheckBox();
+        autoOrderCb = new ICheckBox();
 
         debugCb.addActionListener(e -> Main.DEBUG_MODE = debugCb.isSelected());
         logHistoryCb.addActionListener(e -> Main.LOG_HISTORY = logHistoryCb.isSelected());
+        autoOrderCb.addActionListener(e -> Main.AUTO_ORDER = autoOrderCb.isSelected());
 
         detailsViewCb.addEditedListener(this, "guiDetailsView", String.class);
         lookAndFeelCb.addEditedListener(this, "guiLookAndFeel", String.class);
@@ -179,6 +184,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
         gbc.addLine("Start up full screen: ", fullScreenCb);
         gbc.addLine("Debug mode: ", debugCb);
         gbc.addLine("Log history: ", logHistoryCb);
+        gbc.addLine("Auto order: ", autoOrderCb);
 
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 GuiUtils.createInlineTitleBorder("Gui options"),

@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.DistributorPartLink;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
@@ -20,6 +22,7 @@ import com.waldo.utils.icomponents.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -35,6 +38,10 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     private ICheckBox discourageOrderCb;
     private ITextField replacementItemTf;
     private ITextField relatedItemTf;
+    private ICheckBox autoOrderCb;
+
+    private DefaultComboBoxModel<Distributor> autoOrderByModel;
+    private IComboBox<Distributor> autoOrderByCb;
 
     private IActions.SearchAction searchReplacementItemAa;
     private IActions.EditAction editReplacementItemAa;
@@ -73,6 +80,10 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
 
         editReplacementItemAa.setEnabled(hasReplacement);
         deleteReplacementItemAa.setEnabled(hasReplacement);
+
+        boolean canAutoUpdate = (Main.AUTO_ORDER) && (tableModel.getItemList().size() > 0);
+        autoOrderCb.setEnabled(canAutoUpdate);
+        autoOrderByCb.setEnabled(canAutoUpdate && autoOrderCb.isSelected());
     }
 
     private JPanel createDistributorPanel() {
@@ -94,6 +105,8 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         gbc.addLine("Discourage orders: ", discourageOrderCb);
         gbc.addLine("Replaced with: ", GuiUtils.createComponentWithActions(replacementItemTf, searchReplacementItemAa, editReplacementItemAa, deleteReplacementItemAa));
         gbc.addLine("Related to: ", GuiUtils.createComponentWithActions(relatedItemTf, searchRelatedItemAa, editRelatedItemAa, deleteRelatedItemAa));
+        gbc.addLine("Automatic orders: ", autoOrderCb);
+        gbc.addLine("Auto order by: ", autoOrderByCb);
 
         linksPanel.add(helperPnl, BorderLayout.NORTH);
         linksPanel.setBorder(GuiUtils.createInlineTitleBorder("Order rules"));
@@ -214,6 +227,35 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         }
     }
 
+
+    private void updateAutoOrderByCb() {
+        if (newItem != null) {
+            autoOrderByModel.removeAllElements();
+
+            autoOrderByModel.addElement(Distributor.getUnknownDistributor());
+            for (DistributorPartLink link : tableModel.getItemList()) {
+                autoOrderByModel.addElement(link.getDistributor());
+            }
+
+            if (newItem.getAutoOrderById() > DbObject.UNKNOWN_ID) {
+                autoOrderByCb.setSelectedItem(newItem.getAutoOrderBy());
+            } else {
+                autoOrderByCb.setSelectedIndex(0);
+            }
+        }
+    }
+
+    private void onAutoOrderBy(Distributor distributor) {
+        if (newItem != null) {
+            if (distributor != null) {
+                newItem.setAutoOrderById(distributor.getId());
+            } else {
+                newItem.setAutoOrderById(0);
+            }
+            editedListener.onValueChanged(autoOrderByCb, "autoOrderById", 0, 0);
+        }
+    }
+
     //
     // Toolbar
     //
@@ -261,6 +303,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     public void onInserted(DistributorPartLink link) {
         tableModel.addItem(link);
         linkTable.selectItem(link);
+        updateAutoOrderByCb();
         updateEnabledComponents();
     }
 
@@ -268,6 +311,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     public void onUpdated(DistributorPartLink link) {
         tableModel.updateTable();
         linkTable.selectItem(link);
+        updateAutoOrderByCb();
         updateEnabledComponents();
     }
 
@@ -275,6 +319,14 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
     public void onDeleted(DistributorPartLink link) {
         tableModel.removeItem(link);
         linkTable.selectItem(null);
+
+        if (newItem != null) {
+            if (newItem.getAutoOrderById() == link.getDistributorId()) {
+                onAutoOrderBy(Distributor.getUnknownDistributor());
+            }
+        }
+
+        updateAutoOrderByCb();
         updateEnabledComponents();
     }
 
@@ -302,6 +354,20 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
 
         replacementItemTf = new ITextField(false);
         relatedItemTf = new ITextField(false);
+
+        autoOrderCb = new ICheckBox();
+        autoOrderCb.addEditedListener(editedListener, "autoOrder");
+        autoOrderCb.addActionListener(e -> updateEnabledComponents());
+
+        autoOrderByModel = new DefaultComboBoxModel<>();
+        autoOrderByCb = new IComboBox<>(autoOrderByModel);
+        autoOrderByCb.addItemListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    onAutoOrderBy((Distributor)autoOrderByCb.getSelectedItem());
+                }
+            });
+        });
 
         searchReplacementItemAa = new IActions.SearchAction() {
             @Override
@@ -366,6 +432,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
 
             // Order rules
             discourageOrderCb.setSelected(newItem.isDiscourageOrder());
+            autoOrderCb.setSelected(newItem.isAutoOrder());
 
             if (newItem.getReplacementItemId() > DbObject.UNKNOWN_ID) {
                 replacementItemTf.setText(newItem.getReplacementItem().toString());
@@ -374,6 +441,8 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
             if (newItem.getRelatedItemId() > DbObject.UNKNOWN_ID) {
                 relatedItemTf.setText(newItem.getRelatedItem().toString());
             }
+
+            updateAutoOrderByCb();
         }
 
         updateEnabledComponents();
