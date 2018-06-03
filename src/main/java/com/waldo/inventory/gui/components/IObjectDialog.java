@@ -83,6 +83,10 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         return originalObject != null && copyObject != null && !(copyObject.equals(originalObject));
     }
 
+    protected void doDelete() {
+        originalObject.delete();
+    }
+
     protected void doSave() {
         copyObject.createCopy(originalObject);
         originalObject.setCanBeSaved(true);
@@ -155,12 +159,14 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
     @Override
     public void onInserted(T object) {
         copyObject = (T) object.createCopy();
+        originalObject = object;
         getButtonNeutral().setEnabled(false);
     }
 
     @Override
     public void onUpdated(T object) {
         copyObject = (T) object.createCopy();
+        originalObject = object;
         getButtonNeutral().setEnabled(false);
     }
 
