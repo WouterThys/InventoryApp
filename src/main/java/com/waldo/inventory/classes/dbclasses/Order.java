@@ -4,6 +4,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.classes.Price;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.OpenUtils;
@@ -38,9 +39,12 @@ public class Order extends DbObject {
     private String orderReference;
     private String trackingNumber;
 
+    private boolean isAutoOrder = false;
+
     // Runtime variables
     private boolean isLocked;
     private final List<OrderLine> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+    private final List<Item> autoOrderItems = new ArrayList<>();
 
     public Order() {
         super(TABLE_NAME);
@@ -70,6 +74,7 @@ public class Order extends DbObject {
         statement.setLong(ndx++, getDistributorId());
         statement.setString(ndx++, getOrderReference());
         statement.setString(ndx++, getTrackingNumber());
+        statement.setBoolean(ndx++, isAutoOrder());
         return ndx;
     }
 
@@ -100,6 +105,7 @@ public class Order extends DbObject {
         order.setDistributorId(getDistributorId());
         order.setOrderReference(getOrderReference());
         order.setTrackingNumber(getTrackingNumber());
+        order.setAutoOrder(isAutoOrder());
 
         return order;
     }
@@ -124,6 +130,7 @@ public class Order extends DbObject {
                 if (!(ref.getDistributorId() == (getDistributorId()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
+                if (!(ref.isAutoOrder() == isAutoOrder())) return false;
 
             }
         }
@@ -136,16 +143,43 @@ public class Order extends DbObject {
         return order;
     }
 
+    public static Order createAutoOrder(int autoOrderNumber, Distributor distributor) {
+        Order order = null;
+        if (distributor != null) {
+            order = new Order();
+            order.setAutoOrder(true);
+            order.setName("AUTO-ORDER_" + autoOrderNumber);
+            order.setDistributorId(distributor.getId());
+        }
+        return order;
+    }
+
+    public synchronized void addAutoOrderItem(Item item) {
+        if (item != null && isAutoOrder()) {
+            if (!autoOrderItems.contains(item)) {
+                autoOrderItems.add(item);
+            }
+        }
+    }
+
     //
     // DatabaseAccess tells the object is updated
     //
     @Override
     public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case Insert: {
+            case Insert:
                 cache().add(this);
+            case Update:
+                if (isAutoOrder()) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (autoOrderItems.size() > 0) {
+                            OrderManager.doAutoOrder(this);
+                        }
+                    });
+                }
                 break;
-            }
+
             case Delete: {
                 cache().remove(this);
                 break;
@@ -494,5 +528,21 @@ public class Order extends DbObject {
 
     public void clearTempOrderList() {
         tempOrderItems.clear();
+    }
+
+
+    public synchronized List<Item> takeAutoOrderItems() {
+        List<Item> autoOrderList = new ArrayList<>(autoOrderItems);
+        autoOrderItems.clear();
+        return autoOrderList;
+    }
+
+
+    public boolean isAutoOrder() {
+        return isAutoOrder;
+    }
+
+    public void setAutoOrder(boolean autoOrder) {
+        isAutoOrder = autoOrder;
     }
 }

@@ -59,9 +59,11 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
                             return m.toString();
                         }
                     } else {
-                        Project p = line.getPcb().getProject();
-                        if (p != null && p.getId() != DbObject.UNKNOWN_ID) {
-                            return p.toString();
+                        if (line.getPcb() != null) {
+                            Project p = line.getPcb().getProject();
+                            if (p != null && p.getId() != DbObject.UNKNOWN_ID) {
+                                return p.toString();
+                            }
                         }
                     }
                     return "";

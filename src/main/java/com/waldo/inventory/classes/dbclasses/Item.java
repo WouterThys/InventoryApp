@@ -5,10 +5,12 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.SearchMatch;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.swing.*;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -219,7 +221,7 @@ public class Item extends DbObject {
                 Objects.equals(getLocalDataSheet(), item.getLocalDataSheet()) &&
                 Objects.equals(getOnlineDataSheet(), item.getOnlineDataSheet()) &&
                 getAmountType() == item.getAmountType() &&
-                getOrderState() == item.getOrderState() &&
+                //getOrderState() == item.getOrderState() &&
                 getReplacementItemId() == item.getReplacementItemId() &&
                 getRelatedItemId() == item.getRelatedItemId() &&
                 getAutoOrderById() == item.getAutoOrderById() &&
@@ -412,10 +414,20 @@ public class Item extends DbObject {
     @Override
     public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case Insert: {
+            case Insert:
                 cache().add(this);
                 break;
-            }
+
+            case Update:
+                if (isAutoOrder()) {
+                    if (getAmount() < getMinimum()) {
+                        SwingUtilities.invokeLater(() -> {
+                            OrderManager.autoOrderItem(this);
+                        });
+                    }
+                }
+                break;
+
             case Delete: {
                 cache().remove(this);
                 break;
@@ -605,6 +617,10 @@ public class Item extends DbObject {
         this.amountType = ItemAmountTypes.fromInt(amountType);
     }
 
+
+    public void setOrderState(Statics.OrderStates orderState) {
+        this.orderState = orderState;
+    }
 
     public Statics.OrderStates getOrderState() {
         if (orderState == null) {

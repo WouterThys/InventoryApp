@@ -1,9 +1,8 @@
 package com.waldo.inventory.managers;
 
 import com.waldo.inventory.Main;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.utils.DateUtils;
 
 import java.sql.Date;
@@ -12,12 +11,16 @@ import java.util.List;
 
 public class OrderManager {
 
+    private static final LogManager LOG = LogManager.LOG(OrderManager.class);
+
     // Singleton
     private static final OrderManager INSTANCE = new OrderManager();
+
+    private OrderManager() {
+    }
+
     public static OrderManager om() {
         return INSTANCE;
-    }
-    private OrderManager() {
     }
 
 
@@ -27,20 +30,70 @@ public class OrderManager {
     // ...
 
 
-
-
-
     //
     // STATIC METHODS
     //
 
-    public static void autoOrderItem(Item item) {
+    static int autoOrderItemCnt = 0;
+    public static synchronized void autoOrderItem(final Item item) {
         if (item != null && Main.AUTO_ORDER && item.isAutoOrder()) {
+            if ((!item.getOrderState().equals(Statics.OrderStates.Planned)) && (item.getAutoOrderById() > DbObject.UNKNOWN_ID)) {
 
+                item.setOrderState(Statics.OrderStates.Planned);
+
+                autoOrderItemCnt++;
+                System.out.println("autoOrderItem() " + autoOrderItemCnt);
+
+                Distributor autoOrderBy = item.getAutoOrderBy();
+                Order autoOrder = null;
+
+                // Find auto
+                List<Order> autoOrders = SearchManager.sm().findAutoOrdersByState(Statics.OrderStates.Planned);
+                if (autoOrders.size() > 0) {
+                    for (Order order : autoOrders) {
+                        if (order.getDistributorId() == autoOrderBy.getId()) {
+                            autoOrder = order;
+                            break;
+                        }
+                    }
+                }
+
+                // Create new if no auto order yet
+                if (autoOrder == null) {
+                    autoOrder = Order.createAutoOrder(autoOrders.size() + 1, autoOrderBy);
+                    autoOrder.addAutoOrderItem(item);
+                    autoOrder.save();
+                } else {
+                    autoOrder.addAutoOrderItem(item);
+                    doAutoOrder(autoOrder);
+                }
+            }
         }
     }
 
+    static int doAutoOrderCnt;
+    public static synchronized void doAutoOrder(Order autoOrder) {
+        if (autoOrder != null) {
 
+            List<Item> itemList = autoOrder.takeAutoOrderItems();
+
+            if (itemList.size() > 0) {
+                doAutoOrderCnt++;
+                System.out.println("doAutoOrderCnt() " + doAutoOrderCnt);
+
+                // Replaced?
+                for (int i = 0; i < itemList.size(); i++) {
+                    Item item = itemList.get(i);
+                    if (item.getReplacementItemId() > DbObject.UNKNOWN_ID) {
+                        itemList.set(i, item.getReplacementItem());
+                    }
+                }
+
+                // Order item
+                addItemsToOrder(itemList, autoOrder);
+            }
+        }
+    }
 
     // Order status
     public static boolean moveToOrdered(Order order) {
@@ -93,11 +146,6 @@ public class OrderManager {
         }
     }
 
-
-
-
-
-
     private static boolean validateOrderLines(Order order) {
         List<String> errors = checkOrder(order);
         if (errors.size() > 0) {
@@ -132,5 +180,32 @@ public class OrderManager {
             }
         }
         return errorList;
+    }
+
+
+
+    public static void addItemToOrder(Item item, Order order) {
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(item);
+        addItemsToOrder(items, order);
+    }
+
+    static int addItemsToOrderCnt;
+    public static void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+        List<Item> list = new ArrayList<>();
+        // Update items
+        for (Item item : itemsToOrder) {
+            if (order.findOrderLineFor(item) == null) {
+                list.add(item);
+            }
+        }
+
+        LOG.info("Auto ordering " + list.size() + " items for " + order);
+
+        addItemsToOrderCnt++;
+        System.out.println("addItemsToOrderCnt() " + addItemsToOrderCnt);
+
+        // Add
+        order.addItemsToOrder(list);
     }
 }

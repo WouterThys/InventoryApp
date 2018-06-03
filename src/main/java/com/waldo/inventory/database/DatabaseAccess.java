@@ -540,7 +540,7 @@ public class DatabaseAccess {
                         i.setIsSet(rs.getBoolean("isSet"));
                         i.setReplacementItemId(rs.getLong("replacementItemId"));
                         i.setRelatedItemId(rs.getLong("relatedItemId"));
-                        i.setAutoOrderById(rs.getLong("autoOrderById"));
+                        i.setAutoOrderById(rs.getLong("autoOrderById")); // MUST BE AFTER setAmount() to disable auto ordering while fetching from DB
 
                         if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                             i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
@@ -742,6 +742,7 @@ public class DatabaseAccess {
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
                     o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
+                    o.setAutoOrder(rs.getBoolean("isAutoOrder"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {

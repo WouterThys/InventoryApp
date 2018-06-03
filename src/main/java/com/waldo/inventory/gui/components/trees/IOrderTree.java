@@ -214,6 +214,8 @@ public class IOrderTree extends ITree<Order> {
 
                 if (value instanceof DefaultMutableTreeNode) {
                     Order order = (Order) ((DefaultMutableTreeNode) value).getUserObject();
+                    Font font = getFont();
+                    setFont(new Font(font.getName(), Font.PLAIN, font.getSize()));
                     if (!order.canBeSaved()) {
                         switch (order.getName()) {
                             case "Planned":
@@ -234,6 +236,9 @@ public class IOrderTree extends ITree<Order> {
                             default:
                             case Items: setIcon(itemIcon); break;
                             case Pcbs: setIcon(pcbIcon); break;
+                        }
+                        if (order.isAutoOrder()) {
+                            setFont(new Font(font.getName(), Font.ITALIC, font.getSize()));
                         }
                     }
                 }
