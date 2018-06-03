@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 
 import com.sun.istack.internal.NotNull;
-import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
@@ -25,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUtils.GuiInterface, IdBToolBar.IdbToolBarListener, CacheChangedListener<DistributorPartLink> {
@@ -81,7 +81,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         editReplacementItemAa.setEnabled(hasReplacement);
         deleteReplacementItemAa.setEnabled(hasReplacement);
 
-        boolean canAutoUpdate = (Main.AUTO_ORDER) && (tableModel.getItemList().size() > 0);
+        boolean canAutoUpdate = (settings().getGeneralSettings().isAutoOrderEnabled()) && (tableModel.getItemList().size() > 0);
         autoOrderCb.setEnabled(canAutoUpdate);
         autoOrderByCb.setEnabled(canAutoUpdate && autoOrderCb.isSelected());
     }

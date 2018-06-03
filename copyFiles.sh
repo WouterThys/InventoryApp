@@ -6,7 +6,7 @@ echo "Copy .jar file to /opt/Inventory"
 cp -ar /home/wouter/Documents/Geeken/InventoryApp/out/artifacts/InventoryApp_jar2/InventoryApp.jar /opt/Inventory/
 
 echo "Copy setting db /opt/Inventory"
-cp -ar /home/wouter/Documents/Geeken/InventoryApp/settings.db /opt/Inventory/
+cp /home/wouter/Documents/Geeken/InventoryApp/settings.db /opt/Inventory/
 
 #echo "Copy 'Images' to /opt/Inventory"
 #cp -ar /home/wouter/Documents/Geeken/InventoryApp/Images /opt/Inventory/

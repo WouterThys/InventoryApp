@@ -31,14 +31,12 @@ public class Main {
     private static final String IS = "IMAGE_SERVER";
     private static final String FS = "FULL_SCREEN";
     private static final String LH = "LOG_HISTORY";
-    private static final String AO = "AUTO_ORDER";
 
     public static boolean CACHE_ONLY = false;
     public static boolean DEBUG_MODE = false;
     public static boolean IMAGE_SERVER = true;
     public static boolean FULL_SCREEN = false;
     public static boolean LOG_HISTORY = false;
-    public static boolean AUTO_ORDER = true;
 
     private static Application app;
 
@@ -90,9 +88,6 @@ public class Main {
                             break;
                         case IS:
                             IMAGE_SERVER = Boolean.valueOf(value);
-                            break;
-                        case AO:
-                            AUTO_ORDER = Boolean.valueOf(value);
                             break;
                     }
                 } catch (Exception e) {

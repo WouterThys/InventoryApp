@@ -1,6 +1,5 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.utils.DateUtils;
@@ -8,6 +7,8 @@ import com.waldo.utils.DateUtils;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public class OrderManager {
 
@@ -36,7 +37,7 @@ public class OrderManager {
 
     static int autoOrderItemCnt = 0;
     public static synchronized void autoOrderItem(final Item item) {
-        if (item != null && Main.AUTO_ORDER && item.isAutoOrder()) {
+        if (item != null && settings().getGeneralSettings().isAutoOrderEnabled() && item.isAutoOrder()) {
             if ((!item.getOrderState().equals(Statics.OrderStates.Planned)) && (item.getAutoOrderById() > DbObject.UNKNOWN_ID)) {
 
                 item.setOrderState(Statics.OrderStates.Planned);

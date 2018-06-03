@@ -95,7 +95,7 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
             lookAndFeelCb.setSelectedItem(selectedSettings.getGuiLookAndFeel());
             fullScreenCb.setSelected(selectedSettings.isGuiStartUpFullScreen());
             debugCb.setSelected(Main.DEBUG_MODE);
-            autoOrderCb.setSelected(Main.AUTO_ORDER);
+            autoOrderCb.setSelected(selectedSettings.isAutoOrderEnabled());
             logHistoryCb.setSelected(Main.LOG_HISTORY);
         }
     }
@@ -166,11 +166,11 @@ public class GeneralPanel extends SettingsPnl<GeneralSettings> {
 
         debugCb.addActionListener(e -> Main.DEBUG_MODE = debugCb.isSelected());
         logHistoryCb.addActionListener(e -> Main.LOG_HISTORY = logHistoryCb.isSelected());
-        autoOrderCb.addActionListener(e -> Main.AUTO_ORDER = autoOrderCb.isSelected());
 
         detailsViewCb.addEditedListener(this, "guiDetailsView", String.class);
         lookAndFeelCb.addEditedListener(this, "guiLookAndFeel", String.class);
         fullScreenCb.addEditedListener(this, "guiStartUpFullScreen");
+        autoOrderCb.addEditedListener(this, "autoOrderEnabled");
     }
 
     @Override
