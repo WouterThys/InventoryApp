@@ -21,7 +21,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
    // Item
-    ILabel iconLbl;
+    private ILabel iconLbl;
     ITextField nameTf;
     ITextField descriptionTa;
     private ITextField categoryTf;
@@ -225,7 +225,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         discourageOrderCb.setHorizontalAlignment(SwingConstants.RIGHT);
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
-        remarksTp.setEnabled(false);
+        //remarksTp.setEnabled(false);
 
         plusOneAction = new IActions.PlusOneAction() {
             @Override
