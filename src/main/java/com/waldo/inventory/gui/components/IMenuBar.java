@@ -42,10 +42,6 @@ public class IMenuBar extends JPanel {
         JPanel groupPnl = new JPanel(new BorderLayout());
         ILabel groupLbl = createGroupTitle(name);
 
-//        Box groupBox = Box.createVerticalBox();
-//        for (AbstractAction action : actions) {
-//            groupBox.add(createActionBtn(action));
-//        }
         JToolBar groupBox = GuiUtils.createNewToolbar();
         groupBox.setOrientation(JToolBar.VERTICAL);
         groupBox.add(Box.createGlue());

@@ -625,6 +625,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
             EditRemarksDialog dialog = new EditRemarksDialog(parent, "Edit remarks", solderItem.getRemarksFile());
             if (dialog.showDialog() == IDialog.OK) {
                 solderItem.setRemarksFile(dialog.getFile());
+                solderItem.save();
                 updateSolderInfo(solderItem);
             }
         }

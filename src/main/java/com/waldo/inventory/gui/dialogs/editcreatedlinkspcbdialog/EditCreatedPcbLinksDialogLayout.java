@@ -299,7 +299,6 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         remarksPnl.add(GuiUtils.createNewToolbar(editRemarksAa), BorderLayout.NORTH);
         remarksPnl.add(scrollPane, BorderLayout.CENTER);
 
-        //panel.add(toolbarPnl, BorderLayout.NORTH);
         panel.add(remarksPnl, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(1,1,1,1),
@@ -342,7 +341,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         JPanel westPnl = new JPanel(new BorderLayout());
 
         JPanel toolbarPnl = new JPanel(new BorderLayout());
-        toolbarPnl.add(createSolderMenu(), BorderLayout.EAST);
+        toolbarPnl.add(createSolderMenu(), BorderLayout.WEST);
 
         // Tables
         JScrollPane linkScrollPane = new JScrollPane(linkTable);
@@ -355,7 +354,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         eastPnl.add(linkScrollPane, BorderLayout.CENTER);
         eastPnl.add(createLinkInfoPanel(), BorderLayout.SOUTH);
 
-        westPnl.add(toolbarPnl, BorderLayout.NORTH);
+        //westPnl.add(toolbarPnl, BorderLayout.NORTH);
         westPnl.add(solderScrollPane, BorderLayout.CENTER);
         westPnl.add(createSolderInfoPanel(), BorderLayout.SOUTH);
 
@@ -363,6 +362,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         split.setResizeWeight(0.5);
         split.setOneTouchExpandable(true);
 
+        panel.add(toolbarPnl, BorderLayout.NORTH);
         panel.add(split, BorderLayout.CENTER);
 
         return panel;
