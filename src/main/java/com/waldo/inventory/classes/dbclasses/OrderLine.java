@@ -319,10 +319,4 @@ public class OrderLine extends DbObject {
         }
         return "";
     }
-
-    public static class OrderLineException extends Exception {
-        OrderLineException(String message) {
-            super(message);
-        }
-    }
 }
