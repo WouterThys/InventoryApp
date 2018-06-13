@@ -187,8 +187,8 @@ abstract class MessageProgressDialogLayout extends iDialog {
         getButtonCancel().setVisible(false);
         getButtonOK().setEnabled(false);
 
-        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        defaults.put("nimbusOrange", defaults.get("nimbusFocus"));
+        //UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        //defaults.put("nimbusOrange", defaults.get("nimbusFocus"));
 
         mainProgressBar = new JProgressBar();
         mainProgressBar.setStringPainted(true);

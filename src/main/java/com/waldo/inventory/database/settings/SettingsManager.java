@@ -3,7 +3,6 @@ package com.waldo.inventory.database.settings;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -546,6 +545,7 @@ public class SettingsManager {
                     gs.setGuiDetailsView(rs.getString("guiDetailsView"));
                     gs.setGuiLookAndFeel(rs.getString("guiLookAndFeel"));
                     gs.setGuiStartUpFullScreen(rs.getBoolean("guiStartUpFullScreen"));
+                    gs.setAutoOrderEnabled(rs.getBoolean("autoOrderEnabled"));
 
                     gs.setSaved(true);
 
@@ -645,6 +645,7 @@ public class SettingsManager {
                 stmt.setString(2, general.getGuiDetailsView().toString());
                 stmt.setString(3, general.getGuiLookAndFeel());
                 stmt.setBoolean(4, general.isGuiStartUpFullScreen());
+                stmt.setBoolean(5, general.isAutoOrderEnabled());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -707,8 +708,9 @@ public class SettingsManager {
                 stmt.setString(1, general.getGuiDetailsView().toString());
                 stmt.setString(2, general.getGuiLookAndFeel());
                 stmt.setBoolean(3, general.isGuiStartUpFullScreen());
+                stmt.setBoolean(4, general.isAutoOrderEnabled());
 
-                stmt.setString(4, general.getName()); // Where name
+                stmt.setString(5, general.getName()); // Where name
                 stmt.execute();
             }
         } catch (SQLException e) {

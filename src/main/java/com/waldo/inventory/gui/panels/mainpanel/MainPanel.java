@@ -7,7 +7,6 @@ import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.popups.*;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
-import com.waldo.inventory.gui.dialogs.messageprogressdialog.MessageProgressDialog;
 import com.waldo.inventory.managers.SearchManager;
 
 import javax.swing.*;
@@ -537,20 +536,7 @@ public class MainPanel extends MainPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-
-        // Test
-        MessageProgressDialog dialog = new MessageProgressDialog(application);
-        dialog.initMainProgress(0,50);
-        dialog.initSubProgress(0,10);
-        dialog.setMainProgress(20);
-        dialog.setSubProgress(9);
-        dialog.appendError("This is an error");
-        dialog.appendError("Again an error");
-        dialog.appendWarning("Now its a warning");
-        dialog.appendInfo("FYI last message was a warning..");
-        dialog.showDialog();
-        // Test
-        //onAddItem();
+        onAddItem();
     }
 
     @Override

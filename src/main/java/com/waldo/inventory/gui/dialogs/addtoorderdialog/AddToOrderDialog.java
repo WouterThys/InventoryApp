@@ -16,7 +16,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddToOrderCacheDialog extends AddToOrderCacheDialogLayout implements CacheChangedListener<Order> {
+public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements CacheChangedListener<Order> {
 
     private final Application application;
     private Item itemToOrder;
@@ -24,7 +24,7 @@ public class AddToOrderCacheDialog extends AddToOrderCacheDialogLayout implement
     private boolean orderList;
     private boolean createOnConfirm;
 
-    public AddToOrderCacheDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
+    public AddToOrderDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
         super(parent, title, pendingOption, Statics.DistributorType.Items);
         this.application = parent;
         this.itemToOrder = itemToOrder;
@@ -38,7 +38,7 @@ public class AddToOrderCacheDialog extends AddToOrderCacheDialogLayout implement
         updateComponents();
     }
 
-    public AddToOrderCacheDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm, boolean pendingOption) {
+    public AddToOrderDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm, boolean pendingOption) {
         super(parent, title, pendingOption, Statics.DistributorType.Items);
         this.application = parent;
         this.itemsToOrderList = itemsToOrder;
@@ -59,7 +59,7 @@ public class AddToOrderCacheDialog extends AddToOrderCacheDialogLayout implement
     @Override
     void addToOrder() {
         if (orderCb.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(AddToOrderCacheDialog.this, "Selected an order", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(AddToOrderDialog.this, "Selected an order", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (createOnConfirm) {
@@ -78,7 +78,7 @@ public class AddToOrderCacheDialog extends AddToOrderCacheDialogLayout implement
     @Override
     void addToPending() {
         if (distributorCb.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(AddToOrderCacheDialog.this, "Selected a distributor", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(AddToOrderDialog.this, "Selected a distributor", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Distributor distributor = (Distributor) distributorCb.getSelectedItem();

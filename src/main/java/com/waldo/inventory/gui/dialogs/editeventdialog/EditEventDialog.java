@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editeventdialog;
 
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 
 import java.awt.*;
 

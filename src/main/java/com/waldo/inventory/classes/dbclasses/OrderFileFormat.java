@@ -63,6 +63,9 @@ public class OrderFileFormat extends DbObject {
     }
 
     public String getSeparator() {
+        if (separator == null) {
+            separator = "";
+        }
         return separator;
     }
 

@@ -140,6 +140,14 @@ public class Distributor extends DbObject {
         }
     }
 
+    public static Distributor getUnknownDistributor() {
+        Distributor d = new Distributor();
+        d.setName("");
+        d.setId(UNKNOWN_ID);
+        d.setCanBeSaved(false);
+        return d;
+    }
+
     //
     // Getters, setters
     //

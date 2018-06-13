@@ -1,7 +1,7 @@
 package com.waldo.inventory.managers;
 
-import com.waldo.inventory.classes.database.DbForeignKey;
-import com.waldo.inventory.classes.database.DbTable;
+import com.waldo.inventory.database.classes.DbForeignKey;
+import com.waldo.inventory.database.classes.DbTable;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
 import org.apache.commons.dbcp2.BasicDataSource;

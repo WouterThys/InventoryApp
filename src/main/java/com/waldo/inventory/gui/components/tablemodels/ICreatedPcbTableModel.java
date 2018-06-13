@@ -62,7 +62,8 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
 
         private static final ImageIcon redBall = imageResource.readIcon("Ball.red");;
         private static final ImageIcon receivedIcon = imageResource.readIcon("Actions.Received");
-        private static final ImageIcon createdIcon = imageResource.readIcon("Actions.Created");
+        private static final ImageIcon inProgressIcon = imageResource.readIcon("Actions.Created");
+        private static final ImageIcon doneIcon = imageResource.readIcon("Actions.Ok");
         private static final ImageIcon destroyedIcon = imageResource.readIcon("Actions.Destroyed");
 
         private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, receivedIcon);
@@ -82,17 +83,24 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
 
                 CreatedPcb pcb = (CreatedPcb) value;
                 if (pcb.isCreated()) {
-                    if (pcb.isSoldered()) {
-                        if (pcb.isDestroyed()) {
-                            stateLabel.setIcon(destroyedIcon);
-                            stateLabel.setToolTipText("Destroyed PCB: " + DateUtils.formatDateTime(pcb.getDateDestroyed()));
-                        } else {
-                            stateLabel.setIcon(createdIcon);
-                            stateLabel.setToolTipText("Created PCB: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
-                        }
+
+                    if (pcb.isDestroyed()) {
+                        stateLabel.setIcon(destroyedIcon);
+                        stateLabel.setToolTipText("Destroyed PCB: " + DateUtils.formatDateTime(pcb.getDateDestroyed()));
                     } else {
-                        stateLabel.setIcon(receivedIcon);
-                        stateLabel.setToolTipText("Received PCB: " + DateUtils.formatDateTime(pcb.getDateCreated()));
+                        int total = pcb.getAmountOfSolderItems();
+                        int done = pcb.getAmountDone();
+
+                        if (done == 0) {
+                            stateLabel.setIcon(receivedIcon);
+                            stateLabel.setToolTipText("Received PCB: " + DateUtils.formatDateTime(pcb.getDateCreated()));
+                        } else if (done < total) {
+                            stateLabel.setIcon(inProgressIcon);
+                            stateLabel.setToolTipText("In progress: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
+                        } else {
+                            stateLabel.setIcon(doneIcon);
+                            stateLabel.setToolTipText("Done: " + DateUtils.formatDateTime(pcb.getDateSoldered()));
+                        }
                     }
                 } else {
                     stateLabel.setIcon(redBall);

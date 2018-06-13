@@ -202,6 +202,20 @@ public class SearchManager {
         return null;
     }
 
+    public List<Order> findAutoOrdersByState(Statics.OrderStates orderState) {
+        List<Order> autoOrderList = new ArrayList<>();
+
+        for (Order order : cache().getOrders()) {
+            if (order.isAutoOrder()) {
+                if (orderState == null || order.getOrderState().equals(orderState)) {
+                    autoOrderList.add(order);
+                }
+            }
+        }
+
+        return autoOrderList;
+    }
+
     public List<OrderLine> findOrderLinesForOrder(long orderId) {
         List<OrderLine> lines = new ArrayList<>();
         if (orderId > DbObject.UNKNOWN_ID) {

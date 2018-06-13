@@ -2,7 +2,7 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
@@ -502,7 +502,7 @@ public class DatabaseAccess {
     }
 
 
-    public List<Item> updateItems() {
+    public List<Item> fetchItems() {
         List<Item> items = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return items;
@@ -535,8 +535,12 @@ public class DatabaseAccess {
                         i.setPins(rs.getInt("pins"));
                         i.setRating(rs.getFloat("rating"));
                         i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                        i.setAutoOrder(rs.getBoolean("autoOrder"));
                         i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                         i.setIsSet(rs.getBoolean("isSet"));
+                        i.setReplacementItemId(rs.getLong("replacementItemId"));
+                        i.setRelatedItemId(rs.getLong("relatedItemId"));
+                        i.setAutoOrderById(rs.getLong("autoOrderById")); // MUST BE AFTER setAmount() to disable auto ordering while fetching from DB
 
                         if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                             i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
@@ -563,7 +567,7 @@ public class DatabaseAccess {
         return items;
     }
 
-    public List<Division> updateDivisions() {
+    public List<Division> fetchDivisions() {
         List<Division> divisions = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return divisions;
@@ -600,7 +604,7 @@ public class DatabaseAccess {
         return divisions;
     }
 
-    public List<Manufacturer> updateManufacturers() {
+    public List<Manufacturer> fetchManufacturers() {
         List<Manufacturer> manufacturers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return manufacturers;
@@ -634,7 +638,7 @@ public class DatabaseAccess {
         return manufacturers;
     }
 
-    public List<Location> updateLocations() {
+    public List<Location> fetchLocations() {
         List<Location> locations = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return locations;
@@ -673,7 +677,7 @@ public class DatabaseAccess {
         return locations;
     }
 
-    public List<LocationType> updateLocationTypes() {
+    public List<LocationType> fetchLocationTypes() {
         List<LocationType> locationTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return locationTypes;
@@ -708,7 +712,7 @@ public class DatabaseAccess {
         return locationTypes;
     }
 
-    public List<Order> updateOrders() {
+    public List<Order> fetchOrders() {
         List<Order> orders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orders;
@@ -738,6 +742,7 @@ public class DatabaseAccess {
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
                     o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
+                    o.setAutoOrder(rs.getBoolean("isAutoOrder"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -759,7 +764,7 @@ public class DatabaseAccess {
         return orders;
     }
 
-    public List<OrderLine> updateOrderLines() {
+    public List<OrderLine> fetchOrderLines() {
         List<OrderLine> orderLines = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orderLines;
@@ -817,7 +822,7 @@ public class DatabaseAccess {
 //        }
 //    }
 
-    public List<Distributor> updateDistributors() {
+    public List<Distributor> fetchDistributors() {
         List<Distributor> distributors = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributors;
@@ -857,7 +862,7 @@ public class DatabaseAccess {
         return distributors;
     }
 
-    public List<DistributorPartLink> updateDistributorParts() {
+    public List<DistributorPartLink> fetchDistributorParts() {
         List<DistributorPartLink> distributorPartLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributorPartLinks;
@@ -898,7 +903,7 @@ public class DatabaseAccess {
         return distributorPartLinks;
     }
 
-    public List<DistributorOrderFlow> updateDistributorOrderFlows() {
+    public List<DistributorOrderFlow> fetchDistributorOrderFlows() {
         List<DistributorOrderFlow> distributorOrderFlows = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributorOrderFlows;
@@ -939,7 +944,7 @@ public class DatabaseAccess {
         return distributorOrderFlows;
     }
 
-    public List<Package> updatePackages() {
+    public List<Package> fetchPackages() {
         List<Package> packages = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packages;
@@ -973,7 +978,7 @@ public class DatabaseAccess {
         return packages;
     }
 
-    public List<PackageType> updatePackageTypes() {
+    public List<PackageType> fetchPackageTypes() {
         List<PackageType> packageTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packageTypes;
@@ -1010,7 +1015,7 @@ public class DatabaseAccess {
         return packageTypes;
     }
 
-    public List<Project> updateProjects() {
+    public List<Project> fetchProjects() {
         List<Project> projects = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projects;
@@ -1047,7 +1052,7 @@ public class DatabaseAccess {
         return projects;
     }
 
-    public List<ProjectCode> updateProjectCodes() {
+    public List<ProjectCode> fetchProjectCodes() {
         List<ProjectCode> projectCodes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectCodes;
@@ -1091,7 +1096,7 @@ public class DatabaseAccess {
         return projectCodes;
     }
 
-    public List<ProjectPcb> updateProjectPcbs() {
+    public List<ProjectPcb> fetchProjectPcbs() {
         List<ProjectPcb> projectPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectPcbs;
@@ -1137,7 +1142,7 @@ public class DatabaseAccess {
         return projectPcbs;
     }
 
-    public List<ProjectOther> updateProjectOthers() {
+    public List<ProjectOther> fetchProjectOthers() {
         List<ProjectOther> projectOthers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectOthers;
@@ -1181,7 +1186,7 @@ public class DatabaseAccess {
         return projectOthers;
     }
 
-    public List<PcbItemProjectLink> updatePcbItemLinks() {
+    public List<PcbItemProjectLink> fetchPcbItemLinks() {
         List<PcbItemProjectLink> pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemProjectLinks;
@@ -1220,7 +1225,7 @@ public class DatabaseAccess {
         return pcbItemProjectLinks;
     }
 
-    public List<CreatedPcb> updateCreatedPcbs() {
+    public List<CreatedPcb> fetchCreatedPcbs() {
         List<CreatedPcb> createdPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return createdPcbs;
@@ -1272,7 +1277,7 @@ public class DatabaseAccess {
         return createdPcbs;
     }
 
-    public List<CreatedPcbLink> updateCreatedPcbLinks() {
+    public List<CreatedPcbLink> fetchCreatedPcbLinks() {
         List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return createdPcbLinks;
@@ -1314,7 +1319,7 @@ public class DatabaseAccess {
         return createdPcbLinks;
     }
 
-    public List<SolderItem> updateSolderItems() {
+    public List<SolderItem> fetchSolderItems() {
         List<SolderItem> solderItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return solderItems;
@@ -1372,7 +1377,7 @@ public class DatabaseAccess {
         return solderItems;
     }
 
-    public List<ProjectIDE> updateProjectIDEs() {
+    public List<ProjectIDE> fetchProjectIDEs() {
         List<ProjectIDE> projectIDES = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectIDES;
@@ -1416,7 +1421,7 @@ public class DatabaseAccess {
         return projectIDES;
     }
 
-    public List<ParserItemLink> updateParserItemLinks() {
+    public List<ParserItemLink> fetchParserItemLinks() {
         List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return parserItemLinks;
@@ -1450,7 +1455,7 @@ public class DatabaseAccess {
         return parserItemLinks;
     }
 
-    public List<OrderFileFormat> updateOrderFileFormats() {
+    public List<OrderFileFormat> fetchOrderFileFormats() {
         List<OrderFileFormat> orderFileFormats = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orderFileFormats;
@@ -1483,7 +1488,7 @@ public class DatabaseAccess {
         return orderFileFormats;
     }
 
-    public List<PcbItem> updatePcbItems() {
+    public List<PcbItem> fetchPcbItems() {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItems;
@@ -1517,7 +1522,7 @@ public class DatabaseAccess {
         return pcbItems;
     }
 
-    public List<PcbItemItemLink> updateKcItemLinks() {
+    public List<PcbItemItemLink> fetchKcItemLinks() {
         List<PcbItemItemLink> pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemItemLinks;
@@ -1552,7 +1557,7 @@ public class DatabaseAccess {
         return pcbItemItemLinks;
     }
 
-    public List<Log> updateLogs() {
+    public List<Log> fetchLogs() {
         List<Log> logs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return logs;
@@ -1592,7 +1597,7 @@ public class DatabaseAccess {
         return logs;
     }
 
-    public List<DbHistory> updateDbHistoryList() {
+    public List<DbHistory> fetchDbHistoryList() {
         List<DbHistory> dbHistoryList = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return dbHistoryList;
@@ -1632,7 +1637,7 @@ public class DatabaseAccess {
         return dbHistoryList;
     }
 
-    public List<Set> updateSets() {
+    public List<Set> fetchSets() {
         List<Set> sets = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return sets;
@@ -1691,7 +1696,7 @@ public class DatabaseAccess {
         return sets;
     }
 
-    public List<SetItemLink> updateSetItemLinks() {
+    public List<SetItemLink> fetchSetItemLinks() {
         List<SetItemLink> setItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return setItemLinks;
@@ -1726,7 +1731,7 @@ public class DatabaseAccess {
         return setItemLinks;
     }
 
-    public List<DbEvent> updateDbEvents() {
+    public List<DbEvent> fetchDbEvents() {
         List<DbEvent> dbEvents = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return dbEvents;
@@ -1770,7 +1775,7 @@ public class DatabaseAccess {
         return dbEvents;
     }
 
-    public List<Statistics> updateStatistics() {
+    public List<Statistics> fetchStatistics() {
         List<Statistics> statistics = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return statistics;
@@ -1811,7 +1816,7 @@ public class DatabaseAccess {
         return statistics;
     }
 
-    public List<PendingOrder> updatePendingOrders() {
+    public List<PendingOrder> fetchPendingOrders() {
         List<PendingOrder> pendingOrders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pendingOrders;

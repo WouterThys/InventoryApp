@@ -35,6 +35,7 @@ public class DistributorPartLink extends DbObject {
         this();
 
         this.item = item;
+        this.itemId = item.getId();
         this.distributor = null;
         this.distributorId = UNKNOWN_ID;
         this.projectPcb = null;
@@ -142,6 +143,9 @@ public class DistributorPartLink extends DbObject {
 
 
     public long getDistributorId() {
+        if (distributorId < UNKNOWN_ID) {
+            distributorId = UNKNOWN_ID;
+        }
         return distributorId;
     }
 
@@ -153,7 +157,7 @@ public class DistributorPartLink extends DbObject {
     }
 
     public Distributor getDistributor() {
-        if (distributor == null) {
+        if (distributor == null && getDistributorId() > UNKNOWN_ID) {
             distributor = SearchManager.sm().findDistributorById(distributorId);
         }
         return distributor;
@@ -167,12 +171,12 @@ public class DistributorPartLink extends DbObject {
     }
 
     public void setItemId(long itemId) {
-        if (getDistributor() != null && distributor.getDistributorType() == Statics.DistributorType.Items) {
+        //if (getDistributor() != null && distributor.getDistributorType() == Statics.DistributorType.Items) {
             if (item != null && item.getId() != itemId) {
                 item = null;
             }
             this.itemId = itemId;
-        }
+        //}
     }
 
     public Item getItem() {

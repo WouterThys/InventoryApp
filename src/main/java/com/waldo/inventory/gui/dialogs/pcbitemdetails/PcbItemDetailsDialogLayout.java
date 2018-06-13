@@ -135,7 +135,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         // TODO: what if already changed?
         //..
         matchedItemLbl.setText("");
-        matchedItemLbl.setIcon((ImageIcon)null);
+        matchedItemLbl.setIcon(null);
         matchedItemTf.setText("");
 
     }

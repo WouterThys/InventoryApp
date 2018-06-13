@@ -247,7 +247,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
-        remarksTp.setEnabled(false);
+        //remarksTp.setEnabled(false);
 
         dbToolbar = new IdBToolBar(this, false, false, true, true);
 

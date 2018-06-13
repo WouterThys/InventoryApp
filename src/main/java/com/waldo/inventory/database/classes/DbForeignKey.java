@@ -1,4 +1,4 @@
-package com.waldo.inventory.classes.database;
+package com.waldo.inventory.database.classes;
 
 public class DbForeignKey {
 
